@@ -6,20 +6,24 @@ class AppTheme {
 
   //Colors
 
-  static const Color kPrimaryColor = Color(0xfff7a42a);
-  static const Color kBackgroundColor = Colors.white; 
-  static const Color kOnPrimaryColor = Colors.white;
+  static const Color kPrimaryColor = Color(0xffffffff);
+  static const Color kAccentColor = Color(0xff8aa8d8);
+
+  static const Color kBackgroundColor = Colors.white;
+  static const Color kOnPrimaryColor = Color(0xff8aa8d8);
   static const Color kSecondaryColor = Color(0xff535353);
   static const Color kFontColor1 = Colors.black;
   static const Color kFontColor2 = Colors.white;
   static const Color kCardColor = Color(0xffFFFFFF);
   static const Color kShadowColor = Color(0xff000000);
   static Color kListTileColor = Color(0xffD8D8D8).withOpacity(0.12);
-  static Color kIconColor = Color(0xff535353).withOpacity(0.75); 
+  static Color kIconColor = Color(0xff535353).withOpacity(0.75);
 
   //Font-sizes
   static const double kButtonFontSize = 18.0;
   static const double kSubtitleFontSize = 14.0;
+
+  static const double kSubtitle2FontSize = 12.0;
   static const double kTitleFontSize = 28.0;
   static const double kCaptionFontSize = 16.0;
   static const double kBottomSheetTitleSize = 20.0;
@@ -35,6 +39,7 @@ class AppTheme {
   static final ThemeData lightTheme = ThemeData(
       // fontFamily: 'Poppins',
       primaryColor: kPrimaryColor,
+      accentColor: kAccentColor,
       errorColor: Colors.red,
       scaffoldBackgroundColor: kBackgroundColor,
       backgroundColor: kBackgroundColor,
@@ -45,7 +50,7 @@ class AppTheme {
         foregroundColor: kOnPrimaryColor,
         centerTitle: true,
         iconTheme: IconThemeData(
-          color: kOnPrimaryColor,
+          color: kAccentColor,
         ),
       ),
       colorScheme: ColorScheme.light(
@@ -63,14 +68,16 @@ class AppTheme {
       textTheme: TextTheme(
           headline6: TextStyle(
               fontSize: kTitleFontSize,
-              color: kPrimaryColor,
+              color: kAccentColor,
               fontFamily: 'Poppins-SemiBold'),
           caption: TextStyle(
               fontSize: kCaptionFontSize,
               color: kFontColor1,
               fontWeight: FontWeight.w500),
           subtitle1:
-              TextStyle(fontSize: kSubtitleFontSize, color: kSecondaryColor)),
+              TextStyle(fontSize: kSubtitleFontSize, color: kAccentColor),
+          subtitle2:
+              TextStyle(fontSize: kSubtitle2FontSize, color: kAccentColor)),
       inputDecorationTheme: InputDecorationTheme(
         hintStyle:
             TextStyle(color: kSecondaryColor, fontSize: kSubtitleFontSize),

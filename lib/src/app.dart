@@ -45,7 +45,10 @@ class _AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.lightTheme,
-      home: LoginPage(),
+      // home: LoginPage(),
+      home: HomePage(
+        title: "SOC",
+      ),
       localizationsDelegates: [
         _newLocaleDelegate!,
         //provides localised strings
