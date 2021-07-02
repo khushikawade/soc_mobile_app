@@ -1,0 +1,17 @@
+{
+    "select_language": "Select language",
+    "login" : "Login",
+    "login_subtitle" : "Log in with your credentials",
+    "username" : "Username",
+    "password" : "Password",
+    "username_hint" : "Enter the username here",
+    "password_hint" : "Enter the password here",
+    "forgot_password" : "Forgot password?",
+    "username_validation_error": "Username can't be empty",
+    "password_validation_error": "Password can't be empty",
+    "invalid_credentials": "Username and / or password incorrect.",
+    "settings" : "Settings",
+    "profile" : "Profile",
+    "app_information" : "App information",
+    "change_language" : "Change language"
+}

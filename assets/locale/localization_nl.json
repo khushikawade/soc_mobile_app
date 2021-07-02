@@ -1,0 +1,17 @@
+{
+    "select_language": "Selecteer taal",
+    "login" : "Inloggen",
+    "login_subtitle" : "Log in met uw inloggegevens",
+    "username" : "Gebruikersnaam",
+    "password" : "Wachtwoord",
+    "username_hint" : "Vul hier de gebruikersnaam in",
+    "password_hint" : "Vul hier de wachtwoord in",
+    "forgot_password" : "Wachtwoord vergeten?",
+    "username_validation_error": "Gebruikersnaam kan niet leeg zijn",
+    "password_validation_error": "Wachtwoord kan niet leeg zijn",
+    "invalid_credentials": "Gebruikersnaam en/of wachtwoord onjuist",
+    "settings" : "Instellingen",
+    "profile" : "Profiel",
+    "app_information" : "App informatie",
+    "change_language" : "Wijzig taal"
+}
