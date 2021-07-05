@@ -1,8 +1,11 @@
 import 'package:app/src/locale/app_translations.dart';
 import 'package:app/src/modules/families/ui/family.dart';
+import 'package:app/src/modules/home/ui/iconsmenu.dart';
 import 'package:app/src/modules/news/ui/news.dart';
+import 'package:app/src/modules/setting/information/ui/information.dart';
+import 'package:app/src/modules/setting/settiings/ui/setting.dart';
 import 'package:app/src/modules/social/ui/Soical.dart';
-import 'package:app/src/modules/home/ui/drawer.dart';
+
 import 'package:app/src/modules/staff/ui/staff.dart';
 import 'package:app/src/modules/students/ui/student.dart';
 import 'package:app/src/styles/theme.dart';
@@ -18,8 +21,84 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  static const _kFontFam = 'ACCELERATECustomIcons';
+  static const double _kLabelSpacing = 16.0;
+  static const _kFontFam = 'SOC_CustomIcons';
   static const _kFontPkg = null;
+
+  //STYLE
+  static const _kPopMenuTextStyle = TextStyle(
+      fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
+
+  // Top-Section Widget
+  Widget myPopMenuWidget() {
+    return PopupMenuButton<IconMenu>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(2),
+      ),
+      icon: Icon(
+        const IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+        color: AppTheme.kIconColor2,
+      ),
+      onSelected: (value) {
+        switch (value) {
+          case IconsMenu.Information:
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => InformationPage()));
+            break;
+          case IconsMenu.Setting:
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SettingPage()));
+            break;
+          case IconsMenu.Permissions:
+            break;
+        }
+      },
+      itemBuilder: (context) => IconsMenu.items
+          .map((item) => PopupMenuItem<IconMenu>(
+              value: item,
+              child: ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                dense: true,
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
+                title: Text(
+                  item.text,
+                  style: _kPopMenuTextStyle,
+                ),
+              )))
+          .toList(),
+    );
+  }
+
+  // Widget popMenuOption() {
+  //   return PopupMenuButton(
+  //       itemBuilder: (context) => [
+  //             PopupMenuItem(
+  //               child: Text("First"),
+  //               value: 1,
+  //             ),
+  //             PopupMenuItem(
+  //               child: Text("Second"),
+  //               value: 2,
+  //             )
+  //           ]);
+
+  //   // PopupMenuButton(
+  //   //   itemBuilder: (BuildContext bc) {
+  //   //     return _options
+  //   //         .map((day) => PopupMenuItem(
+  //   //               child: Text(day),
+  //   //               value: day,
+  //   //             ))
+  //   //         .toList();
+  //   //   },
+  //   //   onSelected: (value) {
+  //   //     setState(() {
+  //   //       // _selectedItem = value;
+  //   //     });
+  //   //   },
+  //   // );
+  // }
 
   void _onItemTap(int index) {
     setState(() {
@@ -59,9 +138,8 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: Icon(
-                    const IconData(0xe815,
+                    const IconData(0xe807,
                         fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                    size: 40.0,
                   ),
                 ),
               ],
@@ -77,9 +155,9 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
-                  const IconData(0xe812,
+                  const IconData(0xe801,
                       fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                  size: 40.0,
+                  // size: 40.0,
                 ),
               ),
             ]),
@@ -95,9 +173,8 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: Icon(
-                    const IconData(0xe812,
+                    const IconData(0xe80a,
                         fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                    size: 40.0,
                   ),
                 ),
               ],
@@ -115,7 +192,6 @@ class _HomePageState extends State<HomePage> {
                 child: Icon(
                   const IconData(0xe812,
                       fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                  size: 40.0,
                 ),
               ),
             ]),
@@ -130,9 +206,8 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
-                  const IconData(0xe812,
+                  const IconData(0xe808,
                       fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                  size: 40.0,
                 ),
               ),
             ]),
@@ -141,7 +216,7 @@ class _HomePageState extends State<HomePage> {
         ],
         elevation: 10.0,
         currentIndex: _selectedIndex,
-        unselectedItemColor: Colors.white,
+        // unselectedItemColor: Colors.white,
         onTap: _onItemTap,
       ),
     );
@@ -152,23 +227,20 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: new AppBar(
             iconTheme: IconThemeData(color: Theme.of(context).accentColor),
+            elevation: 0.0,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Icon(
-                  Icons.donut_large,
-                  size: 30,
+                  const IconData(0xe80e,
+                      fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                  size: 40.0,
                 ),
               ],
             ),
             actions: <Widget>[
-              IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: new Icon(
-                    Icons.settings,
-                  ),
-                  onPressed: () {}),
+              myPopMenuWidget(),
             ]),
         body: selectedScreenBody(context, _selectedIndex),
         bottomNavigationBar: buttomNavigationWidget());
