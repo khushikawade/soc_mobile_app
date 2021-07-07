@@ -1,5 +1,6 @@
 import 'package:app/src/locale/app_translations.dart';
 import 'package:app/src/modules/home/ui/drawer.dart';
+import 'package:app/src/modules/news/ui/newsdescription.dart';
 import 'package:app/src/styles/theme.dart';
 import 'package:app/src/widgets/customerappbar.dart';
 import 'package:flutter/material.dart';
@@ -28,18 +29,24 @@ class _NewsPageState extends State<NewsPage> {
 
   Widget _buildListItems(int index) {
     int itemsLength = 10; // Replace with Actual Item Count
-    return Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 3),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _buildnewsHeading(),
-              SizedBox(height: _kLabelSpacing / 3),
-              _buildTimeStamp(),
-              SizedBox(height: _kLabelSpacing / 4),
-            ]));
+    return InkWell(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => NewsDescription()));
+      },
+      child: Container(
+          padding: EdgeInsets.symmetric(
+              horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 3),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _buildnewsHeading(),
+                SizedBox(height: _kLabelSpacing / 3),
+                _buildTimeStamp(),
+                SizedBox(height: _kLabelSpacing / 4),
+              ])),
+    );
   }
 
   Widget _buildnewsHeading() {

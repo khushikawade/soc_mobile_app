@@ -1,11 +1,9 @@
-import 'package:app/src/locale/app_translations.dart';
 import 'package:app/src/modules/families/ui/family.dart';
 import 'package:app/src/modules/home/ui/iconsmenu.dart';
 import 'package:app/src/modules/news/ui/news.dart';
 import 'package:app/src/modules/setting/information/ui/information.dart';
 import 'package:app/src/modules/setting/settiings/ui/setting.dart';
 import 'package:app/src/modules/social/ui/Soical.dart';
-
 import 'package:app/src/modules/staff/ui/staff.dart';
 import 'package:app/src/modules/students/ui/student.dart';
 import 'package:app/src/styles/theme.dart';
@@ -69,36 +67,6 @@ class _HomePageState extends State<HomePage> {
           .toList(),
     );
   }
-
-  // Widget popMenuOption() {
-  //   return PopupMenuButton(
-  //       itemBuilder: (context) => [
-  //             PopupMenuItem(
-  //               child: Text("First"),
-  //               value: 1,
-  //             ),
-  //             PopupMenuItem(
-  //               child: Text("Second"),
-  //               value: 2,
-  //             )
-  //           ]);
-
-  //   // PopupMenuButton(
-  //   //   itemBuilder: (BuildContext bc) {
-  //   //     return _options
-  //   //         .map((day) => PopupMenuItem(
-  //   //               child: Text(day),
-  //   //               value: day,
-  //   //             ))
-  //   //         .toList();
-  //   //   },
-  //   //   onSelected: (value) {
-  //   //     setState(() {
-  //   //       // _selectedItem = value;
-  //   //     });
-  //   //   },
-  //   // );
-  // }
 
   void _onItemTap(int index) {
     setState(() {
@@ -214,9 +182,7 @@ class _HomePageState extends State<HomePage> {
             label: '',
           ),
         ],
-        elevation: 10.0,
         currentIndex: _selectedIndex,
-        // unselectedItemColor: Colors.white,
         onTap: _onItemTap,
       ),
     );
@@ -235,7 +201,6 @@ class _HomePageState extends State<HomePage> {
                 Icon(
                   const IconData(0xe80e,
                       fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                  size: 40.0,
                 ),
               ],
             ),

@@ -12,8 +12,9 @@ class StaffPage extends StatefulWidget {
 }
 
 class _StaffPageState extends State<StaffPage> {
-  FocusNode myFocusNode = new FocusNode();
+  static const double _kIconSize = 188;
   static const double _kLabelSpacing = 20.0;
+  FocusNode myFocusNode = new FocusNode();
 
   //STYLE
   static const _kheadingStyle = TextStyle(
@@ -29,6 +30,7 @@ class _StaffPageState extends State<StaffPage> {
     color: Color(0xff2D3F98),
   );
 
+  // UI Widget
   Widget _buildIcon() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -38,8 +40,8 @@ class _StaffPageState extends State<StaffPage> {
             child: Image.asset(
           'assets/images/splash_bear_icon.png',
           fit: BoxFit.fill,
-          height: 188,
-          width: 188,
+          height: _kIconSize,
+          width: _kIconSize,
         )),
       ],
     );
@@ -80,7 +82,7 @@ class _StaffPageState extends State<StaffPage> {
             Text(
               "If you need support accessing this page, please reach ",
               style: _ktextStyle,
-            )
+            ),
           ],
         ),
         Row(
