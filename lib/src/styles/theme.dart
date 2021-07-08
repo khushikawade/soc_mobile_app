@@ -22,12 +22,14 @@ class AppTheme {
   static Color kListTileColor = Color(0xffD8D8D8).withOpacity(0.12);
   static Color kIconColor = Color(0xff535353).withOpacity(0.75);
   static Color kIconColor2 = Color(0xff8aa8d8);
+  static const Color kListBackgroundColor2 = Color(0xffF5F5F5);
+  static const Color kListIconColor3 = Color(0xff8ca9d8);
 
   //Font-sizes
   static const double kButtonFontSize = 14.0;
   static const double kSubtitleFontSize = 14.0;
   static const double kHeadline1TextFontSize = 22.0;
-  static const double kSubtitle2FontSize = 9.0;
+  static const double kSubtitle2FontSize = 10.0;
   static const double kTitleFontSize = 28.0;
   static const double kCaptionFontSize = 16.0;
   static const double kBottomSheetTitleSize = 20.0;
@@ -126,15 +128,21 @@ class AppTheme {
         backgroundColor: Colors.white,
         elevation: 10,
         selectedLabelStyle: TextStyle(
-            color: Color(0xFF89A7D7),
+            color: Color(0xFF4a5aa6),
             fontFamily: 'Roboto Regular',
             fontSize: kSubtitle2FontSize),
+        selectedIconTheme: IconThemeData(
+          color: Color(0xFF4a5aa6),
+        ),
+        unselectedIconTheme: IconThemeData(
+          color: Color(0xff89A7D7),
+        ),
         unselectedLabelStyle: TextStyle(
-            color: Color(0xff2D3F98),
+            color: Color(0xff89A7D7),
             fontFamily: 'Roboto Regular',
             fontSize: kSubtitle2FontSize),
-        selectedItemColor: Color(0xff2D3F98),
-        unselectedItemColor: Color(0xff2D3F98),
+        selectedItemColor: Color(0xff4a5aa6),
+        unselectedItemColor: Color(0xff89A7D7),
         showUnselectedLabels: true,
       ));
 

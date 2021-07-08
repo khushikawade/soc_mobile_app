@@ -17,7 +17,6 @@ class SocialPage extends StatefulWidget {
 
 class _SocialPageState extends State<SocialPage> {
   static const double _kLabelSpacing = 16.0;
-  static const Color kListBackgroundColor = Color(0xffF5F5F5);
 
 //Style
 
@@ -44,13 +43,13 @@ class _SocialPageState extends State<SocialPage> {
       ),
       color: (index % 2 == 0)
           ? Theme.of(context).backgroundColor
-          : kListBackgroundColor,
+          : AppTheme.kListBackgroundColor2,
       child: Row(
         children: <Widget>[
           Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.08,
+                height: MediaQuery.of(context).size.height * 0.09,
                 width: MediaQuery.of(context).size.width * 0.17,
                 child: Container(
                     child: ClipRRect(

@@ -65,25 +65,25 @@ class _SettingPageState extends State<SettingPage> {
                     // fontSize: globals.deviceType == 'phone' ? 17 : 25
                   ),
                 ),
-                trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Transform.scale(
-                        scale: 1.0,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 28.0, right: 0),
-                          child: CupertinoSwitch(
-                            value: _lights,
-                            onChanged: (bool value) {
-                              setState(() {
-                                _lights = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ]),
+                // trailing: Column(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     crossAxisAlignment: CrossAxisAlignment.end,
+                //     children: <Widget>[
+                //       Transform.scale(
+                //         scale: 1.0,
+                //         child: Padding(
+                //           padding: const EdgeInsets.only(left: 28.0, right: 0),
+                //           child: CupertinoSwitch(
+                //             value: _lights,
+                //             onChanged: (bool value) {
+                //               setState(() {
+                //                 _lights = value;
+                //               });
+                //             },
+                //           ),
+                //         ),
+                //       ),
+                //     ]),
                 selected: true,
                 onTap: () {},
               ),

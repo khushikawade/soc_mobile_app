@@ -1,5 +1,3 @@
-import 'package:app/src/locale/app_translations.dart';
-import 'package:app/src/modules/home/ui/drawer.dart';
 import 'package:app/src/services/utility.dart';
 import 'package:app/src/widgets/customerappbar.dart';
 import 'package:flutter/material.dart';
@@ -196,6 +194,7 @@ class _InformationPageState extends State<InformationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         leading: IconButton(
           icon: Icon(
             const IconData(0xe80d,

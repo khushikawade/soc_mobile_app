@@ -93,8 +93,6 @@ class _HomePageState extends State<HomePage> {
       padding: EdgeInsets.only(top: 2.0),
       child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedFontSize: 0,
-        backgroundColor: AppTheme.kBackgroundColor,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Column(
@@ -192,8 +190,16 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: new AppBar(
-            iconTheme: IconThemeData(color: Theme.of(context).accentColor),
+            // iconTheme: IconThemeData(color: Theme.of(context).iconTheme),
             elevation: 0.0,
+            leading: _selectedIndex == 4
+                ? Icon(
+                    const IconData(0xe80e,
+                        fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                  )
+                : Container(
+                    height: 0,
+                  ),
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -205,6 +211,14 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             actions: <Widget>[
+              _selectedIndex == 3
+                  ? Icon(
+                      const IconData(0xe805,
+                          fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                    )
+                  : Container(
+                      height: 0,
+                    ),
               myPopMenuWidget(),
             ]),
         body: selectedScreenBody(context, _selectedIndex),

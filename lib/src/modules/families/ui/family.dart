@@ -1,5 +1,6 @@
 import 'package:app/src/modules/families/modal/familymodal.dart';
 import 'package:app/src/modules/families/ui/aboutus.dart';
+import 'package:app/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 class FamilyPage extends StatefulWidget {
@@ -24,35 +25,77 @@ class _FamilyPageState extends State<FamilyPage> {
       title: 'About us',
       icon: IconData(0xe80b, fontFamily: _kFontFam, fontPackage: _kFontPkg),
     ),
-    // const FamilyModel(title: 'My Student Login', icon: 0xe802),
-    // const FamilyModel(title: 'Calendar', icon: 0xe80f),
-    // const FamilyModel(title: 'Forms', icon: 0xe813),
-    // const FamilyModel(title: 'Staff Directory', icon: 0xe809),
-    // const FamilyModel(title: 'Health Screening', icon: 0xe800),
-    // const FamilyModel(
-    //     title: 'Complete Blue Card Emergency Contact', icon: 0xe810),
-    // const FamilyModel(title: 'School Merchandise', icon: 0xe804),
-    // const FamilyModel(title: 'Gradebook - Pupilpath', icon: 0xe815),
-    // const FamilyModel(title: 'Resources & Updates', icon: 0xe803),
-    // const FamilyModel(title: 'School Merchandise', icon: 0xe804),
-    // const FamilyModel(title: 'Contact', icon: 0xe811),
-    // const FamilyModel(title: 'Nyc DOE Resources', icon: 0xe802),
+    const FamilyModel(
+      title: 'My Student Login',
+      icon: IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'Calendar/Events',
+      icon: IconData(0xe80f, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'Forms',
+      icon: IconData(0xe813, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'Staff Directory',
+      icon: IconData(0xe809, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'Health Screening',
+      icon: IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'Complete Blue Card Emergency Contact',
+      icon: IconData(0xe810, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'School Merchandise',
+      icon: IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'Gradebook - Pupilpath',
+      icon: IconData(0xe815, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'Resources & Updates',
+      icon: IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'School Merchandise',
+      icon: IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'Contact',
+      icon: IconData(0xe811, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
+    const FamilyModel(
+      title: 'Nyc DOE Resources',
+      icon: IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+    ),
   ];
 
   Widget _buildList(int index) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Color(0xffe1e4e7)),
-        borderRadius: BorderRadius.circular(0.50),
-        color: Color(0xffF5F5F5),
+        borderRadius: BorderRadius.circular(0.0),
+        color: (index % 2 == 0)
+            ? Theme.of(context).backgroundColor
+            : AppTheme.kListBackgroundColor2,
       ),
       child: ListTile(
+        dense: true,
         onTap: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => AboutusPage()));
         },
+        visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         contentPadding: EdgeInsets.only(left: _kLabelSpacing),
-        leading: Icon(familyModelList[index].icon),
+        leading: Icon(
+          familyModelList[index].icon,
+          color: AppTheme.kListIconColor3,
+        ),
         title: Text(
           "${familyModelList[index].title}",
           style: _kTextStyle,
