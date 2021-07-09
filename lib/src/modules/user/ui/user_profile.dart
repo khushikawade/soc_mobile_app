@@ -125,9 +125,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
               bloc: _bloc,
               listener: (context, state) {
                 if (state is LoggedOut) {
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                      ModalRoute.withName('/'));
+                  // Navigator.of(context).pushAndRemoveUntil(
+                  //     MaterialPageRoute(builder: (context) => LoginPage()),
+                  //     ModalRoute.withName('/'));
                 }
                 if (state is ErrorReceived) {
                   if (state.err != null && state.err != "") {

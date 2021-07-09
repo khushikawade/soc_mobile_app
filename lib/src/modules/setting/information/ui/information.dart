@@ -1,3 +1,4 @@
+import 'package:app/src/overrides.dart';
 import 'package:app/src/services/utility.dart';
 import 'package:app/src/widgets/customerappbar.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +10,6 @@ class InformationPage extends StatefulWidget {
 
 class _InformationPageState extends State<InformationPage> {
   static const double _kLabelSpacing = 17.0;
-  static const _kFontFam = 'SOC_CustomIcons';
-  static const _kFontPkg = null;
 
   //Style
   static const _kheadingStyle = TextStyle(
@@ -177,11 +176,7 @@ class _InformationPageState extends State<InformationPage> {
           Expanded(
             flex: 1,
             child: ElevatedButton(
-              onPressed: () {
-                // Route route =
-                //     MaterialPageRoute(builder: (context) => MinionFlare());
-                // Navigator.push(context, route);
-              },
+              onPressed: () {},
               child: Text("I need support"),
             ),
           ),
@@ -198,7 +193,8 @@ class _InformationPageState extends State<InformationPage> {
         leading: IconButton(
           icon: Icon(
             const IconData(0xe80d,
-                fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
             color: Color(0xff171717),
           ),
           onPressed: () {

@@ -1,3 +1,4 @@
+import 'package:app/src/overrides.dart';
 import 'package:app/src/styles/theme.dart';
 import 'package:app/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,6 @@ class NewsDescription extends StatefulWidget {
 }
 
 class _NewsDescriptionState extends State<NewsDescription> {
-  static const _kFontFam = 'SOC_CustomIcons';
-  static const _kFontPkg = null;
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
 
@@ -122,7 +121,7 @@ class _NewsDescriptionState extends State<NewsDescription> {
             children: <Widget>[
               // Icon(
               //   const IconData(0xe80e,
-              //       fontFamily: _kFontFam, fontPackage: _kFontPkg),
+              //       fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
               // ),
             ],
           ),
@@ -132,7 +131,8 @@ class _NewsDescriptionState extends State<NewsDescription> {
               children: [
                 Icon(
                   const IconData(0xe80c,
-                      fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
                   color: Color(0xffbcc5d4),
                   size: 20,
                 ),
@@ -141,7 +141,8 @@ class _NewsDescriptionState extends State<NewsDescription> {
             SizedBox(width: _kPadding / 2),
             Icon(
               const IconData(0xe814,
-                  fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
               color: AppTheme.kBlackColor,
               size: 20,
             ),

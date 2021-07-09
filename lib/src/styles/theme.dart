@@ -10,7 +10,7 @@ class AppTheme {
   static const Color kAccentColor = Color(0xff2D3F98);
   static const Color kBlackColor = Colors.black;
   static const Color kBackgroundColor = Colors.white;
-  static const Color kOnPrimaryColor = Color(0xff8aa8d8);
+  static const Color kOnPrimaryColor = Color(0xff808ED3);
   static const Color kSecondaryColor = Color(0xff535353);
   static const Color kButtonbackColor = Color(0xff89A7D7);
   static const Color kFontColor1 = Colors.black;
@@ -21,9 +21,13 @@ class AppTheme {
   static const Color kTxtFieldColor = Color(0xffBCC5D4);
   static Color kListTileColor = Color(0xffD8D8D8).withOpacity(0.12);
   static Color kIconColor = Color(0xff535353).withOpacity(0.75);
-  static Color kIconColor2 = Color(0xff8aa8d8);
+  static const Color kIconColor2 = Color(0xff8aa8d8);
   static const Color kListBackgroundColor2 = Color(0xffF5F5F5);
+  static const Color kListBackgroundColor3 = Color(0xffe9ebf7);
   static const Color kListIconColor3 = Color(0xff8ca9d8);
+  static const Color kDividerColor = Color(0xff979AA6);
+  static const Color kFieldbackgroundColor = Color(0xffDBDBDB);
+  static const Color kprefixIconColor = Color(0xffbcc5d4);
 
   //Font-sizes
   static const double kButtonFontSize = 14.0;
@@ -96,6 +100,8 @@ class AppTheme {
           )),
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: TextStyle(color: kTxtFieldColor),
+        contentPadding:
+            new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         hintStyle:
             TextStyle(color: kTxtFieldColor, fontSize: kSubtitleFontSize),
         focusedBorder: OutlineInputBorder(
@@ -123,7 +129,7 @@ class AppTheme {
               foregroundColor: MaterialStateProperty.all<Color>(kBlackColor))),
       radioTheme: RadioThemeData(
           overlayColor: MaterialStateProperty.all<Color>(kSecondaryColor),
-          fillColor: MaterialStateProperty.all<Color>(kButtonbackColor)),
+          fillColor: MaterialStateProperty.all<Color>(kBackgroundColor)),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
         elevation: 10,

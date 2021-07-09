@@ -6,6 +6,7 @@ import 'package:app/src/modules/setting/settiings/ui/setting.dart';
 import 'package:app/src/modules/social/ui/Soical.dart';
 import 'package:app/src/modules/staff/ui/staff.dart';
 import 'package:app/src/modules/students/ui/student.dart';
+import 'package:app/src/overrides.dart';
 import 'package:app/src/styles/theme.dart';
 import 'package:app/src/widgets/customerappbar.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   static const double _kLabelSpacing = 16.0;
-  static const _kFontFam = 'SOC_CustomIcons';
-  static const _kFontPkg = null;
 
   //STYLE
   static const _kPopMenuTextStyle = TextStyle(
@@ -34,7 +33,8 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(2),
       ),
       icon: Icon(
-        const IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg),
+        const IconData(0xe806,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         color: AppTheme.kIconColor2,
       ),
       onSelected: (value) {
@@ -105,7 +105,8 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(top: 0.0),
                   child: Icon(
                     const IconData(0xe807,
-                        fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
                   ),
                 ),
               ],
@@ -122,7 +123,8 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
                   const IconData(0xe801,
-                      fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
                   // size: 40.0,
                 ),
               ),
@@ -140,7 +142,8 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(top: 0.0),
                   child: Icon(
                     const IconData(0xe80a,
-                        fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
                   ),
                 ),
               ],
@@ -157,7 +160,8 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
                   const IconData(0xe812,
-                      fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
                 ),
               ),
             ]),
@@ -173,7 +177,8 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
                   const IconData(0xe808,
-                      fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
                 ),
               ),
             ]),
@@ -195,7 +200,8 @@ class _HomePageState extends State<HomePage> {
             leading: _selectedIndex == 4
                 ? Icon(
                     const IconData(0xe80e,
-                        fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
                   )
                 : Container(
                     height: 0,
@@ -206,7 +212,8 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 Icon(
                   const IconData(0xe80e,
-                      fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
                 ),
               ],
             ),
@@ -214,7 +221,8 @@ class _HomePageState extends State<HomePage> {
               _selectedIndex == 3
                   ? Icon(
                       const IconData(0xe805,
-                          fontFamily: _kFontFam, fontPackage: _kFontPkg),
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
                     )
                   : Container(
                       height: 0,

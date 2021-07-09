@@ -85,7 +85,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           newPassword: event.newPassword,
         );
         print(cred);
-        bool result = await (_changePassword(cred.oldPassword, cred.newPassword) as FutureOr<bool>);
+        bool result = await (_changePassword(cred.oldPassword, cred.newPassword)
+            as FutureOr<bool>);
         if (result != null && result) {
           yield LoginSuccess();
         }
@@ -129,7 +130,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   Future<String> checkRole(email) async {
     try {
-      const String _fieldList = "fistName, lastName, email, profile_pic_url_text";
+      const String _fieldList =
+          "fistName, lastName, email, profile_pic_url_text";
       final ResponseModel response =
           await _dbServices.getapi('data/users/$email', headers: {
         'JWT': '${Globals.token}',
@@ -140,7 +142,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (response.statusCode == 200) {
         return "";
       } else {
-         return "";
+        return "";
       }
     } catch (e) {
       throw (e);

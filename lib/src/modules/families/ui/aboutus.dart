@@ -31,8 +31,6 @@ class _AboutusPageState extends State<AboutusPage> {
       child: Image.asset(
         'assets/images/aboutus.png',
         fit: BoxFit.cover,
-
-        // this is the solution for border
       ),
     );
   }
