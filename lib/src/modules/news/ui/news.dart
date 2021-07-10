@@ -87,7 +87,7 @@ class _NewsPageState extends State<NewsPage> {
 // DIVIDER
   Widget divider() {
     return Container(
-      height: 0.6,
+      height: 0.4,
       decoration: BoxDecoration(
         color: Color(0xff979AA6),
       ),

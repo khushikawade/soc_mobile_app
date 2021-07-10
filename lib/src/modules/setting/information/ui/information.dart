@@ -1,5 +1,6 @@
 import 'package:app/src/overrides.dart';
 import 'package:app/src/services/utility.dart';
+import 'package:app/src/widgets/app_bar.dart';
 import 'package:app/src/widgets/customerappbar.dart';
 import 'package:flutter/material.dart';
 
@@ -188,20 +189,7 @@ class _InformationPageState extends State<InformationPage> {
 // BUTTOM SECTION END
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            const IconData(0xe80d,
-                fontFamily: Overrides.kFontFam,
-                fontPackage: Overrides.kFontPkg),
-            color: Color(0xff171717),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+      appBar: CustomAppBarWidget(),
       body: ListView(children: [
         Container(
             child: Column(

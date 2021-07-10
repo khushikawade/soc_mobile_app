@@ -1,21 +1,19 @@
-import 'package:app/src/modules/families/modal/eventmodal.dart';
-import 'package:app/src/modules/families/modal/formModal.dart';
-import 'package:app/src/overrides.dart';
 import 'package:app/src/styles/theme.dart';
+import 'package:app/src/modules/families/modal/resourcemodal.dart';
 import 'package:app/src/widgets/hori_spacerwidget.dart';
 import 'package:app/src/widgets/searchfield.dart';
 import 'package:app/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:app/src/overrides.dart' as overrides;
 
-class FormPage extends StatefulWidget {
-  FormPage({Key? key, this.title}) : super(key: key);
+class Resources extends StatefulWidget {
+  Resources({Key? key, this.title}) : super(key: key);
   final String? title;
   @override
-  _FormPageState createState() => _FormPageState();
+  _ResourcesState createState() => _ResourcesState();
 }
 
-class _FormPageState extends State<FormPage> {
+class _ResourcesState extends State<Resources> {
   static const double _kLabelSpacing = 17.0;
   static const _kFontFam = 'SOC_CustomIcons';
   static const _kFontPkg = null;
@@ -33,30 +31,21 @@ class _FormPageState extends State<FormPage> {
     color: AppTheme.kAccentColor,
   );
 
-  static const List<FormModal> FormModalList = const <FormModal>[
-    const FormModal(
-      formName: 'Complete Blue Card Emergency Contact',
+  static const List<ResourcesModal> ResourcesList = const <ResourcesModal>[
+    const ResourcesModal(
+      resource: '5/24 Family Letter',
     ),
-    const FormModal(
-      formName: 'Complete Media Relese Form',
+    const ResourcesModal(
+      resource: 'Family Letter March 10 2021',
     ),
-    const FormModal(
-      formName: 'Health Screening',
+    const ResourcesModal(
+      resource: 'SupportingFamilies During COVID-19',
     ),
-    const FormModal(
-      formName: 'Consent Form for COVID-19 Testing',
+    const ResourcesModal(
+      resource: 'Complete Blue Card Emergency Contact',
     ),
-    const FormModal(
-      formName: 'Afterschool Consent Form',
-    ),
-    const FormModal(
-      formName: 'Password Request Form',
-    ),
-    const FormModal(
-      formName: 'ipad & chromebook Tech Support',
-    ),
-    const FormModal(
-      formName: 'Field Trip From',
+    const ResourcesModal(
+      resource: 'Complete Blue Card Emergency Contact',
     ),
   ];
 
@@ -83,7 +72,7 @@ class _FormPageState extends State<FormPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _buildFormName(index),
+                _buildresource(index),
               ],
             ),
           ),
@@ -114,11 +103,11 @@ class _FormPageState extends State<FormPage> {
     );
   }
 
-  Widget _buildFormName(int index) {
+  Widget _buildresource(int index) {
     return Row(
       children: [
         Text(
-          FormModalList[index].formName,
+          ResourcesList[index].resource,
           style: formtextStyle,
         ),
       ],

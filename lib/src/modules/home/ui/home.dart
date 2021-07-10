@@ -8,7 +8,9 @@ import 'package:app/src/modules/staff/ui/staff.dart';
 import 'package:app/src/modules/students/ui/student.dart';
 import 'package:app/src/overrides.dart';
 import 'package:app/src/styles/theme.dart';
+import 'package:app/src/widgets/bearIconwidget.dart';
 import 'package:app/src/widgets/customerappbar.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,6 +23,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   static const double _kLabelSpacing = 16.0;
+  static const double _kIconSize = 35.0;
 
   //STYLE
   static const _kPopMenuTextStyle = TextStyle(
@@ -48,6 +51,7 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(builder: (context) => SettingPage()));
             break;
           case IconsMenu.Permissions:
+            AppSettings.openAppSettings();
             break;
         }
       },
@@ -197,26 +201,21 @@ class _HomePageState extends State<HomePage> {
         appBar: new AppBar(
             // iconTheme: IconThemeData(color: Theme.of(context).iconTheme),
             elevation: 0.0,
-            leading: _selectedIndex == 4
-                ? Icon(
-                    const IconData(0xe80e,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                  )
+            leading: _selectedIndex == 3
+                ? SizedBox(
+                    height: _kIconSize / 10,
+                    width: _kIconSize / 10,
+                    child: Image.asset(
+                      'assets/images/language.png',
+                      fit: BoxFit.fill,
+                      height: _kIconSize / 10,
+                      width: _kIconSize / 10,
+                    ))
                 : Container(
                     height: 0,
                   ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Icon(
-                  const IconData(0xe80e,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                ),
-              ],
-            ),
+            title:
+                SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
             actions: <Widget>[
               _selectedIndex == 3
                   ? Icon(

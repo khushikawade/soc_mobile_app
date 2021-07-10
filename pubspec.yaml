@@ -37,6 +37,7 @@ dependencies:
   webview_flutter: ^2.0.9
   modal_bottom_sheet: ^2.0.0
   cached_network_image: ^3.0.0
+  app_settings: 
   # firebase_dynamic_links: ^2.0.1 TODO configure the app
   
 

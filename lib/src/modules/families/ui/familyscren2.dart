@@ -2,6 +2,7 @@ import 'package:app/src/modules/families/ui/aboutus.dart';
 import 'package:app/src/modules/families/ui/event.dart';
 import 'package:app/src/modules/families/ui/family.dart';
 import 'package:app/src/modules/families/ui/forms.dart';
+import 'package:app/src/modules/families/ui/resource.dart';
 import 'package:app/src/modules/families/ui/stafflist.dart';
 import 'package:app/src/modules/home/ui/iconsmenu.dart';
 import 'package:app/src/modules/news/ui/news.dart';
@@ -67,7 +68,7 @@ class _FamilyPage2State extends State<FamilyPage2> {
     } else if (_selectedIndex == 8) {
       return Container();
     } else if (_selectedIndex == 9) {
-      return Container();
+      return Resources();
     } else if (_selectedIndex == 10) {
       return Container();
     } else if (_selectedIndex == 11) {
