@@ -17,7 +17,7 @@ class StaffListPage extends StatefulWidget {
 class _StaffListPageState extends State<StaffListPage> {
   static const double _kLabelSpacing = 18.0;
 
-  final TextStyle headingtextStyle = TextStyle(
+  final TextStyle _kheadingStyle = TextStyle(
     height: 1.5,
     fontFamily: "Roboto Medium",
     fontSize: 28,
@@ -97,7 +97,7 @@ class _StaffListPageState extends State<StaffListPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(tittle, style: headingtextStyle),
+          Text(tittle, style: _kheadingStyle),
         ],
       ),
     );

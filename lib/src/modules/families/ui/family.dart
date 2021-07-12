@@ -16,11 +16,11 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
 
   // STYLE
-  static const _kTextStyle = TextStyle(
-      fontFamily: "Roboto Regular",
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
-      color: Color(0xff2D3F98));
+  // static const _kTextStyle = TextStyle(
+  //     fontFamily: "Roboto Regular",
+  //     fontWeight: FontWeight.bold,
+  //     fontSize: 14,
+  //     color: Color(0xff2D3F98));
 
   static const List<FamilyModel> familyModelList = const <FamilyModel>[
     const FamilyModel(
@@ -130,7 +130,7 @@ class _FamilyPageState extends State<FamilyPage> {
         ),
         title: Text(
           "${familyModelList[index].title}",
-          style: _kTextStyle,
+          style: Theme.of(context).textTheme.bodyText2,
         ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,

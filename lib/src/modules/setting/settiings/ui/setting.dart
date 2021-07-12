@@ -2,7 +2,9 @@ import 'package:app/src/locale/app_translations.dart';
 import 'package:app/src/modules/home/ui/drawer.dart';
 import 'package:app/src/overrides.dart';
 import 'package:app/src/styles/theme.dart';
+import 'package:app/src/widgets/app_bar.dart';
 import 'package:app/src/widgets/customerappbar.dart';
+import 'package:app/src/widgets/share_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,12 +18,12 @@ class _SettingPageState extends State<SettingPage> {
   bool _lights = false;
 
   //style
-  final TextStyle headingtextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Medium",
-    fontSize: 16,
-    color: AppTheme.kFontColor2,
-  );
+  // final TextStyle _kheadingStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Medium",
+  //   fontSize: 16,
+  //   color: AppTheme.kFontColor2,
+  // );
 
   final TextStyle textStyle = TextStyle(
     height: 1.5,
@@ -36,15 +38,14 @@ class _SettingPageState extends State<SettingPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.only(
-              top: _kLabelSpacing / 2, bottom: _kLabelSpacing / 2),
+          padding: EdgeInsets.symmetric(vertical: _kLabelSpacing / 1.5),
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             color: AppTheme.kOnPrimaryColor,
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Text(tittle, style: headingtextStyle),
+            child: Text(tittle, style: Theme.of(context).textTheme.headline3),
           ),
         ),
       ],
@@ -104,61 +105,9 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Widget buttomButtonsWidget() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: _kLabelSpacing,
-        vertical: _kLabelSpacing / 2,
-      ),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: Text("Share this app"),
-            ),
-          ),
-          SizedBox(
-            width: _kLabelSpacing / 2,
-          ),
-          Expanded(
-            flex: 1,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: Text("I need support"),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        titleSpacing: _kLabelSpacing / 2,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(
-                const IconData(0xe80d,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: Color(0xff171717),
-                size: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: CustomAppBarWidget(),
       body: Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -169,7 +118,10 @@ class _SettingPageState extends State<SettingPage> {
             _buildHeading("Acknowledgements"),
             _buildtext(),
             Expanded(child: Container()),
-            buttomButtonsWidget(),
+            SizedBox(
+                width: MediaQuery.of(context).size.width * 1,
+                height: 100.0,
+                child: ButtonWidget()),
           ],
         ),
       ),

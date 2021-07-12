@@ -28,12 +28,16 @@ class AppTheme {
   static const Color kDividerColor = Color(0xff979AA6);
   static const Color kFieldbackgroundColor = Color(0xffDBDBDB);
   static const Color kprefixIconColor = Color(0xffbcc5d4);
+  static const Color kmapBackgroundColor = Color(0xffF4F1EF);
 
   //Font-sizes
   static const double kButtonFontSize = 14.0;
   static const double kSubtitleFontSize = 14.0;
   static const double kHeadline1TextFontSize = 22.0;
+  static const double kHeadline2TextFontSize = 16.0;
+  static const double kHeadline4TextFontSize = 15.0;
   static const double kSubtitle2FontSize = 10.0;
+  static const double kBodyText1FontSize = 14.0;
   static const double kTitleFontSize = 28.0;
   static const double kCaptionFontSize = 16.0;
   static const double kBottomSheetTitleSize = 20.0;
@@ -76,28 +80,66 @@ class AppTheme {
         color: kIconColor,
       ),
       textTheme: TextTheme(
-          headline1: TextStyle(
-            fontSize: kHeadline1TextFontSize,
-            fontFamily: 'Roboto Bold',
+        headline1: TextStyle(
+          fontSize: kHeadline1TextFontSize,
+          fontFamily: 'Roboto Bold',
+          fontWeight: FontWeight.bold,
+          color: kAccentColor,
+        ),
+        headline2: TextStyle(
+          fontSize: kHeadline2TextFontSize,
+          fontFamily: 'Roboto Bold',
+          fontWeight: FontWeight.bold,
+          color: kAccentColor,
+        ),
+        headline3: TextStyle(
+          fontSize: kHeadline2TextFontSize,
+          fontFamily: 'Roboto Bold',
+          color: kFontColor2,
+        ),
+        headline4: TextStyle(
+          fontSize: kHeadline4TextFontSize,
+          fontFamily: 'Roboto Bold',
+          fontWeight: FontWeight.w400,
+          color: kAccentColor,
+        ),
+        headline5: TextStyle(
+          fontSize: kHeadline1TextFontSize,
+          fontFamily: 'Roboto Bold',
+          fontWeight: FontWeight.w600,
+          color: kAccentColor,
+        ),
+        headline6: TextStyle(
+            fontSize: kTitleFontSize,
             color: kAccentColor,
-          ),
-          headline6: TextStyle(
-              fontSize: kTitleFontSize,
-              color: kAccentColor,
-              fontFamily: 'Roboto-SemiBold'),
-          caption: TextStyle(
-              fontSize: kCaptionFontSize,
-              color: kFontColor1,
-              fontWeight: FontWeight.w500),
-          subtitle1: TextStyle(
-              fontSize: kSubtitleFontSize,
-              color: Colors.black,
-              fontWeight: FontWeight.w400),
-          subtitle2: TextStyle(
-            fontSize: kSubtitle2FontSize,
-            color: kAccentColor,
-            fontFamily: 'Roboto Regular',
-          )),
+            fontFamily: 'Roboto-SemiBold'),
+        caption: TextStyle(
+            fontSize: kCaptionFontSize,
+            color: kFontColor1,
+            fontWeight: FontWeight.w500),
+        subtitle1: TextStyle(
+            fontSize: kSubtitleFontSize,
+            color: Colors.black,
+            fontWeight: FontWeight.w400),
+        subtitle2: TextStyle(
+          fontSize: kSubtitle2FontSize,
+          color: kAccentColor,
+          fontFamily: 'Roboto Regular',
+        ),
+        bodyText1: TextStyle(
+          fontSize: kBodyText1FontSize,
+          color: kAccentColor,
+          fontFamily: 'Roboto Regular',
+          height: 1.2,
+        ),
+        bodyText2: TextStyle(
+          fontSize: kBodyText1FontSize,
+          color: kAccentColor,
+          fontFamily: 'Roboto Regular',
+          fontWeight: FontWeight.bold,
+          height: 1.2,
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: TextStyle(color: kTxtFieldColor),
         contentPadding:

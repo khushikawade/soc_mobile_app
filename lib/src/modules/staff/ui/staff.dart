@@ -17,11 +17,11 @@ class _StaffPageState extends State<StaffPage> {
   FocusNode myFocusNode = new FocusNode();
 
   //STYLE
-  static const _kheadingStyle = TextStyle(
-      fontFamily: "Roboto Bold",
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
-      color: Color(0xff2D3F98));
+  // static const _kheadingStyle = TextStyle(
+  //     fontFamily: "Roboto Bold",
+  //     fontWeight: FontWeight.bold,
+  //     fontSize: 16,
+  //     color: Color(0xff2D3F98));
 
   static const _ktextStyle = TextStyle(
     height: 1.5,
@@ -54,7 +54,7 @@ class _StaffPageState extends State<StaffPage> {
       children: [
         Text(
           "This content has beeen locked.",
-          style: _kheadingStyle,
+          style: Theme.of(context).textTheme.headline2,
         )
       ],
     );
@@ -119,7 +119,7 @@ class _StaffPageState extends State<StaffPage> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SpacerWidget(_kLabelSpacing * 2.5),
+            SpacerWidget(_kLabelSpacing * 2.0),
             _buildIcon(),
             SpacerWidget(_kLabelSpacing),
             _buildHeading(),

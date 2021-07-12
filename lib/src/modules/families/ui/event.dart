@@ -14,20 +14,20 @@ class EventPage extends StatefulWidget {
 class _EventPageState extends State<EventPage> {
   static const double _kLabelSpacing = 15.0;
 
-  final TextStyle headingtextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Medium",
-    fontSize: 16,
-    color: AppTheme.kFontColor2,
-  );
+  // final TextStyle headingtextStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Medium",
+  //   fontSize: 16,
+  //   color: AppTheme.kFontColor2,
+  // );
 
-  final TextStyle datetextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Medium",
-    fontSize: 22,
-    fontWeight: FontWeight.w600,
-    color: AppTheme.kAccentColor,
-  );
+  // final TextStyle datetextStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Medium",
+  //   fontSize: 22,
+  //   fontWeight: FontWeight.w600,
+  //   color: AppTheme.kAccentColor,
+  // );
 
   final TextStyle monthtextStyle = TextStyle(
     height: 1.5,
@@ -147,7 +147,7 @@ class _EventPageState extends State<EventPage> {
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Text(tittle, style: headingtextStyle),
+            child: Text(tittle, style: Theme.of(context).textTheme.headline3),
           ),
         ),
       ],
@@ -159,7 +159,7 @@ class _EventPageState extends State<EventPage> {
       children: [
         Text(
           EventModelList[index].date,
-          style: datetextStyle,
+          style: Theme.of(context).textTheme.headline5,
         ),
         Text(
           EventModelList[index].month,

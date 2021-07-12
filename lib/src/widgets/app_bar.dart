@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   CustomAppBarWidget({Key? key})
-      : preferredSize = Size.fromHeight(70.0),
+      : preferredSize = Size.fromHeight(60.0),
         super(key: key);
 
   @override
@@ -30,7 +30,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 10.0, left: 10),
+            padding: const EdgeInsets.only(top: 15.0, left: 10),
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);

@@ -1,5 +1,5 @@
 import 'package:app/src/modules/families/modal/eventmodal.dart';
-import 'package:app/src/modules/families/modal/formModal.dart';
+import 'package:app/src/modules/families/modal/NYCUpdateModal.dart';
 import 'package:app/src/overrides.dart';
 import 'package:app/src/styles/theme.dart';
 import 'package:app/src/widgets/hori_spacerwidget.dart';
@@ -8,14 +8,14 @@ import 'package:app/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:app/src/overrides.dart' as overrides;
 
-class FormPage extends StatefulWidget {
-  FormPage({Key? key, this.title}) : super(key: key);
+class NycResource extends StatefulWidget {
+  NycResource({Key? key, this.title}) : super(key: key);
   final String? title;
   @override
-  _FormPageState createState() => _FormPageState();
+  _NycResourceState createState() => _NycResourceState();
 }
 
-class _FormPageState extends State<FormPage> {
+class _NycResourceState extends State<NycResource> {
   static const double _kLabelSpacing = 17.0;
   static const _kFontFam = 'SOC_CustomIcons';
   static const _kFontPkg = null;
@@ -33,30 +33,30 @@ class _FormPageState extends State<FormPage> {
     color: AppTheme.kAccentColor,
   );
 
-  static const List<FormModal> FormModalList = const <FormModal>[
-    const FormModal(
-      formName: 'Complete Blue Card Emergency Contact',
+  static const List<NYCUpdateModal> NYCUpdateModalList = const <NYCUpdateModal>[
+    const NYCUpdateModal(
+      updateditem: 'Nyc Doe Calender',
     ),
-    const FormModal(
-      formName: 'Complete Media Relese Form',
+    const NYCUpdateModal(
+      updateditem: 'NYC DOE Twittet',
     ),
-    const FormModal(
-      formName: 'Health Screening',
+    const NYCUpdateModal(
+      updateditem: 'NYC DOE Messages to Families',
     ),
-    const FormModal(
-      formName: 'Consent Form for COVID-19 Testing',
+    const NYCUpdateModal(
+      updateditem: 'Technical Support for Families',
     ),
-    const FormModal(
-      formName: 'Afterschool Consent Form',
+    const NYCUpdateModal(
+      updateditem: 'Transportation',
     ),
-    const FormModal(
-      formName: 'Password Request Form',
+    const NYCUpdateModal(
+      updateditem: 'Parents ‘Bill of Right',
     ),
-    const FormModal(
-      formName: 'ipad & chromebook Tech Support',
+    const NYCUpdateModal(
+      updateditem: 'Child Welfare',
     ),
-    const FormModal(
-      formName: 'Field Trip From',
+    const NYCUpdateModal(
+      updateditem: 'FACE ( Family and community Empowerment )',
     ),
   ];
 
@@ -83,7 +83,7 @@ class _FormPageState extends State<FormPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _buildFormName(index),
+                _buildupdateditem(index),
               ],
             ),
           ),
@@ -114,11 +114,11 @@ class _FormPageState extends State<FormPage> {
     );
   }
 
-  Widget _buildFormName(int index) {
+  Widget _buildupdateditem(int index) {
     return Row(
       children: [
         Text(
-          FormModalList[index].formName,
+          NYCUpdateModalList[index].updateditem,
           style: Theme.of(context).textTheme.bodyText1,
         ),
       ],

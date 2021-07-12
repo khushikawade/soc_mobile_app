@@ -38,6 +38,8 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   cached_network_image: ^3.0.0
   app_settings: 
+  device_info: ^2.0.2
+  flutter_launcher_icons: ^0.9.0
   # firebase_dynamic_links: ^2.0.1 TODO configure the app
   
 

@@ -7,7 +7,9 @@ import 'package:app/src/services/shared_preference.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:app/src/Globals.dart';
+
+import '../../../globals.dart';
+
 part 'user_event.dart';
 part 'user_state.dart';
 

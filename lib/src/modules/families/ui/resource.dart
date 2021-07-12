@@ -18,12 +18,12 @@ class _ResourcesState extends State<Resources> {
   static const _kFontFam = 'SOC_CustomIcons';
   static const _kFontPkg = null;
   FocusNode myFocusNode = new FocusNode();
-  final TextStyle headingtextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Medium",
-    fontSize: 16,
-    color: AppTheme.kFontColor2,
-  );
+  // final TextStyle _kheadingStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Medium",
+  //   fontSize: 16,
+  //   color: AppTheme.kFontColor2,
+  // );
 
   final TextStyle formtextStyle = TextStyle(
     fontFamily: "Roboto Regular",
@@ -96,7 +96,10 @@ class _ResourcesState extends State<Resources> {
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Text(tittle, style: headingtextStyle),
+            child: Text(
+              tittle,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
           ),
         ),
       ],
@@ -108,7 +111,7 @@ class _ResourcesState extends State<Resources> {
       children: [
         Text(
           ResourcesList[index].resource,
-          style: formtextStyle,
+          style: Theme.of(context).textTheme.bodyText1,
         ),
       ],
     );

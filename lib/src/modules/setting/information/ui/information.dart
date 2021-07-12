@@ -2,6 +2,8 @@ import 'package:app/src/overrides.dart';
 import 'package:app/src/services/utility.dart';
 import 'package:app/src/widgets/app_bar.dart';
 import 'package:app/src/widgets/customerappbar.dart';
+import 'package:app/src/widgets/share_button.dart';
+import 'package:app/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class InformationPage extends StatefulWidget {
@@ -50,7 +52,7 @@ class _InformationPageState extends State<InformationPage> {
       children: [
         Text(
           "PS 456 Bronx Bears",
-          style: _kheadingStyle,
+          style: Theme.of(context).textTheme.headline1,
         )
       ],
     );
@@ -155,78 +157,33 @@ class _InformationPageState extends State<InformationPage> {
     );
   }
 
-  Widget buttomButtonsWidget() {
-    return Padding(
-      padding: const EdgeInsets.all(_kLabelSpacing),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: ElevatedButton(
-              onPressed: () {
-                // Route route =
-                //     MaterialPageRoute(builder: (context) => MinionFlare());
-                // Navigator.push(context, route);
-              },
-              child: Text("Share this app"),
-            ),
-          ),
-          SizedBox(
-            width: _kLabelSpacing / 2,
-          ),
-          Expanded(
-            flex: 1,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: Text("I need support"),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
 // BUTTOM SECTION END
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(),
-      body: ListView(children: [
-        Container(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildIcon(),
-            SizedBox(
-              height: _kLabelSpacing,
-            ),
-            tittleWidget(),
-            SizedBox(
-              height: _kLabelSpacing,
-            ),
-            greetingWidget(),
-            SizedBox(
-              height: _kLabelSpacing,
-            ),
-            content1Widget(),
-            SizedBox(
-              height: _kLabelSpacing * 1.5,
-            ),
-            content2Widget(),
-            SizedBox(
-              height: _kLabelSpacing / 2,
-            ),
-            privacyWidget(),
-            SizedBox(
-              height: Utility.displayWidth(context) * 0.40,
-            ),
-            Container(
-              alignment: Alignment.bottomCenter,
-              child: buttomButtonsWidget(),
-            ),
-          ],
-        )),
-      ]),
+      body: Container(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildIcon(),
+          SpacerWidget(_kLabelSpacing),
+          tittleWidget(),
+          SpacerWidget(_kLabelSpacing),
+          greetingWidget(),
+          SpacerWidget(_kLabelSpacing),
+          content1Widget(),
+          SpacerWidget(_kLabelSpacing * 1.5),
+          content2Widget(),
+          SpacerWidget(_kLabelSpacing / 2),
+          privacyWidget(),
+          Expanded(child: Container()),
+          SizedBox(
+              width: MediaQuery.of(context).size.width * 1,
+              height: 100.0,
+              child: ButtonWidget()),
+        ],
+      )),
     );
   }
 }

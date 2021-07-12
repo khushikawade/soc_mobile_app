@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
       fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
 
   // Top-Section Widget
-  Widget myPopMenuWidget() {
+  Widget _buildPopupMenuWidget() {
     return PopupMenuButton<IconMenu>(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
@@ -58,15 +58,10 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (context) => IconsMenu.items
           .map((item) => PopupMenuItem<IconMenu>(
               value: item,
-              child: ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-                dense: true,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
-                title: Text(
-                  item.text,
-                  style: _kPopMenuTextStyle,
-                ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: _kLabelSpacing / 4, vertical: 0),
+                child: Text(item.text),
               )))
           .toList(),
     );
@@ -199,18 +194,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: new AppBar(
-            // iconTheme: IconThemeData(color: Theme.of(context).iconTheme),
+            leadingWidth: _kIconSize,
             elevation: 0.0,
             leading: _selectedIndex == 3
-                ? SizedBox(
-                    height: _kIconSize / 10,
-                    width: _kIconSize / 10,
-                    child: Image.asset(
-                      'assets/images/language.png',
-                      fit: BoxFit.fill,
-                      height: _kIconSize / 10,
-                      width: _kIconSize / 10,
-                    ))
+                ? Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Icon(IconData(0xe80b,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg)),
+                  )
                 : Container(
                     height: 0,
                   ),
@@ -226,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                   : Container(
                       height: 0,
                     ),
-              myPopMenuWidget(),
+              _buildPopupMenuWidget(),
             ]),
         body: selectedScreenBody(context, _selectedIndex),
         bottomNavigationBar: buttomNavigationWidget());

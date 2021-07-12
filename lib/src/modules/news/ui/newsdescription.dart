@@ -1,5 +1,6 @@
 import 'package:app/src/overrides.dart';
 import 'package:app/src/styles/theme.dart';
+import 'package:app/src/widgets/bearIconwidget.dart';
 import 'package:app/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -119,10 +120,7 @@ class _NewsDescriptionState extends State<NewsDescription> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              // Icon(
-              //   const IconData(0xe80e,
-              //       fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-              // ),
+              SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
             ],
           ),
           actions: <Widget>[
@@ -138,7 +136,7 @@ class _NewsDescriptionState extends State<NewsDescription> {
                 ),
               ],
             ),
-            SizedBox(width: _kPadding / 2),
+            SizedBox(width: _kPadding),
             Icon(
               const IconData(0xe814,
                   fontFamily: Overrides.kFontFam,

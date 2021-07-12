@@ -17,6 +17,7 @@ class SocialPage extends StatefulWidget {
 
 class _SocialPageState extends State<SocialPage> {
   static const double _kLabelSpacing = 16.0;
+  static const double _kIconSize = 48.0;
 
 //Style
 
@@ -27,10 +28,7 @@ class _SocialPageState extends State<SocialPage> {
       color: Color(0xff2D3F98));
 
   static const _kListDateStyle = TextStyle(
-      fontFamily: "Roboto Regular",
-      fontWeight: FontWeight.bold,
-      fontSize: 13,
-      color: Color(0xff2D3F98));
+      fontFamily: "Roboto Regular", fontSize: 13, color: Color(0xff2D3F98));
 
   Widget _buildlist(int index) {
     DateTime now = DateTime.now();
@@ -48,9 +46,9 @@ class _SocialPageState extends State<SocialPage> {
         children: <Widget>[
           Column(
             children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.09,
-                width: MediaQuery.of(context).size.width * 0.17,
+              SizedBox(
+                width: _kIconSize * 1.4,
+                height: _kIconSize * 1.5,
                 child: Container(
                     child: ClipRRect(
                         child: Image.network(
@@ -102,6 +100,7 @@ class _SocialPageState extends State<SocialPage> {
   Widget makeList() {
     return ListView.builder(
       scrollDirection: Axis.vertical,
+      physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: 10,
       itemBuilder: (BuildContext context, int index) {

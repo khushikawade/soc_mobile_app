@@ -1,7 +1,9 @@
 import 'package:app/src/modules/families/ui/aboutus.dart';
+import 'package:app/src/modules/families/ui/contact.dart';
 import 'package:app/src/modules/families/ui/event.dart';
 import 'package:app/src/modules/families/ui/family.dart';
 import 'package:app/src/modules/families/ui/forms.dart';
+import 'package:app/src/modules/families/ui/nycresource.dart';
 import 'package:app/src/modules/families/ui/resource.dart';
 import 'package:app/src/modules/families/ui/stafflist.dart';
 import 'package:app/src/modules/home/ui/iconsmenu.dart';
@@ -72,9 +74,9 @@ class _FamilyPage2State extends State<FamilyPage2> {
     } else if (_selectedIndex == 10) {
       return Container();
     } else if (_selectedIndex == 11) {
-      return Container();
+      return ContactPage();
     } else if (_selectedIndex == 12) {
-      return Container();
+      return NycResource();
     }
   }
 

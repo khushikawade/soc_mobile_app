@@ -15,12 +15,12 @@ class _NewsPageState extends State<NewsPage> {
   static const double _kLabelSpacing = 20.0;
 
   //STYLE
-  static const _knewsHeadingtStyle = TextStyle(
-      height: 1.5,
-      fontFamily: "Roboto Regular",
-      fontSize: 15,
-      fontWeight: FontWeight.w400,
-      color: AppTheme.kAccentColor);
+  // static const _knewsHeadingtStyle = TextStyle(
+  //     height: 1.2,
+  //     fontFamily: "Roboto Regular",
+  //     fontSize: 15,
+  //     fontWeight: FontWeight.w400,
+  //     color: AppTheme.kAccentColor);
 
   static const _kTimeStampStyle = TextStyle(
       fontFamily: "Roboto Regular", fontSize: 13, color: AppTheme.kAccentColor);
@@ -61,7 +61,7 @@ class _NewsPageState extends State<NewsPage> {
               "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
-              style: _knewsHeadingtStyle,
+              style: Theme.of(context).textTheme.headline4,
             )),
       ],
     );
