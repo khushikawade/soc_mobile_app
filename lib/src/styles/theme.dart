@@ -29,6 +29,8 @@ class AppTheme {
   static const Color kFieldbackgroundColor = Color(0xffDBDBDB);
   static const Color kprefixIconColor = Color(0xffbcc5d4);
   static const Color kmapBackgroundColor = Color(0xffF4F1EF);
+  static const Color kIndicatorBackColor = Color(0xff979AA6);
+  static const Color kIndicatorColor = Color(0xffFFFFFF);
 
   //Font-sizes
   static const double kButtonFontSize = 14.0;

@@ -44,7 +44,18 @@ class _FamilyPage2State extends State<FamilyPage2> {
     if (_selectedIndex == 0) {
       return AboutusPage();
     } else if (_selectedIndex == 1) {
-      // return WebViewClass();
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MyWebView(
+                    url:
+                        "https://pub.dev/packages/flutter_webview_plugin/install",
+                    title: "THIS",
+                  )));
+      // MyWebView(
+      //   url: "https://pub.dev/packages/flutter_webview_plugin/install",
+      //   title: "THIS",
+      // );
     } else if (_selectedIndex == 2) {
       return EventPage();
     } else if (_selectedIndex == 3) {
