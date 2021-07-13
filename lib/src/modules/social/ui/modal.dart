@@ -49,7 +49,7 @@ class Channel {
     this.generator,
     this.lastBuildDate,
     this.language,
-    this.item,
+    // this.item,
   });
 
   Description? title;
@@ -59,7 +59,7 @@ class Channel {
   String? generator;
   String? lastBuildDate;
   Description? language;
-  List<Item>? item;
+  // List<Item>? item;
 
   factory Channel.fromJson(Map<String, dynamic> json) => Channel(
         title: Description.fromJson(json["title"]),
@@ -69,7 +69,7 @@ class Channel {
         generator: json["generator"],
         lastBuildDate: json["lastBuildDate"],
         language: Description.fromJson(json["language"]),
-        item: List<Item>.from(json["item"].map((x) => Item.fromJson(x))),
+        // item: List<Item>.from(json["item"].map((x) => Item.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -80,7 +80,7 @@ class Channel {
         "generator": generator,
         "lastBuildDate": lastBuildDate,
         "language": language!.toJson(),
-        "item": List<dynamic>.from(item!.map((x) => x.toJson())),
+        // "item": List<dynamic>.from(item!.map((x) => x.toJson())),
       };
 }
 
@@ -124,42 +124,42 @@ class Image {
       };
 }
 
-class Item {
-  Item({
-    this.title,
-    this.description,
-    this.link,
-    this.guid,
-    this.creator,
-    this.pubDate,
-    this.content,
-  });
+// class Item {
+//   Item({
+//     this.title,
+//     this.description,
+//     this.link,
+//     this.guid,
+//     this.creator,
+//     this.pubDate,
+//     this.content,
+//   });
 
-  Description? title;
-  Description? description;
-  String? link;
-  String? guid;
-  Description? creator;
-  String? pubDate;
-  String? content;
+//   Description? title;
+//   Description? description;
+//   String? link;
+//   String? guid;
+//   Description? creator;
+//   String? pubDate;
+//   String? content;
 
-  factory Item.fromJson(Map<String, dynamic> json) => Item(
-        title: Description.fromJson(json["title"]),
-        description: Description.fromJson(json["description"]),
-        link: json["link"],
-        guid: json["guid"],
-        creator: Description.fromJson(json["creator"]),
-        pubDate: json["pubDate"],
-        content: json["content"] == null ? null : json["content"],
-      );
+//   factory Item.fromJson(Map<String, dynamic> json) => Item(
+//         title: Description.fromJson(json["title"]),
+//         description: Description.fromJson(json["description"]),
+//         link: json["link"],
+//         guid: json["guid"],
+//         creator: Description.fromJson(json["creator"]),
+//         pubDate: json["pubDate"],
+//         content: json["content"] == null ? null : json["content"],
+//       );
 
-  Map<String, dynamic> toJson() => {
-        "title": title!.toJson(),
-        "description": description!.toJson(),
-        "link": link,
-        "guid": guid,
-        "creator": creator!.toJson(),
-        "pubDate": pubDate,
-        "content": content == null ? null : content,
-      };
-}
+//   Map<String, dynamic> toJson() => {
+//         "title": title!.toJson(),
+//         "description": description!.toJson(),
+//         "link": link,
+//         "guid": guid,
+//         "creator": creator!.toJson(),
+//         "pubDate": pubDate,
+//         "content": content == null ? null : content,
+//       };
+// }

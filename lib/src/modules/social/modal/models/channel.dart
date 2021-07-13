@@ -41,9 +41,9 @@ class Channel {
         language: json['language'] == null
             ? null
             : Language.fromJson(json['language'] as Map<String, dynamic>),
-        item: (json['item'] as List<dynamic>?)
-            ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
-            .toList(),
+        // item: (json['item'] as List<dynamic>?)
+        //     ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
+        //     .toList(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -54,6 +54,6 @@ class Channel {
         'generator': generator,
         'lastBuildDate': lastBuildDate,
         'language': language?.toJson(),
-        'item': item?.map((e) => e.toJson()).toList(),
+        // 'item': item?.map((e) => e.toJson()).toList(),
       };
 }
