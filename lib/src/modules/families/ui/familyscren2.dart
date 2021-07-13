@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/families/Submodule/resource/ui/resource.dart';
 import 'package:Soc/src/modules/families/Submodule/staff/ui/stafflist.dart';
 import 'package:Soc/src/modules/user/ui/login.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/models/webview.dart';
 import 'package:flutter/material.dart';
 
 class FamilyPage2 extends StatefulWidget {
@@ -43,7 +44,7 @@ class _FamilyPage2State extends State<FamilyPage2> {
     if (_selectedIndex == 0) {
       return AboutusPage();
     } else if (_selectedIndex == 1) {
-      return LoginPage();
+      // return WebViewClass();
     } else if (_selectedIndex == 2) {
       return EventPage();
     } else if (_selectedIndex == 3) {

@@ -34,7 +34,7 @@ dependencies:
   flutter_bloc: ^7.0.1
   http:
   equatable: ^2.0.3
-  webview_flutter: ^2.0.9
+  webview_flutter: 
   modal_bottom_sheet: ^2.0.0
   cached_network_image: ^3.0.0
   app_settings: 
