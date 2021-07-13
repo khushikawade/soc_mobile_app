@@ -32,18 +32,30 @@ dependencies:
   intl: ^0.17.0
   shared_preferences: ^2.0.6
   flutter_bloc: ^7.0.1
-  http: ^0.13.3
+  http:
   equatable: ^2.0.3
   webview_flutter: ^2.0.9
   modal_bottom_sheet: ^2.0.0
   cached_network_image: ^3.0.0
+  app_settings: 
+  device_info: ^2.0.2
+  xml2json: ^5.3.1
+  dio: ^4.0.0
+ 
+  
   # firebase_dynamic_links: ^2.0.1 TODO configure the app
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.0
 
+flutter_icons:
+  image_path: "assets/images/appicon.png"  
+  android: true
+  ios: true
+     
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -74,17 +86,17 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Poppins
+    - family: Roboto
       fonts:
-        - asset: fonts/Poppins-Regular.ttf
-        - asset: fonts/Poppins-Italic.ttf
-        - asset: fonts/Poppins-Bold.ttf
-        - asset: fonts/Poppins-SemiBold.ttf
-    - family: CustomFlutterIcons
+        - asset: fonts/Roboto-Regular.ttf
+        - asset: fonts/Roboto-Italic.ttf
+        - asset: fonts/Roboto-Bold.ttf
+        # - asset: fonts/Roboto-SemiBold.ttf
+    - family: SOC_CustomIcons
       fonts:
         - asset: fonts/CustomFlutterIcons.ttf    
         
-    
+ 
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -6,7 +6,6 @@ import 'db_service_response.model.dart';
 class DbServices {
   getapi(api, {headers}) async {
     try {
-      
       print('${Overrides.API_BASE_URL}$api');
       final response =
           await httpClient.get(Uri.parse('${Overrides.API_BASE_URL}$api'),

@@ -1,12 +1,17 @@
-import 'package:app/src/locale/app_translations.dart';
 import 'package:app/src/modules/families/ui/family.dart';
+import 'package:app/src/modules/home/ui/iconsmenu.dart';
 import 'package:app/src/modules/news/ui/news.dart';
+import 'package:app/src/modules/setting/information/ui/information.dart';
+import 'package:app/src/modules/setting/settiings/ui/setting.dart';
 import 'package:app/src/modules/social/ui/Soical.dart';
-import 'package:app/src/modules/home/ui/drawer.dart';
+import 'package:app/src/modules/social/ui/test.dart';
 import 'package:app/src/modules/staff/ui/staff.dart';
 import 'package:app/src/modules/students/ui/student.dart';
+import 'package:app/src/overrides.dart';
 import 'package:app/src/styles/theme.dart';
+import 'package:app/src/widgets/bearIconwidget.dart';
 import 'package:app/src/widgets/customerappbar.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,8 +23,50 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  static const _kFontFam = 'ACCELERATECustomIcons';
-  static const _kFontPkg = null;
+  static const double _kLabelSpacing = 16.0;
+  static const double _kIconSize = 35.0;
+
+  //STYLE
+  static const _kPopMenuTextStyle = TextStyle(
+      fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
+
+  // Top-Section Widget
+  Widget _buildPopupMenuWidget() {
+    return PopupMenuButton<IconMenu>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(2),
+      ),
+      icon: Icon(
+        const IconData(0xe806,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: AppTheme.kIconColor2,
+      ),
+      onSelected: (value) {
+        switch (value) {
+          case IconsMenu.Information:
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => InformationPage()));
+            break;
+          case IconsMenu.Setting:
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SettingPage()));
+            break;
+          case IconsMenu.Permissions:
+            AppSettings.openAppSettings();
+            break;
+        }
+      },
+      itemBuilder: (context) => IconsMenu.items
+          .map((item) => PopupMenuItem<IconMenu>(
+              value: item,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: _kLabelSpacing / 4, vertical: 0),
+                child: Text(item.text),
+              )))
+          .toList(),
+    );
+  }
 
   void _onItemTap(int index) {
     setState(() {
@@ -46,8 +93,6 @@ class _HomePageState extends State<HomePage> {
       padding: EdgeInsets.only(top: 2.0),
       child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedFontSize: 0,
-        backgroundColor: AppTheme.kBackgroundColor,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Column(
@@ -59,9 +104,9 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: Icon(
-                    const IconData(0xe815,
-                        fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                    size: 40.0,
+                    const IconData(0xe807,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
                   ),
                 ),
               ],
@@ -77,9 +122,10 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
-                  const IconData(0xe812,
-                      fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                  size: 40.0,
+                  const IconData(0xe801,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  // size: 40.0,
                 ),
               ),
             ]),
@@ -95,9 +141,9 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: Icon(
-                    const IconData(0xe812,
-                        fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                    size: 40.0,
+                    const IconData(0xe80a,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
                   ),
                 ),
               ],
@@ -114,8 +160,8 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
                   const IconData(0xe812,
-                      fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                  size: 40.0,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
                 ),
               ),
             ]),
@@ -130,18 +176,16 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
-                  const IconData(0xe812,
-                      fontFamily: _kFontFam, fontPackage: _kFontPkg),
-                  size: 40.0,
+                  const IconData(0xe808,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
                 ),
               ),
             ]),
             label: '',
           ),
         ],
-        elevation: 10.0,
         currentIndex: _selectedIndex,
-        unselectedItemColor: Colors.white,
         onTap: _onItemTap,
       ),
     );
@@ -151,24 +195,31 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: new AppBar(
-            iconTheme: IconThemeData(color: Theme.of(context).accentColor),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Icon(
-                  Icons.donut_large,
-                  size: 30,
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: new Icon(
-                    Icons.settings,
+            leadingWidth: _kIconSize,
+            elevation: 0.0,
+            leading: _selectedIndex == 3
+                ? Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Icon(IconData(0xe80b,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg)),
+                  )
+                : Container(
+                    height: 0,
                   ),
-                  onPressed: () {}),
+            title:
+                SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
+            actions: <Widget>[
+              _selectedIndex == 3
+                  ? Icon(
+                      const IconData(0xe805,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                    )
+                  : Container(
+                      height: 0,
+                    ),
+              _buildPopupMenuWidget(),
             ]),
         body: selectedScreenBody(context, _selectedIndex),
         bottomNavigationBar: buttomNavigationWidget());

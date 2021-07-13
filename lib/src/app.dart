@@ -1,6 +1,7 @@
 import 'package:app/src/modules/home/ui/home.dart';
 import 'package:app/src/modules/user/ui/login.dart';
 import 'package:app/src/services/shared_preference.dart';
+import 'package:app/src/startup.dart';
 import 'package:app/src/styles/theme.dart';
 import 'package:app/src/routes.dart';
 import 'package:flutter/material.dart';
@@ -46,9 +47,7 @@ class _AppState extends State<App> {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.lightTheme,
       // home: LoginPage(),
-      home: HomePage(
-        title: "SOC",
-      ),
+      home: StartupPage(),
       localizationsDelegates: [
         _newLocaleDelegate!,
         //provides localised strings
