@@ -6,9 +6,11 @@ import 'package:Soc/src/modules/families/Submodule/nyc/ui/nycresource.dart';
 import 'package:Soc/src/modules/families/Submodule/resource/ui/resource.dart';
 import 'package:Soc/src/modules/families/Submodule/staff/ui/stafflist.dart';
 import 'package:Soc/src/modules/user/ui/login.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/models/webview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class FamilyPage2 extends StatefulWidget {
   FamilyPage2({Key? key, required this.index}) : super(key: key);
@@ -18,26 +20,62 @@ class FamilyPage2 extends StatefulWidget {
 }
 
 class _FamilyPage2State extends State<FamilyPage2> {
+  final flutterWebviewPlugin = FlutterWebviewPlugin();
   int _selectedIndex = 0;
 
   @override
   void initState() {
+    flutterWebviewPlugin.close();
     super.initState();
     _selectedIndex = widget.index;
+  }
+
+  //STYLE
+  static const _kPopMenuTextStyle = TextStyle(
+      fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
+
+  // Top-Section Widget
+
+  // void _onItemTap(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //   });
+  // }
+
+  @override
+  void dispose() {
+    flutterWebviewPlugin.dispose();
+    super.dispose();
   }
 
   selectedScreenBody(context, _selectedIndex) {
     if (_selectedIndex == 0) {
       return AboutusPage();
     } else if (_selectedIndex == 1) {
-      return Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MyWebView(
-                    url:
-                        "https://pub.dev/packages/flutter_webview_plugin/install",
-                    title: "THIS",
-                  )));
+      // return Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => MyWebView(
+      //               url:
+      //                   "https://pub.dev/packages/flutter_webview_plugin/install",
+      //               title: "THIS",
+      //             )));
+      return WebviewScaffold(
+        url: "https://www.google.com/",
+        // url: "https://pub.dev/packages/flutter_webview_plugin/install",
+        withLocalStorage: true,
+        withJavascript: true,
+        withZoom: true,
+        initialChild: Container(
+            child: Center(
+          child: CircularProgressIndicator(
+            valueColor:
+                new AlwaysStoppedAnimation<Color>(AppTheme.kAccentColor),
+          ),
+        )),
+
+        // title: "THIS",
+      );
     } else if (_selectedIndex == 2) {
       return EventPage();
     } else if (_selectedIndex == 3) {
