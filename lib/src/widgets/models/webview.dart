@@ -284,7 +284,7 @@ class _MyWebViewState extends State<MyWebView> {
               ),
             ],
           ),
-          title: SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
+          title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
           bottom: PreferredSize(
             child: _progressBar(lineProgress, context),
             preferredSize: Size.fromHeight(4.0),

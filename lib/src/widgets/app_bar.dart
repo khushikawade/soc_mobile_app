@@ -46,7 +46,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
           ),
         ],
       ),
-      title: SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
+      title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
     );
   }
 }

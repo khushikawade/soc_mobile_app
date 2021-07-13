@@ -181,7 +181,7 @@ class _EventDescriptionState extends State<EventDescription> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
+              SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
             ],
           ),
           actions: <Widget>[

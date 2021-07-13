@@ -22,12 +22,9 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
     SocialEvent event,
   ) async* {
     if (event is SocialPageEvent) {
-      // print("SocialPageEvent ");
       try {
         yield Loading();
-        // final cred
         List<Item> list = await getEventDetails();
-        // data = getEventDetails();
         yield DataGettedSuccessfully(obj: list);
       } catch (e) {
         yield Errorinloading(err: e);
@@ -40,65 +37,13 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       var link = Uri.parse("${overrides.Overrides.socialPagexmlUrl}");
       Xml2Json xml2json = new Xml2Json();
       http.Response response = await http.get(link);
-      // xml2json.parse(response.body);
-      // var jsondata = xml2json.toGData();
-
-      // var data = json.decode(jsondata);
-      // print("************************DATA*************************");
-      // print(data);
-      // var dio = Dio();
-      // Response response = await dio.get(
-      //   "${overrides.Overrides.socialPagexmlUrl}",
-      //   options: Options(
-      //     headers: {
-      //       'Accept': 'application/json',
-      //       // 'Authorization': 'Bearer ${globals.token}'
-      //     },
-      //   ),
-      // );
-
       print(response.body);
       if (response.statusCode == 200) {
         print("statusCode 200 ***********");
         xml2json.parse(response.body);
         var jsondata = xml2json.toGData();
-
         var data = json.decode(jsondata);
-
-        // print(data);
-
-        // var headline;
-        // List? socialList = [];
-        // var jsondata = data["rss"];
-        // Map<String, dynamic> userMap = jsonDecode(jsondata);
-        // var user = Welcome.fromJson(userMap);
-        // print("************USER *****************");
-        // print(user);
-
-        // print('Howdy, ${user.rss!.channel!.item![0].title}!');
-
-        // for (int i = 0; i < jsondata.length; i++) {
-        //   headline =
-        //       data["rss"]["channel"]["item"][i]["title"]["__cdata"] ?? '';
-        //   print(headline);
-        //   socialList.add(headline);
-        //   // print(socialList);
-        //   print(i);
-        // }
-
-        // print(" ***********HeadLine*****************");
-        // print(searchRes);
-        // return searchRes;
-        // var headline = data["rss"]["channel"]["item"][1]["title"]["__cdata"];
-        // print(headline);
-        // Welcome obj = welcomeFromJson(jsondata);
-        // return obj;
-
-        // print(
-        //     "**********************************headline ****************************************");
-
         final data1 = data["rss"]["channel"]["item"];
-
         final data2 = data1 as List;
         // List? searchRes;
         print(data2.length);

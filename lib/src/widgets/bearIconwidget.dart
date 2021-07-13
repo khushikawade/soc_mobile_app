@@ -2,7 +2,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 class BearIconWidget extends StatelessWidget {
-  static const double _kIconSize = 36.0;
+  static const double _kIconSize = 45.0;
 
   final TextStyle buttonstyle = TextStyle(
     height: 1.5,
@@ -20,9 +20,9 @@ class BearIconWidget extends StatelessWidget {
         children: <Widget>[
           SizedBox(
               height: _kIconSize,
-              width: _kIconSize * 2,
+              width: _kIconSize * 1.75,
               child: Padding(
-                padding: const EdgeInsets.only(top: 5.0),
+                padding: const EdgeInsets.only(top: 10.0),
                 child: Image.asset(
                   'assets/images/bear.png',
                   fit: BoxFit.fill,
