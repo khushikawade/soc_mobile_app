@@ -1,8 +1,5 @@
 import 'dart:async';
-
-import 'package:Soc/src/modules/social/modal/models/channel.dart';
 import 'package:Soc/src/modules/social/modal/models/item.dart';
-import 'package:Soc/src/modules/social/modal/socialmodal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -28,9 +25,10 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       // print("SocialPageEvent ");
       try {
         yield Loading();
-        final cred = SocialPageEvent();
-        data = getEventDetails();
-        yield DataGettedSuccessfully();
+        // final cred
+        List<Item> list = await getEventDetails();
+        // data = getEventDetails();
+        yield DataGettedSuccessfully(obj: list);
       } catch (e) {
         yield Errorinloading(err: e);
       }
@@ -67,7 +65,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
         var data = json.decode(jsondata);
 
-        print(data);
+        // print(data);
 
         // var headline;
         // List? socialList = [];
@@ -99,27 +97,35 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         // print(
         //     "**********************************headline ****************************************");
 
-        final data1 = data;
-        final data2 = data1 as List;
-        List? searchRes;
+        final data1 = data["rss"]["channel"]["item"];
 
-        List<Item> list = await data2.map<Item>((i) {
-          print("inside LIST");
+        final data2 = data1 as List;
+        // List? searchRes;
+        print(data2.length);
+
+        // List<Item> list = await data2.map<Item>((i) {
+        return data1.map((i) {
           return Item(
-            title: data["rss"]["channel"]["item"][1]["title"]["__cdata"] ?? '',
-            description: data["rss"]["channel"]["item"][1]["description"]
-                    ["__cdata"] ??
-                '',
-            link: data["rss"]["channel"]["item"][1]["link"] ?? '',
-            creator:
-                data["rss"]["channel"]["item"][1]["creator"]["__cdata"] ?? '',
-            pubDate: data["rss"]["channel"]["item"][1]["pubDate"] ?? '',
-            content: data["rss"]["channel"]["item"][1]["content"] ?? '',
-            // pubget: i["pubget"],
-            // description: i["description"]
+            title: i["link"],
+            // description: data["rss"]["channel"]["item"][1]["description"]
+            //         ["__cdata"] ??
+            //     '',
+            // link:
+            // i["description"],
+            // i["link"] ?? '',
+            // i["guid"],
+            // // creator:
+            // i["creator"] ?? '',
+            // // pubDate: data["rss"]["channel"]["item"][1]["pubDate"] ?? '',
+            // // content:
+            // i["content"] ?? '',
+            // // pubDate:
+            // i["pubget"],
+            // description:
           );
         }).toList();
       } else {
+        print("else+++++++++++++");
         // if (response.data.contains("Failed host lookup")) {
         //   print("inside if");
         //   throw ("Failed host lookup.");

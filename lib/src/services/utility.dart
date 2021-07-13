@@ -58,7 +58,7 @@ class Utility {
   }
 
   static void showSnackBar(_scaffoldKey, msg, context) {
-    _scaffoldKey.currentState.removeCurrentSnackBar();
+    // _scaffoldKey.currentState.removeCurrentSnackBar();
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text("$msg",
           style: TextStyle(
