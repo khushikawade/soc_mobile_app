@@ -1,11 +1,9 @@
-import 'package:app/src/modules/families/modal/familymodal.dart';
-import 'package:app/src/modules/families/ui/aboutus.dart';
-import 'package:app/src/modules/families/ui/event.dart';
-import 'package:app/src/modules/families/ui/familyscren2.dart';
-import 'package:app/src/modules/user/ui/login.dart';
-import 'package:app/src/overrides.dart';
-import 'package:app/src/styles/theme.dart';
+import 'package:Soc/src/modules/families/modal/familymodal.dart';
+import 'package:Soc/src/modules/families/ui/familyscren2.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
+
+import '../../../overrides.dart';
 
 class FamilyPage extends StatefulWidget {
   @override
@@ -25,78 +23,78 @@ class _FamilyPageState extends State<FamilyPage> {
   static const List<FamilyModel> familyModelList = const <FamilyModel>[
     const FamilyModel(
       title: 'About us',
-      icon: IconData(0xe80b,
+      icon: IconData(0xe811,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 0,
     ),
     const FamilyModel(
         title: 'My Student Login',
-        icon: IconData(0xe802,
+        icon: IconData(0xe808,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         index: 1),
     const FamilyModel(
       title: 'Calendar/Events',
-      icon: IconData(0xe80f,
+      icon: IconData(0xe816,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 2,
     ),
     const FamilyModel(
       title: 'Forms',
-      icon: IconData(0xe813,
+      icon: IconData(0xe802,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 3,
     ),
     const FamilyModel(
       title: 'Staff Directory',
-      icon: IconData(0xe809,
+      icon: IconData(0xe80e,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 4,
     ),
     const FamilyModel(
       title: 'Health Screening',
-      icon: IconData(0xe800,
+      icon: IconData(0xe805,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 5,
     ),
     const FamilyModel(
       title: 'Complete Blue Card Emergency Contact',
-      icon: IconData(0xe810,
+      icon: IconData(0xe817,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 6,
     ),
     const FamilyModel(
       title: 'School Merchandise',
-      icon: IconData(0xe804,
+      icon: IconData(0xe80a,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 7,
     ),
     const FamilyModel(
       title: 'Gradebook - Pupilpath',
-      icon: IconData(0xe815,
+      icon: IconData(0xe804,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 8,
     ),
     const FamilyModel(
       title: 'Resources & Updates',
-      icon: IconData(0xe803,
+      icon: IconData(0xe809,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 9,
     ),
     const FamilyModel(
       title: 'School Merchandise',
-      icon: IconData(0xe804,
+      icon: IconData(0xe80a,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 10,
     ),
     const FamilyModel(
       title: 'Contact',
-      icon: IconData(0xe811,
+      icon: IconData(0xe800,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 11,
     ),
     const FamilyModel(
       title: 'Nyc DOE Resources',
-      icon: IconData(0xe802,
+      icon: IconData(0xe808,
           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       index: 12,
     ),

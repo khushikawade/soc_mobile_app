@@ -1,5 +1,5 @@
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:app/src/styles/theme.dart';
 
 class BearIconWidget extends StatelessWidget {
   static const double _kIconSize = 36.0;

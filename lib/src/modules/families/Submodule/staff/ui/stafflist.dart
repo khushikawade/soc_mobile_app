@@ -1,10 +1,7 @@
 import 'dart:ui';
-
-import 'package:app/src/modules/families/modal/eventmodal.dart';
-import 'package:app/src/modules/families/modal/staffmodel.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/hori_spacerwidget.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/modules/families/Submodule/staff/modal/staffmodel.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:flutter/material.dart';
 
 class StaffListPage extends StatefulWidget {

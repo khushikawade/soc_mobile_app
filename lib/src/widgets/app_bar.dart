@@ -1,7 +1,7 @@
-import 'package:app/src/overrides.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:flutter/material.dart';
+
+import '../overrides.dart';
 
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   CustomAppBarWidget({Key? key})
@@ -36,7 +36,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                 Navigator.pop(context);
               },
               child: Icon(
-                const IconData(0xe80d,
+                const IconData(0xe813,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
                 color: Color(0xff171717),

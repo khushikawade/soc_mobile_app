@@ -1,5 +1,5 @@
-import 'package:app/src/overrides.dart';
-import 'package:app/src/styles/theme.dart';
+import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -22,7 +22,7 @@ class SearchFieldWidget extends StatelessWidget {
               fillColor: AppTheme.kBackgroundColor,
               border: OutlineInputBorder(),
               prefixIcon: Icon(
-                IconData(0xe805,
+                IconData(0xe80b,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
                 color: AppTheme.kprefixIconColor,

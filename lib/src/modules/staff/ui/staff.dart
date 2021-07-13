@@ -1,7 +1,4 @@
-import 'package:app/src/locale/app_translations.dart';
-import 'package:app/src/modules/home/ui/drawer.dart';
-import 'package:app/src/widgets/customerappbar.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class StaffPage extends StatefulWidget {

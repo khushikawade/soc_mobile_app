@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:app/src/overrides.dart';
-import 'package:app/src/services/db_service.dart';
-import 'package:app/src/services/db_service_response.model.dart';
-import 'package:app/src/services/shared_preference.dart';
+
+import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/db_service.dart';
+import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/shared_preference.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';

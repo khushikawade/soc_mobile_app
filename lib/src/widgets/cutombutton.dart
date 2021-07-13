@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:app/src/styles/theme.dart';
+import 'package:Soc/src/styles/theme.dart';
 
 class Custombuttom extends StatelessWidget {
   String label;

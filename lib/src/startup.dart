@@ -1,11 +1,9 @@
 import 'dart:io';
-
-import 'package:app/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
-import 'package:app/src/styles/theme.dart';
-
-import 'package:app/src/modules/globals.dart' as globals;
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/modules/globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StartupPage extends StatefulWidget {

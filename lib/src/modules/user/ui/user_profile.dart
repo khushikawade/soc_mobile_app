@@ -1,16 +1,15 @@
-import 'package:app/src/modules/user/bloc/user_bloc.dart';
-import 'package:app/src/modules/user/ui/login.dart';
-import 'package:app/src/services/custom_flutter_icons.dart';
-import 'package:app/src/services/utility.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/app_bar_with_overlapped_body.dart';
-
-import 'package:app/src/widgets/icon_selector.dart';
-import 'package:app/src/widgets/models/custom_app_bar.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
-import 'package:app/src/widgets/profile_picture_widget.dart';
+import 'package:Soc/src/modules/user/bloc/user_bloc.dart';
+import 'package:Soc/src/services/custom_flutter_icons.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/app_bar_with_overlapped_body.dart';
+import 'package:Soc/src/widgets/icon_selector.dart';
+import 'package:Soc/src/widgets/models/custom_app_bar.dart';
+import 'package:Soc/src/widgets/profile_picture_widget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:Soc/src/modules/user/ui/user_profile.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -117,26 +116,26 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     style: Theme.of(context).textTheme.caption),
                 trailing: IconSelectorWidget('logout_icon', 'asset'),
                 onTap: () {
-                  _bloc.add(LogOut());
+                  // _bloc.add(LogOut());
                 },
               ),
             ),
-            BlocListener<UserBloc, UserState>(
-              bloc: _bloc,
-              listener: (context, state) {
-                if (state is LoggedOut) {
-                  // Navigator.of(context).pushAndRemoveUntil(
-                  //     MaterialPageRoute(builder: (context) => LoginPage()),
-                  //     ModalRoute.withName('/'));
-                }
-                if (state is ErrorReceived) {
-                  if (state.err != null && state.err != "") {
-                    Utility.showSnackBar(_scaffoldKey, "${state.err}", context);
-                  }
-                }
-              },
-              child: Container(),
-            )
+            // BlocListener<UserBloc, UserState>(
+            //   bloc: _bloc,
+            //   listener: (context, state) {
+            //     if (state is LoggedOut) {
+            //       // Navigator.of(context).pushAndRemoveUntil(
+            //       //     MaterialPageRoute(builder: (context) => LoginPage()),
+            //       //     ModalRoute.withName('/'));
+            //     }
+            //     if (state is ErrorReceived) {
+            //       if (state.err != null && state.err != "") {
+            //         Utility.showSnackBar(_scaffoldKey, "${state.err}", context);
+            //       }
+            //     }
+            //   },
+            //   child: Container(),
+            // )
           ],
         ),
       ));
@@ -151,3 +150,5 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 }
+
+class UserBloc {}

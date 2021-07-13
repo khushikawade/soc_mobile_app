@@ -1,4 +1,4 @@
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class AboutusPage extends StatefulWidget {

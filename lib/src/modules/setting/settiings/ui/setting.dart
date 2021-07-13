@@ -1,10 +1,6 @@
-import 'package:app/src/locale/app_translations.dart';
-import 'package:app/src/modules/home/ui/drawer.dart';
-import 'package:app/src/overrides.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/app_bar.dart';
-import 'package:app/src/widgets/customerappbar.dart';
-import 'package:app/src/widgets/share_button.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/share_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -29,6 +25,7 @@ class _SettingPageState extends State<SettingPage> {
     height: 1.5,
     fontFamily: "Roboto Regular",
     fontSize: 16,
+    fontWeight: FontWeight.normal,
     color: AppTheme.kAccentColor,
   );
 

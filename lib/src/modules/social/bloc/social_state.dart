@@ -26,7 +26,7 @@ class Errorinloading extends SocialState {
 }
 
 class DataGettedSuccessfully extends SocialState {
-  List<SocialModel>? obj;
+  List<Item>? obj;
 
   DataGettedSuccessfully({this.obj});
 

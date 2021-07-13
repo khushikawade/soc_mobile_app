@@ -1,7 +1,8 @@
-import 'package:app/src/modules/families/modal/eventmodal.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/hori_spacerwidget.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/modules/families/Submodule/event/ui/eventdescition.dart';
+import 'package:Soc/src/modules/families/Submodule/event/modal/eventmodal.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class EventPage extends StatefulWidget {
@@ -104,31 +105,37 @@ class _EventPageState extends State<EventPage> {
   ];
 
   Widget _buildList(int index) {
-    return Container(
-        decoration: BoxDecoration(
-          border: (index % 2 == 0)
-              ? Border.all(color: AppTheme.kListBackgroundColor2)
-              : Border.all(color: Theme.of(context).backgroundColor),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? AppTheme.kListBackgroundColor2
-              : Theme.of(context).backgroundColor,
-        ),
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: _kLabelSpacing * 2, vertical: _kLabelSpacing / 2),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildDate(index),
-                HorzitalSpacerWidget(_kLabelSpacing),
-                _builEvent(index),
-              ],
-            ),
+    return InkWell(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EventDescription()));
+      },
+      child: Container(
+          decoration: BoxDecoration(
+            border: (index % 2 == 0)
+                ? Border.all(color: AppTheme.kListBackgroundColor2)
+                : Border.all(color: Theme.of(context).backgroundColor),
+            borderRadius: BorderRadius.circular(0.0),
+            color: (index % 2 == 0)
+                ? AppTheme.kListBackgroundColor2
+                : Theme.of(context).backgroundColor,
           ),
-        ));
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: _kLabelSpacing * 2, vertical: _kLabelSpacing / 2),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildDate(index),
+                  HorzitalSpacerWidget(_kLabelSpacing),
+                  _builEvent(index),
+                ],
+              ),
+            ),
+          )),
+    );
   }
 
   Widget _buildHeading(String tittle) {

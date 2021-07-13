@@ -1,11 +1,8 @@
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/modules/families/modal/resourcemodal.dart';
-import 'package:app/src/widgets/customList.dart';
-import 'package:app/src/widgets/hori_spacerwidget.dart';
-import 'package:app/src/widgets/searchfield.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/modules/families/Submodule/resource/modal/resourcemodal.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/customList.dart';
+import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
-import 'package:app/src/overrides.dart' as overrides;
 
 class Resources extends StatefulWidget {
   Resources({Key? key, this.title}) : super(key: key);

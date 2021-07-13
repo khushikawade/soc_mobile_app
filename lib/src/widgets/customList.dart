@@ -1,5 +1,5 @@
-import 'package:app/src/overrides.dart';
-import 'package:app/src/styles/theme.dart';
+import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
