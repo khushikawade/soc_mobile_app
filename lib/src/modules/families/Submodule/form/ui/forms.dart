@@ -1,13 +1,8 @@
-import 'package:app/src/modules/families/modal/eventmodal.dart';
-import 'package:app/src/modules/families/modal/formModal.dart';
-import 'package:app/src/overrides.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/customList.dart';
-import 'package:app/src/widgets/hori_spacerwidget.dart';
-import 'package:app/src/widgets/searchfield.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/modules/families/Submodule/form/modal/formModal.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/customList.dart';
+import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
-import 'package:app/src/overrides.dart' as overrides;
 
 class FormPage extends StatefulWidget {
   FormPage({Key? key, this.title}) : super(key: key);
@@ -18,8 +13,6 @@ class FormPage extends StatefulWidget {
 
 class _FormPageState extends State<FormPage> {
   static const double _kLabelSpacing = 17.0;
-  static const _kFontFam = 'SOC_CustomIcons';
-  static const _kFontPkg = null;
   FocusNode myFocusNode = new FocusNode();
   // final TextStyle headingtextStyle = TextStyle(
   //   height: 1.5,

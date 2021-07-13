@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Overrides {
+  static const String privacyPolicyUrl =
+      'https:/www.solvedconsulting.com/privacy';
   static const String socialPagexmlUrl =
       'https://rss.app/feeds/_DawozSyanCYfGaQg.xml';
   static const String kFontFam = 'SOC_CustomIcons';

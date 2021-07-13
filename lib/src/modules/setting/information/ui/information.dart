@@ -1,10 +1,11 @@
-import 'package:app/src/overrides.dart';
-import 'package:app/src/services/utility.dart';
-import 'package:app/src/widgets/app_bar.dart';
-import 'package:app/src/widgets/customerappbar.dart';
-import 'package:app/src/widgets/share_button.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../../overrides.dart' as overrides;
 
 class InformationPage extends StatefulWidget {
   @override
@@ -15,20 +16,39 @@ class _InformationPageState extends State<InformationPage> {
   static const double _kLabelSpacing = 17.0;
 
   //Style
-  static const _kheadingStyle = TextStyle(
-      fontFamily: "Roboto Bold",
-      fontWeight: FontWeight.bold,
-      fontSize: 22,
-      color: Color(0xff2D3F98));
+  // static const _kheadingStyle = TextStyle(
+  //     fontFamily: "Roboto Bold",
+  //     fontWeight: FontWeight.bold,
+  //     fontSize: 22,
+  //     color: Color(0xff2D3F98));
 
   static const _ktextStyle = TextStyle(
     height: 1.5,
     fontFamily: "Roboto",
     fontSize: 14,
+    fontWeight: FontWeight.normal,
+    color: Color(0xff2D3F98),
+  );
+
+  static const _klinkStyle = TextStyle(
+    height: 1.5,
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+    decoration: TextDecoration.underline,
     color: Color(0xff2D3F98),
   );
 
   //TOP SECTION START
+  _launchURL() async {
+    const url = "${overrides.Overrides.privacyPolicyUrl}";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   Widget _buildIcon() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -145,15 +165,20 @@ class _InformationPageState extends State<InformationPage> {
 
 // BUTTOM SECTION START
   Widget privacyWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          "https://www.slovedconsulting.com/privacy",
-          style: _ktextStyle,
-        )
-      ],
+    return InkWell(
+      onTap: () {
+        _launchURL();
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "https://www.slovedconsulting.com/privacy",
+            style: _klinkStyle,
+          )
+        ],
+      ),
     );
   }
 

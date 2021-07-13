@@ -1,8 +1,4 @@
-import 'package:app/src/locale/app_translations.dart';
-import 'package:app/src/modules/home/ui/drawer.dart';
-
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/customerappbar.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

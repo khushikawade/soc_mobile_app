@@ -1,14 +1,11 @@
-import 'package:app/src/modules/home/ui/home.dart';
-import 'package:app/src/modules/user/ui/login.dart';
-import 'package:app/src/services/shared_preference.dart';
-import 'package:app/src/startup.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/routes.dart';
+import 'package:Soc/src/locale/app_translations_delegate.dart';
+import 'package:Soc/src/locale/application.dart';
+import 'package:Soc/src/routes.dart';
+import 'package:Soc/src/services/shared_preference.dart';
+import 'package:Soc/src/startup.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
-import 'locale/app_translations_delegate.dart';
-import 'locale/application.dart';
 
 class App extends StatefulWidget {
   @override

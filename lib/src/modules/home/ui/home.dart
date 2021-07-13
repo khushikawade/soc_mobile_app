@@ -1,18 +1,17 @@
-import 'package:app/src/modules/families/ui/family.dart';
-import 'package:app/src/modules/home/ui/iconsmenu.dart';
-import 'package:app/src/modules/news/ui/news.dart';
-import 'package:app/src/modules/setting/information/ui/information.dart';
-import 'package:app/src/modules/setting/settiings/ui/setting.dart';
-import 'package:app/src/modules/social/ui/Soical.dart';
-import 'package:app/src/modules/social/ui/test.dart';
-import 'package:app/src/modules/staff/ui/staff.dart';
-import 'package:app/src/modules/students/ui/student.dart';
-import 'package:app/src/overrides.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/bearIconwidget.dart';
-import 'package:app/src/widgets/customerappbar.dart';
+import 'package:Soc/src/modules/families/ui/family.dart';
+import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
+import 'package:Soc/src/modules/news/ui/news.dart';
+import 'package:Soc/src/modules/setting/information/ui/information.dart';
+import 'package:Soc/src/modules/setting/settiings/ui/setting.dart';
+import 'package:Soc/src/modules/social/ui/Soical.dart';
+import 'package:Soc/src/modules/staff/ui/staff.dart';
+import 'package:Soc/src/modules/students/ui/student.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+
+import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, this.title}) : super(key: key);
@@ -37,7 +36,7 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(2),
       ),
       icon: Icon(
-        const IconData(0xe806,
+        const IconData(0xe80c,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         color: AppTheme.kIconColor2,
       ),
@@ -62,7 +61,10 @@ class _HomePageState extends State<HomePage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: _kLabelSpacing / 4, vertical: 0),
-                child: Text(item.text),
+                child: Text(
+                  item.text,
+                  style: _kPopMenuTextStyle,
+                ),
               )))
           .toList(),
     );
@@ -104,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: Icon(
-                    const IconData(0xe807,
+                    const IconData(0xe80d,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                   ),
@@ -122,7 +124,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
-                  const IconData(0xe801,
+                  const IconData(0xe807,
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg),
                   // size: 40.0,
@@ -141,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: Icon(
-                    const IconData(0xe80a,
+                    const IconData(0xe810,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                   ),
@@ -159,7 +161,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
-                  const IconData(0xe812,
+                  const IconData(0xe801,
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg),
                 ),
@@ -176,7 +178,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.only(top: 0.0),
                 child: Icon(
-                  const IconData(0xe808,
+                  const IconData(0xe80e,
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg),
                 ),
@@ -200,7 +202,7 @@ class _HomePageState extends State<HomePage> {
             leading: _selectedIndex == 3
                 ? Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Icon(IconData(0xe80b,
+                    child: Icon(IconData(0xe806,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg)),
                   )
@@ -212,7 +214,7 @@ class _HomePageState extends State<HomePage> {
             actions: <Widget>[
               _selectedIndex == 3
                   ? Icon(
-                      const IconData(0xe805,
+                      const IconData(0xe80b,
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
                     )

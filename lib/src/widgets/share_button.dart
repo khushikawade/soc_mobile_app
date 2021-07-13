@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/setting/settiings/ui/appshare.dart';
 import 'package:flutter/material.dart';
 
 class ButtonWidget extends StatelessWidget {
@@ -11,7 +12,13 @@ class ButtonWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ShareApp(),
+                  ),
+                );
+              },
               child: Text("Share this app"),
             ),
           ),

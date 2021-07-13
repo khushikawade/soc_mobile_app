@@ -1,18 +1,20 @@
-import 'package:app/src/overrides.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/bearIconwidget.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class EventDescription extends StatefulWidget {
-  EventDescription({Key? key, this.title}) : super(key: key);
+import '../../../overrides.dart';
+
+class SocialEventDescriptionn extends StatefulWidget {
+  SocialEventDescriptionn({Key? key, this.title}) : super(key: key);
   final String? title;
   @override
-  _EventDescriptionState createState() => _EventDescriptionState();
+  _SocialEventDescriptionnState createState() =>
+      _SocialEventDescriptionnState();
 }
 
-class _EventDescriptionState extends State<EventDescription> {
+class _SocialEventDescriptionnState extends State<SocialEventDescriptionn> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
 
@@ -132,7 +134,7 @@ class _EventDescriptionState extends State<EventDescription> {
                     Navigator.pop(context);
                   },
                   icon: Icon(
-                    const IconData(0xe80c,
+                    const IconData(0xe812,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                     color: Color(0xffbcc5d4),
@@ -143,7 +145,7 @@ class _EventDescriptionState extends State<EventDescription> {
             ),
             SizedBox(width: _kPadding),
             Icon(
-              const IconData(0xe814,
+              const IconData(0xe803,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
               color: AppTheme.kBlackColor,

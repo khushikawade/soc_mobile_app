@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:app/src/overrides.dart';
+
 import 'package:http/http.dart' as httpClient;
+import '../overrides.dart';
 import 'db_service_response.model.dart';
 
 class DbServices {

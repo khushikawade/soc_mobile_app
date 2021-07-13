@@ -1,7 +1,7 @@
-import 'package:app/src/services/utility.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/models/custom_app_bar.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/models/custom_app_bar.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class OverlappedAppBar extends StatefulWidget {

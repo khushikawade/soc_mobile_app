@@ -1,10 +1,9 @@
-import 'package:app/src/overrides.dart';
-import 'package:app/src/services/custom_flutter_icons.dart';
-import 'package:app/src/services/utility.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/icon_selector.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/services/custom_flutter_icons.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/icon_selector.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import '../../../overrides.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -43,12 +42,15 @@ class AppDrawer extends StatelessWidget {
           right: 0.0,
           child: DrawerHeader(
             child: Padding(
-                padding: const EdgeInsets.only(bottom: 46),
+              padding: const EdgeInsets.only(bottom: 46),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                      icon: Icon(CustomFlutterIcons.cross_ico, color: Theme.of(context).colorScheme.onPrimary,),
+                      icon: Icon(
+                        CustomFlutterIcons.cross_ico,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                       onPressed: () => Navigator.of(context).pop())
                 ],
               ),

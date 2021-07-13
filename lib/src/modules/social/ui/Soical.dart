@@ -1,14 +1,11 @@
 import 'dart:ui';
-
-import 'package:app/src/locale/app_translations.dart';
-import 'package:app/src/modules/home/ui/drawer.dart';
-import 'package:app/src/modules/social/bloc/social_bloc.dart';
-import 'package:app/src/modules/social/modal/socialmodal.dart';
-import 'package:app/src/modules/social/ui/eventdesciption.dart';
-import 'package:app/src/services/utility.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/customerappbar.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/modules/families/Submodule/event/ui/eventdescition.dart';
+import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
+import 'package:Soc/src/modules/social/modal/models/item.dart';
+import 'package:Soc/src/modules/social/modal/socialmodal.dart';
+import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -25,7 +22,7 @@ class _SocialPageState extends State<SocialPage> {
   static const double _kIconSize = 48.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<SocialModel>? obj;
+  List<Item>? obj;
   SocialBloc bloc = SocialBloc();
 
   void initState() {
@@ -69,11 +66,13 @@ class _SocialPageState extends State<SocialPage> {
                   width: _kIconSize * 1.4,
                   height: _kIconSize * 1.5,
                   child: Container(
-                      child: ClipRRect(
-                          child: Image.network(
-                    'https://picsum.photos/250?image=9',
-                    fit: BoxFit.fill,
-                  ))),
+                      //     child:
+                      //      ClipRRect(
+                      //         child: Image.network(
+                      //   'https://picsum.photos/250?image=9',
+                      //   fit: BoxFit.fill,
+                      // ))
+                      ),
                 ),
               ],
             ),
@@ -88,14 +87,16 @@ class _SocialPageState extends State<SocialPage> {
                     children: [
                       Container(
                           width: MediaQuery.of(context).size.width * 0.69,
-                          child: obj != null
-                              ? Text(obj![0].tittle)
-                              : Text(
-                                  "Check out these book suggestions for your summer reading !",
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: _kListTextStyle,
-                                )),
+                          child:
+                              // obj != null
+                              //     ? Text(obj![0].tittle)
+                              // :
+                              Text(
+                            "Check out these book suggestions for your summer reading !",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: _kListTextStyle,
+                          )),
                     ],
                   ),
                   SizedBox(height: _kLabelSpacing / 2),
@@ -157,7 +158,7 @@ class _SocialPageState extends State<SocialPage> {
           bloc: bloc,
           listener: (context, state) {
             if (state is DataGettedSuccessfully) {
-              obj = state.obj;
+              // obj = state.obj;
             }
 
             if (state is Errorinloading) {

@@ -1,23 +1,12 @@
-import 'package:app/src/modules/families/ui/aboutus.dart';
-import 'package:app/src/modules/families/ui/contact.dart';
-import 'package:app/src/modules/families/ui/event.dart';
-import 'package:app/src/modules/families/ui/family.dart';
-import 'package:app/src/modules/families/ui/forms.dart';
-import 'package:app/src/modules/families/ui/nycresource.dart';
-import 'package:app/src/modules/families/ui/resource.dart';
-import 'package:app/src/modules/families/ui/stafflist.dart';
-import 'package:app/src/modules/home/ui/iconsmenu.dart';
-import 'package:app/src/modules/news/ui/news.dart';
-import 'package:app/src/modules/setting/information/ui/information.dart';
-import 'package:app/src/modules/setting/settiings/ui/setting.dart';
-import 'package:app/src/modules/social/ui/Soical.dart';
-import 'package:app/src/modules/staff/ui/staff.dart';
-import 'package:app/src/modules/students/ui/student.dart';
-import 'package:app/src/modules/user/ui/login.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/app_bar.dart';
-import 'package:app/src/widgets/customerappbar.dart';
-import 'package:app/src/widgets/models/custom_app_bar.dart';
+import 'package:Soc/src/modules/families/Submodule/aboutus/ui/aboutus.dart';
+import 'package:Soc/src/modules/families/Submodule/contact/ui/contact.dart';
+import 'package:Soc/src/modules/families/Submodule/event/ui/event.dart';
+import 'package:Soc/src/modules/families/Submodule/form/ui/forms.dart';
+import 'package:Soc/src/modules/families/Submodule/nyc/ui/nycresource.dart';
+import 'package:Soc/src/modules/families/Submodule/resource/ui/resource.dart';
+import 'package:Soc/src/modules/families/Submodule/staff/ui/stafflist.dart';
+import 'package:Soc/src/modules/user/ui/login.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 
 class FamilyPage2 extends StatefulWidget {
