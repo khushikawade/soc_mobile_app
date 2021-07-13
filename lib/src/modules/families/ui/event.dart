@@ -33,6 +33,7 @@ class _EventPageState extends State<EventPage> {
     height: 1.5,
     fontFamily: "Roboto Regular",
     fontSize: 16,
+    fontWeight: FontWeight.normal,
     color: AppTheme.kAccentColor,
   );
 
@@ -44,12 +45,12 @@ class _EventPageState extends State<EventPage> {
     color: AppTheme.kAccentColor,
   );
 
-  final TextStyle timeStamptextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Regular",
-    fontSize: 13,
-    color: AppTheme.kAccentColor,
-  );
+  // final TextStyle timeStamptextStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Regular",
+  //   fontSize: 13,
+  //   color: AppTheme.kAccentColor,
+  // );
 
   static const List<EventModel> EventModelList = const <EventModel>[
     const EventModel(
@@ -189,7 +190,7 @@ class _EventPageState extends State<EventPage> {
       children: [
         Text(
           EventModelList[index].timestamp,
-          style: timeStamptextStyle,
+          style: Theme.of(context).textTheme.subtitle1,
         ),
       ],
     );

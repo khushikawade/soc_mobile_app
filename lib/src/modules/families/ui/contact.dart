@@ -30,12 +30,12 @@ class _ContactPageState extends State<ContactPage> {
       fontWeight: FontWeight.w400,
       fontSize: 14,
       color: Color(0xff171717));
-  static const _ktextStyle = TextStyle(
-    fontFamily: "Roboto Medium",
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-    color: Color(0xff2D3F98),
-  );
+  // static const _ktextStyle = TextStyle(
+  //   fontFamily: "Roboto Medium",
+  //   fontSize: 14,
+  //   fontWeight: FontWeight.w500,
+  //   color: Color(0xff2D3F98),
+  // );
 
   static const maptext1Style = TextStyle(
     fontFamily: "Roboto Bold",
@@ -218,7 +218,7 @@ class _ContactPageState extends State<ContactPage> {
                   width: MediaQuery.of(context).size.width * .60,
                   child: Text(
                     "123 Morningside Dr, New york,NY 10027, USA",
-                    style: _ktextStyle,
+                    style: Theme.of(context).textTheme.bodyText2,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 4,
                     textAlign: TextAlign.start,
@@ -243,7 +243,7 @@ class _ContactPageState extends State<ContactPage> {
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Text(
             "(212) 222-0473",
-            style: _ktextStyle,
+            style: Theme.of(context).textTheme.bodyText2,
           )
         ],
       ),

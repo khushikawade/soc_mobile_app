@@ -48,12 +48,6 @@ class SelectIcon extends StatelessWidget {
   static const double _kIconSize = 105.0;
   @override
   Widget build(BuildContext context) {
-    final TextStyle textStyle = TextStyle(
-      height: 1.5,
-      fontFamily: "Roboto Regular",
-      fontSize: 14,
-      color: AppTheme.kFontColor1,
-    );
     return Container(
       child: Center(
         child: Column(
@@ -67,7 +61,7 @@ class SelectIcon extends StatelessWidget {
                   height: _kIconSize,
                 ),
               ),
-              Text(grid.title, style: textStyle),
+              Text(grid.title, style: Theme.of(context).textTheme.caption),
             ]),
       ),
     );

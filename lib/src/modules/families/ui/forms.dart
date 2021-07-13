@@ -2,6 +2,7 @@ import 'package:app/src/modules/families/modal/eventmodal.dart';
 import 'package:app/src/modules/families/modal/formModal.dart';
 import 'package:app/src/overrides.dart';
 import 'package:app/src/styles/theme.dart';
+import 'package:app/src/widgets/customList.dart';
 import 'package:app/src/widgets/hori_spacerwidget.dart';
 import 'package:app/src/widgets/searchfield.dart';
 import 'package:app/src/widgets/spacer_widget.dart';
@@ -64,54 +65,8 @@ class _FormPageState extends State<FormPage> {
     return SearchFieldWidget();
   }
 
-  Widget _buildList(int index) {
-    return Container(
-        decoration: BoxDecoration(
-          border: (index % 2 == 0)
-              ? Border.all(color: AppTheme.kListBackgroundColor2)
-              : Border.all(color: Theme.of(context).backgroundColor),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? AppTheme.kListBackgroundColor2
-              : Theme.of(context).backgroundColor,
-        ),
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: _kLabelSpacing * 2, vertical: _kLabelSpacing),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildFormName(index),
-              ],
-            ),
-          ),
-        ));
-  }
-
-  Widget _buildHeading(String tittle) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.only(
-              top: _kLabelSpacing / 1.5, bottom: _kLabelSpacing / 1.5),
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 0,
-            ),
-            color: AppTheme.kOnPrimaryColor,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Text(tittle, style: Theme.of(context).textTheme.headline3),
-          ),
-        ),
-      ],
-    );
+  Widget _buildList(int index, Widget listItem) {
+    return ListWidget(index, _buildFormName(index));
   }
 
   Widget _buildFormName(int index) {
@@ -138,7 +93,7 @@ class _FormPageState extends State<FormPage> {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: 5,
                 itemBuilder: (BuildContext context, int index) {
-                  return _buildList(index);
+                  return _buildList(index, _buildFormName(index));
                 },
               ),
               // ),

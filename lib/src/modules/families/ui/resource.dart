@@ -1,5 +1,6 @@
 import 'package:app/src/styles/theme.dart';
 import 'package:app/src/modules/families/modal/resourcemodal.dart';
+import 'package:app/src/widgets/customList.dart';
 import 'package:app/src/widgets/hori_spacerwidget.dart';
 import 'package:app/src/widgets/searchfield.dart';
 import 'package:app/src/widgets/spacer_widget.dart';
@@ -15,8 +16,7 @@ class Resources extends StatefulWidget {
 
 class _ResourcesState extends State<Resources> {
   static const double _kLabelSpacing = 17.0;
-  static const _kFontFam = 'SOC_CustomIcons';
-  static const _kFontPkg = null;
+
   FocusNode myFocusNode = new FocusNode();
   // final TextStyle _kheadingStyle = TextStyle(
   //   height: 1.5,
@@ -54,56 +54,7 @@ class _ResourcesState extends State<Resources> {
   }
 
   Widget _buildList(int index) {
-    return Container(
-        decoration: BoxDecoration(
-          border: (index % 2 == 0)
-              ? Border.all(color: AppTheme.kListBackgroundColor2)
-              : Border.all(color: Theme.of(context).backgroundColor),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? AppTheme.kListBackgroundColor2
-              : Theme.of(context).backgroundColor,
-        ),
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: _kLabelSpacing * 2, vertical: _kLabelSpacing),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildresource(index),
-              ],
-            ),
-          ),
-        ));
-  }
-
-  Widget _buildHeading(String tittle) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.only(
-              top: _kLabelSpacing / 1.5, bottom: _kLabelSpacing / 1.5),
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 0,
-            ),
-            color: AppTheme.kOnPrimaryColor,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Text(
-              tittle,
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-          ),
-        ),
-      ],
-    );
+    return ListWidget(index, _buildresource(index));
   }
 
   Widget _buildresource(int index) {

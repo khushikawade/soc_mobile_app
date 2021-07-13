@@ -32,14 +32,14 @@ class AppTheme {
 
   //Font-sizes
   static const double kButtonFontSize = 14.0;
-  static const double kSubtitleFontSize = 14.0;
+  static const double kSubtitleFontSize = 13.0;
   static const double kHeadline1TextFontSize = 22.0;
   static const double kHeadline2TextFontSize = 16.0;
   static const double kHeadline4TextFontSize = 15.0;
   static const double kSubtitle2FontSize = 10.0;
   static const double kBodyText1FontSize = 14.0;
   static const double kTitleFontSize = 28.0;
-  static const double kCaptionFontSize = 16.0;
+  static const double kCaptionFontSize = 14.0;
   static const double kBottomSheetTitleSize = 20.0;
 
   //Borders
@@ -114,13 +114,14 @@ class AppTheme {
             color: kAccentColor,
             fontFamily: 'Roboto-SemiBold'),
         caption: TextStyle(
-            fontSize: kCaptionFontSize,
-            color: kFontColor1,
-            fontWeight: FontWeight.w500),
+          fontSize: kCaptionFontSize,
+          color: kFontColor1,
+          height: 1.2,
+        ),
         subtitle1: TextStyle(
             fontSize: kSubtitleFontSize,
-            color: Colors.black,
-            fontWeight: FontWeight.w400),
+            color: kAccentColor,
+            fontWeight: FontWeight.normal),
         subtitle2: TextStyle(
           fontSize: kSubtitle2FontSize,
           color: kAccentColor,
@@ -129,8 +130,9 @@ class AppTheme {
         bodyText1: TextStyle(
           fontSize: kBodyText1FontSize,
           color: kAccentColor,
+          fontWeight: FontWeight.normal,
           fontFamily: 'Roboto Regular',
-          height: 1.2,
+          height: 1.5,
         ),
         bodyText2: TextStyle(
           fontSize: kBodyText1FontSize,

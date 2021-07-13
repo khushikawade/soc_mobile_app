@@ -4,6 +4,7 @@ import 'package:app/src/modules/news/ui/news.dart';
 import 'package:app/src/modules/setting/information/ui/information.dart';
 import 'package:app/src/modules/setting/settiings/ui/setting.dart';
 import 'package:app/src/modules/social/ui/Soical.dart';
+import 'package:app/src/modules/social/ui/test.dart';
 import 'package:app/src/modules/staff/ui/staff.dart';
 import 'package:app/src/modules/students/ui/student.dart';
 import 'package:app/src/overrides.dart';

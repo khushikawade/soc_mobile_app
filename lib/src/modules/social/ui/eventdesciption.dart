@@ -5,14 +5,14 @@ import 'package:app/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class NewsDescription extends StatefulWidget {
-  NewsDescription({Key? key, this.title}) : super(key: key);
+class EventDescription extends StatefulWidget {
+  EventDescription({Key? key, this.title}) : super(key: key);
   final String? title;
   @override
-  _NewsDescriptionState createState() => _NewsDescriptionState();
+  _EventDescriptionState createState() => _EventDescriptionState();
 }
 
-class _NewsDescriptionState extends State<NewsDescription> {
+class _EventDescriptionState extends State<EventDescription> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
 
@@ -127,12 +127,17 @@ class _NewsDescriptionState extends State<NewsDescription> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(
-                  const IconData(0xe80c,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: Color(0xffbcc5d4),
-                  size: 20,
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    const IconData(0xe80c,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: Color(0xffbcc5d4),
+                    size: 20,
+                  ),
                 ),
               ],
             ),

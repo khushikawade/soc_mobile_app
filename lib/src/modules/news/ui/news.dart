@@ -1,6 +1,6 @@
 import 'package:app/src/locale/app_translations.dart';
 import 'package:app/src/modules/home/ui/drawer.dart';
-import 'package:app/src/modules/news/ui/newsdescription.dart';
+
 import 'package:app/src/styles/theme.dart';
 import 'package:app/src/widgets/customerappbar.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,11 @@ class _NewsPageState extends State<NewsPage> {
   //     color: AppTheme.kAccentColor);
 
   static const _kTimeStampStyle = TextStyle(
-      fontFamily: "Roboto Regular", fontSize: 13, color: AppTheme.kAccentColor);
+    fontFamily: "Roboto Regular",
+    fontSize: 13,
+    color: AppTheme.kAccentColor,
+    fontWeight: FontWeight.normal,
+  );
 
 //UI WIDGETS
 
@@ -31,8 +35,8 @@ class _NewsPageState extends State<NewsPage> {
     int itemsLength = 10; // Replace with Actual Item Count
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => NewsDescription()));
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => NewsDescription()));
       },
       child: Container(
           padding: EdgeInsets.symmetric(
@@ -78,7 +82,7 @@ class _NewsPageState extends State<NewsPage> {
         Container(
             child: Text(
           "${newsTimeStamp}",
-          style: _kTimeStampStyle,
+          style: Theme.of(context).textTheme.subtitle1,
         )),
       ],
     );

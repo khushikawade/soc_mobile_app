@@ -23,12 +23,12 @@ class _StaffPageState extends State<StaffPage> {
   //     fontSize: 16,
   //     color: Color(0xff2D3F98));
 
-  static const _ktextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Regular",
-    fontSize: 14,
-    color: Color(0xff2D3F98),
-  );
+  // static const _ktextStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Regular",
+  //   fontSize: 14,
+  //   color: Color(0xff2D3F98),
+  // );
 
   // UI Widget
   Widget _buildIcon() {
@@ -71,7 +71,7 @@ class _StaffPageState extends State<StaffPage> {
           children: [
             Text(
               "Please unlock this content to continue.",
-              style: _ktextStyle,
+              style: Theme.of(context).textTheme.bodyText1,
             )
           ],
         ),
@@ -81,7 +81,7 @@ class _StaffPageState extends State<StaffPage> {
           children: [
             Text(
               "If you need support accessing this page, please reach ",
-              style: _ktextStyle,
+              style: Theme.of(context).textTheme.bodyText1,
             ),
           ],
         ),
@@ -91,7 +91,7 @@ class _StaffPageState extends State<StaffPage> {
           children: [
             Text(
               "out to Mr. Edwards.",
-              style: _ktextStyle,
+              style: Theme.of(context).textTheme.bodyText1,
             )
           ],
         ),
