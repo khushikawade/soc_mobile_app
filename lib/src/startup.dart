@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/modules/globals.dart' as globals;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StartupPage extends StatefulWidget {
@@ -14,11 +16,12 @@ class StartupPage extends StatefulWidget {
 class _StartupPageState extends State<StartupPage> {
   bool flag = true;
   bool showlogin = true;
-
+  final HomeBloc _bloc = new HomeBloc();
   void initState() {
     super.initState();
     getDeviceType();
-    startTimer();
+    // startTimer();
+    _bloc.add(FetchBottomNavigationBar());
   }
 
   getDeviceType() async {
@@ -41,28 +44,55 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   // start splash screen timer
-  void startTimer() {
-    Future.delayed(const Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(
-              title: "SOC",
-            ),
-          ));
-    });
-  }
+  // void startTimer() {
+  //   Future.delayed(const Duration(seconds: 5), () {
+  //     Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => HomePage(
+  //             title: "SOC",
+  //           ),
+  //         ));
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: SizedBox(
-        height: 200,
-        width: 200,
-        child:
-            Image.asset('assets/images/splash_bear_icon.png', fit: BoxFit.fill),
-      ),
+        body: Stack(
+      children: [
+        Center(
+          child: SizedBox(
+            height: 200,
+            width: 200,
+            child: Image.asset('assets/images/splash_bear_icon.png',
+                fit: BoxFit.fill),
+          ),
+        ),
+        BlocListener<HomeBloc, HomeState>(
+          bloc: _bloc,
+          listener: (context, state) async {
+            if (state is BottomNavigationBarSuccess) {
+              print(
+                  "Inside data +++++++++++++++++++++++++++++++++++++++++++ : ${state.obj}");
+              // Future.delayed(const Duration(seconds: 5), () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(
+                      title: "SOC",
+                      obj: state.obj,
+                    ),
+                  ));
+              // });
+            }
+          },
+          child: Container(
+            height: 0,
+            width: 0,
+          ),
+        )
+      ],
     ));
   }
 }
