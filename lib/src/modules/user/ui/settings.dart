@@ -1,13 +1,12 @@
-import 'package:app/src/locale/app_translations.dart';
-import 'package:app/src/locale/application.dart';
-import 'package:app/src/modules/user/ui/lanuage_selector.dart';
-import 'package:app/src/modules/user/ui/user_profile.dart';
-import 'package:app/src/services/shared_preference.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/app_bar_with_overlapped_body.dart';
-import 'package:app/src/widgets/back_button_widget.dart';
-import 'package:app/src/widgets/icon_selector.dart';
-import 'package:app/src/widgets/models/custom_app_bar.dart';
+import 'package:Soc/src/locale/app_translations.dart';
+import 'package:Soc/src/locale/application.dart';
+import 'package:Soc/src/modules/user/ui/lanuage_selector.dart';
+import 'package:Soc/src/modules/user/ui/user_profile.dart';
+import 'package:Soc/src/services/shared_preference.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/app_bar_with_overlapped_body.dart';
+import 'package:Soc/src/widgets/icon_selector.dart';
+import 'package:Soc/src/widgets/models/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -92,7 +91,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _body() => Container(
         child: Padding(
-          padding: const EdgeInsets.only(left: AppTheme.kBodyPadding, right: AppTheme.kBodyPadding),
+          padding: const EdgeInsets.only(
+              left: AppTheme.kBodyPadding, right: AppTheme.kBodyPadding),
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -123,7 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return OverlappedAppBar(
       topOverFlow: 30.0,
       customAppBar: CustomAppBar(
-          leading: BackButtonWidget(),
+          // leading: BackButtonWidget(),
           title: AppTranslations.of(context)!.text('settings'),
           subtitle: 'Team bedrijfsbureau'),
       body: _body(),

@@ -6,26 +6,46 @@ class AppTheme {
 
   //Colors
 
-  static const Color kPrimaryColor = Color(0xfff7a42a);
-  static const Color kBackgroundColor = Colors.white; 
-  static const Color kOnPrimaryColor = Colors.white;
+  static const Color kPrimaryColor = Color(0xffffffff);
+  static const Color kAccentColor = Color(0xff2D3F98);
+  static const Color kBlackColor = Colors.black;
+  static const Color kBackgroundColor = Colors.white;
+  static const Color kOnPrimaryColor = Color(0xff808ED3);
   static const Color kSecondaryColor = Color(0xff535353);
+  static const Color kButtonbackColor = Color(0xff89A7D7);
   static const Color kFontColor1 = Colors.black;
   static const Color kFontColor2 = Colors.white;
   static const Color kCardColor = Color(0xffFFFFFF);
   static const Color kShadowColor = Color(0xff000000);
+  static const Color kTxtfieldBorderColor = Color(0xffBCC5D4);
+  static const Color kTxtFieldColor = Color(0xffBCC5D4);
   static Color kListTileColor = Color(0xffD8D8D8).withOpacity(0.12);
-  static Color kIconColor = Color(0xff535353).withOpacity(0.75); 
+  static Color kIconColor = Color(0xff535353).withOpacity(0.75);
+  static const Color kIconColor2 = Color(0xff8aa8d8);
+  static const Color kListBackgroundColor2 = Color(0xffF5F5F5);
+  static const Color kListBackgroundColor3 = Color(0xffe9ebf7);
+  static const Color kListIconColor3 = Color(0xff8ca9d8);
+  static const Color kDividerColor = Color(0xff979AA6);
+  static const Color kFieldbackgroundColor = Color(0xffDBDBDB);
+  static const Color kprefixIconColor = Color(0xffbcc5d4);
+  static const Color kmapBackgroundColor = Color(0xffF4F1EF);
+  static const Color kIndicatorBackColor = Color(0xff979AA6);
+  static const Color kIndicatorColor = Color(0xffFFFFFF);
 
   //Font-sizes
-  static const double kButtonFontSize = 18.0;
-  static const double kSubtitleFontSize = 14.0;
+  static const double kButtonFontSize = 14.0;
+  static const double kSubtitleFontSize = 13.0;
+  static const double kHeadline1TextFontSize = 22.0;
+  static const double kHeadline2TextFontSize = 16.0;
+  static const double kHeadline4TextFontSize = 15.0;
+  static const double kSubtitle2FontSize = 10.0;
+  static const double kBodyText1FontSize = 14.0;
   static const double kTitleFontSize = 28.0;
-  static const double kCaptionFontSize = 16.0;
+  static const double kCaptionFontSize = 14.0;
   static const double kBottomSheetTitleSize = 20.0;
 
   //Borders
-  static const double kBorderRadius = 6.0;
+  static const double kBorderRadius = 0.0;
   static const double kBorderWidth = 1.0;
   static const double kBottomSheetModalUpperRadius = 25.0;
 
@@ -33,8 +53,9 @@ class AppTheme {
   static const double kBodyPadding = 16.0;
 
   static final ThemeData lightTheme = ThemeData(
-      // fontFamily: 'Poppins',
+      // fontFamily: 'Roboto',
       primaryColor: kPrimaryColor,
+      accentColor: kAccentColor,
       errorColor: Colors.red,
       scaffoldBackgroundColor: kBackgroundColor,
       backgroundColor: kBackgroundColor,
@@ -61,40 +82,121 @@ class AppTheme {
         color: kIconColor,
       ),
       textTheme: TextTheme(
-          headline6: TextStyle(
-              fontSize: kTitleFontSize,
-              color: kPrimaryColor,
-              fontFamily: 'Poppins-SemiBold'),
-          caption: TextStyle(
-              fontSize: kCaptionFontSize,
-              color: kFontColor1,
-              fontWeight: FontWeight.w500),
-          subtitle1:
-              TextStyle(fontSize: kSubtitleFontSize, color: kSecondaryColor)),
+        headline1: TextStyle(
+          fontSize: kHeadline1TextFontSize,
+          fontFamily: 'Roboto Bold',
+          fontWeight: FontWeight.bold,
+          color: kAccentColor,
+        ),
+        headline2: TextStyle(
+          fontSize: kHeadline2TextFontSize,
+          fontFamily: 'Roboto Bold',
+          fontWeight: FontWeight.bold,
+          color: kAccentColor,
+        ),
+        headline3: TextStyle(
+          fontSize: kHeadline2TextFontSize,
+          fontFamily: 'Roboto Bold',
+          color: kFontColor2,
+        ),
+        headline4: TextStyle(
+          fontSize: kHeadline4TextFontSize,
+          fontFamily: 'Roboto Bold',
+          fontWeight: FontWeight.w400,
+          color: kAccentColor,
+        ),
+        headline5: TextStyle(
+          fontSize: kHeadline1TextFontSize,
+          fontFamily: 'Roboto Bold',
+          fontWeight: FontWeight.w600,
+          color: kAccentColor,
+        ),
+        headline6: TextStyle(
+            fontSize: kTitleFontSize,
+            color: kAccentColor,
+            fontFamily: 'Roboto-SemiBold'),
+        caption: TextStyle(
+          fontSize: kCaptionFontSize,
+          color: kFontColor1,
+          height: 1.2,
+        ),
+        subtitle1: TextStyle(
+            fontSize: kSubtitleFontSize,
+            color: kAccentColor,
+            fontWeight: FontWeight.normal),
+        subtitle2: TextStyle(
+          fontSize: kSubtitle2FontSize,
+          color: kAccentColor,
+          fontFamily: 'Roboto Regular',
+        ),
+        bodyText1: TextStyle(
+          fontSize: kBodyText1FontSize,
+          color: kAccentColor,
+          fontWeight: FontWeight.normal,
+          fontFamily: 'Roboto Regular',
+          height: 1.5,
+        ),
+        bodyText2: TextStyle(
+          fontSize: kBodyText1FontSize,
+          color: kAccentColor,
+          fontFamily: 'Roboto Regular',
+          fontWeight: FontWeight.bold,
+          height: 1.2,
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
+        labelStyle: TextStyle(color: kTxtFieldColor),
+        contentPadding:
+            new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         hintStyle:
-            TextStyle(color: kSecondaryColor, fontSize: kSubtitleFontSize),
+            TextStyle(color: kTxtFieldColor, fontSize: kSubtitleFontSize),
         focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: kBorderWidth, color: kPrimaryColor),
+            borderSide:
+                BorderSide(width: kBorderWidth, color: kTxtfieldBorderColor),
             borderRadius: BorderRadius.circular(kBorderRadius)),
         enabledBorder: OutlineInputBorder(
             borderSide:
-                BorderSide(width: kBorderWidth, color: kBackgroundColor),
+                BorderSide(width: kBorderWidth, color: kTxtfieldBorderColor),
             borderRadius: BorderRadius.circular(kBorderRadius)),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
               textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(
-                  fontSize: kButtonFontSize, fontWeight: FontWeight.w600)),
+                fontSize: kButtonFontSize,
+                fontWeight: FontWeight.w500,
+                color: kBlackColor,
+              )),
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(kButtonbackColor),
               minimumSize: MaterialStateProperty.all<Size>(Size.fromHeight(56)),
               shape: MaterialStateProperty.all<OutlinedBorder>(
                   new RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(kBorderRadius))),
-              foregroundColor:
-                  MaterialStateProperty.all<Color>(kOnPrimaryColor))),
+              foregroundColor: MaterialStateProperty.all<Color>(kBlackColor))),
       radioTheme: RadioThemeData(
           overlayColor: MaterialStateProperty.all<Color>(kSecondaryColor),
-          fillColor: MaterialStateProperty.all<Color>(kPrimaryColor)));
+          fillColor: MaterialStateProperty.all<Color>(kBackgroundColor)),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Colors.white,
+        elevation: 10,
+        selectedLabelStyle: TextStyle(
+            color: Color(0xFF4a5aa6),
+            fontFamily: 'Roboto Regular',
+            fontSize: kSubtitle2FontSize),
+        selectedIconTheme: IconThemeData(
+          color: Color(0xFF4a5aa6),
+        ),
+        unselectedIconTheme: IconThemeData(
+          color: Color(0xff89A7D7),
+        ),
+        unselectedLabelStyle: TextStyle(
+            color: Color(0xff89A7D7),
+            fontFamily: 'Roboto Regular',
+            fontSize: kSubtitle2FontSize),
+        selectedItemColor: Color(0xff4a5aa6),
+        unselectedItemColor: Color(0xff89A7D7),
+        showUnselectedLabels: true,
+      ));
 
   // static final ThemeData darkTheme = ThemeData(
   //   scaffoldBackgroundColor: Colors.black,

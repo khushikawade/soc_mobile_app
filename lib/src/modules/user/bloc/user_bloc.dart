@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:app/src/overrides.dart';
-import 'package:app/src/services/db_service.dart';
-import 'package:app/src/services/db_service_response.model.dart';
-import 'package:app/src/services/shared_preference.dart';
+
+import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/db_service.dart';
+import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/shared_preference.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:app/src/Globals.dart';
+
+import '../../../globals.dart';
+
 part 'user_event.dart';
 part 'user_state.dart';
 
@@ -85,7 +88,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           newPassword: event.newPassword,
         );
         print(cred);
-        bool result = await (_changePassword(cred.oldPassword, cred.newPassword) as FutureOr<bool>);
+        bool result = await (_changePassword(cred.oldPassword, cred.newPassword)
+            as FutureOr<bool>);
         if (result != null && result) {
           yield LoginSuccess();
         }
@@ -129,7 +133,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   Future<String> checkRole(email) async {
     try {
-      const String _fieldList = "fistName, lastName, email, profile_pic_url_text";
+      const String _fieldList =
+          "fistName, lastName, email, profile_pic_url_text";
       final ResponseModel response =
           await _dbServices.getapi('data/users/$email', headers: {
         'JWT': '${Globals.token}',
@@ -140,7 +145,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (response.statusCode == 200) {
         return "";
       } else {
-         return "";
+        return "";
       }
     } catch (e) {
       throw (e);

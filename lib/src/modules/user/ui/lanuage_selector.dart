@@ -1,9 +1,9 @@
-import 'package:app/src/locale/app_translations.dart';
-import 'package:app/src/locale/application.dart';
-import 'package:app/src/services/shared_preference.dart';
-import 'package:app/src/services/utility.dart';
-import 'package:app/src/styles/theme.dart';
-import 'package:app/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/locale/app_translations.dart';
+import 'package:Soc/src/locale/application.dart';
+import 'package:Soc/src/services/shared_preference.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class LanguageSelector {
@@ -52,8 +52,7 @@ class LanguageSelector {
             setLanguage(language, context, onLanguageChanged);
           },
           groupValue: true,
-          title:
-              Text(language, style: Theme.of(context).textTheme.caption),
+          title: Text(language, style: Theme.of(context).textTheme.caption),
         ),
       );
 

@@ -1,6 +1,5 @@
 import 'dart:async';
-
-import 'package:app/src/styles/theme.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -59,7 +58,7 @@ class Utility {
   }
 
   static void showSnackBar(_scaffoldKey, msg, context) {
-    _scaffoldKey.currentState.removeCurrentSnackBar();
+    // _scaffoldKey.currentState.removeCurrentSnackBar();
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text("$msg",
           style: TextStyle(

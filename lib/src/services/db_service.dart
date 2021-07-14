@@ -1,20 +1,22 @@
 import 'dart:convert';
-import 'package:app/src/overrides.dart';
+
+import 'package:Soc/src/globals.dart';
 import 'package:http/http.dart' as httpClient;
+import '../overrides.dart';
 import 'db_service_response.model.dart';
 
 class DbServices {
   getapi(api, {headers}) async {
     try {
-      
       print('${Overrides.API_BASE_URL}$api');
-      final response =
-          await httpClient.get(Uri.parse('${Overrides.API_BASE_URL}$api'),
-              headers: headers != null
-                  ? headers
-                  : {
-                      'Accept-Language': 'Accept-Language',
-                    });
+      final response = await httpClient.get(
+          Uri.parse('${Overrides.API_BASE_URL}$api'),
+          headers: headers != null
+              ? headers
+              : {
+                  'Accept-Language': 'Accept-Language',
+                  'authorization': 'Bearer ${Globals.token}'
+                });
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -42,7 +44,11 @@ class DbServices {
       print('${Overrides.API_BASE_URL}$api?output=json');
       final response = await httpClient.post(
           Uri.parse('${Overrides.API_BASE_URL}$api?output=json'),
-          headers: headers ?? {'Content-Type': 'application/json'},
+          headers: headers ??
+              {
+                'Content-Type': 'application/json',
+                'authorization': 'Bearer ${Globals.token}'
+              },
           body: json.encode(body));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
