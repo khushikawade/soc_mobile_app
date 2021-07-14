@@ -1,13 +1,13 @@
-// part of 'student_bloc.dart';
+part of 'student_bloc.dart';
 
-// abstract class StudentEvent extends Equatable {
-//   const StudentEvent();
-// }
+abstract class StudentEvent extends Equatable {
+  const StudentEvent();
+}
 
-// class StudentPageEvent extends StudentEvent {
-//   @override
-//   List<Object> get props => [];
+class StudentPageEvent extends StudentEvent {
+  @override
+  List<Object> get props => [];
 
-//   @override
-//   String toString() => 'StudentButtonPressed';
-// }
+  @override
+  String toString() => 'StudentButtonPressed';
+}

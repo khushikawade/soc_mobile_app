@@ -40,7 +40,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // var link = Uri.parse("${overrides.Overrides.socialPagexmlUrl}");
 
       final ResponseModel response = await _dbServices.getapi(
-        Uri.encodeFull('sobjects/School_App__c/a1T3J000000RHEKUA4'),
+        Uri.encodeFull(
+            'q=SELECT Title__c,App_Icon__c,App_URL__c,Deep_Link__c,Id,Name FROM Student_App__cwhere School_App__c = a1T3J000000RHEKUA4'),
       );
       final data = response.data;
       print(data);

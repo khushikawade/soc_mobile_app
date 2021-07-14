@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
 
   selectedScreenBody(context, _selectedIndex) {
     if (_selectedIndex == 0) {
-      return SocialPage();
+      return StudentPage();
     } else if (_selectedIndex == 1) {
       return NewsPage();
     } else if (_selectedIndex == 2) {
