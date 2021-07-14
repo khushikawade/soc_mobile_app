@@ -6,8 +6,8 @@ class IconsMenu {
     Setting,
     Permissions,
   ];
-  static const _kPopMenuTextStyle = TextStyle(
-      fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
+  // static const _kPopMenuTextStyle = TextStyle(
+  //     fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
 
   static const Information = IconMenu(
     text: 'Information',

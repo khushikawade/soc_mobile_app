@@ -32,14 +32,14 @@ class _SocialPageState extends State<SocialPage> {
 
 //Style
 
-  static const _kListTextStyle = TextStyle(
-      fontFamily: "Roboto",
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
-      color: Color(0xff2D3F98));
+  // static const _kListTextStyle = TextStyle(
+  //     fontFamily: "Roboto",
+  //     fontWeight: FontWeight.bold,
+  //     fontSize: 16,
+  //     color: Color(0xff2D3F98));
 
-  static const _kListDateStyle = TextStyle(
-      fontFamily: "Roboto Regular", fontSize: 13, color: Color(0xff2D3F98));
+  // static const _kListDateStyle = TextStyle(
+  //     fontFamily: "Roboto Regular", fontSize: 13, color: Color(0xff2D3F98));
 
   Widget _buildlist(int index) {
     DateTime now = DateTime.now();
@@ -95,7 +95,7 @@ class _SocialPageState extends State<SocialPage> {
                             "Check out these book suggestions for your summer reading !",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
-                            style: _kListTextStyle,
+                            style: Theme.of(context).textTheme.headline2,
                           )),
                     ],
                   ),
@@ -109,7 +109,7 @@ class _SocialPageState extends State<SocialPage> {
                           // width: MediaQuery.of(context).size.width * 0.40,
                           child: Text(
                         "${currentDate}",
-                        style: _kListDateStyle,
+                        style: Theme.of(context).textTheme.subtitle1,
                       )),
                     ],
                   ),

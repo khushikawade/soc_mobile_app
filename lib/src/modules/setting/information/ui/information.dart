@@ -22,26 +22,26 @@ class _InformationPageState extends State<InformationPage> {
   //     fontSize: 22,
   //     color: Color(0xff2D3F98));
 
-  static const _ktextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto",
-    fontSize: 14,
-    fontWeight: FontWeight.normal,
-    color: Color(0xff2D3F98),
-  );
+  // static const _ktextStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto",
+  //   fontSize: 14,
+  //   fontWeight: FontWeight.normal,
+  //   color: Color(0xff2D3F98),
+  // );
 
-  static const _klinkStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto",
-    fontSize: 14,
-    fontWeight: FontWeight.normal,
-    decoration: TextDecoration.underline,
-    color: Color(0xff2D3F98),
-  );
+  // static const _klinkStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto",
+  //   fontSize: 14,
+  //   fontWeight: FontWeight.normal,
+  //   decoration: TextDecoration.underline,
+  //   color: Color(0xff2D3F98),
+  // );
 
   //TOP SECTION START
-  _launchURL() async {
-    const url = "${overrides.Overrides.privacyPolicyUrl}";
+  _launchURL(url) async {
+    // const url = "${overrides.Overrides.privacyPolicyUrl}";
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -85,7 +85,7 @@ class _InformationPageState extends State<InformationPage> {
       children: [
         Text(
           "Dear User ",
-          style: _ktextStyle,
+          style: Theme.of(context).textTheme.bodyText1,
         )
       ],
     );
@@ -104,7 +104,7 @@ class _InformationPageState extends State<InformationPage> {
           children: [
             Text(
               "Thank you so much for using our app.Please",
-              style: _ktextStyle,
+              style: Theme.of(context).textTheme.bodyText1,
             )
           ],
         ),
@@ -114,7 +114,7 @@ class _InformationPageState extends State<InformationPage> {
           children: [
             Text(
               "feel free to message us for information ,for",
-              style: _ktextStyle,
+              style: Theme.of(context).textTheme.bodyText1,
             )
           ],
         ),
@@ -124,7 +124,7 @@ class _InformationPageState extends State<InformationPage> {
           children: [
             Text(
               "support , or to provide feedback",
-              style: _ktextStyle,
+              style: Theme.of(context).textTheme.bodyText1,
             )
           ],
         ),
@@ -143,7 +143,7 @@ class _InformationPageState extends State<InformationPage> {
           children: [
             Text(
               "This app was created by sloved .Here is our",
-              style: _ktextStyle,
+              style: Theme.of(context).textTheme.bodyText1,
             )
           ],
         ),
@@ -153,11 +153,30 @@ class _InformationPageState extends State<InformationPage> {
           children: [
             Text(
               "Privacy Policy",
-              style: _ktextStyle,
+              style: Theme.of(context).textTheme.bodyText1,
             )
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildPrivacyWidget() {
+    return InkWell(
+      onTap: () {
+        _launchURL("${overrides.Overrides.privacyPolicyUrl2}");
+      },
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Privacy Policy",
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    decoration: TextDecoration.underline,
+                  ),
+            )
+          ]),
     );
   }
 
@@ -167,7 +186,7 @@ class _InformationPageState extends State<InformationPage> {
   Widget privacyWidget() {
     return InkWell(
       onTap: () {
-        _launchURL();
+        _launchURL("${overrides.Overrides.privacyPolicyUrl}");
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -175,7 +194,9 @@ class _InformationPageState extends State<InformationPage> {
         children: [
           Text(
             "https://www.slovedconsulting.com/privacy",
-            style: _klinkStyle,
+            style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  decoration: TextDecoration.underline,
+                ),
           )
         ],
       ),
@@ -203,6 +224,7 @@ class _InformationPageState extends State<InformationPage> {
           SpacerWidget(_kLabelSpacing / 2),
           privacyWidget(),
           Expanded(child: Container()),
+          _buildPrivacyWidget(),
           SizedBox(
               width: MediaQuery.of(context).size.width * 1,
               height: 100.0,

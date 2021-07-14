@@ -18,15 +18,15 @@ class _SocialEventDescriptionnState extends State<SocialEventDescriptionn> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
 
-  static const _knewsTextStyle = TextStyle(
-    fontFamily: "Roboto Bold",
-    fontSize: 16,
-    color: AppTheme.kAccentColor,
-    fontWeight: FontWeight.bold,
-  );
+  // static const _knewsTextStyle = TextStyle(
+  //   fontFamily: "Roboto Bold",
+  //   fontSize: 16,
+  //   color: AppTheme.kAccentColor,
+  //   fontWeight: FontWeight.bold,
+  // );
 
-  static const _kTimeStampStyle = TextStyle(
-      fontFamily: "Roboto Regular", fontSize: 13, color: AppTheme.kAccentColor);
+  // static const _kTimeStampStyle = TextStyle(
+  //     fontFamily: "Roboto Regular", fontSize: 13, color: AppTheme.kAccentColor);
 
   Widget _buildItem() {
     return Padding(
@@ -53,7 +53,7 @@ class _SocialEventDescriptionnState extends State<SocialEventDescriptionn> {
               "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
               overflow: TextOverflow.ellipsis,
               maxLines: 3,
-              style: _knewsTextStyle,
+              style: Theme.of(context).textTheme.headline2,
             )),
       ],
     );
@@ -67,7 +67,7 @@ class _SocialEventDescriptionnState extends State<SocialEventDescriptionn> {
         Container(
             child: Text(
           "${newsTimeStamp}",
-          style: _kTimeStampStyle,
+          style: Theme.of(context).textTheme.subtitle1,
         )),
       ],
     );

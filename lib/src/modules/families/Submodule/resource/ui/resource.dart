@@ -22,11 +22,11 @@ class _ResourcesState extends State<Resources> {
   //   color: AppTheme.kFontColor2,
   // );
 
-  final TextStyle formtextStyle = TextStyle(
-    fontFamily: "Roboto Regular",
-    fontSize: 14,
-    color: AppTheme.kAccentColor,
-  );
+  // final TextStyle formtextStyle = TextStyle(
+  //   fontFamily: "Roboto Regular",
+  //   fontSize: 14,
+  //   color: AppTheme.kAccentColor,
+  // );
 
   static const List<ResourcesModal> ResourcesList = const <ResourcesModal>[
     const ResourcesModal(

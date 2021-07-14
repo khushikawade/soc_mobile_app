@@ -18,12 +18,12 @@ class _NewsPageState extends State<NewsPage> {
   //     fontWeight: FontWeight.w400,
   //     color: AppTheme.kAccentColor);
 
-  static const _kTimeStampStyle = TextStyle(
-    fontFamily: "Roboto Regular",
-    fontSize: 13,
-    color: AppTheme.kAccentColor,
-    fontWeight: FontWeight.normal,
-  );
+  // static const _kTimeStampStyle = TextStyle(
+  //   fontFamily: "Roboto Regular",
+  //   fontSize: 13,
+  //   color: AppTheme.kAccentColor,
+  //   fontWeight: FontWeight.normal,
+  // );
 
 //UI WIDGETS
 

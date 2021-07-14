@@ -21,11 +21,11 @@ class _NycResourceState extends State<NycResource> {
   //   color: AppTheme.kFontColor2,
   // );
 
-  final TextStyle formtextStyle = TextStyle(
-    fontFamily: "Roboto Regular",
-    fontSize: 14,
-    color: AppTheme.kAccentColor,
-  );
+  // final TextStyle formtextStyle = TextStyle(
+  //   fontFamily: "Roboto Regular",
+  //   fontSize: 14,
+  //   color: AppTheme.kAccentColor,
+  // );
 
   static const List<NYCUpdateModal> NYCUpdateModalList = const <NYCUpdateModal>[
     const NYCUpdateModal(

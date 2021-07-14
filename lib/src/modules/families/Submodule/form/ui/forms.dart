@@ -21,11 +21,11 @@ class _FormPageState extends State<FormPage> {
   //   color: AppTheme.kFontColor2,
   // );
 
-  final TextStyle formtextStyle = TextStyle(
-    fontFamily: "Roboto Regular",
-    fontSize: 14,
-    color: AppTheme.kAccentColor,
-  );
+  // final TextStyle formtextStyle = TextStyle(
+  //   fontFamily: "Roboto Regular",
+  //   fontSize: 14,
+  //   color: AppTheme.kAccentColor,
+  // );
 
   static const List<FormModal> FormModalList = const <FormModal>[
     const FormModal(

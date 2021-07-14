@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class Overrides {
   static const String privacyPolicyUrl =
       'https:/www.solvedconsulting.com/privacy';
+  static const String privacyPolicyUrl2 =
+      'https://solvedapps.webnode.com/ps-456-bronx-bears/';
   static const String socialPagexmlUrl =
       'https://rss.app/feeds/_DawozSyanCYfGaQg.xml';
   static const String kFontFam = 'SOC_CustomIcons';

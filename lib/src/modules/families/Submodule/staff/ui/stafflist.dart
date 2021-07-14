@@ -21,20 +21,20 @@ class _StaffListPageState extends State<StaffListPage> {
     color: AppTheme.kFontColor2,
   );
 
-  final TextStyle nametextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Medium",
-    fontSize: 14.0,
-    fontWeight: FontWeight.w500,
-    color: AppTheme.kAccentColor,
-  );
+  // final TextStyle nametextStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Medium",
+  //   fontSize: 14.0,
+  //   fontWeight: FontWeight.w500,
+  //   color: AppTheme.kAccentColor,
+  // );
 
-  final TextStyle emailtextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Regular",
-    fontSize: 16,
-    color: AppTheme.kAccentColor,
-  );
+  // final TextStyle emailtextStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Regular",
+  //   fontSize: 16,
+  //   color: AppTheme.kAccentColor,
+  // );
 
   static const List<StaffModel> StaffModelList = const <StaffModel>[
     const StaffModel(
@@ -105,7 +105,9 @@ class _StaffListPageState extends State<StaffListPage> {
       children: [
         Text(
           StaffModelList[index].name,
-          style: nametextStyle,
+          style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
         ),
       ],
     );
@@ -116,7 +118,9 @@ class _StaffListPageState extends State<StaffListPage> {
       children: [
         Text(
           StaffModelList[index].email,
-          style: emailtextStyle,
+          style: Theme.of(context).textTheme.headline2!.copyWith(
+                fontWeight: FontWeight.normal,
+              ),
         ),
       ],
     );

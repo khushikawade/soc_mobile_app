@@ -21,11 +21,11 @@ class _ContactPageState extends State<ContactPage> {
   //     fontSize: 16,
   //     color: Color(0xff2D3F98));
 
-  static const _kheading2Style = TextStyle(
-      fontFamily: "Roboto Bold",
-      fontWeight: FontWeight.w400,
-      fontSize: 14,
-      color: Color(0xff171717));
+  // static const _kheading2Style = TextStyle(
+  //     fontFamily: "Roboto Bold",
+  //     fontWeight: FontWeight.w400,
+  //     fontSize: 14,
+  //     color: Color(0xff171717));
   // static const _ktextStyle = TextStyle(
   //   fontFamily: "Roboto Medium",
   //   fontSize: 14,
@@ -33,31 +33,31 @@ class _ContactPageState extends State<ContactPage> {
   //   color: Color(0xff2D3F98),
   // );
 
-  static const maptext1Style = TextStyle(
+  static const maptextStyle = TextStyle(
     fontFamily: "Roboto Bold",
     fontWeight: FontWeight.bold,
     fontSize: 12,
     color: Color(0xff0B84FF),
   );
 
-  static const maptext2Style = TextStyle(
-    fontFamily: "Roboto Bold",
-    fontWeight: FontWeight.bold,
-    fontSize: 12,
-    color: Color(0xffFF5656),
-  );
-  static const maptext3Style = TextStyle(
-    fontFamily: "Roboto Bold",
-    fontWeight: FontWeight.bold,
-    fontSize: 12,
-    color: Color(0xffFF9608),
-  );
-  static const maptext4Style = TextStyle(
-    fontFamily: "Roboto Bold",
-    fontWeight: FontWeight.bold,
-    fontSize: 12,
-    color: Color(0xff368FFF),
-  );
+  // static const maptext2Style = TextStyle(
+  //   fontFamily: "Roboto Bold",
+  //   fontWeight: FontWeight.bold,
+  //   fontSize: 12,
+  //   color: Color(0xffFF5656),
+  // );
+  // static const maptext3Style = TextStyle(
+  //   fontFamily: "Roboto Bold",
+  //   fontWeight: FontWeight.bold,
+  //   fontSize: 12,
+  //   color: Color(0xffFF9608),
+  // );
+  // static const maptext4Style = TextStyle(
+  //   fontFamily: "Roboto Bold",
+  //   fontWeight: FontWeight.bold,
+  //   fontSize: 12,
+  //   color: Color(0xff368FFF),
+  // );
 
   //TOP SECTION START
   Widget _buildIcon() {
@@ -136,12 +136,24 @@ class _ContactPageState extends State<ContactPage> {
                 horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
             child: Row(
               children: <Widget>[
-                Text("G", style: maptext1Style),
-                Text("o", style: maptext1Style),
-                Text("o", style: maptext2Style),
-                Text("g", style: maptext3Style),
-                Text("l", style: maptext4Style),
-                Text("e", style: maptext4Style),
+                Text("G", style: maptextStyle),
+                Text("o", style: maptextStyle),
+                Text("o",
+                    style: maptextStyle.copyWith(
+                      color: Color(0xffFF5656),
+                    )),
+                Text("g",
+                    style: maptextStyle.copyWith(
+                      color: Color(0xffFF9608),
+                    )),
+                Text("l",
+                    style: maptextStyle.copyWith(
+                      color: Color(0xff368FFF),
+                    )),
+                Text("e",
+                    style: maptextStyle.copyWith(
+                      color: Color(0xff368FFF),
+                    )),
               ],
             ),
           ),
@@ -200,7 +212,10 @@ class _ContactPageState extends State<ContactPage> {
             children: [
               Text(
                 "Address:",
-                style: _kheading2Style,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(color: Color(0xff171717)),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -234,7 +249,10 @@ class _ContactPageState extends State<ContactPage> {
         children: [
           Text(
             "Phone:",
-            style: _kheading2Style,
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1!
+                .copyWith(color: Color(0xff171717)),
           ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Text(

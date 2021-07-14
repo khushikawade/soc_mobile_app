@@ -26,8 +26,8 @@ class _HomePageState extends State<HomePage> {
   static const double _kIconSize = 35.0;
 
   //STYLE
-  static const _kPopMenuTextStyle = TextStyle(
-      fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
+  // static const _kPopMenuTextStyle = TextStyle(
+  //     fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
 
   // Top-Section Widget
   Widget _buildPopupMenuWidget() {
@@ -63,7 +63,10 @@ class _HomePageState extends State<HomePage> {
                     horizontal: _kLabelSpacing / 4, vertical: 0),
                 child: Text(
                   item.text,
-                  style: _kPopMenuTextStyle,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .copyWith(color: Color(0xff474D55)),
                 ),
               )))
           .toList(),

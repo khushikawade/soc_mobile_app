@@ -2,6 +2,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 class ShareApp extends StatefulWidget {
   ShareApp({Key? key, this.title}) : super(key: key);
@@ -23,29 +24,35 @@ class _ShareAppState extends State<ShareApp> {
         color: AppTheme.kButtonbackColor,
         height: _kbuttonsize,
         // width: _kbuttonsize * 2,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            SizedBox(
-                height: _kiconsize,
-                width: _kiconsize * 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Image.asset(
-                    buttonicon,
-                    fit: BoxFit.fill,
-                    height: _kiconsize,
-                    width: _kiconsize * 2,
-                  ),
-                )),
-            HorzitalSpacerWidget(_kPadding * 2),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.caption,
-            ),
-          ],
+        child: InkWell(
+          onTap: () {
+            FlutterShare.share('check out my website https://example.com',
+                subject: 'Look what I made!');
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              SizedBox(
+                  height: _kiconsize,
+                  width: _kiconsize * 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Image.asset(
+                      buttonicon,
+                      fit: BoxFit.fill,
+                      height: _kiconsize,
+                      width: _kiconsize * 2,
+                    ),
+                  )),
+              HorzitalSpacerWidget(_kPadding * 2),
+              Text(
+                label,
+                style: Theme.of(context).textTheme.caption,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -30,21 +30,21 @@ class _EventPageState extends State<EventPage> {
   //   color: AppTheme.kAccentColor,
   // );
 
-  final TextStyle monthtextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Regular",
-    fontSize: 16,
-    fontWeight: FontWeight.normal,
-    color: AppTheme.kAccentColor,
-  );
+  // final TextStyle monthtextStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Regular",
+  //   fontSize: 16,
+  //   fontWeight: FontWeight.normal,
+  //   color: AppTheme.kAccentColor,
+  // );
 
-  final TextStyle eventtextStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Bold",
-    fontWeight: FontWeight.bold,
-    fontSize: 16,
-    color: AppTheme.kAccentColor,
-  );
+  // final TextStyle eventtextStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Bold",
+  //   fontWeight: FontWeight.bold,
+  //   fontSize: 16,
+  //   color: AppTheme.kAccentColor,
+  // );
 
   // final TextStyle timeStamptextStyle = TextStyle(
   //   height: 1.5,
@@ -171,7 +171,10 @@ class _EventPageState extends State<EventPage> {
         ),
         Text(
           EventModelList[index].month,
-          style: monthtextStyle,
+          style: Theme.of(context)
+              .textTheme
+              .headline2!
+              .copyWith(fontWeight: FontWeight.normal, height: 1.5),
         )
       ],
     );
@@ -184,7 +187,7 @@ class _EventPageState extends State<EventPage> {
       children: [
         Text(
           EventModelList[index].headline,
-          style: eventtextStyle,
+          style: Theme.of(context).textTheme.headline2!.copyWith(height: 1.5),
         ),
         SpacerWidget(_kLabelSpacing / 2),
         _builTimeStamp(index),
