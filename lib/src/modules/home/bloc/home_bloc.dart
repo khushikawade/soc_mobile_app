@@ -26,9 +26,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is FetchBottomNavigationBar) {
       try {
         yield HomeLoading();
-        await fetchBottomNavigationBar();
+        var data = await fetchBottomNavigationBar();
 
-        yield BottomNavigationBarSuccess();
+        yield BottomNavigationBarSuccess(obj: data);
       } catch (e) {
         yield HomeErrorReceived(err: e);
       }
@@ -42,21 +42,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final ResponseModel response = await _dbServices.getapi(
         Uri.encodeFull('sobjects/School_App__c/a1T3J000000RHEKUA4'),
       );
-      final data = response.data;
-      print(data);
+
       if (response.statusCode == 200) {
         print("statusCode 200 ***********");
-        return true;
+        final data = response.data;
+        print(data);
+        return data;
       } else {
         print("else+++++++++++++");
       }
     } catch (e) {
-      print(e);
-
-      print(e.toString().contains("Failed host lookup"));
       if (e.toString().contains("Failed host lookup")) {
-        print(e);
-        print("inside if");
         throw ("Please check your Internet Connection.");
       } else {
         throw (e);
