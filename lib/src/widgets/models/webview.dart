@@ -157,13 +157,13 @@
 // //       });
 // //     });
 
-// //     _progressBar(double progress, BuildContext context) {
-// //       return LinearProgressIndicator(
-// //         backgroundColor: Colors.white70.withOpacity(0),
-// //         value: progress == 1.0 ? 0 : progress,
-// //         valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-// //       );
-// //     }
+//     _progressBar(double progress, BuildContext context) {
+//       return LinearProgressIndicator(
+//         backgroundColor: Colors.white70.withOpacity(0),
+//         value: progress == 1.0 ? 0 : progress,
+//         valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+//       );
+//     }
 
 // //     @override
 // //     Widget build(BuildContext context) {

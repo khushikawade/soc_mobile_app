@@ -4,6 +4,8 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../../overrides.dart';
 
 class EventDescription extends StatefulWidget {
@@ -106,6 +108,15 @@ class _EventDescriptionState extends State<EventDescription> {
     );
   }
 
+  _launchURL(url) async {
+    // const url = "${overrides.Overrides.privacyPolicyUrl}";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   Widget _buildEventLink() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kPadding),
@@ -113,13 +124,17 @@ class _EventDescriptionState extends State<EventDescription> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width * .90,
-            child: Text(
-              "Website:https://www.google.com/calendar/event?eid**********************************************************************",
-              style: _klinkstyle,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 10,
+          InkWell(
+            onTap: () => _launchURL(
+                "https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ"),
+            child: Container(
+              width: MediaQuery.of(context).size.width * .90,
+              child: Text(
+                "https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ",
+                style: _klinkstyle,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 10,
+              ),
             ),
           ),
         ],
@@ -148,7 +163,7 @@ class _EventDescriptionState extends State<EventDescription> {
             width: _KButtonSize,
             height: _KButtonSize / 2.5,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () => _onShareWithEmptyOrigin(context),
               child: Text(
                 "Share",
                 style: _kbuttonTextStyle,
@@ -163,7 +178,7 @@ class _EventDescriptionState extends State<EventDescription> {
             height: _KButtonSize / 2.5,
             child: ElevatedButton(
               onPressed: () {},
-              child: Text("Share event", style: _kbuttonTextStyle),
+              child: Text("Shave event", style: _kbuttonTextStyle),
             ),
           ),
         ],
@@ -227,5 +242,9 @@ class _EventDescriptionState extends State<EventDescription> {
         ),
       ),
     );
+  }
+
+  _onShareWithEmptyOrigin(BuildContext context) async {
+    await Share.share("text");
   }
 }

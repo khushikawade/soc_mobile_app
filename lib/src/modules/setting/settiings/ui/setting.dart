@@ -1,3 +1,4 @@
+import 'package:Soc/src/app.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
@@ -67,7 +68,7 @@ class _SettingPageState extends State<SettingPage> {
                 },
                 activeColor: Color(0xff548952),
                 activeTrackColor: Color(0xffCDECE1),
-                inactiveThumbColor: Color(0xff548952),
+                inactiveThumbColor: AppTheme.kIndicatorColor,
                 inactiveTrackColor: Color(0xffd4d4d4),
               ),
             ),
@@ -91,14 +92,17 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _buildtext() {
-    return Row(
-      children: [
-        Expanded(
-          child: ListTile(
-            leading: Text("Open Source licences", style: textStyle),
-          ),
-        )
-      ],
+    return InkWell(
+      onTap: () {},
+      child: Row(
+        children: [
+          Expanded(
+            child: ListTile(
+              leading: Text("Open Source licences", style: textStyle),
+            ),
+          )
+        ],
+      ),
     );
   }
 

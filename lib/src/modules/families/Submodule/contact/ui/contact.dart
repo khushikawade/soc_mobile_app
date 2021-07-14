@@ -1,5 +1,6 @@
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -131,32 +132,37 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
-            child: Row(
-              children: <Widget>[
-                Text("G", style: maptextStyle),
-                Text("o", style: maptextStyle),
-                Text("o",
-                    style: maptextStyle.copyWith(
-                      color: Color(0xffFF5656),
-                    )),
-                Text("g",
-                    style: maptextStyle.copyWith(
-                      color: Color(0xffFF9608),
-                    )),
-                Text("l",
-                    style: maptextStyle.copyWith(
-                      color: Color(0xff368FFF),
-                    )),
-                Text("e",
-                    style: maptextStyle.copyWith(
-                      color: Color(0xff368FFF),
-                    )),
-              ],
-            ),
-          ),
+          SizedBox(
+            height: 120,
+            width: 500,
+            child: MapSample(),
+          )
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(
+          //       horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
+          // child: Row(
+          //   children: <Widget>[
+          //     Text("G", style: maptextStyle),
+          //     Text("o", style: maptextStyle),
+          //     Text("o",
+          //         style: maptextStyle.copyWith(
+          //           color: Color(0xffFF5656),
+          //         )),
+          //     Text("g",
+          //         style: maptextStyle.copyWith(
+          //           color: Color(0xffFF9608),
+          //         )),
+          //     Text("l",
+          //         style: maptextStyle.copyWith(
+          //           color: Color(0xff368FFF),
+          //         )),
+          //     Text("e",
+          //         style: maptextStyle.copyWith(
+          //           color: Color(0xff368FFF),
+          //         )),
+          //   ],
+          // ),
+          // ),
         ],
       ),
     );

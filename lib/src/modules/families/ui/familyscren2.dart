@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/families/Submodule/staff/ui/stafflist.dart';
 import 'package:Soc/src/modules/user/ui/login.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/models/webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -52,17 +53,9 @@ class _FamilyPage2State extends State<FamilyPage2> {
     if (_selectedIndex == 0) {
       return AboutusPage();
     } else if (_selectedIndex == 1) {
-      // return Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => MyWebView(
-      //               url:
-      //                   "https://pub.dev/packages/flutter_webview_plugin/install",
-      //               title: "THIS",
-      //             )));
       return WebviewScaffold(
         url: "https://www.google.com/",
-        // url: "https://pub.dev/packages/flutter_webview_plugin/install",
+
         withLocalStorage: true,
         withJavascript: true,
         withZoom: true,

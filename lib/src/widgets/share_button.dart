@@ -1,5 +1,6 @@
 import 'package:Soc/src/modules/setting/settiings/ui/appshare.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 class ButtonWidget extends StatelessWidget {
   static const double _kLabelSpacing = 17.0;
@@ -28,12 +29,16 @@ class ButtonWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () => _onShareWithEmptyOrigin(context),
               child: Text("I need support"),
             ),
           ),
         ],
       ),
     );
+  }
+
+  _onShareWithEmptyOrigin(BuildContext context) async {
+    await Share.share("text");
   }
 }

@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/families/Submodule/staff/modal/staffmodel.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StaffListPage extends StatefulWidget {
   StaffListPage({Key? key, this.title}) : super(key: key);
@@ -114,16 +115,30 @@ class _StaffListPageState extends State<StaffListPage> {
   }
 
   Widget _buildemail(int index) {
-    return Row(
-      children: [
-        Text(
-          StaffModelList[index].email,
-          style: Theme.of(context).textTheme.headline2!.copyWith(
-                fontWeight: FontWeight.normal,
-              ),
-        ),
-      ],
+    return InkWell(
+      onTap: () => _sendMail(index),
+      child: Row(
+        children: [
+          Text(
+            StaffModelList[index].email,
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  fontWeight: FontWeight.normal,
+                ),
+          ),
+        ],
+      ),
     );
+  }
+
+  _sendMail(int index) async {
+    // Android and iOS
+    final uri =
+        'mailto:"${StaffModelList[index].email}"?subject=Greetings&body=Hello%20World';
+    if (await canLaunch(uri)) {
+      await launch(uri);
+    } else {
+      throw 'Could not launch $uri';
+    }
   }
 
   Widget build(BuildContext context) {

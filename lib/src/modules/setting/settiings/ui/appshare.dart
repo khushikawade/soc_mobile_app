@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/setting/settiings/ui/test.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -16,6 +17,10 @@ class _ShareAppState extends State<ShareApp> {
   static const double _kiconsize = 30.0;
   static const double _kbuttonsize = 50.0;
 
+  _onShareWithEmptyOrigin(BuildContext context) async {
+    await Share.share("text");
+  }
+
   Widget _buildsharebutton(String label, String buttonicon) {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -25,10 +30,13 @@ class _ShareAppState extends State<ShareApp> {
         height: _kbuttonsize,
         // width: _kbuttonsize * 2,
         child: InkWell(
-          onTap: () {
-            FlutterShare.share('check out my website https://example.com',
-                subject: 'Look what I made!');
-          },
+          onTap: () => _onShareWithEmptyOrigin(context),
+          // FlutterShare.share('check out my website https://example.com',
+          //     subject: 'Look what I made!');
+
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => DemoApp()));
+
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
