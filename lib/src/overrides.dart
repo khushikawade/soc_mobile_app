@@ -9,7 +9,8 @@ class Overrides {
       'https://rss.app/feeds/_DawozSyanCYfGaQg.xml';
   static const String kFontFam = 'SOC_CustomIcons';
   static const kFontPkg = null;
-  static String? API_BASE_URL = 'https://';
+  static String? API_BASE_URL =
+      'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
   static const List drawerItems = [
     {'title': 'Settings', 'path': 'settings', 'icon': 'settings_icon'}

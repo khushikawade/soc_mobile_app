@@ -14,8 +14,9 @@ import 'package:flutter/material.dart';
 import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key, this.title}) : super(key: key);
+  HomePage({Key? key, this.title, this.obj}) : super(key: key);
   final String? title;
+  var obj;
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -30,6 +31,15 @@ class _HomePageState extends State<HomePage> {
   //     fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
 
   // Top-Section Widget
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.obj != null && widget.obj["Bottom_Navigation__c"] != null) {
+      print(widget.obj["Bottom_Navigation__c"]);
+    }
+  }
+
   Widget _buildPopupMenuWidget() {
     return PopupMenuButton<IconMenu>(
       shape: RoundedRectangleBorder(
@@ -92,6 +102,12 @@ class _HomePageState extends State<HomePage> {
       return StaffPage();
     }
   }
+
+  var bottomNavItems = [
+    BottomNavigationBarItem(icon: Icon(Icons.explore), title: Text("Explore")),
+    BottomNavigationBarItem(
+        icon: Icon(Icons.account_circle), title: Text("Account")),
+  ];
 
   Widget buttomNavigationWidget() {
     return Container(
@@ -199,34 +215,43 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: new AppBar(
-            leadingWidth: _kIconSize,
-            elevation: 0.0,
-            leading: _selectedIndex == 3
-                ? Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Icon(IconData(0xe806,
+      appBar: new AppBar(
+          leadingWidth: _kIconSize,
+          elevation: 0.0,
+          leading: _selectedIndex == 3
+              ? Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Icon(IconData(0xe806,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg)),
+                )
+              : Container(
+                  height: 0,
+                ),
+          title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
+          actions: <Widget>[
+            _selectedIndex == 3
+                ? Icon(
+                    const IconData(0xe80b,
                         fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg)),
+                        fontPackage: Overrides.kFontPkg),
                   )
                 : Container(
                     height: 0,
                   ),
-            title:
-                SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
-            actions: <Widget>[
-              _selectedIndex == 3
-                  ? Icon(
-                      const IconData(0xe80b,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                    )
-                  : Container(
-                      height: 0,
-                    ),
-              _buildPopupMenuWidget(),
-            ]),
-        body: selectedScreenBody(context, _selectedIndex),
-        bottomNavigationBar: buttomNavigationWidget());
+            _buildPopupMenuWidget(),
+          ]),
+      body: selectedScreenBody(context, _selectedIndex),
+      bottomNavigationBar: //buttomNavigationWidget()
+          BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        items: bottomNavItems,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
+    );
   }
 }
