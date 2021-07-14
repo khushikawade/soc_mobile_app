@@ -18,24 +18,31 @@ class StudentPage extends StatelessWidget {
 }
 
 class Grid {
-  const Grid({required this.title, required this.icon});
+  const Grid({required this.title, required this.icon, required this.url});
   final String title;
   final String icon;
+  final String url;
 }
 
 const List<Grid> Grids = const <Grid>[
-  const Grid(title: 'Request', icon: 'assets/images/request_img.png'),
-  const Grid(title: 'Graduation', icon: 'assets/images/graduation.png'),
-  const Grid(title: 'Google Class', icon: 'assets/images/googleclassroom.png'),
-  const Grid(title: 'Classdojo', icon: 'assets/images/classdojo.png'),
-  const Grid(title: 'PupilPath', icon: 'assets/images/pupilpath.png'),
-  const Grid(title: 'Meets', icon: 'assets/images/meet.png'),
-  const Grid(title: 'Zoom', icon: 'assets/images/Zoom.png'),
-  const Grid(title: 'IXL', icon: 'assets/images/IXL.png'),
-  const Grid(title: 'PBS Kids', icon: 'assets/images/PBS_kids_img.png'),
-  const Grid(title: 'EDpuzzle', icon: 'assets/images/Edpuzzle.png'),
-  const Grid(title: 'PearDeck', icon: 'assets/images/PearDeack.png'),
-  const Grid(title: 'NearPod', icon: 'assets/images/nearpod.png'),
+  const Grid(
+      title: 'Request',
+      icon: 'assets/images/request_img.png',
+      url: "www.request.com"),
+  const Grid(
+      title: 'Google Class',
+      icon: 'assets/images/graduation.png',
+      url: " jihdo"),
+  // const Grid(title: 'Google Class', icon: 'assets/images/googleclassroom.png'),
+  // const Grid(title: 'Classdojo', icon: 'assets/images/classdojo.png'),
+  // const Grid(title: 'PupilPath', icon: 'assets/images/pupilpath.png'),
+  // const Grid(title: 'Meets', icon: 'assets/images/meet.png'),
+  // const Grid(title: 'Zoom', icon: 'assets/images/Zoom.png'),
+  // const Grid(title: 'IXL', icon: 'assets/images/IXL.png'),
+  // const Grid(title: 'PBS Kids', icon: 'assets/images/PBS_kids_img.png'),
+  // const Grid(title: 'EDpuzzle', icon: 'assets/images/Edpuzzle.png'),
+  // const Grid(title: 'PearDeck', icon: 'assets/images/PearDeack.png'),
+  // const Grid(title: 'NearPod', icon: 'assets/images/nearpod.png'),
 ];
 
 class SelectIcon extends StatelessWidget {
@@ -49,12 +56,15 @@ class SelectIcon extends StatelessWidget {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(
-                child: Image.asset(
-                  grid.icon,
-                  fit: BoxFit.cover, // this is the solution for border
-                  width: _kIconSize,
-                  height: _kIconSize,
+              InkWell(
+                // onTap: (),
+                child: SizedBox(
+                  child: Image.asset(
+                    grid.icon,
+                    fit: BoxFit.cover, // this is the solution for border
+                    width: _kIconSize,
+                    height: _kIconSize,
+                  ),
                 ),
               ),
               Text(grid.title, style: Theme.of(context).textTheme.caption),
