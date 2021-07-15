@@ -22,7 +22,7 @@ class SearchFieldWidget extends StatelessWidget {
               fillColor: AppTheme.kBackgroundColor,
               border: OutlineInputBorder(),
               prefixIcon: Icon(
-                IconData(0xe80b,
+                IconData(0xe805,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
                 color: AppTheme.kprefixIconColor,

@@ -37,7 +37,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                 Navigator.pop(context);
               },
               child: Icon(
-                const IconData(0xe813,
+                const IconData(0xe80d,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
                 color: Color(0xff171717),

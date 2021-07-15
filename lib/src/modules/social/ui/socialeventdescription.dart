@@ -134,7 +134,7 @@ class _SocialEventDescriptionnState extends State<SocialEventDescriptionn> {
                     Navigator.pop(context);
                   },
                   icon: Icon(
-                    const IconData(0xe812,
+                    const IconData(0xe80c,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                     color: Color(0xffbcc5d4),
@@ -145,7 +145,7 @@ class _SocialEventDescriptionnState extends State<SocialEventDescriptionn> {
             ),
             SizedBox(width: _kPadding),
             Icon(
-              const IconData(0xe803,
+              const IconData(0xe815,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
               color: AppTheme.kBlackColor,
