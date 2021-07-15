@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:Soc/src/modules/user/ui/login.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
