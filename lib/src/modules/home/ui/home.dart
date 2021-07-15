@@ -14,9 +14,10 @@ import 'package:flutter/material.dart';
 import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key, this.title, this.obj}) : super(key: key);
   final String? title;
   var obj;
+  HomePage({Key? key, this.title, this.obj}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -31,13 +32,18 @@ class _HomePageState extends State<HomePage> {
   //     fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
 
   // Top-Section Widget
-
+  var item;
+  var item2;
+  var bottomNavItems;
   @override
   void initState() {
     super.initState();
-    if (widget.obj != null && widget.obj["Bottom_Navigation__c"] != null) {
-      print(widget.obj["Bottom_Navigation__c"]);
-    }
+    // if (widget.obj != null && widget.obj["Bottom_Navigation__c"] != null) {
+    //   item = widget.obj["Bottom_Navigation__c"].split(";");
+    //   print(item);
+
+    //   print(bottomNavItems);
+    // }
   }
 
   Widget _buildPopupMenuWidget() {
@@ -91,7 +97,7 @@ class _HomePageState extends State<HomePage> {
 
   selectedScreenBody(context, _selectedIndex) {
     if (_selectedIndex == 0) {
-      return StudentPage();
+      return SocialPage();
     } else if (_selectedIndex == 1) {
       return NewsPage();
     } else if (_selectedIndex == 2) {
@@ -102,12 +108,6 @@ class _HomePageState extends State<HomePage> {
       return StaffPage();
     }
   }
-
-  var bottomNavItems = [
-    BottomNavigationBarItem(icon: Icon(Icons.explore), title: Text("Explore")),
-    BottomNavigationBarItem(
-        icon: Icon(Icons.account_circle), title: Text("Account")),
-  ];
 
   Widget buttomNavigationWidget() {
     return Container(
@@ -245,7 +245,26 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: //buttomNavigationWidget()
           BottomNavigationBar(
         currentIndex: _selectedIndex,
-        items: bottomNavItems,
+        items: widget.obj["Bottom_Navigation__c"]
+            .split(";")
+            .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
+                  icon: Column(children: [
+                    Text(
+                      e.split(" ")[0],
+                      style: Theme.of(context).textTheme.subtitle2,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0),
+                      child: Icon(
+                        const IconData(0xe80d,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                      ),
+                    ),
+                  ]),
+                  label: '',
+                ))
+            .toList(), //bottomNavItems,
         onTap: (index) {
           setState(() {
             _selectedIndex = index;

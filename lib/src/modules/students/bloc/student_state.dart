@@ -25,13 +25,14 @@ class Errorinloading extends StudentState {
   List<Object> get props => [err];
 }
 
-class DataGettedSuccessfully extends StudentState {
-  List<Item>? obj;
+// ignore: must_be_immutable
+class StudentDataSucess extends StudentState {
+  List<Records>? obj;
 
-  DataGettedSuccessfully({this.obj});
+  StudentDataSucess({this.obj});
 
-  DataGettedSuccessfully copyWith({var obj}) {
-    return DataGettedSuccessfully(obj: obj ?? this.obj);
+  StudentDataSucess copyWith({var obj}) {
+    return StudentDataSucess(obj: obj ?? this.obj);
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:Soc/src/modules/social/modal/models/item.dart';
+import 'package:Soc/src/modules/students/models/models/records.dart';
 import 'package:Soc/src/modules/students/studentmodal.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -17,6 +18,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   var data;
   StudentBloc() : super(StudentInitial());
   final DbServices _dbServices = DbServices();
+  List<Records>? recordsList;
 
   @override
   StudentState get initialState => StudentInitial();
@@ -27,10 +29,10 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   ) async* {
     if (event is StudentPageEvent) {
       try {
-        print("student page event");
+        print("student page event *************************************");
         yield Loading();
-        List<Item> list = await getStudentDetails();
-        yield DataGettedSuccessfully(obj: list);
+        var list = await getStudentDetails();
+        yield StudentDataSucess(obj: list);
       } catch (e) {
         yield Errorinloading(err: e);
       }
@@ -48,17 +50,25 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           );
       final data = response.data;
 
-      print(data);
-
-      final data1 = data["records"];
-
       if (response.statusCode == 200) {
         print("statusCode 200 ***********");
-        return data1.map((i) {
-          return StudentItem(
-            title: i,
-          );
-        }).toList();
+        print(data);
+        recordsList =
+            data["records"].map<Records>((i) => Records.fromJson(i)).toList();
+
+        // print("*******************************MAPPED LIST");
+        // print(recordsList);
+        // for (int i = 0; i < data["records"].length; i++) {
+        //   recordsList.add(Records(
+        //     attributes: data["records"][i]["attributes"],
+        //     titleC: data["records"][i]["Title__c"],
+        //     appIconC: data["records"][i]["App_Icon__c"],
+        //     appUrlC: data["records"][i]["App_URL__c"],
+        //     deepLinkC: data["records"][i]["Deep_Link__c"],
+        //     id: data["records"][i]["Id"],
+        //     name: data["records"][i]["Name"],
+        //   ));
+        return recordsList;
       } else {
         print("else+++++++++++++");
       }

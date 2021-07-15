@@ -11,7 +11,7 @@
 ///      fonts:
 ///       - asset: fonts/CustomFlutterIcons.ttf
 ///
-/// 
+///
 ///
 import 'package:flutter/widgets.dart';
 
@@ -21,32 +21,60 @@ class CustomFlutterIcons {
   static const _kFontFam = 'CustomFlutterIcons';
   static const String? _kFontPkg = null;
 
-  static const IconData add_suggestion_icon = IconData(0xe80b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData all_moods_icon = IconData(0xe80c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData calendar = IconData(0xe80d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData call = IconData(0xe80e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData comment = IconData(0xe80f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData cross_ico_1 = IconData(0xe810, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData edit = IconData(0xe811, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData email = IconData(0xe812, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData filter = IconData(0xe814, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData follow = IconData(0xe815, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData informative = IconData(0xe816, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData like = IconData(0xe817, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData photo_camera = IconData(0xe81c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData progress = IconData(0xe81d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData search = IconData(0xe81e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData share = IconData(0xe81f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData toggle = IconData(0xe820, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData plus_ico = IconData(0xe826, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData search_ico = IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData eye_hide_ico = IconData(0xe829, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData bell_ico = IconData(0xe82a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData signout = IconData(0xe830, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData bell_black_ico = IconData(0xe831, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData cross_ico = IconData(0xe832, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData settings_ico = IconData(0xe833, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData explore_ico = IconData(0xe834, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData calendar_ico = IconData(0xe835, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData eye_show_ico = IconData(0xe838, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData add_suggestion_icon =
+      IconData(0xe80b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData all_moods_icon =
+      IconData(0xe80c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData calendar =
+      IconData(0xe80d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData call =
+      IconData(0xe80e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData comment =
+      IconData(0xe80f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData cross_ico_1 =
+      IconData(0xe810, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData edit =
+      IconData(0xe811, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData email =
+      IconData(0xe812, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData filter =
+      IconData(0xe814, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData follow =
+      IconData(0xe815, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData informative =
+      IconData(0xe816, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData like =
+      IconData(0xe817, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData photo_camera =
+      IconData(0xe81c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData progress =
+      IconData(0xe81d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData search =
+      IconData(0xe81e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData share =
+      IconData(0xe81f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData toggle =
+      IconData(0xe820, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData plus_ico =
+      IconData(0xe826, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData search_ico =
+      IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData eye_hide_ico =
+      IconData(0xe829, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData bell_ico =
+      IconData(0xe82a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData signout =
+      IconData(0xe830, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData bell_black_ico =
+      IconData(0xe831, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData cross_ico =
+      IconData(0xe832, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData settings_ico =
+      IconData(0xe833, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData explore_ico =
+      IconData(0xe834, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData calendar_ico =
+      IconData(0xe835, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData eye_show_ico =
+      IconData(0xe838, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
