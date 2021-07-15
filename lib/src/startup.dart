@@ -3,10 +3,8 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/modules/globals.dart' as globals;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class StartupPage extends StatefulWidget {
   @override
@@ -73,9 +71,6 @@ class _StartupPageState extends State<StartupPage> {
           bloc: _bloc,
           listener: (context, state) async {
             if (state is BottomNavigationBarSuccess) {
-              print(
-                  "Inside data +++++++++++++++++++++++++++++++++++++++++++ : ${state.obj}");
-              // Future.delayed(const Duration(seconds: 5), () {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -84,7 +79,6 @@ class _StartupPageState extends State<StartupPage> {
                       obj: state.obj,
                     ),
                   ));
-              // });
             }
           },
           child: Container(
