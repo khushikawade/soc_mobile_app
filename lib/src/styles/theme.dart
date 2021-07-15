@@ -22,6 +22,7 @@ class AppTheme {
   static Color kListTileColor = Color(0xffD8D8D8).withOpacity(0.12);
   static Color kIconColor = Color(0xff535353).withOpacity(0.75);
   static const Color kIconColor2 = Color(0xff8aa8d8);
+  static const Color kIconColor3 = Colors.black;
   static const Color kListBackgroundColor2 = Color(0xffF5F5F5);
   static const Color kListBackgroundColor3 = Color(0xffe9ebf7);
   static const Color kListIconColor3 = Color(0xff8ca9d8);

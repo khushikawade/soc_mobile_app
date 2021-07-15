@@ -178,7 +178,7 @@ class _EventDescriptionState extends State<EventDescription> {
             height: _KButtonSize / 2.5,
             child: ElevatedButton(
               onPressed: () {},
-              child: Text("Shave event", style: _kbuttonTextStyle),
+              child: Text("Save event", style: _kbuttonTextStyle),
             ),
           ),
         ],
@@ -208,7 +208,7 @@ class _EventDescriptionState extends State<EventDescription> {
                     Navigator.pop(context);
                   },
                   icon: Icon(
-                    const IconData(0xe812,
+                    const IconData(0xe80c,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                     color: Color(0xffbcc5d4),
@@ -219,7 +219,7 @@ class _EventDescriptionState extends State<EventDescription> {
             ),
             SizedBox(width: _kPadding),
             Icon(
-              const IconData(0xe803,
+              const IconData(0xe815,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
               color: AppTheme.kBlackColor,
@@ -245,6 +245,12 @@ class _EventDescriptionState extends State<EventDescription> {
   }
 
   _onShareWithEmptyOrigin(BuildContext context) async {
-    await Share.share("text");
+    RenderBox? box = context.findRenderObject() as RenderBox;
+    final String body =
+        "https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ";
+    final subject = "Event";
+    await Share.share(body,
+        subject: subject,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }

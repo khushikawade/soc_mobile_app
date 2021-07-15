@@ -262,36 +262,36 @@ class _WebViewState extends State<WebView> {
   Widget build(BuildContext context) {
     return Container(
       child: WebviewScaffold(
-        appBar: AppBar(
-          elevation: 0.0,
-          leading: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 10),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    const IconData(0xe813,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: Color(0xff171717),
-                    size: 20,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          title: SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
-          bottom: PreferredSize(
-            child: _progressBar(lineProgress, context),
-            preferredSize: Size.fromHeight(4.0),
-          ),
-        ),
+        // appBar: AppBar(
+        //   elevation: 0.0,
+        //   leading: Row(
+        //     mainAxisAlignment: MainAxisAlignment.start,
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     mainAxisSize: MainAxisSize.max,
+        //     children: [
+        //       Padding(
+        //         padding: const EdgeInsets.only(top: 15.0, left: 10),
+        //         child: IconButton(
+        //           onPressed: () {
+        //             Navigator.pop(context);
+        //           },
+        //           icon: Icon(
+        //             const IconData(0xe80d,
+        //                 fontFamily: Overrides.kFontFam,
+        //                 fontPackage: Overrides.kFontPkg),
+        //             color: Color(0xff171717),
+        //             size: 20,
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        //   title: SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
+        //   bottom: PreferredSize(
+        //     child: _progressBar(lineProgress, context),
+        //     preferredSize: Size.fromHeight(4.0),
+        //   ),
+        // ),
         withLocalStorage: true,
         url: "https://www.google.com/",
         initialChild: Container(
