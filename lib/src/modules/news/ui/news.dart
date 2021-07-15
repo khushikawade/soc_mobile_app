@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -39,8 +40,11 @@ class _NewsPageState extends State<NewsPage> {
     // int itemsLength = 10; // Replace with Actual Item Count
     return InkWell(
       onTap: () {
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => NewsDescription()));
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => InAppUrlLauncer(
+        //             url: obj.url.toString(), title: obj.headings ?? "")));
       },
       child: Container(
           padding: EdgeInsets.symmetric(
