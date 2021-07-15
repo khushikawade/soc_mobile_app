@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:Soc/src/modules/social/modal/models/item.dart';
 import 'package:Soc/src/modules/students/models/models/records.dart';
 import 'package:Soc/src/modules/students/studentmodal.dart';
 import 'package:Soc/src/services/db_service.dart';

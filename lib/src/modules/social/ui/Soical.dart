@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:Soc/src/modules/families/Submodule/event/ui/eventdescition.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
-import 'package:Soc/src/modules/social/modal/models/item.dart';
-import 'package:Soc/src/modules/social/modal/socialmodal.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
+
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';

@@ -48,3 +48,15 @@ class DataGettedSuccessfully extends SocialState {
 //   @override
 //   List<Object> get props => [obj];
 // }
+
+
+// class FetchTrainingData extends SocialState {
+//   // FetchTrainingData({this.obj});
+
+//   FetchTrainingData copyWith({var obj}) {
+//     return FetchTrainingData(obj: obj ?? this.obj);
+//   }
+
+//   @override
+//   List<Object> get props => [obj];
+// }

@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:Soc/src/modules/social/modal/models/item.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';

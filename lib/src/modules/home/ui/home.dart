@@ -255,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 0.0),
                       child: Icon(
-                         IconData(int.parse(e.split("_")[1]),
+                        IconData(int.parse(e.split("_")[1]),
                             fontFamily: Overrides.kFontFam,
                             fontPackage: Overrides.kFontPkg),
                       ),
