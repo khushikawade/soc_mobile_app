@@ -6,25 +6,25 @@ class Item {
   // Title? title;
   // Description? description;
   var title;
-  // var description;
-  // final link;
-  // final guid;
+  var description;
+  final link;
+  final guid;
   // // Creator? creator;
-  // var creator;
-  // var pubDate;
-  // final content;
+  var creator;
+  var pubDate;
+  String? content;
   // String? item;
 
   Item(
       // this.item
       {
     this.title,
-    // this.description,
-    // this.link,
-    // this.guid,
-    // this.creator,
-    // this.pubDate,
-    // this.content,
+    this.description,
+    this.link,
+    this.guid,
+    this.creator,
+    this.pubDate,
+    this.content,
   });
 }
 //   factory Item.fromJson(Map<String, dynamic> json) => Item(

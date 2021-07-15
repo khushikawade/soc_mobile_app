@@ -2,13 +2,15 @@ import 'dart:ui';
 import 'package:Soc/src/modules/families/Submodule/event/ui/eventdescition.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
-
+import 'package:html_unescape/html_unescape.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' show parse;
 
 class SocialPage extends StatefulWidget {
   SocialPage({Key? key, this.title}) : super(key: key);
@@ -21,8 +23,9 @@ class _SocialPageState extends State<SocialPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 48.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  var unescape = new HtmlUnescape();
 
-  List<Item>? obj;
+  // List<Item>? obj;
   SocialBloc bloc = SocialBloc();
 
   void initState() {
@@ -41,7 +44,10 @@ class _SocialPageState extends State<SocialPage> {
   // static const _kListDateStyle = TextStyle(
   //     fontFamily: "Roboto Regular", fontSize: 13, color: Color(0xff2D3F98));
 
-  Widget _buildlist(int index) {
+  Widget _buildlist(Item obj, int index) {
+    var document = parse(obj.description["__cdata"]);
+    dom.Element? link = document.querySelector('img');
+    String? imageLink = link != null ? link.attributes['src'] : '';
     DateTime now = DateTime.now();
     String currentDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
 
@@ -55,25 +61,25 @@ class _SocialPageState extends State<SocialPage> {
           : AppTheme.kListBackgroundColor2,
       child: InkWell(
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => EventDescription()));
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: (context) => EventDescription()));
         },
         child: Row(
           children: <Widget>[
             Column(
               children: [
                 SizedBox(
-                  width: _kIconSize * 1.4,
-                  height: _kIconSize * 1.5,
-                  child: Container(
-                      //     child:
-                      //      ClipRRect(
-                      //         child: Image.network(
-                      //   'https://picsum.photos/250?image=9',
-                      //   fit: BoxFit.fill,
-                      // ))
-                      ),
-                ),
+                    width: _kIconSize * 1.4,
+                    height: _kIconSize * 1.5,
+                    child: Container(
+                      child: imageLink != null
+                          ? ClipRRect(
+                              child: Image.network(
+                              imageLink.toString(),
+                              fit: BoxFit.fill,
+                            ))
+                          : Text(''),
+                    )),
               ],
             ),
             SizedBox(
@@ -92,7 +98,8 @@ class _SocialPageState extends State<SocialPage> {
                               //     ? Text(obj![0].tittle)
                               // :
                               Text(
-                            "Check out these book suggestions for your summer reading !",
+                            unescape.convert(obj.title["__cdata"]),
+                            // "Check out these book suggestions for your summer reading !",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                             style: Theme.of(context).textTheme.headline2,
@@ -108,7 +115,9 @@ class _SocialPageState extends State<SocialPage> {
                       Container(
                           // width: MediaQuery.of(context).size.width * 0.40,
                           child: Text(
-                        "${currentDate}",
+                        unescape.convert(
+                          obj.pubDate.toString(),
+                        ),
                         style: Theme.of(context).textTheme.subtitle1,
                       )),
                     ],
@@ -120,14 +129,14 @@ class _SocialPageState extends State<SocialPage> {
     );
   }
 
-  Widget makeList() {
+  Widget makeList(obj) {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: 10,
+      itemCount: obj.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildlist(index);
+        return _buildlist(obj[index], index);
       },
     );
   }
@@ -142,7 +151,7 @@ class _SocialPageState extends State<SocialPage> {
                 return state.obj != null
                     ? Container(
                         child: Column(
-                          children: [makeList()],
+                          children: [makeList(state.obj)],
                         ),
                       )
                     : Center(
@@ -159,6 +168,7 @@ class _SocialPageState extends State<SocialPage> {
           listener: (context, state) {
             if (state is DataGettedSuccessfully) {
               // obj = state.obj;
+              // print(obj);
             }
 
             if (state is Errorinloading) {

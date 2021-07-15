@@ -51,8 +51,13 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         // List<Item> list = await data2.map<Item>((i) {
         return data1.map((i) {
           return Item(
-            title: i["link"],
-            // description: data["rss"]["channel"]["item"][1]["description"]
+            title: i["title"],
+            description: i["description"],
+            link: i["link"],
+            guid: i['guid'],
+            creator: i['creator'],
+            pubDate: i['pubDate'],
+            content: i['content'],
             //         ["__cdata"] ??
             //     '',
             // link:
