@@ -10,6 +10,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/models/webview.dart';
+import 'package:Soc/src/widgets/webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
@@ -76,17 +77,17 @@ class _FamilyPage2State extends State<FamilyPage2> {
     } else if (_selectedIndex == 4) {
       return StaffListPage();
     } else if (_selectedIndex == 5) {
-      return Container();
+      return WebView();
     } else if (_selectedIndex == 6) {
-      return Container();
+      return WebView();
     } else if (_selectedIndex == 7) {
-      return Container();
+      return WebView();
     } else if (_selectedIndex == 8) {
-      return Container();
+      return WebView();
     } else if (_selectedIndex == 9) {
       return Resources();
     } else if (_selectedIndex == 10) {
-      return Container();
+      return WebView();
     } else if (_selectedIndex == 11) {
       return ContactPage();
     } else if (_selectedIndex == 12) {

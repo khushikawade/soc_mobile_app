@@ -39,6 +39,12 @@ class ButtonWidget extends StatelessWidget {
   }
 
   _onShareWithEmptyOrigin(BuildContext context) async {
-    await Share.share("text");
+    RenderBox? box = context.findRenderObject() as RenderBox;
+    final String body =
+        "Hi, I downloaded the PS 456 Bronx Bears app. You should check it out! Download the app at https://play.google.com/store/apps/details?id=com.app.p1676CB";
+    final subject = "Love the PS 456 Bronx Bears app!";
+    await Share.share(body,
+        subject: subject,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }

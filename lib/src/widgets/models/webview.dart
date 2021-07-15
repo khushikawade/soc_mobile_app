@@ -1,16 +1,16 @@
-// import 'dart:async';
+import 'dart:async';
 
-// import 'package:Soc/src/modules/user/ui/login.dart';
-// import 'package:Soc/src/styles/theme.dart';
-// import 'package:Soc/src/widgets/app_bar.dart';
-// import 'package:Soc/src/widgets/bearIconwidget.dart';
-// import 'package:flutter/material.dart';
-// import 'package:webview_flutter/webview_flutter.dart';
-// import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:Soc/src/modules/user/ui/login.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-// import '../../overrides.dart';
+import '../../overrides.dart';
 
-// // import 'dart:html';
+// import 'dart:html';
 
 // // class WebViewPage extends StatefulWidget {
 // //   WebViewPage({Key? key, required this.url}) : super(key: key);
@@ -74,16 +74,16 @@
 // // //   }
 // // // }
 
-// // // class MyWebView extends StatefulWidget {
+// // // class WebView extends StatefulWidget {
 // // //   final url;
 // // //   final title;
-// // //   MyWebView({Key? key, @required this.url, @required this.title})
+// // //   WebView({Key? key, @required this.url, @required this.title})
 // // //       : super(key: key);
 // // //   @override
-// // //   _MyWebViewState createState() => _MyWebViewState();
+// // //   _WebViewState createState() => _WebViewState();
 // // // }
 
-// // // class _MyWebViewState extends State<MyWebView> {
+// // // class _WebViewState extends State<WebView> {
 // // //   FlutterWebviewPlugin flutterWebviewPlugin = FlutterWebviewPlugin();
 
 // // //   double lineProgress = 0.0;
@@ -211,110 +211,112 @@
 // //   }
 // // }
 
-// class MyWebView extends StatefulWidget {
-//   final url;
-//   final title;
-//   MyWebView({Key? key, @required this.url, @required this.title})
-//       : super(key: key);
-//   @override
-//   _MyWebViewState createState() => _MyWebViewState();
-// }
+class WebView extends StatefulWidget {
+  final url;
 
-// class _MyWebViewState extends State<MyWebView> {
-//   FlutterWebviewPlugin flutterWebviewPlugin = FlutterWebviewPlugin();
+  WebView({
+    Key? key,
+    this.url,
+  }) : super(key: key);
+  @override
+  _WebViewState createState() => _WebViewState();
+}
 
-//   double lineProgress = 0.0;
+class _WebViewState extends State<WebView> {
+  FlutterWebviewPlugin flutterWebviewPlugin = FlutterWebviewPlugin();
 
-//   void initState() {
-//     super.initState();
-//     flutterWebviewPlugin.onProgressChanged.listen((progress) {
-//       print(progress);
-//       setState(() {
-//         lineProgress = progress;
-//       });
-//     });
-//   }
+  double lineProgress = 0.0;
 
-//   @override
-//   void dispose() {
-//     flutterWebviewPlugin.dispose();
-//     super.dispose();
-//   }
+  void initState() {
+    super.initState();
+    flutterWebviewPlugin.onProgressChanged.listen((progress) {
+      print(progress);
+      setState(() {
+        lineProgress = progress;
+      });
+    });
+  }
 
-//   WebViewController? controllerGlobal;
+  @override
+  void dispose() {
+    flutterWebviewPlugin.dispose();
+    super.dispose();
+  }
 
-//   Future<bool> _exitApp(BuildContext context) async {
-//     if (await controllerGlobal!.canGoBack()) {
-//       print("onwill goback");
-//       controllerGlobal!.goBack();
-//       return Future.value(true);
-//     } else {
-//       Scaffold.of(context).showSnackBar(
-//         const SnackBar(content: Text("No back history item")),
-//       );
-//       return Future.value(false);
-//     }
-//   }
+  WebViewController? controllerGlobal;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: WebviewScaffold(
-//         appBar: AppBar(
-//           elevation: 0.0,
-//           leading: Row(
-//             mainAxisAlignment: MainAxisAlignment.start,
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             mainAxisSize: MainAxisSize.max,
-//             children: [
-//               Padding(
-//                 padding: const EdgeInsets.only(top: 15.0, left: 10),
-//                 child: IconButton(
-//                   onPressed: () {
-//                     Navigator.pop(context);
-//                   },
-//                   icon: Icon(
-//                     const IconData(0xe813,
-//                         fontFamily: Overrides.kFontFam,
-//                         fontPackage: Overrides.kFontPkg),
-//                     color: Color(0xff171717),
-//                     size: 20,
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//           title: SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
-//           bottom: PreferredSize(
-//             child: _progressBar(lineProgress, context),
-//             preferredSize: Size.fromHeight(4.0),
-//           ),
-//         ),
-//         withLocalStorage: true,
-//         url: "https://www.google.com/",
-//         initialChild: Container(
-//             child: Center(
-//           child: CircularProgressIndicator(
-//             valueColor:
-//                 new AlwaysStoppedAnimation<Color>(AppTheme.kAccentColor),
-//           ),
-//         )),
-//       ),
-//     );
-//   }
+  Future<bool> _exitApp(BuildContext context) async {
+    if (await controllerGlobal!.canGoBack()) {
+      print("onwill goback");
+      controllerGlobal!.goBack();
+      return Future.value(true);
+    } else {
+      Scaffold.of(context).showSnackBar(
+        const SnackBar(content: Text("No back history item")),
+      );
+      return Future.value(false);
+    }
+  }
 
-//   // _cicularprogress() {
-//   //   return CircularProgressIndicator(
-//   //     valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-//   //   );
-//   // }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: WebviewScaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          leading: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0, left: 10),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    const IconData(0xe813,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: Color(0xff171717),
+                    size: 20,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          title: SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
+          bottom: PreferredSize(
+            child: _progressBar(lineProgress, context),
+            preferredSize: Size.fromHeight(4.0),
+          ),
+        ),
+        withLocalStorage: true,
+        url: "https://www.google.com/",
+        initialChild: Container(
+            child: Center(
+          child: CircularProgressIndicator(
+            valueColor:
+                new AlwaysStoppedAnimation<Color>(AppTheme.kAccentColor),
+          ),
+        )),
+      ),
+    );
+  }
 
-//   _progressBar(double progress, BuildContext context) {
-//     return LinearProgressIndicator(
-//       minHeight: 2.0,
-//       backgroundColor: AppTheme.kIndicatorBackColor,
-//       value: progress == 1.0 ? 0 : progress,
-//       valueColor: new AlwaysStoppedAnimation<Color>(AppTheme.kIndicatorColor),
-//     );
-//   }
-// }
+  // _cicularprogress() {
+  //   return CircularProgressIndicator(
+  //     valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+  //   );
+  // }
+
+  _progressBar(double progress, BuildContext context) {
+    return LinearProgressIndicator(
+      minHeight: 2.0,
+      backgroundColor: AppTheme.kIndicatorBackColor,
+      value: progress == 1.0 ? 0 : progress,
+      valueColor: new AlwaysStoppedAnimation<Color>(AppTheme.kIndicatorColor),
+    );
+  }
+}

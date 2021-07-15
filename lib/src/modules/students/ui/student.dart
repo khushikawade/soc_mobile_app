@@ -1,65 +1,85 @@
+import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
+import 'package:Soc/src/modules/students/models/models/records.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../studentmodal.dart';
 
-class StudentPage extends StatelessWidget {
-  static const double _kLableSpacing = 8.0;
+// ignore: must_be_immutable
+
+class StudentPage extends StatefulWidget {
+  _StudentPageState createState() => _StudentPageState();
+}
+
+class _StudentPageState extends State<StudentPage> {
+  static const double _kLableSpacing = 10.0;
+
+  StudentBloc _bloc = StudentBloc();
+  List<Records>? obj;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc.add(StudentPageEvent());
+  }
+
+  _launchURL(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Widget _buildGrid(int crossaAxisCount, int itemlen, object) {
+    return GridView.count(
+      crossAxisCount: crossaAxisCount,
+      crossAxisSpacing: _kLableSpacing,
+      mainAxisSpacing: _kLableSpacing,
+      shrinkWrap: true,
+      physics: ScrollPhysics(),
+      children: List.generate(
+        itemlen,
+        (index) {
+          return InkWell(
+              onTap: () => _launchURL(object[index].appUrlC),
+              child: Column(
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: object[index].appIconC,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                  Text("${obj![index].titleC}"),
+                ],
+              ));
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: GridView.count(
-            crossAxisCount: 3,
-            crossAxisSpacing: _kLableSpacing / 2,
-            mainAxisSpacing: _kLableSpacing,
-            children: List.generate(Grids.length, (index) {
-              return Center(
-                child: SelectIcon(grid: Grids[index]),
-              );
-            })));
-  }
-}
-
-class Grid {
-  const Grid({required this.title, required this.icon});
-  final String title;
-  final String icon;
-}
-
-const List<Grid> Grids = const <Grid>[
-  const Grid(title: 'Request', icon: 'assets/images/request_img.png'),
-  const Grid(title: 'Graduation', icon: 'assets/images/graduation.png'),
-  const Grid(title: 'Google Class', icon: 'assets/images/googleclassroom.png'),
-  const Grid(title: 'Classdojo', icon: 'assets/images/classdojo.png'),
-  const Grid(title: 'PupilPath', icon: 'assets/images/pupilpath.png'),
-  const Grid(title: 'Meets', icon: 'assets/images/meet.png'),
-  const Grid(title: 'Zoom', icon: 'assets/images/Zoom.png'),
-  const Grid(title: 'IXL', icon: 'assets/images/IXL.png'),
-  const Grid(title: 'PBS Kids', icon: 'assets/images/PBS_kids_img.png'),
-  const Grid(title: 'EDpuzzle', icon: 'assets/images/Edpuzzle.png'),
-  const Grid(title: 'PearDeck', icon: 'assets/images/PearDeack.png'),
-  const Grid(title: 'NearPod', icon: 'assets/images/nearpod.png'),
-];
-
-class SelectIcon extends StatelessWidget {
-  const SelectIcon({required this.grid});
-  final Grid grid;
-  static const double _kIconSize = 105.0;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                child: Image.asset(
-                  grid.icon,
-                  fit: BoxFit.cover, // this is the solution for border
-                  width: _kIconSize,
-                  height: _kIconSize,
-                ),
-              ),
-              Text(grid.title, style: Theme.of(context).textTheme.caption),
-            ]),
-      ),
-    );
+        body: SingleChildScrollView(
+      child: Column(children: [
+        Container(),
+        BlocListener<StudentBloc, StudentState>(
+          bloc: _bloc,
+          listener: (context, state) async {
+            if (state is StudentDataSucess) {
+              obj = state.obj;
+              setState(() {});
+            }
+          },
+          child: Container(
+            height: 0,
+          ),
+        ),
+        obj != null ? _buildGrid(3, obj!.length, obj) : Text(""),
+      ]),
+    ));
   }
 }

@@ -39,10 +39,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
     // // var bg = int.parse(widget.obj["Background_Color__c"].split("#"));
     // // print(0xff + bg);
     // if (widget.obj != null && widget.obj["Bottom_Navigation__c"] != null) {
     //   item = widget.obj["Bottom_Navigation__c"].split(";");
+=======
+    // if (widget.obj != null && widget.obj["Bottom_Navigation__c"] != null) {
+    //   item = widget.obj["Bottom_Navigation__c"].split(";");
+    //   print(item);
+
+    //   print(bottomNavItems);
+>>>>>>> c6a197db1c6be9e55c5c28251d73bd3d5413cf1c
     // }
   }
 
@@ -264,7 +272,11 @@ class _HomePageState extends State<HomePage> {
                   ]),
                   label: '',
                 ))
+<<<<<<< HEAD
             .toList(),
+=======
+            .toList(), //bottomNavItems,
+>>>>>>> c6a197db1c6be9e55c5c28251d73bd3d5413cf1c
         onTap: (index) {
           setState(() {
             _selectedIndex = index;

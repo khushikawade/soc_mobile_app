@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/families/Submodule/resource/modal/resourcemodal.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/customList.dart';
+import 'package:Soc/src/widgets/models/webview.dart';
 import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
 
@@ -55,13 +56,17 @@ class _ResourcesState extends State<Resources> {
   }
 
   Widget _buildresource(int index) {
-    return Row(
-      children: [
-        Text(
-          ResourcesList[index].resource,
-          style: Theme.of(context).textTheme.bodyText1,
-        ),
-      ],
+    return InkWell(
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => WebView())),
+      child: Row(
+        children: [
+          Text(
+            ResourcesList[index].resource,
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+        ],
+      ),
     );
   }
 

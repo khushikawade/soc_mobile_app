@@ -88,7 +88,7 @@
 //   setDbKey(key) async {
 //     if (key == null) return;
 //     await _sharedPref.setString("dbApiKey", key);
-    
+
 //   }
 
 //   @override

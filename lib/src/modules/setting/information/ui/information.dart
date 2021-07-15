@@ -41,7 +41,6 @@ class _InformationPageState extends State<InformationPage> {
 
   //TOP SECTION START
   _launchURL(url) async {
-    // const url = "${overrides.Overrides.privacyPolicyUrl}";
     if (await canLaunch(url)) {
       await launch(url);
     } else {

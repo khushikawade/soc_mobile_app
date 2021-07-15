@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesFn {
-
   // set string value
   Future<void> setString(String key, String value) async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();

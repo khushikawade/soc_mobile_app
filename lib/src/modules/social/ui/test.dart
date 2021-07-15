@@ -20,7 +20,7 @@ class GrtXmldata extends StatelessWidget {
     xml2json.parse(response.body);
     var jsondata = xml2json.toGData();
     var data = json.decode(jsondata);
-    print(data["rss"]["channel"]["item"][0]["title"]);
+    // print(data["rss"]["channel"]["item"][0]["title"]);
   }
 
   Widget build(BuildContext context) {
