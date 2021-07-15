@@ -1,9 +1,9 @@
-import 'records.dart';
+import 'student_app.dart';
 
 class Student {
   int? totalSize;
   bool? done;
-  List<Records>? records;
+  List<StudentApp>? records;
 
   Student({this.totalSize, this.done, this.records});
 
@@ -11,7 +11,7 @@ class Student {
         totalSize: json['totalSize'] as int?,
         done: json['done'] as bool?,
         records: (json['records'] as List<dynamic>?)
-            ?.map((e) => Records.fromJson(e as Map<String, dynamic>))
+            ?.map((e) => StudentApp.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
 

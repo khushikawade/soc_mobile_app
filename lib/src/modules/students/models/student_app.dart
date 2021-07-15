@@ -1,6 +1,6 @@
 import 'attributes.dart';
 
-class Records {
+class StudentApp {
   Attributes? attributes;
   String? titleC;
   String? appIconC;
@@ -9,7 +9,7 @@ class Records {
   String? id;
   String? name;
 
-  Records({
+  StudentApp({
     this.attributes,
     this.titleC,
     this.appIconC,
@@ -19,7 +19,7 @@ class Records {
     this.name,
   });
 
-  factory Records.fromJson(Map<String, dynamic> json) => Records(
+  factory StudentApp.fromJson(Map<String, dynamic> json) => StudentApp(
         attributes: json['attributes'] == null
             ? null
             : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),

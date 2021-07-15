@@ -1,13 +1,10 @@
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
-import 'package:Soc/src/modules/students/models/models/records.dart';
+import 'package:Soc/src/modules/students/models/student_app.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../studentmodal.dart';
-
-// ignore: must_be_immutable
 
 class StudentPage extends StatefulWidget {
   _StudentPageState createState() => _StudentPageState();
@@ -17,7 +14,6 @@ class _StudentPageState extends State<StudentPage> {
   static const double _kLableSpacing = 10.0;
 
   StudentBloc _bloc = StudentBloc();
-  List<Records>? obj;
 
   @override
   void initState() {
@@ -25,34 +21,50 @@ class _StudentPageState extends State<StudentPage> {
     _bloc.add(StudentPageEvent());
   }
 
-  _launchURL(url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+  _launchURL(StudentApp obj) async {
+    if (obj.deepLinkC == 'NO') {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC!,
+                    url: obj.appUrlC!,
+                  )));
     } else {
-      throw 'Could not launch $url';
+      if (await canLaunch(obj.appUrlC!)) {
+        await launch(obj.appUrlC!);
+      } else {
+        throw 'Could not launch ${obj.appUrlC}';
+      }
     }
   }
 
-  Widget _buildGrid(int crossaAxisCount, int itemlen, object) {
+  Widget _buildGrid(int crossaAxisCount, List<StudentApp> list) {
     return GridView.count(
       crossAxisCount: crossaAxisCount,
       crossAxisSpacing: _kLableSpacing,
       mainAxisSpacing: _kLableSpacing,
-      shrinkWrap: true,
-      physics: ScrollPhysics(),
       children: List.generate(
-        itemlen,
+        list.length,
         (index) {
           return InkWell(
-              onTap: () => _launchURL(object[index].appUrlC),
+              onTap: () => _launchURL(list[index]),
               child: Column(
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: object[index].appIconC,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                  Text("${obj![index].titleC}"),
+                  list[index].appIconC != null && list[index].appIconC != ''
+                      ? SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: CachedNetworkImage(
+                            imageUrl: list[index].appIconC ?? '',
+                            placeholder: (context, url) =>
+                                CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                        )
+                      : Container(),
+                  Text("${list[index].titleC}"),
                 ],
               ));
         },
@@ -63,23 +75,19 @@ class _StudentPageState extends State<StudentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(children: [
-        Container(),
-        BlocListener<StudentBloc, StudentState>(
-          bloc: _bloc,
-          listener: (context, state) async {
-            if (state is StudentDataSucess) {
-              obj = state.obj;
-              setState(() {});
-            }
-          },
-          child: Container(
-            height: 0,
-          ),
-        ),
-        obj != null ? _buildGrid(3, obj!.length, obj) : Text(""),
-      ]),
-    ));
+        body: BlocBuilder<StudentBloc, StudentState>(
+            bloc: _bloc,
+            builder: (BuildContext contxt, StudentState state) {
+              if (state is StudentInitial || state is Loading) {
+                return Center(
+                    child: CircularProgressIndicator(
+                  backgroundColor: Colors.blue,
+                ));
+              } else if (state is StudentDataSucess) {
+                return _buildGrid(3, state.obj!);
+              } else {
+                return Container();
+              }
+            }));
   }
 }

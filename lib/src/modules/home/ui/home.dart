@@ -253,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 0.0),
+                      padding: const EdgeInsets.only(top: 5.0),
                       child: Icon(
                          IconData(int.parse(e.split("_")[1]),
                             fontFamily: Overrides.kFontFam,
