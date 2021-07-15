@@ -1,5 +1,8 @@
+import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class NewsPage extends StatefulWidget {
@@ -9,7 +12,12 @@ class NewsPage extends StatefulWidget {
 
 class _NewsPageState extends State<NewsPage> {
   static const double _kLabelSpacing = 20.0;
-
+  NewsBloc bloc = new NewsBloc();
+  @override
+  void initState() {
+    super.initState();
+    bloc.add(FetchNotificationList());
+  }
   //STYLE
   // static const _knewsHeadingtStyle = TextStyle(
   //     height: 1.2,
@@ -27,8 +35,8 @@ class _NewsPageState extends State<NewsPage> {
 
 //UI WIDGETS
 
-  Widget _buildListItems(int index) {
-    int itemsLength = 10; // Replace with Actual Item Count
+  Widget _buildListItems(NotificationList obj) {
+    // int itemsLength = 10; // Replace with Actual Item Count
     return InkWell(
       onTap: () {
         // Navigator.push(context,
@@ -41,15 +49,15 @@ class _NewsPageState extends State<NewsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _buildnewsHeading(),
+                _buildnewsHeading(obj),
                 SizedBox(height: _kLabelSpacing / 3),
-                _buildTimeStamp(),
+                _buildTimeStamp(obj),
                 SizedBox(height: _kLabelSpacing / 4),
               ])),
     );
   }
 
-  Widget _buildnewsHeading() {
+  Widget _buildnewsHeading(NotificationList obj) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -57,8 +65,9 @@ class _NewsPageState extends State<NewsPage> {
         Container(
             width: MediaQuery.of(context).size.width * .88,
             child: Text(
+              obj.contents["en"].toString(),
               // REPLACE  WITH REAL  NEWS
-              "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
+              // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               style: Theme.of(context).textTheme.headline4,
@@ -67,7 +76,7 @@ class _NewsPageState extends State<NewsPage> {
     );
   }
 
-  Widget _buildTimeStamp() {
+  Widget _buildTimeStamp(NotificationList obj) {
     DateTime now = DateTime.now(); //REPLACE WITH ACTUAL DATE
     String newsTimeStamp = DateFormat('yyyy-MM-dd – kk:mm').format(now);
     return Row(
@@ -94,16 +103,16 @@ class _NewsPageState extends State<NewsPage> {
     );
   }
 
-  Widget _buildList() {
+  Widget _buildList(obj) {
     return ListView.separated(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       separatorBuilder: (context, index) {
         return divider();
       },
-      itemCount: 5,
+      itemCount: obj.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildListItems(index);
+        return _buildListItems(obj[index]);
       },
     );
   }
@@ -116,7 +125,29 @@ class _NewsPageState extends State<NewsPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildList(),
+              BlocBuilder(
+                  bloc: bloc,
+                  builder: (BuildContext context, NewsState state) {
+                    if (state is NewsLoaded) {
+                      print(
+                          "+++++++++++++++NewsLoaded++++++++++++++++++++++ : ${state.obj}");
+
+                      return state.obj != null
+                          ? _buildList(state.obj)
+                          : Center(
+                              child: Text("No Data found"),
+                            );
+                    } else if (state is NewsLoading) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          valueColor: new AlwaysStoppedAnimation<Color>(
+                              AppTheme.kAccentColor),
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  }),
             ],
           ),
         ),

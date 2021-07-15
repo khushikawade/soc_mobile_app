@@ -1,5 +1,6 @@
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
+import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information/ui/information.dart';
 import 'package:Soc/src/modules/setting/settiings/ui/setting.dart';
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 35.0;
-
+  final NewsBloc _bloc = new NewsBloc();
   //STYLE
   // static const _kPopMenuTextStyle = TextStyle(
   //     fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
@@ -34,15 +35,11 @@ class _HomePageState extends State<HomePage> {
   var item;
   var item2;
   var bottomNavItems;
+
   @override
   void initState() {
     super.initState();
-    // if (widget.obj != null && widget.obj["Bottom_Navigation__c"] != null) {
-    //   item = widget.obj["Bottom_Navigation__c"].split(";");
-    //   print(item);
-
-    //   print(bottomNavItems);
-    // }
+    _bloc.initPushState(context);
   }
 
   Widget _buildPopupMenuWidget() {
@@ -108,108 +105,108 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget buttomNavigationWidget() {
-    return Container(
-      padding: EdgeInsets.only(top: 2.0),
-      child: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Column(
-              children: [
-                Text(
-                  "Social",
-                  style: Theme.of(context).textTheme.subtitle2,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 0.0),
-                  child: Icon(
-                    const IconData(0xe80d,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                  ),
-                ),
-              ],
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Column(children: [
-              Text(
-                "News",
-                style: Theme.of(context).textTheme.subtitle2,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 0.0),
-                child: Icon(
-                  const IconData(0xe807,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  // size: 40.0,
-                ),
-              ),
-            ]),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Column(
-              children: [
-                Text(
-                  "Students",
-                  style: Theme.of(context).textTheme.subtitle2,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 0.0),
-                  child: Icon(
-                    const IconData(0xe810,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                  ),
-                ),
-              ],
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Column(children: [
-              Text(
-                "Families",
-                style: Theme.of(context).textTheme.subtitle2,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 0.0),
-                child: Icon(
-                  const IconData(0xe801,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                ),
-              ),
-            ]),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Column(children: [
-              Text(
-                "Staff",
-                style: Theme.of(context).textTheme.subtitle2,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 0.0),
-                child: Icon(
-                  const IconData(0xe80e,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                ),
-              ),
-            ]),
-            label: '',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTap,
-      ),
-    );
-  }
+  // Widget buttomNavigationWidget() {
+  //   return Container(
+  //     padding: EdgeInsets.only(top: 2.0),
+  //     child: BottomNavigationBar(
+  //       type: BottomNavigationBarType.fixed,
+  //       items: <BottomNavigationBarItem>[
+  //         BottomNavigationBarItem(
+  //           icon: Column(
+  //             children: [
+  //               Text(
+  //                 "Social",
+  //                 style: Theme.of(context).textTheme.subtitle2,
+  //               ),
+  //               Padding(
+  //                 padding: const EdgeInsets.only(top: 0.0),
+  //                 child: Icon(
+  //                   const IconData(0xe80d,
+  //                       fontFamily: Overrides.kFontFam,
+  //                       fontPackage: Overrides.kFontPkg),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //           label: '',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Column(children: [
+  //             Text(
+  //               "News",
+  //               style: Theme.of(context).textTheme.subtitle2,
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.only(top: 0.0),
+  //               child: Icon(
+  //                 const IconData(0xe807,
+  //                     fontFamily: Overrides.kFontFam,
+  //                     fontPackage: Overrides.kFontPkg),
+  //                 // size: 40.0,
+  //               ),
+  //             ),
+  //           ]),
+  //           label: '',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Column(
+  //             children: [
+  //               Text(
+  //                 "Students",
+  //                 style: Theme.of(context).textTheme.subtitle2,
+  //               ),
+  //               Padding(
+  //                 padding: const EdgeInsets.only(top: 0.0),
+  //                 child: Icon(
+  //                   const IconData(0xe810,
+  //                       fontFamily: Overrides.kFontFam,
+  //                       fontPackage: Overrides.kFontPkg),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //           label: '',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Column(children: [
+  //             Text(
+  //               "Families",
+  //               style: Theme.of(context).textTheme.subtitle2,
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.only(top: 0.0),
+  //               child: Icon(
+  //                 const IconData(0xe801,
+  //                     fontFamily: Overrides.kFontFam,
+  //                     fontPackage: Overrides.kFontPkg),
+  //               ),
+  //             ),
+  //           ]),
+  //           label: '',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Column(children: [
+  //             Text(
+  //               "Staff",
+  //               style: Theme.of(context).textTheme.subtitle2,
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.only(top: 0.0),
+  //               child: Icon(
+  //                 const IconData(0xe80e,
+  //                     fontFamily: Overrides.kFontFam,
+  //                     fontPackage: Overrides.kFontPkg),
+  //               ),
+  //             ),
+  //           ]),
+  //           label: '',
+  //         ),
+  //       ],
+  //       currentIndex: _selectedIndex,
+  //       onTap: _onItemTap,
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -243,6 +240,7 @@ class _HomePageState extends State<HomePage> {
       body: selectedScreenBody(context, _selectedIndex),
       bottomNavigationBar: //buttomNavigationWidget()
           BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         items: widget.obj["Bottom_Navigation__c"]
             .split(";")
@@ -263,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                   ]),
                   label: '',
                 ))
-            .toList(), //bottomNavItems,
+            .toList(),
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
