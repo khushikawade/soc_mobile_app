@@ -27,7 +27,7 @@ class _StartupPageState extends State<StartupPage> {
       final data = (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
       // globals.deviceType = data.size.shortestSide < 600 ? 'tablet' :'tablet';
       globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-      print("${globals.deviceType}");
+      // print("${globals.deviceType}");
     } else {
       var deviceType = await getDeviceInfo();
       globals.deviceType = deviceType == "ipad" ? "tablet" : "phone";
