@@ -77,17 +77,17 @@ class _FamilyPage2State extends State<FamilyPage2> {
     } else if (_selectedIndex == 4) {
       return StaffListPage();
     } else if (_selectedIndex == 5) {
-      // return WebViewExample();
+      return WebView();
     } else if (_selectedIndex == 6) {
-      return Container();
+      return WebView();
     } else if (_selectedIndex == 7) {
-      return Container();
+      return WebView();
     } else if (_selectedIndex == 8) {
-      return Container();
+      return WebView();
     } else if (_selectedIndex == 9) {
       return Resources();
     } else if (_selectedIndex == 10) {
-      return Container();
+      return WebView();
     } else if (_selectedIndex == 11) {
       return ContactPage();
     } else if (_selectedIndex == 12) {
