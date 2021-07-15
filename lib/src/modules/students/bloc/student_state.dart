@@ -27,7 +27,7 @@ class Errorinloading extends StudentState {
 
 // ignore: must_be_immutable
 class StudentDataSucess extends StudentState {
-  List<Records>? obj;
+  List<StudentApp>? obj;
 
   StudentDataSucess({this.obj});
 
