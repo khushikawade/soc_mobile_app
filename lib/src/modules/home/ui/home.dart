@@ -10,7 +10,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
-
 import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
@@ -52,7 +51,7 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(2),
       ),
       icon: Icon(
-        const IconData(0xe80c,
+        const IconData(0xe806,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         color: AppTheme.kIconColor2,
       ),
@@ -221,7 +220,7 @@ class _HomePageState extends State<HomePage> {
           leading: _selectedIndex == 3
               ? Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Icon(IconData(0xe806,
+                  child: Icon(IconData(0xe800,
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg)),
                 )
@@ -232,7 +231,7 @@ class _HomePageState extends State<HomePage> {
           actions: <Widget>[
             _selectedIndex == 3
                 ? Icon(
-                    const IconData(0xe80b,
+                    const IconData(0xe805,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                   )

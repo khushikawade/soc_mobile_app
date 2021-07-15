@@ -5,6 +5,8 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
+import '../../../../overrides.dart';
+
 class ShareApp extends StatefulWidget {
   ShareApp({Key? key, this.title}) : super(key: key);
   final String? title;
@@ -27,7 +29,7 @@ class _ShareAppState extends State<ShareApp> {
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
-  Widget _buildsharebutton(String label, String buttonicon) {
+  Widget _buildsharebutton(String label, IconData buttonicon) {
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: _kPadding, vertical: _kPadding / 2.5),
@@ -52,14 +54,11 @@ class _ShareAppState extends State<ShareApp> {
                   height: _kiconsize,
                   width: _kiconsize * 2,
                   child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Image.asset(
-                      buttonicon,
-                      fit: BoxFit.fill,
-                      height: _kiconsize,
-                      width: _kiconsize * 2,
-                    ),
-                  )),
+                      padding: const EdgeInsets.all(5.0),
+                      child: Icon(
+                        buttonicon,
+                        color: AppTheme.kIconColor3,
+                      ))),
               HorzitalSpacerWidget(_kPadding * 2),
               Text(
                 label,
@@ -85,19 +84,27 @@ class _ShareAppState extends State<ShareApp> {
           children: [
             _buildsharebutton(
               "Share via Twitter",
-              'assets/images/twitter_img.png',
+              IconData(0xe818,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
             ),
             _buildsharebutton(
               "Share via Facebook",
-              'assets/images/facebookthumb.png',
+              IconData(0xe81b,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
             ),
             _buildsharebutton(
               "Rate in Google Play",
-              'assets/images/Mobile_img.png',
+              IconData(0xe81a,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
             ),
             _buildsharebutton(
               "Mail in Link",
-              'assets/images/email.png',
+              IconData(0xe819,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
             ),
           ],
         ),
