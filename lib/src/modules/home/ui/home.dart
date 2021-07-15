@@ -249,13 +249,13 @@ class _HomePageState extends State<HomePage> {
             .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
                   icon: Column(children: [
                     Text(
-                      e.split(" ")[0],
+                      e.split("_")[0],
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 0.0),
                       child: Icon(
-                        const IconData(0xe807,
+                         IconData(int.parse(e.split("_")[1]),
                             fontFamily: Overrides.kFontFam,
                             fontPackage: Overrides.kFontPkg),
                       ),
