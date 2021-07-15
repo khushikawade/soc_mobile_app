@@ -1,5 +1,6 @@
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
+import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information/ui/information.dart';
 import 'package:Soc/src/modules/setting/settiings/ui/setting.dart';
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 35.0;
-
+  final NewsBloc _bloc = new NewsBloc();
   //STYLE
   // static const _kPopMenuTextStyle = TextStyle(
   //     fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
@@ -39,19 +40,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
-    // // var bg = int.parse(widget.obj["Background_Color__c"].split("#"));
-    // // print(0xff + bg);
-    // if (widget.obj != null && widget.obj["Bottom_Navigation__c"] != null) {
-    //   item = widget.obj["Bottom_Navigation__c"].split(";");
-=======
-    // if (widget.obj != null && widget.obj["Bottom_Navigation__c"] != null) {
-    //   item = widget.obj["Bottom_Navigation__c"].split(";");
-    //   print(item);
-
-    //   print(bottomNavItems);
->>>>>>> c6a197db1c6be9e55c5c28251d73bd3d5413cf1c
-    // }
+    _bloc.initPushState(context);
   }
 
   Widget _buildPopupMenuWidget() {
@@ -252,6 +241,7 @@ class _HomePageState extends State<HomePage> {
       body: selectedScreenBody(context, _selectedIndex),
       bottomNavigationBar: //buttomNavigationWidget()
           BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         items: widget.obj["Bottom_Navigation__c"]
             .split(";")
@@ -272,11 +262,7 @@ class _HomePageState extends State<HomePage> {
                   ]),
                   label: '',
                 ))
-<<<<<<< HEAD
             .toList(),
-=======
-            .toList(), //bottomNavItems,
->>>>>>> c6a197db1c6be9e55c5c28251d73bd3d5413cf1c
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
