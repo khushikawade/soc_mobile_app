@@ -156,7 +156,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     try {
       final _email = await _sharedPref.getString('email');
       final _password = await _sharedPref.getString('password');
-      print('Email : $_email');
+      // print('Email : $_email');
       if (_email != null &&
           _email != '' &&
           _password != null &&
@@ -173,19 +173,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   Future _changePassword(oldPassword, newPassword) async {
     try {
-      print('change password called');
+      // print('change password called');
       final _body =
           json.encode({'oldPassword': oldPassword, 'newPassword': newPassword});
       final ResponseModel _response =
           await _dbServices.postapi('', body: _body);
-      print(_response.data);
+      // print(_response.data);
       if (_response.statusCode == 200) {
         _sharedPref.setString('password', newPassword);
         return true;
       } else {
         if (_response.data['errors'] != null &&
             _response.data['errors']['msg'] != null) {
-          print(_response.data['errors']['msg']);
+          // print(_response.data['errors']['msg']);
           throw (_response.data['errors']['msg']);
         } else {
           throw ('ER IS IETS FOUT GEGAAN');

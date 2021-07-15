@@ -2,7 +2,7 @@ class NotificationList {
   String? id;
   var contents;
   var headings;
-  String? url;
+  var url;
 
   NotificationList({this.id, this.contents, this.headings, this.url});
 }
