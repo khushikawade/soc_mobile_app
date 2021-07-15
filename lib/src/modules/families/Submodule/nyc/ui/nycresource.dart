@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/families/Submodule/nyc/modal/nycUpdatemodal.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/customList.dart';
+import 'package:Soc/src/widgets/models/webview.dart';
 import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
 
@@ -63,13 +64,17 @@ class _NycResourceState extends State<NycResource> {
   }
 
   Widget _buildupdateditem(int index) {
-    return Row(
-      children: [
-        Text(
-          NYCUpdateModalList[index].updateditem,
-          style: Theme.of(context).textTheme.bodyText1,
-        ),
-      ],
+    return InkWell(
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => WebView())),
+      child: Row(
+        children: [
+          Text(
+            NYCUpdateModalList[index].updateditem,
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+        ],
+      ),
     );
   }
 

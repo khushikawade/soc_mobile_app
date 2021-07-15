@@ -37,16 +37,16 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       var link = Uri.parse("${overrides.Overrides.socialPagexmlUrl}");
       Xml2Json xml2json = new Xml2Json();
       http.Response response = await http.get(link);
-      print(response.body);
+      // print(response.body);
       if (response.statusCode == 200) {
-        print("statusCode 200 ***********");
+        // print("statusCode 200 ***********");
         xml2json.parse(response.body);
         var jsondata = xml2json.toGData();
         var data = json.decode(jsondata);
         final data1 = data["rss"]["channel"]["item"];
         final data2 = data1 as List;
         // List? searchRes;
-        print(data2.length);
+        // print(data2.length);
 
         // List<Item> list = await data2.map<Item>((i) {
         return data1.map((i) {

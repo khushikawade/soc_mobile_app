@@ -38,12 +38,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    if (widget.obj != null && widget.obj["Bottom_Navigation__c"] != null) {
-      item = widget.obj["Bottom_Navigation__c"].split(";");
-      print(item);
+    // if (widget.obj != null && widget.obj["Bottom_Navigation__c"] != null) {
+    //   item = widget.obj["Bottom_Navigation__c"].split(";");
+    //   print(item);
 
-      print(bottomNavItems);
-    }
+    //   print(bottomNavItems);
+    // }
   }
 
   Widget _buildPopupMenuWidget() {
@@ -248,7 +248,22 @@ class _HomePageState extends State<HomePage> {
         items: widget.obj["Bottom_Navigation__c"]
             .split(";")
             .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
-                icon: Icon(Icons.explore), label: e.split(" ")[0].split("_")[0]))
+                  icon: Column(children: [
+                    Text(
+                      e.split("_")[0],
+                      style: Theme.of(context).textTheme.subtitle2,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0),
+                      child: Icon(
+                         IconData(int.parse(e.split("_")[1]),
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                      ),
+                    ),
+                  ]),
+                  label: '',
+                ))
             .toList(), //bottomNavItems,
         onTap: (index) {
           setState(() {

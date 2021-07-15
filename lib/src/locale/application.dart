@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 class Application {
-
   static final Application _application = Application._internal();
 
   factory Application() {
