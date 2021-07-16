@@ -305,9 +305,6 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
   }
 }
 
-
-
-
 // import 'package:flutter/material.dart';
 
 // void main() {
@@ -444,4 +441,3 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
 //       ],
 //     );
 //   }
-
