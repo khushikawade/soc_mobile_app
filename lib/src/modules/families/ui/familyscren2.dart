@@ -85,15 +85,39 @@ class _FamilyPage2State extends State<FamilyPage2> {
                     url: "www.google.com",
                   )));
     } else if (_selectedIndex == 6) {
-      return WebView();
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: "",
+                    url: "www.google.com",
+                  )));
     } else if (_selectedIndex == 7) {
-      return WebView();
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: "",
+                    url: "www.google.com",
+                  )));
     } else if (_selectedIndex == 8) {
-      return WebView();
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: "",
+                    url: "www.google.com",
+                  )));
     } else if (_selectedIndex == 9) {
       return Resources();
     } else if (_selectedIndex == 10) {
-      return WebView();
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: "",
+                    url: "www.google.com",
+                  )));
     } else if (_selectedIndex == 11) {
       return ContactPage();
     } else if (_selectedIndex == 12) {

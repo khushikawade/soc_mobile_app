@@ -31,6 +31,8 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
   String heading2 = '';
   String heading3 = '';
   int index = 0;
+  int firstindex = 0;
+  late int lastindex;
   var object;
   var date;
   var link;
@@ -39,28 +41,11 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
   @override
   void initState() {
     super.initState();
-
-    print(
-        "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888");
-
     object = widget.obj;
+    lastindex = object.length;
     _build();
     index = widget.index;
-
-    // heading1 = string.split(" ");
   }
-
-  List<Widget> _samplePages = [
-    Container(
-      child: Text("1"),
-    ),
-    Container(
-      child: Text("2"),
-    ),
-    Container(
-      child: Text("3"),
-    ),
-  ];
 
   Widget _builditem1() {
     return Column(children: [
@@ -123,14 +108,11 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
     String s = object[index].title["__cdata"].toString();
     int dex = s.indexOf("!");
     heading1 = s.substring(0, dex + 1).trim();
-    print(heading1);
     // Third
     int dex2 = s.indexOf("#");
     heading3 = s.substring(dex2).trim();
-    print(heading3);
     date = object[index].pubDate;
     link = object[index].link.toString();
-
     RegExp exp =
         new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
     Iterable<RegExpMatch> matches = exp.allMatches(link);
@@ -138,12 +120,6 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
     matches.forEach((match) {
       link2 = link.substring(match.start, match.end);
     });
-
-    // int sub1 = link.indexof("w");
-
-    print(
-        "9999999999999999999999999999999999999999999999999999999999999999999999999999");
-    print(link2);
   }
 
   Widget _buildnews() {
@@ -230,11 +206,9 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
       appBar: new AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: Icon(
               const IconData(0xe80d,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
@@ -251,7 +225,6 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
           ),
           actions: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
                   onPressed: () {
@@ -268,7 +241,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
                 ),
               ],
             ),
-            SizedBox(width: _kPadding),
+            SizedBox(width: _kPadding / 3),
             IconButton(
               onPressed: () {
                 _controller.nextPage(duration: _kDuration, curve: _kCurve);
@@ -281,21 +254,24 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
                 size: 20,
               )),
             ),
-            SizedBox(width: _kPadding),
+            SizedBox(width: _kPadding / 3),
           ]),
       body: Column(
         children: <Widget>[
           Flexible(
             child: PageView.builder(
               controller: _controller,
-              itemCount: 2,
+              itemCount: object.length,
               onPageChanged: (indexnum) {
                 pageindex = indexnum;
-                setState(() {});
+                index = indexnum;
+                setState(() {
+                  _build();
+                });
                 print(pageindex);
               },
               itemBuilder: (BuildContext context, int index) {
-                return _samplePages[index % _samplePages.length];
+                return _builditem1();
               },
             ),
           ),
@@ -328,3 +304,144 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }
+
+
+
+
+// import 'package:flutter/material.dart';
+
+// void main() {
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Demo',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       home: MyHomePage(title: 'Flutter Demo Home Page'),
+//     );
+//   }
+// }
+
+// class MyHomePage extends StatefulWidget {
+//   MyHomePage({Key ?key, this.title}) : super(key: key);
+
+//   final String? title;
+
+//   @override
+//   _MyHomePageState createState() => _MyHomePageState();
+// }
+
+// int ?pageViewIndex;
+
+// class _MyHomePageState extends State<MyHomePage> {
+//   ActionMenu ?actionMenu;
+//   final PageController pageController = PageController();
+//   int currentPageIndex = 0;
+//   int pageCount = 1;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     actionMenu = ActionMenu(this.addPageView, this.removePageView);
+//   }
+
+//   addPageView() {
+//     setState(() {
+//       pageCount++;
+//     });
+//   }
+
+//   removePageView(BuildContext context) {
+//     if (pageCount > 1)
+//       setState(() {
+//         pageCount--;
+//       });
+//     else
+//       Scaffold.of(context).showSnackBar(SnackBar(
+//         content: Text("Last page"),
+//       ));
+//   }
+
+//   navigateToPage(int index) {
+//     pageController.animateToPage(
+//       index,
+//       duration: Duration(milliseconds: 300),
+//       curve: Curves.ease,
+//     );
+//   }
+
+//   getCurrentPage(int page) {
+//     pageViewIndex = page;
+//   }
+
+//   createPage(int page) {
+//     return Container(
+//       child: Center(
+//         child: Text('Page $page'),
+//       ),
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(widget.title),
+//         actions: <Widget>[
+//           actionMenu,
+//         ],
+//       ),
+//       body: Container(
+//         child: PageView.builder(
+//           controller: pageController,
+//           onPageChanged: getCurrentPage,
+//           // itemCount: pageCount,
+//           itemBuilder: (context, position) {
+//             if (position == 5) return null;
+//             return createPage(position + 1);
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// enum MenuOptions { addPageAtEnd, deletePageCurrent }
+// List<Widget> listPageView = List();
+
+// class ActionMenu extends StatelessWidget {
+//   final Function addPageView, removePageView;
+//   ActionMenu(this.addPageView, this.removePageView);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return PopupMenuButton<MenuOptions>(
+//       onSelected: (MenuOptions value) {
+//         switch (value) {
+//           case MenuOptions.addPageAtEnd:
+//             this.addPageView();
+//             break;
+//           case MenuOptions.deletePageCurrent:
+//             this.removePageView(context);
+//             break;
+//         }
+//       },
+//       itemBuilder: (BuildContext context) => <PopupMenuItem<MenuOptions>>[
+//         PopupMenuItem<MenuOptions>(
+//           value: MenuOptions.addPageAtEnd,
+//           child: const Text('Add Page at End'),
+//         ),
+//         const PopupMenuItem<MenuOptions>(
+//           value: MenuOptions.deletePageCurrent,
+//           child: Text('Delete Current Page'),
+//         ),
+//       ],
+//     );
+//   }
+

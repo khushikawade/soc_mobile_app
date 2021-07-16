@@ -46,28 +46,28 @@ class _SamplePageState extends State<SamplePage> {
               },
             ),
           ),
-          Container(
-            color: Colors.lightBlueAccent,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                FlatButton(
-                  child: Text('Prev'),
-                  onPressed: () {
-                    _controller.previousPage(
-                        duration: _kDuration, curve: _kCurve);
-                  },
-                ),
-                FlatButton(
-                  child: Text('Next'),
-                  onPressed: () {
-                    _controller.nextPage(duration: _kDuration, curve: _kCurve);
-                  },
-                )
-              ],
-            ),
-          )
+          // Container(
+          //   color: Colors.lightBlueAccent,
+          //   child: Row(
+          //     mainAxisSize: MainAxisSize.max,
+          //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //     children: <Widget>[
+          //       FlatButton(
+          //         child: Text('Prev'),
+          //         onPressed: () {
+          //           _controller.previousPage(
+          //               duration: _kDuration, curve: _kCurve);
+          //         },
+          //       ),
+          //       FlatButton(
+          //         child: Text('Next'),
+          //         onPressed: () {
+          //           _controller.nextPage(duration: _kDuration, curve: _kCurve);
+          //         },
+          //       )
+          //     ],
+          //   ),
+          // )
         ],
       ),
     );

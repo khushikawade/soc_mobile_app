@@ -1,7 +1,6 @@
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:googleapis/cloudasset/v1.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/services/utility.dart';

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -176,19 +175,19 @@ class _SocialAppUrlLauncherState extends State<SocialAppUrlLauncher> {
   void initState() {
     super.initState();
     url = widget.link;
-    print(url);
+
     _onchanged =
         flutterWebviewPlugin.onStateChanged.listen((WebViewStateChanged state) {
       if (mounted) {
         if (state.type == WebViewState.finishLoad) {
           // if the full website page loaded
-          print("loaded...");
+          // print("loaded...");
         } else if (state.type == WebViewState.abortLoad) {
           // if there is a problem with loading the url
-          print("there is a problem...");
+          // print("there is a problem...");
         } else if (state.type == WebViewState.startLoad) {
           // if the url started loading
-          print("start loading...");
+          // print("start loading...");
         }
       }
     });
@@ -257,7 +256,6 @@ class _SocialAppUrlLauncherState extends State<SocialAppUrlLauncher> {
               color: AppTheme.kIconColor3,
             ),
           ),
-          HorzitalSpacerWidget(_kPadding),
           IconButton(
               onPressed: () {
                 _launchURL(url);
@@ -292,23 +290,14 @@ class _SocialAppUrlLauncherState extends State<SocialAppUrlLauncher> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                const IconData(0xe80c,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: Color(0xffbcc5d4),
-                size: 20,
-              ),
-            ),
-            SizedBox(width: _kPadding),
             Icon(
-              const IconData(0xe815,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
+              Icons.arrow_back_ios_new,
+              color: AppTheme.kBlackColor,
+              size: 20,
+            ),
+            SizedBox(width: _kPadding / 2),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
               color: AppTheme.kBlackColor,
               size: 20,
             ),
