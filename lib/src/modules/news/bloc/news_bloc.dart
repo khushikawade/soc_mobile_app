@@ -45,7 +45,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           headers: {
             'Authorization': 'Basic ${Overrides.REST_API_KEY}',
           });
-      print(response.body);
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
@@ -57,7 +57,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
         return data2.map((i) {
           return NotificationList(
-              id: i["id"], contents: i["contents"], headings: i["headings"]);
+              id: i["id"],
+              contents: i["contents"],
+              headings: i["headings"],
+              url: i["url"]);
         }).toList();
       } else {
         throw ('something_went_wrong');

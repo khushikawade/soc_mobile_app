@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -34,13 +35,26 @@ class _NewsPageState extends State<NewsPage> {
   // );
 
 //UI WIDGETS
+  _launchURL(NotificationList obj) async {
+    if (obj.url != null && obj.url != "") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.headings,
+                    url: obj.url.toString(),
+                  )));
+    } else {
+      throw 'Could not launch ${obj.url}';
+    }
+  }
 
   Widget _buildListItems(NotificationList obj) {
     // int itemsLength = 10; // Replace with Actual Item Count
     return InkWell(
       onTap: () {
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => NewsDescription()));
+        print("${obj.url}++++++++++++++++++++++++++++++++++++++");
+        // _launchURL(obj.url);
       },
       child: Container(
           padding: EdgeInsets.symmetric(
@@ -129,20 +143,18 @@ class _NewsPageState extends State<NewsPage> {
                   bloc: bloc,
                   builder: (BuildContext context, NewsState state) {
                     if (state is NewsLoaded) {
-                      print(
-                          "+++++++++++++++NewsLoaded++++++++++++++++++++++ : ${state.obj}");
-
                       return state.obj != null
                           ? _buildList(state.obj)
                           : Center(
                               child: Text("No Data found"),
                             );
                     } else if (state is NewsLoading) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          valueColor: new AlwaysStoppedAnimation<Color>(
-                              AppTheme.kAccentColor),
-                        ),
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          backgroundColor: Colors.blue,
+                        )),
                       );
                     } else {
                       return Container();
