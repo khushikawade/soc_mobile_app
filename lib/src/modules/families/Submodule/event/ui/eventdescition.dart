@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -9,8 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../../overrides.dart';
 
 class EventDescription extends StatefulWidget {
-  EventDescription({Key? key, this.title}) : super(key: key);
-  final String? title;
+  EventDescription({Key? key, required this.obj}) : super(key: key);
+  final List<Item>? obj;
   @override
   _EventDescriptionState createState() => _EventDescriptionState();
 }

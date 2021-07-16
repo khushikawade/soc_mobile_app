@@ -107,8 +107,8 @@ class _EventPageState extends State<EventPage> {
   Widget _buildList(int index) {
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => EventDescription()));
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => EventDescription()));
       },
       child: Container(
           decoration: BoxDecoration(

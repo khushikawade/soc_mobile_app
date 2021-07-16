@@ -25,38 +25,16 @@ class Errorinloading extends SocialState {
   List<Object> get props => [err];
 }
 
-class DataGettedSuccessfully extends SocialState {
+// ignore: must_be_immutable
+class SocialDataSucess extends SocialState {
   List<Item>? obj;
 
-  DataGettedSuccessfully({this.obj});
+  SocialDataSucess({this.obj});
 
-  DataGettedSuccessfully copyWith({var obj}) {
-    return DataGettedSuccessfully(obj: obj ?? this.obj);
+  SocialDataSucess copyWith({var obj}) {
+    return SocialDataSucess(obj: obj ?? this.obj);
   }
 
   @override
   List<Object> get props => [];
 }
-
-// class FetchTrainingData extends SocialState {
-//   // FetchTrainingData({this.obj});
-
-//   FetchTrainingData copyWith({var obj}) {
-//     return FetchTrainingData(obj: obj ?? this.obj);
-//   }
-
-//   @override
-//   List<Object> get props => [obj];
-// }
-
-
-// class FetchTrainingData extends SocialState {
-//   // FetchTrainingData({this.obj});
-
-//   FetchTrainingData copyWith({var obj}) {
-//     return FetchTrainingData(obj: obj ?? this.obj);
-//   }
-
-//   @override
-//   List<Object> get props => [obj];
-// }

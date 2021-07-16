@@ -24,8 +24,8 @@ class _SocialPageState extends State<SocialPage> {
   static const double _kIconSize = 48.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   var unescape = new HtmlUnescape();
+  List<Item>? object;
 
-  // List<Item>? obj;
   SocialBloc bloc = SocialBloc();
 
   void initState() {
@@ -48,8 +48,6 @@ class _SocialPageState extends State<SocialPage> {
     var document = parse(obj.description["__cdata"]);
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
-    DateTime now = DateTime.now();
-    String currentDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -61,8 +59,13 @@ class _SocialPageState extends State<SocialPage> {
           : AppTheme.kListBackgroundColor2,
       child: InkWell(
         onTap: () {
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => EventDescription()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SocialEventDescription(
+                        obj: object,
+                        index: index,
+                      )));
         },
         child: Row(
           children: <Widget>[
@@ -72,7 +75,7 @@ class _SocialPageState extends State<SocialPage> {
                     width: _kIconSize * 1.4,
                     height: _kIconSize * 1.5,
                     child: Container(
-                      child: imageLink != null
+                      child: imageLink != null && imageLink.length > 4
                           ? ClipRRect(
                               child: Image.network(
                               imageLink.toString(),
@@ -93,12 +96,8 @@ class _SocialPageState extends State<SocialPage> {
                     children: [
                       Container(
                           width: MediaQuery.of(context).size.width * 0.69,
-                          child:
-                              // obj != null
-                              //     ? Text(obj![0].tittle)
-                              // :
-                              Text(
-                            unescape.convert(obj.title["__cdata"]),
+                          child: Text(
+                            obj.title["__cdata"],
                             // "Check out these book suggestions for your summer reading !",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
@@ -113,13 +112,13 @@ class _SocialPageState extends State<SocialPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                          // width: MediaQuery.of(context).size.width * 0.40,
+                          width: MediaQuery.of(context).size.width * 0.40,
                           child: Text(
-                        unescape.convert(
-                          obj.pubDate.toString(),
-                        ),
-                        style: Theme.of(context).textTheme.subtitle1,
-                      )),
+                            unescape.convert(
+                              obj.pubDate.toString(),
+                            ),
+                            style: Theme.of(context).textTheme.subtitle1,
+                          )),
                     ],
                   ),
                 ]),
@@ -147,7 +146,7 @@ class _SocialPageState extends State<SocialPage> {
         BlocBuilder(
             bloc: bloc,
             builder: (BuildContext context, SocialState state) {
-              if (state is DataGettedSuccessfully) {
+              if (state is SocialDataSucess) {
                 return state.obj != null
                     ? Container(
                         child: Column(
@@ -166,7 +165,11 @@ class _SocialPageState extends State<SocialPage> {
         BlocListener<SocialBloc, SocialState>(
           bloc: bloc,
           listener: (context, state) {
-            if (state is DataGettedSuccessfully) {
+            if (state is SocialDataSucess) {
+              print(" *********INSIDE THE SOCAL SUCEESS****");
+              object = state.obj;
+              setState(() {});
+              print(state.obj);
               // obj = state.obj;
               // print(obj);
             }

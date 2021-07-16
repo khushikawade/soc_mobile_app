@@ -1,22 +1,28 @@
+import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../../../overrides.dart';
 
-class SocialEventDescriptionn extends StatefulWidget {
-  SocialEventDescriptionn({Key? key, this.title}) : super(key: key);
-  final String? title;
+// ignore: must_be_immutable
+class SocialEventDescription extends StatefulWidget {
+  SocialEventDescription({required this.obj, required this.index});
+  List<Item>? obj;
+  int index;
   @override
-  _SocialEventDescriptionnState createState() =>
-      _SocialEventDescriptionnState();
+  _SocialEventDescriptionState createState() => _SocialEventDescriptionState();
 }
 
-class _SocialEventDescriptionnState extends State<SocialEventDescriptionn> {
+class _SocialEventDescriptionState extends State<SocialEventDescription> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
+  String heading1 = '';
+  String heading2 = '';
+  String heading3 = '';
+  List<Item>? object;
+  int index = 1;
 
   // static const _knewsTextStyle = TextStyle(
   //   fontFamily: "Roboto Bold",
@@ -28,32 +34,100 @@ class _SocialEventDescriptionnState extends State<SocialEventDescriptionn> {
   // static const _kTimeStampStyle = TextStyle(
   //     fontFamily: "Roboto Regular", fontSize: 13, color: AppTheme.kAccentColor);
 
-  Widget _buildItem() {
+  @override
+  void initState() {
+    super.initState();
+    object = widget.obj;
+    index = widget.index;
+    print(object);
+    // heading1 = string.split(" ");
+  }
+
+  Widget _buildItem(Item obj) {
     return Padding(
       padding: const EdgeInsets.all(_kPadding),
       child: Container(
         child: Column(
           children: [
-            _buildnews(),
+            _buildnews(obj),
             SpacerWidget(_kPadding / 2),
             _buildnewTimeStamp(),
+            _buildbuttomsection(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildnews() {
+  Widget _buildbuttomsection() {
+    return Column(
+      children: [
+        Row(children: [
+          Container(
+            width: MediaQuery.of(context).size.width * .92,
+            height: 5,
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.black)),
+          ),
+        ]),
+        Row(
+          children: [
+            Container(
+                width: MediaQuery.of(context).size.width * .88,
+                child: InkWell(
+                  onTap: () {
+                    // firstpart
+                    // String s = obj.title["__cdata"].toString();
+                    // int dex = s.indexOf("!");
+                    // String temp = s.substring(0, dex + 1).trim();
+                    // print(temp);
+
+                    // // Third
+                    // int dex2 = s.indexOf("#");
+                    // String head2 = s.substring(dex2).trim();
+                    // print(head2);
+                  },
+                  child: Text(
+                    // obj.title["__cdata"].split("..."),
+                    "REPLACE  WITH REAL  NEWS",
+                    // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                    style: Theme.of(context).textTheme.headline2,
+                  ),
+                )),
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget _buildnews(Item obj) {
     return Row(
       children: [
         Container(
             width: MediaQuery.of(context).size.width * .88,
-            child: Text(
-              // REPLACE  WITH REAL  NEWS
-              "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
-              style: Theme.of(context).textTheme.headline2,
+            child: InkWell(
+              onTap: () {
+                // firstpart
+                String s = obj.title["__cdata"].toString();
+                int dex = s.indexOf("!");
+                String head1 = s.substring(0, dex + 1).trim();
+                print(head1);
+
+                // Third
+                int dex2 = s.indexOf("#");
+                String head2 = s.substring(dex2).trim();
+                print(head2);
+              },
+              child: Text(
+                // obj.title["__cdata"].split("..."),
+                "REPLACE  WITH REAL  NEWS",
+                // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+                style: Theme.of(context).textTheme.headline2,
+              ),
             )),
       ],
     );
@@ -161,7 +235,7 @@ class _SocialEventDescriptionnState extends State<SocialEventDescriptionn> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            _buildItem(),
+            _buildItem(object![index]),
             Expanded(child: Container()),
             buttomButtonsWidget(),
           ],

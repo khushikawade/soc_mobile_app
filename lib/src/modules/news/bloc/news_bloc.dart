@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-
 import '../../../overrides.dart';
 part 'news_event.dart';
 part 'news_state.dart';
@@ -128,8 +127,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       //               url: page,
       //             )));
     } else {
-      print(page);
-      print(itemId);
+      // print(page);
+      // print(itemId);
       // Navigator.push(
       //   context,
       //   RouteGenerator.generateRoute(page, args: itemId),

@@ -25,7 +25,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       try {
         yield Loading();
         List<Item> list = await getEventDetails();
-        yield DataGettedSuccessfully(obj: list);
+        yield SocialDataSucess(obj: list);
       } catch (e) {
         yield Errorinloading(err: e);
       }
@@ -49,29 +49,16 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         // print(data2.length);
 
         // List<Item> list = await data2.map<Item>((i) {
+
         return data1.map((i) {
           return Item(
-            title: i["title"],
-            description: i["description"],
-            link: i["link"],
-            guid: i['guid'],
-            creator: i['creator'],
-            pubDate: i['pubDate'],
-            content: i['content'],
-            //         ["__cdata"] ??
-            //     '',
-            // link:
-            // i["description"],
-            // i["link"] ?? '',
-            // i["guid"],
-            // // creator:
-            // i["creator"] ?? '',
-            // // pubDate: data["rss"]["channel"]["item"][1]["pubDate"] ?? '',
-            // // content:
-            // i["content"] ?? '',
-            // // pubDate:
-            // i["pubget"],
-            // description:
+            title: i["title"] ?? '',
+            description: i["description"] ?? '',
+            link: i["link"] ?? '',
+            guid: i['guid'] ?? '',
+            creator: i['creator'] ?? '',
+            pubDate: i['pubDate'] ?? '',
+            content: i['content'] ?? '',
           );
         }).toList();
       } else {
