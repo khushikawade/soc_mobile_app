@@ -22,7 +22,8 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
   String heading2 = '';
   String heading3 = '';
   List<Item>? object;
-  int index = 1;
+  int index = 0;
+  String date = '';
 
   // static const _knewsTextStyle = TextStyle(
   //   fontFamily: "Roboto Bold",
@@ -37,19 +38,26 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
   @override
   void initState() {
     super.initState();
-    object = widget.obj;
-    index = widget.index;
-    print(object);
+    _buildinitlized();
     // heading1 = string.split(" ");
   }
 
-  Widget _buildItem(Item obj) {
+  _buildinitlized() {
+    object = widget.obj;
+    index = widget.index;
+    print("***************");
+    print(object![index].title["__cdata"]);
+    print(index);
+    _build();
+  }
+
+  Widget _buildItem() {
     return Padding(
       padding: const EdgeInsets.all(_kPadding),
       child: Container(
         child: Column(
           children: [
-            _buildnews(obj),
+            _buildnews(),
             SpacerWidget(_kPadding / 2),
             _buildnewTimeStamp(),
             _buildbuttomsection(),
@@ -89,7 +97,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
                   },
                   child: Text(
                     // obj.title["__cdata"].split("..."),
-                    "REPLACE  WITH REAL  NEWS",
+                    object![index].title["__cdata"],
                     // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
                     overflow: TextOverflow.ellipsis,
                     maxLines: 3,
@@ -102,33 +110,43 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
     );
   }
 
-  Widget _buildnews(Item obj) {
-    return Row(
+  _build() {
+    String s = object![index].title["__cdata"].toString();
+    int dex = s.indexOf("!");
+    heading1 = s.substring(0, dex + 1).trim();
+    print(heading1);
+
+    // Third
+    int dex2 = s.indexOf("#");
+    heading3 = s.substring(dex2).trim();
+    print(heading3);
+    date = object![index].pubDate;
+  }
+
+  Widget _buildnews() {
+    return Column(
       children: [
         Container(
-            width: MediaQuery.of(context).size.width * .88,
-            child: InkWell(
-              onTap: () {
-                // firstpart
-                String s = obj.title["__cdata"].toString();
-                int dex = s.indexOf("!");
-                String head1 = s.substring(0, dex + 1).trim();
-                print(head1);
-
-                // Third
-                int dex2 = s.indexOf("#");
-                String head2 = s.substring(dex2).trim();
-                print(head2);
-              },
-              child: Text(
-                // obj.title["__cdata"].split("..."),
-                "REPLACE  WITH REAL  NEWS",
-                // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
-                overflow: TextOverflow.ellipsis,
-                maxLines: 3,
-                style: Theme.of(context).textTheme.headline2,
-              ),
-            )),
+            width: MediaQuery.of(context).size.width * .90,
+            child: heading1.isNotEmpty && heading1.length > 1
+                ? Text(
+                    // obj.title["__cdata"].split("..."),
+                    heading1,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 5,
+                    style: Theme.of(context).textTheme.headline2,
+                  )
+                : Text("1")),
+        Container(
+            width: MediaQuery.of(context).size.width * .90,
+            child: heading3.isNotEmpty && heading3.length > 1
+                ? Text(
+                    heading3,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 5,
+                    style: Theme.of(context).textTheme.headline2,
+                  )
+                : Text("3")),
       ],
     );
   }
@@ -140,7 +158,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
       children: [
         Container(
             child: Text(
-          "${newsTimeStamp}",
+          date,
           style: Theme.of(context).textTheme.subtitle1,
         )),
       ],
@@ -235,7 +253,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            _buildItem(object![index]),
+            _buildItem(),
             Expanded(child: Container()),
             buttomButtonsWidget(),
           ],

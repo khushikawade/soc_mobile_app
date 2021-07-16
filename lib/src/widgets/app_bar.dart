@@ -48,10 +48,10 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
         ],
       ),
       title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
-      bottom: PreferredSize(
-        child: _progressBar(lineProgress, context),
-        preferredSize: Size.fromHeight(3.0),
-      ),
+      // bottom: PreferredSize(
+      //   child: _progressBar(lineProgress, context),
+      //   preferredSize: Size.fromHeight(3.0),
+      // ),
     );
   }
 

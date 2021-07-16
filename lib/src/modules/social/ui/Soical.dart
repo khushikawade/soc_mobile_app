@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:Soc/src/modules/families/Submodule/event/ui/eventdescition.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/modules/social/ui/pageslider.dart';
+import 'package:Soc/src/modules/social/ui/webview.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -62,10 +64,16 @@ class _SocialPageState extends State<SocialPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => SocialEventDescription(
-                        obj: object,
-                        index: index,
-                      )));
+                  builder: (context) =>
+                      SocialAppUrlLauncher(url: "www.google.co.in ")));
+
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => SocialEventDescription(
+          //               obj: object,
+          //               index: index,
+          //             )));
         },
         child: Row(
           children: <Widget>[
