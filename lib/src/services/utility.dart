@@ -100,4 +100,23 @@ class Utility {
     final pattern = new RegExp('.{1,800}'); // 800 is the size of each chunk
     pattern.allMatches(text).forEach((match) => print(match.group(0)));
   }
+
+  static String getUSADateFormat(picked) {
+    return new DateFormat.jm().format(picked.toLocal()).toString();
+  }
+
+  String convertUSADateFormat(picked) {
+    return new DateFormat.yMMMd('en_US').format(picked.toLocal()).toString();
+  }
+
+  static convertDate(date) {
+    String dateNew = date.toString().substring(5).split("}")[0];
+
+    final string = dateNew.toString();
+    final formatter = DateFormat('EEE, d MMM yyyy HH:mm');
+    var dateTime = formatter.parse(string);
+    final DateFormat formatNew = DateFormat('dd/MM/yyyy  hh:mm');
+    final String formatted = formatNew.format(dateTime);
+    return formatted;
+  }
 }

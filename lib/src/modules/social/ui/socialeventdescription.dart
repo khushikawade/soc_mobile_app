@@ -9,7 +9,8 @@ import '../../../overrides.dart';
 // ignore: must_be_immutable
 class SocialEventDescription extends StatefulWidget {
   SocialEventDescription({required this.obj, required this.index});
-  List<Item>? obj;
+  // List<Item>? obj;
+  var obj;
   int index;
   @override
   _SocialEventDescriptionState createState() => _SocialEventDescriptionState();
@@ -21,7 +22,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
   String heading1 = '';
   String heading2 = '';
   String heading3 = '';
-  List<Item>? object;
+  // List<Item>? object;
   int index = 1;
 
   // static const _knewsTextStyle = TextStyle(
@@ -37,9 +38,9 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
   @override
   void initState() {
     super.initState();
-    object = widget.obj;
-    index = widget.index;
-    print(object);
+    // object = widget.obj;
+    // index = widget.index;
+    print(widget.obj);
     // heading1 = string.split(" ");
   }
 
@@ -235,7 +236,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            _buildItem(object![index]),
+            _buildItem(widget.obj),
             Expanded(child: Container()),
             buttomButtonsWidget(),
           ],

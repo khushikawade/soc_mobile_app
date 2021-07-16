@@ -1,14 +1,12 @@
-import 'dart:ui';
-import 'package:Soc/src/modules/families/Submodule/event/ui/eventdescition.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
-import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:googleapis/cloudasset/v1.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
@@ -24,7 +22,6 @@ class _SocialPageState extends State<SocialPage> {
   static const double _kIconSize = 48.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   var unescape = new HtmlUnescape();
-  List<Item>? object;
 
   SocialBloc bloc = SocialBloc();
 
@@ -44,7 +41,7 @@ class _SocialPageState extends State<SocialPage> {
   // static const _kListDateStyle = TextStyle(
   //     fontFamily: "Roboto Regular", fontSize: 13, color: Color(0xff2D3F98));
 
-  Widget _buildlist(Item obj, int index) {
+  Widget _buildlist(obj, int index) {
     var document = parse(obj.description["__cdata"]);
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
@@ -63,7 +60,7 @@ class _SocialPageState extends State<SocialPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => SocialEventDescription(
-                        obj: object,
+                        obj: obj,
                         index: index,
                       )));
         },
@@ -77,10 +74,17 @@ class _SocialPageState extends State<SocialPage> {
                     child: Container(
                       child: imageLink != null && imageLink.length > 4
                           ? ClipRRect(
-                              child: Image.network(
-                              imageLink.toString(),
-                              fit: BoxFit.fill,
-                            ))
+                              child: CachedNetworkImage(
+                                imageUrl: imageLink,
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.blue,
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              ),
+                            )
                           : Text(''),
                     )),
               ],
@@ -97,7 +101,8 @@ class _SocialPageState extends State<SocialPage> {
                       Container(
                           width: MediaQuery.of(context).size.width * 0.69,
                           child: Text(
-                            obj.title["__cdata"],
+                            obj.title["__cdata"]
+                                .replaceAll(new RegExp(r'[^\w\s]+'), ''),
                             // "Check out these book suggestions for your summer reading !",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
@@ -114,9 +119,7 @@ class _SocialPageState extends State<SocialPage> {
                       Container(
                           width: MediaQuery.of(context).size.width * 0.40,
                           child: Text(
-                            unescape.convert(
-                              obj.pubDate.toString(),
-                            ),
+                            Utility.convertDate(obj.pubDate).toString(),
                             style: Theme.of(context).textTheme.subtitle1,
                           )),
                     ],
@@ -157,32 +160,20 @@ class _SocialPageState extends State<SocialPage> {
                         child: Text("No Data found"),
                       );
               } else if (state is Loading) {
-                return Center();
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Center(
+                      child: CircularProgressIndicator(
+                    backgroundColor: Colors.blue,
+                  )),
+                );
+              }
+              if (state is Errorinloading) {
+                return Text("Unable to load the data");
               } else {
                 return Container();
               }
             }),
-        BlocListener<SocialBloc, SocialState>(
-          bloc: bloc,
-          listener: (context, state) {
-            if (state is SocialDataSucess) {
-              print(" *********INSIDE THE SOCAL SUCEESS****");
-              object = state.obj;
-              setState(() {});
-              print(state.obj);
-              // obj = state.obj;
-              // print(obj);
-            }
-
-            if (state is Errorinloading) {
-              if (state.err != null && state.err != "") {
-                Utility.showSnackBar(
-                    _scaffoldKey, "Unable to load the data", context);
-              }
-            }
-          },
-          child: Container(),
-        ),
       ]),
     );
   }
