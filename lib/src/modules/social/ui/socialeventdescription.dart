@@ -1,15 +1,20 @@
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share/share.dart';
 import '../../../overrides.dart';
 
 // ignore: must_be_immutable
 class SocialEventDescription extends StatefulWidget {
   SocialEventDescription({required this.obj, required this.index});
-  List<Item>? obj;
+  // List<Item>? obj;
+  var obj;
   int index;
   @override
   _SocialEventDescriptionState createState() => _SocialEventDescriptionState();
@@ -18,37 +23,51 @@ class SocialEventDescription extends StatefulWidget {
 class _SocialEventDescriptionState extends State<SocialEventDescription> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
+  final _controller = new PageController();
+  static const _kDuration = const Duration(milliseconds: 300);
+  static const _kCurve = Curves.ease;
+  int pageindex = 0;
   String heading1 = '';
   String heading2 = '';
   String heading3 = '';
-  List<Item>? object;
   int index = 0;
-  String date = '';
-
-  // static const _knewsTextStyle = TextStyle(
-  //   fontFamily: "Roboto Bold",
-  //   fontSize: 16,
-  //   color: AppTheme.kAccentColor,
-  //   fontWeight: FontWeight.bold,
-  // );
-
-  // static const _kTimeStampStyle = TextStyle(
-  //     fontFamily: "Roboto Regular", fontSize: 13, color: AppTheme.kAccentColor);
+  var object;
+  var date;
+  var link;
+  var link2;
 
   @override
   void initState() {
     super.initState();
-    _buildinitlized();
+
+    print(
+        "88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888");
+
+    object = widget.obj;
+    _build();
+    index = widget.index;
+
     // heading1 = string.split(" ");
   }
 
-  _buildinitlized() {
-    object = widget.obj;
-    index = widget.index;
-    print("***************");
-    print(object![index].title["__cdata"]);
-    print(index);
-    _build();
+  List<Widget> _samplePages = [
+    Container(
+      child: Text("1"),
+    ),
+    Container(
+      child: Text("2"),
+    ),
+    Container(
+      child: Text("3"),
+    ),
+  ];
+
+  Widget _builditem1() {
+    return Column(children: [
+      _buildItem(),
+      Expanded(child: Container()),
+      buttomButtonsWidget(),
+    ]);
   }
 
   Widget _buildItem() {
@@ -60,6 +79,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             _buildnews(),
             SpacerWidget(_kPadding / 2),
             _buildnewTimeStamp(),
+            SpacerWidget(_kPadding * 4),
             _buildbuttomsection(),
           ],
         ),
@@ -75,35 +95,24 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             width: MediaQuery.of(context).size.width * .92,
             height: 5,
             decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.black)),
+                border: Border.all(width: 0.50, color: Colors.black)),
           ),
         ]),
-        Row(
+        HorzitalSpacerWidget(_kPadding / 2),
+        Column(
           children: [
-            Container(
-                width: MediaQuery.of(context).size.width * .88,
-                child: InkWell(
-                  onTap: () {
-                    // firstpart
-                    // String s = obj.title["__cdata"].toString();
-                    // int dex = s.indexOf("!");
-                    // String temp = s.substring(0, dex + 1).trim();
-                    // print(temp);
-
-                    // // Third
-                    // int dex2 = s.indexOf("#");
-                    // String head2 = s.substring(dex2).trim();
-                    // print(head2);
-                  },
-                  child: Text(
-                    // obj.title["__cdata"].split("..."),
-                    object![index].title["__cdata"],
-                    // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
-                    style: Theme.of(context).textTheme.headline2,
-                  ),
-                )),
+            Text(
+              object[index]
+                  .title["__cdata"]
+                  .replaceAll(new RegExp(r'[^\w\s]+'), ''),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            Text(
+              "#Solvedconsulting #k12 educatio #edtech #edtechers #appdesign #schoolapp",
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
           ],
         )
       ],
@@ -111,16 +120,30 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
   }
 
   _build() {
-    String s = object![index].title["__cdata"].toString();
+    String s = object[index].title["__cdata"].toString();
     int dex = s.indexOf("!");
     heading1 = s.substring(0, dex + 1).trim();
     print(heading1);
-
     // Third
     int dex2 = s.indexOf("#");
     heading3 = s.substring(dex2).trim();
     print(heading3);
-    date = object![index].pubDate;
+    date = object[index].pubDate;
+    link = object[index].link.toString();
+
+    RegExp exp =
+        new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
+    Iterable<RegExpMatch> matches = exp.allMatches(link);
+
+    matches.forEach((match) {
+      link2 = link.substring(match.start, match.end);
+    });
+
+    // int sub1 = link.indexof("w");
+
+    print(
+        "9999999999999999999999999999999999999999999999999999999999999999999999999999");
+    print(link2);
   }
 
   Widget _buildnews() {
@@ -130,13 +153,13 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             width: MediaQuery.of(context).size.width * .90,
             child: heading1.isNotEmpty && heading1.length > 1
                 ? Text(
-                    // obj.title["__cdata"].split("..."),
                     heading1,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 5,
                     style: Theme.of(context).textTheme.headline2,
                   )
                 : Text("1")),
+        SpacerWidget(_kPadding),
         Container(
             width: MediaQuery.of(context).size.width * .90,
             child: heading3.isNotEmpty && heading3.length > 1
@@ -152,13 +175,11 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
   }
 
   Widget _buildnewTimeStamp() {
-    DateTime now = DateTime.now(); //REPLACE WITH ACTUAL DATE
-    String newsTimeStamp = DateFormat('yyyy-MM-dd – kk:mm').format(now);
     return Row(
       children: [
         Container(
             child: Text(
-          date,
+          Utility.convertDate(object[index].pubDate).toString(),
           style: Theme.of(context).textTheme.subtitle1,
         )),
       ],
@@ -177,9 +198,11 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             height: _KButtonSize / 2,
             child: ElevatedButton(
               onPressed: () {
-                // Route route =
-                //     MaterialPageRoute(builder: (context) => MinionFlare());
-                // Navigator.push(context, route);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SocialAppUrlLauncher(link: link2)));
               },
               child: Text("More"),
             ),
@@ -192,9 +215,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             height: _KButtonSize / 2,
             child: ElevatedButton(
               onPressed: () {
-                // Route route =
-                //     MaterialPageRoute(builder: (context) => MinionFlare());
-                // Navigator.push(context, route);
+                _onShareWithEmptyOrigin(context);
               },
               child: Text("Share"),
             ),
@@ -209,7 +230,18 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
       appBar: new AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
-          leading: Container(),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              const IconData(0xe80d,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
+              color: Color(0xff171717),
+              size: 20,
+            ),
+          ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -223,7 +255,8 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    _controller.previousPage(
+                        duration: _kDuration, curve: _kCurve);
                   },
                   icon: Icon(
                     const IconData(0xe80c,
@@ -236,29 +269,62 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
               ],
             ),
             SizedBox(width: _kPadding),
-            Icon(
-              const IconData(0xe815,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: AppTheme.kBlackColor,
-              size: 20,
+            IconButton(
+              onPressed: () {
+                _controller.nextPage(duration: _kDuration, curve: _kCurve);
+              },
+              icon: (Icon(
+                const IconData(0xe815,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kBlackColor,
+                size: 20,
+              )),
             ),
             SizedBox(width: _kPadding),
           ]),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        color: Color(0xffF5F5F5),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            _buildItem(),
-            Expanded(child: Container()),
-            buttomButtonsWidget(),
-          ],
-        ),
+      body: Column(
+        children: <Widget>[
+          Flexible(
+            child: PageView.builder(
+              controller: _controller,
+              itemCount: 2,
+              onPageChanged: (indexnum) {
+                pageindex = indexnum;
+                setState(() {});
+                print(pageindex);
+              },
+              itemBuilder: (BuildContext context, int index) {
+                return _samplePages[index % _samplePages.length];
+              },
+            ),
+          ),
+        ],
       ),
+      bottomSheet: buttomButtonsWidget(),
+      //  Container(
+      //   height: MediaQuery.of(context).size.height,
+      //   color: Color(0xffF5F5F5),
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.start,
+      //     crossAxisAlignment: CrossAxisAlignment.start,
+      //     mainAxisSize: MainAxisSize.max,
+      //     children: [
+      //       _buildItem(),
+      //       Expanded(child: Container()),
+      //       buttomButtonsWidget(),
+      //     ],
+      //   ),
+      // ),
     );
+  }
+
+  _onShareWithEmptyOrigin(BuildContext context) async {
+    RenderBox? box = context.findRenderObject() as RenderBox;
+    final String body =
+        heading1.toString() + heading3.toString() + link.toString();
+
+    await Share.share(body,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }
