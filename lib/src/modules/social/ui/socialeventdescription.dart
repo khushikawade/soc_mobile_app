@@ -1,9 +1,13 @@
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share/share.dart';
 import '../../../overrides.dart';
 
 // ignore: must_be_immutable
@@ -19,40 +23,48 @@ class SocialEventDescription extends StatefulWidget {
 class _SocialEventDescriptionState extends State<SocialEventDescription> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
+  final _controller = new PageController();
+  static const _kDuration = const Duration(milliseconds: 300);
+  static const _kCurve = Curves.ease;
+  int pageindex = 0;
   String heading1 = '';
   String heading2 = '';
   String heading3 = '';
-  // List<Item>? object;
-  int index = 1;
-
-  // static const _knewsTextStyle = TextStyle(
-  //   fontFamily: "Roboto Bold",
-  //   fontSize: 16,
-  //   color: AppTheme.kAccentColor,
-  //   fontWeight: FontWeight.bold,
-  // );
-
-  // static const _kTimeStampStyle = TextStyle(
-  //     fontFamily: "Roboto Regular", fontSize: 13, color: AppTheme.kAccentColor);
+  int index = 0;
+  int firstindex = 0;
+  late int lastindex;
+  var object;
+  var date;
+  var link;
+  var link2;
 
   @override
   void initState() {
     super.initState();
-    // object = widget.obj;
-    // index = widget.index;
-    print(widget.obj);
-    // heading1 = string.split(" ");
+    object = widget.obj;
+    lastindex = object.length;
+    _build();
+    index = widget.index;
   }
 
-  Widget _buildItem(Item obj) {
+  Widget _builditem1() {
+    return Column(children: [
+      _buildItem(),
+      Expanded(child: Container()),
+      buttomButtonsWidget(),
+    ]);
+  }
+
+  Widget _buildItem() {
     return Padding(
       padding: const EdgeInsets.all(_kPadding),
       child: Container(
         child: Column(
           children: [
-            _buildnews(obj),
+            _buildnews(),
             SpacerWidget(_kPadding / 2),
             _buildnewTimeStamp(),
+            SpacerWidget(_kPadding * 4),
             _buildbuttomsection(),
           ],
         ),
@@ -68,80 +80,82 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             width: MediaQuery.of(context).size.width * .92,
             height: 5,
             decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.black)),
+                border: Border.all(width: 0.50, color: Colors.black)),
           ),
         ]),
-        Row(
+        HorzitalSpacerWidget(_kPadding / 2),
+        Column(
           children: [
-            Container(
-                width: MediaQuery.of(context).size.width * .88,
-                child: InkWell(
-                  onTap: () {
-                    // firstpart
-                    // String s = obj.title["__cdata"].toString();
-                    // int dex = s.indexOf("!");
-                    // String temp = s.substring(0, dex + 1).trim();
-                    // print(temp);
-
-                    // // Third
-                    // int dex2 = s.indexOf("#");
-                    // String head2 = s.substring(dex2).trim();
-                    // print(head2);
-                  },
-                  child: Text(
-                    // obj.title["__cdata"].split("..."),
-                    "REPLACE  WITH REAL  NEWS",
-                    // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
-                    style: Theme.of(context).textTheme.headline2,
-                  ),
-                )),
+            Text(
+              object[index]
+                  .title["__cdata"]
+                  .replaceAll(new RegExp(r'[^\w\s]+'), ''),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            Text(
+              "#Solvedconsulting #k12 educatio #edtech #edtechers #appdesign #schoolapp",
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
           ],
         )
       ],
     );
   }
 
-  Widget _buildnews(Item obj) {
-    return Row(
+  _build() {
+    String s = object[index].title["__cdata"].toString();
+    int dex = s.indexOf("!");
+    heading1 = s.substring(0, dex + 1).trim();
+    // Third
+    int dex2 = s.indexOf("#");
+    heading3 = s.substring(dex2).trim();
+    date = object[index].pubDate;
+    link = object[index].link.toString();
+    RegExp exp =
+        new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
+    Iterable<RegExpMatch> matches = exp.allMatches(link);
+
+    matches.forEach((match) {
+      link2 = link.substring(match.start, match.end);
+    });
+  }
+
+  Widget _buildnews() {
+    return Column(
       children: [
         Container(
-            width: MediaQuery.of(context).size.width * .88,
-            child: InkWell(
-              onTap: () {
-                // firstpart
-                String s = obj.title["__cdata"].toString();
-                int dex = s.indexOf("!");
-                String head1 = s.substring(0, dex + 1).trim();
-                print(head1);
-
-                // Third
-                int dex2 = s.indexOf("#");
-                String head2 = s.substring(dex2).trim();
-                print(head2);
-              },
-              child: Text(
-                // obj.title["__cdata"].split("..."),
-                "REPLACE  WITH REAL  NEWS",
-                // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
-                overflow: TextOverflow.ellipsis,
-                maxLines: 3,
-                style: Theme.of(context).textTheme.headline2,
-              ),
-            )),
+            width: MediaQuery.of(context).size.width * .90,
+            child: heading1.isNotEmpty && heading1.length > 1
+                ? Text(
+                    heading1,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 5,
+                    style: Theme.of(context).textTheme.headline2,
+                  )
+                : Text("1")),
+        SpacerWidget(_kPadding),
+        Container(
+            width: MediaQuery.of(context).size.width * .90,
+            child: heading3.isNotEmpty && heading3.length > 1
+                ? Text(
+                    heading3,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 5,
+                    style: Theme.of(context).textTheme.headline2,
+                  )
+                : Text("3")),
       ],
     );
   }
 
   Widget _buildnewTimeStamp() {
-    DateTime now = DateTime.now(); //REPLACE WITH ACTUAL DATE
-    String newsTimeStamp = DateFormat('yyyy-MM-dd – kk:mm').format(now);
     return Row(
       children: [
         Container(
             child: Text(
-          "${newsTimeStamp}",
+          Utility.convertDate(object[index].pubDate).toString(),
           style: Theme.of(context).textTheme.subtitle1,
         )),
       ],
@@ -160,9 +174,11 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             height: _KButtonSize / 2,
             child: ElevatedButton(
               onPressed: () {
-                // Route route =
-                //     MaterialPageRoute(builder: (context) => MinionFlare());
-                // Navigator.push(context, route);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SocialAppUrlLauncher(link: link2)));
               },
               child: Text("More"),
             ),
@@ -175,9 +191,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             height: _KButtonSize / 2,
             child: ElevatedButton(
               onPressed: () {
-                // Route route =
-                //     MaterialPageRoute(builder: (context) => MinionFlare());
-                // Navigator.push(context, route);
+                _onShareWithEmptyOrigin(context);
               },
               child: Text("Share"),
             ),
@@ -192,7 +206,16 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
       appBar: new AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
-          leading: Container(),
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: Icon(
+              const IconData(0xe80d,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
+              color: Color(0xff171717),
+              size: 20,
+            ),
+          ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -202,11 +225,11 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
           ),
           actions: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    _controller.previousPage(
+                        duration: _kDuration, curve: _kCurve);
                   },
                   icon: Icon(
                     const IconData(0xe80c,
@@ -218,30 +241,207 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
                 ),
               ],
             ),
-            SizedBox(width: _kPadding),
-            Icon(
-              const IconData(0xe815,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: AppTheme.kBlackColor,
-              size: 20,
+            SizedBox(width: _kPadding / 3),
+            IconButton(
+              onPressed: () {
+                _controller.nextPage(duration: _kDuration, curve: _kCurve);
+              },
+              icon: (Icon(
+                const IconData(0xe815,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kBlackColor,
+                size: 20,
+              )),
             ),
-            SizedBox(width: _kPadding),
+            SizedBox(width: _kPadding / 3),
           ]),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        color: Color(0xffF5F5F5),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            _buildItem(widget.obj),
-            Expanded(child: Container()),
-            buttomButtonsWidget(),
-          ],
-        ),
+      body: Column(
+        children: <Widget>[
+          Flexible(
+            child: PageView.builder(
+              controller: _controller,
+              itemCount: object.length,
+              onPageChanged: (indexnum) {
+                pageindex = indexnum;
+                index = indexnum;
+                setState(() {
+                  _build();
+                });
+                print(pageindex);
+              },
+              itemBuilder: (BuildContext context, int index) {
+                return _builditem1();
+              },
+            ),
+          ),
+        ],
       ),
+      bottomSheet: buttomButtonsWidget(),
+      //  Container(
+      //   height: MediaQuery.of(context).size.height,
+      //   color: Color(0xffF5F5F5),
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.start,
+      //     crossAxisAlignment: CrossAxisAlignment.start,
+      //     mainAxisSize: MainAxisSize.max,
+      //     children: [
+      //       _buildItem(),
+      //       Expanded(child: Container()),
+      //       buttomButtonsWidget(),
+      //     ],
+      //   ),
+      // ),
     );
   }
+
+  _onShareWithEmptyOrigin(BuildContext context) async {
+    RenderBox? box = context.findRenderObject() as RenderBox;
+    final String body =
+        heading1.toString() + heading3.toString() + link.toString();
+
+    await Share.share(body,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+  }
 }
+
+
+
+
+// import 'package:flutter/material.dart';
+
+// void main() {
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Demo',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       home: MyHomePage(title: 'Flutter Demo Home Page'),
+//     );
+//   }
+// }
+
+// class MyHomePage extends StatefulWidget {
+//   MyHomePage({Key ?key, this.title}) : super(key: key);
+
+//   final String? title;
+
+//   @override
+//   _MyHomePageState createState() => _MyHomePageState();
+// }
+
+// int ?pageViewIndex;
+
+// class _MyHomePageState extends State<MyHomePage> {
+//   ActionMenu ?actionMenu;
+//   final PageController pageController = PageController();
+//   int currentPageIndex = 0;
+//   int pageCount = 1;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     actionMenu = ActionMenu(this.addPageView, this.removePageView);
+//   }
+
+//   addPageView() {
+//     setState(() {
+//       pageCount++;
+//     });
+//   }
+
+//   removePageView(BuildContext context) {
+//     if (pageCount > 1)
+//       setState(() {
+//         pageCount--;
+//       });
+//     else
+//       Scaffold.of(context).showSnackBar(SnackBar(
+//         content: Text("Last page"),
+//       ));
+//   }
+
+//   navigateToPage(int index) {
+//     pageController.animateToPage(
+//       index,
+//       duration: Duration(milliseconds: 300),
+//       curve: Curves.ease,
+//     );
+//   }
+
+//   getCurrentPage(int page) {
+//     pageViewIndex = page;
+//   }
+
+//   createPage(int page) {
+//     return Container(
+//       child: Center(
+//         child: Text('Page $page'),
+//       ),
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(widget.title),
+//         actions: <Widget>[
+//           actionMenu,
+//         ],
+//       ),
+//       body: Container(
+//         child: PageView.builder(
+//           controller: pageController,
+//           onPageChanged: getCurrentPage,
+//           // itemCount: pageCount,
+//           itemBuilder: (context, position) {
+//             if (position == 5) return null;
+//             return createPage(position + 1);
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// enum MenuOptions { addPageAtEnd, deletePageCurrent }
+// List<Widget> listPageView = List();
+
+// class ActionMenu extends StatelessWidget {
+//   final Function addPageView, removePageView;
+//   ActionMenu(this.addPageView, this.removePageView);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return PopupMenuButton<MenuOptions>(
+//       onSelected: (MenuOptions value) {
+//         switch (value) {
+//           case MenuOptions.addPageAtEnd:
+//             this.addPageView();
+//             break;
+//           case MenuOptions.deletePageCurrent:
+//             this.removePageView(context);
+//             break;
+//         }
+//       },
+//       itemBuilder: (BuildContext context) => <PopupMenuItem<MenuOptions>>[
+//         PopupMenuItem<MenuOptions>(
+//           value: MenuOptions.addPageAtEnd,
+//           child: const Text('Add Page at End'),
+//         ),
+//         const PopupMenuItem<MenuOptions>(
+//           value: MenuOptions.deletePageCurrent,
+//           child: Text('Delete Current Page'),
+//         ),
+//       ],
+//     );
+//   }
+

@@ -32,6 +32,7 @@ class AppTheme {
   static const Color kmapBackgroundColor = Color(0xffF4F1EF);
   static const Color kIndicatorBackColor = Color(0xff979AA6);
   static const Color kIndicatorColor = Color(0xffFFFFFF);
+  static const Color kDecativeIconColor = Color(0xff8d8d8d);
 
   //Font-sizes
   static const double kButtonFontSize = 14.0;

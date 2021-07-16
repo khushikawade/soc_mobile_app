@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/families/Submodule/staff/ui/stafflist.dart';
 import 'package:Soc/src/modules/user/ui/login.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/models/webview.dart';
 import 'package:flutter/material.dart';
@@ -76,17 +77,47 @@ class _FamilyPage2State extends State<FamilyPage2> {
     } else if (_selectedIndex == 4) {
       return StaffListPage();
     } else if (_selectedIndex == 5) {
-      return WebView();
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: "",
+                    url: "www.google.com",
+                  )));
     } else if (_selectedIndex == 6) {
-      return WebView();
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: "",
+                    url: "www.google.com",
+                  )));
     } else if (_selectedIndex == 7) {
-      return WebView();
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: "",
+                    url: "www.google.com",
+                  )));
     } else if (_selectedIndex == 8) {
-      return WebView();
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: "",
+                    url: "www.google.com",
+                  )));
     } else if (_selectedIndex == 9) {
       return Resources();
     } else if (_selectedIndex == 10) {
-      return WebView();
+      return Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: "",
+                    url: "www.google.com",
+                  )));
     } else if (_selectedIndex == 11) {
       return ContactPage();
     } else if (_selectedIndex == 12) {

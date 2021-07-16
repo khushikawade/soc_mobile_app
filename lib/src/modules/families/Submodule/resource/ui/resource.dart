@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/families/Submodule/resource/modal/resourcemodal.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/customList.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/models/webview.dart';
 import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +59,12 @@ class _ResourcesState extends State<Resources> {
   Widget _buildresource(int index) {
     return InkWell(
       onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => WebView())),
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: "",
+                    url: "www.google.com",
+                  ))),
       child: Row(
         children: [
           Text(

@@ -1,6 +1,6 @@
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
+import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:googleapis/cloudasset/v1.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -20,8 +20,10 @@ class SocialPage extends StatefulWidget {
 class _SocialPageState extends State<SocialPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 48.0;
+  static const double _kPadding = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   var unescape = new HtmlUnescape();
+  var object;
 
   SocialBloc bloc = SocialBloc();
 
@@ -56,11 +58,13 @@ class _SocialPageState extends State<SocialPage> {
           : AppTheme.kListBackgroundColor2,
       child: InkWell(
         onTap: () {
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => SamplePage()));
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => SocialEventDescription(
-                        obj: obj,
+                        obj: object,
                         index: index,
                       )));
         },
@@ -143,6 +147,13 @@ class _SocialPageState extends State<SocialPage> {
     );
   }
 
+  void _build(obj) {
+    object = obj;
+    print(
+        "******************************************************************************");
+    // print(object[0].pubDate);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(children: [
@@ -150,6 +161,7 @@ class _SocialPageState extends State<SocialPage> {
             bloc: bloc,
             builder: (BuildContext context, SocialState state) {
               if (state is SocialDataSucess) {
+                _build(state.obj);
                 return state.obj != null
                     ? Container(
                         child: Column(
