@@ -76,10 +76,10 @@ class _SocialPageState extends State<SocialPage> {
                           ? ClipRRect(
                               child: CachedNetworkImage(
                                 imageUrl: imageLink,
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  backgroundColor: Colors.blue,
+                                placeholder: (context, url) => SizedBox(
+                                  height: 100,
+                                  width: 100,
+                                  child: CircularProgressIndicator(),
                                 ),
                                 errorWidget: (context, url, error) =>
                                     Icon(Icons.error),

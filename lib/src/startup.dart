@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
-import 'package:Soc/src/modules/globals.dart' as globals;
+import 'package:Soc/src/globals.dart' as globals;
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'modules/user/bloc/user_bloc.dart';
 
 class StartupPage extends StatefulWidget {
   @override
@@ -15,11 +18,12 @@ class _StartupPageState extends State<StartupPage> {
   bool flag = true;
   bool showlogin = true;
   final HomeBloc _bloc = new HomeBloc();
+  UserBloc _loginBloc = new UserBloc();
   void initState() {
     super.initState();
     getDeviceType();
-    // startTimer();
-    _bloc.add(FetchBottomNavigationBar());
+
+    _loginBloc.add(PerfomLogin());
   }
 
   getDeviceType() async {
@@ -41,19 +45,6 @@ class _StartupPageState extends State<StartupPage> {
     return iosInfo.model.toLowerCase();
   }
 
-  // start splash screen timer
-  // void startTimer() {
-  //   Future.delayed(const Duration(seconds: 5), () {
-  //     Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => HomePage(
-  //             title: "SOC",
-  //           ),
-  //         ));
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +56,22 @@ class _StartupPageState extends State<StartupPage> {
             width: 200,
             child: Image.asset('assets/images/splash_bear_icon.png',
                 fit: BoxFit.fill),
+          ),
+        ),
+        BlocListener<UserBloc, UserState>(
+          bloc: _loginBloc,
+          listener: (context, state) async {
+            if (state is LoginSuccess) {
+              Globals.token != null && Globals.token != " "
+                  ? _bloc.add(FetchBottomNavigationBar())
+                  : Container(
+                      child: Text("Please refresh your application"),
+                    );
+            }
+          },
+          child: Container(
+            height: 0,
+            width: 0,
           ),
         ),
         BlocListener<HomeBloc, HomeState>(
@@ -85,7 +92,7 @@ class _StartupPageState extends State<StartupPage> {
             height: 0,
             width: 0,
           ),
-        )
+        ),
       ],
     ));
   }

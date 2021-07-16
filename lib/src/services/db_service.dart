@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:Soc/src/globals.dart';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as httpClient;
 import '../overrides.dart';
 import 'db_service_response.model.dart';
@@ -66,6 +67,37 @@ class DbServices {
     } catch (e) {
       if (e.toString().contains('Failed host lookup')) {
         throw ('No Internet connection');
+      } else {
+        throw (e);
+      }
+    }
+  }
+
+  diopostapi(api, _headers, body) async {
+    try {
+      var dio = Dio();
+
+      Response response = await dio.post(
+        '${Overrides.API_BASE_URL}$api',
+        data: body,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+            // 'Authorization': 'Bearer ${Globals.token}'
+          },
+        ),
+      );
+
+      final data = response.data;
+      if (response.statusCode == 200) {
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      } else {
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      }
+    } catch (e) {
+      if (e.toString().contains("Failed host lookup")) {
+        throw ("No Internet Connection.");
       } else {
         throw (e);
       }

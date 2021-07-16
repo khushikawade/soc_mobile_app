@@ -8,16 +8,17 @@ class StudentApp {
   String? deepLinkC;
   String? id;
   String? name;
+  String? appFolderc;
 
-  StudentApp({
-    this.attributes,
-    this.titleC,
-    this.appIconC,
-    this.appUrlC,
-    this.deepLinkC,
-    this.id,
-    this.name,
-  });
+  StudentApp(
+      {this.attributes,
+      this.titleC,
+      this.appIconC,
+      this.appUrlC,
+      this.deepLinkC,
+      this.id,
+      this.name,
+      this.appFolderc});
 
   factory StudentApp.fromJson(Map<String, dynamic> json) => StudentApp(
         attributes: json['attributes'] == null
@@ -29,6 +30,7 @@ class StudentApp {
         deepLinkC: json['Deep_Link__c'] as String?,
         id: json['Id'] as String?,
         name: json['Name'] as String?,
+        appFolderc: json['App_Folder__c'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -39,5 +41,6 @@ class StudentApp {
         'Deep_Link__c': deepLinkC,
         'Id': id,
         'Name': name,
+        'App_Folder__c': appFolderc
       };
 }

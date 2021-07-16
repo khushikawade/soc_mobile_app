@@ -6,19 +6,19 @@ abstract class UserEvent {
 }
 
 class PerfomLogin extends UserEvent {
-  final String? email;
-  final String? password;
+  // final String? email;
+  // final String? password;
 
-  const PerfomLogin({
-    required this.email,
-    required this.password,
-  });
-
-  @override
-  List<Object?> get props => [email, password];
+  // const PerfomLogin({
+  //   // required this.email,
+  //   // required this.password,
+  // });
 
   @override
-  String toString() => 'PerfomLogin { username: $email, password: $password }';
+  List<Object?> get props => [];
+
+  @override
+  String toString() => 'PerfomLogin { }';
 }
 
 class AutoLogin extends UserEvent {
