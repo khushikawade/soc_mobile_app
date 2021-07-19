@@ -4,6 +4,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventPage extends StatefulWidget {
   @override
@@ -102,9 +103,18 @@ class _EventPageState extends State<EventPage> {
     ),
   ];
 
+  _launchURL(obj) async {
+    if (await canLaunch(obj)) {
+      await launch(obj);
+    } else {
+      throw 'Could not launch ${obj}';
+    }
+  }
+
   Widget _buildList(int index) {
     return InkWell(
       onTap: () {
+        // _launchURL('');
         // Navigator.push(context,
         //     MaterialPageRoute(builder: (context) => EventDescription()));
       },

@@ -26,6 +26,12 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   // }
 
   @override
+  void initState() {
+    print(widget.url);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: AppBar(

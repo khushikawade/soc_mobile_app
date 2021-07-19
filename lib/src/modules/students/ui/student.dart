@@ -1,5 +1,6 @@
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
+import 'package:Soc/src/modules/students/ui/apps_folder.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class StudentPage extends StatefulWidget {
 
 class _StudentPageState extends State<StudentPage> {
   static const double _kLableSpacing = 10.0;
-
+  List<StudentApp> appList = [];
   StudentBloc _bloc = StudentBloc();
 
   @override
@@ -21,55 +22,65 @@ class _StudentPageState extends State<StudentPage> {
     _bloc.add(StudentPageEvent());
   }
 
-  _launchURL(StudentApp obj) async {
-    if (obj.deepLinkC == 'NO') {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.titleC!,
-                    url: obj.appUrlC!,
-                  )));
+  _launchURL(StudentApp obj, list) async {
+    if (obj.appUrlC == 'app_folder') {
+      showDialog(
+        context: context,
+        builder: (_) => AppsFolderPage(obj: list, folderName: obj.titleC!),
+      );
     } else {
-      if (await canLaunch(obj.appUrlC!)) {
-        await launch(obj.appUrlC!);
+      if (obj.deepLinkC == 'NO') {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => InAppUrlLauncer(
+                      title: obj.titleC!,
+                      url: obj.appUrlC!,
+                    )));
       } else {
-        throw 'Could not launch ${obj.appUrlC}';
+        if (await canLaunch(obj.appUrlC!)) {
+          await launch(obj.appUrlC!);
+        } else {
+          throw 'Could not launch ${obj.appUrlC}';
+        }
       }
     }
   }
 
   Widget _buildGrid(int crossaAxisCount, List<StudentApp> list) {
-    return GridView.count(
-      crossAxisCount: crossaAxisCount,
-      crossAxisSpacing: _kLableSpacing,
-      mainAxisSpacing: _kLableSpacing,
-      children: List.generate(
-        list.length,
-        (index) {
-          return InkWell(
-              onTap: () => _launchURL(list[index]),
-              child: Column(
-                children: [
-                  list[index].appIconC != null && list[index].appIconC != ''
-                      ? SizedBox(
-                          height: 100,
-                          width: 100,
-                          child: CachedNetworkImage(
-                            imageUrl: list[index].appIconC ?? '',
-                            placeholder: (context, url) =>
-                                CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                        )
-                      : Container(),
-                  Text("${list[index].titleC}"),
-                ],
-              ));
-        },
-      ),
-    );
+    return appList.length > 0
+        ? GridView.count(
+            crossAxisCount: crossaAxisCount,
+            crossAxisSpacing: _kLableSpacing,
+            mainAxisSpacing: _kLableSpacing,
+            children: List.generate(
+              appList.length,
+              (index) {
+                return InkWell(
+                    onTap: () => _launchURL(appList[index], list),
+                    child: Column(
+                      children: [
+                        appList[index].appIconC != null &&
+                                appList[index].appIconC != ''
+                            ? SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: CachedNetworkImage(
+                                  imageUrl: appList[index].appIconC ?? '',
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                ),
+                              )
+                            : Container(),
+                        Text("${appList[index].titleC}"),
+                      ],
+                    ));
+              },
+            ),
+          )
+        : Container(child: Text("No apps available here"));
   }
 
   @override
@@ -84,6 +95,12 @@ class _StudentPageState extends State<StudentPage> {
                   backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is StudentDataSucess) {
+                for (int i = 0; i < state.obj!.length; i++) {
+                  if (state.obj![i].appFolderc == null ||
+                      state.obj![i].appFolderc == "") {
+                    appList.add(state.obj![i]);
+                  }
+                }
                 return _buildGrid(3, state.obj!);
               } else {
                 return Container();

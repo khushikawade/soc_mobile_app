@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
@@ -105,65 +107,202 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+<<<<<<< HEAD
+=======
+  // Widget buttomNavigationWidget() {
+  //   return Container(
+  //     padding: EdgeInsets.only(top: 2.0),
+  //     child: BottomNavigationBar(
+  //       type: BottomNavigationBarType.fixed,
+  //       items: <BottomNavigationBarItem>[
+  //         BottomNavigationBarItem(
+  //           icon: Column(
+  //             children: [
+  //               Text(
+  //                 "Social",
+  //                 style: Theme.of(context).textTheme.subtitle2,
+  //               ),
+  //               Padding(
+  //                 padding: const EdgeInsets.only(top: 0.0),
+  //                 child: Icon(
+  //                   const IconData(0xe80d,
+  //                       fontFamily: Overrides.kFontFam,
+  //                       fontPackage: Overrides.kFontPkg),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //           label: '',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Column(children: [
+  //             Text(
+  //               "News",
+  //               style: Theme.of(context).textTheme.subtitle2,
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.only(top: 0.0),
+  //               child: Icon(
+  //                 const IconData(0xe807,
+  //                     fontFamily: Overrides.kFontFam,
+  //                     fontPackage: Overrides.kFontPkg),
+  //                 // size: 40.0,
+  //               ),
+  //             ),
+  //           ]),
+  //           label: '',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Column(
+  //             children: [
+  //               Text(
+  //                 "Students",
+  //                 style: Theme.of(context).textTheme.subtitle2,
+  //               ),
+  //               Padding(
+  //                 padding: const EdgeInsets.only(top: 0.0),
+  //                 child: Icon(
+  //                   const IconData(0xe810,
+  //                       fontFamily: Overrides.kFontFam,
+  //                       fontPackage: Overrides.kFontPkg),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //           label: '',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Column(children: [
+  //             Text(
+  //               "Families",
+  //               style: Theme.of(context).textTheme.subtitle2,
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.only(top: 0.0),
+  //               child: Icon(
+  //                 const IconData(0xe801,
+  //                     fontFamily: Overrides.kFontFam,
+  //                     fontPackage: Overrides.kFontPkg),
+  //               ),
+  //             ),
+  //           ]),
+  //           label: '',
+  //         ),
+  //         BottomNavigationBarItem(
+  //           icon: Column(children: [
+  //             Text(
+  //               "Staff",
+  //               style: Theme.of(context).textTheme.subtitle2,
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.only(top: 0.0),
+  //               child: Icon(
+  //                 const IconData(0xe80e,
+  //                     fontFamily: Overrides.kFontFam,
+  //                     fontPackage: Overrides.kFontPkg),
+  //               ),
+  //             ),
+  //           ]),
+  //           label: '',
+  //         ),
+  //       ],
+  //       currentIndex: _selectedIndex,
+  //       onTap: _onItemTap,
+  //     ),
+  //   );
+  // }
+  _onBackPressed() {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: AppTheme.kBackgroundColor,
+              title: Text(
+                "Do you want to exit the app?",
+                style: Theme.of(context).textTheme.headline2,
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text(
+                    "No",
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () => exit(0),
+                  child: Text(
+                    "Yes",
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                ),
+              ],
+            ));
+  }
+
+>>>>>>> eea9121ef3166e5c4568158daf12e596ca292ca3
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-          leadingWidth: _kIconSize,
-          elevation: 0.0,
-          leading: _selectedIndex == 3
-              ? Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Icon(IconData(0xe800,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg)),
-                )
-              : Container(
-                  height: 0,
-                ),
-          title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
-          actions: <Widget>[
-            _selectedIndex == 3
-                ? Icon(
-                    const IconData(0xe805,
+    return WillPopScope(
+      onWillPop: () => _onBackPressed(),
+      child: Scaffold(
+        appBar: new AppBar(
+            leadingWidth: _kIconSize,
+            elevation: 0.0,
+            leading: _selectedIndex == 3
+                ? Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Icon(IconData(0xe800,
                         fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
+                        fontPackage: Overrides.kFontPkg)),
                   )
                 : Container(
                     height: 0,
                   ),
-            _buildPopupMenuWidget(),
-          ]),
-      body: selectedScreenBody(context, _selectedIndex),
-      bottomNavigationBar: //buttomNavigationWidget()
-          BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        items: widget.obj["Bottom_Navigation__c"]
-            .split(";")
-            .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
-                  icon: Column(children: [
-                    Text(
-                      e.split("_")[0],
-                      style: Theme.of(context).textTheme.subtitle2,
+            title:
+                SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
+            actions: <Widget>[
+              _selectedIndex == 3
+                  ? Icon(
+                      const IconData(0xe805,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                    )
+                  : Container(
+                      height: 0,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: Icon(
-                        IconData(int.parse(e.split("_")[1]),
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
+              _buildPopupMenuWidget(),
+            ]),
+        body: selectedScreenBody(context, _selectedIndex),
+        bottomNavigationBar: //buttomNavigationWidget()
+            BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          items: widget.obj["Bottom_Navigation__c"]
+              .split(";")
+              .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
+                    icon: Column(children: [
+                      Text(
+                        e.split("_")[0],
+                        style: Theme.of(context).textTheme.subtitle2,
                       ),
-                    ),
-                  ]),
-                  label: '',
-                ))
-            .toList(),
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Icon(
+                          IconData(int.parse(e.split("_")[1]),
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                        ),
+                      ),
+                    ]),
+                    label: '',
+                  ))
+              .toList(),
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+        ),
       ),
     );
   }

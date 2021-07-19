@@ -81,10 +81,17 @@ class _SocialPageState extends State<SocialPage> {
                           ? ClipRRect(
                               child: CachedNetworkImage(
                                 imageUrl: imageLink,
+<<<<<<< HEAD
                                 placeholder: (context, url) =>
                                     CircularProgressIndicator(
                                   strokeWidth: 2,
                                   backgroundColor: AppTheme.kAccentColor,
+=======
+                                placeholder: (context, url) => SizedBox(
+                                  height: 100,
+                                  width: 100,
+                                  child: CircularProgressIndicator(),
+>>>>>>> eea9121ef3166e5c4568158daf12e596ca292ca3
                                 ),
                                 errorWidget: (context, url, error) =>
                                     Icon(Icons.error),
