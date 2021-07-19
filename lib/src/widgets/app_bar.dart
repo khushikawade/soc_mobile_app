@@ -1,7 +1,7 @@
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/run/v1.dart';
+
 import '../overrides.dart';
 
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {

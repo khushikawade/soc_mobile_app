@@ -232,8 +232,8 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
               children: [
                 IconButton(
                   onPressed: () {
-                    _controller.previousPage(
-                        duration: _kDuration, curve: _kCurve);
+                    // _controller.previousPage(
+                    //     duration: _kDuration, curve: _kCurve);
                     if (currentindex > -1 && currentindex < object.length) {
                       _controller.previousPage(
                           duration: _kDuration, curve: _kCurve);
@@ -266,7 +266,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
                   _build();
                 }
 
-                _controller.nextPage(duration: _kDuration, curve: _kCurve);
+                // _controller.nextPage(duration: _kDuration, curve: _kCurve);
               },
               icon: (Icon(
                 const IconData(0xe815,
@@ -347,140 +347,3 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
     setState(() {});
   }
 }
-
-// import 'package:flutter/material.dart';
-
-// void main() {
-//   runApp(MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Flutter Demo',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: MyHomePage(title: 'Flutter Demo Home Page'),
-//     );
-//   }
-// }
-
-// class MyHomePage extends StatefulWidget {
-//   MyHomePage({Key ?key, this.title}) : super(key: key);
-
-//   final String? title;
-
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
-
-// int ?pageViewIndex;
-
-// class _MyHomePageState extends State<MyHomePage> {
-//   ActionMenu ?actionMenu;
-//   final PageController pageController = PageController();
-//   int currentPageIndex = 0;
-//   int pageCount = 1;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     actionMenu = ActionMenu(this.addPageView, this.removePageView);
-//   }
-
-//   addPageView() {
-//     setState(() {
-//       pageCount++;
-//     });
-//   }
-
-//   removePageView(BuildContext context) {
-//     if (pageCount > 1)
-//       setState(() {
-//         pageCount--;
-//       });
-//     else
-//       Scaffold.of(context).showSnackBar(SnackBar(
-//         content: Text("Last page"),
-//       ));
-//   }
-
-//   navigateToPage(int index) {
-//     pageController.animateToPage(
-//       index,
-//       duration: Duration(milliseconds: 300),
-//       curve: Curves.ease,
-//     );
-//   }
-
-//   getCurrentPage(int page) {
-//     pageViewIndex = page;
-//   }
-
-//   createPage(int page) {
-//     return Container(
-//       child: Center(
-//         child: Text('Page $page'),
-//       ),
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.title),
-//         actions: <Widget>[
-//           actionMenu,
-//         ],
-//       ),
-//       body: Container(
-//         child: PageView.builder(
-//           controller: pageController,
-//           onPageChanged: getCurrentPage,
-//           // itemCount: pageCount,
-//           itemBuilder: (context, position) {
-//             if (position == 5) return null;
-//             return createPage(position + 1);
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// enum MenuOptions { addPageAtEnd, deletePageCurrent }
-// List<Widget> listPageView = List();
-
-// class ActionMenu extends StatelessWidget {
-//   final Function addPageView, removePageView;
-//   ActionMenu(this.addPageView, this.removePageView);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return PopupMenuButton<MenuOptions>(
-//       onSelected: (MenuOptions value) {
-//         switch (value) {
-//           case MenuOptions.addPageAtEnd:
-//             this.addPageView();
-//             break;
-//           case MenuOptions.deletePageCurrent:
-//             this.removePageView(context);
-//             break;
-//         }
-//       },
-//       itemBuilder: (BuildContext context) => <PopupMenuItem<MenuOptions>>[
-//         PopupMenuItem<MenuOptions>(
-//           value: MenuOptions.addPageAtEnd,
-//           child: const Text('Add Page at End'),
-//         ),
-//         const PopupMenuItem<MenuOptions>(
-//           value: MenuOptions.deletePageCurrent,
-//           child: Text('Delete Current Page'),
-//         ),
-//       ],
-//     );
-//   }

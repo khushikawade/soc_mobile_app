@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'globals.dart';
-
 import 'modules/user/bloc/user_bloc.dart';
 
 class StartupPage extends StatefulWidget {
@@ -37,10 +36,8 @@ class _StartupPageState extends State<StartupPage> {
     try {
       if (Platform.isAndroid) {
         andorid = await deviceInfoPlugin.androidInfo;
-        // deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
       } else if (Platform.isIOS) {
         ios = await deviceInfoPlugin.iosInfo;
-        // deviceData = _readIosDeviceInfo(await deviceInfoPlugin.iosInfo);
       }
       // ignore: nullable_type_in_catch_clause
     } on PlatformException {
@@ -63,12 +60,10 @@ class _StartupPageState extends State<StartupPage> {
 
   getDeviceType() async {
     if (Platform.isAndroid) {
-      // deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
       final data = (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
       andorid = await deviceInfoPlugin.androidInfo;
       Globals.phoneModel = andorid!.device;
       Globals.baseOS = andorid!.version.baseOS;
-      // globals.deviceType = data.size.shortestSide < 600 ? 'tablet' :'tablet';
       Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
       print("${Globals.deviceType}");
     } else {
