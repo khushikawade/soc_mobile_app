@@ -18,7 +18,7 @@ class _StartupPageState extends State<StartupPage> {
   bool flag = true;
   bool showlogin = true;
   final HomeBloc _bloc = new HomeBloc();
-  final UserBloc _loginBloc = new UserBloc();
+  UserBloc _loginBloc = new UserBloc();
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   Map<String, dynamic> _deviceData = <String, dynamic>{};
   AndroidDeviceInfo? andorid;
@@ -26,9 +26,8 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     getDeviceType();
-    // startTimer();
-    _bloc.add(FetchBottomNavigationBar());
-    initPlatformState();
+
+    _loginBloc.add(PerfomLogin());
   }
 
   Future<void> initPlatformState() async {

@@ -1,4 +1,3 @@
-import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -112,9 +111,9 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
               object[currentindex]
                   .title["__cdata"]
                   .replaceAll(new RegExp(r'[^\w\s]+'), ''),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
-              style: Theme.of(context).textTheme.subtitle1,
+              // overflow: TextOverflow.ellipsis,
+              // maxLines: 3,
+              // style: Theme.of(context).textTheme.subtitle1,
             ),
             Text(
               "#Solvedconsulting #k12 educatio #edtech #edtechers #appdesign #schoolapp",
@@ -233,8 +232,8 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
               children: [
                 IconButton(
                   onPressed: () {
-                    _controller.previousPage(
-                        duration: _kDuration, curve: _kCurve);
+                    // _controller.previousPage(
+                    //     duration: _kDuration, curve: _kCurve);
                     if (currentindex > -1 && currentindex < object.length) {
                       _controller.previousPage(
                           duration: _kDuration, curve: _kCurve);
@@ -267,7 +266,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
                   _build();
                 }
 
-                _controller.nextPage(duration: _kDuration, curve: _kCurve);
+                // _controller.nextPage(duration: _kDuration, curve: _kCurve);
               },
               icon: (Icon(
                 const IconData(0xe815,

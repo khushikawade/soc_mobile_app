@@ -83,8 +83,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       OSiOSSettings.promptBeforeOpeningPushUrl: true
     };
 
-    OneSignal.shared
-        .setNotificationReceivedHandler((OSNotification notification) {
+    OneSignal.shared.setNotificationWillShowInForegroundHandler(
+        (OSNotificationReceivedEvent notification) {
       print(
           "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
     });
@@ -93,7 +93,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
       print(
           "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-      _performPushOperation(result, context);
+      // _performPushOperation(result, context);
     });
 
     OneSignal.shared
@@ -105,14 +105,23 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       print("PERMISSION STATE CHANGED: ${changes.jsonRepresentation()}");
     });
 
-    await OneSignal.shared.init(Overrides.PUSH_APP_ID, iOSSettings: settings);
+    OneSignal.shared.setEmailSubscriptionObserver(
+        (OSEmailSubscriptionStateChanges emailChanges) {});
 
-    OneSignal.shared
-        .setInFocusDisplayType(OSNotificationDisplayType.notification);
+    OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
+
+// The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      print("Accepted permission: $accepted");
+    });
 
     // await OneSignal.shared.sendTags({"dbKey": "coimbee"});
 
     if (Platform.isIOS) {
+      await OneSignal.shared
+          .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    }
+    if (Platform.isAndroid) {
       await OneSignal.shared
           .promptUserForPushNotificationPermission(fallbackToSettings: true);
     }
@@ -153,8 +162,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Future<void> updateDeviceId() async {
     // print("Updating the Onesignal Player id");
     try {
-      final status = await OneSignal.shared.getPermissionSubscriptionState();
-      final deviceId = status.subscriptionStatus.userId;
+      final status = await OneSignal.shared.getDeviceState();
+      final deviceId = status?.userId;
       // print("deviceId...");
       print(deviceId);
       if (deviceId == null) {

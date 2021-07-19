@@ -21,26 +21,24 @@ class _NewsPageState extends State<NewsPage> {
     bloc.add(FetchNotificationList());
   }
 
-  _launchURL(obj) async {
-    if (obj.url != null && obj.url != "") {
-      // print("${obj.url}++++++++++++++++++++++++++++++++++++++");
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.headings,
-                    url: obj.url!,
-                  )));
-    } else {
-      throw 'Could not launch ${obj.url}';
-    }
-  }
+  // _launchURL(obj) async {
+  //   if (obj.url != null && obj.url != "") {
+  //     // print("${obj.url}++++++++++++++++++++++++++++++++++++++");
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (BuildContext context) => InAppUrlLauncer(
+  //                   title: obj.headings,
+  //                   url: obj.url!,
+  //                 )));
+  //   } else {
+  //     throw 'Could not launch ${obj.url}';
+  //   }
+  // }
 
   Widget _buildListItems(NotificationList obj) {
     return InkWell(
-      onTap: () {
-        _launchURL(obj);
-      },
+      onTap: () {},
       child: Container(
           padding: EdgeInsets.symmetric(
               horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 3),
