@@ -3,15 +3,17 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/inwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
 import '../../../overrides.dart';
 
 // ignore: must_be_immutable
 class SocialEventDescription extends StatefulWidget {
   SocialEventDescription({required this.obj, required this.index});
-  // List<Item>? obj;
+
   var obj;
   int index;
   @override
@@ -37,27 +39,18 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
   var date;
   var link;
   var link2;
+  int pageviewItem = 0;
 
   @override
   void initState() {
     super.initState();
     object = widget.obj;
     lastindex = object.length;
-    itemcount = lastindex;
     currentindex = int.parse("${widget.index}");
-    print("                          CURENT INDEX");
-    print(currentindex);
+    pageviewItem = lastindex + currentindex;
 
     _build();
   }
-
-  // _maps() {
-  //   List<Item> list = [];
-  //   for (int i = 0; i < object.length; i++) {
-  //     Item customObject = Item(title: [i][obj]['key'], weight: map[i]['key']);
-  //     list.add(CustomObject);
-  //   }
-  // }
 
   Widget _builditem1() {
     return Column(children: [
@@ -65,15 +58,6 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
       Expanded(child: Container()),
       buttomButtonsWidget(),
     ]);
-  }
-
-  @override
-  void didChangeDependencies() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      if (_controller.hasClients) _controller.jumpToPage(currentindex);
-    });
-
-    super.didChangeDependencies();
   }
 
   Widget _buildItem() {
@@ -107,16 +91,14 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
         HorzitalSpacerWidget(_kPadding / 2),
         Column(
           children: [
+            Html(data: object[currentindex].title["__cdata"]),
+            // Text(
+            //   object[currentindex]
+            //       .title["__cdata"]
+            //       .replaceAll(new RegExp(r'[^\w\s]+'), ''),
+            // ),
             Text(
-              object[currentindex]
-                  .title["__cdata"]
-                  .replaceAll(new RegExp(r'[^\w\s]+'), ''),
-              // overflow: TextOverflow.ellipsis,
-              // maxLines: 3,
-              // style: Theme.of(context).textTheme.subtitle1,
-            ),
-            Text(
-              "#Solvedconsulting #k12 educatio #edtech #edtechers #appdesign #schoolapp",
+              "#Solvedconsulting #k12 education #edtech #edtechers #appdesign #schoolapp",
               style: Theme.of(context).textTheme.subtitle1,
             ),
           ],
@@ -182,7 +164,7 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            SocialAppUrlLauncher(link: link2)));
+                            InappWebview(link: link2, isSocialpage: true)));
               },
               child: Text("More"),
             ),
@@ -231,16 +213,15 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             Row(
               children: [
                 IconButton(
-                  onPressed: () {
-                    // _controller.previousPage(
-                    //     duration: _kDuration, curve: _kCurve);
-                    if (currentindex > -1 && currentindex < object.length) {
+                  onPressed: () async {
+                    if (pageindex > -1 && pageindex < object.length - 2) {
                       _controller.previousPage(
                           duration: _kDuration, curve: _kCurve);
                       currentindex = currentindex - 1;
                       print("**************************************");
 
-                      _build();
+                      var i = await _build();
+                      setState(() {});
                     }
                   },
                   icon: Icon(
@@ -257,16 +238,16 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             ),
             SizedBox(width: _kPadding / 3),
             IconButton(
-              onPressed: () {
-                if (currentindex > -1 && currentindex < object.length) {
+              onPressed: () async {
+                if (pageindex > -1 && pageindex < object.length - 2) {
                   currentindex = currentindex + 1;
                   print("**************************************");
                   _controller.nextPage(duration: _kDuration, curve: _kCurve);
 
-                  _build();
-                }
+                  var i = await _build();
 
-                // _controller.nextPage(duration: _kDuration, curve: _kCurve);
+                  setState(() {});
+                }
               },
               icon: (Icon(
                 const IconData(0xe815,
@@ -280,21 +261,16 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
             ),
             SizedBox(width: _kPadding / 3),
           ]),
-      body: currentindex != null && currentindex < object.length
+      body: pageindex < object.length - 2
           ? Column(
               children: <Widget>[
                 Flexible(
                   child: PageView.builder(
                     controller: _controller,
-                    itemCount: itemcount,
+                    itemCount: lastindex - 2,
                     onPageChanged: (indexnum) {
                       pageindex = indexnum;
-                      // _build();
-                      // currentindex = indexnum;
-                      // setState(() {
-                      //   _build();
-                      //   print(currentindex);
-                      // });
+
                       print(pageindex);
                     },
                     itemBuilder: (BuildContext context, int index) {
@@ -318,19 +294,13 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
-  _build() async {
-    print("inside build bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+  Future _build() async {
     String s = object[currentindex]
         .title["__cdata"]
         .replaceAll(new RegExp(r'[^\w\s]+'), '');
-    //   // .toString()
-    //   // .trim();
-    // int dex = s.indexOf("!");
-    // heading1 = s.substring(0, dex + 1).trim();
+
     heading1 = s;
-    // Third
-    // int dex2 = s.indexOf("#");
-    // heading3 = s.substring(dex2).trim();
+
     date = object[currentindex].pubDate;
     link = object[currentindex].link.toString();
     print("*********************link*******************************");
@@ -341,9 +311,5 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
     matches.forEach((match) {
       link2 = link.substring(match.start, match.end);
     });
-    print(
-        "******************************LINK LINK LINK************************");
-    print(link2);
-    setState(() {});
   }
 }
