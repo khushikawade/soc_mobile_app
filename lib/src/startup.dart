@@ -4,12 +4,8 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:Soc/src/modules/globals.dart' as globals;
+
 import 'package:flutter/services.dart';
-=======
-import 'package:Soc/src/globals.dart' as globals;
->>>>>>> eea9121ef3166e5c4568158daf12e596ca292ca3
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'globals.dart';
 
@@ -24,7 +20,7 @@ class _StartupPageState extends State<StartupPage> {
   bool flag = true;
   bool showlogin = true;
   final HomeBloc _bloc = new HomeBloc();
-<<<<<<< HEAD
+  final UserBloc _loginBloc = new UserBloc();
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   Map<String, dynamic> _deviceData = <String, dynamic>{};
   AndroidDeviceInfo? andorid;
@@ -35,14 +31,6 @@ class _StartupPageState extends State<StartupPage> {
     // startTimer();
     _bloc.add(FetchBottomNavigationBar());
     initPlatformState();
-=======
-  UserBloc _loginBloc = new UserBloc();
-  void initState() {
-    super.initState();
-    getDeviceType();
-
-    _loginBloc.add(PerfomLogin());
->>>>>>> eea9121ef3166e5c4568158daf12e596ca292ca3
   }
 
   Future<void> initPlatformState() async {

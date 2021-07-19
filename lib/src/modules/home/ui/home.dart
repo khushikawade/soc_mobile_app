@@ -107,8 +107,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-<<<<<<< HEAD
-=======
   // Widget buttomNavigationWidget() {
   //   return Container(
   //     padding: EdgeInsets.only(top: 2.0),
@@ -239,7 +237,6 @@ class _HomePageState extends State<HomePage> {
             ));
   }
 
->>>>>>> eea9121ef3166e5c4568158daf12e596ca292ca3
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

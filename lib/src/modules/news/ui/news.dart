@@ -1,10 +1,7 @@
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-<<<<<<< HEAD
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
-=======
->>>>>>> eea9121ef3166e5c4568158daf12e596ca292ca3
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,14 +39,7 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildListItems(NotificationList obj) {
     return InkWell(
       onTap: () {
-<<<<<<< HEAD
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => Newdescription()));
-=======
         _launchURL(obj);
->>>>>>> eea9121ef3166e5c4568158daf12e596ca292ca3
       },
       child: Container(
           padding: EdgeInsets.symmetric(
@@ -75,10 +65,7 @@ class _NewsPageState extends State<NewsPage> {
             width: MediaQuery.of(context).size.width * .88,
             child: Text(
               obj.contents["en"].toString(),
-<<<<<<< HEAD
               // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
-=======
->>>>>>> eea9121ef3166e5c4568158daf12e596ca292ca3
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               style: Theme.of(context).textTheme.headline4,
