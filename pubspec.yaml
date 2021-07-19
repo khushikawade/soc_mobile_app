@@ -51,8 +51,8 @@ dependencies:
   onesignal_flutter: ^2.6.4
   table_calendar: ^3.0.1
   flutter_datetime_picker: ^1.5.1
-  googleapis: ^4.0.0
-  googleapis_auth: ^1.1.0
+ 
+  
   html_unescape: ^2.0.0
   html: ^0.15.0
   flutter_linkify: ^5.0.2
