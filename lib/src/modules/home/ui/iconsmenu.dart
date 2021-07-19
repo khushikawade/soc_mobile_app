@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class IconsMenu {
   static const items = <IconMenu>[
     Information,

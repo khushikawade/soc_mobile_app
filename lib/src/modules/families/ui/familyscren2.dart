@@ -33,8 +33,8 @@ class _FamilyPage2State extends State<FamilyPage2> {
   }
 
   //STYLE
-  static const _kPopMenuTextStyle = TextStyle(
-      fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
+  // static const _kPopMenuTextStyle = TextStyle(
+  //     fontFamily: "Roboto Regular", fontSize: 14, color: Color(0xff474D55));
 
   // Top-Section Widget
 
@@ -128,7 +128,9 @@ class _FamilyPage2State extends State<FamilyPage2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(),
+      appBar: CustomAppBarWidget(
+        isnewsDescription: false,
+      ),
       body: selectedScreenBody(context, _selectedIndex),
     );
   }

@@ -137,7 +137,7 @@ class _AboutusPageState extends State<AboutusPage> {
               SpacerWidget(_kLabelSpacing),
               _buildContent2(),
               SpacerWidget(_kLabelSpacing),
-              _buildContent3()
+              _buildContent3(),
             ],
           ),
         ),

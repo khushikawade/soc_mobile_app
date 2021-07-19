@@ -1,5 +1,7 @@
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/modules/news/ui/newdescription.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,26 +22,24 @@ class _NewsPageState extends State<NewsPage> {
     bloc.add(FetchNotificationList());
   }
 
-  _launchURL(obj) async {
-    if (obj.url != null && obj.url != "") {
-      // print("${obj.url}++++++++++++++++++++++++++++++++++++++");
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.headings,
-                    url: obj.url!,
-                  )));
-    } else {
-      throw 'Could not launch ${obj.url}';
-    }
-  }
+  // _launchURL(obj) async {
+  //   if (obj.url != null && obj.url != "") {
+  //     // print("${obj.url}++++++++++++++++++++++++++++++++++++++");
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (BuildContext context) => InAppUrlLauncer(
+  //                   title: obj.headings,
+  //                   url: obj.url!,
+  //                 )));
+  //   } else {
+  //     throw 'Could not launch ${obj.url}';
+  //   }
+  // }
 
   Widget _buildListItems(NotificationList obj) {
     return InkWell(
-      onTap: () {
-        // _launchURL(obj);
-      },
+      onTap: () {},
       child: Container(
           padding: EdgeInsets.symmetric(
               horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 3),
@@ -64,6 +64,7 @@ class _NewsPageState extends State<NewsPage> {
             width: MediaQuery.of(context).size.width * .88,
             child: Text(
               obj.contents["en"].toString(),
+              // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               style: Theme.of(context).textTheme.headline4,
@@ -94,7 +95,7 @@ class _NewsPageState extends State<NewsPage> {
     return Container(
       height: 0.4,
       decoration: BoxDecoration(
-        color: Color(0xff979AA6),
+        color: AppTheme.kDividerColor,
       ),
     );
   }
@@ -135,7 +136,7 @@ class _NewsPageState extends State<NewsPage> {
                         height: MediaQuery.of(context).size.height * 0.8,
                         child: Center(
                             child: CircularProgressIndicator(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Theme.of(context).accentColor,
                         )),
                       );
                     } else {

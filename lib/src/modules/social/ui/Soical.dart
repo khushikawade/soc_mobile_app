@@ -1,3 +1,4 @@
+import 'package:Soc/src/app.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -80,10 +81,10 @@ class _SocialPageState extends State<SocialPage> {
                           ? ClipRRect(
                               child: CachedNetworkImage(
                                 imageUrl: imageLink,
-                                placeholder: (context, url) => SizedBox(
-                                  height: 100,
-                                  width: 100,
-                                  child: CircularProgressIndicator(),
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  backgroundColor: AppTheme.kAccentColor,
                                 ),
                                 errorWidget: (context, url, error) =>
                                     Icon(Icons.error),
@@ -176,7 +177,7 @@ class _SocialPageState extends State<SocialPage> {
                   height: MediaQuery.of(context).size.height * 0.8,
                   child: Center(
                       child: CircularProgressIndicator(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: AppTheme.kAccentColor,
                   )),
                 );
               }

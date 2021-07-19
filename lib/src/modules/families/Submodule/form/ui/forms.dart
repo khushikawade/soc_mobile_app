@@ -7,8 +7,6 @@ import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
 
 class FormPage extends StatefulWidget {
-  FormPage({Key? key, this.title}) : super(key: key);
-  final String? title;
   @override
   _FormPageState createState() => _FormPageState();
 }
