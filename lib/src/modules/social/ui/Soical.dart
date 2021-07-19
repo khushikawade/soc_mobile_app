@@ -1,8 +1,5 @@
-import 'package:Soc/src/app.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
-import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -23,7 +20,6 @@ class _SocialPageState extends State<SocialPage> {
   static const double _kIconSize = 48.0;
   static const double _kPadding = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  var unescape = new HtmlUnescape();
   var object;
 
   SocialBloc bloc = SocialBloc();

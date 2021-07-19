@@ -51,12 +51,11 @@ dependencies:
   onesignal_flutter: ^3.1.0 #^2.6.4
   table_calendar: ^3.0.1
   flutter_datetime_picker: ^1.5.1
- 
-  
-  html_unescape: ^2.0.0
   html: ^0.15.0
   flutter_html: ^2.1.0
   flutter_linkify: ^5.0.2
+  advance_pdf_viewer: ^2.0.0
+  
  
   
   # firebase_dynamic_links: ^2.0.1 TODO configure the app
