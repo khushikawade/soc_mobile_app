@@ -1,5 +1,8 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/setting/settiings/ui/appshare.dart';
+import 'package:Soc/src/modules/setting/settiings/ui/deviceinfo.dart';
 import 'package:flutter/material.dart';
+import 'package:googleapis/firebasedynamiclinks/v1.dart';
 import 'package:share/share.dart';
 
 class ButtonWidget extends StatelessWidget {
@@ -29,13 +32,30 @@ class ButtonWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: ElevatedButton(
-              onPressed: () => _onShareWithEmptyOrigin(context),
+              onPressed: () {
+                _onNeedButton(context);
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => DeviceInfoDemo()));
+              },
               child: Text("I need support"),
             ),
           ),
         ],
       ),
     );
+  }
+
+  _onNeedButton(BuildContext context) async {
+    RenderBox? box = context.findRenderObject() as RenderBox;
+    final String body =
+        "Description of the problem: [Please describe the issue you are encountering here...] App: Bronx Bears 1.10.0.0(1.2021.521.1630) Device:" +
+            "${Globals.phoneModel}" "user/release-keys OS " +
+            "${Globals.baseOS}";
+    final subject = "Problem with the PS 456 Bronx Bears-app";
+
+    await Share.share(body,
+        subject: subject,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
   _onShareWithEmptyOrigin(BuildContext context) async {

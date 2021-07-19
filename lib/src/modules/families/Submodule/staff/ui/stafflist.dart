@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class StaffListPage extends StatefulWidget {
-  StaffListPage({Key? key, this.title}) : super(key: key);
-  final String? title;
   @override
   _StaffListPageState createState() => _StaffListPageState();
 }
@@ -15,12 +13,12 @@ class StaffListPage extends StatefulWidget {
 class _StaffListPageState extends State<StaffListPage> {
   static const double _kLabelSpacing = 18.0;
 
-  final TextStyle _kheadingStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Medium",
-    fontSize: 28,
-    color: AppTheme.kFontColor2,
-  );
+  // final TextStyle _kheadingStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Medium",
+  //   fontSize: 28,
+  //   color: AppTheme.kFontColor2,
+  // );
 
   // final TextStyle nametextStyle = TextStyle(
   //   height: 1.5,
@@ -95,7 +93,12 @@ class _StaffListPageState extends State<StaffListPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(tittle, style: _kheadingStyle),
+          Text(
+            tittle,
+            style: Theme.of(context).textTheme.headline6!.copyWith(
+                  color: AppTheme.kFontColor2,
+                ),
+          ),
         ],
       ),
     );

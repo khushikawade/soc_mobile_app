@@ -7,8 +7,6 @@ import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
 
 class Resources extends StatefulWidget {
-  Resources({Key? key, this.title}) : super(key: key);
-  final String? title;
   @override
   _ResourcesState createState() => _ResourcesState();
 }

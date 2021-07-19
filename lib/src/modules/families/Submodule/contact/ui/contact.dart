@@ -11,7 +11,7 @@ class ContactPage extends StatefulWidget {
 
 class _ContactPageState extends State<ContactPage> {
   static const double _kLabelSpacing = 16.0;
-  static const double _kboxheight = 55.0;
+  static const double _kboxheight = 60.0;
   static const double _kboxwidth = 300.0;
   static const double _kboxborderwidth = 0.75;
 
@@ -34,12 +34,12 @@ class _ContactPageState extends State<ContactPage> {
   //   color: Color(0xff2D3F98),
   // );
 
-  static const maptextStyle = TextStyle(
-    fontFamily: "Roboto Bold",
-    fontWeight: FontWeight.bold,
-    fontSize: 12,
-    color: Color(0xff0B84FF),
-  );
+  // static const maptextStyle = TextStyle(
+  //   fontFamily: "Roboto Bold",
+  //   fontWeight: FontWeight.bold,
+  //   fontSize: 12,
+  //   color: Color(0xff0B84FF),
+  // );
 
   // static const maptext2Style = TextStyle(
   //   fontFamily: "Roboto Bold",
@@ -95,14 +95,6 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
-//TOP SECTION END
-
-// Middle Section START
-
-// Middle Section END
-
-// BUTTOM SECTION START
-
   Widget _buildMapWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
@@ -110,8 +102,10 @@ class _ContactPageState extends State<ContactPage> {
         height: _kboxheight * 2.5,
         width: MediaQuery.of(context).size.width * 1,
         decoration: BoxDecoration(
-            border:
-                Border.all(width: _kboxborderwidth, color: Color(0xffBCC5D4)),
+            border: Border.all(
+              width: _kboxborderwidth,
+              color: AppTheme.kTxtfieldBorderColor,
+            ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildmap(),
       ),
@@ -133,36 +127,9 @@ class _ContactPageState extends State<ContactPage> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           SizedBox(
-            height: 120,
-            width: 500,
+            height: _kboxheight * 2,
             child: MapSample(),
           )
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(
-          //       horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
-          // child: Row(
-          //   children: <Widget>[
-          //     Text("G", style: maptextStyle),
-          //     Text("o", style: maptextStyle),
-          //     Text("o",
-          //         style: maptextStyle.copyWith(
-          //           color: Color(0xffFF5656),
-          //         )),
-          //     Text("g",
-          //         style: maptextStyle.copyWith(
-          //           color: Color(0xffFF9608),
-          //         )),
-          //     Text("l",
-          //         style: maptextStyle.copyWith(
-          //           color: Color(0xff368FFF),
-          //         )),
-          //     Text("e",
-          //         style: maptextStyle.copyWith(
-          //           color: Color(0xff368FFF),
-          //         )),
-          //   ],
-          // ),
-          // ),
         ],
       ),
     );
@@ -174,12 +141,11 @@ class _ContactPageState extends State<ContactPage> {
         horizontal: _kLabelSpacing,
       ),
       child: Container(
-        height: _kboxheight / 1.5,
         width: MediaQuery.of(context).size.width * 1,
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              color: Color(0xffBCC5D4),
+              color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildphone(),
@@ -191,12 +157,11 @@ class _ContactPageState extends State<ContactPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Container(
-        height: _kboxheight,
         width: MediaQuery.of(context).size.width * 1,
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              color: Color(0xffBCC5D4),
+              color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildaddress(),
@@ -283,7 +248,6 @@ class _ContactPageState extends State<ContactPage> {
           tittleWidget(),
           SpacerWidget(_kLabelSpacing / 1.5),
           _buildMapWidget(),
-          // SpacerWidget(1),
           _buildaddressWidget(),
           SpacerWidget(_kLabelSpacing / 1.25),
           _buildPhoneWidget()

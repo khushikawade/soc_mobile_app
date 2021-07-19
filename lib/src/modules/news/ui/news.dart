@@ -1,5 +1,6 @@
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
@@ -53,8 +54,10 @@ class _NewsPageState extends State<NewsPage> {
     // int itemsLength = 10; // Replace with Actual Item Count
     return InkWell(
       onTap: () {
-        print("${obj.url}++++++++++++++++++++++++++++++++++++++");
-        // _launchURL(obj.url);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Newdescription()));
       },
       child: Container(
           padding: EdgeInsets.symmetric(
@@ -80,7 +83,6 @@ class _NewsPageState extends State<NewsPage> {
             width: MediaQuery.of(context).size.width * .88,
             child: Text(
               obj.contents["en"].toString(),
-              // REPLACE  WITH REAL  NEWS
               // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
@@ -112,7 +114,7 @@ class _NewsPageState extends State<NewsPage> {
     return Container(
       height: 0.4,
       decoration: BoxDecoration(
-        color: Color(0xff979AA6),
+        color: AppTheme.kDividerColor,
       ),
     );
   }
@@ -153,7 +155,7 @@ class _NewsPageState extends State<NewsPage> {
                         height: MediaQuery.of(context).size.height * 0.8,
                         child: Center(
                             child: CircularProgressIndicator(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Theme.of(context).accentColor,
                         )),
                       );
                     } else {

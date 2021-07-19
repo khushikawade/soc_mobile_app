@@ -1,13 +1,15 @@
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:flutter/material.dart';
-
+import 'package:googleapis/run/v1.dart';
 import '../overrides.dart';
 
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-  CustomAppBarWidget({Key? key, this.islinearProgress})
+  CustomAppBarWidget({Key? key, required this.isnewsDescription})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? islinearProgress = false;
+  bool? isnewsDescription = false;
   @override
   final Size preferredSize;
 
@@ -40,7 +42,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                 const IconData(0xe80d,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
-                color: Color(0xff171717),
+                color: AppTheme.kIconColor1,
                 size: 20,
               ),
             ),
@@ -48,6 +50,32 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
         ],
       ),
       title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
+      actions: [
+        widget.isnewsDescription != null
+            ? IconButton(
+                onPressed: () {
+                  // _onShareWithEmptyOrigin(context);
+                },
+                icon: Icon(
+                  Icons.share,
+                  color: AppTheme.kIconColor3,
+                ),
+              )
+            : Icon(
+                Icons.share,
+                color: Colors.white,
+              )
+
+        //  IconButton(
+        //     onPressed: () {
+        //       // _onShareWithEmptyOrigin(context);
+        //     },
+        //     icon: Icon(
+        //       Icons.share,
+        //       color: AppTheme.kIconColor3,
+        //     ),
+        //   ),
+      ],
       // bottom: PreferredSize(
       //   child: _progressBar(lineProgress, context),
       //   preferredSize: Size.fromHeight(3.0),

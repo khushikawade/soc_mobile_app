@@ -2,7 +2,6 @@ import 'package:Soc/src/modules/families/modal/familymodal.dart';
 import 'package:Soc/src/modules/families/ui/familyscren2.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
-
 import '../../../overrides.dart';
 
 class FamilyPage extends StatefulWidget {
@@ -104,7 +103,7 @@ class _FamilyPageState extends State<FamilyPage> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Color(0xffe1e4e7),
+          color: AppTheme.kDividerColor2,
           width: 0.65,
         ),
         borderRadius: BorderRadius.circular(0.0),
@@ -133,7 +132,7 @@ class _FamilyPageState extends State<FamilyPage> {
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: 18,
-          color: Color(0xff89A7D7),
+          color: AppTheme.kButtonbackColor,
         ),
       ),
     );

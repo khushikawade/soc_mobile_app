@@ -6,8 +6,6 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class EventPage extends StatefulWidget {
-  EventPage({Key? key, this.title}) : super(key: key);
-  final String? title;
   @override
   _EventPageState createState() => _EventPageState();
 }

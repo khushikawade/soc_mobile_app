@@ -81,7 +81,7 @@ class _StudentPageState extends State<StudentPage> {
               if (state is StudentInitial || state is Loading) {
                 return Center(
                     child: CircularProgressIndicator(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is StudentDataSucess) {
                 return _buildGrid(3, state.obj!);
