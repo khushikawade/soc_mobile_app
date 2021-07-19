@@ -16,7 +16,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   var data;
   NewsBloc() : super(NewsInitial());
   final DbServices _dbServices = DbServices();
-  @override
+
   NewsState get initialState => NewsInitial();
 
   @override
@@ -129,36 +129,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     updateDeviceId();
   }
 
-  void performPushRouting(page, itemId, title, context) {
-    if (page.contains("http")) {
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (BuildContext context) => InAppUrlLauncer(
-      //               title: title,
-      //               url: page,
-      //             )));
-    } else {
-      // print(page);
-      // print(itemId);
-      // Navigator.push(
-      //   context,
-      //   RouteGenerator.generateRoute(page, args: itemId),
-      // );
-    }
-  }
-
-  void _performPushOperation(result, context) {
-    var data = result.notification.payload.additionalData;
-    print(data);
-    String _title = result.notification.payload.title;
-    if (data != null) {
-      if (data.containsKey('page')) {
-        performPushRouting(data["page"], data["itemId"], _title, context);
-      }
-    }
-  }
-
   Future<void> updateDeviceId() async {
     // print("Updating the Onesignal Player id");
     try {
@@ -171,11 +141,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         await Future.delayed(Duration(milliseconds: 2000));
         updateDeviceId();
         return;
-      } else {
-        // print("Got the device id...");
-      }
-      // NewsBloc _userBloc = new NewsBloc();
-      // await _userBloc.updateUserData({'onsignal_pushId': deviceId});
+      } else {}
     } catch (e) {
       throw ("something went wrong");
     }

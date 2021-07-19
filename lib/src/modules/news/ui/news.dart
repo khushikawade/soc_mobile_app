@@ -2,7 +2,6 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -15,40 +14,34 @@ class NewsPage extends StatefulWidget {
 class _NewsPageState extends State<NewsPage> {
   static const double _kLabelSpacing = 20.0;
   NewsBloc bloc = new NewsBloc();
+  String newsTimeStamp = '';
   @override
   void initState() {
     super.initState();
     bloc.add(FetchNotificationList());
   }
 
-  // _launchURL(obj) async {
-  //   if (obj.url != null && obj.url != "") {
-  //     // print("${obj.url}++++++++++++++++++++++++++++++++++++++");
-  //     Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //             builder: (BuildContext context) => InAppUrlLauncer(
-  //                   title: obj.headings,
-  //                   url: obj.url!,
-  //                 )));
-  //   } else {
-  //     throw 'Could not launch ${obj.url}';
-  //   }
-  // }
-
-  Widget _buildListItems(NotificationList obj) {
+  Widget _buildListItems(obj) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Newdescription(
+                      obj: obj,
+                      date: newsTimeStamp,
+                    )));
+      },
       child: Container(
           padding: EdgeInsets.symmetric(
-              horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 3),
+              vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 _buildnewsHeading(obj),
                 SizedBox(height: _kLabelSpacing / 3),
-                _buildTimeStamp(obj),
+                Container(child: _buildTimeStamp(obj)),
                 SizedBox(height: _kLabelSpacing / 4),
               ])),
     );
@@ -59,22 +52,23 @@ class _NewsPageState extends State<NewsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Container(
-            width: MediaQuery.of(context).size.width * .88,
-            child: Text(
-              obj.contents["en"].toString(),
-              // "Check out these book suggestions for your summer by  this books  you can improve our genral knowledge !",
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              style: Theme.of(context).textTheme.headline4,
-            )),
+        Expanded(
+          child: Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                obj.contents["en"],
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: Theme.of(context).textTheme.headline4,
+              )),
+        ),
       ],
     );
   }
 
   Widget _buildTimeStamp(NotificationList obj) {
     DateTime now = DateTime.now(); //REPLACE WITH ACTUAL DATE
-    String newsTimeStamp = DateFormat('yyyy-MM-dd – kk:mm').format(now);
+    newsTimeStamp = DateFormat('yyyy/MM/dd').format(now);
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
