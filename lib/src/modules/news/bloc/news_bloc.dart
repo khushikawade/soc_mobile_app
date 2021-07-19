@@ -16,7 +16,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   var data;
   NewsBloc() : super(NewsInitial());
   final DbServices _dbServices = DbServices();
-  @override
+
   NewsState get initialState => NewsInitial();
 
   @override
