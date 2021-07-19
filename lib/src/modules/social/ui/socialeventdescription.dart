@@ -6,6 +6,7 @@ import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
 import '../../../overrides.dart';
@@ -86,13 +87,13 @@ class _SocialEventDescriptionState extends State<SocialEventDescription> {
         HorzitalSpacerWidget(_kPadding / 2),
         Column(
           children: [
-            Text(
-              object[index]
+            Html(
+              data: object[index]
                   .title["__cdata"]
                   .replaceAll(new RegExp(r'[^\w\s]+'), ''),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
-              style: Theme.of(context).textTheme.subtitle1,
+              // overflow: TextOverflow.ellipsis,
+              // maxLines: 3,
+              // style: Theme.of(context).textTheme.subtitle1,
             ),
             Text(
               "#Solvedconsulting #k12 educatio #edtech #edtechers #appdesign #schoolapp",

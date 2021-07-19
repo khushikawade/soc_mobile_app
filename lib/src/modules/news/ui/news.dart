@@ -4,6 +4,7 @@ import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class NewsPage extends StatefulWidget {
   @override
@@ -37,7 +38,7 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildListItems(NotificationList obj) {
     return InkWell(
       onTap: () {
-        _launchURL(obj);
+        // _launchURL(obj);
       },
       child: Container(
           padding: EdgeInsets.symmetric(
