@@ -1,8 +1,11 @@
-import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
-import 'package:Soc/src/modules/staff/models/models/staffmodal.dart';
+import 'package:Soc/src/modules/staff/models/staffmodal.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/common_sublist.dart';
+import 'package:Soc/src/widgets/html_description.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,61 +29,46 @@ class _StaffPageState extends State<StaffPage> {
     _bloc.add(StaffPageEvent());
   }
 
-  //STYLE
-  // static const _kheadingStyle = TextStyle(
-  //     fontFamily: "Roboto Bold",
-  //     fontWeight: FontWeight.bold,
-  //     fontSize: 16,
-  //     color: Color(0xff2D3F98));
-
-  // static const _ktextStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Regular",
-  //   fontSize: 14,
-  //   color: Color(0xff2D3F98),
-  // );
-
-  // _route(StaffList obj, index) {
-  //   if (obj.typeC == "URL") {
-  //     obj.appUrlC != null
-  //         ? Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //                 builder: (BuildContext context) => InAppUrlLauncer(
-  //                       title: obj.titleC!,
-  //                       url: obj.appUrlC!,
-  //                     )))
-  //         : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-  //   } else if (obj.typeC == "RFT_HTML") {
-  //     obj.rtfHTMLC != null
-  //         ? Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //                 builder: (BuildContext context) => AboutusPage(
-  //                       htmlText: obj.rtfHTMLC.toString(),
-  //                     )))
-  //         : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-  //   } else if (obj.typeC == "PDF URL") {
-  //     print(obj.pdfURL);
-  //     obj.pdfURL != null
-  //         ? Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //                 builder: (BuildContext context) => CommonPdfViewerPage(
-  //                       url: obj.pdfURL,
-  //                     )))
-  //         : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-  //   } else if (obj.typeC == "Sub-Menu") {
-  //     Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //             builder: (BuildContext context) => SubListPage(
-  //                   title: obj.titleC,
-  //                 )));
-  //   } else {
-  //     print("");
-  //   }
-  // }
+  _route(StaffList obj, index) {
+    if (obj.typeC == "URL") {
+      obj.urlC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                        title: obj.titleC!,
+                        url: obj.urlC!,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    } else if (obj.typeC == "RFT_HTML") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AboutusPage(
+                        htmlText: obj.rtfHTMLC.toString(),
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "PDF URL") {
+      obj.pdfURL != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CommonPdfViewerPage(
+                        url: obj.pdfURL,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+    } else if (obj.typeC == "Sub-Menu") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SubListPage(
+                    title: obj.titleC,
+                  )));
+    } else {
+      Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    }
+  }
 
   Widget _buildList(StaffList obj, int index) {
     return Container(
@@ -96,7 +84,7 @@ class _StaffPageState extends State<StaffPage> {
       ),
       child: ListTile(
         onTap: () {
-          // _route(obj, index);
+          _route(obj, index);
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         contentPadding:
@@ -152,110 +140,4 @@ class _StaffPageState extends State<StaffPage> {
               }
             }));
   }
-
-  // // UI Widget
-  // Widget _buildIcon() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.center,
-  //     crossAxisAlignment: CrossAxisAlignment.center,
-  //     children: [
-  //       Container(
-  //           child: Image.asset(
-  //         'assets/images/splash_bear_icon.png',
-  //         fit: BoxFit.fill,
-  //         height: _kIconSize,
-  //         width: _kIconSize,
-  //       )),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildHeading() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.center,
-  //     crossAxisAlignment: CrossAxisAlignment.center,
-  //     children: [
-  //       Text(
-  //         "This content has beeen locked.",
-  //         style: Theme.of(context).textTheme.headline2,
-  //       )
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildcontent() {
-  //   return Column(
-  //     mainAxisAlignment: MainAxisAlignment.start,
-  //     crossAxisAlignment: CrossAxisAlignment.center,
-  //     children: [
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: [
-  //           Text(
-  //             "Please unlock this content to continue.",
-  //             style: Theme.of(context).textTheme.bodyText1,
-  //             textAlign: TextAlign.center,
-  //           )
-  //         ],
-  //       ),
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: [
-  //           Text(
-  //             "If you need support accessing this page, please reach ",
-  //             style: Theme.of(context).textTheme.bodyText1,
-  //             textAlign: TextAlign.center,
-  //           ),
-  //         ],
-  //       ),
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: [
-  //           Text(
-  //             "out to Mr. Edwards.",
-  //             style: Theme.of(context).textTheme.bodyText1,
-  //             textAlign: TextAlign.center,
-  //           )
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildPasswordField() {
-  //   return Padding(
-  //     padding: const EdgeInsets.all(_kLabelSpacing),
-  //     child: TextFormField(
-  //       focusNode: myFocusNode,
-  //       decoration: InputDecoration(
-  //         labelText: 'Please enter the password',
-  //         border: OutlineInputBorder(),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: ListView(children: [
-  //       Center(
-  //           child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           SpacerWidget(_kLabelSpacing * 2.0),
-  //           _buildIcon(),
-  //           SpacerWidget(_kLabelSpacing),
-  //           _buildHeading(),
-  //           SpacerWidget(_kLabelSpacing / 2),
-  //           _buildcontent(),
-  //           SpacerWidget(_kLabelSpacing),
-  //           _buildPasswordField(),
-  //         ],
-  //       )),
-  //     ]),
-  //   );
-  // }
 }
