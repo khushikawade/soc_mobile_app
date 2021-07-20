@@ -11,16 +11,16 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../overrides.dart';
 
 // ignore: must_be_immutable
-class InappWebview extends StatefulWidget {
-  InappWebview({Key? key, required this.link, required this.isSocialpage})
+class InAppBrowser extends StatefulWidget {
+  InAppBrowser({Key? key, required this.link, required this.isSocialpage})
       : super(key: key);
   String link;
   bool isSocialpage;
   @override
-  _InappWebviewState createState() => _InappWebviewState();
+  _InAppBrowserState createState() => _InAppBrowserState();
 }
 
-class _InappWebviewState extends State<InappWebview> {
+class _InAppBrowserState extends State<InAppBrowser> {
   String url = "";
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;

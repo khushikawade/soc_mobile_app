@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/user/ui/login.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/inwebview.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/models/webview.dart';
 import 'package:flutter/material.dart';
@@ -80,33 +81,33 @@ class _FamilyPage2State extends State<FamilyPage2> {
       return Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: "",
-                    url: "www.google.com",
+              builder: (BuildContext context) => InAppBrowser(
+                    link: "www.google.com",
+                    isSocialpage: false,
                   )));
     } else if (_selectedIndex == 6) {
       return Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: "",
-                    url: "www.google.com",
+              builder: (BuildContext context) => InAppBrowser(
+                    link: "www.google.com",
+                    isSocialpage: false,
                   )));
     } else if (_selectedIndex == 7) {
       return Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: "",
-                    url: "www.google.com",
+              builder: (BuildContext context) => InAppBrowser(
+                    link: "www.google.com",
+                    isSocialpage: false,
                   )));
     } else if (_selectedIndex == 8) {
       return Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: "",
-                    url: "www.google.com",
+              builder: (BuildContext context) => InAppBrowser(
+                    link: "www.google.com",
+                    isSocialpage: false,
                   )));
     } else if (_selectedIndex == 9) {
       return Resources();
@@ -114,9 +115,9 @@ class _FamilyPage2State extends State<FamilyPage2> {
       return Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: "",
-                    url: "www.google.com",
+              builder: (BuildContext context) => InAppBrowser(
+                    link: "www.google.com",
+                    isSocialpage: false,
                   )));
     } else if (_selectedIndex == 11) {
       return ContactPage();

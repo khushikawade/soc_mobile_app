@@ -1,6 +1,8 @@
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
+import 'package:Soc/src/modules/social/ui/valuelistner.dart';
+import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
@@ -59,15 +61,22 @@ class _SocialPageState extends State<SocialPage> {
           : AppTheme.kListBackgroundColor2,
       child: InkWell(
         onTap: () {
-          // Navigator.push(
-          //     context, MaterialPageRoute(builder: (context) => SamplePage()));
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => SocialEventDescription(
+                  builder: (context) => SliderWidget(
                         obj: object,
-                        index: index,
+                        cuurentIndex: index,
+                        issocialpage: true,
+                        date: '1',
                       )));
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => SocialEventDescription(
+          //               obj: object,
+          //               index: index,
+          //             )));
         },
         child: Row(
           children: <Widget>[
