@@ -154,10 +154,7 @@ class _NewsPageState extends State<NewsPage> {
                     object = state.obj;
                   }
                 },
-                child: Container(
-                  height: 0,
-                  width: 0,
-                ),
+                child: Container(),
               ),
             ],
           ),

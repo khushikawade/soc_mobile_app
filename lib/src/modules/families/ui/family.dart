@@ -64,7 +64,7 @@ class _FamilyPageState extends State<FamilyPage> {
                     title: obj.titleC,
                   )));
     } else {
-      print("");
+      Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }
   }
 

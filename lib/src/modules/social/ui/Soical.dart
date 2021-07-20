@@ -29,17 +29,6 @@ class _SocialPageState extends State<SocialPage> {
     bloc.add(SocialPageEvent());
   }
 
-//Style
-
-  // static const _kListTextStyle = TextStyle(
-  //     fontFamily: "Roboto",
-  //     fontWeight: FontWeight.bold,
-  //     fontSize: 16,
-  //     color: Color(0xff2D3F98));
-
-  // static const _kListDateStyle = TextStyle(
-  //     fontFamily: "Roboto Regular", fontSize: 13, color: Color(0xff2D3F98));
-
   Widget _buildlist(obj, int index) {
     var document = parse(obj.description["__cdata"]);
     dom.Element? link = document.querySelector('img');
@@ -76,25 +65,28 @@ class _SocialPageState extends State<SocialPage> {
           children: <Widget>[
             Column(
               children: [
-                SizedBox(
-                    width: _kIconSize * 1.4,
-                    height: _kIconSize * 1.5,
-                    child: Container(
-                      child: imageLink != null && imageLink.length > 4
-                          ? ClipRRect(
-                              child: CachedNetworkImage(
-                                imageUrl: imageLink,
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  backgroundColor: AppTheme.kAccentColor,
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
+                Container(
+                  alignment: Alignment.center,
+                  width: _kIconSize * 1.4,
+                  height: _kIconSize * 1.5,
+                  child: imageLink != null && imageLink.length > 4
+                      ? ClipRRect(
+                          child: CachedNetworkImage(
+                            imageUrl: imageLink,
+                            placeholder: (context, url) => Container(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                backgroundColor: AppTheme.kAccentColor,
                               ),
-                            )
-                          : Text(''),
-                    )),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                        )
+                      : Text(''),
+                ),
               ],
             ),
             SizedBox(
