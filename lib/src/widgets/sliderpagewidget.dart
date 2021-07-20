@@ -1,18 +1,12 @@
-import 'package:Soc/src/modules/news/ui/newdescription.dart';
-import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/inwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
 import '../overrides.dart';
-import 'dart:collection'; // used in test.dart
-import 'package:flutter/foundation.dart';
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
@@ -188,10 +182,12 @@ class _SliderWidgetState extends State<SliderWidget> {
             itemBuilder: (BuildContext context, int index) {
               return widget.issocialpage
                   ? SocialDescription(object: object[widget.cuurentIndex])
-                  : Newdescription(
-                      newsobject: object[widget.cuurentIndex],
-                      date: widget.date,
-                    );
+                  : Container();
+
+              //  Newdescription(
+              //     newsobject: object[widget.cuurentIndex],
+              //     date: widget.date,
+              //   );
             },
           ),
         )
