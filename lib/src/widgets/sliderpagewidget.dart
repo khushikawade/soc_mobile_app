@@ -1,4 +1,3 @@
-import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
@@ -130,10 +129,12 @@ class _SliderWidgetState extends State<SliderWidget> {
             itemBuilder: (BuildContext context, int index) {
               return widget.issocialpage
                   ? SocialDescription(object: object[widget.cuurentIndex])
-                  : Newdescription(
-                      obj: object[widget.cuurentIndex],
-                      date: widget.date,
-                    );
+                  : Container();
+
+              //  Newdescription(
+              //     newsobject: object[widget.cuurentIndex],
+              //     date: widget.date,
+              //   );
             },
           ),
         )
