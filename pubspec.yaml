@@ -55,9 +55,6 @@ dependencies:
   flutter_html: ^2.1.0
   flutter_linkify: ^5.0.2
   advance_pdf_viewer: ^2.0.0
-  
- 
-  
   # firebase_dynamic_links: ^2.0.1 TODO configure the app
   
 

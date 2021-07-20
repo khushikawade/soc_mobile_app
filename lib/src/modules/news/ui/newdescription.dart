@@ -1,4 +1,3 @@
-import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -39,7 +38,6 @@ class _NewdescriptionState extends State<Newdescription> {
             child: widget.obj.image != null && widget.obj.image != ""
                 ? CachedNetworkImage(
                     imageUrl: widget.obj.image,
-                    // "https://www.airship.com/wp-content/uploads/2015/10/Push-Notifications-Explained.png",
                     fit: BoxFit.fill,
                     placeholder: (context, url) => CircularProgressIndicator(
                       strokeWidth: 2,
