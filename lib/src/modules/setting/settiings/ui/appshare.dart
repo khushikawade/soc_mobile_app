@@ -83,25 +83,25 @@ class _ShareAppState extends State<ShareApp> {
           children: [
             _buildsharebutton(
               "Share via Twitter",
-              IconData(0xe818,
+              const IconData(0xe818,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
             ),
             _buildsharebutton(
               "Share via Facebook",
-              IconData(0xe81b,
+              const IconData(0xe81b,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
             ),
             _buildsharebutton(
               "Rate in Google Play",
-              IconData(0xe81a,
+              const IconData(0xe81a,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
             ),
             _buildsharebutton(
               "Mail in Link",
-              IconData(0xe819,
+              const IconData(0xe819,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
             ),
