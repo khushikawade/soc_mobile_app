@@ -43,7 +43,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
   Future<List<StaffList>> getStaffDetails() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/query/?q=SELECT Title__c,App_Icon__c,URL__c,Id,Name FROM Staff_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,URL__c,Id,Name FROM Staff_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
       if (response.statusCode == 200) {
         return response.data["records"]
             .map<StaffList>((i) => StaffList.fromJson(i))

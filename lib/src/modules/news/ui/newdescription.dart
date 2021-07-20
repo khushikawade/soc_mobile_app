@@ -1,4 +1,3 @@
-import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -27,18 +26,6 @@ class _NewdescriptionState extends State<Newdescription> {
                 )));
   }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
-        child: _buildNewsDescription(),
-      ),
-    );
-  }
-
   Widget _buildNewsDescription() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -51,7 +38,6 @@ class _NewdescriptionState extends State<Newdescription> {
             child: widget.obj.image != null && widget.obj.image != ""
                 ? CachedNetworkImage(
                     imageUrl: widget.obj.image,
-                    // "https://www.airship.com/wp-content/uploads/2015/10/Push-Notifications-Explained.png",
                     fit: BoxFit.fill,
                     placeholder: (context, url) => CircularProgressIndicator(
                       strokeWidth: 2,
@@ -121,6 +107,15 @@ class _NewdescriptionState extends State<Newdescription> {
               : Container(),
         ),
       ],
+    );
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
+        child: _buildNewsDescription(),
+      ),
     );
   }
 }
@@ -227,5 +222,22 @@ class _NewdescriptionState extends State<Newdescription> {
 //   State<StatefulWidget> createState() {
 //     // TODO: implement createState
 //     throw UnimplementedError();
+//   }
+// }
+
+// import 'package:flutter/material.dart';
+
+// // ignore: must_be_immutable
+// class Newdescription extends StatelessWidget {
+//   var object;
+
+//   Newdescription({required this.object});
+
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Container(
+//           alignment: Alignment.center,
+//           child: Text("kfjd ghrehig wroieh oqrh ")),
+//     );
 //   }
 // }

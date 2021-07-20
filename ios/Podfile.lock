@@ -1,4 +1,6 @@
 PODS:
+  - advance_pdf_viewer (1.0.5):
+    - Flutter
   - "app_settings (3.0.0+1)":
     - Flutter
   - device_info (0.0.1):
@@ -19,10 +21,10 @@ PODS:
     - GoogleMaps/Base
   - image_picker (0.0.1):
     - Flutter
-  - OneSignal (2.16.5)
-  - onesignal_flutter (2.6.4):
+  - onesignal_flutter (3.1.0):
     - Flutter
-    - OneSignal (= 2.16.5)
+    - OneSignalXCFramework (= 3.5.3)
+  - OneSignalXCFramework (3.5.3)
   - path_provider (0.0.1):
     - Flutter
   - share (0.0.1):
@@ -34,10 +36,15 @@ PODS:
     - FMDB (>= 2.7.5)
   - url_launcher (0.0.1):
     - Flutter
+  - video_player (0.0.1):
+    - Flutter
+  - wakelock (0.0.1):
+    - Flutter
   - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
+  - advance_pdf_viewer (from `.symlinks/plugins/advance_pdf_viewer/ios`)
   - app_settings (from `.symlinks/plugins/app_settings/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - Flutter (from `Flutter`)
@@ -50,15 +57,19 @@ DEPENDENCIES:
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - video_player (from `.symlinks/plugins/video_player/ios`)
+  - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
   trunk:
     - FMDB
     - GoogleMaps
-    - OneSignal
+    - OneSignalXCFramework
 
 EXTERNAL SOURCES:
+  advance_pdf_viewer:
+    :path: ".symlinks/plugins/advance_pdf_viewer/ios"
   app_settings:
     :path: ".symlinks/plugins/app_settings/ios"
   device_info:
@@ -83,10 +94,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
+  video_player:
+    :path: ".symlinks/plugins/video_player/ios"
+  wakelock:
+    :path: ".symlinks/plugins/wakelock/ios"
   webview_flutter:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
+  advance_pdf_viewer: 5c832f382b4ca84fe735f893b7e91aa830c27d7b
   app_settings: d103828c9f5d515c4df9ee754dabd443f7cedcf3
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
@@ -95,13 +111,15 @@ SPEC CHECKSUMS:
   google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
   GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
   image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
-  OneSignal: b72068b06b359f22e27404edee87338f4b68e783
-  onesignal_flutter: 48eddd9a4eddc7ed5052eef8a6ab6f9ed73e6ebc
+  onesignal_flutter: 79eb89d25249b078d3c358fb7827b22909f7fbed
+  OneSignalXCFramework: 4e08d8353adec161c3d9174e2572c849e1225c9f
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
+  video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
+  wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
 
 PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea

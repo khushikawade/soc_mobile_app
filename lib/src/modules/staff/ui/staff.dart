@@ -1,8 +1,10 @@
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/models/staffmodal.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StaffPage extends StatefulWidget {
   StaffPage({Key? key, this.title}) : super(key: key);
@@ -15,6 +17,7 @@ class _StaffPageState extends State<StaffPage> {
   static const double _kIconSize = 188;
   static const double _kLabelSpacing = 20.0;
   FocusNode myFocusNode = new FocusNode();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   StaffBloc _bloc = StaffBloc();
 
   @override
@@ -37,49 +40,49 @@ class _StaffPageState extends State<StaffPage> {
   //   color: Color(0xff2D3F98),
   // );
 
-  _route(StaffList obj, index) {
-    if (obj.typeC == "URL") {
-      obj.appUrlC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => InAppUrlLauncer(
-                        title: obj.titleC!,
-                        url: obj.appUrlC!,
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML") {
-      obj.rtfHTMLC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => AboutusPage(
-                        htmlText: obj.rtfHTMLC.toString(),
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (obj.typeC == "PDF URL") {
-      print(obj.pdfURL);
-      obj.pdfURL != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => CommonPdfViewerPage(
-                        url: obj.pdfURL,
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-    } else if (obj.typeC == "Sub-Menu") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => SubListPage(
-                    title: obj.titleC,
-                  )));
-    } else {
-      print("");
-    }
-  }
+  // _route(StaffList obj, index) {
+  //   if (obj.typeC == "URL") {
+  //     obj.appUrlC != null
+  //         ? Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (BuildContext context) => InAppUrlLauncer(
+  //                       title: obj.titleC!,
+  //                       url: obj.appUrlC!,
+  //                     )))
+  //         : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+  //   } else if (obj.typeC == "RFT_HTML") {
+  //     obj.rtfHTMLC != null
+  //         ? Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (BuildContext context) => AboutusPage(
+  //                       htmlText: obj.rtfHTMLC.toString(),
+  //                     )))
+  //         : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+  //   } else if (obj.typeC == "PDF URL") {
+  //     print(obj.pdfURL);
+  //     obj.pdfURL != null
+  //         ? Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (BuildContext context) => CommonPdfViewerPage(
+  //                       url: obj.pdfURL,
+  //                     )))
+  //         : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+  //   } else if (obj.typeC == "Sub-Menu") {
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (BuildContext context) => SubListPage(
+  //                   title: obj.titleC,
+  //                 )));
+  //   } else {
+  //     print("");
+  //   }
+  // }
 
-  Widget _buildList(FamiliesList obj, int index) {
+  Widget _buildList(StaffList obj, int index) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -93,7 +96,7 @@ class _StaffPageState extends State<StaffPage> {
       ),
       child: ListTile(
         onTap: () {
-          _route(obj, index);
+          // _route(obj, index);
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         contentPadding:
@@ -118,15 +121,15 @@ class _StaffPageState extends State<StaffPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        body: BlocBuilder<FamilyBloc, FamilyState>(
+        body: BlocBuilder<StaffBloc, StaffState>(
             bloc: _bloc,
-            builder: (BuildContext contxt, FamilyState state) {
-              if (state is FamilyInitial || state is FamilyLoading) {
+            builder: (BuildContext contxt, StaffState state) {
+              if (state is StaffInitial || state is Loading) {
                 return Center(
                     child: CircularProgressIndicator(
                   backgroundColor: Theme.of(context).accentColor,
                 ));
-              } else if (state is FamiliesDataSucess) {
+              } else if (state is StaffDataSucess) {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
