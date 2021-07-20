@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +15,7 @@ class NewsPage extends StatefulWidget {
 class _NewsPageState extends State<NewsPage> {
   static const double _kLabelSpacing = 20.0;
   NewsBloc bloc = new NewsBloc();
+  var object;
   String newsTimeStamp = '';
   @override
   void initState() {
@@ -21,14 +23,24 @@ class _NewsPageState extends State<NewsPage> {
     bloc.add(FetchNotificationList());
   }
 
-  Widget _buildListItems(obj) {
+  Widget _buildListItems(obj, index) {
     return InkWell(
       onTap: () {
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (BuildContext context) => Newdescription(
+        //               newsobject: obj,
+        //               date: newsTimeStamp,
+        //             )));
+
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => Newdescription(
-                      obj: obj,
+                builder: (BuildContext context) => SliderWidget(
+                      obj: object,
+                      cuurentIndex: index,
+                      issocialpage: false,
                       date: newsTimeStamp,
                     )));
       },
@@ -102,7 +114,7 @@ class _NewsPageState extends State<NewsPage> {
       },
       itemCount: obj.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildListItems(obj[index]);
+        return _buildListItems(obj[index], index);
       },
     );
   }
@@ -136,6 +148,18 @@ class _NewsPageState extends State<NewsPage> {
                       return Container();
                     }
                   }),
+              BlocListener<NewsBloc, NewsState>(
+                bloc: bloc,
+                listener: (context, state) async {
+                  if (state is NewsLoaded) {
+                    object = state.obj;
+                  }
+                },
+                child: Container(
+                  height: 0,
+                  width: 0,
+                ),
+              ),
             ],
           ),
         ),

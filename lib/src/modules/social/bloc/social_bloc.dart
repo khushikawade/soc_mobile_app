@@ -14,7 +14,6 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   var data;
   SocialBloc() : super(SocialInitial());
 
-  @override
   SocialState get initialState => SocialInitial();
 
   @override
