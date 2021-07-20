@@ -45,6 +45,12 @@ class _SliderWidgetState extends State<SliderWidget> {
     _controller = PageController(initialPage: widget.cuurentIndex);
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
