@@ -27,18 +27,6 @@ class _NewdescriptionState extends State<Newdescription> {
                 )));
   }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
-        child: _buildNewsDescription(),
-      ),
-    );
-  }
-
   Widget _buildNewsDescription() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -121,6 +109,15 @@ class _NewdescriptionState extends State<Newdescription> {
               : Container(),
         ),
       ],
+    );
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
+        child: _buildNewsDescription(),
+      ),
     );
   }
 }
@@ -227,5 +224,22 @@ class _NewdescriptionState extends State<Newdescription> {
 //   State<StatefulWidget> createState() {
 //     // TODO: implement createState
 //     throw UnimplementedError();
+//   }
+// }
+
+// import 'package:flutter/material.dart';
+
+// // ignore: must_be_immutable
+// class Newdescription extends StatelessWidget {
+//   var object;
+
+//   Newdescription({required this.object});
+
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Container(
+//           alignment: Alignment.center,
+//           child: Text("kfjd ghrehig wroieh oqrh ")),
+//     );
 //   }
 // }

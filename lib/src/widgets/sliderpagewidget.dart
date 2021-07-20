@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
@@ -12,12 +13,12 @@ class SliderWidget extends StatefulWidget {
   SliderWidget({
     required this.obj,
     required this.cuurentIndex,
-    required this.issocialpage,
+    this.issocialpage,
     required this.date,
   });
   var obj;
   int cuurentIndex;
-  bool issocialpage;
+  bool? issocialpage;
   String date;
 
   @override
@@ -112,7 +113,7 @@ class _SliderWidgetState extends State<SliderWidget> {
             HorzitalSpacerWidget(_kPadding / 3),
           ]),
       body: Column(children: <Widget>[
-        Flexible(
+        Expanded(
           child: PageView.builder(
             controller: _controller,
             itemCount: widget.obj.length,
@@ -121,20 +122,17 @@ class _SliderWidgetState extends State<SliderWidget> {
               pageViewCurrentIndex = indexnumber;
             },
             itemBuilder: (BuildContext context, int index) {
-              return widget.issocialpage
+              return widget.issocialpage!
                   ? SocialDescription(object: object[widget.cuurentIndex])
-                  : Container();
-
-              //  Newdescription(
-              //     newsobject: object[widget.cuurentIndex],
-              //     date: widget.date,
-              //   );
+                  : Newdescription(
+                      obj: object[widget.cuurentIndex],
+                      date: widget.date,
+                    );
             },
           ),
         )
       ]),
-      bottomSheet:
-          widget.issocialpage ? buttomButtonsWidget(context) : Container(),
+      bottomSheet: widget.issocialpage! ? buttomButtonsWidget(context) : null,
     );
   }
 
