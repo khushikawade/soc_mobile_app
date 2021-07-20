@@ -1,5 +1,5 @@
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
-import 'package:Soc/src/modules/families/modal/family_list.dart';
+import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
@@ -30,10 +30,10 @@ class _SubListPageState extends State<SubListPage> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(FamiliesEvent());
+    _bloc.add(FamiliesSublistEvent());
   }
 
-  _route(FamiliesList obj, index) {
+  _route(FamiliesSubList obj, index) {
     if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(
@@ -53,7 +53,7 @@ class _SubListPageState extends State<SubListPage> {
                         htmlText: obj.rtfHTMLC.toString(),
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (obj.typeC == "PDF URL") {
+    } else if (obj.typeC == "PDF") {
       print(obj.pdfURL);
       obj.pdfURL != null
           ? Navigator.push(
@@ -107,7 +107,7 @@ class _SubListPageState extends State<SubListPage> {
                     child: CircularProgressIndicator(
                   backgroundColor: Theme.of(context).accentColor,
                 ));
-              } else if (state is FamiliesDataSucess) {
+              } else if (state is FamiliesSublistSucess) {
                 return SingleChildScrollView(
                   child: SafeArea(
                     child: Column(

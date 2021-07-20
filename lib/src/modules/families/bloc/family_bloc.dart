@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
+import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -25,17 +26,19 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   ) async* {
     if (event is FamiliesEvent) {
       try {
-        List<FamiliesList> subList = [];
         yield FamilyLoading();
         List<FamiliesList> list = await getFamilyList();
-        // if (list != null && list.length > 0) {
-        //   for (int i = 0; i < list.length; i++) {
-        //     if (list[i].appFolderc == null || list[i].appFolderc == "") {
-        //       appList.add(list[i]);
-        //     }
-        //   }
-        // }
-        yield FamiliesDataSucess(obj: list, subFolder: subList);
+        yield FamiliesDataSucess(obj: list);
+      } catch (e) {
+        yield ErrorLoading(err: e);
+      }
+    }
+
+    if (event is FamiliesSublistEvent) {
+      try {
+        yield FamilyLoading();
+        List<FamiliesSubList> list = await getFamilySubList();
+        yield FamiliesSublistSucess(obj: list);
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -50,6 +53,23 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       if (response.statusCode == 200) {
         return response.data["records"]
             .map<FamiliesList>((i) => FamiliesList.fromJson(i))
+            .toList();
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<FamiliesSubList>> getFamilySubList() async {
+    try {
+      final ResponseModel response = await _dbServices.getapi(
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c FROM Family_Sub_Menu_App__c")}");
+
+      if (response.statusCode == 200) {
+        return response.data["records"]
+            .map<FamiliesSubList>((i) => FamiliesSubList.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');

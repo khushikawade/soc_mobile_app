@@ -1,18 +1,11 @@
-import 'package:Soc/src/modules/news/ui/newdescription.dart';
-import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/inwebview.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
 import '../overrides.dart';
-import 'dart:collection'; // used in test.dart
-import 'package:flutter/foundation.dart';
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
@@ -47,66 +40,8 @@ class _SliderWidgetState extends State<SliderWidget> {
   @override
   void initState() {
     super.initState();
-    pageviewLastIndex = 10;
     object = widget.obj;
-  }
-
-  Widget _buildItem(
-    String newsLine,
-    String newsTimeStamp,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.all(_kPadding),
-      child: Container(
-        child: Column(
-          children: [
-            _buildnewsLines(newsLine),
-            SpacerWidget(_kPadding / 2),
-            _buildnewTimeStamp(newsTimeStamp),
-            SpacerWidget(_kPadding * 4),
-            // _buildbuttomsection(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildnewTimeStamp(String newsTimeStamp) {
-    return Row(
-      children: [
-        Container(
-            child: Text(
-          newsTimeStamp,
-          style: Theme.of(context).textTheme.subtitle1,
-        )),
-      ],
-    );
-  }
-
-  Widget _buildnewsLines(String newsLines) {
-    return Column(
-      children: [
-        // heading1.isNotEmpty && heading1.length > 1
-        // ?
-        Expanded(
-            child: Text(
-          newsLines,
-          textAlign: TextAlign.justify,
-          style: Theme.of(context).textTheme.headline2,
-        )),
-        // : Text("1"),
-        SpacerWidget(_kPadding),
-
-        // heading3.isNotEmpty && heading3.length > 1
-        Expanded(
-            child: Text(
-          newsLines,
-          textAlign: TextAlign.justify,
-          style: Theme.of(context).textTheme.headline2,
-        )),
-        // : Text("3"),
-      ],
-    );
+    _controller = PageController(initialPage: widget.cuurentIndex);
   }
 
   Widget build(BuildContext context) {
@@ -182,16 +117,18 @@ class _SliderWidgetState extends State<SliderWidget> {
             controller: _controller,
             itemCount: widget.obj.length,
             onPageChanged: (indexnumber) {
+              print(indexnumber);
               pageViewCurrentIndex = indexnumber;
-              print(pageViewCurrentIndex);
             },
             itemBuilder: (BuildContext context, int index) {
               return widget.issocialpage
                   ? SocialDescription(object: object[widget.cuurentIndex])
-                  : Newdescription(
-                      newsobject: object[widget.cuurentIndex],
-                      date: widget.date,
-                    );
+                  : Container();
+
+              //  Newdescription(
+              //     newsobject: object[widget.cuurentIndex],
+              //     date: widget.date,
+              //   );
             },
           ),
         )
@@ -214,7 +151,7 @@ class _SliderWidgetState extends State<SliderWidget> {
             child: ElevatedButton(
               onPressed: () async {
                 _buildlink();
-                // print(link2);
+
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -242,6 +179,7 @@ class _SliderWidgetState extends State<SliderWidget> {
     );
   }
 
+// MORE_BUTTON_LINK
   Future _buildlink() async {
     link = widget.obj[widget.cuurentIndex].link.toString();
 
@@ -254,11 +192,11 @@ class _SliderWidgetState extends State<SliderWidget> {
     print(link2);
   }
 
+// SHARE BUTTON
   _onShareWithEmptyOrigin(BuildContext context) async {
     RenderBox? box = context.findRenderObject() as RenderBox;
     final String body = widget.obj[widget.cuurentIndex].title["__cdata"] +
         widget.obj[widget.cuurentIndex].link.toString();
-    ;
 
     await Share.share(body,
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);

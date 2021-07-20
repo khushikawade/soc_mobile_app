@@ -11,3 +11,11 @@ class FamiliesEvent extends FamilyEvent {
   @override
   String toString() => 'SocialButtonPressed';
 }
+
+class FamiliesSublistEvent extends FamilyEvent {
+  @override
+  List<Object> get props => [];
+
+  @override
+  String toString() => 'SocialButtonPressed';
+}
