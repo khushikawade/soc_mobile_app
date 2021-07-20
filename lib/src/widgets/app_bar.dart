@@ -51,7 +51,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       ),
       title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
       actions: [
-        widget.isnewsDescription != null
+        widget.isnewsDescription != null && widget.isnewsDescription == true
             ? IconButton(
                 onPressed: () {
                   // _onShareWithEmptyOrigin(context);
@@ -61,10 +61,12 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                   color: AppTheme.kIconColor3,
                 ),
               )
-            : Icon(
-                Icons.share,
-                color: Colors.white,
-              )
+            : widget.isnewsDescription == false
+                ? Container()
+                : Icon(
+                    Icons.share,
+                    color: Colors.white,
+                  )
 
         //  IconButton(
         //     onPressed: () {

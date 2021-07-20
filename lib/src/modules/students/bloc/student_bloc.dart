@@ -20,9 +20,17 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   ) async* {
     if (event is StudentPageEvent) {
       try {
+        List<StudentApp> appList = [];
         yield Loading();
         List<StudentApp> list = await getStudentDetails();
-        yield StudentDataSucess(obj: list);
+        if (list != null && list.length > 0) {
+          for (int i = 0; i < list.length; i++) {
+            if (list[i].appFolderc == null || list[i].appFolderc == "") {
+              appList.add(list[i]);
+            }
+          }
+        }
+        yield StudentDataSucess(obj: appList, subFolder: list);
       } catch (e) {
         yield Errorinloading(err: e);
       }
