@@ -248,7 +248,7 @@ class _HomePageState extends State<HomePage> {
             leading: _selectedIndex == 3
                 ? Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Icon(IconData(0xe800,
+                    child: const Icon(IconData(0xe800,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg)),
                   )
@@ -284,8 +284,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5.0),
-                        child: Icon(
-                          IconData(int.parse(e.split("_")[1]),
+                        child: Icon( 
+                           IconData(int.parse(e.split("_")[1]),
                               fontFamily: Overrides.kFontFam,
                               fontPackage: Overrides.kFontPkg),
                         ),
