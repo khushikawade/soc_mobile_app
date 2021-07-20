@@ -40,3 +40,18 @@ class StaffDataSucess extends StaffState {
   @override
   List<Object> get props => [];
 }
+
+class StaffSubListSucess extends StaffState {
+  List<StaffSubList>? obj;
+  List<StaffSubList>? subFolder;
+
+  StaffSubListSucess({this.obj, this.subFolder});
+
+  StaffSubListSucess copyWith({var obj, var subFolder}) {
+    return StaffSubListSucess(
+        obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
+  }
+
+  @override
+  List<Object> get props => [];
+}

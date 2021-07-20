@@ -1,5 +1,6 @@
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
+import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
@@ -11,11 +12,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SubListPage extends StatefulWidget {
   var title;
+  String? module;
 
-  SubListPage({
-    Key? key,
-    required this.title,
-  }) : super(key: key);
+  SubListPage({Key? key, required this.title, required this.module})
+      : super(key: key);
   @override
   _SubListPageState createState() => _SubListPageState();
 }
@@ -26,11 +26,16 @@ class _SubListPageState extends State<SubListPage> {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
-
+  StaffBloc _staffBloc = StaffBloc();
+  String? subModule;
   @override
   void initState() {
     super.initState();
-    _bloc.add(FamiliesSublistEvent());
+    if (widget.module == "family") {
+      _bloc.add(FamiliesSublistEvent());
+    } else {
+      _staffBloc.add(StaffSubListData());
+    }
   }
 
   _route(FamiliesSubList obj, index) {
@@ -69,6 +74,7 @@ class _SubListPageState extends State<SubListPage> {
           MaterialPageRoute(
               builder: (BuildContext context) => SubListPage(
                     title: obj.titleC,
+                    module: subModule,
                   )));
     } else {
       print("");

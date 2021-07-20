@@ -11,3 +11,11 @@ class StaffPageEvent extends StaffEvent {
   // @override
   // String toString() => 'StaffButtonPressed';
 }
+
+class StaffSubListData extends StaffEvent {
+  @override
+  List<Object> get props => [];
+
+  @override
+  String toString() => 'SocialButtonPressed';
+}
