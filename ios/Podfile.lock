@@ -19,6 +19,10 @@ PODS:
     - GoogleMaps/Base
   - image_picker (0.0.1):
     - Flutter
+  - OneSignal (2.16.5)
+  - onesignal_flutter (2.6.4):
+    - Flutter
+    - OneSignal (= 2.16.5)
   - path_provider (0.0.1):
     - Flutter
   - share (0.0.1):
@@ -40,6 +44,7 @@ DEPENDENCIES:
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -51,6 +56,7 @@ SPEC REPOS:
   trunk:
     - FMDB
     - GoogleMaps
+    - OneSignal
 
 EXTERNAL SOURCES:
   app_settings:
@@ -65,6 +71,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  onesignal_flutter:
+    :path: ".symlinks/plugins/onesignal_flutter/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   share:
@@ -87,6 +95,8 @@ SPEC CHECKSUMS:
   google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
   GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
   image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
+  OneSignal: b72068b06b359f22e27404edee87338f4b68e783
+  onesignal_flutter: 48eddd9a4eddc7ed5052eef8a6ab6f9ed73e6ebc
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d

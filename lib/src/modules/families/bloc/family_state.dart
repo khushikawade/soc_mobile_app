@@ -28,13 +28,30 @@ class ErrorLoading extends FamilyState {
 // ignore: must_be_immutable
 class FamiliesDataSucess extends FamilyState {
   List<FamiliesList>? obj;
-  List<FamiliesList>? subFolder;
+  FamiliesDataSucess({
+    this.obj,
+  });
+  FamiliesDataSucess copyWith({
+    var obj,
+  }) {
+    return FamiliesDataSucess(obj: obj ?? this.obj);
+  }
 
-  FamiliesDataSucess({this.obj, this.subFolder});
+  @override
+  List<Object> get props => [];
+}
 
-  FamiliesDataSucess copyWith({var obj, var subFolder}) {
-    return FamiliesDataSucess(
-        obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
+class FamiliesSublistSucess extends FamilyState {
+  List<FamiliesSubList>? obj;
+
+  FamiliesSublistSucess({
+    this.obj,
+  });
+
+  FamiliesSublistSucess copyWith({
+    var obj,
+  }) {
+    return FamiliesSublistSucess(obj: obj ?? this.obj);
   }
 
   @override
