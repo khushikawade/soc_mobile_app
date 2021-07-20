@@ -38,7 +38,7 @@ class _NewsPageState extends State<NewsPage> {
             MaterialPageRoute(
                 builder: (context) => SliderWidget(
                       obj: object,
-                      cuurentIndex: index,
+                      currentIndex: index,
                       issocialpage: false,
                       date: newsTimeStamp,
                     )));

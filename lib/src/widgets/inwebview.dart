@@ -188,7 +188,7 @@ class _InAppBrowserState extends State<InAppBrowser> {
 
   _onShareWithEmptyOrigin(BuildContext context) async {
     RenderBox? box = context.findRenderObject() as RenderBox;
-    final String body = "hey, check ou this site!" + url.toString();
+    final String body = "hey, check out this site!" + url.toString();
 
     await Share.share(body,
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);

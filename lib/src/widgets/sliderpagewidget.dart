@@ -12,12 +12,12 @@ import '../overrides.dart';
 class SliderWidget extends StatefulWidget {
   SliderWidget({
     required this.obj,
-    required this.cuurentIndex,
+    required this.currentIndex,
     this.issocialpage,
     required this.date,
   });
   var obj;
-  int cuurentIndex;
+  int currentIndex;
   bool? issocialpage;
   String date;
 
@@ -29,7 +29,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
   var _controller = new PageController();
-  static const _kDuration = const Duration(milliseconds: 300);
+  static const _kDuration = const Duration(milliseconds: 400);
   int pageinitialIndex = 0;
   int pageViewCurrentIndex = 0;
   int pageviewLastIndex = 10;
@@ -37,12 +37,24 @@ class _SliderWidgetState extends State<SliderWidget> {
   var object;
   var link;
   var link2;
+  bool first = false;
+
+  @override
+  // void didChangeDependencies() {
+  //   WidgetsBinding.instance!.addPostFrameCallback((_) {
+  //     if (_controller.hasClients) _controller.jumpToPage(widget.currentIndex);
+  //   });
+
+  //   super.didChangeDependencies();
+  // }
 
   @override
   void initState() {
     super.initState();
     object = widget.obj;
-    _controller = PageController(initialPage: widget.cuurentIndex);
+    first = true;
+    pageinitialIndex = widget.currentIndex;
+    _controller = PageController(initialPage: widget.currentIndex);
   }
 
   @override
@@ -79,17 +91,17 @@ class _SliderWidgetState extends State<SliderWidget> {
                 IconButton(
                   onPressed: () async {
                     setState(() {});
-                    if (widget.cuurentIndex > 0) {
+                    if (widget.currentIndex > 0) {
                       _controller.previousPage(
                           duration: _kDuration, curve: _kCurve);
-                      --widget.cuurentIndex;
+                      // --widget.currentIndex;
                     }
                   },
                   icon: Icon(
                     const IconData(0xe80c,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
-                    color: widget.cuurentIndex == 0
+                    color: widget.currentIndex == 0
                         ? AppTheme.kDecativeIconColor
                         : AppTheme.kBlackColor,
                     size: 20,
@@ -101,16 +113,16 @@ class _SliderWidgetState extends State<SliderWidget> {
             IconButton(
               onPressed: () async {
                 setState(() {});
-                if (widget.cuurentIndex < object.length - 1) {
+                if (widget.currentIndex < object.length - 1) {
                   _controller.nextPage(duration: _kDuration, curve: _kCurve);
-                  ++widget.cuurentIndex;
+                  // ++widget.currentIndex;
                 }
               },
               icon: (Icon(
                 const IconData(0xe815,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
-                color: widget.cuurentIndex == widget.obj.length - 1
+                color: widget.currentIndex == widget.obj.length - 1
                     ? AppTheme.kDecativeIconColor
                     : AppTheme.kBlackColor,
                 size: 20,
@@ -118,26 +130,43 @@ class _SliderWidgetState extends State<SliderWidget> {
             ),
             HorzitalSpacerWidget(_kPadding / 3),
           ]),
-      body: Column(children: <Widget>[
-        Expanded(
-          child: PageView.builder(
-            controller: _controller,
-            itemCount: widget.obj.length,
-            onPageChanged: (indexnumber) {
-              print(indexnumber);
-              pageViewCurrentIndex = indexnumber;
-            },
-            itemBuilder: (BuildContext context, int index) {
-              return widget.issocialpage!
-                  ? SocialDescription(object: object[widget.cuurentIndex])
-                  : Newdescription(
-                      obj: object[widget.cuurentIndex],
-                      date: widget.date,
-                    );
-            },
-          ),
-        )
-      ]),
+      body: SingleChildScrollView(
+        child: Column(children: <Widget>[
+          Expanded(
+            child: PageView.builder(
+              controller: _controller,
+              itemCount: widget.obj.length,
+              onPageChanged: (sliderIndex) {
+                print(sliderIndex);
+                if (first) {
+                  pageinitialIndex < sliderIndex
+                      ? ++widget.currentIndex
+                      : --widget.currentIndex;
+                  pageViewCurrentIndex = sliderIndex;
+                  first = false;
+                } else {
+                  if (sliderIndex > widget.currentIndex &&
+                      widget.currentIndex < object.length - 1) {
+                    ++widget.currentIndex;
+                  } else if (sliderIndex <= widget.currentIndex &&
+                      widget.currentIndex > 0) {
+                    --widget.currentIndex;
+                  }
+                }
+                setState(() {});
+              },
+              itemBuilder: (BuildContext context, int index) {
+                return widget.issocialpage!
+                    ? SocialDescription(object: object[widget.currentIndex])
+                    : Newdescription(
+                        obj: object[widget.currentIndex],
+                        date: widget.date,
+                      );
+              },
+            ),
+          )
+        ]),
+      ),
       bottomSheet: widget.issocialpage! ? buttomButtonsWidget(context) : null,
     );
   }
@@ -185,7 +214,7 @@ class _SliderWidgetState extends State<SliderWidget> {
 
 // MORE_BUTTON_LINK
   Future _buildlink() async {
-    link = widget.obj[widget.cuurentIndex].link.toString();
+    link = widget.obj[widget.currentIndex].link.toString();
 
     RegExp exp =
         new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
@@ -199,8 +228,9 @@ class _SliderWidgetState extends State<SliderWidget> {
 // SHARE BUTTON
   _onShareWithEmptyOrigin(BuildContext context) async {
     RenderBox? box = context.findRenderObject() as RenderBox;
-    final String body = widget.obj[widget.cuurentIndex].title["__cdata"] +
-        widget.obj[widget.cuurentIndex].link.toString();
+    final String body = widget.obj[widget.currentIndex].title["__cdata"] +
+        " " +
+        widget.obj[widget.currentIndex].link.toString();
 
     await Share.share(body,
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);

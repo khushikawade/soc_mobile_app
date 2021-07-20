@@ -69,11 +69,13 @@ class SocialDescription extends StatelessWidget {
         HorzitalSpacerWidget(_kPadding / 2),
         Column(
           children: [
-            Html(data: object.title["__cdata"]),
-            Text(
-              "#Solvedconsulting #k12 education #edtech #edtechers #appdesign #schoolapp",
-              style: Theme.of(context).textTheme.subtitle1,
+            Html(
+              data: "${object.description["__cdata"]}",
             ),
+            // Text(
+            //   "#Solvedconsulting #k12 education #edtech #edtechers #appdesign #schoolapp",
+            //   style: Theme.of(context).textTheme.subtitle1,
+            // ),
           ],
         )
       ],

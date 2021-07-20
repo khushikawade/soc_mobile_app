@@ -1,7 +1,9 @@
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/models/staffmodal.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,7 +44,7 @@ class _StaffPageState extends State<StaffPage> {
 
   // _route(StaffList obj, index) {
   //   if (obj.typeC == "URL") {
-  //     obj.appUrlC != null
+  //     obj.urlC != null
   //         ? Navigator.push(
   //             context,
   //             MaterialPageRoute(

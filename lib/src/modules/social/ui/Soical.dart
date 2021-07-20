@@ -60,7 +60,7 @@ class _SocialPageState extends State<SocialPage> {
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
                         obj: object,
-                        cuurentIndex: index,
+                        currentIndex: index,
                         issocialpage: true,
                         date: '1',
                       )));
