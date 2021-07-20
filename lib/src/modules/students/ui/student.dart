@@ -13,7 +13,7 @@ class StudentPage extends StatefulWidget {
 
 class _StudentPageState extends State<StudentPage> {
   static const double _kLableSpacing = 10.0;
-  List<StudentApp> appList = [];
+
   StudentBloc _bloc = StudentBloc();
 
   @override
@@ -22,11 +22,11 @@ class _StudentPageState extends State<StudentPage> {
     _bloc.add(StudentPageEvent());
   }
 
-  _launchURL(StudentApp obj, list) async {
+  _launchURL(StudentApp obj, subList) async {
     if (obj.appUrlC == 'app_folder') {
       showDialog(
         context: context,
-        builder: (_) => AppsFolderPage(obj: list, folderName: obj.titleC!),
+        builder: (_) => AppsFolderPage(obj: subList, folderName: obj.titleC!),
       );
     } else {
       if (obj.deepLinkC == 'NO') {
@@ -47,26 +47,27 @@ class _StudentPageState extends State<StudentPage> {
     }
   }
 
-  Widget _buildGrid(int crossaAxisCount, List<StudentApp> list) {
-    return appList.length > 0
+  Widget _buildGrid(
+      int crossaAxisCount, List<StudentApp> list, List<StudentApp> subList) {
+    return list.length > 0
         ? GridView.count(
             crossAxisCount: crossaAxisCount,
             crossAxisSpacing: _kLableSpacing,
             mainAxisSpacing: _kLableSpacing,
             children: List.generate(
-              appList.length,
+              list.length,
               (index) {
                 return InkWell(
-                    onTap: () => _launchURL(appList[index], list),
+                    onTap: () => _launchURL(list[index], subList),
                     child: Column(
                       children: [
-                        appList[index].appIconC != null &&
-                                appList[index].appIconC != ''
+                        list[index].appIconC != null &&
+                                list[index].appIconC != ''
                             ? SizedBox(
                                 height: 100,
                                 width: 100,
                                 child: CachedNetworkImage(
-                                  imageUrl: appList[index].appIconC ?? '',
+                                  imageUrl: list[index].appIconC ?? '',
                                   placeholder: (context, url) =>
                                       CircularProgressIndicator(),
                                   errorWidget: (context, url, error) =>
@@ -74,7 +75,7 @@ class _StudentPageState extends State<StudentPage> {
                                 ),
                               )
                             : Container(),
-                        Text("${appList[index].titleC}"),
+                        Text("${list[index].titleC}"),
                       ],
                     ));
               },
@@ -92,16 +93,10 @@ class _StudentPageState extends State<StudentPage> {
               if (state is StudentInitial || state is Loading) {
                 return Center(
                     child: CircularProgressIndicator(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is StudentDataSucess) {
-                for (int i = 0; i < state.obj!.length; i++) {
-                  if (state.obj![i].appFolderc == null ||
-                      state.obj![i].appFolderc == "") {
-                    appList.add(state.obj![i]);
-                  }
-                }
-                return _buildGrid(3, state.obj!);
+                return _buildGrid(3, state.obj!, state.subFolder!);
               } else {
                 return Container();
               }

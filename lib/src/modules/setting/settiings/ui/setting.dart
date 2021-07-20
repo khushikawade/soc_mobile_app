@@ -22,13 +22,13 @@ class _SettingPageState extends State<SettingPage> {
   //   color: AppTheme.kFontColor2,
   // );
 
-  final TextStyle textStyle = TextStyle(
-    height: 1.5,
-    fontFamily: "Roboto Regular",
-    fontSize: 16,
-    fontWeight: FontWeight.normal,
-    color: AppTheme.kAccentColor,
-  );
+  // final TextStyle textStyle = TextStyle(
+  //   height: 1.5,
+  //   fontFamily: "Roboto Regular",
+  //   fontSize: 16,
+  //   fontWeight: FontWeight.normal,
+  //   color: AppTheme.kAccentColor,
+  // );
 
   Widget _buildHeading(String tittle) {
     return Row(
@@ -66,10 +66,10 @@ class _SettingPageState extends State<SettingPage> {
                     _lights = value;
                   });
                 },
-                activeColor: Color(0xff548952),
-                activeTrackColor: Color(0xffCDECE1),
+                activeColor: AppTheme.kactivebackColor,
+                activeTrackColor: AppTheme.kactiveTrackColor,
                 inactiveThumbColor: AppTheme.kIndicatorColor,
-                inactiveTrackColor: Color(0xffd4d4d4),
+                inactiveTrackColor: AppTheme.kinactiveTrackColor,
               ),
             ),
           ),
@@ -83,7 +83,11 @@ class _SettingPageState extends State<SettingPage> {
       children: [
         Expanded(
           child: ListTile(
-            leading: Text("Enable Notification", style: textStyle),
+            leading: Text("Enable Notification",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.normal)),
             trailing: _buildSwitch(),
           ),
         )
@@ -98,7 +102,11 @@ class _SettingPageState extends State<SettingPage> {
         children: [
           Expanded(
             child: ListTile(
-              leading: Text("Open Source licences", style: textStyle),
+              leading: Text("Open Source licences",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontWeight: FontWeight.normal)),
             ),
           )
         ],
@@ -108,7 +116,9 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(),
+      appBar: CustomAppBarWidget(
+        isnewsDescription: false,
+      ),
       body: Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

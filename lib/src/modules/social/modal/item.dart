@@ -1,23 +1,13 @@
-// import 'creator.dart';
-// import 'description.dart';
-// import 'title.dart';
-
 class Item {
-  // Title? title;
-  // Description? description;
   var title;
   var description;
   final link;
   final guid;
-  // // Creator? creator;
   var creator;
   var pubDate;
   String? content;
-  // String? item;
 
-  Item(
-      // this.item
-      {
+  Item({
     this.title,
     this.description,
     this.link,

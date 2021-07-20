@@ -16,7 +16,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   var data;
   NewsBloc() : super(NewsInitial());
   final DbServices _dbServices = DbServices();
-  @override
+
   NewsState get initialState => NewsInitial();
 
   @override
@@ -60,7 +60,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
               id: i["id"],
               contents: i["contents"],
               headings: i["headings"],
-              url: i["url"]);
+              url: i["url"],
+              image: i["global_image"]);
         }).toList();
       } else {
         throw ('something_went_wrong');
@@ -83,8 +84,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       OSiOSSettings.promptBeforeOpeningPushUrl: true
     };
 
-    OneSignal.shared
-        .setNotificationReceivedHandler((OSNotification notification) {
+    OneSignal.shared.setNotificationWillShowInForegroundHandler(
+        (OSNotificationReceivedEvent notification) {
       print(
           "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
     });
@@ -93,7 +94,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
       print(
           "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-      _performPushOperation(result, context);
+      // _performPushOperation(result, context);
     });
 
     OneSignal.shared
@@ -105,10 +106,15 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       print("PERMISSION STATE CHANGED: ${changes.jsonRepresentation()}");
     });
 
-    await OneSignal.shared.init(Overrides.PUSH_APP_ID, iOSSettings: settings);
+    OneSignal.shared.setEmailSubscriptionObserver(
+        (OSEmailSubscriptionStateChanges emailChanges) {});
 
-    OneSignal.shared
-        .setInFocusDisplayType(OSNotificationDisplayType.notification);
+    OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
+
+// The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      print("Accepted permission: $accepted");
+    });
 
     // await OneSignal.shared.sendTags({"dbKey": "coimbee"});
 
@@ -116,45 +122,19 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       await OneSignal.shared
           .promptUserForPushNotificationPermission(fallbackToSettings: true);
     }
+    if (Platform.isAndroid) {
+      await OneSignal.shared
+          .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    }
 
     updateDeviceId();
-  }
-
-  void performPushRouting(page, itemId, title, context) {
-    if (page.contains("http")) {
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (BuildContext context) => InAppUrlLauncer(
-      //               title: title,
-      //               url: page,
-      //             )));
-    } else {
-      // print(page);
-      // print(itemId);
-      // Navigator.push(
-      //   context,
-      //   RouteGenerator.generateRoute(page, args: itemId),
-      // );
-    }
-  }
-
-  void _performPushOperation(result, context) {
-    var data = result.notification.payload.additionalData;
-    print(data);
-    String _title = result.notification.payload.title;
-    if (data != null) {
-      if (data.containsKey('page')) {
-        performPushRouting(data["page"], data["itemId"], _title, context);
-      }
-    }
   }
 
   Future<void> updateDeviceId() async {
     // print("Updating the Onesignal Player id");
     try {
-      final status = await OneSignal.shared.getPermissionSubscriptionState();
-      final deviceId = status.subscriptionStatus.userId;
+      final status = await OneSignal.shared.getDeviceState();
+      final deviceId = status?.userId;
       // print("deviceId...");
       print(deviceId);
       if (deviceId == null) {
@@ -162,11 +142,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         await Future.delayed(Duration(milliseconds: 2000));
         updateDeviceId();
         return;
-      } else {
-        // print("Got the device id...");
-      }
-      // NewsBloc _userBloc = new NewsBloc();
-      // await _userBloc.updateUserData({'onsignal_pushId': deviceId});
+      } else {}
     } catch (e) {
       throw ("something went wrong");
     }

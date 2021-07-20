@@ -4,12 +4,9 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
-
 import '../../../../overrides.dart';
 
 class ShareApp extends StatefulWidget {
-  ShareApp({Key? key, this.title}) : super(key: key);
-  final String? title;
   @override
   _ShareAppState createState() => _ShareAppState();
 }
@@ -73,10 +70,12 @@ class _ShareAppState extends State<ShareApp> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(),
+      appBar: CustomAppBarWidget(
+        isnewsDescription: false,
+      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
-        color: Color(0xffF5F5F5),
+        color: AppTheme.kListBackgroundColor2,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,

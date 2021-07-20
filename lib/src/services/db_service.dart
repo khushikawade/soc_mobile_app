@@ -23,7 +23,7 @@ class DbServices {
         final data = json.decode(response.body);
         return ResponseModel(statusCode: response.statusCode, data: data);
       } else {
-        print(response.body);
+        // print(response.body);
         if (response.body == 'Unauthorized') {
           // await refreshtoken(); here we should refresh the token // TODO implement refresh session
           ResponseModel _res = await getapi(api, headers: headers);
@@ -42,7 +42,7 @@ class DbServices {
 
   postapi(api, {body, headers}) async {
     try {
-      print('${Overrides.API_BASE_URL}$api?output=json');
+      // print('${Overrides.API_BASE_URL}$api?output=json');
       final response = await httpClient.post(
           Uri.parse('${Overrides.API_BASE_URL}$api?output=json'),
           headers: headers ??
@@ -57,7 +57,6 @@ class DbServices {
       } else {
         if (response.body == 'Unauthorized') {
           print('The token has been expired....');
-          // await refreshtoken(); TODO implement refresh session
           ResponseModel _res = await postapi(api, body: body, headers: headers);
           return _res;
         }

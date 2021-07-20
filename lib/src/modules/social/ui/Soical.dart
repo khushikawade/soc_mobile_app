@@ -1,7 +1,8 @@
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/ui/SocialAppUrlLauncher.dart';
+import 'package:Soc/src/modules/social/ui/valuelistner.dart';
+import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -22,7 +23,6 @@ class _SocialPageState extends State<SocialPage> {
   static const double _kIconSize = 48.0;
   static const double _kPadding = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  var unescape = new HtmlUnescape();
   var object;
 
   SocialBloc bloc = SocialBloc();
@@ -58,15 +58,22 @@ class _SocialPageState extends State<SocialPage> {
           : AppTheme.kListBackgroundColor2,
       child: InkWell(
         onTap: () {
-          // Navigator.push(
-          //     context, MaterialPageRoute(builder: (context) => SamplePage()));
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => SocialEventDescription(
+                  builder: (context) => SliderWidget(
                         obj: object,
-                        index: index,
+                        cuurentIndex: index,
+                        issocialpage: true,
+                        date: '1',
                       )));
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => SocialEventDescription(
+          //               obj: object,
+          //               index: index,
+          //             )));
         },
         child: Row(
           children: <Widget>[
@@ -80,10 +87,10 @@ class _SocialPageState extends State<SocialPage> {
                           ? ClipRRect(
                               child: CachedNetworkImage(
                                 imageUrl: imageLink,
-                                placeholder: (context, url) => SizedBox(
-                                  height: 100,
-                                  width: 100,
-                                  child: CircularProgressIndicator(),
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  backgroundColor: AppTheme.kAccentColor,
                                 ),
                                 errorWidget: (context, url, error) =>
                                     Icon(Icons.error),
@@ -176,7 +183,7 @@ class _SocialPageState extends State<SocialPage> {
                   height: MediaQuery.of(context).size.height * 0.8,
                   child: Center(
                       child: CircularProgressIndicator(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: AppTheme.kAccentColor,
                   )),
                 );
               }

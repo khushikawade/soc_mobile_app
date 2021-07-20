@@ -1,6 +1,8 @@
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/modules/news/ui/newdescription.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -13,42 +15,45 @@ class NewsPage extends StatefulWidget {
 class _NewsPageState extends State<NewsPage> {
   static const double _kLabelSpacing = 20.0;
   NewsBloc bloc = new NewsBloc();
+  var object;
+  String newsTimeStamp = '';
   @override
   void initState() {
     super.initState();
     bloc.add(FetchNotificationList());
   }
 
-  _launchURL(obj) async {
-    if (obj.url != null && obj.url != "") {
-      // print("${obj.url}++++++++++++++++++++++++++++++++++++++");
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.headings,
-                    url: obj.url!,
-                  )));
-    } else {
-      throw 'Could not launch ${obj.url}';
-    }
-  }
-
-  Widget _buildListItems(NotificationList obj) {
+  Widget _buildListItems(obj, index) {
     return InkWell(
       onTap: () {
-        _launchURL(obj);
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (BuildContext context) => Newdescription(
+        //               newsobject: obj,
+        //               date: newsTimeStamp,
+        //             )));
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => SliderWidget(
+                      obj: object,
+                      cuurentIndex: index,
+                      issocialpage: false,
+                      date: newsTimeStamp,
+                    )));
       },
       child: Container(
           padding: EdgeInsets.symmetric(
-              horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 3),
+              vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 _buildnewsHeading(obj),
                 SizedBox(height: _kLabelSpacing / 3),
-                _buildTimeStamp(obj),
+                Container(child: _buildTimeStamp(obj)),
                 SizedBox(height: _kLabelSpacing / 4),
               ])),
     );
@@ -59,21 +64,23 @@ class _NewsPageState extends State<NewsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Container(
-            width: MediaQuery.of(context).size.width * .88,
-            child: Text(
-              obj.contents["en"].toString(),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              style: Theme.of(context).textTheme.headline4,
-            )),
+        Expanded(
+          child: Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                obj.contents["en"],
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: Theme.of(context).textTheme.headline4,
+              )),
+        ),
       ],
     );
   }
 
   Widget _buildTimeStamp(NotificationList obj) {
     DateTime now = DateTime.now(); //REPLACE WITH ACTUAL DATE
-    String newsTimeStamp = DateFormat('yyyy-MM-dd – kk:mm').format(now);
+    newsTimeStamp = DateFormat('yyyy/MM/dd').format(now);
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +100,7 @@ class _NewsPageState extends State<NewsPage> {
     return Container(
       height: 0.4,
       decoration: BoxDecoration(
-        color: Color(0xff979AA6),
+        color: AppTheme.kDividerColor,
       ),
     );
   }
@@ -107,7 +114,7 @@ class _NewsPageState extends State<NewsPage> {
       },
       itemCount: obj.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildListItems(obj[index]);
+        return _buildListItems(obj[index], index);
       },
     );
   }
@@ -134,13 +141,25 @@ class _NewsPageState extends State<NewsPage> {
                         height: MediaQuery.of(context).size.height * 0.8,
                         child: Center(
                             child: CircularProgressIndicator(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Theme.of(context).accentColor,
                         )),
                       );
                     } else {
                       return Container();
                     }
                   }),
+              BlocListener<NewsBloc, NewsState>(
+                bloc: bloc,
+                listener: (context, state) async {
+                  if (state is NewsLoaded) {
+                    object = state.obj;
+                  }
+                },
+                child: Container(
+                  height: 0,
+                  width: 0,
+                ),
+              ),
             ],
           ),
         ),

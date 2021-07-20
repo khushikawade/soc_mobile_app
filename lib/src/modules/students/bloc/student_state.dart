@@ -28,11 +28,13 @@ class Errorinloading extends StudentState {
 // ignore: must_be_immutable
 class StudentDataSucess extends StudentState {
   List<StudentApp>? obj;
+  List<StudentApp>? subFolder;
 
-  StudentDataSucess({this.obj});
+  StudentDataSucess({this.obj, this.subFolder});
 
-  StudentDataSucess copyWith({var obj}) {
-    return StudentDataSucess(obj: obj ?? this.obj);
+  StudentDataSucess copyWith({var obj, var subFolder}) {
+    return StudentDataSucess(
+        obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }
 
   @override

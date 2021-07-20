@@ -229,7 +229,6 @@ class _WebViewState extends State<WebView> {
   void initState() {
     super.initState();
     flutterWebviewPlugin.onProgressChanged.listen((progress) {
-      print(progress);
       setState(() {
         lineProgress = progress;
       });
@@ -246,7 +245,6 @@ class _WebViewState extends State<WebView> {
 
   Future<bool> _exitApp(BuildContext context) async {
     if (await controllerGlobal!.canGoBack()) {
-      print("onwill goback");
       controllerGlobal!.goBack();
       return Future.value(true);
     } else {

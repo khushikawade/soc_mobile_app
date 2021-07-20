@@ -205,7 +205,9 @@ class _InformationPageState extends State<InformationPage> {
 // BUTTOM SECTION END
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(),
+      appBar: CustomAppBarWidget(
+        isnewsDescription: false,
+      ),
       body: Container(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

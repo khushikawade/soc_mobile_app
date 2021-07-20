@@ -1,22 +1,29 @@
-import 'package:Soc/src/widgets/common_sublist.dart';
-import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
-import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
-import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/customList.dart';
+import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../overrides.dart';
 
-class FamilyPage extends StatefulWidget {
+class SubListPage extends StatefulWidget {
+  var title;
+
+  SubListPage({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
   @override
-  _FamilyPageState createState() => _FamilyPageState();
+  _SubListPageState createState() => _SubListPageState();
 }
 
-class _FamilyPageState extends State<FamilyPage> {
-  static const double _kLabelSpacing = 16.0;
+class _SubListPageState extends State<SubListPage> {
+  static const double _kLabelSpacing = 17.0;
+  FocusNode myFocusNode = new FocusNode();
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
 
@@ -68,38 +75,23 @@ class _FamilyPageState extends State<FamilyPage> {
     }
   }
 
-  Widget _buildList(FamiliesList obj, int index) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: AppTheme.kDividerColor2,
-          width: 0.65,
-        ),
-        borderRadius: BorderRadius.circular(0.0),
-        color: (index % 2 == 0)
-            ? Theme.of(context).backgroundColor
-            : AppTheme.kListBackgroundColor2,
-      ),
-      child: ListTile(
+  Widget _buildSearchfield() {
+    return SearchFieldWidget();
+  }
+
+  Widget _buildList(int index, Widget listItem, obj) {
+    return GestureDetector(
         onTap: () {
           _route(obj, index);
         },
-        visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        contentPadding:
-            EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: Icon(
-          Icons.list,
-          color: AppTheme.kListIconColor3,
-        ),
-        title: Text(
-          obj.titleC.toString(),
-          style: Theme.of(context).textTheme.bodyText2,
-        ),
-        trailing: Icon(
-          Icons.arrow_forward_ios_rounded,
-          size: 18,
-          color: AppTheme.kButtonbackColor,
-        ),
+        child: ListWidget(index, _buildFormName(index, obj)));
+  }
+
+  Widget _buildFormName(int index, obj) {
+    return InkWell(
+      child: Text(
+        obj.titleC.toString(),
+        style: Theme.of(context).textTheme.bodyText1,
       ),
     );
   }
@@ -117,20 +109,25 @@ class _FamilyPageState extends State<FamilyPage> {
                 ));
               } else if (state is FamiliesDataSucess) {
                 return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        child: ListView.builder(
+                  child: SafeArea(
+                    child: Column(
+                      children: [
+                        _buildSearchfield(),
+                        ListView.builder(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: state.obj!.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return _buildList(state.obj![index], index);
+                            return _buildList(
+                                index,
+                                _buildFormName(index, state.obj![index]),
+                                state.obj![index]);
                           },
                         ),
-                      ),
-                    ],
+                        // ),
+                      ],
+                    ),
                   ),
                 );
               } else {

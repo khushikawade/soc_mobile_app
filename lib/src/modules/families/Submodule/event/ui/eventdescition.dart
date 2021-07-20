@@ -20,24 +20,24 @@ class _EventDescriptionState extends State<EventDescription> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 95.0;
 
-  static const _knewsTextStyle = TextStyle(
-    fontFamily: "Roboto Bold",
-    fontSize: 16,
-    color: AppTheme.kAccentColor,
-    fontWeight: FontWeight.bold,
-  );
-  static const _klinkstyle = TextStyle(
-      fontFamily: "Roboto Bold",
-      fontSize: 15,
-      fontWeight: FontWeight.normal,
-      decoration: TextDecoration.underline,
-      color: AppTheme.kAccentColor);
+  // static const _knewsTextStyle = TextStyle(
+  //   fontFamily: "Roboto Bold",
+  //   fontSize: 16,
+  //   color: AppTheme.kAccentColor,
+  //   fontWeight: FontWeight.bold,
+  // );
+  // static const _klinkstyle = TextStyle(
+  //     fontFamily: "Roboto Bold",
+  //     fontSize: 15,
+  //     fontWeight: FontWeight.normal,
+  //     decoration: TextDecoration.underline,
+  //     color: AppTheme.kAccentColor);
 
-  static const _kTimeStampStyle = TextStyle(
-      fontWeight: FontWeight.normal,
-      fontFamily: "Roboto Regular",
-      fontSize: 13,
-      color: AppTheme.kAccentColor);
+  // static const _kTimeStampStyle = TextStyle(
+  //     fontWeight: FontWeight.normal,
+  //     fontFamily: "Roboto Regular",
+  //     fontSize: 13,
+  //     color: AppTheme.kAccentColor);
 
   static const _kbuttonTextStyle = TextStyle(
       fontWeight: FontWeight.normal,
@@ -102,7 +102,7 @@ class _EventDescriptionState extends State<EventDescription> {
           Container(
               child: Text(
             "${newsTimeStamp}",
-            style: _kTimeStampStyle,
+            style: Theme.of(context).textTheme.subtitle1,
           )),
         ],
       ),
@@ -132,7 +132,10 @@ class _EventDescriptionState extends State<EventDescription> {
               width: MediaQuery.of(context).size.width * .90,
               child: Text(
                 "https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ",
-                style: _klinkstyle,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4!
+                    .copyWith(decoration: TextDecoration.underline),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 10,
               ),
@@ -212,7 +215,7 @@ class _EventDescriptionState extends State<EventDescription> {
                     const IconData(0xe80c,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
-                    color: Color(0xffbcc5d4),
+                    color: AppTheme.kTxtfieldBorderColor,
                     size: 20,
                   ),
                 ),
@@ -230,7 +233,7 @@ class _EventDescriptionState extends State<EventDescription> {
           ]),
       body: Container(
         height: MediaQuery.of(context).size.height,
-        color: Color(0xffF5F5F5),
+        color: AppTheme.kListBackgroundColor2,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

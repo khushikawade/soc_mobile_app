@@ -8,16 +8,19 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import '../../../overrides.dart';
+import '../overrides.dart';
 
-class SocialAppUrlLauncher extends StatefulWidget {
-  SocialAppUrlLauncher({Key? key, required this.link}) : super(key: key);
+// ignore: must_be_immutable
+class InAppBrowser extends StatefulWidget {
+  InAppBrowser({Key? key, required this.link, required this.isSocialpage})
+      : super(key: key);
   String link;
+  bool isSocialpage;
   @override
-  _SocialAppUrlLauncherState createState() => _SocialAppUrlLauncherState();
+  _InAppBrowserState createState() => _InAppBrowserState();
 }
 
-class _SocialAppUrlLauncherState extends State<SocialAppUrlLauncher> {
+class _InAppBrowserState extends State<InAppBrowser> {
   String url = "";
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
@@ -102,23 +105,27 @@ class _SocialAppUrlLauncherState extends State<SocialAppUrlLauncher> {
         //   preferredSize: Size.fromHeight(3.0),
         // ),
         actions: [
-          IconButton(
-            onPressed: () {
-              _onShareWithEmptyOrigin(context);
-            },
-            icon: Icon(
-              Icons.share,
-              color: AppTheme.kIconColor3,
-            ),
-          ),
-          IconButton(
-              onPressed: () {
-                _launchURL(url);
-              },
-              icon: Icon(
-                Icons.stop_screen_share,
-                color: AppTheme.kIconColor3,
-              )),
+          widget.isSocialpage
+              ? IconButton(
+                  onPressed: () {
+                    _onShareWithEmptyOrigin(context);
+                  },
+                  icon: Icon(
+                    Icons.share,
+                    color: AppTheme.kIconColor3,
+                  ),
+                )
+              : Container(),
+          widget.isSocialpage
+              ? IconButton(
+                  onPressed: () {
+                    _launchURL(url);
+                  },
+                  icon: Icon(
+                    Icons.stop_screen_share,
+                    color: AppTheme.kIconColor3,
+                  ))
+              : Container(),
         ],
       ),
       initialChild: Container(
@@ -137,40 +144,46 @@ class _SocialAppUrlLauncherState extends State<SocialAppUrlLauncher> {
   }
 
   Widget buttomButtonsWidget() {
-    return Container(
-      padding: EdgeInsets.all(_kPadding / 2),
-      color: AppTheme.kBackgroundColor,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Icon(
-              Icons.arrow_back_ios_new,
-              color: AppTheme.kBlackColor,
-              size: 20,
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.all(_kPadding / 2),
+        color: AppTheme.kBackgroundColor,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Icon(
+                Icons.arrow_back_ios_new,
+                color: AppTheme.kBlackColor,
+                size: 20,
+              ),
+              SizedBox(width: _kPadding / 2),
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: AppTheme.kBlackColor,
+                size: 20,
+              ),
+            ]),
+            SizedBox(
+              width: _kPadding / 2,
             ),
-            SizedBox(width: _kPadding / 2),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: AppTheme.kBlackColor,
-              size: 20,
-            ),
-          ]),
-          SizedBox(
-            width: _kPadding / 2,
-          ),
-          IconButton(
-              onPressed: () {
-                flutterWebviewPlugin.reload();
-              },
-              icon: Icon(
-                Icons.refresh,
-                color: AppTheme.kIconColor3,
-              )),
-        ],
+            IconButton(
+                onPressed: () {
+                  flutterWebviewPlugin.reload();
+                },
+                icon: Icon(
+                  Icons.refresh,
+                  color: AppTheme.kIconColor3,
+                )),
+          ],
+        ),
       ),
     );
+  }
+
+  Widget _conatainer() {
+    return Container();
   }
 
   _onShareWithEmptyOrigin(BuildContext context) async {
