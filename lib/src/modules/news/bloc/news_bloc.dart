@@ -60,7 +60,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
               id: i["id"],
               contents: i["contents"],
               headings: i["headings"],
-              url: i["url"]);
+              url: i["url"],
+              image: i["global_image"]);
         }).toList();
       } else {
         throw ('something_went_wrong');

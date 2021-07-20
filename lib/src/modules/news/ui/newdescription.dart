@@ -44,22 +44,27 @@ class _NewdescriptionState extends State<Newdescription> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          // width: MediaQuery.of(context).size.width * 100,
-          height: MediaQuery.of(context).size.width * 0.5,
-          child: ClipRRect(
-            child: CachedNetworkImage(
-              imageUrl:
-                  "https://www.airship.com/wp-content/uploads/2015/10/Push-Notifications-Explained.png",
-              fit: BoxFit.fill,
-              placeholder: (context, url) => CircularProgressIndicator(
-                strokeWidth: 2,
-                backgroundColor: Theme.of(context).accentColor,
+        widget.obj.image != "" && widget.obj.image != null
+            ? Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.width * 0.5,
+                child: ClipRRect(
+                  child: CachedNetworkImage(
+                    imageUrl: widget.obj.image,
+                    fit: BoxFit.fill,
+                    placeholder: (context, url) => CircularProgressIndicator(
+                      strokeWidth: 2,
+                      backgroundColor: Theme.of(context).accentColor,
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
+              )
+            : Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.width * 0.5,
+                child: Image(image: AssetImage("assets/images/appicon.png")),
               ),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
-          ),
-        ),
         SpacerWidget(_kLabelSpacing),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

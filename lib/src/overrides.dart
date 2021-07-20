@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Overrides {
   static const String privacyPolicyUrl =
       'https:/www.solvedconsulting.com/privacy';

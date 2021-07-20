@@ -3,6 +3,7 @@ class NotificationList {
   var contents;
   var headings;
   var url;
+  String? image;
 
-  NotificationList({this.id, this.contents, this.headings, this.url});
+  NotificationList({this.id, this.contents, this.headings, this.url, this.image});
 }
