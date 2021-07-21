@@ -29,14 +29,14 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         List<FamiliesList> sortedList = [];
         yield FamilyLoading();
         List<FamiliesList> list = await getFamilyList();
-        if (list != null && list.length > 0) {
-          for (int i = 0; i < list.length; i++) {
-            if (list[i].sortOredr != null && list[i].sortOredr != "") {
-              sortedList.sort(list[i].sortOredr);
-            }
-            print("$sortedList[0]}, ${sortedList[1]}, ${sortedList[2]}");
-          }
-        }
+        // if (list != null && list.length > 0) {
+        //   for (int i = 0; i < list.length; i++) {
+        //     if (list[i].sortOredr != null && list[i].sortOredr != "") {
+        //       sortedList.sort(list[i].sortOredr);
+        //     }
+        //     print("$sortedList[0]}, ${sortedList[1]}, ${sortedList[2]}");
+        //   }
+        // }
         yield FamiliesDataSucess(obj: list);
       } catch (e) {
         yield ErrorLoading(err: e);
