@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:dio/dio.dart';
@@ -65,6 +64,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
     return Scaffold(
         appBar: CustomAppBarWidget(
           isnewsDescription: true,
+          isnewsSearchPage: false,
         ),
         body: widget.url != null && widget.url != ""
             ? document == null

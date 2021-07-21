@@ -3,7 +3,7 @@ import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/inwebview.dart';
+import 'package:Soc/src/widgets/inappbrowerwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import '../overrides.dart';
@@ -130,43 +130,41 @@ class _SliderWidgetState extends State<SliderWidget> {
             ),
             HorzitalSpacerWidget(_kPadding / 3),
           ]),
-      body: SingleChildScrollView(
-        child: Column(children: <Widget>[
-          Expanded(
-            child: PageView.builder(
-              controller: _controller,
-              itemCount: widget.obj.length,
-              onPageChanged: (sliderIndex) {
-                print(sliderIndex);
-                if (first) {
-                  pageinitialIndex < sliderIndex
-                      ? ++widget.currentIndex
-                      : --widget.currentIndex;
-                  pageViewCurrentIndex = sliderIndex;
-                  first = false;
-                } else {
-                  if (sliderIndex > widget.currentIndex &&
-                      widget.currentIndex < object.length - 1) {
-                    ++widget.currentIndex;
-                  } else if (sliderIndex <= widget.currentIndex &&
-                      widget.currentIndex > 0) {
-                    --widget.currentIndex;
-                  }
+      body: Column(children: <Widget>[
+        Expanded(
+          child: PageView.builder(
+            controller: _controller,
+            itemCount: widget.obj.length,
+            onPageChanged: (sliderIndex) {
+              print(sliderIndex);
+              if (first) {
+                pageinitialIndex < sliderIndex
+                    ? ++widget.currentIndex
+                    : --widget.currentIndex;
+                pageViewCurrentIndex = sliderIndex;
+                first = false;
+              } else {
+                if (sliderIndex > widget.currentIndex &&
+                    widget.currentIndex < object.length - 1) {
+                  ++widget.currentIndex;
+                } else if (sliderIndex <= widget.currentIndex &&
+                    widget.currentIndex > 0) {
+                  --widget.currentIndex;
                 }
-                setState(() {});
-              },
-              itemBuilder: (BuildContext context, int index) {
-                return widget.issocialpage!
-                    ? SocialDescription(object: object[widget.currentIndex])
-                    : Newdescription(
-                        obj: object[widget.currentIndex],
-                        date: widget.date,
-                      );
-              },
-            ),
-          )
-        ]),
-      ),
+              }
+              setState(() {});
+            },
+            itemBuilder: (BuildContext context, int index) {
+              return widget.issocialpage!
+                  ? SocialDescription(object: object[widget.currentIndex])
+                  : Newdescription(
+                      obj: object[widget.currentIndex],
+                      date: widget.date,
+                    );
+            },
+          ),
+        )
+      ]),
       bottomSheet: widget.issocialpage! ? buttomButtonsWidget(context) : null,
     );
   }

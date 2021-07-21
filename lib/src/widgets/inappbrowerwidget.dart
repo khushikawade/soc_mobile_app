@@ -12,10 +12,14 @@ import '../overrides.dart';
 
 // ignore: must_be_immutable
 class InAppBrowser extends StatefulWidget {
-  InAppBrowser({Key? key, required this.link, required this.isSocialpage})
-      : super(key: key);
+  InAppBrowser({
+    Key? key,
+    required this.link,
+    required this.isSocialpage,
+  }) : super(key: key);
   String link;
   bool isSocialpage;
+
   @override
   _InAppBrowserState createState() => _InAppBrowserState();
 }

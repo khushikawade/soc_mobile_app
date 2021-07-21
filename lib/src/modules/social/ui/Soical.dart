@@ -53,13 +53,6 @@ class _SocialPageState extends State<SocialPage> {
                         issocialpage: true,
                         date: '1',
                       )));
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => SocialEventDescription(
-          //               obj: object,
-          //               index: index,
-          //             )));
         },
         child: Row(
           children: <Widget>[

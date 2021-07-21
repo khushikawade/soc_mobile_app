@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
 import 'package:Soc/src/widgets/html_description.dart';
@@ -99,6 +100,10 @@ class _SubListPageState extends State<SubListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
+        appBar: CustomAppBarWidget(
+          isnewsDescription: false,
+          isnewsSearchPage: false,
+        ),
         body: BlocBuilder<FamilyBloc, FamilyState>(
             bloc: _bloc,
             builder: (BuildContext contxt, FamilyState state) {

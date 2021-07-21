@@ -207,6 +207,7 @@ class _InformationPageState extends State<InformationPage> {
     return Scaffold(
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
+        isnewsSearchPage: false,
       ),
       body: Container(
           child: Column(
