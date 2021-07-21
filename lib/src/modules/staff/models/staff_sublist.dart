@@ -1,35 +1,37 @@
-import '../modal/sub_attributes.dart';
+import '../ui/../models/staff_sublist_attributes.dart';
 
-class FamiliesSubList {
-  SubAttributes? attributes;
+class StaffSubList {
+  StaffSubListAttributes? attributes;
   String? titleC;
-  String? appUrlC;
-  String? pdfURL;
+  dynamic appIconC;
+  dynamic urlC;
   String? id;
   String? name;
-  String? rtfHTMLC;
   String? typeC;
+  String? rtfHTMLC;
+  String? pdfURL;
   var sortOredr;
 
-  FamiliesSubList(
+  StaffSubList(
       {this.attributes,
       this.titleC,
-      this.appUrlC,
-      this.pdfURL,
+      this.appIconC,
+      this.urlC,
       this.id,
       this.name,
+      this.pdfURL,
       this.rtfHTMLC,
       this.typeC,
       this.sortOredr});
 
-  factory FamiliesSubList.fromJson(Map<String, dynamic> json) =>
-      FamiliesSubList(
+  factory StaffSubList.fromJson(Map<String, dynamic> json) => StaffSubList(
         attributes: json['attributes'] == null
             ? null
-            : SubAttributes.fromJson(
+            : StaffSubListAttributes.fromJson(
                 json['attributes'] as Map<String, dynamic>),
         titleC: json['Title__c'] as String?,
-        appUrlC: json['URL__c'] as String?,
+        appIconC: json['App_Icon__c'] as String?,
+        urlC: json['URL__c'] as String?,
         pdfURL: json['PDF_URL__c'] as String?,
         id: json['Id'] as String?,
         name: json['Name'] as String?,
@@ -41,7 +43,8 @@ class FamiliesSubList {
   Map<String, dynamic> toJson() => {
         'attributes': attributes?.toJson(),
         'Title__c': titleC,
-        'URL__c': appUrlC,
+        'App_Icon__c': appIconC,
+        'URL__c': urlC,
         'PDF_URL__c': pdfURL,
         'Id': id,
         'Name': name,

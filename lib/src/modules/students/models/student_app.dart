@@ -9,6 +9,7 @@ class StudentApp {
   String? id;
   String? name;
   String? appFolderc;
+  var sortOredr;
 
   StudentApp(
       {this.attributes,
@@ -18,7 +19,8 @@ class StudentApp {
       this.deepLinkC,
       this.id,
       this.name,
-      this.appFolderc});
+      this.appFolderc,
+      this.sortOredr});
 
   factory StudentApp.fromJson(Map<String, dynamic> json) => StudentApp(
         attributes: json['attributes'] == null
@@ -31,6 +33,7 @@ class StudentApp {
         id: json['Id'] as String?,
         name: json['Name'] as String?,
         appFolderc: json['App_Folder__c'] as String?,
+        sortOredr: json['Sort_Order__c'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -41,6 +44,7 @@ class StudentApp {
         'Deep_Link__c': deepLinkC,
         'Id': id,
         'Name': name,
-        'App_Folder__c': appFolderc
+        'App_Folder__c': appFolderc,
+        'Sort_Order__c': sortOredr,
       };
 }

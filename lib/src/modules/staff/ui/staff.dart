@@ -40,16 +40,23 @@ class _StaffPageState extends State<StaffPage> {
                         url: obj.urlC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML") {
+    } else if (obj.typeC == "HTML/RTF") {
       obj.rtfHTMLC != null
-          ? Navigator.push(
+          ?
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) =>
+          //             SubListPage(title: obj.titleC, module: "staff")))
+
+          Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (obj.typeC == "PDF URL") {
+    } else if (obj.typeC == "PDF") {
       obj.pdfURL != null
           ? Navigator.push(
               context,
@@ -62,9 +69,8 @@ class _StaffPageState extends State<StaffPage> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => SubListPage(
-                    title: obj.titleC,
-                  )));
+              builder: (BuildContext context) =>
+                  SubListPage(title: obj.titleC, module: "staff")));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }
@@ -112,7 +118,7 @@ class _StaffPageState extends State<StaffPage> {
         body: BlocBuilder<StaffBloc, StaffState>(
             bloc: _bloc,
             builder: (BuildContext contxt, StaffState state) {
-              if (state is StaffInitial || state is Loading) {
+              if (state is StaffInitial || state is StaffLoading) {
                 return Center(
                     child: CircularProgressIndicator(
                   backgroundColor: Theme.of(context).accentColor,

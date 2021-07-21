@@ -8,7 +8,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../overrides.dart';
 
 class FamilyPage extends StatefulWidget {
   @override
@@ -60,9 +59,8 @@ class _FamilyPageState extends State<FamilyPage> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => SubListPage(
-                    title: obj.titleC,
-                  )));
+              builder: (BuildContext context) =>
+                  SubListPage(title: obj.titleC, module: "family")));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }
