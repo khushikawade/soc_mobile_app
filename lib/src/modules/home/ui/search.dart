@@ -60,10 +60,10 @@
 // }
 
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +82,7 @@ class _SearchPageState extends State<SearchPage> {
   final backColor = AppTheme.kactivebackColor;
   final sebarcolor = AppTheme.kFieldbackgroundColor;
   FocusNode myFocusNode = new FocusNode();
-
+  final _debouncer = Debouncer(milliseconds: 500);
   HomeBloc _searchBloc = new HomeBloc();
 
   static List<String> mainDataList = ["Flutter", "f", "angular"];
@@ -90,9 +90,12 @@ class _SearchPageState extends State<SearchPage> {
   List<String> newDataList = List.from(mainDataList);
 
   onItemChanged(String value) {
-    print(value);
     suggestionlist = true;
-    _searchBloc.add(GlobalSearchEvent(keyword: value));
+    _debouncer.run(() {
+      _searchBloc.add(GlobalSearchEvent(keyword: value));
+      setState(() {});
+    });
+
     // setState(() {
     //   newDataList = mainDataList
     //       .where((string) => string.toLowerCase().contains(value.toLowerCase()))
@@ -207,15 +210,7 @@ class _SearchPageState extends State<SearchPage> {
     return BlocBuilder<HomeBloc, HomeState>(
         bloc: _searchBloc,
         builder: (BuildContext contxt, HomeState state) {
-          if (state is HomeInitial || state is SearchLoading) {
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: Center(
-                  child: CircularProgressIndicator(
-                backgroundColor: Theme.of(context).accentColor,
-              )),
-            );
-          } else if (state is GlobalSearchSuccess) {
+          if (state is GlobalSearchSuccess) {
             return Expanded(
               child: Container(
                   color: AppTheme.kTxtFieldColor,
@@ -236,6 +231,14 @@ class _SearchPageState extends State<SearchPage> {
                           });
                     }).toList(),
                   )),
+            );
+          } else if (state is SearchLoading) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: Center(
+                  child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).accentColor,
+              )),
             );
           } else {
             return Container();

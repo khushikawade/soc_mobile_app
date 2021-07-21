@@ -70,10 +70,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
       print(response.data);
       if (response.statusCode == 200) {
-        // final data = response.data;
-        // print(data);
-        // return data;
-
         return response.data["searchRecords"]
             .map<SearchList>((i) => SearchList.fromJson(i))
             .toList();
