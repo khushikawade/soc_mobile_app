@@ -23,9 +23,12 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
       try {
         yield StaffLoading();
         List<StaffList> list = await getStaffDetails();
-        yield StaffDataSucess(
-          obj: list,
-        );
+        if (list.length > 0) {
+          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          yield StaffDataSucess(
+            obj: list,
+          );
+        }
       } catch (e) {
         yield ErrorInStaffLoading(err: e);
       }
@@ -35,9 +38,12 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
       try {
         yield StaffLoading();
         List<StaffSubList> list = await getStaffSubList();
-        yield StaffSubListSucess(
-          obj: list,
-        );
+        if (list.length > 0) {
+          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          yield StaffSubListSucess(
+            obj: list,
+          );
+        }
       } catch (e) {
         yield ErrorInStaffLoading(err: e);
       }

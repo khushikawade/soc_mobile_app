@@ -7,9 +7,6 @@ import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../../overrides.dart' as overrides;
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 part 'family_event.dart';
 part 'family_state.dart';
 
@@ -19,25 +16,21 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   final DbServices _dbServices = DbServices();
 
   FamilyState get initialState => FamilyInitial();
-
+  var dataArray;
   @override
   Stream<FamilyState> mapEventToState(
     FamilyEvent event,
   ) async* {
     if (event is FamiliesEvent) {
       try {
-        List<FamiliesList> sortedList = [];
+        // List<FamiliesList> sortedList = [];
         yield FamilyLoading();
         List<FamiliesList> list = await getFamilyList();
-        // if (list != null && list.length > 0) {
-        //   for (int i = 0; i < list.length; i++) {
-        //     if (list[i].sortOredr != null && list[i].sortOredr != "") {
-        //       sortedList.sort(list[i].sortOredr);
-        //     }
-        //     print("$sortedList[0]}, ${sortedList[1]}, ${sortedList[2]}");
-        //   }
-        // }
-        yield FamiliesDataSucess(obj: list);
+
+        if (list.length > 0) {
+          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          yield FamiliesDataSucess(obj: list);
+        }
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -47,7 +40,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         yield FamilyLoading();
         List<FamiliesSubList> list = await getFamilySubList();
-        yield FamiliesSublistSucess(obj: list);
+        if (list.length > 0) {
+          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          yield FamiliesSublistSucess(obj: list);
+        }
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -60,6 +56,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c FROM Families_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
 
       if (response.statusCode == 200) {
+        dataArray = response.data["records"];
         return response.data["records"]
             .map<FamiliesList>((i) => FamiliesList.fromJson(i))
             .toList();
