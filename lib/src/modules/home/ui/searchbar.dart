@@ -59,13 +59,13 @@
 //   }
 // }
 
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -82,6 +82,8 @@ class _SearchPageState extends State<SearchPage> {
   FocusNode myFocusNode = new FocusNode();
   // Color c = const Color.fromRGBO(142, 142, 147, 0.12);
 
+  HomeBloc _searchBloc = new HomeBloc();
+
   static List<String> mainDataList = [
     "Flutter",
   ];
@@ -89,12 +91,14 @@ class _SearchPageState extends State<SearchPage> {
   List<String> newDataList = List.from(mainDataList);
 
   onItemChanged(String value) {
+    print(value);
     suggestionlist = true;
-    setState(() {
-      newDataList = mainDataList
-          .where((string) => string.toLowerCase().contains(value.toLowerCase()))
-          .toList();
-    });
+    _searchBloc.add(GlobalSearchEvent(keyword: value));
+    // setState(() {
+    //   newDataList = mainDataList
+    //       .where((string) => string.toLowerCase().contains(value.toLowerCase()))
+    //       .toList();
+    // });
   }
 
   void _onItemTap(int index) {
