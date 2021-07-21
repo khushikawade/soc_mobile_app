@@ -1,4 +1,3 @@
-import 'package:Soc/src/modules/setting/settiings/ui/test.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -72,6 +71,7 @@ class _ShareAppState extends State<ShareApp> {
     return Scaffold(
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
+        isnewsSearchPage: false,
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,

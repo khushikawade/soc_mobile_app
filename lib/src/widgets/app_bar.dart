@@ -1,15 +1,23 @@
+import 'package:Soc/src/modules/home/ui/searchbar.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 import '../overrides.dart';
 
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-  CustomAppBarWidget({Key? key, required this.isnewsDescription})
+  CustomAppBarWidget(
+      {Key? key,
+      required this.isnewsDescription,
+      required this.isnewsSearchPage})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? islinearProgress = false;
   bool? isnewsDescription = false;
+  bool? isnewsSearchPage = false;
   @override
   final Size preferredSize;
 
@@ -51,22 +59,37 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       ),
       title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
       actions: [
+        Icon(
+          const IconData(0xe805,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        ),
         widget.isnewsDescription != null && widget.isnewsDescription == true
             ? IconButton(
                 onPressed: () {
-                  // _onShareWithEmptyOrigin(context);
+                  _onShareWithEmptyOrigin(context, "body", "subject");
                 },
                 icon: Icon(
                   Icons.share,
                   color: AppTheme.kIconColor3,
                 ),
               )
-            : widget.isnewsDescription == false
-                ? Container()
-                : Icon(
-                    Icons.share,
-                    color: Colors.white,
-                  )
+            : widget.isnewsDescription == false &&
+                    widget.isnewsDescription == false
+                ? HorzitalSpacerWidget(10)
+                : widget.isnewsSearchPage == false
+                    ? IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SearchPage()));
+                        },
+                        icon: Icon(
+                          const IconData(0xe805,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                        ))
+                    : Container(),
 
         //  IconButton(
         //     onPressed: () {
@@ -83,6 +106,17 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       //   preferredSize: Size.fromHeight(3.0),
       // ),
     );
+  }
+
+  _onShareWithEmptyOrigin(
+      BuildContext context, String body, String subject) async {
+    RenderBox? box = context.findRenderObject() as RenderBox;
+    final String body1 = body;
+    // "Hi, I downloaded the PS 456 Bronx Bears app. You should check it out! Download the app at https://play.google.com/store/apps/details?id=com.app.p1676CB";
+    final subject1 = subject;
+    await Share.share(body1,
+        subject: subject1,
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
   _progressBar(double progress, BuildContext context) {

@@ -192,45 +192,45 @@ class _EventDescriptionState extends State<EventDescription> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
-          iconTheme: IconThemeData(color: Theme.of(context).accentColor),
-          elevation: 0.0,
-          leading: Container(),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
-            ],
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    const IconData(0xe80c,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kTxtfieldBorderColor,
-                    size: 20,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(width: _kPadding),
-            Icon(
-              const IconData(0xe815,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: AppTheme.kBlackColor,
-              size: 20,
-            ),
-            SizedBox(width: _kPadding),
-          ]),
+      // appBar: new AppBar(
+      //     iconTheme: IconThemeData(color: Theme.of(context).accentColor),
+      //     elevation: 0.0,
+      //     leading: Container(),
+      //     title: Row(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       mainAxisSize: MainAxisSize.min,
+      //       children: <Widget>[
+      //         SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
+      //       ],
+      //     ),
+      //     actions: <Widget>[
+      //       Row(
+      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //         children: [
+      //           IconButton(
+      //             onPressed: () {
+      //               Navigator.pop(context);
+      //             },
+      //             icon: Icon(
+      //               const IconData(0xe80c,
+      //                   fontFamily: Overrides.kFontFam,
+      //                   fontPackage: Overrides.kFontPkg),
+      //               color: AppTheme.kTxtfieldBorderColor,
+      //               size: 20,
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //       SizedBox(width: _kPadding),
+      //       Icon(
+      //         const IconData(0xe815,
+      //             fontFamily: Overrides.kFontFam,
+      //             fontPackage: Overrides.kFontPkg),
+      //         color: AppTheme.kBlackColor,
+      //         size: 20,
+      //       ),
+      //       SizedBox(width: _kPadding),
+      //     ]),
       body: Container(
         height: MediaQuery.of(context).size.height,
         color: AppTheme.kListBackgroundColor2,

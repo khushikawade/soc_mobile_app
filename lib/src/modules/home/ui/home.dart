@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
+import 'package:Soc/src/modules/home/ui/searchbar.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information/ui/information.dart';
@@ -258,15 +259,28 @@ class _HomePageState extends State<HomePage> {
             title:
                 SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
             actions: <Widget>[
-              _selectedIndex == 3
-                  ? Icon(
-                      const IconData(0xe805,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                    )
-                  : Container(
-                      height: 0,
-                    ),
+              // _selectedIndex == 3
+              // ?
+
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SearchPage()));
+                  },
+                  icon: Icon(
+                    const IconData(0xe805,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                  )),
+
+              // Icon(
+              //   const IconData(0xe805,
+              //       fontFamily: Overrides.kFontFam,
+              //       fontPackage: Overrides.kFontPkg),
+              // ),
+              // : Container(
+              //     height: 0,
+              //   ),
               _buildPopupMenuWidget(),
             ]),
         body: selectedScreenBody(context, _selectedIndex),
@@ -284,8 +298,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5.0),
-                        child: Icon( 
-                           IconData(int.parse(e.split("_")[1]),
+                        child: Icon(
+                          IconData(int.parse(e.split("_")[1]),
                               fontFamily: Overrides.kFontFam,
                               fontPackage: Overrides.kFontPkg),
                         ),

@@ -52,6 +52,7 @@ class _AboutusPageState extends State<AboutusPage> {
       child: Scaffold(
         appBar: CustomAppBarWidget(
           isnewsDescription: false,
+          isnewsSearchPage: false,
         ),
         body: SingleChildScrollView(
           child: _buildContent1(),

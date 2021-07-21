@@ -4,7 +4,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar_with_overlapped_body.dart';
 import 'package:Soc/src/widgets/icon_selector.dart';
-import 'package:Soc/src/widgets/models/custom_app_bar.dart';
+
 import 'package:Soc/src/widgets/profile_picture_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -142,12 +142,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return OverlappedAppBar(
-      scaffoldKey: _scaffoldKey,
-      customAppBar: CustomAppBar(),
-      topOverFlow: 90,
-      body: _body(),
-    );
+    return Container();
+    // return OverlappedAppBar(
+    //   scaffoldKey: _scaffoldKey,
+    //   customAppBar: CustomAppBar(),
+    //   topOverFlow: 90,
+    //   body: _body(),
+    // );
   }
 }
 

@@ -3,6 +3,8 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SocialDescription extends StatelessWidget {
@@ -69,12 +71,27 @@ class SocialDescription extends StatelessWidget {
         HorzitalSpacerWidget(_kPadding / 2),
         Column(
           children: [
+            // object.description["__cdata"]
+            //     .querySelectorAll('div')
+            //     .forEach((value) {
+            //   debugPrint(value.outerHtml);
+            // }),
+
             Html(
               data: "${object.description["__cdata"]}",
             ),
-            // Text(
-            //   "#Solvedconsulting #k12 education #edtech #edtechers #appdesign #schoolapp",
-            //   style: Theme.of(context).textTheme.subtitle1,
+            // InkWell(
+            //   onTap: () {
+            //     var document = parse(object.description["__cdata"]);
+            //     dom.Element? link = document.querySelector('div');
+            //     String? imageLink = link != null ? link.attributes[''] : '';
+
+            //     print(imageLink);
+            //   },
+            //   child: Text(
+            //     "#Solvedconsulting #k12 education #edtech #edtechers #appdesign #schoolapp",
+            //     style: Theme.of(context).textTheme.subtitle1,
+            //   ),
             // ),
           ],
         )
@@ -125,7 +142,7 @@ class SocialDescription extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(child: _buildItem(context)),
+      body: SingleChildScrollView(child: Container(child: _buildItem(context))),
     );
   }
 }

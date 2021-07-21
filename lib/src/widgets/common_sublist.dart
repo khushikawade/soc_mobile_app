@@ -111,6 +111,7 @@ class _SubListPageState extends State<SubListPage> {
     return Scaffold(
         appBar: CustomAppBarWidget(
           isnewsDescription: false,
+          isnewsSearchPage: false,
         ),
         key: _scaffoldKey,
         body: widget.module == "family"

@@ -1,8 +1,9 @@
 import 'package:Soc/src/modules/families/Submodule/resource/modal/resourcemodal.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/customList.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/models/webview.dart';
+
 import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
 
@@ -76,6 +77,10 @@ class _ResourcesState extends State<Resources> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBarWidget(
+        isnewsDescription: false,
+        isnewsSearchPage: false,
+      ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
