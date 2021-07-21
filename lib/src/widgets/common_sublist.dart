@@ -2,10 +2,12 @@ import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/models/custom_app_bar.dart';
 import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,8 +35,12 @@ class _SubListPageState extends State<SubListPage> {
     super.initState();
     if (widget.module == "family") {
       _bloc.add(FamiliesSublistEvent());
-    } else {
-      _staffBloc.add(StaffSubListData());
+    } else if (widget.module == "staff") {
+      _staffBloc.add(StaffPageEvent());
+    } else if (widget.module == "subListStaff") {
+      _staffBloc.add(StaffSubListEvent());
+    } else if (widget.module == "subListFamily") {
+      _bloc.add(FamiliesSublistEvent());
     }
   }
 
@@ -49,7 +55,7 @@ class _SubListPageState extends State<SubListPage> {
                         url: obj.appUrlC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML") {
+    } else if (obj.typeC == "RFT_HTML" || obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
@@ -104,41 +110,168 @@ class _SubListPageState extends State<SubListPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: CustomAppBarWidget(
+          isnewsDescription: false,
+        ),
         key: _scaffoldKey,
-        body: BlocBuilder<FamilyBloc, FamilyState>(
-            bloc: _bloc,
-            builder: (BuildContext contxt, FamilyState state) {
-              if (state is FamilyInitial || state is FamilyLoading) {
-                return Center(
-                    child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
-                ));
-              } else if (state is FamiliesSublistSucess) {
-                return SingleChildScrollView(
-                  child: SafeArea(
-                    child: Column(
-                      children: [
-                        _buildSearchfield(),
-                        ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return _buildList(
-                                index,
-                                _buildFormName(index, state.obj![index]),
-                                state.obj![index]);
-                          },
+        body: widget.module == "family"
+            ? BlocBuilder<FamilyBloc, FamilyState>(
+                bloc: _bloc,
+                builder: (BuildContext contxt, FamilyState state) {
+                  if (state is FamilyInitial || state is FamilyLoading) {
+                    return Center(
+                        child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).accentColor,
+                    ));
+                  } else if (state is FamiliesSublistSucess) {
+                    subModule = 'subListFamily';
+                    return SingleChildScrollView(
+                      child: SafeArea(
+                        child: Column(
+                          children: [
+                            _buildSearchfield(),
+                            ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: state.obj!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return _buildList(
+                                    index,
+                                    _buildFormName(index, state.obj![index]),
+                                    state.obj![index]);
+                              },
+                            ),
+                            // ),
+                          ],
                         ),
-                        // ),
-                      ],
-                    ),
-                  ),
-                );
-              } else {
-                return Container();
-              }
-            }));
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                })
+            : widget.module == 'staff'
+                ? BlocBuilder<StaffBloc, StaffState>(
+                    bloc: _staffBloc,
+                    builder: (BuildContext contxt, StaffState state) {
+                      if (state is StaffInitial || state is StaffLoading) {
+                        return Center(
+                            child: CircularProgressIndicator(
+                          backgroundColor: Theme.of(context).accentColor,
+                        ));
+                      } else if (state is StaffDataSucess) {
+                        subModule = 'subListStaff';
+                        return SingleChildScrollView(
+                          child: SafeArea(
+                            child: Column(
+                              children: [
+                                _buildSearchfield(),
+                                ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: state.obj!.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return _buildList(
+                                        index,
+                                        _buildFormName(
+                                            index, state.obj![index]),
+                                        state.obj![index]);
+                                  },
+                                ),
+                                // ),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Container();
+                      }
+                    })
+                : widget.module == 'subListFamily'
+                    ? BlocBuilder<FamilyBloc, FamilyState>(
+                        bloc: _bloc,
+                        builder: (BuildContext contxt, FamilyState state) {
+                          if (state is FamilyInitial ||
+                              state is FamilyLoading) {
+                            return Center(
+                                child: CircularProgressIndicator(
+                              backgroundColor: Theme.of(context).accentColor,
+                            ));
+                          } else if (state is FamiliesSublistSucess) {
+                            subModule = 'subListFamily';
+                            return SingleChildScrollView(
+                              child: SafeArea(
+                                child: Column(
+                                  children: [
+                                    _buildSearchfield(),
+                                    ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: state.obj!.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return _buildList(
+                                            index,
+                                            _buildFormName(
+                                                index, state.obj![index]),
+                                            state.obj![index]);
+                                      },
+                                    ),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        })
+                    : widget.module == 'subListStaff'
+                        ? BlocBuilder<StaffBloc, StaffState>(
+                            bloc: _staffBloc,
+                            builder: (BuildContext contxt, StaffState state) {
+                              if (state is StaffInitial ||
+                                  state is StaffLoading) {
+                                return Center(
+                                    child: CircularProgressIndicator(
+                                  backgroundColor:
+                                      Theme.of(context).accentColor,
+                                ));
+                              } else if (state is StaffSubListSucess) {
+                                subModule = 'subListStaff';
+                                return SingleChildScrollView(
+                                  child: SafeArea(
+                                    child: Column(
+                                      children: [
+                                        _buildSearchfield(),
+                                        ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          itemCount: state.obj!.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return _buildList(
+                                                index,
+                                                _buildFormName(
+                                                    index, state.obj![index]),
+                                                state.obj![index]);
+                                          },
+                                        ),
+                                        // ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return Container();
+                              }
+                            })
+                        : Container());
   }
 }

@@ -10,6 +10,7 @@ class StaffSubList {
   String? typeC;
   String? rtfHTMLC;
   String? pdfURL;
+  var sortOredr;
 
   StaffSubList(
       {this.attributes,
@@ -20,7 +21,8 @@ class StaffSubList {
       this.name,
       this.pdfURL,
       this.rtfHTMLC,
-      this.typeC});
+      this.typeC,
+      this.sortOredr});
 
   factory StaffSubList.fromJson(Map<String, dynamic> json) => StaffSubList(
         attributes: json['attributes'] == null
@@ -35,6 +37,7 @@ class StaffSubList {
         name: json['Name'] as String?,
         rtfHTMLC: json['RTF_HTML__c'] as String?,
         typeC: json['Type__c'] as String?,
+        sortOredr: json['Sort_Order__c'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -47,5 +50,6 @@ class StaffSubList {
         'Name': name,
         'RTF_HTML__c': rtfHTMLC,
         'Type__c': typeC,
+        'Sort_Order__c': sortOredr
       };
 }

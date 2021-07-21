@@ -118,7 +118,7 @@ class _StaffPageState extends State<StaffPage> {
         body: BlocBuilder<StaffBloc, StaffState>(
             bloc: _bloc,
             builder: (BuildContext contxt, StaffState state) {
-              if (state is StaffInitial || state is Loading) {
+              if (state is StaffInitial || state is StaffLoading) {
                 return Center(
                     child: CircularProgressIndicator(
                   backgroundColor: Theme.of(context).accentColor,

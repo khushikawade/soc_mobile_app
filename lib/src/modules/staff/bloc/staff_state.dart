@@ -9,16 +9,16 @@ class StaffInitial extends StaffState {
   List<Object> get props => [];
 }
 
-class Loading extends StaffState {
+class StaffLoading extends StaffState {
   @override
   List<Object> get props => [];
 }
 
-class Errorinloading extends StaffState {
+class ErrorInStaffLoading extends StaffState {
   final err;
-  Errorinloading({this.err});
-  Errorinloading copyWith({var err}) {
-    return Errorinloading(err: err ?? this.err);
+  ErrorInStaffLoading({this.err});
+  ErrorInStaffLoading copyWith({var err}) {
+    return ErrorInStaffLoading(err: err ?? this.err);
   }
 
   @override

@@ -26,8 +26,17 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   ) async* {
     if (event is FamiliesEvent) {
       try {
+        List<FamiliesList> sortedList = [];
         yield FamilyLoading();
         List<FamiliesList> list = await getFamilyList();
+        if (list != null && list.length > 0) {
+          for (int i = 0; i < list.length; i++) {
+            if (list[i].sortOredr != null && list[i].sortOredr != "") {
+              sortedList.sort(list[i].sortOredr);
+            }
+            print("$sortedList[0]}, ${sortedList[1]}, ${sortedList[2]}");
+          }
+        }
         yield FamiliesDataSucess(obj: list);
       } catch (e) {
         yield ErrorLoading(err: e);
@@ -48,7 +57,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Future<List<FamiliesList>> getFamilyList() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c FROM Families_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c FROM Families_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
 
       if (response.statusCode == 200) {
         return response.data["records"]
@@ -65,7 +74,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Future<List<FamiliesSubList>> getFamilySubList() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c FROM Family_Sub_Menu_App__c")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c FROM Family_Sub_Menu_App__c")}");
 
       if (response.statusCode == 200) {
         return response.data["records"]

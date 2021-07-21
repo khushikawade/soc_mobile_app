@@ -10,6 +10,7 @@ class StaffList {
   String? typeC;
   String? rtfHTMLC;
   String? pdfURL;
+  var sortOredr;
 
   StaffList(
       {this.attributes,
@@ -20,21 +21,22 @@ class StaffList {
       this.name,
       this.pdfURL,
       this.rtfHTMLC,
-      this.typeC});
+      this.typeC,
+      this.sortOredr});
 
   factory StaffList.fromJson(Map<String, dynamic> json) => StaffList(
-        attributes: json['attributes'] == null
-            ? null
-            : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
-        titleC: json['Title__c'] as String?,
-        appIconC: json['App_Icon__c'] as String?,
-        urlC: json['URL__c'] as String?,
-        pdfURL: json['PDF_URL__c'] as String?,
-        id: json['Id'] as String?,
-        name: json['Name'] as String?,
-        rtfHTMLC: json['RTF_HTML__c'] as String?,
-        typeC: json['Type__c'] as String?,
-      );
+      attributes: json['attributes'] == null
+          ? null
+          : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
+      titleC: json['Title__c'] as String?,
+      appIconC: json['App_Icon__c'] as String?,
+      urlC: json['URL__c'] as String?,
+      pdfURL: json['PDF_URL__c'] as String?,
+      id: json['Id'] as String?,
+      name: json['Name'] as String?,
+      rtfHTMLC: json['RTF_HTML__c'] as String?,
+      typeC: json['Type__c'] as String?,
+      sortOredr: json['Sort_Order__c']);
 
   Map<String, dynamic> toJson() => {
         'attributes': attributes?.toJson(),
@@ -46,5 +48,6 @@ class StaffList {
         'Name': name,
         'RTF_HTML__c': rtfHTMLC,
         'Type__c': typeC,
+        'Sort_Order__c': sortOredr
       };
 }
