@@ -1,10 +1,14 @@
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class ContactPage extends StatefulWidget {
+  var obj;
+  ContactPage({Key? key, required this.obj}) : super(key: key);
+
   @override
   _ContactPageState createState() => _ContactPageState();
 }
@@ -14,6 +18,13 @@ class _ContactPageState extends State<ContactPage> {
   static const double _kboxheight = 60.0;
   static const double _kboxwidth = 300.0;
   static const double _kboxborderwidth = 0.75;
+  var object;
+
+  @override
+  void initState() {
+    super.initState();
+    object = widget.obj;
+  }
 
   //Style
   // static const _kheadingStyle = TextStyle(
@@ -67,12 +78,13 @@ class _ContactPageState extends State<ContactPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-            child: Image.asset(
-          'assets/images/address.png',
-          fit: BoxFit.fill,
-          height: 160,
-          width: MediaQuery.of(context).size.width * 1,
-        )),
+            //   child: NetworkImage(
+            // object["Contact_Image__c"],
+            // fit: BoxFit.fill,
+            // height: 160,
+            // width: MediaQuery.of(context).size.width * 1,
+            // )
+            ),
       ],
     );
   }
@@ -238,6 +250,10 @@ class _ContactPageState extends State<ContactPage> {
 // BUTTOM SECTION END
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBarWidget(
+        isnewsDescription: false,
+        isnewsSearchPage: true,
+      ),
       body: Container(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

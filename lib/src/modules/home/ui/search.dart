@@ -80,11 +80,8 @@ class _SearchPageState extends State<SearchPage> {
   final backColor = AppTheme.kactivebackColor;
   final sebarcolor = AppTheme.kFieldbackgroundColor;
   FocusNode myFocusNode = new FocusNode();
-  // Color c = const Color.fromRGBO(142, 142, 147, 0.12);
 
-  static List<String> mainDataList = [
-    "Flutter",
-  ];
+  static List<String> mainDataList = ["Flutter", "f", "angular"];
 
   List<String> newDataList = List.from(mainDataList);
 
@@ -111,7 +108,7 @@ class _SearchPageState extends State<SearchPage> {
                 vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
             color: AppTheme.kFieldbackgroundColor,
             child: TextFormField(
-              focusNode: myFocusNode,
+              // focusNode: myFocusNode,
               controller: _controller,
               decoration: InputDecoration(
                 isDense: true,
@@ -131,7 +128,7 @@ class _SearchPageState extends State<SearchPage> {
                 suffix: IconButton(
                   onPressed: () {
                     setState(() {
-                      _controller.clear();
+                      // _controller.clear();
                       suggestionlist = false;
                     });
                   },
@@ -203,20 +200,24 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildsuggestionlist() {
     return Expanded(
       child: Container(
+          color: AppTheme.kTxtFieldColor,
+          margin: EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+          width: MediaQuery.of(context).size.width * 1,
+          height: 50,
           child: ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.all(_kLabelSpacing / 2),
-        children: newDataList.map((data) {
-          return ListTile(
-              title: Text(
-                data,
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              onTap: () {
-                print(data);
-              });
-        }).toList(),
-      )),
+            shrinkWrap: true,
+            padding: EdgeInsets.all(_kLabelSpacing / 2),
+            children: newDataList.map((data) {
+              return ListTile(
+                  title: Text(
+                    data,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onTap: () {
+                    print(data);
+                  });
+            }).toList(),
+          )),
     );
   }
 
@@ -257,7 +258,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
-        isnewsSearchPage: true,
+        isnewsSearchPage: false,
       ),
       body: Container(
         child: Column(mainAxisSize: MainAxisSize.max, children: [

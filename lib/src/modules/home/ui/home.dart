@@ -14,6 +14,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import '../../../globals.dart';
 import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
@@ -102,7 +103,9 @@ class _HomePageState extends State<HomePage> {
     } else if (_selectedIndex == 2) {
       return StudentPage();
     } else if (_selectedIndex == 3) {
-      return FamilyPage();
+      return FamilyPage(
+        obj: widget.obj,
+      );
     } else if (_selectedIndex == 4) {
       return StaffPage();
     }
