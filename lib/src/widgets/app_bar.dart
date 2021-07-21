@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/home/ui/searchbar.dart';
+import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -16,8 +16,8 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? islinearProgress = false;
-  bool? isnewsDescription = false;
-  bool? isnewsSearchPage = false;
+  bool? isnewsDescription;
+  bool? isnewsSearchPage;
   @override
   final Size preferredSize;
 
@@ -76,13 +76,15 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
             : widget.isnewsDescription == false &&
                     widget.isnewsDescription == false
                 ? HorzitalSpacerWidget(10)
-                : widget.isnewsSearchPage == false
+                : widget.isnewsSearchPage == false &&
+                        widget.isnewsSearchPage == false
                     ? IconButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchPage()));
+                          print(widget.isnewsSearchPage);
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => SearchPage()));
                         },
                         icon: Icon(
                           const IconData(0xe805,

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
-import 'package:Soc/src/modules/home/ui/searchbar.dart';
+import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information/ui/information.dart';

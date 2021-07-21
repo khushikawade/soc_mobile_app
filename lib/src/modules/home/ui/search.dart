@@ -75,7 +75,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   int _selectedIndex = 0;
   bool suggestionlist = false;
-  static const double _kLabelSpacing = 18.0;
+  static const double _kLabelSpacing = 20.0;
   var _controller = TextEditingController();
   final backColor = AppTheme.kactivebackColor;
   final sebarcolor = AppTheme.kFieldbackgroundColor;
@@ -105,28 +105,45 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildSearchbar() {
     return SizedBox(
-        height: 60,
-        child: SizedBox(
-            height: 50,
-            child: Container(
-                padding: EdgeInsets.symmetric(
-                    vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing),
-                color: AppTheme.kFieldbackgroundColor,
-                child: TextFormField(
-                  focusNode: myFocusNode,
-                  decoration: InputDecoration(
-                      isDense: true,
-                      labelText: 'Search',
-                      filled: true,
-                      fillColor: AppTheme.kBackgroundColor,
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(
-                        const IconData(0xe805,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        color: AppTheme.kprefixIconColor,
-                      )),
-                ))));
+        height: 50,
+        child: Container(
+            padding: EdgeInsets.symmetric(
+                vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
+            color: AppTheme.kFieldbackgroundColor,
+            child: TextFormField(
+              focusNode: myFocusNode,
+              controller: _controller,
+              decoration: InputDecoration(
+                isDense: true,
+                labelText: 'Search',
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: _kLabelSpacing / 2,
+                ),
+                filled: true,
+                fillColor: AppTheme.kBackgroundColor,
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(
+                  const IconData(0xe805,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kprefixIconColor,
+                ),
+                suffix: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _controller.clear();
+                      suggestionlist = false;
+                    });
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    color: AppTheme.kIconColor,
+                    size: 18,
+                  ),
+                ),
+              ),
+              onChanged: onItemChanged,
+            )));
 
     //   Container(
     //     padding: EdgeInsets.symmetric(
