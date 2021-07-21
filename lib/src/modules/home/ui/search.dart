@@ -62,6 +62,7 @@
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -79,19 +80,30 @@ class _SearchPageState extends State<SearchPage> {
   var _controller = TextEditingController();
   final backColor = AppTheme.kactivebackColor;
   final sebarcolor = AppTheme.kFieldbackgroundColor;
-  FocusNode myFocusNode = new FocusNode();
+  // FocusNode myFocusNode = new FocusNode();
 
   static List<String> mainDataList = ["Flutter", "f", "angular"];
 
-  List<String> newDataList = List.from(mainDataList);
+  List<String> newDataList = [''];
 
   onItemChanged(String value) {
-    suggestionlist = true;
-    setState(() {
-      newDataList = mainDataList
-          .where((string) => string.toLowerCase().contains(value.toLowerCase()))
-          .toList();
-    });
+    // suggestionlist = true;
+
+    if (value.isNotEmpty)
+      setState(() {
+        newDataList = mainDataList
+            .where(
+                (string) => string.toLowerCase().contains(value.toLowerCase()))
+            .toList();
+      });
+    if (newDataList.isNotEmpty) {
+      suggestionlist = true;
+    }
+
+    if (value.isEmpty) {
+      suggestionlist = false;
+    }
+    setState(() {});
   }
 
   void _onItemTap(int index) {
@@ -110,6 +122,7 @@ class _SearchPageState extends State<SearchPage> {
             child: TextFormField(
               // focusNode: myFocusNode,
               controller: _controller,
+              cursorColor: Colors.black,
               decoration: InputDecoration(
                 isDense: true,
                 labelText: 'Search',
@@ -128,7 +141,7 @@ class _SearchPageState extends State<SearchPage> {
                 suffix: IconButton(
                   onPressed: () {
                     setState(() {
-                      // _controller.clear();
+                      _controller.clear();
                       suggestionlist = false;
                     });
                   },
@@ -141,72 +154,72 @@ class _SearchPageState extends State<SearchPage> {
               ),
               onChanged: onItemChanged,
             )));
-
-    //   Container(
-    //     padding: EdgeInsets.symmetric(
-    //         vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 3),
-    //     color: AppTheme.kFieldbackgroundColor,
-    //     child: TextFormField(
-    //       controller: _controller,
-    //       focusNode: myFocusNode,
-    //       textAlign: TextAlign.start,
-    //       style: TextStyle(color: Colors.black),
-    //       decoration: InputDecoration(
-    //         contentPadding: EdgeInsets.symmetric(
-    //           vertical: _kLabelSpacing,
-    //         ),
-    //         prefixIcon: Icon(
-    //           const IconData(0xe805,
-    //               fontFamily: Overrides.kFontFam,
-    //               fontPackage: Overrides.kFontPkg),
-    //           color: AppTheme.kprefixIconColor,
-    //           size: 18,
-    //         ),
-    //         suffix: IconButton(
-    //           onPressed: () {
-    //             setState(() {
-    //               _controller.clear();
-    //               suggestionlist = false;
-    //             });
-    //           },
-    //           icon: Icon(
-    //             Icons.clear,
-    //             color: AppTheme.kIconColor,
-    //             size: 18,
-    //           ),
-    //         ),
-    //         filled: true,
-    //         fillColor: AppTheme.kBackgroundColor,
-    //         enabledBorder: OutlineInputBorder(
-    //           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-    //           borderSide: const BorderSide(),
-    //         ),
-    //         border: OutlineInputBorder(
-    //           borderRadius: const BorderRadius.all(
-    //             const Radius.circular(10.0),
-    //           ),
-    //         ),
-    //         hintText: 'Search',
-    //         hintStyle: TextStyle(
-    //           color: AppTheme.kBlackColor,
-    //         ),
-    //       ),
-    //       onChanged: onItemChanged,
-    //     ),
-    //   ),
-    // );
   }
 
+  //   Container(
+  //     padding: EdgeInsets.symmetric(
+  //         vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 3),
+  //     color: AppTheme.kFieldbackgroundColor,
+  //     child: TextFormField(
+  //       controller: _controller,
+  //       focusNode: myFocusNode,
+  //       textAlign: TextAlign.start,
+  //       style: TextStyle(color: Colors.black),
+  //       decoration: InputDecoration(
+  //         contentPadding: EdgeInsets.symmetric(
+  //           vertical: _kLabelSpacing,
+  //         ),
+  //         prefixIcon: Icon(
+  //           const IconData(0xe805,
+  //               fontFamily: Overrides.kFontFam,
+  //               fontPackage: Overrides.kFontPkg),
+  //           color: AppTheme.kprefixIconColor,
+  //           size: 18,
+  //         ),
+  //         suffix: IconButton(
+  //           onPressed: () {
+  //             setState(() {
+  //               _controller.clear();
+  //               suggestionlist = false;
+  //             });
+  //           },
+  //           icon: Icon(
+  //             Icons.clear,
+  //             color: AppTheme.kIconColor,
+  //             size: 18,
+  //           ),
+  //         ),
+  //         filled: true,
+  //         fillColor: AppTheme.kBackgroundColor,
+  //         enabledBorder: OutlineInputBorder(
+  //           borderRadius: BorderRadius.all(Radius.circular(10.0)),
+  //           borderSide: const BorderSide(),
+  //         ),
+  //         border: OutlineInputBorder(
+  //           borderRadius: const BorderRadius.all(
+  //             const Radius.circular(10.0),
+  //           ),
+  //         ),
+  //         hintText: 'Search',
+  //         hintStyle: TextStyle(
+  //           color: AppTheme.kBlackColor,
+  //         ),
+  //       ),
+  //       onChanged: onItemChanged,
+  //     ),
+  //   ),
+  // );
+  // }
+
   Widget _buildsuggestionlist() {
-    return Expanded(
-      child: Container(
-          color: AppTheme.kTxtFieldColor,
-          margin: EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-          width: MediaQuery.of(context).size.width * 1,
-          height: 50,
-          child: ListView(
+    return Container(
+        color: Colors.blue,
+        margin: EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+        width: MediaQuery.of(context).size.width * 1,
+        height: 100,
+        child: ListView(
             shrinkWrap: true,
-            padding: EdgeInsets.all(_kLabelSpacing / 2),
+            // padding: EdgeInsets.all(_kLabelSpacing / 2),
             children: newDataList.map((data) {
               return ListTile(
                   title: Text(
@@ -216,9 +229,7 @@ class _SearchPageState extends State<SearchPage> {
                   onTap: () {
                     print(data);
                   });
-            }).toList(),
-          )),
-    );
+            }).toList()));
   }
 
   Widget _buildHeading() {
@@ -238,7 +249,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildrecentItem() {
     return new Expanded(
         child: new ListView.builder(
-            itemCount: 1,
+            itemCount: 3,
             itemBuilder: (BuildContext ctxt, int index) {
               return Container(
                   height: 50,
@@ -256,10 +267,36 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-        isnewsSearchPage: false,
-      ),
+      appBar: AppBar(
+          elevation: 0.0,
+          leading: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0, left: 10),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(
+                    const IconData(0xe80d,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: AppTheme.kIconColor1,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget())),
+
+      // appBar: CustomAppBarWidget(
+      //   isnewsDescription: false,
+      //   isnewsSearchPage: false,
+      // ),
       body: Container(
         child: Column(mainAxisSize: MainAxisSize.max, children: [
           _buildHeading(),

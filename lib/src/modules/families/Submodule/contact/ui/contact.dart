@@ -3,6 +3,7 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ContactPage extends StatefulWidget {
@@ -78,13 +79,15 @@ class _ContactPageState extends State<ContactPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-            //   child: NetworkImage(
-            // object["Contact_Image__c"],
-            // fit: BoxFit.fill,
-            // height: 160,
-            // width: MediaQuery.of(context).size.width * 1,
-            // )
-            ),
+            child: CachedNetworkImage(
+          imageUrl: object["Contact_Image__c"],
+          fit: BoxFit.fill,
+          placeholder: (context, url) => CircularProgressIndicator(
+            strokeWidth: 2,
+            backgroundColor: Theme.of(context).accentColor,
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        )),
       ],
     );
   }
@@ -140,7 +143,10 @@ class _ContactPageState extends State<ContactPage> {
         children: [
           SizedBox(
             height: _kboxheight * 2,
-            child: MapSample(),
+            child: MapSample(
+              latitude: object["Contact_office_Location__Latitude__s"],
+              longitude: object["Contact_office_Location__Longitude__s"],
+            ),
           )
         ],
       ),
@@ -239,7 +245,47 @@ class _ContactPageState extends State<ContactPage> {
           ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Text(
-            "(212) 222-0473",
+            object["Contact_Phone__c"],
+            style: Theme.of(context).textTheme.bodyText2,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmailWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: Container(
+          width: MediaQuery.of(context).size.width * 1,
+          decoration: BoxDecoration(
+              border: Border.all(
+                width: _kboxborderwidth,
+                color: AppTheme.kTxtfieldBorderColor,
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(4.0))),
+          child: _builEmail()),
+    );
+  }
+
+  Widget _builEmail() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
+      child: Row(
+        children: [
+          Text(
+            "Email",
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1!
+                .copyWith(color: Color(0xff171717)),
+          ),
+          HorzitalSpacerWidget(_kLabelSpacing / 2),
+          Text(
+            object["Contact_Email__c"],
             style: Theme.of(context).textTheme.bodyText2,
           )
         ],
@@ -266,7 +312,9 @@ class _ContactPageState extends State<ContactPage> {
           _buildMapWidget(),
           _buildaddressWidget(),
           SpacerWidget(_kLabelSpacing / 1.25),
-          _buildPhoneWidget()
+          _buildPhoneWidget(),
+          SpacerWidget(_kLabelSpacing / 1.25),
+          _buildEmailWidget()
         ],
       )),
     );
