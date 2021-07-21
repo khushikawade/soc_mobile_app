@@ -1,5 +1,4 @@
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
-import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -12,10 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SubListPage extends StatefulWidget {
-  var title;
+  var obj;
   String? module;
 
-  SubListPage({Key? key, required this.title, required this.module})
+  SubListPage({Key? key, required this.obj, required this.module})
       : super(key: key);
   @override
   _SubListPageState createState() => _SubListPageState();
@@ -33,17 +32,13 @@ class _SubListPageState extends State<SubListPage> {
   void initState() {
     super.initState();
     if (widget.module == "family") {
-      _bloc.add(FamiliesSublistEvent());
+      _bloc.add(FamiliesSublistEvent(id: widget.obj.id));
     } else if (widget.module == "staff") {
-      _staffBloc.add(StaffPageEvent());
-    } else if (widget.module == "subListStaff") {
-      _staffBloc.add(StaffSubListEvent());
-    } else if (widget.module == "subListFamily") {
-      _bloc.add(FamiliesSublistEvent());
+      _staffBloc.add(StaffSubListEvent(id: widget.obj.id));
     }
   }
 
-  _route(FamiliesSubList obj, index) {
+  _route(obj, index) {
     if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(
@@ -64,7 +59,6 @@ class _SubListPageState extends State<SubListPage> {
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
-      print(obj.pdfURL);
       obj.pdfURL != null
           ? Navigator.push(
               context,
@@ -73,14 +67,6 @@ class _SubListPageState extends State<SubListPage> {
                         url: obj.pdfURL,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-    } else if (obj.typeC == "Sub-Menu") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => SubListPage(
-                    title: obj.titleC,
-                    module: subModule,
-                  )));
     } else {
       print("");
     }
@@ -160,7 +146,7 @@ class _SubListPageState extends State<SubListPage> {
                             child: CircularProgressIndicator(
                           backgroundColor: Theme.of(context).accentColor,
                         ));
-                      } else if (state is StaffDataSucess) {
+                      } else if (state is StaffSubListSucess) {
                         subModule = 'subListStaff';
                         return SingleChildScrollView(
                           child: SafeArea(
@@ -190,88 +176,6 @@ class _SubListPageState extends State<SubListPage> {
                         return Container();
                       }
                     })
-                : widget.module == 'subListFamily'
-                    ? BlocBuilder<FamilyBloc, FamilyState>(
-                        bloc: _bloc,
-                        builder: (BuildContext contxt, FamilyState state) {
-                          if (state is FamilyInitial ||
-                              state is FamilyLoading) {
-                            return Center(
-                                child: CircularProgressIndicator(
-                              backgroundColor: Theme.of(context).accentColor,
-                            ));
-                          } else if (state is FamiliesSublistSucess) {
-                            subModule = 'subListFamily';
-                            return SingleChildScrollView(
-                              child: SafeArea(
-                                child: Column(
-                                  children: [
-                                    _buildSearchfield(),
-                                    ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: state.obj!.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return _buildList(
-                                            index,
-                                            _buildFormName(
-                                                index, state.obj![index]),
-                                            state.obj![index]);
-                                      },
-                                    ),
-                                    // ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          } else {
-                            return Container();
-                          }
-                        })
-                    : widget.module == 'subListStaff'
-                        ? BlocBuilder<StaffBloc, StaffState>(
-                            bloc: _staffBloc,
-                            builder: (BuildContext contxt, StaffState state) {
-                              if (state is StaffInitial ||
-                                  state is StaffLoading) {
-                                return Center(
-                                    child: CircularProgressIndicator(
-                                  backgroundColor:
-                                      Theme.of(context).accentColor,
-                                ));
-                              } else if (state is StaffSubListSucess) {
-                                subModule = 'subListStaff';
-                                return SingleChildScrollView(
-                                  child: SafeArea(
-                                    child: Column(
-                                      children: [
-                                        _buildSearchfield(),
-                                        ListView.builder(
-                                          scrollDirection: Axis.vertical,
-                                          shrinkWrap: true,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          itemCount: state.obj!.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return _buildList(
-                                                index,
-                                                _buildFormName(
-                                                    index, state.obj![index]),
-                                                state.obj![index]);
-                                          },
-                                        ),
-                                        // ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return Container();
-                              }
-                            })
-                        : Container());
+                : Container());
   }
 }

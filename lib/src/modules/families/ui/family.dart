@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/families/Submodule/contact/ui/contact.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
@@ -10,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FamilyPage extends StatefulWidget {
+  var obj;
+  FamilyPage({Key? key, required this.obj}) : super(key: key);
+
   @override
   _FamilyPageState createState() => _FamilyPageState();
 }
@@ -26,6 +30,15 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   _route(FamiliesList obj, index) {
+    if (obj.titleC == "Contact") {
+      obj.titleC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      ContactPage(obj: widget.obj)))
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    }
     if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(
@@ -60,7 +73,7 @@ class _FamilyPageState extends State<FamilyPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) =>
-                  SubListPage(title: obj.titleC, module: "family")));
+                  SubListPage(obj: obj, module: "family")));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }

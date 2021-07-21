@@ -11,4 +11,5 @@ class Globals {
   static String? baseOS;
   static String? deviceType;
   static String? phone = 'phone';
+  var object;
 }

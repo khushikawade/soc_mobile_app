@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +33,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is GlobalSearchEvent) {
       try {
         yield SearchLoading();
-        var data = await getGlobalSearch(event.keyword);
-
-        yield GlobalSearchSuccess(obj: data);
+        List<SearchList> list = await getGlobalSearch(event.keyword);
+        yield GlobalSearchSuccess(
+          obj: list,
+        );
       } catch (e) {
         yield HomeErrorReceived(err: e);
       }
@@ -64,13 +66,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future getGlobalSearch(keyword) async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-        Uri.encodeFull('search/?q=$keyword'),
+        'search/?q=FIND+%7B$keyword%7D',
       );
-
+      print(response.data);
       if (response.statusCode == 200) {
-        final data = response.data;
-        print(data);
-        return data;
+        // final data = response.data;
+        // print(data);
+        // return data;
+
+        return response.data["searchRecords"]
+            .map<SearchList>((i) => SearchList.fromJson(i))
+            .toList();
       }
     } catch (e) {
       if (e.toString().contains("Failed host lookup")) {

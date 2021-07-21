@@ -70,7 +70,7 @@ class _StaffPageState extends State<StaffPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) =>
-                  SubListPage(title: obj.titleC, module: "staff")));
+                  SubListPage(obj: obj, module: "staff")));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }

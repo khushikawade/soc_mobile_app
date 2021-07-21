@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -23,7 +24,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   ) async* {
     if (event is FamiliesEvent) {
       try {
-        // List<FamiliesList> sortedList = [];
         yield FamilyLoading();
         List<FamiliesList> list = await getFamilyList();
 
@@ -39,7 +39,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     if (event is FamiliesSublistEvent) {
       try {
         yield FamilyLoading();
-        List<FamiliesSubList> list = await getFamilySubList();
+        List<FamiliesSubList> list = await getFamilySubList(event.id);
         if (list.length > 0) {
           list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
           yield FamiliesSublistSucess(obj: list);
@@ -68,10 +68,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  Future<List<FamiliesSubList>> getFamilySubList() async {
+  Future<List<FamiliesSubList>> getFamilySubList(id) async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c FROM Family_Sub_Menu_App__c")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c FROM Family_Sub_Menu_App__c where Families_App__c='$id'")}");
 
       if (response.statusCode == 200) {
         return response.data["records"]

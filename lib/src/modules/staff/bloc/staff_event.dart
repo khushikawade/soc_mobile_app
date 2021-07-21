@@ -13,9 +13,15 @@ class StaffPageEvent extends StaffEvent {
 }
 
 class StaffSubListEvent extends StaffEvent {
-  @override
-  List<Object> get props => [];
+  final String? id;
+
+  StaffSubListEvent({
+    @required this.id,
+  });
 
   @override
-  String toString() => 'SocialButtonPressed';
+  List<Object> get props => [id!];
+
+  @override
+  String toString() => 'GlobalSearchEvent { keyword: $id}';
 }

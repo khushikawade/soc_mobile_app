@@ -60,12 +60,14 @@
 // }
 
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -75,18 +77,15 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   int _selectedIndex = 0;
   bool suggestionlist = false;
-  static const double _kLabelSpacing = 18.0;
+  static const double _kLabelSpacing = 20.0;
   var _controller = TextEditingController();
   final backColor = AppTheme.kactivebackColor;
   final sebarcolor = AppTheme.kFieldbackgroundColor;
   FocusNode myFocusNode = new FocusNode();
-  // Color c = const Color.fromRGBO(142, 142, 147, 0.12);
 
   HomeBloc _searchBloc = new HomeBloc();
 
-  static List<String> mainDataList = [
-    "Flutter",
-  ];
+  static List<String> mainDataList = ["Flutter", "f", "angular"];
 
   List<String> newDataList = List.from(mainDataList);
 
@@ -109,28 +108,45 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildSearchbar() {
     return SizedBox(
-        height: 60,
-        child: SizedBox(
-            height: 50,
-            child: Container(
-                padding: EdgeInsets.symmetric(
-                    vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing),
-                color: AppTheme.kFieldbackgroundColor,
-                child: TextFormField(
-                  focusNode: myFocusNode,
-                  decoration: InputDecoration(
-                      isDense: true,
-                      labelText: 'Search',
-                      filled: true,
-                      fillColor: AppTheme.kBackgroundColor,
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(
-                        const IconData(0xe805,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        color: AppTheme.kprefixIconColor,
-                      )),
-                ))));
+        height: 50,
+        child: Container(
+            padding: EdgeInsets.symmetric(
+                vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
+            color: AppTheme.kFieldbackgroundColor,
+            child: TextFormField(
+              // focusNode: myFocusNode,
+              controller: _controller,
+              decoration: InputDecoration(
+                isDense: true,
+                labelText: 'Search',
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: _kLabelSpacing / 2,
+                ),
+                filled: true,
+                fillColor: AppTheme.kBackgroundColor,
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(
+                  const IconData(0xe805,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kprefixIconColor,
+                ),
+                suffix: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      // _controller.clear();
+                      suggestionlist = false;
+                    });
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    color: AppTheme.kIconColor,
+                    size: 18,
+                  ),
+                ),
+              ),
+              onChanged: onItemChanged,
+            )));
 
     //   Container(
     //     padding: EdgeInsets.symmetric(
@@ -188,23 +204,43 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildsuggestionlist() {
-    return Expanded(
-      child: Container(
-          child: ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.all(_kLabelSpacing / 2),
-        children: newDataList.map((data) {
-          return ListTile(
-              title: Text(
-                data,
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              onTap: () {
-                print(data);
-              });
-        }).toList(),
-      )),
-    );
+    return BlocBuilder<HomeBloc, HomeState>(
+        bloc: _searchBloc,
+        builder: (BuildContext contxt, HomeState state) {
+          if (state is HomeInitial || state is SearchLoading) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: Center(
+                  child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).accentColor,
+              )),
+            );
+          } else if (state is GlobalSearchSuccess) {
+            return Expanded(
+              child: Container(
+                  color: AppTheme.kTxtFieldColor,
+                  margin: EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+                  width: MediaQuery.of(context).size.width * 1,
+                  // height: 50,
+                  child: ListView(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(_kLabelSpacing / 2),
+                    children: state.obj.map<Widget>((data) {
+                      return ListTile(
+                          title: Text(
+                            data.id,
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          onTap: () {
+                            print(data.id);
+                          });
+                    }).toList(),
+                  )),
+            );
+          } else {
+            return Container();
+          }
+        });
   }
 
   Widget _buildHeading() {
@@ -244,7 +280,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
-        isnewsSearchPage: true,
+        isnewsSearchPage: false,
       ),
       body: Container(
         child: Column(mainAxisSize: MainAxisSize.max, children: [
