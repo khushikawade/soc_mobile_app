@@ -1,4 +1,3 @@
-import 'package:Soc/src/modules/setting/settiings/ui/test.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -15,6 +14,7 @@ class _ShareAppState extends State<ShareApp> {
   static const double _kPadding = 16.0;
   static const double _kiconsize = 30.0;
   static const double _kbuttonsize = 50.0;
+  // GlobalKey<SharePopupState> _myKey = GlobalKey();
 
   _onShareWithEmptyOrigin(BuildContext context) async {
     RenderBox? box = context.findRenderObject() as RenderBox;
@@ -33,15 +33,8 @@ class _ShareAppState extends State<ShareApp> {
       child: Container(
         color: AppTheme.kButtonbackColor,
         height: _kbuttonsize,
-        // width: _kbuttonsize * 2,
         child: InkWell(
-          onTap: () => _onShareWithEmptyOrigin(context),
-          // FlutterShare.share('check out my website https://example.com',
-          //     subject: 'Look what I made!');
-
-          // Navigator.push(
-          //     context, MaterialPageRoute(builder: (context) => DemoApp()));
-
+          onTap: () {},
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,6 +65,7 @@ class _ShareAppState extends State<ShareApp> {
     return Scaffold(
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
+        isnewsSearchPage: false,
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,

@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/setting/settiings/ui/appshare.dart';
-import 'package:Soc/src/modules/setting/settiings/ui/deviceinfo.dart';
 import 'package:flutter/material.dart';
 
 import 'package:share/share.dart';

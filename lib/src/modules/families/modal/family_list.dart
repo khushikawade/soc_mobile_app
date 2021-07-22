@@ -1,4 +1,4 @@
-import 'attributes.dart';
+import 'package:Soc/src/modules/families/Submodule/staff/modal/models/attributes.dart';
 
 class FamiliesList {
   Attributes? attributes;
@@ -10,6 +10,7 @@ class FamiliesList {
   String? name;
   String? rtfHTMLC;
   String? typeC;
+  var sortOredr;
 
   FamiliesList(
       {this.attributes,
@@ -20,21 +21,22 @@ class FamiliesList {
       this.id,
       this.name,
       this.rtfHTMLC,
-      this.typeC});
+      this.typeC,
+      this.sortOredr});
 
   factory FamiliesList.fromJson(Map<String, dynamic> json) => FamiliesList(
-        attributes: json['attributes'] == null
-            ? null
-            : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
-        titleC: json['Title__c'] as String?,
-        appIconC: json['App_Icon__c'] as String?,
-        appUrlC: json['URL__c'] as String?,
-        pdfURL: json['PDF_URL__c'] as String?,
-        id: json['Id'] as String?,
-        name: json['Name'] as String?,
-        rtfHTMLC: json['RTF_HTML__c'] as String?,
-        typeC: json['Type__c'] as String?,
-      );
+      attributes: json['attributes'] == null
+          ? null
+          : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
+      titleC: json['Title__c'] as String?,
+      appIconC: json['App_Icon__c'] as String?,
+      appUrlC: json['URL__c'] as String?,
+      pdfURL: json['PDF_URL__c'] as String?,
+      id: json['Id'] as String?,
+      name: json['Name'] as String?,
+      rtfHTMLC: json['RTF_HTML__c'] as String?,
+      typeC: json['Type__c'] as String?,
+      sortOredr: json['Sort_Order__c']);
 
   Map<String, dynamic> toJson() => {
         'attributes': attributes?.toJson(),
@@ -46,5 +48,6 @@ class FamiliesList {
         'Name': name,
         'RTF_HTML__c': rtfHTMLC,
         'Type__c': typeC,
+        'Sort_Order__c': sortOredr
       };
 }

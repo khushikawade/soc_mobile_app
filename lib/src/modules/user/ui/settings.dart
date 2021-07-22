@@ -6,7 +6,7 @@ import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar_with_overlapped_body.dart';
 import 'package:Soc/src/widgets/icon_selector.dart';
-import 'package:Soc/src/widgets/models/custom_app_bar.dart';
+
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -120,13 +120,14 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return OverlappedAppBar(
-      topOverFlow: 30.0,
-      customAppBar: CustomAppBar(
-          // leading: BackButtonWidget(),
-          title: AppTranslations.of(context)!.text('settings'),
-          subtitle: 'Team bedrijfsbureau'),
-      body: _body(),
-    );
+    return Container();
+    // return OverlappedAppBar(
+    //   topOverFlow: 30.0,
+    //   customAppBar: CustomAppBar(
+    //       // leading: BackButtonWidget(),
+    //       title: AppTranslations.of(context)!.text('settings'),
+    //       subtitle: 'Team bedrijfsbureau'),
+    //   body: _body(),
+    // );
   }
 }

@@ -4,12 +4,10 @@ import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../../overrides.dart' as overrides;
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 part 'family_event.dart';
 part 'family_state.dart';
 
@@ -19,7 +17,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   final DbServices _dbServices = DbServices();
 
   FamilyState get initialState => FamilyInitial();
-
+  var dataArray;
   @override
   Stream<FamilyState> mapEventToState(
     FamilyEvent event,
@@ -28,7 +26,11 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         yield FamilyLoading();
         List<FamiliesList> list = await getFamilyList();
-        yield FamiliesDataSucess(obj: list);
+
+        if (list.length > 0) {
+          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          yield FamiliesDataSucess(obj: list);
+        }
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -37,8 +39,11 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     if (event is FamiliesSublistEvent) {
       try {
         yield FamilyLoading();
-        List<FamiliesSubList> list = await getFamilySubList();
-        yield FamiliesSublistSucess(obj: list);
+        List<FamiliesSubList> list = await getFamilySubList(event.id);
+        if (list.length > 0) {
+          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          yield FamiliesSublistSucess(obj: list);
+        }
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -48,9 +53,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Future<List<FamiliesList>> getFamilyList() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c FROM Families_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c FROM Families_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
 
       if (response.statusCode == 200) {
+        dataArray = response.data["records"];
         return response.data["records"]
             .map<FamiliesList>((i) => FamiliesList.fromJson(i))
             .toList();
@@ -62,10 +68,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  Future<List<FamiliesSubList>> getFamilySubList() async {
+  Future<List<FamiliesSubList>> getFamilySubList(id) async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c FROM Family_Sub_Menu_App__c")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c FROM Family_Sub_Menu_App__c where Families_App__c='$id'")}");
 
       if (response.statusCode == 200) {
         return response.data["records"]

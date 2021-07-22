@@ -13,9 +13,15 @@ class FamiliesEvent extends FamilyEvent {
 }
 
 class FamiliesSublistEvent extends FamilyEvent {
-  @override
-  List<Object> get props => [];
+  final String? id;
+
+  FamiliesSublistEvent({
+    @required this.id,
+  });
 
   @override
-  String toString() => 'SocialButtonPressed';
+  List<Object> get props => [id!];
+
+  @override
+  String toString() => 'GlobalSearchEvent { keyword: $id}';
 }

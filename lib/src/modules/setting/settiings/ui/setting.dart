@@ -1,9 +1,11 @@
 import 'package:Soc/src/app.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -95,9 +97,12 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Widget _buildtext() {
+  Widget _buildLicence() {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => SocialSharePlugin()));
+      },
       child: Row(
         children: [
           Expanded(
@@ -118,6 +123,7 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
+        isnewsSearchPage: false,
       ),
       body: Container(
         child: Column(
@@ -127,7 +133,7 @@ class _SettingPageState extends State<SettingPage> {
             _buildHeading("Push Notifcation"),
             _buildNotification(),
             _buildHeading("Acknowledgements"),
-            _buildtext(),
+            _buildLicence(),
             Expanded(child: Container()),
             SizedBox(
                 width: MediaQuery.of(context).size.width * 1,

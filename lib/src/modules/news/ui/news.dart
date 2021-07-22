@@ -1,7 +1,7 @@
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +16,7 @@ class _NewsPageState extends State<NewsPage> {
   NewsBloc bloc = new NewsBloc();
   var object;
   String newsTimeStamp = '';
+
   @override
   void initState() {
     super.initState();
@@ -25,23 +26,22 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildListItems(obj, index) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => Newdescription(
-                      obj: obj,
-                      date: newsTimeStamp,
-                    )));
-
         // Navigator.push(
         //     context,
         //     MaterialPageRoute(
-        //         builder: (BuildContext context) => SliderWidget(
-        //               obj: object,
-        //               cuurentIndex: index,
-        //               issocialpage: false,
+        //         builder: (BuildContext context) => Newdescription(
+        //               obj: obj,
         //               date: newsTimeStamp,
         //             )));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SliderWidget(
+                      obj: object,
+                      currentIndex: index,
+                      issocialpage: false,
+                      date: newsTimeStamp,
+                    )));
       },
       child: Container(
           padding: EdgeInsets.symmetric(
@@ -154,10 +154,7 @@ class _NewsPageState extends State<NewsPage> {
                     object = state.obj;
                   }
                 },
-                child: Container(
-                  height: 0,
-                  width: 0,
-                ),
+                child: Container(),
               ),
             ],
           ),

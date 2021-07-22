@@ -12,10 +12,14 @@ import '../overrides.dart';
 
 // ignore: must_be_immutable
 class InAppBrowser extends StatefulWidget {
-  InAppBrowser({Key? key, required this.link, required this.isSocialpage})
-      : super(key: key);
+  InAppBrowser({
+    Key? key,
+    required this.link,
+    required this.isSocialpage,
+  }) : super(key: key);
   String link;
   bool isSocialpage;
+
   @override
   _InAppBrowserState createState() => _InAppBrowserState();
 }
@@ -122,8 +126,10 @@ class _InAppBrowserState extends State<InAppBrowser> {
                     _launchURL(url);
                   },
                   icon: Icon(
-                    Icons.stop_screen_share,
-                    color: AppTheme.kIconColor3,
+                    IconData(0xe80e,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: AppTheme.kBlackColor,
                   ))
               : Container(),
         ],
@@ -173,8 +179,10 @@ class _InAppBrowserState extends State<InAppBrowser> {
                   flutterWebviewPlugin.reload();
                 },
                 icon: Icon(
-                  Icons.refresh,
-                  color: AppTheme.kIconColor3,
+                  IconData(0xe80f,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kBlackColor,
                 )),
           ],
         ),
@@ -188,7 +196,7 @@ class _InAppBrowserState extends State<InAppBrowser> {
 
   _onShareWithEmptyOrigin(BuildContext context) async {
     RenderBox? box = context.findRenderObject() as RenderBox;
-    final String body = "hey, check ou this site!" + url.toString();
+    final String body = "hey, check out this site!" + url.toString();
 
     await Share.share(body,
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);

@@ -1,3 +1,6 @@
+import 'package:Soc/src/modules/families/Submodule/contact/ui/contact.dart';
+import 'package:Soc/src/modules/families/Submodule/staff/ui/staffdirectory.dart';
+import 'package:Soc/src/modules/staff/models/staffmodal.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
@@ -8,9 +11,12 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../overrides.dart';
 
 class FamilyPage extends StatefulWidget {
+  var obj;
+  var searchObj;
+  FamilyPage({Key? key, this.obj, this.searchObj}) : super(key: key);
+
   @override
   _FamilyPageState createState() => _FamilyPageState();
 }
@@ -27,6 +33,24 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   _route(FamiliesList obj, index) {
+    // if (obj.titleC == "Contact") {
+    //   obj.titleC != null
+    //       ? Navigator.push(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (BuildContext context) =>
+    //                   ContactPage(obj: widget.obj)))
+    //       : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    // }
+    if (obj.titleC == "Staff Directory") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    obj: obj,
+                  )));
+    }
+
     if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(
@@ -54,17 +78,17 @@ class _FamilyPageState extends State<FamilyPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         url: obj.pdfURL,
+                        tittle: obj.titleC,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => SubListPage(
-                    title: obj.titleC,
-                  )));
+              builder: (BuildContext context) =>
+                  SubListPage(obj: obj, module: "family")));
     } else {
-      print("");
+      Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }
   }
 

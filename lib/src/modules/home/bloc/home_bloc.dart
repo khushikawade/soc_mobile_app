@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -11,7 +14,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   var data;
   HomeBloc() : super(HomeInitial());
   final DbServices _dbServices = DbServices();
-  @override
+
   HomeState get initialState => HomeInitial();
 
   @override
@@ -28,6 +31,73 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         yield HomeErrorReceived(err: e);
       }
     }
+    if (event is GlobalSearchEvent) {
+      try {
+        var obj;
+        yield SearchLoading();
+        List<SearchList> list = await getGlobalSearch({
+          "q": event.keyword,
+          "sobjects": [
+            {
+              "fields": [
+                "Id",
+                "Title__c",
+                "URL__c",
+                "PDF_URL__c",
+                "Name",
+                "RTF_HTML__c",
+                "Type__c"
+              ],
+              "name": "Families_App__c"
+            },
+            {
+              "name": "Family_Sub_Menu_App__c",
+              "fields": [
+                "Id",
+                "Title__c",
+                "URL__c",
+                "PDF_URL__c",
+                "Name",
+                "RTF_HTML__c",
+                "Type__c"
+              ]
+            },
+            {
+              "name": "Staff_App__c",
+              "fields": [
+                "Id",
+                "Title__c",
+                "URL__c",
+                "PDF_URL__c",
+                "Name",
+                "RTF_HTML__c",
+                "Type__c"
+              ]
+            },
+            {
+              "fields": [
+                "Id",
+                "Title__c",
+                "URL__c",
+                "PDF_URL__c",
+                "Name",
+                "RTF_HTML__c",
+                "Type__c"
+              ],
+              "name": "Staff_Sub_Menu_App__c"
+            }
+          ],
+          "in": "ALL",
+          "overallLimit": 100,
+          "defaultLimit": 10
+        });
+        yield GlobalSearchSuccess(
+          obj: list,
+        );
+      } catch (e) {
+        yield HomeErrorReceived(err: e);
+      }
+    }
   }
 
   Future fetchBottomNavigationBar() async {
@@ -40,6 +110,45 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final data = response.data;
 
         return data;
+      }
+    } catch (e) {
+      if (e.toString().contains("Failed host lookup")) {
+        throw ("Please check your Internet Connection.");
+      } else {
+        throw (e);
+      }
+    }
+  }
+
+  // Future getGlobalSearch(keyword) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.getapi(
+  //       'search/?q=FIND+%7B$keyword%7D',
+  //     );
+  //     print(response.data);
+  //     if (response.statusCode == 200) {
+  //       return response.data["searchRecords"]
+  //           .map<SearchList>((i) => SearchList.fromJson(i))
+  //           .toList();
+  //     }
+  //   } catch (e) {
+  //     if (e.toString().contains("Failed host lookup")) {
+  //       throw ("Please check your Internet Connection.");
+  //     } else {
+  //       throw (e);
+  //     }
+  //   }
+  // }
+
+  Future getGlobalSearch(body) async {
+    try {
+      final ResponseModel response =
+          await _dbServices.postapi('parameterizedSearch', body: body);
+      print(response.data);
+      if (response.statusCode == 200) {
+        return response.data["searchRecords"]
+            .map<SearchList>((i) => SearchList.fromJson(i))
+            .toList();
       }
     } catch (e) {
       if (e.toString().contains("Failed host lookup")) {

@@ -65,12 +65,13 @@ class _StartupPageState extends State<StartupPage> {
       Globals.phoneModel = andorid!.device;
       Globals.baseOS = andorid!.version.baseOS;
       Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-      print("${Globals.deviceType}");
+      print("*********************************");
+      print("${Globals.phoneModel}");
     } else {
       // var deviceType = await getDeviceInfo();
       // Globals.deviceType = deviceType == "ipad" ? "tablet" : "phone";
       print("else");
-      print("${Globals.deviceType}");
+      print("${Globals.phoneModel}");
     }
   }
 
@@ -163,13 +164,14 @@ class _StartupPageState extends State<StartupPage> {
           bloc: _bloc,
           listener: (context, state) async {
             if (state is BottomNavigationBarSuccess) {
+              Globals.homeObjet = state.obj;
               state.obj != null
                   ? Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => HomePage(
                           title: "SOC",
-                          obj: state.obj,
+                          homeObj: state.obj,
                         ),
                       ))
                   : Text("No data found");

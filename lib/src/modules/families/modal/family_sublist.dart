@@ -9,6 +9,7 @@ class FamiliesSubList {
   String? name;
   String? rtfHTMLC;
   String? typeC;
+  var sortOredr;
 
   FamiliesSubList(
       {this.attributes,
@@ -18,7 +19,8 @@ class FamiliesSubList {
       this.id,
       this.name,
       this.rtfHTMLC,
-      this.typeC});
+      this.typeC,
+      this.sortOredr});
 
   factory FamiliesSubList.fromJson(Map<String, dynamic> json) =>
       FamiliesSubList(
@@ -33,6 +35,7 @@ class FamiliesSubList {
         name: json['Name'] as String?,
         rtfHTMLC: json['RTF_HTML__c'] as String?,
         typeC: json['Type__c'] as String?,
+        sortOredr: json['Sort_Order__c'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -44,5 +47,6 @@ class FamiliesSubList {
         'Name': name,
         'RTF_HTML__c': rtfHTMLC,
         'Type__c': typeC,
+        'Sort_Order__c': sortOredr
       };
 }
