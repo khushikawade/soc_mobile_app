@@ -1,64 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class SearchBarPage extends StatefulWidget {
-//   @override
-//   _SearchBarPageState createState() => _SearchBarPageState();
-// }
-
-// class _SearchBarPageState extends State<SearchBarPage> {
-//   // TODO: Add search history here
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       // TODO: Add the FloatingSearchBar here
-//       body: SearchResultsListView(
-//         searchTerm: '',
-//       ),
-//     );
-//   }
-// }
-
-// class SearchResultsListView extends StatelessWidget {
-//   final String? searchTerm;
-
-//   const SearchResultsListView({
-//     Key? key,
-//     @required this.searchTerm,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (searchTerm == null) {
-//       return Center(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             Icon(
-//               Icons.search,
-//               size: 64,
-//             ),
-//             Text(
-//               'Start searching',
-//               style: Theme.of(context).textTheme.headline5,
-//             )
-//           ],
-//         ),
-//       );
-//     }
-
-//     return ListView(
-//       children: List.generate(
-//         50,
-//         (index) => ListTile(
-//           title: Text('$searchTerm search result'),
-//           subtitle: Text(index.toString()),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -265,11 +204,6 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
           title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget())),
-
-      // appBar: CustomAppBarWidget(
-      //   isnewsDescription: false,
-      //   isnewsSearchPage: false,
-      // ),
       body: Container(
         child: Column(mainAxisSize: MainAxisSize.max, children: [
           _buildHeading(),
