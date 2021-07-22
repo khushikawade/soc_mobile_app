@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
+import 'package:Soc/src/modules/families/modal/stafflist.dart';
 
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -48,6 +49,20 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         yield ErrorLoading(err: e);
       }
     }
+
+    if (event is SDevent) {
+      try {
+        yield FamilyLoading();
+        List<SDlist> list = await getStaffList();
+
+        if (list.length > 0) {
+          list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
+          yield SDDataSucess(obj: list);
+        }
+      } catch (e) {
+        yield ErrorLoading(err: e);
+      }
+    }
   }
 
   Future<List<FamiliesList>> getFamilyList() async {
@@ -76,6 +91,24 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       if (response.statusCode == 200) {
         return response.data["records"]
             .map<FamiliesSubList>((i) => FamiliesSubList.fromJson(i))
+            .toList();
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<SDlist>> getStaffList() async {
+    try {
+      final ResponseModel response = await _dbServices.getapi(
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
+
+      if (response.statusCode == 200) {
+        dataArray = response.data["records"];
+        return response.data["records"]
+            .map<SDlist>((i) => SDlist.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');

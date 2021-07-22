@@ -65,7 +65,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
-          isnewsDescription: false,
+          isnewsDescription: true,
           isnewsSearchPage: false,
         ),
         body: widget.url != null && widget.url != ""
