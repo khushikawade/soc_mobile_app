@@ -33,7 +33,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
     if (event is GlobalSearchEvent) {
       try {
-        var obj;
         yield SearchLoading();
         List<SearchList> list = await getGlobalSearch({
           "q": event.keyword,
@@ -131,26 +130,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     }
   }
-
-  // Future getGlobalSearch(keyword) async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.getapi(
-  //       'search/?q=FIND+%7B$keyword%7D',
-  //     );
-  //     print(response.data);
-  //     if (response.statusCode == 200) {
-  //       return response.data["searchRecords"]
-  //           .map<SearchList>((i) => SearchList.fromJson(i))
-  //           .toList();
-  //     }
-  //   } catch (e) {
-  //     if (e.toString().contains("Failed host lookup")) {
-  //       throw ("Please check your Internet Connection.");
-  //     } else {
-  //       throw (e);
-  //     }
-  //   }
-  // }
 
   Future getGlobalSearch(body) async {
     try {

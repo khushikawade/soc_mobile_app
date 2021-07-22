@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/news/ui/news.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/services/db_service.dart';
@@ -95,6 +98,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       print(
           "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
       // _performPushOperation(result, context);
+      var data = result.notification.additionalData;
+      Globals.appNavigator!.currentState!
+          .push(MaterialPageRoute(builder: (context) => NewsPage()));
     });
 
     OneSignal.shared
@@ -111,12 +117,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
 
-// The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
     OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
       print("Accepted permission: $accepted");
     });
-
-    // await OneSignal.shared.sendTags({"dbKey": "coimbee"});
 
     if (Platform.isIOS) {
       await OneSignal.shared

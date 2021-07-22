@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 String? deviceType;
 
 class Globals {
@@ -13,4 +15,5 @@ class Globals {
   static String? phone = 'phone';
   var object;
   static var homeObjet;
+  static GlobalKey<NavigatorState>? appNavigator;
 }
