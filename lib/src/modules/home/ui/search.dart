@@ -1,3 +1,6 @@
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/families/Submodule/contact/ui/contact.dart';
+// import 'package:Soc/src/modules/families/Submodule/staff_directory/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
@@ -13,6 +16,7 @@ import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -43,26 +47,39 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  _route(SearchList obj) {
-    // if (obj.titleC == "Contact") {
-    //   obj.titleC != null
-    //       ? Navigator.push(
-    //           context,
-    //           MaterialPageRoute(
-    //               builder: (BuildContext context) =>
-    //                   ContactPage(obj: widget.obj)))
-    //       : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    // }
-    // if (obj.titleC == "Staff Directory") {
-    //   Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (BuildContext context) => StaffDirectory(
-    //                 obj: obj,
-    //               )));
-    // }
-
-    if (obj.typeC == "URL") {
+  _route(SearchList obj) async {
+    if (obj.titleC == "Contact") {
+      obj.titleC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      ContactPage(obj: Globals.homeObjet)))
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    } else if (obj.titleC == "Staff Directory") {
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (BuildContext context) => StaffDirectory(
+      //               obj: obj,
+      //             )));
+    } else if (obj.deepLink != null) {
+      if (obj.deepLink == 'NO') {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => InAppUrlLauncer(
+                      title: obj.titleC!,
+                      url: obj.appURLC!,
+                    )));
+      } else {
+        if (await canLaunch(obj.appURLC!)) {
+          await launch(obj.appURLC!);
+        } else {
+          throw 'Could not launch ${obj.appURLC}';
+        }
+      }
+    } else if (obj.typeC == "URL") {
       obj.urlC != null
           ? Navigator.push(
               context,
@@ -99,7 +116,8 @@ class _SearchPageState extends State<SearchPage> {
               builder: (BuildContext context) =>
                   SubListPage(obj: obj, module: "family")));
     } else {
-      Utility.showSnackBar(_scaffoldKey, "No data available", context);
+      Utility.showSnackBar(
+          _scaffoldKey, "No data available for this record", context);
     }
   }
 

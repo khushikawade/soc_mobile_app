@@ -1,6 +1,5 @@
 import 'package:Soc/src/modules/families/Submodule/contact/ui/contact.dart';
-import 'package:Soc/src/modules/families/Submodule/staff/ui/staffdirectory.dart';
-import 'package:Soc/src/modules/staff/models/staffmodal.dart';
+// import 'package:Soc/src/modules/families/Submodule/staff_directory/ui/staffdirectory.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
@@ -33,25 +32,22 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   _route(FamiliesList obj, index) {
-    // if (obj.titleC == "Contact") {
-    //   obj.titleC != null
-    //       ? Navigator.push(
-    //           context,
-    //           MaterialPageRoute(
-    //               builder: (BuildContext context) =>
-    //                   ContactPage(obj: widget.obj)))
-    //       : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    // }
-    if (obj.titleC == "Staff Directory") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => StaffDirectory(
-                    obj: obj,
-                  )));
-    }
-
-    if (obj.typeC == "URL") {
+    if (obj.titleC == "Contact") {
+      obj.titleC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      ContactPage(obj: widget.obj)))
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    } else if (obj.titleC == "Staff Directory") {
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (BuildContext context) => StaffDirectory(
+      //               obj: obj,
+      //             )));
+    } else if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(
               context,

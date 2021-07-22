@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/families/Submodule/staff/modal/models/attributes.dart';
+import 'package:Soc/src/modules/families/modal/attributes.dart';
 
 class FamiliesList {
   Attributes? attributes;
