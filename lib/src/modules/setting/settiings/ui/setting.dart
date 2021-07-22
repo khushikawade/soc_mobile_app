@@ -1,5 +1,4 @@
 import 'package:Soc/src/app.dart';
-import 'package:Soc/src/modules/setting/information/ui/test1.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';

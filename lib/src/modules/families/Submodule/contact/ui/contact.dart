@@ -94,7 +94,13 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 )
-              : Container(),
+              : Container(
+                  child: Image.asset(
+                  'assets/images/address.png',
+                  fit: BoxFit.fill,
+                  height: 160,
+                  width: MediaQuery.of(context).size.width * 1,
+                )),
         )
       ],
     );

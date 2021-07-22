@@ -1,64 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class SearchBarPage extends StatefulWidget {
-//   @override
-//   _SearchBarPageState createState() => _SearchBarPageState();
-// }
-
-// class _SearchBarPageState extends State<SearchBarPage> {
-//   // TODO: Add search history here
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       // TODO: Add the FloatingSearchBar here
-//       body: SearchResultsListView(
-//         searchTerm: '',
-//       ),
-//     );
-//   }
-// }
-
-// class SearchResultsListView extends StatelessWidget {
-//   final String? searchTerm;
-
-//   const SearchResultsListView({
-//     Key? key,
-//     @required this.searchTerm,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (searchTerm == null) {
-//       return Center(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             Icon(
-//               Icons.search,
-//               size: 64,
-//             ),
-//             Text(
-//               'Start searching',
-//               style: Theme.of(context).textTheme.headline5,
-//             )
-//           ],
-//         ),
-//       );
-//     }
-
-//     return ListView(
-//       children: List.generate(
-//         50,
-//         (index) => ListTile(
-//           title: Text('$searchTerm search result'),
-//           subtitle: Text(index.toString()),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/search_list.dart';
@@ -170,95 +109,51 @@ class _SearchPageState extends State<SearchPage> {
             )));
   }
 
-  //   Container(
-  //     padding: EdgeInsets.symmetric(
-  //         vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 3),
-  //     color: AppTheme.kFieldbackgroundColor,
-  //     child: TextFormField(
-  //       controller: _controller,
-  //       focusNode: myFocusNode,
-  //       textAlign: TextAlign.start,
-  //       style: TextStyle(color: Colors.black),
-  //       decoration: InputDecoration(
-  //         contentPadding: EdgeInsets.symmetric(
-  //           vertical: _kLabelSpacing,
-  //         ),
-  //         prefixIcon: Icon(
-  //           const IconData(0xe805,
-  //               fontFamily: Overrides.kFontFam,
-  //               fontPackage: Overrides.kFontPkg),
-  //           color: AppTheme.kprefixIconColor,
-  //           size: 18,
-  //         ),
-  //         suffix: IconButton(
-  //           onPressed: () {
-  //             setState(() {
-  //               _controller.clear();
-  //               suggestionlist = false;
-  //             });
-  //           },
-  //           icon: Icon(
-  //             Icons.clear,
-  //             color: AppTheme.kIconColor,
-  //             size: 18,
-  //           ),
-  //         ),
-  //         filled: true,
-  //         fillColor: AppTheme.kBackgroundColor,
-  //         enabledBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-  //           borderSide: const BorderSide(),
-  //         ),
-  //         border: OutlineInputBorder(
-  //           borderRadius: const BorderRadius.all(
-  //             const Radius.circular(10.0),
-  //           ),
-  //         ),
-  //         hintText: 'Search',
-  //         hintStyle: TextStyle(
-  //           color: AppTheme.kBlackColor,
-  //         ),
-  //       ),
-  //       onChanged: onItemChanged,
-  //     ),
-  //   ),
-  // );
-  // }
-
   Widget _buildsuggestionlist() {
     return BlocBuilder<HomeBloc, HomeState>(
         bloc: _searchBloc,
         builder: (BuildContext contxt, HomeState state) {
           if (state is GlobalSearchSuccess) {
             return Expanded(
-              child: Container(
-                  color: AppTheme.kTxtFieldColor,
-                  margin: EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-                  width: MediaQuery.of(context).size.width * 1,
-                  // height: 50,
-                  child: ListView(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.all(_kLabelSpacing / 2),
-                    children: state.obj.map<Widget>((data) {
-                      return ListTile(
-                          title: Text(
-                            data.id,
-                            style: Theme.of(context).textTheme.bodyText1,
+                child: state.obj.map != null && state.obj.length > 0
+                    ? Container(
+                        margin: EdgeInsets.only(
+                            left: _kLabelSpacing / 2,
+                            right: _kLabelSpacing / 2,
+                            bottom: _kLabelSpacing * 2),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
                           ),
-                          onTap: () {
-                            _route(data);
-                            print(data.id);
-                          });
-                    }).toList(),
-                  )),
-            );
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(5.0),
+                              bottomLeft: Radius.circular(5.0)),
+                        ),
+                        child: ListView(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.all(_kLabelSpacing / 2),
+                          children: state.obj.map<Widget>((data) {
+                            return ListTile(
+                                title: Text(
+                                  data.id,
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                                onTap: () {
+                                  _route(data);
+                                  print(data.id);
+                                });
+                          }).toList(),
+                        ))
+                    : Container());
           } else if (state is SearchLoading) {
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: Center(
-                  child: CircularProgressIndicator(
-                backgroundColor: Theme.of(context).accentColor,
-              )),
+            return Expanded(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: Center(
+                    child: CircularProgressIndicator(
+                  backgroundColor: Theme.of(context).accentColor,
+                )),
+              ),
             );
           } else {
             return Container();
@@ -326,11 +221,6 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
           title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget())),
-
-      // appBar: CustomAppBarWidget(
-      //   isnewsDescription: false,
-      //   isnewsSearchPage: false,
-      // ),
       body: Container(
         child: Column(mainAxisSize: MainAxisSize.max, children: [
           _buildHeading(),
