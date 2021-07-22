@@ -192,29 +192,29 @@ class _StaffDirectoryState extends State<StaffDirectory> {
             )));
   }
 
-  Widget card()
-  {
-    return  Card(
-          elevation: 50,
-          shadowColor: Colors.black,
-          color: Colors.greenAccent[100],
-          child: SizedBox(
-            width: 300,
-            height: 500,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.green[500],
-                    radius: 108,
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          "https://pbs.twimg.com/profile_images/1304985167476523008/QNHrwL2q_400x400.jpg"), //NetworkImage
-                      radius: 100,
-                    ), //CircleAvatar
-                  )]));//CirclAvatar
-  }
+  // Widget card()
+  // {
+  //   return  Card(
+  //         elevation: 50,
+  //         shadowColor: Colors.black,
+  //         color: Colors.greenAccent[100],
+  //         child: SizedBox(
+  //           width: 300,
+  //           height: 500,
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(20.0),
+  //             child: Column(
+  //               children: [
+  //                 CircleAvatar(
+  //                   backgroundColor: Colors.green[500],
+  //                   radius: 108,
+  //                   child: CircleAvatar(
+  //                     backgroundImage: NetworkImage(
+  //                         "https://pbs.twimg.com/profile_images/1304985167476523008/QNHrwL2q_400x400.jpg"), //NetworkImage
+  //                     radius: 100,
+  //                   ), //CircleAvatar
+  //                 )]));//CirclAvatar
+  // }
 
   Widget build(BuildContext context) {
     return Scaffold(
