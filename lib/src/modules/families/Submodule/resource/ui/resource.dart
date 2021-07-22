@@ -80,6 +80,7 @@ class _ResourcesState extends State<Resources> {
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
         isnewsSearchPage: false,
+        title: '',
       ),
       body: SingleChildScrollView(
         child: SafeArea(

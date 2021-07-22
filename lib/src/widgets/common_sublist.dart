@@ -65,6 +65,7 @@ class _SubListPageState extends State<SubListPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         url: obj.pdfURL,
+                        tittle: obj.titleC,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else {
@@ -98,6 +99,7 @@ class _SubListPageState extends State<SubListPage> {
         appBar: CustomAppBarWidget(
           isnewsDescription: false,
           isnewsSearchPage: false,
+          title: '',
         ),
         key: _scaffoldKey,
         body: widget.module == "family"

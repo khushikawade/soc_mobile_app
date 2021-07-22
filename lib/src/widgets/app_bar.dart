@@ -9,15 +9,18 @@ import 'package:share/share.dart';
 import '../overrides.dart';
 
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-  CustomAppBarWidget(
-      {Key? key,
-      required this.isnewsDescription,
-      required this.isnewsSearchPage})
-      : preferredSize = Size.fromHeight(60.0),
+  CustomAppBarWidget({
+    Key? key,
+    required this.isnewsDescription,
+    required this.isnewsSearchPage,
+    required this.title,
+  })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? islinearProgress = false;
   bool? isnewsDescription;
   bool? isnewsSearchPage;
+  String title;
+
   @override
   final Size preferredSize;
 
@@ -57,7 +60,12 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
           ),
         ],
       ),
-      title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
+      title: widget.title.isNotEmpty && widget.title.length > 2
+          ? Text(
+              widget.title,
+              style: Theme.of(context).textTheme.headline1,
+            )
+          : SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
       actions: [
         Icon(
           const IconData(0xe805,
@@ -78,19 +86,20 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                 ? HorzitalSpacerWidget(10)
                 : widget.isnewsSearchPage == false &&
                         widget.isnewsSearchPage == false
-                    ? IconButton(
-                        onPressed: () {
-                          print(widget.isnewsSearchPage);
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => SearchPage()));
-                        },
-                        icon: Icon(
-                          const IconData(0xe805,
-                              fontFamily: Overrides.kFontFam,
-                              fontPackage: Overrides.kFontPkg),
-                        ))
+                    ? Container()
+                    //  IconButton(
+                    //     onPressed: () {
+                    //       print(widget.isnewsSearchPage);
+                    //       // Navigator.push(
+                    //       //     context,
+                    //       //     MaterialPageRoute(
+                    //       //         builder: (context) => SearchPage()));
+                    //     },
+                    //     icon: Icon(
+                    //       const IconData(0xe805,
+                    //           fontFamily: Overrides.kFontFam,
+                    //           fontPackage: Overrides.kFontPkg),
+                    //     ))
                     : Container(),
 
         //  IconButton(

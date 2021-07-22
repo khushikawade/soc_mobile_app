@@ -63,6 +63,7 @@ class _StaffPageState extends State<StaffPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         url: obj.pdfURL,
+                        tittle: obj.titleC,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {

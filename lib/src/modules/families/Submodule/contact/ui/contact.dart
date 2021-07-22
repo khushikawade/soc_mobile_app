@@ -3,6 +3,7 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ContactPage extends StatefulWidget {
@@ -18,12 +19,16 @@ class _ContactPageState extends State<ContactPage> {
   static const double _kboxheight = 60.0;
   static const double _kboxwidth = 300.0;
   static const double _kboxborderwidth = 0.75;
+  var longitude;
+  var latitude;
   var object;
 
   @override
   void initState() {
     super.initState();
     object = widget.obj;
+    latitude = object["Contact_Office_Location__Latitude__s"];
+    longitude = object["Contact_Office_Location__Longitude__s"];
   }
 
   //Style
@@ -78,13 +83,19 @@ class _ContactPageState extends State<ContactPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-            //   child: NetworkImage(
-            // object["Contact_Image__c"],
-            // fit: BoxFit.fill,
-            // height: 160,
-            // width: MediaQuery.of(context).size.width * 1,
-            // )
-            ),
+          child: object["Contact_Image__c"] != null &&
+                  object["Contact_Image__c"].length > 0
+              ? CachedNetworkImage(
+                  imageUrl: object["Contact_Image__c"],
+                  fit: BoxFit.fill,
+                  placeholder: (context, url) => CircularProgressIndicator(
+                    strokeWidth: 2,
+                    backgroundColor: Theme.of(context).accentColor,
+                  ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                )
+              : Container(),
+        )
       ],
     );
   }
@@ -98,10 +109,13 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            "PS 456 Bronx Bears",
-            style: Theme.of(context).textTheme.headline2,
-          )
+          object["Contact_Name__c"] != null &&
+                  object["Contact_Name__c"].length > 0
+              ? Text(
+                  object["Contact_Name__c"],
+                  style: Theme.of(context).textTheme.headline2,
+                )
+              : Container(),
         ],
       ),
     );
@@ -138,10 +152,15 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          SizedBox(
-            height: _kboxheight * 2,
-            child: MapSample(),
-          )
+          latitude != null
+              ? SizedBox(
+                  height: _kboxheight * 2,
+                  child: MapSample(
+                    latitude: latitude,
+                    longitude: longitude,
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
@@ -208,15 +227,17 @@ class _ContactPageState extends State<ContactPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                  width: MediaQuery.of(context).size.width * .60,
-                  child: Text(
-                    "123 Morningside Dr, New york,NY 10027, USA",
-                    style: Theme.of(context).textTheme.bodyText2,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 4,
-                    textAlign: TextAlign.start,
-                  )),
+              object["Contact_Address__c"] != null
+                  ? Container(
+                      width: MediaQuery.of(context).size.width * .60,
+                      child: Text(
+                        object["Contact_Address__c"],
+                        style: Theme.of(context).textTheme.bodyText2,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 4,
+                        textAlign: TextAlign.start,
+                      ))
+                  : Container(),
             ],
           ),
         ],
@@ -237,9 +258,49 @@ class _ContactPageState extends State<ContactPage> {
                 .bodyText1!
                 .copyWith(color: Color(0xff171717)),
           ),
-          HorzitalSpacerWidget(_kLabelSpacing / 2),
+          HorzitalSpacerWidget(_kLabelSpacing),
           Text(
-            "(212) 222-0473",
+            object["Contact_Phone__c"],
+            style: Theme.of(context).textTheme.bodyText2,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmailWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: Container(
+          width: MediaQuery.of(context).size.width * 1,
+          decoration: BoxDecoration(
+              border: Border.all(
+                width: _kboxborderwidth,
+                color: AppTheme.kTxtfieldBorderColor,
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(4.0))),
+          child: _builEmail()),
+    );
+  }
+
+  Widget _builEmail() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
+      child: Row(
+        children: [
+          Text(
+            "Email",
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1!
+                .copyWith(color: Color(0xff171717)),
+          ),
+          HorzitalSpacerWidget(_kLabelSpacing * 1.5),
+          Text(
+            object["Contact_Email__c"],
             style: Theme.of(context).textTheme.bodyText2,
           )
         ],
@@ -253,6 +314,7 @@ class _ContactPageState extends State<ContactPage> {
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
         isnewsSearchPage: true,
+        title: '',
       ),
       body: Container(
           child: Column(
@@ -266,7 +328,9 @@ class _ContactPageState extends State<ContactPage> {
           _buildMapWidget(),
           _buildaddressWidget(),
           SpacerWidget(_kLabelSpacing / 1.25),
-          _buildPhoneWidget()
+          _buildPhoneWidget(),
+          SpacerWidget(_kLabelSpacing / 1.25),
+          _buildEmailWidget()
         ],
       )),
     );
