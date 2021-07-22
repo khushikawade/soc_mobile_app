@@ -13,7 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
-  FamilyPage({Key? key, required this.obj}) : super(key: key);
+  var searchObj;
+  FamilyPage({Key? key, this.obj, this.searchObj}) : super(key: key);
 
   @override
   _FamilyPageState createState() => _FamilyPageState();
