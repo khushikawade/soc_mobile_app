@@ -67,10 +67,10 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
             )
           : SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
       actions: [
-        Icon(
-          const IconData(0xe805,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        ),
+        // Icon(
+        //   const IconData(0xe805,
+        //       fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        // ),
         widget.isnewsDescription != null && widget.isnewsDescription == true
             ? IconButton(
                 onPressed: () {
@@ -81,26 +81,24 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                   color: AppTheme.kIconColor3,
                 ),
               )
-            : widget.isnewsDescription == false &&
-                    widget.isnewsDescription == false
-                ? HorzitalSpacerWidget(10)
-                : widget.isnewsSearchPage == false &&
-                        widget.isnewsSearchPage == false
-                    ? Container()
-                    //  IconButton(
-                    //     onPressed: () {
-                    //       print(widget.isnewsSearchPage);
-                    //       // Navigator.push(
-                    //       //     context,
-                    //       //     MaterialPageRoute(
-                    //       //         builder: (context) => SearchPage()));
-                    //     },
-                    //     icon: Icon(
-                    //       const IconData(0xe805,
-                    //           fontFamily: Overrides.kFontFam,
-                    //           fontPackage: Overrides.kFontPkg),
-                    //     ))
-                    : Container(),
+            : Container(),
+        // : widget.isnewsDescription == false &&
+        //         widget.isnewsDescription == false
+        //     ? HorzitalSpacerWidget(10)
+        //     :
+        widget.isnewsSearchPage == true && widget.isnewsSearchPage == true
+            ? IconButton(
+                onPressed: () {
+                  print(widget.isnewsSearchPage);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SearchPage()));
+                },
+                icon: Icon(
+                  const IconData(0xe805,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                ))
+            : Container(),
 
         //  IconButton(
         //     onPressed: () {
