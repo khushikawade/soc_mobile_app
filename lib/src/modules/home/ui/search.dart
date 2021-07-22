@@ -1,10 +1,15 @@
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/html_description.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +29,7 @@ class _SearchPageState extends State<SearchPage> {
   FocusNode myFocusNode = new FocusNode();
   final _debouncer = Debouncer(milliseconds: 500);
   HomeBloc _searchBloc = new HomeBloc();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   static List<String> mainDataList = ["Flutter", "f", "angular"];
 
@@ -35,32 +41,66 @@ class _SearchPageState extends State<SearchPage> {
       _searchBloc.add(GlobalSearchEvent(keyword: value));
       setState(() {});
     });
-
-    // setState(() {
-    //   newDataList = mainDataList
-    //       .where((string) => string.toLowerCase().contains(value.toLowerCase()))
-    //       .toList();
-    // });
   }
 
-  _route(SearchList data) {
-    // if (data.attributes!.type == "Families_App__c") {
+  _route(SearchList obj) {
+    // if (obj.titleC == "Contact") {
+    //   obj.titleC != null
+    //       ? Navigator.push(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (BuildContext context) =>
+    //                   ContactPage(obj: widget.obj)))
+    //       : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    // }
+    // if (obj.titleC == "Staff Directory") {
     //   Navigator.push(
     //       context,
     //       MaterialPageRoute(
-    //           builder: (BuildContext context) => FamilyPage(searchObj: data)));
-    // } else if (data.attributes!.type == "Staff_App__c") {
-    //   Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (BuildContext context) => StaffPage(searchObj: data)));
-    // } else if (data.attributes!.type == "Family_Sub_Menu_App__c") {
-    // } else if (data.attributes!.type == "Staff_Sub_Menu_App__c") {
-    // } else if (data.attributes!.type == "Student_App__c ") {}
+    //           builder: (BuildContext context) => StaffDirectory(
+    //                 obj: obj,
+    //               )));
+    // }
 
-    // setState(() {
-    //   _selectedIndex = index;
-    // });
+    if (obj.typeC == "URL") {
+      obj.urlC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                        title: obj.titleC!,
+                        url: obj.urlC!,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    } else if (obj.typeC == "RFT_HTML") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AboutusPage(
+                        htmlText: obj.rtfHTMLC.toString(),
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "PDF URL") {
+      print(obj.pdfURL);
+      obj.pdfURL != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CommonPdfViewerPage(
+                        url: obj.pdfURL,
+                        tittle: obj.titleC,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+    } else if (obj.typeC == "Sub-Menu") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  SubListPage(obj: obj, module: "family")));
+    } else {
+      Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    }
   }
 
   Widget _buildSearchbar() {
@@ -146,13 +186,12 @@ class _SearchPageState extends State<SearchPage> {
                               ),
                               child: ListTile(
                                   title: Text(
-                                    data.id,
+                                    data.titleC,
                                     style:
                                         Theme.of(context).textTheme.bodyText1,
                                   ),
                                   onTap: () {
                                     _route(data);
-                                    print(data.id);
                                   }),
                             );
                           }).toList(),
@@ -209,6 +248,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
           elevation: 0.0,
           leading: Row(

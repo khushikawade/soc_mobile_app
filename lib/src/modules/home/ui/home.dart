@@ -18,8 +18,8 @@ import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
-  var obj;
-  HomePage({Key? key, this.title, this.obj}) : super(key: key);
+  var homeObj;
+  HomePage({Key? key, this.title, this.homeObj}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
       return StudentPage();
     } else if (_selectedIndex == 3) {
       return FamilyPage(
-        obj: widget.obj,
+        obj: widget.homeObj,
       );
     } else if (_selectedIndex == 4) {
       return StaffPage();
@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
-          items: widget.obj["Bottom_Navigation__c"]
+          items: widget.homeObj["Bottom_Navigation__c"]
               .split(";")
               .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
                     icon: Column(children: [

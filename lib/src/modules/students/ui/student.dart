@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class StudentPage extends StatefulWidget {
+  var homeObj;
+  StudentPage({Key? key, this.homeObj}) : super(key: key);
   _StudentPageState createState() => _StudentPageState();
 }
 
