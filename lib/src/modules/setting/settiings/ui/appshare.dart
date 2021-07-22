@@ -34,7 +34,9 @@ class _ShareAppState extends State<ShareApp> {
         color: AppTheme.kButtonbackColor,
         height: _kbuttonsize,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            _onShareWithEmptyOrigin(context);
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,

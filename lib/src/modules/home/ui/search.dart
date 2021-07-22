@@ -31,7 +31,9 @@ class _SearchPageState extends State<SearchPage> {
   HomeBloc _searchBloc = new HomeBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  static List<String> mainDataList = ["Flutter", "f", "angular"];
+  // static List<String> mainDataList = ["Flutter", "f", "angular"];
+
+  List<dynamic> mainDataList = [];
 
   List<String> newDataList = [''];
 
@@ -192,6 +194,10 @@ class _SearchPageState extends State<SearchPage> {
                                   ),
                                   onTap: () {
                                     _route(data);
+
+                                    if (data != null) {
+                                      mainDataList.add(data);
+                                    }
                                   }),
                             );
                           }).toList(),
@@ -227,17 +233,46 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  Widget _buildrecentSearch() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        HorzitalSpacerWidget(_kLabelSpacing / 2),
+        Text(
+          "Recent Search",
+          style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
+                fontSize: 18,
+              ),
+          textAlign: TextAlign.left,
+        ),
+      ],
+    );
+  }
+
   Widget _buildrecentItem() {
     return new Expanded(
         child: new ListView.builder(
-            itemCount: 3,
+            itemCount: mainDataList.length,
             itemBuilder: (BuildContext ctxt, int index) {
               return Container(
                   height: 50,
                   child: ListTile(
-                    title: Text(
-                      '${mainDataList[index]}',
-                      style: Theme.of(context).textTheme.bodyText1,
+                    title: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    InAppUrlLauncer(
+                                      title: mainDataList[index].titleC!,
+                                      url: mainDataList[index].urlC!,
+                                    )));
+                        print('${mainDataList[index].urlC}');
+                      },
+                      child: Text(
+                        "'${mainDataList[index].titleC}'",
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
                     ),
                     selected: true,
                     onTap: () {},
@@ -280,7 +315,11 @@ class _SearchPageState extends State<SearchPage> {
           SpacerWidget(_kLabelSpacing / 2),
           _buildSearchbar(),
           suggestionlist ? _buildsuggestionlist() : SizedBox(height: 0),
-          suggestionlist == false ? _buildrecentItem() : SizedBox(height: 0),
+          SpacerWidget(_kLabelSpacing),
+          suggestionlist == false && mainDataList.length > 0
+              ? _buildrecentSearch()
+              // _buildrecentItem()
+              : SizedBox(height: 0),
         ]),
       ),
     );
