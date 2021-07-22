@@ -39,23 +39,22 @@ class _FamilyPageState extends State<FamilyPage> {
                   builder: (BuildContext context) =>
                       ContactPage(obj: widget.obj)))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    }
-    else if(obj.titleC == "Staff Directory") {
-    //  Navigator.push(
-    //           context,
-    //           MaterialPageRoute(
-    //               builder: (BuildContext context) =>
-    //                   StaffList()
-    //                   ));
+    } else if (obj.titleC == "Staff Directory") {
+      //  Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //               builder: (BuildContext context) =>
+      //                   StaffList()
+      //                   ));
 
     }
-      obj.titleC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      ContactPage(obj: widget.obj)))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);)
+    obj.titleC != null
+        ? Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    ContactPage(obj: widget.obj)))
+        : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(
