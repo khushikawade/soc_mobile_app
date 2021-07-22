@@ -49,13 +49,7 @@ class _FamilyPageState extends State<FamilyPage> {
                     obj: obj,
                   )));
     }
-    obj.titleC != null
-        ? Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    ContactPage(obj: widget.obj)))
-        : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+
     if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(
