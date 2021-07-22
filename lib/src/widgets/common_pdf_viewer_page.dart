@@ -7,7 +7,9 @@ import 'package:path_provider/path_provider.dart';
 
 class CommonPdfViewerPage extends StatefulWidget {
   final String? url;
-  CommonPdfViewerPage({Key? key, @required this.url}) : super(key: key);
+  String? tittle = '';
+  CommonPdfViewerPage({Key? key, @required this.url, @required this.tittle})
+      : super(key: key);
   @override
   _CommonPdfViewerPageState createState() => _CommonPdfViewerPageState();
 }
@@ -63,8 +65,9 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
-          isnewsDescription: true,
+          isnewsDescription: false,
           isnewsSearchPage: false,
+          title: widget.tittle.toString(),
         ),
         body: widget.url != null && widget.url != ""
             ? document == null

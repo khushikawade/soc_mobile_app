@@ -19,12 +19,16 @@ class _ContactPageState extends State<ContactPage> {
   static const double _kboxheight = 60.0;
   static const double _kboxwidth = 300.0;
   static const double _kboxborderwidth = 0.75;
+  var longitude;
+  var latitude;
   var object;
 
   @override
   void initState() {
     super.initState();
     object = widget.obj;
+    latitude = object["Contact_Office_Location__Latitude__s"];
+    longitude = object["Contact_Office_Location__Longitude__s"];
   }
 
   //Style
@@ -79,15 +83,19 @@ class _ContactPageState extends State<ContactPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-            child: CachedNetworkImage(
-          imageUrl: object["Contact_Image__c"],
-          fit: BoxFit.fill,
-          placeholder: (context, url) => CircularProgressIndicator(
-            strokeWidth: 2,
-            backgroundColor: Theme.of(context).accentColor,
-          ),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        )),
+          child: object["Contact_Image__c"] != null &&
+                  object["Contact_Image__c"].length > 0
+              ? CachedNetworkImage(
+                  imageUrl: object["Contact_Image__c"],
+                  fit: BoxFit.fill,
+                  placeholder: (context, url) => CircularProgressIndicator(
+                    strokeWidth: 2,
+                    backgroundColor: Theme.of(context).accentColor,
+                  ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                )
+              : Container(),
+        )
       ],
     );
   }
@@ -101,10 +109,13 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            "PS 456 Bronx Bears",
-            style: Theme.of(context).textTheme.headline2,
-          )
+          object["Contact_Name__c"] != null &&
+                  object["Contact_Name__c"].length > 0
+              ? Text(
+                  object["Contact_Name__c"],
+                  style: Theme.of(context).textTheme.headline2,
+                )
+              : Container(),
         ],
       ),
     );
@@ -141,13 +152,15 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          SizedBox(
-            height: _kboxheight * 2,
-            child: MapSample(
-              latitude: object["Contact_office_Location__Latitude__s"],
-              longitude: object["Contact_office_Location__Longitude__s"],
-            ),
-          )
+          latitude != null
+              ? SizedBox(
+                  height: _kboxheight * 2,
+                  child: MapSample(
+                    latitude: latitude,
+                    longitude: longitude,
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
@@ -214,15 +227,17 @@ class _ContactPageState extends State<ContactPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                  width: MediaQuery.of(context).size.width * .60,
-                  child: Text(
-                    "123 Morningside Dr, New york,NY 10027, USA",
-                    style: Theme.of(context).textTheme.bodyText2,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 4,
-                    textAlign: TextAlign.start,
-                  )),
+              object["Contact_Address__c"] != null
+                  ? Container(
+                      width: MediaQuery.of(context).size.width * .60,
+                      child: Text(
+                        object["Contact_Address__c"],
+                        style: Theme.of(context).textTheme.bodyText2,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 4,
+                        textAlign: TextAlign.start,
+                      ))
+                  : Container(),
             ],
           ),
         ],
@@ -243,7 +258,7 @@ class _ContactPageState extends State<ContactPage> {
                 .bodyText1!
                 .copyWith(color: Color(0xff171717)),
           ),
-          HorzitalSpacerWidget(_kLabelSpacing / 2),
+          HorzitalSpacerWidget(_kLabelSpacing),
           Text(
             object["Contact_Phone__c"],
             style: Theme.of(context).textTheme.bodyText2,
@@ -283,7 +298,7 @@ class _ContactPageState extends State<ContactPage> {
                 .bodyText1!
                 .copyWith(color: Color(0xff171717)),
           ),
-          HorzitalSpacerWidget(_kLabelSpacing / 2),
+          HorzitalSpacerWidget(_kLabelSpacing * 1.5),
           Text(
             object["Contact_Email__c"],
             style: Theme.of(context).textTheme.bodyText2,
@@ -299,6 +314,7 @@ class _ContactPageState extends State<ContactPage> {
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
         isnewsSearchPage: true,
+        title: '',
       ),
       body: Container(
           child: Column(

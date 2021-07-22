@@ -126,8 +126,10 @@ class _InAppBrowserState extends State<InAppBrowser> {
                     _launchURL(url);
                   },
                   icon: Icon(
-                    Icons.stop_screen_share,
-                    color: AppTheme.kIconColor3,
+                    IconData(0xe80e,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: AppTheme.kBlackColor,
                   ))
               : Container(),
         ],
@@ -177,8 +179,10 @@ class _InAppBrowserState extends State<InAppBrowser> {
                   flutterWebviewPlugin.reload();
                 },
                 icon: Icon(
-                  Icons.refresh,
-                  color: AppTheme.kIconColor3,
+                  IconData(0xe80f,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kBlackColor,
                 )),
           ],
         ),

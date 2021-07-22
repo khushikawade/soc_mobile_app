@@ -102,26 +102,27 @@ class SocialDescription extends StatelessWidget {
   Widget _buildnews(BuildContext context) {
     return Column(
       children: [
-        Container(
-            width: MediaQuery.of(context).size.width * .90,
-            child: object != null && object.title["__cdata"].length > 1
-                ? Text(
-                    object.title["__cdata"]
-                        .replaceAll(new RegExp(r'[^\w\s]+'), ''),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 5,
-                    style: Theme.of(context).textTheme.headline2,
-                  )
-                : Text("1")),
-        SpacerWidget(_kPadding),
-        Container(
-            width: MediaQuery.of(context).size.width * .90,
-            child: Text(
-              "heading3",
-              overflow: TextOverflow.ellipsis,
-              maxLines: 5,
-              style: Theme.of(context).textTheme.headline2,
-            )),
+        Wrap(children: [
+          object != null && object.title["__cdata"].length > 1
+              ? Text(
+                  object.title["__cdata"]
+                      .replaceAll(new RegExp(r'[^\w\s]+'), ''),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 5,
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context).textTheme.headline2,
+                )
+              : Text("1"),
+          SpacerWidget(_kPadding),
+          // Container(
+          //     width: MediaQuery.of(context).size.width * .90,
+          //     child: Text(
+          //       "heading3",
+          //       overflow: TextOverflow.ellipsis,
+          //       maxLines: 5,
+          //       style: Theme.of(context).textTheme.headline2,
+          //     )),
+        ]),
       ],
     );
   }

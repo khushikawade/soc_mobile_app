@@ -99,6 +99,7 @@ class _SocialPageState extends State<SocialPage> {
                             // "Check out these book suggestions for your summer reading !",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
+
                             style: Theme.of(context).textTheme.headline2,
                           )),
                     ],

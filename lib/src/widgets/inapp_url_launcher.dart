@@ -38,6 +38,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
         appBar: CustomAppBarWidget(
           isnewsDescription: true,
           isnewsSearchPage: false,
+          title: widget.title,
         ),
         body: WebView(
           initialUrl: '${widget.url}',

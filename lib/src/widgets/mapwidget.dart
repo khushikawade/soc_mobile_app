@@ -19,28 +19,30 @@ class MapSampleState extends State<MapSample> {
   @override
   void initState() {
     super.initState();
-
+    print("init");
     _kGooglePlex = CameraPosition(
       target: LatLng(widget.latitude, widget.longitude),
       zoom: 14.4746,
     );
-    _kLocation = CameraPosition(
-        bearing: 192.8334901395799,
-        target: LatLng(37.43296265331129, -122.08832357078792),
-        tilt: 59.440717697143555,
-        zoom: 19.151926040649414);
+    // _kLocation = CameraPosition(
+    //     bearing: 192.8334901395799,
+    //     target: LatLng(37.43296265331129, -122.08832357078792),
+    //     tilt: 59.440717697143555,
+    //     zoom: 19.151926040649414);
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex!,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
+      body: widget.latitude != null && widget.longitude != null
+          ? GoogleMap(
+              mapType: MapType.normal,
+              initialCameraPosition: _kGooglePlex!,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+            )
+          : Container(),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: _gotoLocation,
       //   // label: Text('our location'),
@@ -49,8 +51,8 @@ class MapSampleState extends State<MapSample> {
     );
   }
 
-  Future<void> _gotoLocation() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLocation!));
-  }
+  // Future<void> _gotoLocation() async {
+  //   final GoogleMapController controller = await _controller.future;
+  //   controller.animateCamera(CameraUpdate.newCameraPosition(_kLocation!));
+  // }
 }

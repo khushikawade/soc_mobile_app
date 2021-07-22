@@ -11,6 +11,8 @@ class HomeInitial extends HomeState {}
 
 class HomeLoading extends HomeState {}
 
+class SearchLoading extends HomeState {}
+
 class BottomNavigationBarSuccess extends HomeState {
   var obj;
 
@@ -18,6 +20,19 @@ class BottomNavigationBarSuccess extends HomeState {
 
   BottomNavigationBarSuccess copyWith({var obj}) {
     return BottomNavigationBarSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class GlobalSearchSuccess extends HomeState {
+  var obj;
+
+  GlobalSearchSuccess({this.obj});
+
+  GlobalSearchSuccess copyWith({var obj}) {
+    return GlobalSearchSuccess(obj: obj ?? this.obj);
   }
 
   @override
