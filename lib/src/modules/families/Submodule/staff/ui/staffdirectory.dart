@@ -1,17 +1,23 @@
 import 'dart:ui';
 import 'package:Soc/src/modules/families/Submodule/staff/modal/staffmodel.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../../overrides.dart';
 
-class StaffListPage extends StatefulWidget {
+class StaffDirectory extends StatefulWidget {
+  var obj;
+  StaffDirectory({Key? key, required this.obj}) : super(key: key);
+
   @override
-  _StaffListPageState createState() => _StaffListPageState();
+  _StaffDirectoryState createState() => _StaffDirectoryState();
 }
 
-class _StaffListPageState extends State<StaffListPage> {
+class _StaffDirectoryState extends State<StaffDirectory> {
   static const double _kLabelSpacing = 18.0;
+  var _controller = TextEditingController();
 
   // final TextStyle _kheadingStyle = TextStyle(
   //   height: 1.5,
@@ -144,14 +150,85 @@ class _StaffListPageState extends State<StaffListPage> {
     }
   }
 
+  Widget _buildSearchbar() {
+    return SizedBox(
+        height: 50,
+        child: Container(
+            padding: EdgeInsets.symmetric(
+                vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
+            color: AppTheme.kFieldbackgroundColor,
+            child: TextFormField(
+              // focusNode: myFocusNode,
+              controller: _controller,
+              cursorColor: Colors.black,
+              decoration: InputDecoration(
+                isDense: true,
+                labelText: 'Search School App',
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: _kLabelSpacing / 2,
+                ),
+                filled: true,
+                fillColor: AppTheme.kBackgroundColor,
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(
+                  const IconData(0xe805,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kprefixIconColor,
+                ),
+                suffix: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _controller.clear();
+                    });
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    color: AppTheme.kIconColor,
+                    size: 18,
+                  ),
+                ),
+              ),
+            )));
+  }
+
+  Widget card()
+  {
+    return  Card(
+          elevation: 50,
+          shadowColor: Colors.black,
+          color: Colors.greenAccent[100],
+          child: SizedBox(
+            width: 300,
+            height: 500,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.green[500],
+                    radius: 108,
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          "https://pbs.twimg.com/profile_images/1304985167476523008/QNHrwL2q_400x400.jpg"), //NetworkImage
+                      radius: 100,
+                    ), //CircleAvatar
+                  )]));//CirclAvatar
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBarWidget(
+        isnewsDescription: false,
+        title: widget.obj.toString(),
+        isnewsSearchPage: false,
+      ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
             children: [
               _buildHeading("STAFF DIRECTORY"),
-
+              _buildSearchbar(),
               ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
@@ -161,7 +238,6 @@ class _StaffListPageState extends State<StaffListPage> {
                   return _buildList(index);
                 },
               ),
-              // ),
             ],
           ),
         ),
