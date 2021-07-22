@@ -1,7 +1,5 @@
-import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/search_list.dart';
-import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
@@ -133,15 +131,30 @@ class _SearchPageState extends State<SearchPage> {
                           shrinkWrap: true,
                           padding: EdgeInsets.all(_kLabelSpacing / 2),
                           children: state.obj.map<Widget>((data) {
-                            return ListTile(
-                                title: Text(
-                                  data.id,
-                                  style: Theme.of(context).textTheme.bodyText1,
-                                ),
-                                onTap: () {
-                                  _route(data);
-                                  print(data.id);
-                                });
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: (state.obj.indexOf(data) % 2 == 0)
+                                    ? Border.all(
+                                        color: AppTheme.kListBackgroundColor3)
+                                    : Border.all(
+                                        color:
+                                            Theme.of(context).backgroundColor),
+                                borderRadius: BorderRadius.circular(0.0),
+                                color: (state.obj.indexOf(data) % 2 == 0)
+                                    ? AppTheme.kListBackgroundColor3
+                                    : Theme.of(context).backgroundColor,
+                              ),
+                              child: ListTile(
+                                  title: Text(
+                                    data.id,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1,
+                                  ),
+                                  onTap: () {
+                                    _route(data);
+                                    print(data.id);
+                                  }),
+                            );
                           }).toList(),
                         ))
                     : Container());

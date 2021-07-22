@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:Soc/src/modules/families/Submodule/staff/modal/staffmodel.dart';
+import 'package:Soc/src/modules/families/Submodule/staff/ui/directorydetail.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -16,30 +17,8 @@ class StaffDirectory extends StatefulWidget {
 }
 
 class _StaffDirectoryState extends State<StaffDirectory> {
-  static const double _kLabelSpacing = 18.0;
+  static const double _kLabelSpacing = 16.0;
   var _controller = TextEditingController();
-
-  // final TextStyle _kheadingStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Medium",
-  //   fontSize: 28,
-  //   color: AppTheme.kFontColor2,
-  // );
-
-  // final TextStyle nametextStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Medium",
-  //   fontSize: 14.0,
-  //   fontWeight: FontWeight.w500,
-  //   color: AppTheme.kAccentColor,
-  // );
-
-  // final TextStyle emailtextStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Regular",
-  //   fontSize: 16,
-  //   color: AppTheme.kAccentColor,
-  // );
 
   static const List<StaffModel> StaffModelList = const <StaffModel>[
     const StaffModel(
@@ -158,7 +137,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
             color: AppTheme.kFieldbackgroundColor,
             child: TextFormField(
-              // focusNode: myFocusNode,
               controller: _controller,
               cursorColor: Colors.black,
               decoration: InputDecoration(
@@ -192,29 +170,102 @@ class _StaffDirectoryState extends State<StaffDirectory> {
             )));
   }
 
-  // Widget card()
-  // {
-  //   return  Card(
-  //         elevation: 50,
-  //         shadowColor: Colors.black,
-  //         color: Colors.greenAccent[100],
-  //         child: SizedBox(
-  //           width: 300,
-  //           height: 500,
-  //           child: Padding(
-  //             padding: const EdgeInsets.all(20.0),
-  //             child: Column(
-  //               children: [
-  //                 CircleAvatar(
-  //                   backgroundColor: Colors.green[500],
-  //                   radius: 108,
-  //                   child: CircleAvatar(
-  //                     backgroundImage: NetworkImage(
-  //                         "https://pbs.twimg.com/profile_images/1304985167476523008/QNHrwL2q_400x400.jpg"), //NetworkImage
-  //                     radius: 100,
-  //                   ), //CircleAvatar
-  //                 )]));//CirclAvatar
-  // }
+  Widget contactItem() {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => DirectoryDetailPage()));
+      },
+      child: Container(
+          margin: EdgeInsets.only(
+              left: _kLabelSpacing,
+              right: _kLabelSpacing,
+              top: _kLabelSpacing / 2,
+              bottom: _kLabelSpacing / 2),
+          padding: EdgeInsets.only(
+              left: _kLabelSpacing,
+              right: _kLabelSpacing,
+              top: _kLabelSpacing / 2,
+              bottom: _kLabelSpacing / 2),
+          decoration: BoxDecoration(
+            color: AppTheme.ListColor2,
+            borderRadius: BorderRadius.circular(4),
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.2),
+                spreadRadius: 0,
+                blurRadius: 1,
+                offset: Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Container(
+                  child: Image.asset(
+                'assets/images/address.png',
+                fit: BoxFit.fill,
+                height: 60,
+                width: 60,
+              )),
+              HorzitalSpacerWidget(_kLabelSpacing),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          Text(
+                            "Name",
+                          ),
+                          Text(
+                            "xyz",
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Email",
+                          ),
+                          Expanded(
+                            child: Text(
+                              "@gmaiil.com",
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "phone",
+                          ),
+                          Text(
+                            "12354",
+                          ),
+                        ],
+                      ),
+                    ]),
+              ),
+            ],
+          )),
+    );
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -228,16 +279,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
           child: Column(
             children: [
               _buildHeading("STAFF DIRECTORY"),
-              _buildSearchbar(),
-              ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: 5,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildList(index);
-                },
-              ),
+              contactItem(),
             ],
           ),
         ),
