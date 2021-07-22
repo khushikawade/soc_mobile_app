@@ -1,7 +1,7 @@
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -43,10 +43,24 @@ class _SearchPageState extends State<SearchPage> {
     // });
   }
 
-  void _onItemTap(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  _route(SearchList data) {
+    // if (data.attributes!.type == "Families_App__c") {
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (BuildContext context) => FamilyPage(searchObj: data)));
+    // } else if (data.attributes!.type == "Staff_App__c") {
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (BuildContext context) => StaffPage(searchObj: data)));
+    // } else if (data.attributes!.type == "Family_Sub_Menu_App__c") {
+    // } else if (data.attributes!.type == "Staff_Sub_Menu_App__c") {
+    // } else if (data.attributes!.type == "Student_App__c ") {}
+
+    // setState(() {
+    //   _selectedIndex = index;
+    // });
   }
 
   Widget _buildSearchbar() {
@@ -137,6 +151,7 @@ class _SearchPageState extends State<SearchPage> {
                                         Theme.of(context).textTheme.bodyText1,
                                   ),
                                   onTap: () {
+                                    _route(data);
                                     print(data.id);
                                   }),
                             );
