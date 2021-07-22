@@ -208,7 +208,6 @@ class _InformationPageState extends State<InformationPage> {
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
         isnewsSearchPage: false,
-        title: '',
       ),
       body: Container(
           child: Column(

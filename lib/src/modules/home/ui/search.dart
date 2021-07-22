@@ -1,6 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/Submodule/contact/ui/contact.dart';
-import 'package:Soc/src/modules/families/Submodule/staff_directory/ui/staffdirectory.dart';
+// import 'package:Soc/src/modules/families/Submodule/staff_directory/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
@@ -57,12 +57,12 @@ class _SearchPageState extends State<SearchPage> {
                       ContactPage(obj: Globals.homeObjet)))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => StaffDirectory(
-                    obj: obj,
-                  )));
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (BuildContext context) => StaffDirectory(
+      //               obj: obj,
+      //             )));
     } else if (obj.deepLink != null) {
       if (obj.deepLink == 'NO') {
         Navigator.push(
