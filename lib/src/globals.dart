@@ -12,4 +12,5 @@ class Globals {
   static String? deviceType;
   static String? phone = 'phone';
   var object;
+  static var homeObjet;
 }

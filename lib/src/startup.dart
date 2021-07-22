@@ -164,13 +164,14 @@ class _StartupPageState extends State<StartupPage> {
           bloc: _bloc,
           listener: (context, state) async {
             if (state is BottomNavigationBarSuccess) {
+              Globals.homeObjet = state.obj;
               state.obj != null
                   ? Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => HomePage(
                           title: "SOC",
-                          obj: state.obj,
+                          homeObj: state.obj,
                         ),
                       ))
                   : Text("No data found");

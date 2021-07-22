@@ -10,10 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StaffPage extends StatefulWidget {
+  StaffPage({Key? key, this.title}) : super(key: key);
   final String? title;
-  var searchObj;
-  StaffPage({Key? key, this.title, this.searchObj}) : super(key: key);
-
   @override
   _StaffPageState createState() => _StaffPageState();
 }
