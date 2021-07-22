@@ -1,6 +1,6 @@
-import 'package:Soc/src/modules/families/Submodule/staff/modal/models/attributes.dart';
+import 'attributes.dart';
 
-class StaffList {
+class Staffsublist {
   Attributes? attributes;
   dynamic titleC;
   String? imageUrlC;
@@ -11,7 +11,7 @@ class StaffList {
   var sortOrderC;
   String? phoneC;
 
-  StaffList({
+  Staffsublist({
     this.attributes,
     this.titleC,
     this.imageUrlC,
@@ -23,7 +23,7 @@ class StaffList {
     this.phoneC,
   });
 
-  factory StaffList.fromJson(Map<String, dynamic> json) => StaffList(
+  factory Staffsublist.fromJson(Map<String, dynamic> json) => Staffsublist(
         attributes: json['attributes'] == null
             ? null
             : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),

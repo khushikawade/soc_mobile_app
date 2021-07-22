@@ -320,7 +320,6 @@ class _ContactPageState extends State<ContactPage> {
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
         isnewsSearchPage: true,
-        title: '',
       ),
       body: Container(
           child: Column(

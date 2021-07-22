@@ -67,7 +67,6 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
         appBar: CustomAppBarWidget(
           isnewsDescription: false,
           isnewsSearchPage: false,
-          title: widget.tittle.toString(),
         ),
         body: widget.url != null && widget.url != ""
             ? document == null

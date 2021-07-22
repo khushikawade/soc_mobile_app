@@ -124,7 +124,6 @@ class _SettingPageState extends State<SettingPage> {
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
         isnewsSearchPage: false,
-        title: '',
       ),
       body: Container(
         child: Column(

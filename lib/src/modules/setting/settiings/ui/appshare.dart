@@ -66,7 +66,6 @@ class _ShareAppState extends State<ShareApp> {
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
         isnewsSearchPage: false,
-        title: '',
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
