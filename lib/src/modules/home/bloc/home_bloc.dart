@@ -85,6 +85,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "Type__c"
               ],
               "name": "Staff_Sub_Menu_App__c"
+            },
+            {
+              "fields": [
+                "Title__c",
+                "App_Icon__c",
+                "App_URL__c",
+                "Deep_Link__c",
+                "Id",
+                "Name",
+                "App_Folder__c"
+              ],
+              "name": "Student_App__c"
             }
           ],
           "in": "ALL",

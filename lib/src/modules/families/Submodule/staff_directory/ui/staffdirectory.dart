@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:Soc/src/modules/families/Submodule/staff/modal/staffmodel.dart';
-import 'package:Soc/src/modules/families/Submodule/staff/ui/directorydetail.dart';
+import 'package:Soc/src/modules/families/Submodule/staff_directory/modal/staffmodel.dart';
+import 'package:Soc/src/modules/families/Submodule/staff_directory/ui/directorydetail.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -265,7 +265,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     return Scaffold(
       appBar: CustomAppBarWidget(
         isnewsDescription: false,
-        title: widget.obj.toString(),
+        title: "Staff directory", //  widget.obj.toString(),
         isnewsSearchPage: false,
       ),
       body: SingleChildScrollView(
