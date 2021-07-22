@@ -1,7 +1,6 @@
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import '../../../../overrides.dart';
@@ -15,7 +14,7 @@ class _ShareAppState extends State<ShareApp> {
   static const double _kPadding = 16.0;
   static const double _kiconsize = 30.0;
   static const double _kbuttonsize = 50.0;
-  GlobalKey<SharePopupState> _myKey = GlobalKey();
+  // GlobalKey<SharePopupState> _myKey = GlobalKey();
 
   _onShareWithEmptyOrigin(BuildContext context) async {
     RenderBox? box = context.findRenderObject() as RenderBox;
