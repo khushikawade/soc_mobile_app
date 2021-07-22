@@ -46,19 +46,19 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   _route(SearchList data) {
-    if (data.attributes!.type == "Families_App__c") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => FamilyPage(searchObj: data)));
-    } else if (data.attributes!.type == "Staff_App__c") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => StaffPage(searchObj: data)));
-    } else if (data.attributes!.type == "Family_Sub_Menu_App__c") {
-    } else if (data.attributes!.type == "Staff_Sub_Menu_App__c") {
-    } else if (data.attributes!.type == "Student_App__c ") {}
+    // if (data.attributes!.type == "Families_App__c") {
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (BuildContext context) => FamilyPage(searchObj: data)));
+    // } else if (data.attributes!.type == "Staff_App__c") {
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (BuildContext context) => StaffPage(searchObj: data)));
+    // } else if (data.attributes!.type == "Family_Sub_Menu_App__c") {
+    // } else if (data.attributes!.type == "Staff_Sub_Menu_App__c") {
+    // } else if (data.attributes!.type == "Student_App__c ") {}
 
     // setState(() {
     //   _selectedIndex = index;
