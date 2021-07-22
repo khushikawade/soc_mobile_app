@@ -57,3 +57,18 @@ class FamiliesSublistSucess extends FamilyState {
   @override
   List<Object> get props => [];
 }
+
+class SDDataSucess extends FamilyState {
+  List<SDlist>? obj;
+  SDDataSucess({
+    this.obj,
+  });
+  SDDataSucess copyWith({
+    var obj,
+  }) {
+    return SDDataSucess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
