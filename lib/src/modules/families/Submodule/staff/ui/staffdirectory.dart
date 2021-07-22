@@ -179,16 +179,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 builder: (BuildContext context) => DirectoryDetailPage()));
       },
       child: Container(
-          margin: EdgeInsets.only(
-              left: _kLabelSpacing,
-              right: _kLabelSpacing,
-              top: _kLabelSpacing / 2,
-              bottom: _kLabelSpacing / 2),
-          padding: EdgeInsets.only(
-              left: _kLabelSpacing,
-              right: _kLabelSpacing,
-              top: _kLabelSpacing / 2,
-              bottom: _kLabelSpacing / 2),
+          margin: EdgeInsets.symmetric(
+              horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
+          padding: EdgeInsets.symmetric(
+              horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
           decoration: BoxDecoration(
             color: AppTheme.ListColor2,
             borderRadius: BorderRadius.circular(4),
@@ -216,9 +210,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               HorzitalSpacerWidget(_kLabelSpacing),
               Expanded(
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    // mainAxisSize: MainAxisSize.min,
+                    // mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Row(
                         children: [

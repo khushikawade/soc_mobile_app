@@ -42,6 +42,8 @@ class _DirectoryDetailPageState extends State<DirectoryDetailPage> {
           case "email":
             _launch("mailto: email@com?");
             break;
+          default:
+            break;
         }
       },
       child: Padding(
@@ -81,10 +83,10 @@ class _DirectoryDetailPageState extends State<DirectoryDetailPage> {
         children: [
           _buildIcon(),
           _buildItemList("name", Icons.ac_unit_outlined, "1"),
-          _buildItemList("12345", Icons.local_phone, "1"),
-          _buildItemList("name", Icons.ac_unit, "1"),
-          _buildItemList("name", Icons.ac_unit, "1"),
-          _buildItemList("name", Icons.ac_unit, "1")
+          _buildItemList("12345", Icons.local_phone, "PHONE"),
+          _buildItemList("email", Icons.email, "email"),
+          _buildItemList("title", Icons.ac_unit, "1"),
+          _buildItemList("description", Icons.ac_unit, "1")
         ],
       )),
     );
