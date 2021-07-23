@@ -6,7 +6,6 @@ import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/services/db_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -18,7 +17,7 @@ part 'news_state.dart';
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
   var data;
   NewsBloc() : super(NewsInitial());
-  final DbServices _dbServices = DbServices();
+  // final DbServices _dbServices = DbServices();
 
   NewsState get initialState => NewsInitial();
 
@@ -52,9 +51,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        // List<NotificationList> _notifications = data["notifications"]
-        //     .map<NotificationList>((i) => NotificationList.fromJson(i))
-        //     .toList();
         final data1 = data["notifications"];
         final data2 = data1 as List;
 
@@ -82,13 +78,14 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
 
-    final settings = {
-      OSiOSSettings.autoPrompt: true,
-      OSiOSSettings.promptBeforeOpeningPushUrl: true
-    };
+    // final settings = {
+    //   OSiOSSettings.autoPrompt: true,
+    //   OSiOSSettings.promptBeforeOpeningPushUrl: true
+    // };
 
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) {
+      notification.complete(notification.notification);
       print(
           "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
     });
@@ -97,8 +94,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
       print(
           "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-      // _performPushOperation(result, context);
-      var data = result.notification.additionalData;
+
       Globals.appNavigator!.currentState!
           .push(MaterialPageRoute(builder: (context) => NewsPage()));
     });
@@ -116,6 +112,14 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         (OSEmailSubscriptionStateChanges emailChanges) {});
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
+    // OneSignal.shared.setInAppMessageClickedHandler((action) {
+    //   Navigator.of(context)
+    //       .push(MaterialPageRoute(builder: (context) => NewsPage()));
+    // });
+    // OneSignal.shared.setNotificationOpenedHandler((action) {
+    //   Navigator.of(context)
+    //       .push(MaterialPageRoute(builder: (context) => NewsPage()));
+    // });
 
     OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
       print("Accepted permission: $accepted");

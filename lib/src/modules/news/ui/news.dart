@@ -26,13 +26,6 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildListItems(obj, index) {
     return InkWell(
       onTap: () {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (BuildContext context) => Newdescription(
-        //               obj: obj,
-        //               date: newsTimeStamp,
-        //             )));
         Navigator.push(
             context,
             MaterialPageRoute(
