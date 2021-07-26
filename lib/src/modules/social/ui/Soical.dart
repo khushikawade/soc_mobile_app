@@ -1,4 +1,3 @@
-import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -19,10 +18,7 @@ class SocialPage extends StatefulWidget {
 class _SocialPageState extends State<SocialPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 48.0;
-  static const double _kPadding = 16.0;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   var object;
-  final NewsBloc _bloc = new NewsBloc();
   SocialBloc bloc = SocialBloc();
 
   void initState() {
@@ -57,31 +53,32 @@ class _SocialPageState extends State<SocialPage> {
         },
         child: Row(
           children: <Widget>[
-            Column(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  width: _kIconSize * 1.4,
-                  height: _kIconSize * 1.5,
-                  child: imageLink != null && imageLink.length > 4
-                      ? ClipRRect(
-                          child: CachedNetworkImage(
-                            imageUrl: imageLink,
-                            placeholder: (context, url) => Container(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                backgroundColor: AppTheme.kAccentColor,
-                              ),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+            Container(
+              alignment: Alignment.center,
+              width: _kIconSize * 1.4,
+              height: _kIconSize * 1.5,
+              child: imageLink != null && imageLink.length > 4
+                  ? ClipRRect(
+                      child: CachedNetworkImage(
+                        imageUrl: imageLink,
+                        placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          width: _kIconSize * 1.4,
+                          height: _kIconSize * 1.5,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            backgroundColor: AppTheme.kAccentColor,
                           ),
-                        )
-                      : Text(''),
-                ),
-              ],
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
+                    )
+                  : Container(
+                      height: _kIconSize * 1.5,
+                      alignment: Alignment.centerLeft,
+                      child:
+                          Image(image: AssetImage("assets/images/appicon.png")),
+                    ),
             ),
             SizedBox(
               width: _kLabelSpacing / 2,

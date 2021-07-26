@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,7 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> {
+  static const double _kIconSize = 48.0;
   static const double _kLabelSpacing = 20.0;
   NewsBloc bloc = new NewsBloc();
   var object;
@@ -23,88 +25,115 @@ class _NewsPageState extends State<NewsPage> {
     bloc.add(FetchNotificationList());
   }
 
-  Widget _buildListItems(obj, index) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SliderWidget(
-                      obj: object,
-                      currentIndex: index,
-                      issocialpage: false,
-                      date: newsTimeStamp,
-                    )));
-      },
-      child: Container(
-          padding: EdgeInsets.symmetric(
-              vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildnewsHeading(obj),
-                SizedBox(height: _kLabelSpacing / 3),
-                Container(child: _buildTimeStamp(obj)),
-                SizedBox(height: _kLabelSpacing / 4),
-              ])),
+  Widget _buildListItems(obj, int index) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+        vertical: _kLabelSpacing / 2,
+      ),
+      color: (index % 2 == 0)
+          ? Theme.of(context).backgroundColor
+          : AppTheme.kListBackgroundColor2,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SliderWidget(
+                        obj: object,
+                        currentIndex: index,
+                        issocialpage: false,
+                        date: "$newsTimeStamp",
+                      )));
+        },
+        child: Row(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.centerLeft,
+              height: _kIconSize * 1.5,
+              child: obj.image != null
+                  ? ClipRRect(
+                      child: CachedNetworkImage(
+                        imageUrl: obj.image!,
+                        height: _kIconSize * 1.5,
+                        width: _kIconSize * 1.4,
+                        placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            backgroundColor: AppTheme.kAccentColor,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
+                    )
+                  : Container(
+                      height: _kIconSize * 1.5,
+                      alignment: Alignment.centerLeft,
+                      child:
+                          Image(image: AssetImage("assets/images/appicon.png")),
+                    ),
+            ),
+            SizedBox(
+              width: _kLabelSpacing / 2,
+            ),
+            Expanded(
+              flex: 5,
+              child: Container(
+                  padding: EdgeInsets.symmetric(
+                      vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildnewsHeading(obj),
+                        SizedBox(height: _kLabelSpacing / 3),
+                        Container(child: _buildTimeStamp(obj)),
+                        SizedBox(height: _kLabelSpacing / 4),
+                      ])),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildnewsHeading(NotificationList obj) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                obj.contents["en"],
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                style: Theme.of(context).textTheme.headline4,
-              )),
-        ),
-      ],
-    );
+  Widget _buildnewsHeading(obj) {
+    return Container(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          obj.contents["en"],
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+          style: Theme.of(context).textTheme.headline4,
+        ));
   }
 
   Widget _buildTimeStamp(NotificationList obj) {
     DateTime now = DateTime.now(); //REPLACE WITH ACTUAL DATE
     newsTimeStamp = DateFormat('yyyy/MM/dd').format(now);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-            child: Text(
-          "${newsTimeStamp}",
-          style: Theme.of(context).textTheme.subtitle1,
-        )),
-      ],
-    );
+    return Container(
+        child: Text(
+      "${newsTimeStamp}",
+      style: Theme.of(context).textTheme.subtitle1,
+    ));
   }
 
-// DIVIDER
-  Widget divider() {
-    return Container(
-      height: 0.4,
-      decoration: BoxDecoration(
-        color: AppTheme.kDividerColor,
-      ),
-    );
-  }
+// // DIVIDER
+//   Widget divider() {
+//     return Container(
+//       height: 0.4,
+//       decoration: BoxDecoration(
+//         color: AppTheme.kDividerColor,
+//       ),
+//     );
+//   }
 
   Widget _buildList(obj) {
-    return ListView.separated(
+    return ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      separatorBuilder: (context, index) {
-        return divider();
-      },
       itemCount: obj.length,
       itemBuilder: (BuildContext context, int index) {
         return _buildListItems(obj[index], index);
@@ -114,45 +143,47 @@ class _NewsPageState extends State<NewsPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BlocBuilder(
+      body: ListView(
+        children: [
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BlocBuilder(
+                    bloc: bloc,
+                    builder: (BuildContext context, NewsState state) {
+                      if (state is NewsLoaded) {
+                        return state.obj != null
+                            ? _buildList(state.obj)
+                            : Center(
+                                child: Text("No Data found"),
+                              );
+                      } else if (state is NewsLoading) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            backgroundColor: Theme.of(context).accentColor,
+                          )),
+                        );
+                      } else {
+                        return Container();
+                      }
+                    }),
+                BlocListener<NewsBloc, NewsState>(
                   bloc: bloc,
-                  builder: (BuildContext context, NewsState state) {
+                  listener: (context, state) async {
                     if (state is NewsLoaded) {
-                      return state.obj != null
-                          ? _buildList(state.obj)
-                          : Center(
-                              child: Text("No Data found"),
-                            );
-                    } else if (state is NewsLoading) {
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).accentColor,
-                        )),
-                      );
-                    } else {
-                      return Container();
+                      object = state.obj;
                     }
-                  }),
-              BlocListener<NewsBloc, NewsState>(
-                bloc: bloc,
-                listener: (context, state) async {
-                  if (state is NewsLoaded) {
-                    object = state.obj;
-                  }
-                },
-                child: Container(),
-              ),
-            ],
+                  },
+                  child: Container(),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
