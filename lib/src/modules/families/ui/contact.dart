@@ -135,7 +135,7 @@ class _ContactPageState extends State<ContactPage> {
                   child: GoogleMaps(
                     latitude: latitude,
                     longitude: longitude,
-                    locationName: 'soc client',
+                    // locationName: 'soc client',
                   ),
                 )
               : Container(),

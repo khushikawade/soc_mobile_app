@@ -5,13 +5,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class GoogleMaps extends StatefulWidget {
   var latitude;
   var longitude;
-  var locationName;
-  GoogleMaps(
-      {Key? key,
-      required this.latitude,
-      required this.longitude,
-      required this.locationName})
-      : super(key: key);
+  // var locationName;
+  GoogleMaps({
+    Key? key,
+    required this.latitude,
+    required this.longitude,
+    // required this.locationName
+  }) : super(key: key);
 
   @override
   State<GoogleMaps> createState() => GoogleMapsState();
@@ -34,9 +34,9 @@ class GoogleMapsState extends State<GoogleMaps> {
     _markers.add(Marker(
       markerId: MarkerId(widget.latitude.toString()),
       position: LatLng(widget.latitude, widget.longitude),
-      infoWindow: InfoWindow(
-        title: widget.locationName,
-      ),
+      // infoWindow: InfoWindow(
+      //   title: widget.locationName,
+      // ),
       icon: BitmapDescriptor.defaultMarker,
     ));
   }
