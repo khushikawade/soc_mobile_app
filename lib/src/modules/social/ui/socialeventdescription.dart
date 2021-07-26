@@ -99,32 +99,39 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildbuttomsection(BuildContext context) {
-    print(object.description["__cdata"].toString().split('"')[1]);
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 2),
-        Column(
-          children: [
-            object.description["__cdata"] != null &&
-                    object.description["__cdata"].toString().split('"')[1] != ""
-                ? CachedNetworkImage(
-                    imageUrl:
-                        object.description["__cdata"].toString().split('"')[1],
-                    placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        backgroundColor: AppTheme.kAccentColor,
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  )
-                : Container(),
-            Html(
-              data:
-                  "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\n]+'), '')}",
-            ),
-          ],
+        object.description["__cdata"] != null &&
+                object.description["__cdata"]
+                    .toString()
+                    .contains("<img src=") &&
+                object.description["__cdata"].toString().split('"')[1] != ""
+            ? Html(
+                data: "<img" +
+                    "${object.description["__cdata"].toString().split("<img")[1].split(">")[0]}" +
+                    ">")
+
+            // CachedNetworkImage(
+            //     imageUrl:
+            //         object.description["__cdata"].toString().split('"')[1],
+            //     placeholder: (context, url) => Container(
+            //       alignment: Alignment.center,
+            //       child: CircularProgressIndicator(
+            //         strokeWidth: 2,
+            //         backgroundColor: AppTheme.kAccentColor,
+            //       ),
+            //     ),
+            //     errorWidget: (context, url, error) => Icon(Icons.error),
+            //   )
+
+            : Container(
+                alignment: Alignment.center,
+                child: Image(image: AssetImage("assets/images/appicon.png")),
+              ),
+        Html(
+          data:
+              "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\n]+'), '')}",
         )
       ],
     );
@@ -133,10 +140,17 @@ class SocialDescription extends StatelessWidget {
   Widget _buildnews(BuildContext context) {
     return Wrap(children: [
       object != null && object.title["__cdata"].length > 1
-          ? Html(
-              data: object.title["__cdata"]
-                  .toString()
-                  .replaceAll(new RegExp(r'[\\n]+'), '\n'))
+          ? Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                object.title["__cdata"]
+                    .toString()
+                    .replaceAll(new RegExp(r'[\\]+'), '\n')
+                    .replaceAll("n.", ".")
+                    .replaceAll("\nn", "\n"),
+                textAlign: TextAlign.left,
+              ),
+            ) //Html(data: data)
           : Text("1"),
       SpacerWidget(_kPadding),
     ]);

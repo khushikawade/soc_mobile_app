@@ -6,7 +6,6 @@ import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/searchfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,13 +20,11 @@ class SubListPage extends StatefulWidget {
 }
 
 class _SubListPageState extends State<SubListPage> {
-  static const double _kLabelSpacing = 17.0;
   FocusNode myFocusNode = new FocusNode();
-
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
   StaffBloc _staffBloc = StaffBloc();
-  String? subModule;
+
   @override
   void initState() {
     super.initState();
@@ -74,10 +71,6 @@ class _SubListPageState extends State<SubListPage> {
     }
   }
 
-  Widget _buildSearchfield() {
-    return SearchFieldWidget();
-  }
-
   Widget _buildList(int index, Widget listItem, obj) {
     return GestureDetector(
         onTap: () {
@@ -114,12 +107,10 @@ class _SubListPageState extends State<SubListPage> {
                       backgroundColor: Theme.of(context).accentColor,
                     ));
                   } else if (state is FamiliesSublistSucess) {
-                    subModule = 'subListFamily';
                     return SingleChildScrollView(
                       child: SafeArea(
                         child: Column(
                           children: [
-                            _buildSearchfield(),
                             ListView.builder(
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
@@ -132,7 +123,6 @@ class _SubListPageState extends State<SubListPage> {
                                     state.obj![index]);
                               },
                             ),
-                            // ),
                           ],
                         ),
                       ),
@@ -151,12 +141,10 @@ class _SubListPageState extends State<SubListPage> {
                           backgroundColor: Theme.of(context).accentColor,
                         ));
                       } else if (state is StaffSubListSucess) {
-                        subModule = 'subListStaff';
                         return SingleChildScrollView(
                           child: SafeArea(
                             child: Column(
                               children: [
-                                _buildSearchfield(),
                                 ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
@@ -171,7 +159,6 @@ class _SubListPageState extends State<SubListPage> {
                                         state.obj![index]);
                                   },
                                 ),
-                                // ),
                               ],
                             ),
                           ),
@@ -183,4 +170,3 @@ class _SubListPageState extends State<SubListPage> {
                 : Container());
   }
 }
-// CustomAppBarWidget
