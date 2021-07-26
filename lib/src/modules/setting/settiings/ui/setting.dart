@@ -122,8 +122,10 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-        isnewsSearchPage: false,
+        isSearch: false,
+        isShare: false,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
       ),
       body: Container(
         child: Column(

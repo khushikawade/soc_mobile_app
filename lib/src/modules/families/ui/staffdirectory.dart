@@ -43,6 +43,30 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     }
   }
 
+  Widget _buildHeading(String tittle) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: _kLabelSpacing * 1.2),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 0,
+        ),
+        color: AppTheme.kOnPrimaryColor,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            tittle,
+            style: Theme.of(context).textTheme.headline6!.copyWith(
+                  color: AppTheme.kFontColor2,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSearchbar() {
     return SizedBox(
         height: 50,
@@ -110,31 +134,37 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               ],
             ),
             child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   obj.imageUrlC != null && obj.imageUrlC.length > 0
-                      ? CachedNetworkImage(
-                          imageUrl: obj.imageUrlC,
-                          fit: BoxFit.fill,
-                          width: 60,
-                          height: 60,
-                          placeholder: (context, url) =>
-                              CircularProgressIndicator(
-                            strokeWidth: 2,
-                            backgroundColor: Theme.of(context).accentColor,
-                          ),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
+                      ? Center(
+                          child: CachedNetworkImage(
+                              imageUrl: obj.imageUrlC,
+                              fit: BoxFit.fill,
+                              width: 60,
+                              height: 60,
+                              placeholder: (context, url) => SizedBox(
+                                  height: 5,
+                                  width: 5,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                      backgroundColor:
+                                          Theme.of(context).accentColor,
+                                    ),
+                                  ))),
                         )
-                      : Container(
-                          child: Image.asset(
-                          'assets/images/address.png',
-                          fit: BoxFit.fill,
-                          height: 60,
-                          width: 60,
-                        )),
+                      : Center(
+                          child: Container(
+                              child: Image.asset(
+                            'assets/images/appicon.png',
+                            fit: BoxFit.fill,
+                            height: 60,
+                            width: 60,
+                          )),
+                        ),
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
                       child: Column(
@@ -144,19 +174,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     children: <Widget>[
                       Row(
                         children: [
-                          Text("Title:",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                  )),
-                          HorzitalSpacerWidget(_kLabelSpacing / 2),
                           obj.titleC != null && obj.titleC.length > 0
                               ? Container(
                                   width:
-                                      MediaQuery.of(context).size.width * .70,
+                                      MediaQuery.of(context).size.width * .50,
                                   child: Text(obj.titleC,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
@@ -166,35 +187,33 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                           .bodyText1!
                                           .copyWith(
                                               fontWeight: FontWeight.w400)))
-                              : Container(),
+                              : Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * .40,
+                                  child: Text(
+                                    "alalalalalalalalalalalllalallalalallalalalalllloremlalalalallllorem",
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    textAlign: TextAlign.start,
+                                  )),
                         ],
                       ),
                       SpacerWidget(_kLabelSpacing / 2),
                       Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Row(
                               children: [
-                                Text(
-                                  "Description",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                      ),
-                                ),
-                                HorzitalSpacerWidget(_kLabelSpacing / 2),
                                 obj.descriptionC != null &&
                                         obj.descriptionC.length > 0
                                     ? Container(
                                         width:
                                             MediaQuery.of(context).size.width *
-                                                .70,
+                                                .40,
                                         child: Text(obj.descriptionC,
                                             overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
+                                            maxLines: 2,
                                             textAlign: TextAlign.start,
                                             style: Theme.of(context)
                                                 .textTheme
@@ -202,7 +221,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                                 .copyWith(
                                                     fontWeight:
                                                         FontWeight.w400)))
-                                    : Text("")
+                                    : Expanded(
+                                        child: Text(
+                                          "alalalalalalalalalalalllalallalalallalalalalllloremlalalalallllorem",
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
                               ],
                             ),
                             SpacerWidget(_kLabelSpacing * 2),
@@ -215,16 +241,19 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         },
                         child: Row(
                           children: [
-                            Text("Email",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1!
-                                    .copyWith(fontWeight: FontWeight.w500)),
+                            Icon(
+                              Icons.email,
+                              size: 20,
+                            ),
                             HorzitalSpacerWidget(_kLabelSpacing / 2),
                             obj.emailC != null && obj.emailC.length > 0
-                                ? Icon(
-                                    Icons.email,
-                                    size: 20,
+                                ? Text(
+                                    obj.emailC,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.center,
                                   )
                                 : Text("")
                           ],
@@ -239,16 +268,18 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         },
                         child: Row(
                           children: <Widget>[
-                            Text("Phone",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1!
-                                    .copyWith(fontWeight: FontWeight.w500)),
+                            Icon(
+                              Icons.local_phone,
+                              size: 20,
+                            ),
                             HorzitalSpacerWidget(_kLabelSpacing / 2),
                             obj.phoneC != null && obj.phoneC.length > 0
-                                ? Icon(
-                                    Icons.local_phone,
-                                    size: 20,
+                                ? Text(
+                                    obj.phoneC,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(fontWeight: FontWeight.w400),
                                   )
                                 : Text("")
                           ],
@@ -262,9 +293,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-        // title: "Staff directory", //  widget.obj.toString(),
-        isnewsSearchPage: false,
+        isSearch: true,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
+        isShare: false,
       ),
       body: SingleChildScrollView(
           child: SafeArea(
@@ -272,14 +304,17 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   bloc: _bloc,
                   builder: (BuildContext contxt, FamilyState state) {
                     if (state is FamilyInitial || state is FamilyLoading) {
-                      return Center(
-                          child: CircularProgressIndicator(
-                        backgroundColor: Theme.of(context).accentColor,
-                      ));
+                      return Container(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            backgroundColor: Theme.of(context).accentColor,
+                          )));
                     } else if (state is SDDataSucess) {
                       return SingleChildScrollView(
                         child: Column(
                           children: [
+                            _buildHeading("STAFF DIRECTORY"),
                             Container(
                               child: ListView.builder(
                                 scrollDirection: Axis.vertical,
@@ -301,3 +336,5 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     );
   }
 }
+
+// CustomAppBarWidget

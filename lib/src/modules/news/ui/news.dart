@@ -108,6 +108,7 @@ class _NewsPageState extends State<NewsPage> {
     return ListView.separated(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       separatorBuilder: (context, index) {
         return divider();
       },

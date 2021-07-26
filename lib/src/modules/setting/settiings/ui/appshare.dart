@@ -66,8 +66,10 @@ class _ShareAppState extends State<ShareApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-        isnewsSearchPage: false,
+        isSearch: false,
+        isShare: false,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,

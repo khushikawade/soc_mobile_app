@@ -36,8 +36,10 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: CustomAppBarWidget(
-          isnewsDescription: true,
-          isnewsSearchPage: false,
+          isSearch: false,
+          isShare: true,
+          sharedpopBodytext: widget.url.toString(),
+          sharedpopUpheaderText: "Please checkout this link",
         ),
         body: WebView(
           initialUrl: '${widget.url}',

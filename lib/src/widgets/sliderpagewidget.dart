@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -7,6 +8,7 @@ import 'package:Soc/src/widgets/inappbrowerwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import '../overrides.dart';
+import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
@@ -14,11 +16,13 @@ class SliderWidget extends StatefulWidget {
     required this.obj,
     required this.currentIndex,
     this.issocialpage,
+    this.iseventpage,
     required this.date,
   });
   var obj;
   int currentIndex;
   bool? issocialpage;
+  bool? iseventpage;
   String date;
 
   @override
@@ -157,10 +161,12 @@ class _SliderWidgetState extends State<SliderWidget> {
             itemBuilder: (BuildContext context, int index) {
               return widget.issocialpage!
                   ? SocialDescription(object: object[widget.currentIndex])
-                  : Newdescription(
-                      obj: object[widget.currentIndex],
-                      date: widget.date,
-                    );
+                  : widget.iseventpage!
+                      ? EventDescription(obj: object[widget.currentIndex])
+                      : Newdescription(
+                          obj: object[widget.currentIndex],
+                          date: widget.date,
+                        );
             },
           ),
         )
@@ -170,42 +176,44 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   Widget buttomButtonsWidget(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(_kPadding / 2),
-      color: AppTheme.kBackgroundColor,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          SizedBox(
-            width: _KButtonSize,
-            height: _KButtonSize / 2,
-            child: ElevatedButton(
-              onPressed: () async {
-                _buildlink();
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.all(_kPadding / 2),
+        color: AppTheme.kBackgroundColor,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            SizedBox(
+              width: _KButtonSize,
+              height: _KButtonSize / 2,
+              child: ElevatedButton(
+                onPressed: () async {
+                  _buildlink();
 
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            InAppBrowser(link: link2, isSocialpage: true)));
-              },
-              child: Text("More"),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              InAppBrowser(link: link2, isSocialpage: true)));
+                },
+                child: Text("More"),
+              ),
             ),
-          ),
-          SizedBox(
-            width: _kPadding / 2,
-          ),
-          SizedBox(
-            width: _KButtonSize,
-            height: _KButtonSize / 2,
-            child: ElevatedButton(
-              onPressed: () {
-                _onShareWithEmptyOrigin(context);
-              },
-              child: Text("Share"),
+            SizedBox(
+              width: _kPadding / 2,
             ),
-          ),
-        ],
+            SizedBox(
+              width: _KButtonSize,
+              height: _KButtonSize / 2,
+              child: ElevatedButton(
+                onPressed: () {
+                  _onShareWithEmptyOrigin(context);
+                },
+                child: Text("Share"),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -232,5 +240,44 @@ class _SliderWidgetState extends State<SliderWidget> {
 
     await Share.share(body,
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+  }
+
+  void htmlparser() {
+    List<String> data = [];
+
+    // data.add(object[0]
+    //     .description["__cdata"]
+    //     .getElementsByClassName("time")[0]
+    //     .innerHtml);
+
+    //declaring variable for temp since we will be using it multiple places
+    // var temp =
+    //     object[0].description["__cdata"].getElementsByTagName("<div>")[0];
+    // data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<div>")));
+    // data.add(temp
+    //     .getElementsByTagName("small")[0]
+    //     .innerHtml
+    //     .replaceAll(RegExp("[(|)|℃]"), ""));
+
+    // //We can also do document.getElementsByTagName("td") but I am just being more specific here.
+    // var rows = object[0]
+    //     .description["__cdata"]
+    //     .getElementsByTagName("table")[0]
+    //     .getElementsByTagName("td");
+
+    // //Map elememt to its innerHtml,  because we gonna need it.
+    // //Iterate over all the table-data and store it in the data list
+    // rows.map((e) => e.innerHtml).forEach((element) {
+    //   if (element != "-") {
+    //     data.add(element);
+    //   }
+    // });
+    var doc = parse(object[0].description["__cdata"]);
+    //print the data to console.
+
+    var element = doc.getElementById('content');
+
+    debugPrint(element!.querySelectorAll('div').toString());
+    print(doc.body);
   }
 }

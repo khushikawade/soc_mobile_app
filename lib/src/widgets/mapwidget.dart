@@ -2,19 +2,25 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MapSample extends StatefulWidget {
+class GoogleMaps extends StatefulWidget {
   var latitude;
   var longitude;
-  MapSample({Key? key, required this.latitude, required this.longitude})
+  var locationName;
+  GoogleMaps(
+      {Key? key,
+      required this.latitude,
+      required this.longitude,
+      required this.locationName})
       : super(key: key);
 
   @override
-  State<MapSample> createState() => MapSampleState();
+  State<GoogleMaps> createState() => GoogleMapsState();
 }
 
-class MapSampleState extends State<MapSample> {
+class GoogleMapsState extends State<GoogleMaps> {
   Completer<GoogleMapController> _controller = Completer();
   CameraPosition? _kGooglePlex;
+  final Set<Marker> _markers = {};
   CameraPosition? _kLocation;
   @override
   void initState() {
@@ -24,11 +30,15 @@ class MapSampleState extends State<MapSample> {
       target: LatLng(widget.latitude, widget.longitude),
       zoom: 14.4746,
     );
-    // _kLocation = CameraPosition(
-    //     bearing: 192.8334901395799,
-    //     target: LatLng(37.43296265331129, -122.08832357078792),
-    //     tilt: 59.440717697143555,
-    //     zoom: 19.151926040649414);
+
+    _markers.add(Marker(
+      markerId: MarkerId(widget.latitude.toString()),
+      position: LatLng(widget.latitude, widget.longitude),
+      infoWindow: InfoWindow(
+        title: widget.locationName,
+      ),
+      icon: BitmapDescriptor.defaultMarker,
+    ));
   }
 
   @override
@@ -41,6 +51,7 @@ class MapSampleState extends State<MapSample> {
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
               },
+              markers: _markers,
             )
           : Container(),
       // floatingActionButton: FloatingActionButton(

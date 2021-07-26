@@ -56,6 +56,7 @@ class _SubListPageState extends State<SubListPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
+                        url: obj.appUrlC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -97,8 +98,10 @@ class _SubListPageState extends State<SubListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
-          isnewsDescription: false,
-          isnewsSearchPage: false,
+          isSearch: true,
+          isShare: false,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
         ),
         key: _scaffoldKey,
         body: widget.module == "family"
@@ -180,3 +183,4 @@ class _SubListPageState extends State<SubListPage> {
                 : Container());
   }
 }
+// CustomAppBarWidget

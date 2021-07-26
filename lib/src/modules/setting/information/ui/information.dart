@@ -15,30 +15,6 @@ class InformationPage extends StatefulWidget {
 class _InformationPageState extends State<InformationPage> {
   static const double _kLabelSpacing = 17.0;
 
-  //Style
-  // static const _kheadingStyle = TextStyle(
-  //     fontFamily: "Roboto Bold",
-  //     fontWeight: FontWeight.bold,
-  //     fontSize: 22,
-  //     color: Color(0xff2D3F98));
-
-  // static const _ktextStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto",
-  //   fontSize: 14,
-  //   fontWeight: FontWeight.normal,
-  //   color: Color(0xff2D3F98),
-  // );
-
-  // static const _klinkStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto",
-  //   fontSize: 14,
-  //   fontWeight: FontWeight.normal,
-  //   decoration: TextDecoration.underline,
-  //   color: Color(0xff2D3F98),
-  // );
-
   //TOP SECTION START
   _launchURL(url) async {
     if (await canLaunch(url)) {
@@ -206,8 +182,10 @@ class _InformationPageState extends State<InformationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-        isnewsSearchPage: false,
+        isSearch: false,
+        isShare: false,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
       ),
       body: Container(
           child: Column(

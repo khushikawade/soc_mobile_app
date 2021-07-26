@@ -42,18 +42,12 @@ class _StaffPageState extends State<StaffPage> {
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "HTML/RTF") {
       obj.rtfHTMLC != null
-          ?
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (BuildContext context) =>
-          //             SubListPage(title: obj.titleC, module: "staff")))
-
-          Navigator.push(
+          ? Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
+                        url: obj.urlC.toString(),
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {

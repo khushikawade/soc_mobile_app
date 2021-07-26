@@ -65,8 +65,10 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
-          isnewsDescription: true,
-          isnewsSearchPage: false,
+          isSearch: false,
+          isShare: true,
+          sharedpopBodytext: widget.url.toString(),
+          sharedpopUpheaderText: "Please check out this",
         ),
         body: widget.url != null && widget.url != ""
             ? document == null
@@ -88,3 +90,6 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
             : Text("No Document Found"));
   }
 }
+
+
+// CustomAppBarWidget

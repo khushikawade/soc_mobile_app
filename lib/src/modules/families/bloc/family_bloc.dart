@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/families/modal/stafflist.dart';
-
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:flutter/material.dart';
