@@ -4,11 +4,13 @@ import 'package:flutter_html/flutter_html.dart';
 
 class AboutusPage extends StatefulWidget {
   String htmlText;
+  String url;
 
   @override
   AboutusPage({
     Key? key,
     required this.htmlText,
+    required this.url,
   }) : super(key: key);
   @override
   _AboutusPageState createState() => _AboutusPageState();
@@ -51,8 +53,10 @@ class _AboutusPageState extends State<AboutusPage> {
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBarWidget(
-          isnewsDescription: false,
-          isnewsSearchPage: false,
+          isSearch: false,
+          isShare: widget.url != "null" && widget.url.length > 1 ? true : false,
+          sharedpopBodytext: widget.url.toString(),
+          sharedpopUpheaderText: "Please checkout this link",
         ),
         body: SingleChildScrollView(
           child: _buildContent1(),
@@ -61,3 +65,4 @@ class _AboutusPageState extends State<AboutusPage> {
     );
   }
 }
+// CustomAppBarWidget

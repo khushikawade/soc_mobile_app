@@ -151,5 +151,3 @@ class _UserProfilePageState extends State<UserProfilePage> {
     // );
   }
 }
-
-class UserBloc {}

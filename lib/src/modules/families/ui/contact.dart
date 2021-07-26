@@ -5,6 +5,8 @@ import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactPage extends StatefulWidget {
   var obj;
@@ -31,50 +33,19 @@ class _ContactPageState extends State<ContactPage> {
     longitude = object["Contact_Office_Location__Longitude__s"];
   }
 
-  //Style
-  // static const _kheadingStyle = TextStyle(
-  //     fontFamily: "Roboto Bold",
-  //     fontWeight: FontWeight.bold,
-  //     fontSize: 16,
-  //     color: Color(0xff2D3F98));
-
-  // static const _kheading2Style = TextStyle(
-  //     fontFamily: "Roboto Bold",
-  //     fontWeight: FontWeight.w400,
-  //     fontSize: 14,
-  //     color: Color(0xff171717));
-  // static const _ktextStyle = TextStyle(
-  //   fontFamily: "Roboto Medium",
-  //   fontSize: 14,
-  //   fontWeight: FontWeight.w500,
-  //   color: Color(0xff2D3F98),
-  // );
-
-  // static const maptextStyle = TextStyle(
-  //   fontFamily: "Roboto Bold",
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: 12,
-  //   color: Color(0xff0B84FF),
-  // );
-
-  // static const maptext2Style = TextStyle(
-  //   fontFamily: "Roboto Bold",
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: 12,
-  //   color: Color(0xffFF5656),
-  // );
-  // static const maptext3Style = TextStyle(
-  //   fontFamily: "Roboto Bold",
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: 12,
-  //   color: Color(0xffFF9608),
-  // );
-  // static const maptext4Style = TextStyle(
-  //   fontFamily: "Roboto Bold",
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: 12,
-  //   color: Color(0xff368FFF),
-  // );
+  void _launch(String launchThis) async {
+    try {
+      String url = launchThis;
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        print("Unable to launch $launchThis");
+//        throw 'Could not launch $url';
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   //TOP SECTION START
   Widget _buildIcon() {
@@ -96,7 +67,7 @@ class _ContactPageState extends State<ContactPage> {
                 )
               : Container(
                   child: Image.asset(
-                  'assets/images/address.png',
+                  'assets/images/appicon.png',
                   fit: BoxFit.fill,
                   height: 160,
                   width: MediaQuery.of(context).size.width * 1,
@@ -161,9 +132,10 @@ class _ContactPageState extends State<ContactPage> {
           latitude != null
               ? SizedBox(
                   height: _kboxheight * 2,
-                  child: MapSample(
+                  child: GoogleMaps(
                     latitude: latitude,
                     longitude: longitude,
+                    locationName: 'soc client',
                   ),
                 )
               : Container(),
@@ -265,9 +237,16 @@ class _ContactPageState extends State<ContactPage> {
                 .copyWith(color: Color(0xff171717)),
           ),
           HorzitalSpacerWidget(_kLabelSpacing),
-          Text(
-            object["Contact_Phone__c"],
-            style: Theme.of(context).textTheme.bodyText2,
+          InkWell(
+            onTap: () {
+              object["Contact_Phone__c"] != null
+                  ? _launch("tel:" + object["Contact_Phone__c"])
+                  : print("he");
+            },
+            child: Text(
+              object["Contact_Phone__c"],
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
           )
         ],
       ),
@@ -305,9 +284,16 @@ class _ContactPageState extends State<ContactPage> {
                 .copyWith(color: Color(0xff171717)),
           ),
           HorzitalSpacerWidget(_kLabelSpacing * 1.5),
-          Text(
-            object["Contact_Email__c"],
-            style: Theme.of(context).textTheme.bodyText2,
+          InkWell(
+            onTap: () {
+              object["Contact_Email__c"] != null
+                  ? _launch('mailto:"${object["Contact_Email__c"]}"')
+                  : print("null value");
+            },
+            child: Text(
+              object["Contact_Email__c"],
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
           )
         ],
       ),
@@ -318,8 +304,10 @@ class _ContactPageState extends State<ContactPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-        isnewsSearchPage: true,
+        isSearch: true,
+        isShare: false,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
       ),
       body: Container(
           child: Column(
@@ -341,3 +329,5 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 }
+
+// CustomAppBarWidget

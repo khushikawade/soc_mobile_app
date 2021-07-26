@@ -1,10 +1,13 @@
-import 'package:Soc/src/modules/families/Submodule/event/ui/eventdescition.dart';
-import 'package:Soc/src/modules/families/Submodule/event/modal/eventmodal.dart';
+import 'package:Soc/src/modules/families/ui/eventdescition.dart';
+import 'package:Soc/src/modules/families/ui/test.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'eventmodal.dart';
 
 class EventPage extends StatefulWidget {
   @override
@@ -56,48 +59,64 @@ class _EventPageState extends State<EventPage> {
     const EventModel(
       date: '13',
       month: 'SEP',
+      eventLink:
+          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
       headline: 'First Day Of School',
       timestamp: '13/09/2021',
     ),
     const EventModel(
       date: '16',
       month: 'SEP',
+      eventLink:
+          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
       headline: 'Yom kippur:School Closed',
       timestamp: '16/09/2021 20:39',
     ),
     const EventModel(
       date: '11',
       month: 'OCT',
+      eventLink:
+          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
       headline: 'Indigenous People Day:Schools',
       timestamp: '11/10/2021 1:39',
     ),
     const EventModel(
       date: '02',
       month: 'NOV',
+      eventLink:
+          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
       headline: 'Election Day:Fully Remote Asy..',
       timestamp: '02/11/2021 20:39',
     ),
     const EventModel(
       date: '18',
       month: 'NOV',
+      eventLink:
+          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
       headline: 'Conference: Half Day for Students',
       timestamp: '18/11/2021 1:39',
     ),
     const EventModel(
       date: '25',
       month: 'NOV',
+      eventLink:
+          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
       headline: 'Election Day: Fully Remote, Asy…',
       timestamp: '25/11/2021 - 26/11/2021',
     ),
     const EventModel(
       date: '24',
       month: 'DEC',
+      eventLink:
+          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
       headline: 'Thanks giving Recess:School',
       timestamp: '25/11/2021 - 26/11/2021',
     ),
     const EventModel(
       date: '17',
       month: 'JAN',
+      eventLink:
+          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
       headline: 'Rev. Dr. Martin Luther king Jr… ',
       timestamp: '17/01/2022',
     ),
@@ -115,8 +134,16 @@ class _EventPageState extends State<EventPage> {
     return InkWell(
       onTap: () {
         // _launchURL('');
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => EventDescription()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SliderWidget(
+                      obj: EventModelList,
+                      issocialpage: false,
+                      iseventpage: true,
+                      currentIndex: index,
+                      date: '',
+                    )));
       },
       child: Container(
           decoration: BoxDecoration(

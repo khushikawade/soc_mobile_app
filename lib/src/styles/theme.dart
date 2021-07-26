@@ -19,7 +19,8 @@ class AppTheme {
   static const Color kCardColor = Color(0xffFFFFFF);
   static const Color kShadowColor = Color(0xff000000);
   static const Color kTxtfieldBorderColor = Color(0xffBCC5D4);
-  static const Color kTxtFieldColor = Color(0xffBCC5D4);
+  // static const Color kTxtFieldColor = Color(0xffBCC5D4);
+  static const Color kTxtFieldColor = Colors.grey;
   static Color kListTileColor = Color(0xffD8D8D8).withOpacity(0.12);
   static Color kIconColor = Color(0xff535353).withOpacity(0.75);
   static const Color kIconColor2 = Color(0xff8aa8d8);
@@ -188,8 +189,8 @@ class AppTheme {
         hintStyle: TextStyle(
             color: kTxtFieldColor,
             fontSize: Globals.deviceType == Globals.phone
-                ? kSubtitleFontSize
-                : kSubtitleFontSize + 0),
+                ? kSubtitleFontSize + 2
+                : kSubtitleFontSize + 2),
         focusedBorder: OutlineInputBorder(
             borderSide:
                 BorderSide(width: kBorderWidth, color: kTxtfieldBorderColor),

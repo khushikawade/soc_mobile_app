@@ -1,6 +1,5 @@
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
-// import 'package:Soc/src/modules/families/Submodule/staff_directory/ui/staffdirectory.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
@@ -54,9 +53,7 @@ class _FamilyPageState extends State<FamilyPage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
-                        title: obj.titleC!,
-                        url: obj.appUrlC!,
-                      )))
+                      title: obj.titleC!, url: obj.appUrlC ?? '')))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
       obj.rtfHTMLC != null
@@ -65,6 +62,7 @@ class _FamilyPageState extends State<FamilyPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
+                        url: obj.appUrlC ?? '',
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {

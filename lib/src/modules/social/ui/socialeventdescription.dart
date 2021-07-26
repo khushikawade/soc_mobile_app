@@ -37,6 +37,38 @@ class SocialDescription extends StatelessWidget {
     this.currentindex++;
   }
 
+  void htmlparser() {
+    List<String> data = [];
+
+    data.add(object.description["__cdata"]
+        .getElementsByClassName("time")[0]
+        .innerHtml);
+
+    //declaring variable for temp since we will be using it multiple places
+    var temp = object.description["__cdata"].getElementsByClassName("temp")[0];
+    data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<span>")));
+    data.add(temp
+        .getElementsByTagName("small")[0]
+        .innerHtml
+        .replaceAll(RegExp("[(|)|℃]"), ""));
+
+    //We can also do document.getElementsByTagName("td") but I am just being more specific here.
+    var rows = object.description["__cdata"]
+        .getElementsByTagName("table")[0]
+        .getElementsByTagName("td");
+
+    //Map elememt to its innerHtml,  because we gonna need it.
+    //Iterate over all the table-data and store it in the data list
+    rows.map((e) => e.innerHtml).forEach((element) {
+      if (element != "-") {
+        data.add(element);
+      }
+    });
+
+    //print the data to console.
+    print(data);
+  }
+
   Widget _buildItem(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(_kPadding),
@@ -46,7 +78,9 @@ class SocialDescription extends StatelessWidget {
             _buildnews(context),
             SpacerWidget(_kPadding / 2),
             _buildnewTimeStamp(context),
-            SpacerWidget(_kPadding * 4),
+            // SpacerWidget(_kPadding * 4),
+            SpacerWidget(_kPadding / 2),
+            _buildDivider(context),
             _buildbuttomsection(context),
           ],
         ),
@@ -54,18 +88,20 @@ class SocialDescription extends StatelessWidget {
     );
   }
 
+  Widget _buildDivider(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: _kPadding / 3),
+      width: MediaQuery.of(context).size.width * 1,
+      height: 1,
+      decoration:
+          BoxDecoration(border: Border.all(width: 0.50, color: Colors.black)),
+    );
+  }
+
   Widget _buildbuttomsection(BuildContext context) {
     print(object.description["__cdata"].toString().split('"')[1]);
     return Column(
       children: [
-        Row(children: [
-          Container(
-            width: MediaQuery.of(context).size.width * .92,
-            height: 5,
-            decoration: BoxDecoration(
-                border: Border.all(width: 0.50, color: Colors.black)),
-          ),
-        ]),
         HorzitalSpacerWidget(_kPadding / 2),
         Column(
           children: [

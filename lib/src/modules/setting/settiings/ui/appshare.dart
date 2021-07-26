@@ -34,7 +34,9 @@ class _ShareAppState extends State<ShareApp> {
         color: AppTheme.kButtonbackColor,
         height: _kbuttonsize,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            _onShareWithEmptyOrigin(context);
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,8 +66,10 @@ class _ShareAppState extends State<ShareApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-        isnewsSearchPage: false,
+        isSearch: false,
+        isShare: false,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,

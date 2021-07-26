@@ -1,21 +1,26 @@
 import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
-
 import '../overrides.dart';
 
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   CustomAppBarWidget({
     Key? key,
-    required this.isnewsDescription,
-    required this.isnewsSearchPage,
+    required this.isSearch,
+    required this.isShare,
+    required this.sharedpopUpheaderText,
+    required this.sharedpopBodytext,
   })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? islinearProgress = false;
-  bool? isnewsDescription;
-  bool? isnewsSearchPage;
+
+  bool? isSearch;
+  bool? isShare;
+  String? sharedpopBodytext;
+  String? sharedpopUpheaderText;
 
   @override
   final Size preferredSize;
@@ -31,8 +36,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return // here the desired height
-        AppBar(
+    return AppBar(
       elevation: 0.0,
       leading: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -40,7 +44,8 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 15.0, left: 10),
+            padding: const EdgeInsets.only(
+                top: _kLabelSpacing, left: _kLabelSpacing / 1.5),
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
@@ -58,29 +63,10 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       ),
       title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
       actions: [
-        // Icon(
-        //   const IconData(0xe805,
-        //       fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        // ),
-        widget.isnewsDescription != null && widget.isnewsDescription == true
+        widget.isSearch == true
             ? IconButton(
                 onPressed: () {
-                  _onShareWithEmptyOrigin(context, "body", "subject");
-                },
-                icon: Icon(
-                  Icons.share,
-                  color: AppTheme.kIconColor3,
-                ),
-              )
-            : Container(),
-        // : widget.isnewsDescription == false &&
-        //         widget.isnewsDescription == false
-        //     ? HorzitalSpacerWidget(10)
-        //     :
-        widget.isnewsSearchPage == true && widget.isnewsSearchPage == true
-            ? IconButton(
-                onPressed: () {
-                  print(widget.isnewsSearchPage);
+                  print(widget.isSearch);
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => SearchPage()));
                 },
@@ -90,21 +76,25 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                       fontPackage: Overrides.kFontPkg),
                 ))
             : Container(),
-
-        //  IconButton(
-        //     onPressed: () {
-        //       // _onShareWithEmptyOrigin(context);
-        //     },
-        //     icon: Icon(
-        //       Icons.share,
-        //       color: AppTheme.kIconColor3,
-        //     ),
-        //   ),
+        widget.isShare == true &&
+                widget.isShare == true &&
+                widget.sharedpopBodytext != 'null'
+            ? IconButton(
+                onPressed: () {
+                  widget.sharedpopBodytext != null &&
+                          widget.sharedpopUpheaderText != 'null' &&
+                          widget.sharedpopBodytext!.length > 1
+                      ? _onShareWithEmptyOrigin(
+                          context,
+                          widget.sharedpopBodytext.toString(),
+                          widget.sharedpopUpheaderText.toString())
+                      : print("null");
+                },
+                icon: Icon(Icons.share),
+              )
+            : Container(),
+        HorzitalSpacerWidget(_kLabelSpacing / 3)
       ],
-      // bottom: PreferredSize(
-      //   child: _progressBar(lineProgress, context),
-      //   preferredSize: Size.fromHeight(3.0),
-      // ),
     );
   }
 

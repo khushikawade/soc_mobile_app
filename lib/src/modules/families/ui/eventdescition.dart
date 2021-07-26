@@ -1,17 +1,17 @@
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../../../overrides.dart';
+import '..../../../../../overrides.dart';
 
 class EventDescription extends StatefulWidget {
+  var obj;
   EventDescription({Key? key, required this.obj}) : super(key: key);
-  final List<Item>? obj;
+  // final List<Item>? obj;
   @override
   _EventDescriptionState createState() => _EventDescriptionState();
 }
@@ -192,45 +192,6 @@ class _EventDescriptionState extends State<EventDescription> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: new AppBar(
-      //     iconTheme: IconThemeData(color: Theme.of(context).accentColor),
-      //     elevation: 0.0,
-      //     leading: Container(),
-      //     title: Row(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       mainAxisSize: MainAxisSize.min,
-      //       children: <Widget>[
-      //         SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
-      //       ],
-      //     ),
-      //     actions: <Widget>[
-      //       Row(
-      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //         children: [
-      //           IconButton(
-      //             onPressed: () {
-      //               Navigator.pop(context);
-      //             },
-      //             icon: Icon(
-      //               const IconData(0xe80c,
-      //                   fontFamily: Overrides.kFontFam,
-      //                   fontPackage: Overrides.kFontPkg),
-      //               color: AppTheme.kTxtfieldBorderColor,
-      //               size: 20,
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //       SizedBox(width: _kPadding),
-      //       Icon(
-      //         const IconData(0xe815,
-      //             fontFamily: Overrides.kFontFam,
-      //             fontPackage: Overrides.kFontPkg),
-      //         color: AppTheme.kBlackColor,
-      //         size: 20,
-      //       ),
-      //       SizedBox(width: _kPadding),
-      //     ]),
       body: Container(
         height: MediaQuery.of(context).size.height,
         color: AppTheme.kListBackgroundColor2,
