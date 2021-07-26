@@ -17,8 +17,6 @@ part 'news_state.dart';
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
   var data;
   NewsBloc() : super(NewsInitial());
-  // final DbServices _dbServices = DbServices();
-
   NewsState get initialState => NewsInitial();
 
   @override
@@ -29,7 +27,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       try {
         yield NewsLoading();
         List<NotificationList> _list = await fetchNotificationList();
-
         yield NewsLoaded(
           obj: _list,
         );
@@ -50,7 +47,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-
         final data1 = data["notifications"];
         final data2 = data1 as List;
 
@@ -77,11 +73,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Future<void> initPushState(context) async {
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
-
-    // final settings = {
-    //   OSiOSSettings.autoPrompt: true,
-    //   OSiOSSettings.promptBeforeOpeningPushUrl: true
-    // };
 
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) {
@@ -112,14 +103,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         (OSEmailSubscriptionStateChanges emailChanges) {});
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
-    // OneSignal.shared.setInAppMessageClickedHandler((action) {
-    //   Navigator.of(context)
-    //       .push(MaterialPageRoute(builder: (context) => NewsPage()));
-    // });
-    // OneSignal.shared.setNotificationOpenedHandler((action) {
-    //   Navigator.of(context)
-    //       .push(MaterialPageRoute(builder: (context) => NewsPage()));
-    // });
 
     OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
       print("Accepted permission: $accepted");
