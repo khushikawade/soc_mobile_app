@@ -5,6 +5,7 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingPage extends StatefulWidget {
@@ -66,6 +67,8 @@ class _SettingPageState extends State<SettingPage> {
                 onChanged: (bool value) {
                   setState(() {
                     _lights = value;
+                    bool status = !value;
+                    OneSignal.shared.disablePush(status);
                   });
                 },
                 activeColor: AppTheme.kactivebackColor,

@@ -77,7 +77,7 @@ class _StudentPageState extends State<StudentPage> {
                                 ),
                               )
                             : Container(),
-                        Text("${list[index].titleC}"),
+                        Expanded(child: Text("${list[index].titleC}")),
                       ],
                     ));
               },

@@ -3,8 +3,8 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:html/dom.dart' as dom;
-import 'package:html/parser.dart' show parse;
+// import 'package:html/dom.dart' as dom;
+// import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SocialDescription extends StatelessWidget {
@@ -14,9 +14,9 @@ class SocialDescription extends StatelessWidget {
 
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
-  var _controller = new PageController();
-  static const _kDuration = const Duration(milliseconds: 300);
-  static const _kCurve = Curves.ease;
+  // var _controller = new PageController();
+  // static const _kDuration = const Duration(milliseconds: 300);
+  // static const _kCurve = Curves.ease;
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
   int objectindex = 0;

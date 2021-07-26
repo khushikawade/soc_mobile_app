@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -21,7 +22,7 @@ class _SocialPageState extends State<SocialPage> {
   static const double _kPadding = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   var object;
-
+  final NewsBloc _bloc = new NewsBloc();
   SocialBloc bloc = SocialBloc();
 
   void initState() {
