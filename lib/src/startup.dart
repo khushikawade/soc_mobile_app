@@ -65,8 +65,8 @@ class _StartupPageState extends State<StartupPage> {
       Globals.phoneModel = andorid!.device;
       Globals.baseOS = andorid!.version.baseOS;
       Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-      print("*********************************");
-      print("${Globals.phoneModel}");
+      // print("*********************************");
+      // print("${Globals.phoneModel}");
     } else {
       // var deviceType = await getDeviceInfo();
       // Globals.deviceType = deviceType == "ipad" ? "tablet" : "phone";

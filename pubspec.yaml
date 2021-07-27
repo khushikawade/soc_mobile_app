@@ -61,6 +61,7 @@ dependencies:
   device_apps:
   android_intent:
   device_calendar: ^3.1.0
+  add_2_calendar: ^2.1.0
   
 
   

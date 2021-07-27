@@ -28,7 +28,6 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
 
   @override
   void initState() {
-    print(widget.url);
     super.initState();
   }
 

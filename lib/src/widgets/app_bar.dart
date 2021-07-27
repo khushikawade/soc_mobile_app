@@ -66,7 +66,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
         widget.isSearch == true
             ? IconButton(
                 onPressed: () {
-                  print(widget.isSearch);
+                  // print(widget.isSearch);
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => SearchPage()));
                 },

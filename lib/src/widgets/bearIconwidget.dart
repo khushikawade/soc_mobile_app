@@ -1,4 +1,3 @@
-import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 class BearIconWidget extends StatelessWidget {

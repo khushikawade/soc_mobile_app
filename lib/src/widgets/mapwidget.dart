@@ -25,7 +25,6 @@ class GoogleMapsState extends State<GoogleMaps> {
   @override
   void initState() {
     super.initState();
-    print("init");
     _kGooglePlex = CameraPosition(
       target: LatLng(widget.latitude, widget.longitude),
       zoom: 14.4746,

@@ -66,7 +66,7 @@ class _FamilyPageState extends State<FamilyPage> {
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
-      print(obj.pdfURL);
+      // print(obj.pdfURL);
       obj.pdfURL != null
           ? Navigator.push(
               context,

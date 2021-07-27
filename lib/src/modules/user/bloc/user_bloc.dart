@@ -51,7 +51,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           },
         ),
       );
-      print(response.statusCode);
+      // print(response.statusCode);
       if (response.statusCode == 200) {
         final data = response.data;
         Globals.token = data["access_token"];
