@@ -1,9 +1,11 @@
 import 'dart:ui';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class StaffDirectory extends StatefulWidget {
   var obj;
-  StaffDirectory({Key? key, required this.obj}) : super(key: key);
+  bool isbuttomsheet;
+  StaffDirectory({Key? key, required this.obj, required this.isbuttomsheet})
+      : super(key: key);
 
   @override
   _StaffDirectoryState createState() => _StaffDirectoryState();
@@ -221,7 +225,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                                 .copyWith(
                                                     fontWeight:
                                                         FontWeight.w400)))
-                                    : Expanded(
+                                    : Container(
                                         child: Text(
                                           "No description found",
                                           overflow: TextOverflow.ellipsis,
@@ -255,7 +259,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                         .copyWith(fontWeight: FontWeight.w400),
                                     textAlign: TextAlign.center,
                                   )
-                                : Text("")
+                                : Container(
+                                    child: Text(
+                                      "No email found",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
                           ],
                         ),
                       ),
@@ -292,48 +303,52 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        isSearch: true,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-        isShare: false,
-      ),
-      body: SingleChildScrollView(
-          child: SafeArea(
-              child: BlocBuilder<FamilyBloc, FamilyState>(
-                  bloc: _bloc,
-                  builder: (BuildContext contxt, FamilyState state) {
-                    if (state is FamilyInitial || state is FamilyLoading) {
-                      return Container(
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(
-                              child: CircularProgressIndicator(
-                            backgroundColor: Theme.of(context).accentColor,
-                          )));
-                    } else if (state is SDDataSucess) {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            _buildHeading("STAFF DIRECTORY"),
-                            Container(
-                              child: ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: state.obj!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return contactItem(state.obj![index], index);
-                                },
+        appBar: CustomAppBarWidget(
+          isSearch: true,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+          isShare: false,
+        ),
+        body: SingleChildScrollView(
+            child: SafeArea(
+                child: BlocBuilder<FamilyBloc, FamilyState>(
+                    bloc: _bloc,
+                    builder: (BuildContext contxt, FamilyState state) {
+                      if (state is FamilyInitial || state is FamilyLoading) {
+                        return Container(
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              backgroundColor: Theme.of(context).accentColor,
+                            )));
+                      } else if (state is SDDataSucess) {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              _buildHeading("STAFF DIRECTORY"),
+                              Container(
+                                child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: state.obj!.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return contactItem(
+                                        state.obj![index], index);
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  }))),
-    );
+                            ],
+                          ),
+                        );
+                      } else {
+                        return Container();
+                      }
+                    }))),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }
 

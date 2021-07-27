@@ -2,14 +2,10 @@ import 'package:Soc/src/modules/user/bloc/user_bloc.dart';
 import 'package:Soc/src/services/custom_flutter_icons.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/app_bar_with_overlapped_body.dart';
-import 'package:Soc/src/widgets/icon_selector.dart';
 
 import 'package:Soc/src/widgets/profile_picture_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:Soc/src/modules/user/ui/user_profile.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -106,7 +102,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   'Wachtwoord wijzigen',
                   style: Theme.of(context).textTheme.caption,
                 ),
-                trailing: IconSelectorWidget('change_password_icon', 'asset'),
+                // trailing: IconSelectorWidget('change_password_icon', 'asset'),
               ),
             ),
             SpacerWidget(10),
@@ -114,7 +110,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               child: ListTile(
                 title: Text('Uitloggen',
                     style: Theme.of(context).textTheme.caption),
-                trailing: IconSelectorWidget('logout_icon', 'asset'),
+                // trailing: IconSelectorWidget('logout_icon', 'asset'),
                 onTap: () {
                   // _bloc.add(LogOut());
                 },

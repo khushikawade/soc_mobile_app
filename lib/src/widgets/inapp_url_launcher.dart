@@ -1,4 +1,6 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -6,9 +8,14 @@ class InAppUrlLauncer extends StatefulWidget {
   final String title;
   final String url;
   final bool? hideHeader;
+  bool isbuttomsheet;
   @override
   InAppUrlLauncer(
-      {Key? key, required this.title, required this.url, this.hideHeader})
+      {Key? key,
+      required this.title,
+      required this.url,
+      this.hideHeader,
+      required this.isbuttomsheet})
       : super(key: key);
   _InAppUrlLauncerState createState() => new _InAppUrlLauncerState();
 }
@@ -42,7 +49,10 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
         ),
         body: WebView(
           initialUrl: '${widget.url}',
-        ));
+        ),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 
   @override

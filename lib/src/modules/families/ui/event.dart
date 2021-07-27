@@ -1,6 +1,5 @@
-import 'package:Soc/src/modules/families/ui/calendar.dart';
 import 'package:Soc/src/modules/families/ui/eventdescition.dart';
-import 'package:Soc/src/modules/families/ui/test.dart';
+
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
@@ -146,8 +145,8 @@ class _EventPageState extends State<EventPage> {
         //               date: '',
         //             )));
 
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => IntentTest()));
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => IntentTest()));
       },
       child: Container(
           decoration: BoxDecoration(

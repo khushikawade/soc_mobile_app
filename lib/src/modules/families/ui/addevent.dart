@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:add_2_calendar/add_2_calendar.dart';
 
+// ignore: must_be_immutable
 class AddeventToCalendarWidget extends StatelessWidget {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();

@@ -1,6 +1,8 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -10,7 +12,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ContactPage extends StatefulWidget {
   var obj;
-  ContactPage({Key? key, required this.obj}) : super(key: key);
+  bool isbuttomsheet;
+  ContactPage({Key? key, required this.obj, required this.isbuttomsheet})
+      : super(key: key);
 
   @override
   _ContactPageState createState() => _ContactPageState();
@@ -29,8 +33,8 @@ class _ContactPageState extends State<ContactPage> {
   void initState() {
     super.initState();
     object = widget.obj;
-    latitude = object["Contact_Office_Location__Latitude__s"];
-    longitude = object["Contact_Office_Location__Longitude__s"];
+    latitude = object["Contact_Office_Location__Latitude__s"] ?? '';
+    longitude = object["Contact_Office_Location__Longitude__s"] ?? '';
   }
 
   void _launch(String launchThis) async {
@@ -244,7 +248,7 @@ class _ContactPageState extends State<ContactPage> {
                   onTap: () {
                     object["Contact_Phone__c"] != null
                         ? _launch("tel:" + object["Contact_Phone__c"])
-                        : print("he");
+                        : print("No phone");
                   },
                   child: Text(
                     object["Contact_Phone__c"],
@@ -333,6 +337,9 @@ class _ContactPageState extends State<ContactPage> {
           _buildEmailWidget()
         ],
       )),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null);
     );
   }
 }

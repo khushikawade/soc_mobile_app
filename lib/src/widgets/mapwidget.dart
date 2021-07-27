@@ -53,16 +53,6 @@ class GoogleMapsState extends State<GoogleMaps> {
               markers: _markers,
             )
           : Container(),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _gotoLocation,
-      //   // label: Text('our location'),
-      //   child: Icon(Icons.location_city),
-      // ),
     );
   }
-
-  // Future<void> _gotoLocation() async {
-  //   final GoogleMapController controller = await _controller.future;
-  //   controller.animateCamera(CameraUpdate.newCameraPosition(_kLocation!));
-  // }
 }

@@ -5,7 +5,6 @@ import 'package:Soc/src/modules/user/ui/user_profile.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar_with_overlapped_body.dart';
-import 'package:Soc/src/widgets/icon_selector.dart';
 
 import 'package:flutter/material.dart';
 
@@ -96,22 +95,22 @@ class _SettingsPageState extends State<SettingsPage> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                _listItem(
-                    AppTranslations.of(context)!.text('select_language'),
-                    IconSelectorWidget(
-                      'language_icon',
-                      'asset',
-                    ),
-                    'language_selector',
-                    trailing: _languageNameIndicatorTrailing()),
-                _listItem(
-                    AppTranslations.of(context)!.text('profile'),
-                    IconSelectorWidget('profile_icon', 'asset'),
-                    'user_profile'),
-                _listItem(
-                    AppTranslations.of(context)!.text('app_information'),
-                    IconSelectorWidget('informative_icon', 'asset'),
-                    'app_info'),
+                // _listItem(
+                //     AppTranslations.of(context)!.text('select_language'),
+                //     IconSelectorWidget(
+                //       'language_icon',
+                //       'asset',
+                //     ),
+                //     'language_selector',
+                //     trailing: _languageNameIndicatorTrailing()),
+                // _listItem(
+                //     AppTranslations.of(context)!.text('profile'),
+                //     IconSelectorWidget('profile_icon', 'asset'),
+                //     'user_profile'),
+                // _listItem(
+                //     AppTranslations.of(context)!.text('app_information'),
+                //     IconSelectorWidget('informative_icon', 'asset'),
+                //     'app_info'),
               ],
             ),
           ),

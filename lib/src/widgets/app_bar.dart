@@ -67,8 +67,12 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
             ? IconButton(
                 onPressed: () {
                   // print(widget.isSearch);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SearchPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SearchPage(
+                                isbuttomsheet: true,
+                              )));
                 },
                 icon: Icon(
                   const IconData(0xe805,

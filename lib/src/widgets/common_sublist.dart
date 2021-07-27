@@ -1,19 +1,33 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
+import 'package:Soc/src/modules/families/ui/family.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/news/ui/news.dart';
+import 'package:Soc/src/modules/social/ui/Soical.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
+import 'package:Soc/src/modules/staff/ui/staff.dart';
+import 'package:Soc/src/modules/students/ui/student.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SubListPage extends StatefulWidget {
   var obj;
   String? module;
+  bool isbuttomsheet;
 
-  SubListPage({Key? key, required this.obj, required this.module})
+  SubListPage(
+      {Key? key,
+      required this.obj,
+      required this.module,
+      required this.isbuttomsheet})
       : super(key: key);
   @override
   _SubListPageState createState() => _SubListPageState();
@@ -33,6 +47,8 @@ class _SubListPageState extends State<SubListPage> {
     } else if (widget.module == "staff") {
       _staffBloc.add(StaffSubListEvent(id: widget.obj.id));
     }
+
+    // _selectedIndex = Globals.internalBottombarIndex;
   }
 
   _route(obj, index) {
@@ -44,6 +60,7 @@ class _SubListPageState extends State<SubListPage> {
                   builder: (BuildContext context) => InAppUrlLauncer(
                         title: obj.titleC!,
                         url: obj.appUrlC!,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML" || obj.typeC == "RTF/HTML") {
@@ -54,6 +71,7 @@ class _SubListPageState extends State<SubListPage> {
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
                         url: obj.appUrlC!,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -64,6 +82,7 @@ class _SubListPageState extends State<SubListPage> {
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         url: obj.pdfURL,
                         tittle: obj.titleC,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else {
@@ -78,6 +97,26 @@ class _SubListPageState extends State<SubListPage> {
         },
         child: ListWidget(index, _buildFormName(index, obj)));
   }
+
+  // selectedpage(context, _selectedIndex) {
+  //   if (_selectedIndex == 0) {
+  //     return Navigator.push(
+  //         context, MaterialPageRoute(builder: (context) => HomePage()));
+  //   } else if (_selectedIndex == 1) {
+  //     return Navigator.push(
+  //         context, MaterialPageRoute(builder: (context) => HomePage()));
+  //   } else if (_selectedIndex == 2) {
+  //     return Navigator.push(
+  //         context, MaterialPageRoute(builder: (context) => HomePage()));
+  //   } else if (_selectedIndex == 3) {
+  //     return Navigator.push(
+  //         context, MaterialPageRoute(builder: (context) => HomePage()));
+
+  //   } else if (_selectedIndex == 4) {
+  //     return Navigator.push(
+  //         context, MaterialPageRoute(builder: (context) => HomePage()));
+  //   }
+  // }
 
   Widget _buildFormName(int index, obj) {
     return InkWell(
@@ -167,6 +206,9 @@ class _SubListPageState extends State<SubListPage> {
                         return Container();
                       }
                     })
-                : Container());
+                : Container(),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }

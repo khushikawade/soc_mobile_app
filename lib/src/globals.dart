@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 String? deviceType;
+var homeobj;
 
 class Globals {
   static String? token =
@@ -14,6 +15,8 @@ class Globals {
   static String? deviceType;
   static String? phone = 'phone';
   var object;
+  static int? outerBottombarIndex;
+  static int? internalBottombarIndex;
   static var homeObjet;
   static GlobalKey<NavigatorState>? appNavigator;
 }

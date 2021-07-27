@@ -81,7 +81,7 @@ class SocialDescription extends StatelessWidget {
             // SpacerWidget(_kPadding * 4),
             SpacerWidget(_kPadding / 2),
             _buildDivider(context),
-            SpacerWidget(_kPadding * 5),
+            SpacerWidget(_kPadding / 2),
             _buildbuttomsection(context),
           ],
         ),
@@ -161,7 +161,7 @@ class SocialDescription extends StatelessWidget {
     return Row(
       children: [
         Container(
-            child: object != null && object.pubDate.length > 1
+            child: object != null
                 ? Text(
                     Utility.convertDate(object.pubDate).toString(),
                     style: Theme.of(context).textTheme.subtitle1,

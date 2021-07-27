@@ -1,10 +1,9 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/setting/settiings/ui/appshare.dart';
 import 'package:flutter/material.dart';
-
 import 'package:share/share.dart';
 
-class ButtonWidget extends StatelessWidget {
+class ShareButtonWidget extends StatelessWidget {
   static const double _kLabelSpacing = 17.0;
   @override
   Widget build(BuildContext context) {
@@ -33,8 +32,6 @@ class ButtonWidget extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 _onNeedButton(context);
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => DeviceInfoDemo()));
               },
               child: Text("I need support"),
             ),

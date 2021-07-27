@@ -47,10 +47,8 @@ class _AppState extends State<App> {
       home: StartupPage(),
       localizationsDelegates: [
         _newLocaleDelegate!,
-        //provides localised strings
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-        //provides RTL support
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: application.supportedLocales(),

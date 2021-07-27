@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -11,8 +12,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../overrides.dart';
 
 // ignore: must_be_immutable
-class InAppBrowser extends StatefulWidget {
-  InAppBrowser({
+class SoicalPageWebview extends StatefulWidget {
+  SoicalPageWebview({
     Key? key,
     required this.link,
     required this.isSocialpage,
@@ -21,10 +22,10 @@ class InAppBrowser extends StatefulWidget {
   bool isSocialpage;
 
   @override
-  _InAppBrowserState createState() => _InAppBrowserState();
+  _SoicalPageWebviewState createState() => _SoicalPageWebviewState();
 }
 
-class _InAppBrowserState extends State<InAppBrowser> {
+class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   String url = "";
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
@@ -42,21 +43,13 @@ class _InAppBrowserState extends State<InAppBrowser> {
         flutterWebviewPlugin.onStateChanged.listen((WebViewStateChanged state) {
       if (mounted) {
         if (state.type == WebViewState.finishLoad) {
-          // if the full website page loaded
-          // print("loaded...");
         } else if (state.type == WebViewState.abortLoad) {
-          // if there is a problem with loading the url
-          // print("there is a problem...");
-        } else if (state.type == WebViewState.startLoad) {
-          // if the url started loading
-          // print("start loading...");
-        }
+        } else if (state.type == WebViewState.startLoad) {}
       }
     });
   }
 
   _launchURL(url) async {
-    // const url = "${overrides.Overrides.privacyPolicyUrl}";
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -75,10 +68,9 @@ class _InAppBrowserState extends State<InAppBrowser> {
   Widget build(BuildContext context) {
     return WebviewScaffold(
       url: url,
-      withJavascript: false, // run javascript
-      withZoom: false, // if you want the user zoom-in and zoom-out
-      hidden:
-          true, // put it true if you want to show CircularProgressIndicator while waiting for the page to load
+      withJavascript: false,
+      withZoom: false,
+      hidden: true,
       appBar: AppBar(
         elevation: 0.0,
         leading: Row(
@@ -104,10 +96,6 @@ class _InAppBrowserState extends State<InAppBrowser> {
           ],
         ),
         title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
-        // bottom: PreferredSize(
-        //   child: _progressBar(lineProgress, context),
-        //   preferredSize: Size.fromHeight(3.0),
-        // ),
         actions: [
           widget.isSocialpage
               ? IconButton(
@@ -135,7 +123,6 @@ class _InAppBrowserState extends State<InAppBrowser> {
         ],
       ),
       initialChild: Container(
-        // but if you want to add your own waiting widget just add InitialChild
         color: Colors.white,
         child: const Center(
           child: CircularProgressIndicator(
@@ -144,50 +131,51 @@ class _InAppBrowserState extends State<InAppBrowser> {
           ),
         ),
       ),
-
       bottomNavigationBar: buttomButtonsWidget(),
     );
   }
 
   Widget buttomButtonsWidget() {
     return SafeArea(
-      child: Container(
-        padding: EdgeInsets.all(_kPadding / 2),
-        color: AppTheme.kBackgroundColor,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Icon(
-                Icons.arrow_back_ios_new,
-                color: AppTheme.kBlackColor,
-                size: 20,
-              ),
-              SizedBox(width: _kPadding / 2),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: AppTheme.kBlackColor,
-                size: 20,
-              ),
-            ]),
-            SizedBox(
-              width: _kPadding / 2,
-            ),
-            IconButton(
-                onPressed: () {
-                  flutterWebviewPlugin.reload();
-                },
-                icon: Icon(
-                  IconData(0xe80f,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: AppTheme.kBlackColor,
-                )),
-          ],
-        ),
-      ),
-    );
+        child: Container(
+            padding: EdgeInsets.all(_kPadding / 2),
+            color: AppTheme.kBackgroundColor,
+            child: Column(
+              // mainAxisSize: MainAxisSize.max,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                //   Icon(
+                //     Icons.arrow_back_ios_new,
+                //     color: AppTheme.kBlackColor,
+                //     size: 20,
+                //   ),
+                //   SizedBox(width: _kPadding / 2),
+                //   Icon(
+                //     Icons.arrow_forward_ios_rounded,
+                //     color: AppTheme.kBlackColor,
+                //     size: 20,
+                //   ),
+                // ]),
+                SizedBox(
+                  width: _kPadding / 2,
+                ),
+                IconButton(
+                    onPressed: () {
+                      flutterWebviewPlugin.reload();
+                    },
+                    icon: Icon(
+                      IconData(0xe80f,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: AppTheme.kBlackColor,
+                    )),
+
+                // widget.isbuttomsheet && Globals.homeObjet != null
+                //     ? InternalButtomNavigationBar()
+                //     : null
+              ],
+            )));
   }
 
   Widget _conatainer() {

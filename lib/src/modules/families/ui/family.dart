@@ -37,8 +37,10 @@ class _FamilyPageState extends State<FamilyPage> {
           ? Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      ContactPage(obj: widget.obj)))
+                  builder: (BuildContext context) => ContactPage(
+                        obj: widget.obj,
+                        isbuttomsheet: true,
+                      )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
       Navigator.push(
@@ -46,6 +48,7 @@ class _FamilyPageState extends State<FamilyPage> {
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
                     obj: obj,
+                    isbuttomsheet: true,
                   )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
@@ -53,7 +56,10 @@ class _FamilyPageState extends State<FamilyPage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC!, url: obj.appUrlC ?? '')))
+                        title: obj.titleC!,
+                        url: obj.appUrlC ?? '',
+                        isbuttomsheet: true,
+                      )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
       obj.rtfHTMLC != null
@@ -63,6 +69,7 @@ class _FamilyPageState extends State<FamilyPage> {
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
                         url: obj.appUrlC ?? '',
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
@@ -74,14 +81,18 @@ class _FamilyPageState extends State<FamilyPage> {
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         url: obj.pdfURL,
                         tittle: obj.titleC,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  SubListPage(obj: obj, module: "family")));
+              builder: (BuildContext context) => SubListPage(
+                    obj: obj,
+                    module: "family",
+                    isbuttomsheet: true,
+                  )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }

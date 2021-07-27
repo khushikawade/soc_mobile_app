@@ -1,16 +1,20 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class AboutusPage extends StatefulWidget {
   String htmlText;
   String url;
+  bool isbuttomsheet;
 
   @override
   AboutusPage({
     Key? key,
     required this.htmlText,
     required this.url,
+    required this.isbuttomsheet,
   }) : super(key: key);
   @override
   _AboutusPageState createState() => _AboutusPageState();
@@ -52,20 +56,22 @@ class _AboutusPageState extends State<AboutusPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: false,
-          isShare: widget.url != null &&
-                  widget.url != "null" &&
-                  widget.url.length > 1
-              ? true
-              : false,
-          sharedpopBodytext: widget.url.toString(),
-          sharedpopUpheaderText: "Please checkout this link",
-        ),
-        body: SingleChildScrollView(
-          child: _buildContent1(),
-        ),
-      ),
+          appBar: CustomAppBarWidget(
+            isSearch: false,
+            isShare: widget.url != null &&
+                    widget.url != "null" &&
+                    widget.url.length > 1
+                ? true
+                : false,
+            sharedpopBodytext: widget.url.toString(),
+            sharedpopUpheaderText: "Please checkout this link",
+          ),
+          body: SingleChildScrollView(
+            child: _buildContent1(),
+          ),
+          bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+              ? InternalButtomNavigationBar()
+              : null),
     );
   }
 }

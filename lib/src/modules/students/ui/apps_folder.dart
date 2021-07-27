@@ -54,6 +54,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC!,
                     url: obj.appUrlC!,
+                    isbuttomsheet: true,
                   )));
     } else {
       await launch(obj.appUrlC!);

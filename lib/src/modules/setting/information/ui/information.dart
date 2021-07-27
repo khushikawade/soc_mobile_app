@@ -208,7 +208,7 @@ class _InformationPageState extends State<InformationPage> {
           SizedBox(
               width: MediaQuery.of(context).size.width * 1,
               height: 100.0,
-              child: ButtonWidget()),
+              child: ShareButtonWidget()),
         ],
       )),
     );

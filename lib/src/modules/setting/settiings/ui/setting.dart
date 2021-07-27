@@ -143,7 +143,7 @@ class _SettingPageState extends State<SettingPage> {
             SizedBox(
                 width: MediaQuery.of(context).size.width * 1,
                 height: 100.0,
-                child: ButtonWidget()),
+                child: ShareButtonWidget()),
           ],
         ),
       ),
