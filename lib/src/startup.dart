@@ -153,12 +153,15 @@ class _StartupPageState extends State<StartupPage> {
                   : Container(
                       child: Text("Please refresh your application"),
                     );
+            } else if (state is LoginError) {
+              Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Text("Unable to load the data"),
+              );
             }
           },
-          child: Container(
-            height: 0,
-            width: 0,
-          ),
+          child: Container(),
         ),
         BlocListener<HomeBloc, HomeState>(
           bloc: _bloc,
@@ -175,12 +178,15 @@ class _StartupPageState extends State<StartupPage> {
                         ),
                       ))
                   : Text("No data found");
+            } else if (state is HomeErrorReceived) {
+              Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Text("Unable to load the data"),
+              );
             }
           },
-          child: Container(
-            height: 0,
-            width: 0,
-          ),
+          child: Container(),
         ),
       ],
     ));

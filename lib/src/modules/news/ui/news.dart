@@ -120,16 +120,6 @@ class _NewsPageState extends State<NewsPage> {
     ));
   }
 
-// // DIVIDER
-//   Widget divider() {
-//     return Container(
-//       height: 0.4,
-//       decoration: BoxDecoration(
-//         color: AppTheme.kDividerColor,
-//       ),
-//     );
-//   }
-
   Widget _buildList(obj) {
     return ListView.builder(
       scrollDirection: Axis.vertical,
@@ -155,10 +145,13 @@ class _NewsPageState extends State<NewsPage> {
                     bloc: bloc,
                     builder: (BuildContext context, NewsState state) {
                       if (state is NewsLoaded) {
-                        return state.obj != null
+                        return state.obj != null && state.obj!.length > 0
                             ? _buildList(state.obj)
-                            : Center(
-                                child: Text("No Data found"),
+                            : Container(
+                                alignment: Alignment.center,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                child: Text("No news found"),
                               );
                       } else if (state is NewsLoading) {
                         return Container(
@@ -167,6 +160,12 @@ class _NewsPageState extends State<NewsPage> {
                               child: CircularProgressIndicator(
                             backgroundColor: Theme.of(context).accentColor,
                           )),
+                        );
+                      } else if (state is NewsErrorReceived) {
+                        return Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Text("Unable to load the data"),
                         );
                       } else {
                         return Container();

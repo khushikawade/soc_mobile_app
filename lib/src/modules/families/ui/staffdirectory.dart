@@ -329,6 +329,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           ],
                         ),
                       );
+                    } else if (state is ErrorLoading) {
+                      return Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Text("Unable to load the data"),
+                      );
                     } else {
                       return Container();
                     }

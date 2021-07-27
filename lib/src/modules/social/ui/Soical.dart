@@ -154,8 +154,10 @@ class _SocialPageState extends State<SocialPage> {
                           children: [makeList(state.obj)],
                         ),
                       )
-                    : Center(
-                        child: Text("No Data found"),
+                    : Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Text("No data found"),
                       );
               } else if (state is Loading) {
                 return Container(
@@ -166,8 +168,12 @@ class _SocialPageState extends State<SocialPage> {
                   )),
                 );
               }
-              if (state is Errorinloading) {
-                return Text("Unable to load the data");
+              if (state is SocialError) {
+                return Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Text("Unable to load the data"),
+                );
               } else {
                 return Container();
               }

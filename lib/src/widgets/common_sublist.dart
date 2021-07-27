@@ -109,24 +109,26 @@ class _SubListPageState extends State<SubListPage> {
                     ));
                   } else if (state is FamiliesSublistSucess) {
                     return SingleChildScrollView(
-                      child: SafeArea(
-                        child: Column(
-                          children: [
-                            ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: state.obj!.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return _buildList(
-                                    index,
-                                    _buildFormName(index, state.obj![index]),
-                                    state.obj![index]);
-                              },
+                      child: state.obj != null && state.obj!.length > 0
+                          ? SafeArea(
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: state.obj!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return _buildList(
+                                      index,
+                                      _buildFormName(index, state.obj![index]),
+                                      state.obj![index]);
+                                },
+                              ),
+                            )
+                          : Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Text("No data found"),
                             ),
-                          ],
-                        ),
-                      ),
                     );
                   } else {
                     return Container();
@@ -143,26 +145,29 @@ class _SubListPageState extends State<SubListPage> {
                         ));
                       } else if (state is StaffSubListSucess) {
                         return SingleChildScrollView(
-                          child: SafeArea(
-                            child: Column(
-                              children: [
-                                ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: state.obj!.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return _buildList(
-                                        index,
-                                        _buildFormName(
-                                            index, state.obj![index]),
-                                        state.obj![index]);
-                                  },
+                          child: state.obj != null && state.obj!.length > 0
+                              ? SafeArea(
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: state.obj!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return _buildList(
+                                          index,
+                                          _buildFormName(
+                                              index, state.obj![index]),
+                                          state.obj![index]);
+                                    },
+                                  ),
+                                )
+                              : Container(
+                                  alignment: Alignment.center,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  child: Text("No data found"),
                                 ),
-                              ],
-                            ),
-                          ),
                         );
                       } else {
                         return Container();

@@ -26,7 +26,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         List<Item> list = await getEventDetails();
         yield SocialDataSucess(obj: list);
       } catch (e) {
-        yield Errorinloading(err: e);
+        yield SocialError(err: e);
       }
     }
   }
