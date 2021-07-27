@@ -33,20 +33,20 @@ class _SettingsPageState extends State<SettingsPage> {
     geLanguage();
   }
 
-  _naviage(path) {
-    switch (path) {
-      case 'language_selector':
-        LanguageSelector(context, (newLanguage) {
-          _currentLanguage.value = newLanguage;
-        });
-        break;
-      case 'user_profile':
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => UserProfilePage()));
-        break;
-      default:
-    }
-  }
+  // _naviage(path) {
+  //   switch (path) {
+  //     case 'language_selector':
+  //       LanguageSelector(context, (newLanguage) {
+  //         _currentLanguage.value = newLanguage;
+  //       });
+  //       break;
+  //     case 'user_profile':
+  //       Navigator.push(context,
+  //           MaterialPageRoute(builder: (context) => UserProfilePage()));
+  //       break;
+  //     default:
+  //   }
+  // }
 
   geLanguage() async {
     String _languageCode = await _sharedPref.getString('selected_language');
@@ -65,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
               style: Theme.of(context).textTheme.caption,
             ),
             leading: leading,
-            onTap: () => _naviage(path),
+            // onTap: () => _naviage(path),
             trailing: trailing),
       );
 

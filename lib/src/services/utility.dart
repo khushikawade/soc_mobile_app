@@ -119,4 +119,26 @@ class Utility {
     final String formatted = formatNew.format(dateTime);
     return formatted;
   }
+
+  static convertDateFormat(date) {
+    String dateNew = date;
+
+    final string = dateNew.toString();
+    final formatter = DateFormat('yyyy-MM-dd');
+    var dateTime = formatter.parse(string);
+    final DateFormat formatNew = DateFormat('dd/MM/yyyy');
+    final String formatted = formatNew.format(dateTime);
+    return formatted;
+  }
+
+  static getMonthFromDate(date) {
+    String dateNew = date;
+
+    final string = dateNew.toString();
+    final formatter = DateFormat('yyyy-MM-dd');
+    var dateTime = formatter.parse(string);
+    final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
+    final String formatted = formatNew.format(dateTime);
+    return formatted;
+  }
 }

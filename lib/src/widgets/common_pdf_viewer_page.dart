@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
+// ignore: must_be_immutable
 class CommonPdfViewerPage extends StatefulWidget {
   final String? url;
   String? tittle = '';
@@ -30,7 +31,6 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
     document = await PDFDocument.fromURL(
       widget.url!,
     );
-    // print(document);
     if (document != null) {
       setState(() => _isLoading = false);
     }

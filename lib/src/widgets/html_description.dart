@@ -4,6 +4,7 @@ import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
+// ignore: must_be_immutable
 class AboutusPage extends StatefulWidget {
   String htmlText;
   String url;
@@ -75,4 +76,3 @@ class _AboutusPageState extends State<AboutusPage> {
     );
   }
 }
-// CustomAppBarWidget

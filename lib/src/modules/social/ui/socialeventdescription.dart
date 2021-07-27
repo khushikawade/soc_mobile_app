@@ -1,12 +1,8 @@
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-// import 'package:html/dom.dart' as dom;
-// import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SocialDescription extends StatelessWidget {
@@ -44,7 +40,6 @@ class SocialDescription extends StatelessWidget {
         .getElementsByClassName("time")[0]
         .innerHtml);
 
-    //declaring variable for temp since we will be using it multiple places
     var temp = object.description["__cdata"].getElementsByClassName("temp")[0];
     data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<span>")));
     data.add(temp
@@ -52,21 +47,15 @@ class SocialDescription extends StatelessWidget {
         .innerHtml
         .replaceAll(RegExp("[(|)|℃]"), ""));
 
-    //We can also do document.getElementsByTagName("td") but I am just being more specific here.
     var rows = object.description["__cdata"]
         .getElementsByTagName("table")[0]
         .getElementsByTagName("td");
 
-    //Map elememt to its innerHtml,  because we gonna need it.
-    //Iterate over all the table-data and store it in the data list
     rows.map((e) => e.innerHtml).forEach((element) {
       if (element != "-") {
         data.add(element);
       }
     });
-
-    //print the data to console.
-    // print(data);
   }
 
   Widget _buildItem(BuildContext context) {
@@ -78,24 +67,11 @@ class SocialDescription extends StatelessWidget {
             _buildnews(context),
             SpacerWidget(_kPadding / 2),
             _buildnewTimeStamp(context),
-            // SpacerWidget(_kPadding * 4),
-            SpacerWidget(_kPadding / 2),
-            _buildDivider(context),
-            SpacerWidget(_kPadding / 2),
+            SpacerWidget(_kPadding * 5),
             _buildbuttomsection(context),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildDivider(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: _kPadding / 3),
-      width: MediaQuery.of(context).size.width * 1,
-      height: 1,
-      decoration:
-          BoxDecoration(border: Border.all(width: 0.50, color: Colors.black)),
     );
   }
 
@@ -112,20 +88,6 @@ class SocialDescription extends StatelessWidget {
                 data: "<img" +
                     "${object.description["__cdata"].toString().split("<img")[1].split(">")[0]}" +
                     ">")
-
-            // CachedNetworkImage(
-            //     imageUrl:
-            //         object.description["__cdata"].toString().split('"')[1],
-            //     placeholder: (context, url) => Container(
-            //       alignment: Alignment.center,
-            //       child: CircularProgressIndicator(
-            //         strokeWidth: 2,
-            //         backgroundColor: AppTheme.kAccentColor,
-            //       ),
-            //     ),
-            //     errorWidget: (context, url, error) => Icon(Icons.error),
-            //   )
-
             : Container(
                 alignment: Alignment.center,
                 child: Image(image: AssetImage("assets/images/appicon.png")),
@@ -151,7 +113,7 @@ class SocialDescription extends StatelessWidget {
                     .replaceAll("\nn", "\n"),
                 textAlign: TextAlign.left,
               ),
-            ) //Html(data: data)
+            )
           : Text("No headline found"),
       SpacerWidget(_kPadding),
     ]);

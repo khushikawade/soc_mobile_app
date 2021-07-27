@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import '../overrides.dart';
 
+// ignore: must_be_immutable
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   CustomAppBarWidget({
     Key? key,
@@ -113,11 +114,11 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
-  _progressBar(double progress, BuildContext context) {
-    return LinearProgressIndicator(
-      backgroundColor: Colors.white70.withOpacity(0),
-      value: progress == 1.0 ? 0 : progress,
-      valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-    );
-  }
+  // _progressBar(double progress, BuildContext context) {
+  //   return LinearProgressIndicator(
+  //     backgroundColor: Colors.white70.withOpacity(0),
+  //     value: progress == 1.0 ? 0 : progress,
+  //     valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+  //   );
+  // }
 }

@@ -1,6 +1,5 @@
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -27,7 +26,7 @@ class _SocialPageState extends State<SocialPage> {
     bloc.add(SocialPageEvent());
   }
 
-  Widget _buildlist(obj, int index) {
+  Widget _buildlist(obj, int index, mainObj) {
     var document = parse(obj.description["__cdata"]);
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
@@ -46,7 +45,7 @@ class _SocialPageState extends State<SocialPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
-                        obj: object,
+                        obj: mainObj,
                         currentIndex: index,
                         issocialpage: true,
                         iseventpage: false,
@@ -137,16 +136,9 @@ class _SocialPageState extends State<SocialPage> {
       shrinkWrap: true,
       itemCount: obj.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildlist(obj[index], index);
+        return _buildlist(obj[index], index, obj!);
       },
     );
-  }
-
-  void _build(obj) {
-    object = obj;
-    print(
-        "******************************************************************************");
-    // print(object[0].pubDate);
   }
 
   Widget build(BuildContext context) {
@@ -156,8 +148,7 @@ class _SocialPageState extends State<SocialPage> {
             bloc: bloc,
             builder: (BuildContext context, SocialState state) {
               if (state is SocialDataSucess) {
-                _build(state.obj);
-                return state.obj != null
+                return state.obj != null && state.obj!.length > 0
                     ? Container(
                         child: Column(
                           children: [makeList(state.obj)],

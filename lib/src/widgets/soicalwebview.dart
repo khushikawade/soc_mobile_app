@@ -11,7 +11,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../overrides.dart';
 
-// ignore: must_be_immutable
 class SoicalPageWebview extends StatefulWidget {
   SoicalPageWebview({
     Key? key,
@@ -28,7 +27,6 @@ class SoicalPageWebview extends StatefulWidget {
 class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   String url = "";
   static const double _kPadding = 16.0;
-  static const double _KButtonSize = 110.0;
 
   final flutterWebviewPlugin = new FlutterWebviewPlugin();
   StreamSubscription<WebViewStateChanged>?
@@ -59,9 +57,8 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-    flutterWebviewPlugin.dispose(); // disposing the webview widget
+    flutterWebviewPlugin.dispose();
   }
 
   @override
@@ -176,10 +173,6 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                 //     : null
               ],
             )));
-  }
-
-  Widget _conatainer() {
-    return Container();
   }
 
   _onShareWithEmptyOrigin(BuildContext context) async {
