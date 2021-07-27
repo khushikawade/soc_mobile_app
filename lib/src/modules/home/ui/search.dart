@@ -112,7 +112,7 @@ class _SearchPageState extends State<SearchPage> {
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
-      print(obj.pdfURL);
+      // print(obj.pdfURL);
       obj.pdfURL != null
           ? Navigator.push(
               context,
@@ -197,7 +197,7 @@ class _SearchPageState extends State<SearchPage> {
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
-      print(obj.pdfURL);
+      // print(obj.pdfURL);
       obj.pdfURL != null
           ? Future.delayed(
               const Duration(seconds: 0),
@@ -469,11 +469,11 @@ class _SearchPageState extends State<SearchPage> {
   void addtoDataBase(Recent log) async {
     bool isSuccess = await DbServices().addData(log, Strings.hiveLogName);
 
-    if (isSuccess != null && isSuccess) {
-      print(
-          "hive *********************************************************************************");
-      print(isSuccess);
-    }
+    // if (isSuccess != null && isSuccess) {
+    //   print(
+    //       "hive *********************************************************************************");
+    //   print(isSuccess);
+    // }
   }
 
   @override

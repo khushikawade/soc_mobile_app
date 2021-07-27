@@ -135,7 +135,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       final ResponseModel response =
           await _dbServices.postapi('parameterizedSearch', body: body);
-      print(response.data);
+      // print(response.data);
       if (response.statusCode == 200) {
         return response.data["searchRecords"]
             .map<SearchList>((i) => SearchList.fromJson(i))

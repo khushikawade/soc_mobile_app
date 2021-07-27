@@ -23,7 +23,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
     document = await PDFDocument.fromURL(
       widget.url!,
     );
-    print(document);
+    // print(document);
     if (document != null) {
       setState(() => _isLoading = false);
     }
@@ -90,6 +90,5 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
             : Text("No Document Found"));
   }
 }
-
 
 // CustomAppBarWidget

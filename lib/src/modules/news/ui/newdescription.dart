@@ -16,7 +16,7 @@ class _NewdescriptionState extends State<Newdescription> {
   static const double _kLabelSpacing = 20.0;
 
   _launchURL(obj) async {
-    print(obj);
+    // print(obj);
     Navigator.push(
         context,
         MaterialPageRoute(

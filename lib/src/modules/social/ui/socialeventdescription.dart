@@ -66,7 +66,7 @@ class SocialDescription extends StatelessWidget {
     });
 
     //print the data to console.
-    print(data);
+    // print(data);
   }
 
   Widget _buildItem(BuildContext context) {

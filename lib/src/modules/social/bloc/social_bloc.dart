@@ -57,12 +57,12 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         print("else");
       }
     } catch (e) {
-      print(e);
+      // print(e);
 
-      print(e.toString().contains("Failed host lookup"));
+      // print(e.toString().contains("Failed host lookup"));
       if (e.toString().contains("Failed host lookup")) {
-        print(e);
-        print("inside if");
+        // print(e);
+        // print("inside if");
         throw ("Please check your Internet Connection.");
       } else {
         throw (e);

@@ -140,7 +140,6 @@ class _SliderWidgetState extends State<SliderWidget> {
             controller: _controller,
             itemCount: widget.obj.length,
             onPageChanged: (sliderIndex) {
-              print(sliderIndex);
               if (first) {
                 pageinitialIndex < sliderIndex
                     ? ++widget.currentIndex
@@ -228,7 +227,7 @@ class _SliderWidgetState extends State<SliderWidget> {
     matches.forEach((match) {
       link2 = link.substring(match.start, match.end);
     });
-    print(link2);
+    // print(link2);
   }
 
 // SHARE BUTTON
@@ -278,6 +277,6 @@ class _SliderWidgetState extends State<SliderWidget> {
     var element = doc.getElementById('content');
 
     debugPrint(element!.querySelectorAll('div').toString());
-    print(doc.body);
+    // print(doc.body);
   }
 }
