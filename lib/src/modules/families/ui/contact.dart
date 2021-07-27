@@ -92,7 +92,7 @@ class _ContactPageState extends State<ContactPage> {
                   object["Contact_Name__c"],
                   style: Theme.of(context).textTheme.headline2,
                 )
-              : Container(),
+              : Container(child: Text("No contact details available ")),
         ],
       ),
     );
@@ -205,7 +205,8 @@ class _ContactPageState extends State<ContactPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              object["Contact_Address__c"] != null
+              object["Contact_Address__c"] != null &&
+                      object["Contact_Address__c"].length > 1
                   ? Container(
                       width: MediaQuery.of(context).size.width * .60,
                       child: Text(
@@ -215,7 +216,7 @@ class _ContactPageState extends State<ContactPage> {
                         maxLines: 4,
                         textAlign: TextAlign.start,
                       ))
-                  : Container(),
+                  : Container(child: Text("No address  available here")),
             ],
           ),
         ],
@@ -237,17 +238,20 @@ class _ContactPageState extends State<ContactPage> {
                 .copyWith(color: Color(0xff171717)),
           ),
           HorzitalSpacerWidget(_kLabelSpacing),
-          InkWell(
-            onTap: () {
-              object["Contact_Phone__c"] != null
-                  ? _launch("tel:" + object["Contact_Phone__c"])
-                  : print("he");
-            },
-            child: Text(
-              object["Contact_Phone__c"],
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-          )
+          object["Contact_Phone__c"] != null &&
+                  object["Contact_Phone__c"].length > 1
+              ? InkWell(
+                  onTap: () {
+                    object["Contact_Phone__c"] != null
+                        ? _launch("tel:" + object["Contact_Phone__c"])
+                        : print("he");
+                  },
+                  child: Text(
+                    object["Contact_Phone__c"],
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                )
+              : Container(child: Text("No phone  available here"))
         ],
       ),
     );
@@ -284,17 +288,20 @@ class _ContactPageState extends State<ContactPage> {
                 .copyWith(color: Color(0xff171717)),
           ),
           HorzitalSpacerWidget(_kLabelSpacing * 1.5),
-          InkWell(
-            onTap: () {
-              object["Contact_Email__c"] != null
-                  ? _launch('mailto:"${object["Contact_Email__c"]}"')
-                  : print("null value");
-            },
-            child: Text(
-              object["Contact_Email__c"],
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-          )
+          object["Contact_Email__c"] != null &&
+                  object["Contact_Email__c"].length > 1
+              ? InkWell(
+                  onTap: () {
+                    object["Contact_Email__c"] != null
+                        ? _launch('mailto:"${object["Contact_Email__c"]}"')
+                        : print("null value");
+                  },
+                  child: Text(
+                    object["Contact_Email__c"],
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                )
+              : Container(child: Text("No email  available here"))
         ],
       ),
     );

@@ -43,6 +43,7 @@ class _NewsPageState extends State<NewsPage> {
                         obj: object,
                         currentIndex: index,
                         issocialpage: false,
+                        iseventpage: false,
                         date: "$newsTimeStamp",
                       )));
         },

@@ -1,5 +1,6 @@
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -48,6 +49,7 @@ class _SocialPageState extends State<SocialPage> {
                         obj: object,
                         currentIndex: index,
                         issocialpage: true,
+                        iseventpage: false,
                         date: '1',
                       )));
         },
@@ -89,17 +91,20 @@ class _SocialPageState extends State<SocialPage> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                          width: MediaQuery.of(context).size.width * 0.69,
-                          child: Text(
-                            obj.title["__cdata"]
-                                .replaceAll(new RegExp(r'[^\w\s]+'), ''),
-                            // "Check out these book suggestions for your summer reading !",
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+                      obj.title["__cdata"] != null &&
+                              obj.title["__cdata"].length > 1
+                          ? Container(
+                              width: MediaQuery.of(context).size.width * 0.69,
+                              child: Text(
+                                obj.title["__cdata"]
+                                    .replaceAll(new RegExp(r'[^\w\s]+'), ''),
+                                // "Check out these book suggestions for your summer reading !",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
 
-                            style: Theme.of(context).textTheme.headline2,
-                          )),
+                                style: Theme.of(context).textTheme.headline2,
+                              ))
+                          : Container()
                     ],
                   ),
                   SizedBox(height: _kLabelSpacing / 2),
@@ -108,12 +113,14 @@ class _SocialPageState extends State<SocialPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                          width: MediaQuery.of(context).size.width * 0.40,
-                          child: Text(
-                            Utility.convertDate(obj.pubDate).toString(),
-                            style: Theme.of(context).textTheme.subtitle1,
-                          )),
+                      obj.pubDate != null && obj.pubDate.length > 1
+                          ? Container(
+                              width: MediaQuery.of(context).size.width * 0.40,
+                              child: Text(
+                                Utility.convertDate(obj.pubDate).toString(),
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ))
+                          : Container()
                     ],
                   ),
                 ]),

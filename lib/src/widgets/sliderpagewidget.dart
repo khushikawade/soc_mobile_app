@@ -16,7 +16,7 @@ class SliderWidget extends StatefulWidget {
     required this.obj,
     required this.currentIndex,
     this.issocialpage,
-    this.iseventpage,
+    required this.iseventpage,
     required this.date,
   });
   var obj;

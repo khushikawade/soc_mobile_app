@@ -81,6 +81,7 @@ class SocialDescription extends StatelessWidget {
             // SpacerWidget(_kPadding * 4),
             SpacerWidget(_kPadding / 2),
             _buildDivider(context),
+            SpacerWidget(_kPadding * 5),
             _buildbuttomsection(context),
           ],
         ),
@@ -98,37 +99,8 @@ class SocialDescription extends StatelessWidget {
     );
   }
 
-  Widget _buildbuttomsection(BuildContext context) {
-    print(object.description["__cdata"].toString().split('"')[1]);
-    return Column(
-      children: [
-        HorzitalSpacerWidget(_kPadding / 2),
-        Column(
-          children: [
-            object.description["__cdata"] != null &&
-                    object.description["__cdata"].toString().split('"')[1] != ""
-                ? CachedNetworkImage(
-                    imageUrl:
-                        object.description["__cdata"].toString().split('"')[1],
-                    placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        backgroundColor: AppTheme.kAccentColor,
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  )
-                : Container(),
-            Html(
-              data:
-                  "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\n]+'), '')}",
-            ),
-          ],
-        )
-      ],
-    );
-  }
+  // Widget
+  _buildbuttomsection(BuildContext context) {}
 
   Widget _buildnews(BuildContext context) {
     return Wrap(children: [
@@ -137,7 +109,7 @@ class SocialDescription extends StatelessWidget {
               data: object.title["__cdata"]
                   .toString()
                   .replaceAll(new RegExp(r'[\\n]+'), '\n'))
-          : Text("1"),
+          : Text("No headline found"),
       SpacerWidget(_kPadding),
     ]);
   }
@@ -146,12 +118,12 @@ class SocialDescription extends StatelessWidget {
     return Row(
       children: [
         Container(
-            child: object != null
+            child: object != null && object.pubDate.length > 1
                 ? Text(
                     Utility.convertDate(object.pubDate).toString(),
                     style: Theme.of(context).textTheme.subtitle1,
                   )
-                : Text("date")),
+                : Text("No timestamp found")),
       ],
     );
   }

@@ -191,7 +191,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   width:
                                       MediaQuery.of(context).size.width * .40,
                                   child: Text(
-                                    "alalalalalalalalalalalllalallalalallalalalalllloremlalalalallllorem",
+                                    "No title  found",
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
                                     textAlign: TextAlign.start,
@@ -223,7 +223,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                                         FontWeight.w400)))
                                     : Expanded(
                                         child: Text(
-                                          "alalalalalalalalalalalllalallalalallalalalalllloremlalalalallllorem",
+                                          "No description found",
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 2,
                                           textAlign: TextAlign.start,
@@ -264,7 +264,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         onTap: () {
                           obj.phoneC != null
                               ? _launch("tel:" + obj.phoneC)
-                              : print("he");
+                              : print("No telephone number found");
                         },
                         child: Row(
                           children: <Widget>[
@@ -281,7 +281,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                         .bodyText1!
                                         .copyWith(fontWeight: FontWeight.w400),
                                   )
-                                : Text("")
+                                : Text("No telephone number found")
                           ],
                         ),
                       ),

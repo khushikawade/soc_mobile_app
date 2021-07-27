@@ -73,38 +73,39 @@ class _StaffPageState extends State<StaffPage> {
 
   Widget _buildList(StaffList obj, int index) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: AppTheme.kDividerColor2,
-          width: 0.65,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppTheme.kDividerColor2,
+            width: 0.65,
+          ),
+          borderRadius: BorderRadius.circular(0.0),
+          color: (index % 2 == 0)
+              ? Theme.of(context).backgroundColor
+              : AppTheme.kListBackgroundColor2,
         ),
-        borderRadius: BorderRadius.circular(0.0),
-        color: (index % 2 == 0)
-            ? Theme.of(context).backgroundColor
-            : AppTheme.kListBackgroundColor2,
-      ),
-      child: ListTile(
-        onTap: () {
-          _route(obj, index);
-        },
-        visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        contentPadding:
-            EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: Icon(
-          Icons.list,
-          color: AppTheme.kListIconColor3,
-        ),
-        title: Text(
-          obj.titleC.toString(),
-          style: Theme.of(context).textTheme.bodyText2,
-        ),
-        trailing: Icon(
-          Icons.arrow_forward_ios_rounded,
-          size: 18,
-          color: AppTheme.kButtonbackColor,
-        ),
-      ),
-    );
+        child: obj != null && obj.titleC != null
+            ? ListTile(
+                onTap: () {
+                  _route(obj, index);
+                },
+                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                contentPadding: EdgeInsets.only(
+                    left: _kLabelSpacing, right: _kLabelSpacing / 2),
+                leading: Icon(
+                  Icons.list,
+                  color: AppTheme.kListIconColor3,
+                ),
+                title: Text(
+                  obj.titleC.toString(),
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 18,
+                  color: AppTheme.kButtonbackColor,
+                ),
+              )
+            : Container(child: Text("No contact detail found")));
   }
 
   Widget build(BuildContext context) {

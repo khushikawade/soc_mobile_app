@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/families/ui/calendar.dart';
 import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/families/ui/test.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -134,16 +135,19 @@ class _EventPageState extends State<EventPage> {
     return InkWell(
       onTap: () {
         // _launchURL('');
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => SliderWidget(
+        //               obj: EventModelList,
+        //               issocialpage: false,
+        //               iseventpage: true,
+        //               currentIndex: index,
+        //               date: '',
+        //             )));
+
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SliderWidget(
-                      obj: EventModelList,
-                      issocialpage: false,
-                      iseventpage: true,
-                      currentIndex: index,
-                      date: '',
-                    )));
+            context, MaterialPageRoute(builder: (context) => IntentTest()));
       },
       child: Container(
           decoration: BoxDecoration(

@@ -54,7 +54,11 @@ class _AboutusPageState extends State<AboutusPage> {
       child: Scaffold(
         appBar: CustomAppBarWidget(
           isSearch: false,
-          isShare: widget.url != "null" && widget.url.length > 1 ? true : false,
+          isShare: widget.url != null &&
+                  widget.url != "null" &&
+                  widget.url.length > 1
+              ? true
+              : false,
           sharedpopBodytext: widget.url.toString(),
           sharedpopUpheaderText: "Please checkout this link",
         ),
