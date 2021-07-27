@@ -99,7 +99,19 @@ class _StudentPageState extends State<StudentPage> {
                   backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is StudentDataSucess) {
-                return _buildGrid(3, state.obj!, state.subFolder!);
+                return state.obj != null && state.obj!.length > 0
+                    ? _buildGrid(3, state.obj!, state.subFolder!)
+                    : Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Text("No data found"),
+                      );
+              } else if (state is StudentError) {
+                return Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Text("Unable to load the data"),
+                );
               } else {
                 return Container();
               }

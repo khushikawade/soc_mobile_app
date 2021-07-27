@@ -14,11 +14,11 @@ class Loading extends SocialState {
   List<Object> get props => [];
 }
 
-class Errorinloading extends SocialState {
+class SocialError extends SocialState {
   final err;
-  Errorinloading({this.err});
-  Errorinloading copyWith({var err}) {
-    return Errorinloading(err: err ?? this.err);
+  SocialError({this.err});
+  SocialError copyWith({var err}) {
+    return SocialError(err: err ?? this.err);
   }
 
   @override

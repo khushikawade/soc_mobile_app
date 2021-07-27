@@ -67,7 +67,7 @@ class SocialDescription extends StatelessWidget {
             _buildnews(context),
             SpacerWidget(_kPadding / 2),
             _buildnewTimeStamp(context),
-            SpacerWidget(_kPadding * 5),
+            SpacerWidget(_kPadding / 5),
             _buildbuttomsection(context),
           ],
         ),
@@ -94,7 +94,7 @@ class SocialDescription extends StatelessWidget {
               ),
         Html(
           data:
-              "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\n]+'), '')}",
+              "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
         )
       ],
     );
@@ -106,11 +106,7 @@ class SocialDescription extends StatelessWidget {
           ? Container(
               alignment: Alignment.centerLeft,
               child: Text(
-                object.title["__cdata"]
-                    .toString()
-                    .replaceAll(new RegExp(r'[\\]+'), '\n')
-                    .replaceAll("n.", ".")
-                    .replaceAll("\nn", "\n"),
+                "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
                 textAlign: TextAlign.left,
               ),
             )
@@ -120,17 +116,13 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildnewTimeStamp(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-            child: object != null
-                ? Text(
-                    Utility.convertDate(object.pubDate).toString(),
-                    style: Theme.of(context).textTheme.subtitle1,
-                  )
-                : Text("No timestamp found")),
-      ],
-    );
+    return Container(
+        child: object != null && object.pubDate.length > 1
+            ? Text(
+                Utility.convertDate(object.pubDate).toString(),
+                style: Theme.of(context).textTheme.subtitle1,
+              )
+            : Container());
   }
 
   Widget build(BuildContext context) {

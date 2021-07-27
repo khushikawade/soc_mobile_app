@@ -14,11 +14,11 @@ class Loading extends StudentState {
   List<Object> get props => [];
 }
 
-class Errorinloading extends StudentState {
+class StudentError extends StudentState {
   final err;
-  Errorinloading({this.err});
-  Errorinloading copyWith({var err}) {
-    return Errorinloading(err: err ?? this.err);
+  StudentError({this.err});
+  StudentError copyWith({var err}) {
+    return StudentError(err: err ?? this.err);
   }
 
   @override
