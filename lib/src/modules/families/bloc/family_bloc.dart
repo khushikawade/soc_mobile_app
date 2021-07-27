@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Soc/src/modules/families/modal/calendar_list.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/families/modal/stafflist.dart';
@@ -62,6 +63,17 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         yield ErrorLoading(err: e);
       }
     }
+
+    if (event is CalendarListEvent) {
+      try {
+        yield FamilyLoading();
+        List<CalendarList> list = await getCalendarEventList();
+
+        yield CalendarListSuccess(obj: list);
+      } catch (e) {
+        yield ErrorLoading(err: e);
+      }
+    }
   }
 
   Future<List<FamiliesList>> getFamilyList() async {
@@ -108,6 +120,24 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         dataArray = response.data["records"];
         return response.data["records"]
             .map<SDlist>((i) => SDlist.fromJson(i))
+            .toList();
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<CalendarList>> getCalendarEventList() async {
+    try {
+      final ResponseModel response = await _dbServices.getapi(
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,Start_Date__c,End_Date__c, Invite_Link__c, Description__c FROM Calendar_Events_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
+
+      if (response.statusCode == 200) {
+        dataArray = response.data["records"];
+        return response.data["records"]
+            .map<CalendarList>((i) => CalendarList.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');

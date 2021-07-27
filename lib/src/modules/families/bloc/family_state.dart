@@ -72,3 +72,18 @@ class SDDataSucess extends FamilyState {
   @override
   List<Object> get props => [];
 }
+
+class CalendarListSuccess extends FamilyState {
+  List<CalendarList>? obj;
+  CalendarListSuccess({
+    this.obj,
+  });
+  CalendarListSuccess copyWith({
+    var obj,
+  }) {
+    return CalendarListSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}

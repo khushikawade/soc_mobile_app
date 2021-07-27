@@ -1,14 +1,10 @@
-import 'package:Soc/src/modules/families/ui/calendar.dart';
-import 'package:Soc/src/modules/families/ui/eventdescition.dart';
-import 'package:Soc/src/modules/families/ui/test.dart';
+import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import 'eventmodal.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventPage extends StatefulWidget {
   @override
@@ -17,137 +13,27 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage> {
   static const double _kLabelSpacing = 15.0;
+  FamilyBloc _eventBloc = FamilyBloc();
 
-  // final TextStyle headingtextStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Medium",
-  //   fontSize: 16,
-  //   color: AppTheme.kFontColor2,
-  // );
-
-  // final TextStyle datetextStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Medium",
-  //   fontSize: 22,
-  //   fontWeight: FontWeight.w600,
-  //   color: AppTheme.kAccentColor,
-  // );
-
-  // final TextStyle monthtextStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Regular",
-  //   fontSize: 16,
-  //   fontWeight: FontWeight.normal,
-  //   color: AppTheme.kAccentColor,
-  // );
-
-  // final TextStyle eventtextStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Bold",
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: 16,
-  //   color: AppTheme.kAccentColor,
-  // );
-
-  // final TextStyle timeStamptextStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Regular",
-  //   fontSize: 13,
-  //   color: AppTheme.kAccentColor,
-  // );
-
-  static const List<EventModel> EventModelList = const <EventModel>[
-    const EventModel(
-      date: '13',
-      month: 'SEP',
-      eventLink:
-          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
-      headline: 'First Day Of School',
-      timestamp: '13/09/2021',
-    ),
-    const EventModel(
-      date: '16',
-      month: 'SEP',
-      eventLink:
-          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
-      headline: 'Yom kippur:School Closed',
-      timestamp: '16/09/2021 20:39',
-    ),
-    const EventModel(
-      date: '11',
-      month: 'OCT',
-      eventLink:
-          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
-      headline: 'Indigenous People Day:Schools',
-      timestamp: '11/10/2021 1:39',
-    ),
-    const EventModel(
-      date: '02',
-      month: 'NOV',
-      eventLink:
-          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
-      headline: 'Election Day:Fully Remote Asy..',
-      timestamp: '02/11/2021 20:39',
-    ),
-    const EventModel(
-      date: '18',
-      month: 'NOV',
-      eventLink:
-          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
-      headline: 'Conference: Half Day for Students',
-      timestamp: '18/11/2021 1:39',
-    ),
-    const EventModel(
-      date: '25',
-      month: 'NOV',
-      eventLink:
-          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
-      headline: 'Election Day: Fully Remote, Asy…',
-      timestamp: '25/11/2021 - 26/11/2021',
-    ),
-    const EventModel(
-      date: '24',
-      month: 'DEC',
-      eventLink:
-          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
-      headline: 'Thanks giving Recess:School',
-      timestamp: '25/11/2021 - 26/11/2021',
-    ),
-    const EventModel(
-      date: '17',
-      month: 'JAN',
-      eventLink:
-          'https://calendar.google.com/calendar/u/0/r/week/2021/7/15?eid=NmoxMTlhbTRmYzduMzZvbW8ydHNucTQyOGggYXNod2ludGhha3VyNDk4QG0&ctok=YXNod2ludGhha3VyNDk4QGdtYWlsLmNvbQ',
-      headline: 'Rev. Dr. Martin Luther king Jr… ',
-      timestamp: '17/01/2022',
-    ),
-  ];
-
-  _launchURL(obj) async {
-    if (await canLaunch(obj)) {
-      await launch(obj);
-    } else {
-      throw 'Could not launch ${obj}';
-    }
+  @override
+  void initState() {
+    super.initState();
+    _eventBloc.add(CalendarListEvent());
   }
 
-  Widget _buildList(int index) {
+  Widget _buildList(list, int index, mainObj) {
     return InkWell(
       onTap: () {
-        // _launchURL('');
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => SliderWidget(
-        //               obj: EventModelList,
-        //               issocialpage: false,
-        //               iseventpage: true,
-        //               currentIndex: index,
-        //               date: '',
-        //             )));
-
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => IntentTest()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => SliderWidget(
+                      obj: mainObj,
+                      issocialpage: false,
+                      iseventpage: true,
+                      currentIndex: index,
+                      date: '',
+                    )));
       },
       child: Container(
           decoration: BoxDecoration(
@@ -161,18 +47,50 @@ class _EventPageState extends State<EventPage> {
           ),
           child: Container(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: _kLabelSpacing * 2, vertical: _kLabelSpacing / 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _buildDate(index),
-                  HorzitalSpacerWidget(_kLabelSpacing),
-                  _builEvent(index),
-                ],
-              ),
-            ),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: _kLabelSpacing * 1,
+                    vertical: _kLabelSpacing / 2),
+                child: ListTile(
+                  leading: Container(
+                    alignment: Alignment.center,
+                    width: 30,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          Utility.convertDateFormat(list.startDate!)
+                              .toString()
+                              .substring(0, 2),
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
+                        Text(
+                          Utility.getMonthFromDate(list.startDate!)
+                              .toString()
+                              .split("/")[1],
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  fontWeight: FontWeight.normal, height: 1.5),
+                        )
+                      ],
+                    ),
+                  ),
+                  title: Text(
+                    list.titleC!,
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                  subtitle: Text(
+                    Utility.convertDateFormat(list.startDate!) +
+                        " - " +
+                        Utility.convertDateFormat(list.endDate!),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(fontWeight: FontWeight.normal, height: 1.5),
+                  ),
+                )),
           )),
     );
   }
@@ -201,70 +119,48 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  Widget _buildDate(int index) {
-    return Column(
-      children: [
-        Text(
-          EventModelList[index].date,
-          style: Theme.of(context).textTheme.headline5,
-        ),
-        Text(
-          EventModelList[index].month,
-          style: Theme.of(context)
-              .textTheme
-              .headline2!
-              .copyWith(fontWeight: FontWeight.normal, height: 1.5),
-        )
-      ],
-    );
-  }
-
-  Widget _builEvent(int index) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          EventModelList[index].headline,
-          style: Theme.of(context).textTheme.headline2!.copyWith(height: 1.5),
-        ),
-        SpacerWidget(_kLabelSpacing / 2),
-        _builTimeStamp(index),
-      ],
-    );
-  }
-
-  Widget _builTimeStamp(int index) {
-    return Row(
-      children: [
-        Text(
-          EventModelList[index].timestamp,
-          style: Theme.of(context).textTheme.subtitle1,
-        ),
-      ],
-    );
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBarWidget(
+          isSearch: true,
+          isShare: false,
+          sharedpopUpheaderText: "",
+          sharedpopBodytext: ""),
       body: SingleChildScrollView(
         child: SafeArea(
-          child: Column(
-            children: [
-              _buildHeading("Upcoming"),
-              ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: 5,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildList(index);
-                },
-              ),
-              // ),
-            ],
-          ),
-        ),
+            child: BlocBuilder<FamilyBloc, FamilyState>(
+                bloc: _eventBloc,
+                builder: (BuildContext contxt, FamilyState state) {
+                  if (state is FamilyLoading) {
+                    return Container(
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator(
+                          backgroundColor: Theme.of(context).accentColor,
+                        ));
+                  } else if (state is CalendarListSuccess) {
+                    return Column(
+                      children: [
+                        _buildHeading("Upcoming"),
+                        ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: state.obj!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return state.obj!.length > 0
+                                ? _buildList(
+                                    state.obj![index], index, state.obj)
+                                : Container();
+                          },
+                        ),
+                        // ),
+                      ],
+                    );
+                  } else {
+                    return Container();
+                  }
+                })),
       ),
     );
   }

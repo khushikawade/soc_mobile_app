@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:Soc/src/styles/theme.dart';
 
+// ignore: must_be_immutable
 class Custombuttom extends StatelessWidget {
   String label;
   Color bakcolor;

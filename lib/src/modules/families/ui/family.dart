@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/families/ui/contact.dart';
+import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -47,6 +48,9 @@ class _FamilyPageState extends State<FamilyPage> {
               builder: (BuildContext context) => StaffDirectory(
                     obj: obj,
                   )));
+    } else if (obj.titleC == "Calendar/Events") {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) => EventPage()));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(

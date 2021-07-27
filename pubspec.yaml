@@ -60,7 +60,7 @@ dependencies:
   build_runner: ^2.0.6
   device_apps:
   android_intent:
-  device_calendar: ^3.1.0
+  # device_calendar: ^3.1.0
   add_2_calendar: ^2.1.0
   
 
