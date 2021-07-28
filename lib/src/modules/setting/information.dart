@@ -1,13 +1,9 @@
-import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../../../../overrides.dart' as overrides;
+import '../../overrides.dart' as overrides;
 
 class InformationPage extends StatefulWidget {
   @override

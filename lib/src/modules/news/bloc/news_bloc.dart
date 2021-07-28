@@ -132,7 +132,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         await Future.delayed(Duration(milliseconds: 2000));
         updateDeviceId();
         return;
-      } else {}
+      } else {
+        Globals.deviceID = deviceId;
+      }
     } catch (e) {
       throw ("something went wrong");
     }

@@ -26,7 +26,7 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     getDeviceType();
-
+    getDeviceInfo();
     _loginBloc.add(PerfomLogin());
   }
 
@@ -59,13 +59,28 @@ class _StartupPageState extends State<StartupPage> {
       Globals.phoneModel = andorid!.device;
       Globals.baseOS = andorid!.version.baseOS;
       Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
+      var androidInfo = await DeviceInfoPlugin().androidInfo;
+      Globals.release = androidInfo.version.release;
+      // var sdkInt = androidInfo.version.sdkInt;
+      Globals.manufacturer = androidInfo.manufacturer;
+      Globals.model = androidInfo.model;
+      // print('Android $release (SDK $sdkInt), $manufacturer $model');
+    }
+    if (Platform.isIOS) {
+      var iosInfo = await DeviceInfoPlugin().iosInfo;
+      Globals.manufacturer = iosInfo.systemName;
+      Globals.release = iosInfo.systemVersion;
+      Globals.name = iosInfo.name;
+      Globals.model = iosInfo.model;
+      // print('$systemName $version, $name $model');
+      // iOS 13.1, iPhone 11 Pro Max iPhone
     } else {}
   }
 
   static Future<String> getDeviceInfo() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-
+    print(iosInfo.model.toLowerCase());
     return iosInfo.model.toLowerCase();
   }
 

@@ -13,10 +13,15 @@ class Globals {
   static String? phoneModel;
   static String? baseOS;
   static String? deviceType;
+  static String? deviceID;
   static String? phone = 'phone';
   var object;
   static int? outerBottombarIndex;
   static int? internalBottombarIndex;
   static var homeObjet;
   static GlobalKey<NavigatorState>? appNavigator;
+  static String? manufacturer;
+  static String? release;
+  static String? model;
+  static String? name;
 }
