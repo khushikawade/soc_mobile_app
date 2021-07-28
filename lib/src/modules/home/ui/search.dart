@@ -9,19 +9,22 @@ import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/Strings.dart';
-import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
+  bool isbuttomsheet;
+
+  SearchPage({Key? key, required this.isbuttomsheet}) : super(key: key);
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -37,6 +40,7 @@ class _SearchPageState extends State<SearchPage> {
   HomeBloc _searchBloc = new HomeBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   static const double _kIconSize = 35.0;
+
   onItemChanged(String value) {
     issuggestionList = true;
     _debouncer.run(() {
@@ -65,8 +69,10 @@ class _SearchPageState extends State<SearchPage> {
           ? Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      ContactPage(obj: Globals.homeObjet)))
+                  builder: (BuildContext context) => ContactPage(
+                        obj: Globals.homeObjet,
+                        isbuttomsheet: true,
+                      )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
       Navigator.push(
@@ -74,6 +80,7 @@ class _SearchPageState extends State<SearchPage> {
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
                     obj: obj,
+                    isbuttomsheet: true,
                   )));
     } else if (obj.deepLink != null) {
       if (obj.deepLink == 'NO') {
@@ -83,6 +90,7 @@ class _SearchPageState extends State<SearchPage> {
                 builder: (BuildContext context) => InAppUrlLauncer(
                       title: obj.titleC!,
                       url: obj.appURLC!,
+                      isbuttomsheet: true,
                     )));
       } else {
         if (await canLaunch(obj.appURLC!)) {
@@ -99,6 +107,7 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context) => InAppUrlLauncer(
                         title: obj.titleC!,
                         url: obj.urlC!,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
@@ -109,10 +118,11 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
                         url: obj.urlC,
+                        isbuttomsheet: true,
+                        ishtml: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
-      // print(obj.pdfURL);
       obj.pdfURL != null
           ? Navigator.push(
               context,
@@ -120,14 +130,18 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         url: obj.pdfURL,
                         tittle: obj.titleC,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  SubListPage(obj: obj, module: "family")));
+              builder: (BuildContext context) => SubListPage(
+                    obj: obj,
+                    module: "family",
+                    isbuttomsheet: true,
+                  )));
     } else {
       Utility.showSnackBar(
           _scaffoldKey, "No data available for this record", context);
@@ -146,8 +160,10 @@ class _SearchPageState extends State<SearchPage> {
               () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          ContactPage(obj: Globals.homeObjet))))
+                      builder: (BuildContext context) => ContactPage(
+                            obj: Globals.homeObjet,
+                            isbuttomsheet: true,
+                          ))))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
       Navigator.push(
@@ -155,6 +171,7 @@ class _SearchPageState extends State<SearchPage> {
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
                     obj: obj,
+                    isbuttomsheet: true,
                   )));
     } else if (obj.deepLink != null) {
       if (obj.deepLink == 'NO') {
@@ -166,6 +183,7 @@ class _SearchPageState extends State<SearchPage> {
                     builder: (BuildContext context) => InAppUrlLauncer(
                           title: obj.titleC!,
                           url: obj.appURLC!,
+                          isbuttomsheet: true,
                         ))));
       } else {
         if (await canLaunch(obj.appURLC!)) {
@@ -184,6 +202,7 @@ class _SearchPageState extends State<SearchPage> {
                       builder: (BuildContext context) => InAppUrlLauncer(
                             title: obj.titleC!,
                             url: obj.urlC!,
+                            isbuttomsheet: true,
                           ))))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
@@ -194,10 +213,11 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
                         url: obj.urlC,
+                        isbuttomsheet: true,
+                        ishtml: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
-      // print(obj.pdfURL);
       obj.pdfURL != null
           ? Future.delayed(
               const Duration(seconds: 0),
@@ -207,6 +227,7 @@ class _SearchPageState extends State<SearchPage> {
                       builder: (BuildContext context) => CommonPdfViewerPage(
                             url: obj.pdfURL,
                             tittle: obj.titleC,
+                            isbuttomsheet: true,
                           ))))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
@@ -215,8 +236,11 @@ class _SearchPageState extends State<SearchPage> {
           () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      SubListPage(obj: obj, module: "family"))));
+                  builder: (BuildContext context) => SubListPage(
+                        obj: obj,
+                        module: "family",
+                        isbuttomsheet: true,
+                      ))));
     } else {
       Utility.showSnackBar(
           _scaffoldKey, "No data available for this record", context);
@@ -468,66 +492,62 @@ class _SearchPageState extends State<SearchPage> {
 
   void addtoDataBase(Recent log) async {
     bool isSuccess = await DbServices().addData(log, Strings.hiveLogName);
-
-    // if (isSuccess != null && isSuccess) {
-    //   print(
-    //       "hive *********************************************************************************");
-    //   print(isSuccess);
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      resizeToAvoidBottomInset: true,
-      appBar: new AppBar(
-        elevation: 0.0,
-        leading: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0, left: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(
-                  const IconData(0xe80d,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: AppTheme.kIconColor1,
-                  size: 20,
+        key: _scaffoldKey,
+        resizeToAvoidBottomInset: true,
+        appBar: new AppBar(
+          elevation: 0.0,
+          leading: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0, left: 10),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(
+                    const IconData(0xe80d,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: AppTheme.kIconColor1,
+                    size: 20,
+                  ),
                 ),
               ),
+            ],
+          ),
+          title: Padding(
+            padding: const EdgeInsets.only(top: _kLabelSpacing / 2),
+            child: Image.asset(
+              'assets/images/bear.png',
+              fit: BoxFit.fill,
+              height: _kIconSize,
+              width: _kIconSize * 2,
             ),
-          ],
-        ),
-        title: Padding(
-          padding: const EdgeInsets.only(top: _kLabelSpacing / 2),
-          child: Image.asset(
-            'assets/images/bear.png',
-            fit: BoxFit.fill,
-            height: _kIconSize,
-            width: _kIconSize * 2,
           ),
         ),
-      ),
-      body: Container(
-        child: Column(mainAxisSize: MainAxisSize.max, children: [
-          _buildHeading(),
-          SpacerWidget(_kLabelSpacing / 2),
-          _buildSearchbar(),
-          issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
-          SpacerWidget(_kLabelSpacing),
-          issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
-          issuggestionList == false
-              ? _buildRecentItemList()
-              : SizedBox(height: 0),
-        ]),
-      ),
-    );
+        body: Container(
+          child: Column(mainAxisSize: MainAxisSize.max, children: [
+            _buildHeading(),
+            SpacerWidget(_kLabelSpacing / 2),
+            _buildSearchbar(),
+            issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
+            SpacerWidget(_kLabelSpacing),
+            issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
+            issuggestionList == false
+                ? _buildRecentItemList()
+                : SizedBox(height: 0),
+          ]),
+        ),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }

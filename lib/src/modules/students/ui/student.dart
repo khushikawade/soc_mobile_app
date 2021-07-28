@@ -38,6 +38,7 @@ class _StudentPageState extends State<StudentPage> {
                 builder: (BuildContext context) => InAppUrlLauncer(
                       title: obj.titleC!,
                       url: obj.appUrlC!,
+                      isbuttomsheet: true,
                     )));
       } else {
         if (await canLaunch(obj.appUrlC!)) {

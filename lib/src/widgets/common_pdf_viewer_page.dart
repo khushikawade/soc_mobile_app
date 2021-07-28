@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,12 @@ import 'package:path_provider/path_provider.dart';
 class CommonPdfViewerPage extends StatefulWidget {
   final String? url;
   String? tittle = '';
-  CommonPdfViewerPage({Key? key, @required this.url, @required this.tittle})
+  bool isbuttomsheet;
+  CommonPdfViewerPage(
+      {Key? key,
+      @required this.url,
+      @required this.tittle,
+      required this.isbuttomsheet})
       : super(key: key);
   @override
   _CommonPdfViewerPageState createState() => _CommonPdfViewerPageState();
@@ -87,8 +94,9 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                     zoomSteps: 2,
                     scrollDirection: Axis.vertical,
                   )
-            : Text("No Document Found"));
+            : Text("No Document Found"),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }
-
-// CustomAppBarWidget

@@ -9,7 +9,6 @@ import 'db_service_response.model.dart';
 class DbServices {
   getapi(api, {headers}) async {
     try {
-      // print('${Overrides.API_BASE_URL}$api');
       final response =
           await httpClient.get(Uri.parse('${Overrides.API_BASE_URL}$api'),
               headers: headers != null
@@ -24,9 +23,7 @@ class DbServices {
         final data = json.decode(response.body);
         return ResponseModel(statusCode: response.statusCode, data: data);
       } else {
-        // print(response.body);
         if (response.body == 'Unauthorized') {
-          // await refreshtoken(); here we should refresh the token // TODO implement refresh session
           ResponseModel _res = await getapi(api, headers: headers);
           return _res;
         }
@@ -43,7 +40,6 @@ class DbServices {
 
   postapi(api, {body, headers}) async {
     try {
-      // print('${Overrides.API_BASE_URL}$api?output=json');
       final response = await httpClient.post(
           Uri.parse('${Overrides.API_BASE_URL}$api?output=json'),
           headers: headers ??
@@ -84,7 +80,6 @@ class DbServices {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json',
-            // 'Authorization': 'Bearer ${Globals.token}'
           },
         ),
       );
@@ -148,55 +143,6 @@ class DbServices {
       }
     }
   }
-
-  // Future<List> getSelectedDateData(tableName) async {
-  //   try {
-  //     var hiveBox = await Hive.openBox(tableName);
-  //     var list = hiveBox.values.toList();
-  //     List<LogsModel> listofSelectedDate;
-  //     listofSelectedDate = new List();
-
-  //     if (list != null && list.length > 0) {
-  //       for (int i = 0; i < list.length; i++) {
-  //         // print(logsList[i].dateTime);
-
-  //         String logTemp1 = "${list[i].dateTime}".split(' ')[0];
-  //         String logTemp2 = "${globals.getdatefromslider}".split(' ')[0];
-
-  //         if (logTemp1 == logTemp2) {
-  //           // DateTime dateTime = logsList[i].dateTime;
-  //           // String position;
-  //           // String temprature;
-  //           // String symptoms;
-  //           // var addMedinceLog;
-  //           // String addNotehere;
-  //           var item = LogsModel(
-  //               list[i].dateTime,
-  //               list[i].position,
-  //               list[i].temprature,
-  //               list[i].symptoms,
-  //               list[i].addMedinceLog,
-  //               list[i].addNotehere);
-
-  //           listofSelectedDate.add(item);
-
-  //           // var filteredUsers = logsList.values
-  //           //     .where((LogsModel) => LogsModel.dateTime == "")
-  //           //     .toList();
-  //           // print(filteredUsers.length);
-  //         }
-  //       }
-  //     }
-
-  //     return listofSelectedDate;
-  //   } catch (e) {
-  //     if (e.toString().contains("Failed host lookup")) {
-  //       throw ("NO_CONNECTION");
-  //     } else {
-  //       throw (e);
-  //     }
-  //   }
-  // }
 
   Future<bool> updateListData(tableName, index, value) async {
     try {

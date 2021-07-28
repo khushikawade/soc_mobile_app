@@ -7,9 +7,6 @@ abstract class StaffEvent extends Equatable {
 class StaffPageEvent extends StaffEvent {
   @override
   List<Object> get props => [];
-
-  // @override
-  // String toString() => 'StaffButtonPressed';
 }
 
 class StaffSubListEvent extends StaffEvent {

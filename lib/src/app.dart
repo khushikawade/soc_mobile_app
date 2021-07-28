@@ -22,7 +22,6 @@ class _AppState extends State<App> {
     _newLocaleDelegate = AppTranslationsDelegate(newLocale: null);
     checkForSetLanguage();
     application.onLocaleChanged = onLocaleChange;
-    //
   }
 
   checkForSetLanguage() async {
@@ -39,18 +38,15 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Soc',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.lightTheme,
-      // home: LoginPage(),
       home: StartupPage(),
       localizationsDelegates: [
         _newLocaleDelegate!,
-        //provides localised strings
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-        //provides RTL support
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: application.supportedLocales(),

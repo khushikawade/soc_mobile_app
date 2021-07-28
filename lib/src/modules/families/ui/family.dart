@@ -11,6 +11,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:html/dom_parsing.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
@@ -38,8 +39,10 @@ class _FamilyPageState extends State<FamilyPage> {
           ? Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      ContactPage(obj: widget.obj)))
+                  builder: (BuildContext context) => ContactPage(
+                        obj: widget.obj,
+                        isbuttomsheet: true,
+                      )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
       Navigator.push(
@@ -47,17 +50,25 @@ class _FamilyPageState extends State<FamilyPage> {
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
                     obj: obj,
+                    isbuttomsheet: true,
                   )));
     } else if (obj.titleC == "Calendar/Events") {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext context) => EventPage()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => EventPage(
+                    isbuttomsheet: true,
+                  )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC!, url: obj.appUrlC ?? '')))
+                        title: obj.titleC!,
+                        url: obj.appUrlC ?? '',
+                        isbuttomsheet: true,
+                      )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
       obj.rtfHTMLC != null
@@ -67,10 +78,11 @@ class _FamilyPageState extends State<FamilyPage> {
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
                         url: obj.appUrlC ?? '',
+                        isbuttomsheet: true,
+                        ishtml: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
-      // print(obj.pdfURL);
       obj.pdfURL != null
           ? Navigator.push(
               context,
@@ -78,14 +90,18 @@ class _FamilyPageState extends State<FamilyPage> {
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         url: obj.pdfURL,
                         tittle: obj.titleC,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  SubListPage(obj: obj, module: "family")));
+              builder: (BuildContext context) => SubListPage(
+                    obj: obj,
+                    module: "family",
+                    isbuttomsheet: true,
+                  )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }

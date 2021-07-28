@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:Soc/src/modules/families/ui/event.dart';
-import 'package:Soc/src/modules/families/ui/eventdescition.dart';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/home/ui/search.dart';
@@ -40,6 +39,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _bloc.initPushState(context);
+    _selectedIndex = Globals.outerBottombarIndex ?? 0;
   }
 
   Widget _buildPopupMenuWidget() {
@@ -93,7 +93,6 @@ class _HomePageState extends State<HomePage> {
     } else if (_selectedIndex == 2) {
       return StudentPage();
     } else if (_selectedIndex == 3) {
-      // return EventPage();
       return FamilyPage(
         obj: widget.homeObj,
       );
@@ -153,8 +152,12 @@ class _HomePageState extends State<HomePage> {
             actions: <Widget>[
               IconButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SearchPage()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SearchPage(
+                                  isbuttomsheet: true,
+                                )));
                   },
                   icon: Icon(
                     const IconData(0xe805,
@@ -167,7 +170,7 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
-          items: widget.homeObj["Bottom_Navigation__c"]
+          items: Globals.homeObjet["Bottom_Navigation__c"]
               .split(";")
               .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
                     icon: Column(children: [
@@ -190,6 +193,7 @@ class _HomePageState extends State<HomePage> {
           onTap: (index) {
             setState(() {
               _selectedIndex = index;
+              Globals.internalBottombarIndex = index;
             });
           },
         ),

@@ -4,7 +4,8 @@ import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/inappbrowerwidget.dart';
+import 'package:Soc/src/widgets/sharepopmenu.dart';
+import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import '../overrides.dart';
@@ -42,15 +43,6 @@ class _SliderWidgetState extends State<SliderWidget> {
   var link;
   var link2;
   bool first = false;
-
-  @override
-  // void didChangeDependencies() {
-  //   WidgetsBinding.instance!.addPostFrameCallback((_) {
-  //     if (_controller.hasClients) _controller.jumpToPage(widget.currentIndex);
-  //   });
-
-  //   super.didChangeDependencies();
-  // }
 
   @override
   void initState() {
@@ -98,7 +90,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                     if (widget.currentIndex > 0) {
                       _controller.previousPage(
                           duration: _kDuration, curve: _kCurve);
-                      // --widget.currentIndex;
                     }
                   },
                   icon: Icon(
@@ -119,7 +110,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                 setState(() {});
                 if (widget.currentIndex < object.length - 1) {
                   _controller.nextPage(duration: _kDuration, curve: _kCurve);
-                  // ++widget.currentIndex;
                 }
               },
               icon: (Icon(
@@ -161,10 +151,14 @@ class _SliderWidgetState extends State<SliderWidget> {
               return widget.issocialpage!
                   ? SocialDescription(object: object[widget.currentIndex])
                   : widget.iseventpage!
-                      ? EventDescription(obj: object[widget.currentIndex])
+                      ? EventDescription(
+                          obj: object[widget.currentIndex],
+                          isbuttomsheet: true,
+                        )
                       : Newdescription(
                           obj: object[widget.currentIndex],
                           date: widget.date,
+                          isbuttomsheet: true,
                         );
             },
           ),
@@ -177,7 +171,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   Widget buttomButtonsWidget(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: EdgeInsets.all(_kPadding / 2),
+        padding: EdgeInsets.all(_kPadding),
         color: AppTheme.kBackgroundColor,
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -188,25 +182,31 @@ class _SliderWidgetState extends State<SliderWidget> {
               child: ElevatedButton(
                 onPressed: () async {
                   _buildlink();
-
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              InAppBrowser(link: link2, isSocialpage: true)));
+                          builder: (context) => SoicalPageWebview(
+                                link: link2,
+                                isSocialpage: true,
+                                isbuttomsheet: true,
+                              )));
                 },
                 child: Text("More"),
               ),
             ),
-            SizedBox(
-              width: _kPadding / 2,
-            ),
+            HorzitalSpacerWidget(_kPadding / 2),
             SizedBox(
               width: _KButtonSize,
               height: _KButtonSize / 2,
               child: ElevatedButton(
-                onPressed: () {
-                  _onShareWithEmptyOrigin(context);
+                onPressed: () async {
+                  SharePopUp obj = new SharePopUp();
+                  String link = await _buildlink();
+                  final String body =
+                      "${widget.obj[widget.currentIndex].title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}"
+                              " " +
+                          link;
+                  obj.callFunction(context, body, "");
                 },
                 child: Text("Share"),
               ),
@@ -217,66 +217,20 @@ class _SliderWidgetState extends State<SliderWidget> {
     );
   }
 
-// MORE_BUTTON_LINK
-  Future _buildlink() async {
+  Future<String> _buildlink() async {
     link = widget.obj[widget.currentIndex].link.toString();
-
     RegExp exp =
         new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
     Iterable<RegExpMatch> matches = exp.allMatches(link);
     matches.forEach((match) {
       link2 = link.substring(match.start, match.end);
     });
-    // print(link2);
-  }
-
-// SHARE BUTTON
-  _onShareWithEmptyOrigin(BuildContext context) async {
-    RenderBox? box = context.findRenderObject() as RenderBox;
-    final String body = widget.obj[widget.currentIndex].title["__cdata"] +
-        " " +
-        widget.obj[widget.currentIndex].link.toString();
-
-    await Share.share(body,
-        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+    return link2;
   }
 
   void htmlparser() {
-    List<String> data = [];
-
-    // data.add(object[0]
-    //     .description["__cdata"]
-    //     .getElementsByClassName("time")[0]
-    //     .innerHtml);
-
-    //declaring variable for temp since we will be using it multiple places
-    // var temp =
-    //     object[0].description["__cdata"].getElementsByTagName("<div>")[0];
-    // data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<div>")));
-    // data.add(temp
-    //     .getElementsByTagName("small")[0]
-    //     .innerHtml
-    //     .replaceAll(RegExp("[(|)|℃]"), ""));
-
-    // //We can also do document.getElementsByTagName("td") but I am just being more specific here.
-    // var rows = object[0]
-    //     .description["__cdata"]
-    //     .getElementsByTagName("table")[0]
-    //     .getElementsByTagName("td");
-
-    // //Map elememt to its innerHtml,  because we gonna need it.
-    // //Iterate over all the table-data and store it in the data list
-    // rows.map((e) => e.innerHtml).forEach((element) {
-    //   if (element != "-") {
-    //     data.add(element);
-    //   }
-    // });
     var doc = parse(object[0].description["__cdata"]);
-    //print the data to console.
-
     var element = doc.getElementById('content');
-
     debugPrint(element!.querySelectorAll('div').toString());
-    // print(doc.body);
   }
 }

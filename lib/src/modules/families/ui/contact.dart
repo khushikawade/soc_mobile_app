@@ -1,16 +1,21 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/urllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// ignore: must_be_immutable
 class ContactPage extends StatefulWidget {
   var obj;
-  ContactPage({Key? key, required this.obj}) : super(key: key);
+  bool isbuttomsheet;
+  ContactPage({Key? key, required this.obj, required this.isbuttomsheet})
+      : super(key: key);
 
   @override
   _ContactPageState createState() => _ContactPageState();
@@ -19,7 +24,8 @@ class ContactPage extends StatefulWidget {
 class _ContactPageState extends State<ContactPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
-  static const double _kboxwidth = 300.0;
+  UrlLauncherWidget urlobj = new UrlLauncherWidget();
+
   static const double _kboxborderwidth = 0.75;
   var longitude;
   var latitude;
@@ -29,22 +35,8 @@ class _ContactPageState extends State<ContactPage> {
   void initState() {
     super.initState();
     object = widget.obj;
-    latitude = object["Contact_Office_Location__Latitude__s"];
-    longitude = object["Contact_Office_Location__Longitude__s"];
-  }
-
-  void _launch(String launchThis) async {
-    try {
-      String url = launchThis;
-      if (await canLaunch(url)) {
-        await launch(url);
-      } else {
-        print("Unable to launch $launchThis");
-//        throw 'Could not launch $url';
-      }
-    } catch (e) {
-      print(e.toString());
-    }
+    // latitude = object["Contact_Office_Location__Latitude__s"] ?? '';
+    // longitude = object["Contact_Office_Location__Longitude__s"] ?? '';
   }
 
   //TOP SECTION START
@@ -129,7 +121,7 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          latitude != null
+          latitude != null && latitude.length > 1 && longitude.length > 1
               ? SizedBox(
                   height: _kboxheight * 2,
                   child: GoogleMaps(
@@ -207,15 +199,12 @@ class _ContactPageState extends State<ContactPage> {
             children: [
               object["Contact_Address__c"] != null &&
                       object["Contact_Address__c"].length > 1
-                  ? Container(
-                      width: MediaQuery.of(context).size.width * .60,
-                      child: Text(
-                        object["Contact_Address__c"],
-                        style: Theme.of(context).textTheme.bodyText2,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 4,
-                        textAlign: TextAlign.start,
-                      ))
+                  ? Text(
+                      object["Contact_Address__c"],
+                      style: Theme.of(context).textTheme.bodyText2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.start,
+                    )
                   : Container(child: Text("No address  available here")),
             ],
           ),
@@ -243,8 +232,9 @@ class _ContactPageState extends State<ContactPage> {
               ? InkWell(
                   onTap: () {
                     object["Contact_Phone__c"] != null
-                        ? _launch("tel:" + object["Contact_Phone__c"])
-                        : print("he");
+                        ? urlobj.callurlLaucher(
+                            context, "tel:" + object["Contact_Phone__c"])
+                        : print("No phone");
                   },
                   child: Text(
                     object["Contact_Phone__c"],
@@ -293,7 +283,8 @@ class _ContactPageState extends State<ContactPage> {
               ? InkWell(
                   onTap: () {
                     object["Contact_Email__c"] != null
-                        ? _launch('mailto:"${object["Contact_Email__c"]}"')
+                        ? urlobj.callurlLaucher(
+                            context, 'mailto:"${object["Contact_Email__c"]}"')
                         : print("null value");
                   },
                   child: Text(
@@ -310,30 +301,32 @@ class _ContactPageState extends State<ContactPage> {
 // BUTTOM SECTION END
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        isSearch: true,
-        isShare: false,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-      ),
-      body: Container(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildIcon(),
-          SpacerWidget(_kLabelSpacing),
-          tittleWidget(),
-          SpacerWidget(_kLabelSpacing / 1.5),
-          _buildMapWidget(),
-          _buildaddressWidget(),
-          SpacerWidget(_kLabelSpacing / 1.25),
-          _buildPhoneWidget(),
-          SpacerWidget(_kLabelSpacing / 1.25),
-          _buildEmailWidget()
-        ],
-      )),
-    );
+        appBar: CustomAppBarWidget(
+          isSearch: true,
+          isShare: false,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+        ),
+        body: Container(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildIcon(),
+            SpacerWidget(_kLabelSpacing),
+            tittleWidget(),
+            SpacerWidget(_kLabelSpacing / 1.5),
+            _buildMapWidget(),
+            _buildaddressWidget(),
+            SpacerWidget(_kLabelSpacing / 1.25),
+            _buildPhoneWidget(),
+            SpacerWidget(_kLabelSpacing / 1.25),
+            _buildEmailWidget()
+          ],
+        )),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }
 
