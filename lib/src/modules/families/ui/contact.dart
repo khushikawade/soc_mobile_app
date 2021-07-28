@@ -5,7 +5,8 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:Soc/src/widgets/urllauncher.dart';
+
+import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -329,5 +330,3 @@ class _ContactPageState extends State<ContactPage> {
             : null);
   }
 }
-
-// CustomAppBarWidget

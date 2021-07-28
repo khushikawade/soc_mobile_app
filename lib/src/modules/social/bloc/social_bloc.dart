@@ -41,7 +41,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         var jsondata = xml2json.toGData();
         var data = json.decode(jsondata);
         final data1 = data["rss"]["channel"]["item"];
-
+        final data2 = data1 as List;
         return data1.map((i) {
           return Item(
             title: i["title"] ?? '',
@@ -57,7 +57,12 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         print("else");
       }
     } catch (e) {
+      // print(e);
+
+      // print(e.toString().contains("Failed host lookup"));
       if (e.toString().contains("Failed host lookup")) {
+        // print(e);
+        // print("inside if");
         throw ("Please check your Internet Connection.");
       } else {
         throw (e);
