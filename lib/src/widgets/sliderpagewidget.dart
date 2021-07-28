@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -89,7 +90,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                     if (widget.currentIndex > 0) {
                       _controller.previousPage(
                           duration: _kDuration, curve: _kCurve);
-                      // --widget.currentIndex;
                     }
                   },
                   icon: Icon(
@@ -151,7 +151,10 @@ class _SliderWidgetState extends State<SliderWidget> {
               return widget.issocialpage!
                   ? SocialDescription(object: object[widget.currentIndex])
                   : widget.iseventpage!
-                      ? EventDescription(obj: object[widget.currentIndex])
+                      ? EventDescription(
+                          obj: object[widget.currentIndex],
+                          isbuttomsheet: true,
+                        )
                       : Newdescription(
                           obj: object[widget.currentIndex],
                           date: widget.date,
@@ -183,7 +186,10 @@ class _SliderWidgetState extends State<SliderWidget> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => SoicalPageWebview(
-                              link: link2, isSocialpage: true)));
+                                link: link2,
+                                isSocialpage: true,
+                                isbuttomsheet: true,
+                              )));
                 },
                 child: Text("More"),
               ),
@@ -193,8 +199,14 @@ class _SliderWidgetState extends State<SliderWidget> {
               width: _KButtonSize,
               height: _KButtonSize / 2,
               child: ElevatedButton(
-                onPressed: () {
-                  _onShareWithEmptyOrigin(context);
+                onPressed: () async {
+                  SharePopUp obj = new SharePopUp();
+                  String link = await _buildlink();
+                  final String body =
+                      "${widget.obj[widget.currentIndex].title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}"
+                              " " +
+                          link;
+                  obj.callFunction(context, body, "");
                 },
                 child: Text("Share"),
               ),
@@ -206,7 +218,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
 // MORE_BUTTON_LINK
-  Future _buildlink() async {
+  Future<String> _buildlink() async {
     link = widget.obj[widget.currentIndex].link.toString();
     RegExp exp =
         new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
@@ -214,17 +226,7 @@ class _SliderWidgetState extends State<SliderWidget> {
     matches.forEach((match) {
       link2 = link.substring(match.start, match.end);
     });
-  }
-
-// SHARE BUTTON
-  _onShareWithEmptyOrigin(BuildContext context) async {
-    RenderBox? box = context.findRenderObject() as RenderBox;
-    final String body = widget.obj[widget.currentIndex].title["__cdata"] +
-        " " +
-        widget.obj[widget.currentIndex].link.toString();
-
-    await Share.share(body,
-        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+    return link2;
   }
 
   void htmlparser() {

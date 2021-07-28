@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/families/ui/event.dart';
-import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/home/ui/search.dart';
@@ -95,7 +93,6 @@ class _HomePageState extends State<HomePage> {
     } else if (_selectedIndex == 2) {
       return StudentPage();
     } else if (_selectedIndex == 3) {
-      // return EventPage();
       return FamilyPage(
         obj: widget.homeObj,
       );

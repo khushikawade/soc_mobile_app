@@ -1,7 +1,11 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/calendar_list.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
+import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/urllauncher.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -10,7 +14,9 @@ import 'package:url_launcher/url_launcher.dart';
 // ignore: must_be_immutable
 class EventDescription extends StatefulWidget {
   var obj;
-  EventDescription({Key? key, required this.obj}) : super(key: key);
+  bool? isbuttomsheet;
+  EventDescription({Key? key, required this.obj, required this.isbuttomsheet})
+      : super(key: key);
 
   @override
   _EventDescriptionState createState() => _EventDescriptionState();
@@ -67,18 +73,12 @@ class _EventDescriptionState extends State<EventDescription> {
     );
   }
 
-  _launchURL(url) async {
-    // const url = "${overrides.Overrides.privacyPolicyUrl}";
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
   Widget _buildEventLink(CalendarList list) {
     return InkWell(
-      onTap: () => _launchURL(list.inviteLink),
+      onTap: () {
+        UrlLauncherWidget obj = new UrlLauncherWidget();
+        obj.callurlLaucher(context, list.inviteLink);
+      },
       child: Container(
         child: Text(
           list.inviteLink!,
@@ -112,7 +112,11 @@ class _EventDescriptionState extends State<EventDescription> {
                   width: _KButtonSize,
                   height: _KButtonSize / 2.5,
                   child: ElevatedButton(
-                    onPressed: () => _onShareWithEmptyOrigin(context, list),
+                    onPressed: () {
+                      SharePopUp obj = new SharePopUp();
+
+                      obj.callFunction(context, list.inviteLink!, list.titleC!);
+                    },
                     child: Text(
                       "Share",
                       style: _kbuttonTextStyle,
@@ -145,30 +149,23 @@ class _EventDescriptionState extends State<EventDescription> {
       title: list.titleC!,
       description: list.description ?? "",
       startDate: DateTime.parse(list.startDate!),
-      endDate:
-          DateTime.parse(list.endDate!), // start.add(Duration(minutes: 40)),
+      endDate: DateTime.parse(list.endDate!),
     );
-  }
-
-  _onShareWithEmptyOrigin(BuildContext context, CalendarList list) async {
-    RenderBox? box = context.findRenderObject() as RenderBox;
-    final String body = list.inviteLink!;
-    await Share.share(body,
-        subject: list.titleC!,
-        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: AppTheme.kListBackgroundColor2,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [_buildItem(widget.obj), buttomButtonsWidget(widget.obj)],
+        body: Container(
+          color: AppTheme.kListBackgroundColor2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [_buildItem(widget.obj), buttomButtonsWidget(widget.obj)],
+          ),
         ),
-      ),
-    );
+        bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }

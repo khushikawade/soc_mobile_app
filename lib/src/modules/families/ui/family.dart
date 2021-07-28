@@ -11,6 +11,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:html/dom_parsing.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
@@ -52,8 +53,12 @@ class _FamilyPageState extends State<FamilyPage> {
                     isbuttomsheet: true,
                   )));
     } else if (obj.titleC == "Calendar/Events") {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (BuildContext context) => EventPage()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => EventPage(
+                    isbuttomsheet: true,
+                  )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(
@@ -74,10 +79,10 @@ class _FamilyPageState extends State<FamilyPage> {
                         htmlText: obj.rtfHTMLC.toString(),
                         url: obj.appUrlC ?? '',
                         isbuttomsheet: true,
+                        ishtml: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
-      // print(obj.pdfURL);
       obj.pdfURL != null
           ? Navigator.push(
               context,

@@ -21,18 +21,6 @@ class InAppUrlLauncer extends StatefulWidget {
 }
 
 class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
-  // launchUrl(url) async {
-  //   if (await canLaunch(url)) {
-  //     setState(() {
-  //       _flag = false;
-  //     });
-  //     await launch(url);
-  //     setState(() {
-  //       _flag = true;
-  //     });
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -57,8 +45,6 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
 
   @override
   void dispose() {
-    // _controller();
-    // _animation1.di
     super.dispose();
   }
 }

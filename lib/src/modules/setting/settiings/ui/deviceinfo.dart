@@ -4,15 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:device_info/device_info.dart';
 
-// void main() {
-//   runZonedGuarded(() {
-//     runApp(DeviceInfoDemo());
-//   }, (dynamic error, dynamic stack) {
-//     print(error);
-//     print(stack);
-//   });
-// }
-
 class DeviceInfoDemo extends StatefulWidget {
   @override
   _DeviceInfoDemoState createState() => _DeviceInfoDemoState();

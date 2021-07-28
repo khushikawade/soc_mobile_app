@@ -1,8 +1,7 @@
-import 'package:Soc/src/app.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/urllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -16,22 +15,7 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   static const double _kLabelSpacing = 18.0;
   bool _lights = false;
-
-  //style
-  // final TextStyle _kheadingStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Medium",
-  //   fontSize: 16,
-  //   color: AppTheme.kFontColor2,
-  // );
-
-  // final TextStyle textStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Regular",
-  //   fontSize: 16,
-  //   fontWeight: FontWeight.normal,
-  //   color: AppTheme.kAccentColor,
-  // );
+  UrlLauncherWidget urlobj = new UrlLauncherWidget();
 
   Widget _buildHeading(String tittle) {
     return Row(
@@ -103,8 +87,7 @@ class _SettingPageState extends State<SettingPage> {
   Widget _buildLicence() {
     return InkWell(
       onTap: () {
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => SocialSharePlugin()));
+        urlobj.callurlLaucher(context, "https://www.google.com/");
       },
       child: Row(
         children: [

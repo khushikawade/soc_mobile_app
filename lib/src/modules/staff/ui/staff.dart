@@ -53,6 +53,7 @@ class _StaffPageState extends State<StaffPage> {
                         htmlText: obj.rtfHTMLC.toString(),
                         url: obj.urlC.toString(),
                         isbuttomsheet: true,
+                        ishtml: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {

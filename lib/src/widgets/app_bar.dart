@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import '../overrides.dart';
@@ -14,6 +15,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
     required this.isShare,
     required this.sharedpopUpheaderText,
     required this.sharedpopBodytext,
+    this.ishtmlpage,
   })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? islinearProgress = false;
@@ -22,6 +24,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   bool? isShare;
   String? sharedpopBodytext;
   String? sharedpopUpheaderText;
+  bool? ishtmlpage;
 
   @override
   final Size preferredSize;
@@ -34,6 +37,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
   static const double _kLabelSpacing = 15.0;
   static const double _kIconSize = 50.0;
   double lineProgress = 0.0;
+  SharePopUp shareobj = new SharePopUp();
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +71,6 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
         widget.isSearch == true
             ? IconButton(
                 onPressed: () {
-                  // print(widget.isSearch);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -89,7 +92,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                   widget.sharedpopBodytext != null &&
                           widget.sharedpopUpheaderText != 'null' &&
                           widget.sharedpopBodytext!.length > 1
-                      ? _onShareWithEmptyOrigin(
+                      ? shareobj.callFunction(
                           context,
                           widget.sharedpopBodytext.toString(),
                           widget.sharedpopUpheaderText.toString())
@@ -98,20 +101,25 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                 icon: Icon(Icons.share),
               )
             : Container(),
+        widget.ishtmlpage == true
+            ? IconButton(
+                onPressed: () {
+                  widget.sharedpopBodytext != null &&
+                          widget.sharedpopUpheaderText != 'null' &&
+                          widget.sharedpopBodytext!.length > 1
+                      ? shareobj.callFunction(
+                          context,
+                          widget.sharedpopBodytext.toString(),
+                          widget.sharedpopUpheaderText.toString())
+                      : print("null");
+                },
+                icon: Icon(Icons.share))
+            : Container(
+                height: 0,
+              ),
         HorzitalSpacerWidget(_kLabelSpacing / 3)
       ],
     );
-  }
-
-  _onShareWithEmptyOrigin(
-      BuildContext context, String body, String subject) async {
-    RenderBox? box = context.findRenderObject() as RenderBox;
-    final String body1 = body;
-    // "Hi, I downloaded the PS 456 Bronx Bears app. You should check it out! Download the app at https://play.google.com/store/apps/details?id=com.app.p1676CB";
-    final subject1 = subject;
-    await Share.share(body1,
-        subject: subject1,
-        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
   // _progressBar(double progress, BuildContext context) {

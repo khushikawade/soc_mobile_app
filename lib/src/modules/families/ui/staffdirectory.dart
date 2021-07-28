@@ -7,11 +7,13 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/urllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// ignore: must_be_immutable
 class StaffDirectory extends StatefulWidget {
   var obj;
   bool isbuttomsheet;
@@ -26,25 +28,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   static const double _kLabelSpacing = 16.0;
   var _controller = TextEditingController();
   FamilyBloc _bloc = FamilyBloc();
+  UrlLauncherWidget objurl = new UrlLauncherWidget();
 
   @override
   void initState() {
     super.initState();
     _bloc.add(SDevent());
-  }
-
-  void _launch(String launchThis) async {
-    try {
-      String url = launchThis;
-      if (await canLaunch(url)) {
-        await launch(url);
-      } else {
-        print("Unable to launch $launchThis");
-//        throw 'Could not launch $url';
-      }
-    } catch (e) {
-      print(e.toString());
-    }
   }
 
   Widget _buildHeading(String tittle) {
@@ -179,27 +168,18 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       Row(
                         children: [
                           obj.titleC != null && obj.titleC.length > 0
-                              ? Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * .50,
-                                  child: Text(obj.titleC,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.start,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1!
-                                          .copyWith(
-                                              fontWeight: FontWeight.w400)))
-                              : Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * .40,
-                                  child: Text(
-                                    "No title  found",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    textAlign: TextAlign.start,
-                                  )),
+                              ? Text(obj.titleC,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.start,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(fontWeight: FontWeight.w400))
+                              : Text(
+                                  "No title  found",
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.start,
+                                ),
                         ],
                       ),
                       SpacerWidget(_kLabelSpacing / 2),
@@ -211,27 +191,16 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               children: [
                                 obj.descriptionC != null &&
                                         obj.descriptionC.length > 0
-                                    ? Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                .40,
-                                        child: Text(obj.descriptionC,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            textAlign: TextAlign.start,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1!
-                                                .copyWith(
-                                                    fontWeight:
-                                                        FontWeight.w400)))
-                                    : Container(
-                                        child: Text(
-                                          "No description found",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.start,
-                                        ),
+                                    ? Text(obj.descriptionC,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.start,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1!
+                                            .copyWith(
+                                                fontWeight: FontWeight.w400))
+                                    : Text(
+                                        "No description found",
                                       ),
                               ],
                             ),
@@ -240,8 +209,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       InkWell(
                         onTap: () {
                           obj.emailC != null
-                              ? _launch('mailto:"${obj.emailC}"')
-                              : print("he");
+                              ? objurl.callurlLaucher(
+                                  context, 'mailto:"${obj.emailC}"')
+                              : print("No email found");
                         },
                         child: Row(
                           children: [
@@ -259,13 +229,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                         .copyWith(fontWeight: FontWeight.w400),
                                     textAlign: TextAlign.center,
                                   )
-                                : Container(
-                                    child: Text(
-                                      "No email found",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.start,
-                                    ),
+                                : Text(
+                                    "No email found",
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.start,
                                   ),
                           ],
                         ),
@@ -274,7 +241,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       InkWell(
                         onTap: () {
                           obj.phoneC != null
-                              ? _launch("tel:" + obj.phoneC)
+                              ? objurl.callurlLaucher(
+                                  context, "tel:" + obj.phoneC)
                               : print("No telephone number found");
                         },
                         child: Row(
@@ -310,61 +278,50 @@ class _StaffDirectoryState extends State<StaffDirectory> {
           isShare: false,
         ),
         body: SingleChildScrollView(
-            child: SafeArea(
-                child: BlocBuilder<FamilyBloc, FamilyState>(
-                    bloc: _bloc,
-                    builder: (BuildContext contxt, FamilyState state) {
-                      if (state is FamilyInitial || state is FamilyLoading) {
-                        return Container(
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Center(
-                                child: CircularProgressIndicator(
-                              backgroundColor: Theme.of(context).accentColor,
-                            )));
-                      } else if (state is SDDataSucess) {
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              _buildHeading("STAFF DIRECTORY"),
-                              Container(
-                                child: ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: state.obj!.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return contactItem(
-                                        state.obj![index], index);
-                                  },
-                                ),
-                              ),
-                            ],
+          child: SafeArea(
+            child: BlocBuilder<FamilyBloc, FamilyState>(
+                bloc: _bloc,
+                builder: (BuildContext contxt, FamilyState state) {
+                  if (state is FamilyInitial || state is FamilyLoading) {
+                    return Container(
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          backgroundColor: Theme.of(context).accentColor,
+                        )));
+                  } else if (state is SDDataSucess) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          _buildHeading("STAFF DIRECTORY"),
+                          Container(
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: state.obj!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return contactItem(state.obj![index], index);
+                              },
+                            ),
                           ),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }))),
+                        ],
+                      ),
+                    );
+                  } else if (state is ErrorLoading) {
+                    return Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Text("Unable to load the data"),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
+          ),
+        ),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);
-                            ),
-                          ],
-                        ),
-                      );
-                    } else if (state is ErrorLoading) {
-                      return Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Text("Unable to load the data"),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  }))),
-    );
   }
 }
-
-// CustomAppBarWidget

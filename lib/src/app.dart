@@ -39,11 +39,10 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Soc',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.lightTheme,
-      // home: LoginPage(),
       home: StartupPage(),
       localizationsDelegates: [
         _newLocaleDelegate!,

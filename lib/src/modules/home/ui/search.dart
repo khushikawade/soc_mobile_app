@@ -9,7 +9,6 @@ import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/Strings.dart';
-import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
@@ -120,10 +119,10 @@ class _SearchPageState extends State<SearchPage> {
                         htmlText: obj.rtfHTMLC.toString(),
                         url: obj.urlC,
                         isbuttomsheet: true,
+                        ishtml: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
-      // print(obj.pdfURL);
       obj.pdfURL != null
           ? Navigator.push(
               context,
@@ -215,10 +214,10 @@ class _SearchPageState extends State<SearchPage> {
                         htmlText: obj.rtfHTMLC.toString(),
                         url: obj.urlC,
                         isbuttomsheet: true,
+                        ishtml: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
-      // print(obj.pdfURL);
       obj.pdfURL != null
           ? Future.delayed(
               const Duration(seconds: 0),

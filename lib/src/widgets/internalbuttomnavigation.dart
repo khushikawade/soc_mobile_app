@@ -4,8 +4,6 @@ import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 
 class InternalButtomNavigationBar extends StatefulWidget {
-  // InternalButtomNavigationBar({Key? key, this.title}) : super(key: key);
-  // final String? title;
   @override
   _InternalButtomNavigationBarState createState() =>
       _InternalButtomNavigationBarState();
@@ -18,7 +16,9 @@ class _InternalButtomNavigationBarState
   @override
   void initState() {
     super.initState();
-    _selectedIndex = Globals.internalBottombarIndex ?? 0;
+    _selectedIndex = Globals.internalBottombarIndex != null
+        ? Globals.internalBottombarIndex
+        : 0;
   }
 
   selectedpage(context, _selectedIndex) {

@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
+import 'package:table_calendar/table_calendar.dart';
 
-class MySharePopup extends StatefulWidget {
-  const MySharePopup({Key? key}) : super(key: key);
-
+class SharePopUp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => SharePopupState();
+  void callFunction(BuildContext context, String body, String header) {
+    SharePopupState._onShare(context, body, header);
+  }
 }
 
-class SharePopupState extends State<MySharePopup> {
-  _onShareWithEmptyOrigin(BuildContext context) async {
+class SharePopupState extends State<SharePopUp> {
+  static String? body1;
+  static String? subject1;
+
+  static _onShare(BuildContext context, String body1, String header1) async {
     RenderBox? box = context.findRenderObject() as RenderBox;
-    final String body = "text";
-    // "Hi, I downloaded the PS 456 Bronx Bears app. You should check it out! Download the app at https://play.google.com/store/apps/details?id=com.app.p1676CB";
-    final subject = "sub";
+    final String body = body1;
+    final subject = header1;
     await Share.share(body,
         subject: subject,
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
+  @override
   Widget build(BuildContext context) {
-    return Container();
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }

@@ -48,8 +48,6 @@ class _SubListPageState extends State<SubListPage> {
     } else if (widget.module == "staff") {
       _staffBloc.add(StaffSubListEvent(id: widget.obj.id));
     }
-
-    // _selectedIndex = Globals.internalBottombarIndex;
   }
 
   _route(obj, index) {
@@ -73,6 +71,7 @@ class _SubListPageState extends State<SubListPage> {
                         htmlText: obj.rtfHTMLC.toString(),
                         url: obj.appUrlC!,
                         isbuttomsheet: true,
+                        ishtml: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -98,26 +97,6 @@ class _SubListPageState extends State<SubListPage> {
         },
         child: ListWidget(index, _buildFormName(index, obj)));
   }
-
-  // selectedpage(context, _selectedIndex) {
-  //   if (_selectedIndex == 0) {
-  //     return Navigator.push(
-  //         context, MaterialPageRoute(builder: (context) => HomePage()));
-  //   } else if (_selectedIndex == 1) {
-  //     return Navigator.push(
-  //         context, MaterialPageRoute(builder: (context) => HomePage()));
-  //   } else if (_selectedIndex == 2) {
-  //     return Navigator.push(
-  //         context, MaterialPageRoute(builder: (context) => HomePage()));
-  //   } else if (_selectedIndex == 3) {
-  //     return Navigator.push(
-  //         context, MaterialPageRoute(builder: (context) => HomePage()));
-
-  //   } else if (_selectedIndex == 4) {
-  //     return Navigator.push(
-  //         context, MaterialPageRoute(builder: (context) => HomePage()));
-  //   }
-  // }
 
   Widget _buildFormName(int index, obj) {
     return InkWell(

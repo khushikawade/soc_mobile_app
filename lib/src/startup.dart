@@ -39,7 +39,6 @@ class _StartupPageState extends State<StartupPage> {
       } else if (Platform.isIOS) {
         ios = await deviceInfoPlugin.iosInfo;
       }
-      // ignore: nullable_type_in_catch_clause
     } on PlatformException {
       deviceData = <String, dynamic>{
         'Error:': 'Failed to get platform version.'
@@ -60,10 +59,7 @@ class _StartupPageState extends State<StartupPage> {
       Globals.phoneModel = andorid!.device;
       Globals.baseOS = andorid!.version.baseOS;
       Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-    } else {
-      print("else");
-      print("${Globals.phoneModel}");
-    }
+    } else {}
   }
 
   static Future<String> getDeviceInfo() async {

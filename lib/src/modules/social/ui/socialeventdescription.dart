@@ -126,8 +126,6 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(child: Container(child: _buildItem(context))),
-    );
+    return Container(child: _buildItem(context));
   }
 }

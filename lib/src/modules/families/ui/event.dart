@@ -1,12 +1,21 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+// ignore: must_be_immutable
 class EventPage extends StatefulWidget {
+  EventPage({
+    required this.isbuttomsheet,
+  });
+
+  bool? isbuttomsheet;
+
   @override
   _EventPageState createState() => _EventPageState();
 }
@@ -121,53 +130,54 @@ class _EventPageState extends State<EventPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-          isSearch: true,
-          isShare: false,
-          sharedpopUpheaderText: "",
-          sharedpopBodytext: ""),
-      body: SingleChildScrollView(
-        child: SafeArea(
-            child: BlocBuilder<FamilyBloc, FamilyState>(
-                bloc: _eventBloc,
-                builder: (BuildContext contxt, FamilyState state) {
-                  if (state is FamilyLoading) {
-                    return Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
+        appBar: CustomAppBarWidget(
+            isSearch: true,
+            isShare: false,
+            sharedpopUpheaderText: "",
+            sharedpopBodytext: ""),
+        body: SingleChildScrollView(
+          child: SafeArea(
+              child: BlocBuilder<FamilyBloc, FamilyState>(
+                  bloc: _eventBloc,
+                  builder: (BuildContext contxt, FamilyState state) {
+                    if (state is FamilyLoading) {
+                      return Container(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator(
+                            backgroundColor: Theme.of(context).accentColor,
+                          ));
+                    } else if (state is CalendarListSuccess) {
+                      return Column(
+                        children: [
+                          _buildHeading("Upcoming"),
+                          ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: state.obj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return state.obj!.length > 0
+                                  ? _buildList(
+                                      state.obj![index], index, state.obj)
+                                  : Container();
+                            },
+                          ),
+                        ],
+                      );
+                    } else if (state is ErrorLoading) {
+                      return Container(
                         alignment: Alignment.center,
-                        child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).accentColor,
-                        ));
-                  } else if (state is CalendarListSuccess) {
-                    return Column(
-                      children: [
-                        _buildHeading("Upcoming"),
-                        ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return state.obj!.length > 0
-                                ? _buildList(
-                                    state.obj![index], index, state.obj)
-                                : Container();
-                          },
-                        ),
-                        // ),
-                      ],
-                    );
-                  } else if (state is ErrorLoading) {
-                    return Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      child: Text("Unable to load the data"),
-                    );
-                  } else {
-                    return Container();
-                  }
-                })),
-      ),
-    );
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Text("Unable to load the data"),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  })),
+        ),
+        bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }
