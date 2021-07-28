@@ -198,23 +198,16 @@ class _ContactPageState extends State<ContactPage> {
             ],
           ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              object["Contact_Address__c"] != null &&
-                      object["Contact_Address__c"].length > 1
-                  ? Text(
-                      object["Contact_Address__c"],
-                      style: Theme.of(context).textTheme.bodyText2,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.start,
-                    )
-                  : Container(child: Text("No address  available here")),
-            ],
-          ),
+          object["Contact_Address__c"] != null &&
+                  object["Contact_Address__c"].length > 1
+              ? Expanded(
+                  child: Text(
+                    object["Contact_Address__c"],
+                    style: Theme.of(context).textTheme.bodyText2,
+                    textAlign: TextAlign.start,
+                  ),
+                )
+              : Container(child: Text("No address  available here")),
         ],
       ),
     );

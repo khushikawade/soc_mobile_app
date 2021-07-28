@@ -6,6 +6,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart';
 import 'modules/user/bloc/user_bloc.dart';
 
@@ -26,8 +27,16 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     getDeviceType();
-    getDeviceInfo();
+    getindicatorValue();
+    // getDeviceInfo();
     _loginBloc.add(PerfomLogin());
+  }
+
+  getindicatorValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.getBool("enableIndicator") == null
+        ? prefs.setBool("enableIndicator", false)
+        : prefs.setBool("enableIndicator", prefs.getBool("enableIndicator")!);
   }
 
   Future<void> initPlatformState() async {
@@ -64,6 +73,10 @@ class _StartupPageState extends State<StartupPage> {
       // var sdkInt = androidInfo.version.sdkInt;
       Globals.manufacturer = androidInfo.manufacturer;
       Globals.model = androidInfo.model;
+      Globals.deviceToken = androidInfo.androidId;
+      Globals.myLocale = Localizations.localeOf(context);
+      Globals.countrycode = Localizations.localeOf(context).countryCode!;
+
       // print('Android $release (SDK $sdkInt), $manufacturer $model');
     }
     if (Platform.isIOS) {

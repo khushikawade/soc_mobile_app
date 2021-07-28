@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../overrides.dart';
 part 'news_event.dart';
 part 'news_state.dart';
@@ -75,8 +76,11 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
 
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
-        (OSNotificationReceivedEvent notification) {
+        (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool("enableIndicator", true);
       print(
           "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
     });

@@ -24,4 +24,7 @@ class Globals {
   static String? release;
   static String? model;
   static String? name;
+  static String? deviceToken;
+  static String? countrycode;
+  static Locale? myLocale;
 }

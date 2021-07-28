@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
@@ -15,6 +15,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,14 +33,31 @@ class _HomePageState extends State<HomePage> {
   static const double _kIconSize = 35.0;
   final NewsBloc _bloc = new NewsBloc();
 
+  bool _status = false;
   var item;
   var item2;
-
+  final ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
+  Timer? timer;
   @override
   void initState() {
     super.initState();
+
     _bloc.initPushState(context);
     _selectedIndex = Globals.outerBottombarIndex ?? 0;
+    timer =
+        Timer.periodic(Duration(seconds: 3), (Timer t) => getindicatorValue());
+  }
+
+  getindicatorValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _status = prefs.getBool("enableIndicator")!;
+      if (_status == true) {
+        indicator.value = true;
+      } else {
+        indicator.value = false;
+      }
+    });
   }
 
   Widget _buildPopupMenuWidget() {
@@ -85,18 +103,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  selectedScreenBody(context, _selectedIndex) {
-    if (_selectedIndex == 0) {
+  hideIndicator() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("enableIndicator", false);
+  }
+
+  selectedScreenBody(context, _selectedIndex, list) {
+    print(list);
+    if (list[_selectedIndex].split("_")[0] == "Social") {
       return SocialPage();
-    } else if (_selectedIndex == 1) {
+    } else if (list[_selectedIndex].split("_")[0] == "News") {
+      hideIndicator();
       return NewsPage();
-    } else if (_selectedIndex == 2) {
+    } else if (list[_selectedIndex].split("_")[0] == "Students") {
       return StudentPage();
-    } else if (_selectedIndex == 3) {
+    } else if (list[_selectedIndex].split("_")[0] == "Families") {
       return FamilyPage(
         obj: widget.homeObj,
       );
-    } else if (_selectedIndex == 4) {
+    } else if (list[_selectedIndex].split("_")[0] == "Staff") {
       return StaffPage();
     }
   }
@@ -166,7 +191,8 @@ class _HomePageState extends State<HomePage> {
                   )),
               _buildPopupMenuWidget(),
             ]),
-        body: selectedScreenBody(context, _selectedIndex),
+        body: selectedScreenBody(context, _selectedIndex,
+            Globals.homeObjet["Bottom_Navigation__c"].split(";")),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
@@ -174,9 +200,32 @@ class _HomePageState extends State<HomePage> {
               .split(";")
               .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
                     icon: Column(children: [
-                      Text(
-                        e.split("_")[0],
-                        style: Theme.of(context).textTheme.subtitle2,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            e.split("_")[0],
+                            style: Theme.of(context).textTheme.subtitle2,
+                          ),
+                          ValueListenableBuilder(
+                            builder: (BuildContext context, dynamic value,
+                                Widget? child) {
+                              return e.split("_")[0] == "News" &&
+                                      indicator.value == true
+                                  ? Container(
+                                      height: 8,
+                                      width: 8,
+                                      margin: EdgeInsets.only(left: 3),
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle),
+                                    )
+                                  : Container();
+                            },
+                            valueListenable: indicator,
+                            child: Container(),
+                          ),
+                        ],
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5.0),
