@@ -6,7 +6,12 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+<<<<<<< HEAD
 import 'globals.dart' as globals;
+=======
+import 'package:shared_preferences/shared_preferences.dart';
+import 'globals.dart';
+>>>>>>> 456cfa2599cd7ce8f2acc5557b00847aeac09bd3
 import 'modules/user/bloc/user_bloc.dart';
 
 class StartupPage extends StatefulWidget {
@@ -26,8 +31,16 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     getDeviceType();
-
+    getindicatorValue();
+    // getDeviceInfo();
     _loginBloc.add(PerfomLogin());
+  }
+
+  getindicatorValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.getBool("enableIndicator") == null
+        ? prefs.setBool("enableIndicator", false)
+        : prefs.setBool("enableIndicator", prefs.getBool("enableIndicator")!);
   }
 
   Future<void> initPlatformState() async {
@@ -58,13 +71,36 @@ class _StartupPageState extends State<StartupPage> {
       andorid = await deviceInfoPlugin.androidInfo;
       Globals.phoneModel = andorid!.device;
       Globals.baseOS = andorid!.version.baseOS;
+<<<<<<< HEAD
+=======
+      Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
+      var androidInfo = await DeviceInfoPlugin().androidInfo;
+      Globals.release = androidInfo.version.release;
+      // var sdkInt = androidInfo.version.sdkInt;
+      Globals.manufacturer = androidInfo.manufacturer;
+      Globals.model = androidInfo.model;
+      Globals.deviceToken = androidInfo.androidId;
+      Globals.myLocale = Localizations.localeOf(context);
+      Globals.countrycode = Localizations.localeOf(context).countryCode!;
+
+      // print('Android $release (SDK $sdkInt), $manufacturer $model');
+    }
+    if (Platform.isIOS) {
+      var iosInfo = await DeviceInfoPlugin().iosInfo;
+      Globals.manufacturer = iosInfo.systemName;
+      Globals.release = iosInfo.systemVersion;
+      Globals.name = iosInfo.name;
+      Globals.model = iosInfo.model;
+      // print('$systemName $version, $name $model');
+      // iOS 13.1, iPhone 11 Pro Max iPhone
+>>>>>>> 456cfa2599cd7ce8f2acc5557b00847aeac09bd3
     } else {}
   }
 
   static Future<String> getDeviceInfo() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-
+    print(iosInfo.model.toLowerCase());
     return iosInfo.model.toLowerCase();
   }
 

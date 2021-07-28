@@ -3,7 +3,7 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:flutter/material.dart';
-import '../../../../overrides.dart';
+import '../../overrides.dart';
 
 class SharePage extends StatefulWidget {
   @override

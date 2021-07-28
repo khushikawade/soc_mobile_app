@@ -94,9 +94,9 @@ class _NewsPageState extends State<NewsPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         _buildnewsHeading(obj),
-                        SizedBox(height: _kLabelSpacing / 3),
-                        Container(child: _buildTimeStamp(obj)),
-                        SizedBox(height: _kLabelSpacing / 4),
+                        // SizedBox(height: _kLabelSpacing / 3),
+                        // Container(child: _buildTimeStamp(obj)),
+                        // SizedBox(height: _kLabelSpacing / 4),
                       ])),
             ),
           ],
@@ -116,15 +116,15 @@ class _NewsPageState extends State<NewsPage> {
         ));
   }
 
-  Widget _buildTimeStamp(NotificationList obj) {
-    DateTime now = DateTime.now(); //REPLACE WITH ACTUAL DATE
-    newsTimeStamp = DateFormat('yyyy/MM/dd').format(now);
-    return Container(
-        child: Text(
-      "${newsTimeStamp}",
-      style: Theme.of(context).textTheme.subtitle1,
-    ));
-  }
+  // Widget _buildTimeStamp(NotificationList obj) {
+  //   DateTime now = DateTime.now(); //REPLACE WITH ACTUAL DATE
+  //   newsTimeStamp = DateFormat('yyyy/MM/dd').format(now);
+  //   return Container(
+  //       child: Text(
+  //     "${newsTimeStamp}",
+  //     style: Theme.of(context).textTheme.subtitle1,
+  //   ));
+  // }
 
   Widget _buildList(obj) {
     return ListView.builder(
