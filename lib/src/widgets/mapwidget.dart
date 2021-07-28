@@ -22,7 +22,7 @@ class GoogleMapsState extends State<GoogleMaps> {
   Completer<GoogleMapController> _controller = Completer();
   CameraPosition? _kGooglePlex;
   final Set<Marker> _markers = {};
-  CameraPosition? _kLocation;
+  // CameraPosition? _kLocation;
   @override
   void initState() {
     super.initState();

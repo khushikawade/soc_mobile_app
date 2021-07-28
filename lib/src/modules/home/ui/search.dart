@@ -63,7 +63,7 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  _route(SearchList obj) async {
+  Future<void> _route(obj) async {
     if (obj.titleC == "Contact") {
       obj.titleC != null
           ? Navigator.push(
@@ -117,7 +117,7 @@ class _SearchPageState extends State<SearchPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        url: obj.urlC,
+                        // url: obj.urlC,
                         isbuttomsheet: true,
                         ishtml: true,
                       )))
@@ -142,105 +142,6 @@ class _SearchPageState extends State<SearchPage> {
                     module: "family",
                     isbuttomsheet: true,
                   )));
-    } else {
-      Utility.showSnackBar(
-          _scaffoldKey, "No data available for this record", context);
-    }
-  }
-
-  Future<void> deleteDataBase(index) async {
-    bool isSuccess = await DbServices().deleteData(Strings.hiveLogName, index);
-  }
-
-  Future<void> _recentListRoute(obj) async {
-    if (obj.titleC == "Contact") {
-      obj.titleC != null
-          ? Future.delayed(
-              const Duration(seconds: 0),
-              () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => ContactPage(
-                            obj: Globals.homeObjet,
-                            isbuttomsheet: true,
-                          ))))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.titleC == "Staff Directory") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => StaffDirectory(
-                    obj: obj,
-                    isbuttomsheet: true,
-                  )));
-    } else if (obj.deepLink != null) {
-      if (obj.deepLink == 'NO') {
-        Future.delayed(
-            const Duration(seconds: 0),
-            () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => InAppUrlLauncer(
-                          title: obj.titleC!,
-                          url: obj.appURLC!,
-                          isbuttomsheet: true,
-                        ))));
-      } else {
-        if (await canLaunch(obj.appURLC!)) {
-          await launch(obj.appURLC!);
-        } else {
-          throw 'Could not launch ${obj.appURLC}';
-        }
-      }
-    } else if (obj.typeC == "URL") {
-      obj.urlC != null
-          ? Future.delayed(
-              const Duration(seconds: 0),
-              () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => InAppUrlLauncer(
-                            title: obj.titleC!,
-                            url: obj.urlC!,
-                            isbuttomsheet: true,
-                          ))))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML") {
-      obj.rtfHTMLC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => AboutusPage(
-                        htmlText: obj.rtfHTMLC.toString(),
-                        url: obj.urlC,
-                        isbuttomsheet: true,
-                        ishtml: true,
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (obj.typeC == "PDF URL") {
-      obj.pdfURL != null
-          ? Future.delayed(
-              const Duration(seconds: 0),
-              () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => CommonPdfViewerPage(
-                            url: obj.pdfURL,
-                            tittle: obj.titleC,
-                            isbuttomsheet: true,
-                          ))))
-          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-    } else if (obj.typeC == "Sub-Menu") {
-      Future.delayed(
-          const Duration(seconds: 0),
-          () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => SubListPage(
-                        obj: obj,
-                        module: "family",
-                        isbuttomsheet: true,
-                      ))));
     } else {
       Utility.showSnackBar(
           _scaffoldKey, "No data available for this record", context);
@@ -336,7 +237,8 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildIListtem(int index, items) {
     return InkWell(
       onTap: () async {
-        await _recentListRoute(items[index]);
+        // await _recentListRoute(items[index]);
+        await _route(items[index]);
       },
       child: Container(
           margin: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),

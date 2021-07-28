@@ -2,7 +2,6 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/setting/settiings/ui/sharepage.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
 
 class ShareButtonWidget extends StatelessWidget {
   static const double _kLabelSpacing = 17.0;

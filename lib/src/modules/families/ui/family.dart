@@ -77,7 +77,7 @@ class _FamilyPageState extends State<FamilyPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        url: obj.appUrlC ?? '',
+                        // url: obj.appUrlC ?? '',
                         isbuttomsheet: true,
                         ishtml: true,
                       )))
