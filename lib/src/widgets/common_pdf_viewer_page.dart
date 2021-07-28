@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 class CommonPdfViewerPage extends StatefulWidget {
   final String? url;
   String? tittle = '';
+
   bool isbuttomsheet;
   CommonPdfViewerPage(
       {Key? key,
@@ -74,6 +75,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
         appBar: CustomAppBarWidget(
           isSearch: false,
           isShare: true,
+          appBarTitle: widget.tittle!,
           sharedpopBodytext: widget.url.toString(),
           sharedpopUpheaderText: "Please check out this",
         ),

@@ -10,11 +10,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ignore: must_be_immutable
 class EventPage extends StatefulWidget {
-  EventPage({
-    required this.isbuttomsheet,
-  });
+  EventPage({required this.isbuttomsheet, required this.appBarTitle});
 
   bool? isbuttomsheet;
+  String? appBarTitle;
 
   @override
   _EventPageState createState() => _EventPageState();
@@ -131,6 +130,7 @@ class _EventPageState extends State<EventPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
+            appBarTitle: widget.appBarTitle!,
             isSearch: true,
             isShare: false,
             sharedpopUpheaderText: "",

@@ -59,6 +59,7 @@ class _SharePageState extends State<SharePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
+        appBarTitle: 'Empty',
         isSearch: false,
         isShare: false,
         sharedpopBodytext: '',

@@ -168,6 +168,7 @@ class _InformationPageState extends State<InformationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
+        appBarTitle: 'Empty',
         isSearch: false,
         isShare: false,
         sharedpopBodytext: '',

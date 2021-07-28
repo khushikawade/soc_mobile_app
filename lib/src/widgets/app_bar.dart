@@ -12,13 +12,14 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
     Key? key,
     required this.isSearch,
     required this.isShare,
+    required this.appBarTitle,
     required this.sharedpopUpheaderText,
     required this.sharedpopBodytext,
     this.ishtmlpage,
   })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? islinearProgress = false;
-
+  String appBarTitle;
   bool? isSearch;
   bool? isShare;
   String? sharedpopBodytext;
@@ -65,7 +66,12 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
           ),
         ],
       ),
-      title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
+      title: Text(
+        widget.appBarTitle,
+        style: Theme.of(context).textTheme.headline2,
+        textAlign: TextAlign.center,
+      ),
+      //  SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
       actions: [
         widget.isSearch == true
             ? IconButton(

@@ -5,7 +5,6 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,12 @@ import 'package:url_launcher/url_launcher.dart';
 class ContactPage extends StatefulWidget {
   var obj;
   bool isbuttomsheet;
-  ContactPage({Key? key, required this.obj, required this.isbuttomsheet})
+  String appBarTitle;
+  ContactPage(
+      {Key? key,
+      required this.obj,
+      required this.isbuttomsheet,
+      required this.appBarTitle})
       : super(key: key);
 
   @override
@@ -36,8 +40,8 @@ class _ContactPageState extends State<ContactPage> {
   void initState() {
     super.initState();
     object = widget.obj;
-    // latitude = object["Contact_Office_Location__Latitude__s"] ?? '';
-    // longitude = object["Contact_Office_Location__Longitude__s"] ?? '';
+    latitude = object["Contact_Office_Location__Latitude__s"] ?? '';
+    longitude = object["Contact_Office_Location__Longitude__s"] ?? '';
   }
 
   //TOP SECTION START
@@ -122,7 +126,7 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          latitude != null && latitude.length > 1 && longitude.length > 1
+          latitude != null
               ? SizedBox(
                   height: _kboxheight * 2,
                   child: GoogleMaps(
@@ -204,6 +208,8 @@ class _ContactPageState extends State<ContactPage> {
                       object["Contact_Address__c"],
                       style: Theme.of(context).textTheme.bodyText2,
                       overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textDirection: TextDirection.rtl,
                       textAlign: TextAlign.start,
                     )
                   : Container(child: Text("No address  available here")),
@@ -299,12 +305,12 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
-// BUTTOM SECTION END
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
           isSearch: true,
           isShare: false,
+          appBarTitle: "Contact",
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
         ),

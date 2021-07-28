@@ -53,6 +53,7 @@ class _StaffPageState extends State<StaffPage> {
                         // url: obj.urlC.toString(),
                         isbuttomsheet: true,
                         ishtml: true,
+                        appbarTitle: obj.titleC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -74,6 +75,7 @@ class _StaffPageState extends State<StaffPage> {
                     obj: obj,
                     module: "staff",
                     isbuttomsheet: true,
+                    appBarTitle: obj.titleC!,
                   )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);

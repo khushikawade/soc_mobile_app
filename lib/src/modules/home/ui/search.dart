@@ -72,6 +72,7 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context) => ContactPage(
                         obj: Globals.homeObjet,
                         isbuttomsheet: true,
+                        appBarTitle: obj.titleC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
@@ -79,6 +80,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
                   )));
@@ -120,6 +122,7 @@ class _SearchPageState extends State<SearchPage> {
                         // url: obj.urlC,
                         isbuttomsheet: true,
                         ishtml: true,
+                        appbarTitle: obj.titleC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
@@ -141,6 +144,7 @@ class _SearchPageState extends State<SearchPage> {
                     obj: obj,
                     module: "family",
                     isbuttomsheet: true,
+                    appBarTitle: obj.titleC!,
                   )));
     } else {
       Utility.showSnackBar(

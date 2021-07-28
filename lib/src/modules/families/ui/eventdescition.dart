@@ -5,7 +5,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
