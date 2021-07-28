@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/news/ui/news.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,11 +76,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool("enableIndicator", true);
       print(
           "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool("enableIndicator", true);
     });
 
     OneSignal.shared
@@ -90,8 +87,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       print(
           "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
 
-      Globals.appNavigator!.currentState!
-          .push(MaterialPageRoute(builder: (context) => NewsPage()));
+      // Globals.appNavigator!.currentState!
+      //     .push(MaterialPageRoute(builder: (context) => NewsPage()));
     });
 
     OneSignal.shared
