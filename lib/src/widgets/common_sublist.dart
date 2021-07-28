@@ -71,6 +71,7 @@ class _SubListPageState extends State<SubListPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
+                        // url: obj.appUrlC ?? "",
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC,

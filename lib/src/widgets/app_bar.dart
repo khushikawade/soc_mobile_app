@@ -4,7 +4,6 @@ import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
 import '../overrides.dart';
 
 // ignore: must_be_immutable

@@ -3,7 +3,6 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:html/parser.dart';
 
 // ignore: must_be_immutable
 class AboutusPage extends StatefulWidget {
