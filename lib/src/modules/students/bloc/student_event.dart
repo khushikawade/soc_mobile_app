@@ -7,7 +7,4 @@ abstract class StudentEvent extends Equatable {
 class StudentPageEvent extends StudentEvent {
   @override
   List<Object> get props => [];
-
-  // @override
-  // String toString() => 'StudentButtonPressed';
 }

@@ -6,14 +6,6 @@ abstract class UserEvent {
 }
 
 class PerfomLogin extends UserEvent {
-  // final String? email;
-  // final String? password;
-
-  // const PerfomLogin({
-  //   // required this.email,
-  //   // required this.password,
-  // });
-
   @override
   List<Object?> get props => [];
 

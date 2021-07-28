@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StaffPage extends StatefulWidget {
-  // bool isbuttomsheet;
   StaffPage({
     Key? key,
     this.title,
@@ -163,8 +162,5 @@ class _StaffPageState extends State<StaffPage> {
                 return Container();
               }
             }));
-    // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-    //     ? InternalButtomNavigationBar()
-    //     : null);
   }
 }

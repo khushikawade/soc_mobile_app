@@ -22,7 +22,6 @@ class _AppState extends State<App> {
     _newLocaleDelegate = AppTranslationsDelegate(newLocale: null);
     checkForSetLanguage();
     application.onLocaleChanged = onLocaleChange;
-    //
   }
 
   checkForSetLanguage() async {

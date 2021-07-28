@@ -229,8 +229,7 @@ class AppTheme {
                 ? kSubtitle2FontSize
                 : kSubtitle2FontSize + 0),
         selectedIconTheme: IconThemeData(
-          color: Colors.red,
-          // Color(0xFF4a5aa6),
+          color: Color(0xFF4a5aa6),
         ),
         unselectedIconTheme: IconThemeData(
           color: Color(0xff89A7D7),
@@ -241,34 +240,8 @@ class AppTheme {
             fontSize: Globals.deviceType == Globals.phone
                 ? kSubtitle2FontSize
                 : kSubtitle2FontSize + 8),
-        selectedItemColor: Colors.red,
-        // Color(0xff4a5aa6),
+        selectedItemColor: Color(0xff4a5aa6),
         unselectedItemColor: Color(0xff89A7D7),
         showUnselectedLabels: true,
       ));
-
-  // static final ThemeData darkTheme = ThemeData(
-  //   scaffoldBackgroundColor: Colors.black,
-  //   appBarTheme: AppBarTheme(
-  //     color: Colors.black,
-  //     iconTheme: IconThemeData(
-  //       color: Colors.white,
-  //     ),
-  //   ),
-  //   colorScheme: ColorScheme.light(
-  //     primary: Colors.black,
-  //     onPrimary: Colors.black,
-  //     primaryVariant: Colors.black,
-  //     secondary: Colors.red,
-  //   ),
-  //   cardTheme: CardTheme(
-  //     color: Colors.black,
-  //   ),
-  //   iconTheme: IconThemeData(
-  //     color: Colors.white54,
-  //   ),
-  //   textTheme: TextTheme(
-
-  //   ),
-  // );
 }

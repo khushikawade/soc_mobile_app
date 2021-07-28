@@ -100,5 +100,3 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
             : null);
   }
 }
-
-// CustomAppBarWidget

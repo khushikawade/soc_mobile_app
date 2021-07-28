@@ -217,7 +217,6 @@ class _SliderWidgetState extends State<SliderWidget> {
     );
   }
 
-// MORE_BUTTON_LINK
   Future<String> _buildlink() async {
     link = widget.obj[widget.currentIndex].link.toString();
     RegExp exp =
