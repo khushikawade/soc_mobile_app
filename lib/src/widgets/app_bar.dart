@@ -15,6 +15,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
     required this.appBarTitle,
     required this.sharedpopUpheaderText,
     required this.sharedpopBodytext,
+    this.isCenterIcon,
     this.ishtmlpage,
   })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
@@ -25,6 +26,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   String? sharedpopBodytext;
   String? sharedpopUpheaderText;
   bool? ishtmlpage;
+  bool? isCenterIcon;
 
   @override
   final Size preferredSize;
@@ -66,12 +68,13 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
           ),
         ],
       ),
-      title: Text(
-        widget.appBarTitle,
-        style: Theme.of(context).textTheme.headline2,
-        textAlign: TextAlign.center,
-      ),
-      //  SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
+      title: widget.isCenterIcon != null && widget.isCenterIcon == true
+          ? SizedBox(width: 100.0, height: 60.0, child: BearIconWidget())
+          : Text(
+              widget.appBarTitle,
+              style: Theme.of(context).textTheme.headline2,
+              textAlign: TextAlign.center,
+            ),
       actions: [
         widget.isSearch == true
             ? IconButton(

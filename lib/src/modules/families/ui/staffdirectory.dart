@@ -283,6 +283,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
           isShare: false,
+          isCenterIcon: true,
         ),
         body: SingleChildScrollView(
           child: SafeArea(
