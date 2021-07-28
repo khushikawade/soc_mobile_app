@@ -8,17 +8,19 @@ import 'package:html/parser.dart';
 // ignore: must_be_immutable
 class AboutusPage extends StatefulWidget {
   String htmlText;
-  String url;
+  // String url;
   bool isbuttomsheet;
   bool ishtml;
+  String appbarTitle;
 
   @override
   AboutusPage({
     Key? key,
     required this.htmlText,
-    required this.url,
+    // required this.url,
     required this.isbuttomsheet,
     required this.ishtml,
+    required this.appbarTitle,
   }) : super(key: key);
   @override
   _AboutusPageState createState() => _AboutusPageState();
@@ -64,6 +66,7 @@ class _AboutusPageState extends State<AboutusPage> {
           appBar: CustomAppBarWidget(
             isSearch: false,
             isShare: false,
+            appBarTitle: widget.appbarTitle,
             ishtmlpage: widget.ishtml,
             sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
             sharedpopUpheaderText: "Please checkout this link",

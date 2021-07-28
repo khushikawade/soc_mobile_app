@@ -18,7 +18,12 @@ import 'package:url_launcher/url_launcher.dart';
 class StaffDirectory extends StatefulWidget {
   var obj;
   bool isbuttomsheet;
-  StaffDirectory({Key? key, required this.obj, required this.isbuttomsheet})
+  String appBarTitle;
+  StaffDirectory(
+      {Key? key,
+      required this.obj,
+      required this.isbuttomsheet,
+      required this.appBarTitle})
       : super(key: key);
 
   @override
@@ -273,6 +278,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
+          appBarTitle: widget.appBarTitle,
           isSearch: true,
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',

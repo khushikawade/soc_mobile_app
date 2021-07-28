@@ -11,7 +11,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:html/dom_parsing.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
@@ -42,6 +41,7 @@ class _FamilyPageState extends State<FamilyPage> {
                   builder: (BuildContext context) => ContactPage(
                         obj: widget.obj,
                         isbuttomsheet: true,
+                        appBarTitle: obj.titleC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
@@ -49,6 +49,7 @@ class _FamilyPageState extends State<FamilyPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
                   )));
@@ -58,6 +59,7 @@ class _FamilyPageState extends State<FamilyPage> {
           MaterialPageRoute(
               builder: (BuildContext context) => EventPage(
                     isbuttomsheet: true,
+                    appBarTitle: obj.titleC,
                   )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
@@ -77,9 +79,9 @@ class _FamilyPageState extends State<FamilyPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        url: obj.appUrlC ?? '',
                         isbuttomsheet: true,
                         ishtml: true,
+                        appbarTitle: obj.titleC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
@@ -98,6 +100,7 @@ class _FamilyPageState extends State<FamilyPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => SubListPage(
+                    appBarTitle: obj.titleC!,
                     obj: obj,
                     module: "family",
                     isbuttomsheet: true,

@@ -32,6 +32,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
         appBar: CustomAppBarWidget(
           isSearch: false,
           isShare: true,
+          appBarTitle: widget.title,
           sharedpopBodytext: widget.url.toString(),
           sharedpopUpheaderText: "Please checkout this link",
         ),

@@ -23,13 +23,15 @@ class SubListPage extends StatefulWidget {
   var obj;
   String? module;
   bool isbuttomsheet;
+  String appBarTitle;
 
-  SubListPage(
-      {Key? key,
-      required this.obj,
-      required this.module,
-      required this.isbuttomsheet})
-      : super(key: key);
+  SubListPage({
+    Key? key,
+    required this.obj,
+    required this.module,
+    required this.isbuttomsheet,
+    required this.appBarTitle,
+  }) : super(key: key);
   @override
   _SubListPageState createState() => _SubListPageState();
 }
@@ -69,9 +71,9 @@ class _SubListPageState extends State<SubListPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        url: obj.appUrlC!,
                         isbuttomsheet: true,
                         ishtml: true,
+                        appbarTitle: obj.titleC,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -112,6 +114,7 @@ class _SubListPageState extends State<SubListPage> {
         appBar: CustomAppBarWidget(
           isSearch: true,
           isShare: false,
+          appBarTitle: widget.appBarTitle,
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
         ),
