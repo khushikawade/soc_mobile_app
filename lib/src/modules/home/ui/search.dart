@@ -57,7 +57,6 @@ class _SearchPageState extends State<SearchPage> {
 
   deleteItem() async {
     int itemcount = await DbServices().getListLength(Strings.hiveLogName);
-
     if (itemcount > 5) {
       await DbServices().deleteData(Strings.hiveLogName, 0);
     }
@@ -177,6 +176,7 @@ class _SearchPageState extends State<SearchPage> {
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg),
                   color: AppTheme.kprefixIconColor,
+                  size: Globals.deviceType == "phone" ? 20 : 28,
                 ),
                 suffix: IconButton(
                   onPressed: () {
@@ -189,7 +189,7 @@ class _SearchPageState extends State<SearchPage> {
                   icon: Icon(
                     Icons.clear,
                     color: AppTheme.kIconColor,
-                    size: 18,
+                    size: Globals.deviceType == "phone" ? 18 : 24,
                   ),
                 ),
               ),
@@ -423,7 +423,7 @@ class _SearchPageState extends State<SearchPage> {
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                     color: AppTheme.kIconColor1,
-                    size: 20,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
                   ),
                 ),
               ),
@@ -439,19 +439,23 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
-        body: Container(
-          child: Column(mainAxisSize: MainAxisSize.max, children: [
-            _buildHeading(),
-            SpacerWidget(_kLabelSpacing / 2),
-            _buildSearchbar(),
-            issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
-            SpacerWidget(_kLabelSpacing),
-            issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
-            issuggestionList == false
-                ? _buildRecentItemList()
-                : SizedBox(height: 0),
-          ]),
-        ),
+        body: OrientationBuilder(builder: (context, orientation) {
+          return Container(
+            child: Column(mainAxisSize: MainAxisSize.max, children: [
+              _buildHeading(),
+              SpacerWidget(_kLabelSpacing / 2),
+              _buildSearchbar(),
+              issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
+              SpacerWidget(_kLabelSpacing),
+              issuggestionList == false
+                  ? _buildHeading2()
+                  : SizedBox(height: 0),
+              issuggestionList == false
+                  ? _buildRecentItemList()
+                  : SizedBox(height: 0),
+            ]),
+          );
+        }),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

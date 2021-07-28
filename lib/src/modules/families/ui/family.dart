@@ -1,3 +1,4 @@
+import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
@@ -10,6 +11,7 @@ import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FamilyPage extends StatefulWidget {
@@ -30,6 +32,11 @@ class _FamilyPageState extends State<FamilyPage> {
   void initState() {
     super.initState();
     _bloc.add(FamiliesEvent());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   _route(FamiliesList obj, index) {
@@ -133,6 +140,7 @@ class _FamilyPageState extends State<FamilyPage> {
         leading: Icon(
           Icons.list,
           color: AppTheme.kListIconColor3,
+          size: Globals.deviceType == "phone" ? 22 : 30,
         ),
         title: Text(
           obj.titleC.toString(),
@@ -140,7 +148,7 @@ class _FamilyPageState extends State<FamilyPage> {
         ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
-          size: 18,
+          size: Globals.deviceType == "phone" ? 18 : 26,
           color: AppTheme.kButtonbackColor,
         ),
       ),

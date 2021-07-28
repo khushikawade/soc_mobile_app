@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -8,7 +8,6 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -100,7 +99,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   icon: Icon(
                     Icons.clear,
                     color: AppTheme.kIconColor,
-                    size: 18,
+                    size: Globals.deviceType == Globals.phone ? 18 : 24,
                   ),
                 ),
               ),
@@ -223,17 +222,21 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           children: [
                             Icon(
                               Icons.email,
-                              size: 20,
+                              size:
+                                  Globals.deviceType == Globals.phone ? 20 : 28,
                             ),
                             HorzitalSpacerWidget(_kLabelSpacing / 2),
                             obj.emailC != null && obj.emailC.length > 0
-                                ? Text(
-                                    obj.emailC,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .copyWith(fontWeight: FontWeight.w400),
-                                    textAlign: TextAlign.center,
+                                ? Expanded(
+                                    child: Text(
+                                      obj.emailC,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!
+                                          .copyWith(
+                                              fontWeight: FontWeight.w400),
+                                      textDirection: TextDirection.rtl,
+                                    ),
                                   )
                                 : Text(
                                     "No email found",
@@ -255,7 +258,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           children: <Widget>[
                             Icon(
                               Icons.local_phone,
-                              size: 20,
+                              size:
+                                  Globals.deviceType == Globals.phone ? 20 : 28,
                             ),
                             HorzitalSpacerWidget(_kLabelSpacing / 2),
                             obj.phoneC != null && obj.phoneC.length > 0

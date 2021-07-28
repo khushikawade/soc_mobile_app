@@ -5,6 +5,7 @@ import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 // ignore: must_be_immutable
@@ -66,7 +67,13 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   void initState() {
     super.initState();
     //_loadPdf();
+
     changePDF();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override

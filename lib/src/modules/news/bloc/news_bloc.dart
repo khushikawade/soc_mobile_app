@@ -121,14 +121,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   }
 
   Future<void> updateDeviceId() async {
-    // print("Updating the Onesignal Player id");
     try {
       final status = await OneSignal.shared.getDeviceState();
       final deviceId = status?.userId;
-      // print("deviceId...");
+
       print(deviceId);
       if (deviceId == null) {
-        // print("Calling again");
         await Future.delayed(Duration(milliseconds: 2000));
         updateDeviceId();
         return;

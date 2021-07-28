@@ -1,11 +1,7 @@
 import 'package:Soc/src/locale/app_translations.dart';
 import 'package:Soc/src/locale/application.dart';
-import 'package:Soc/src/modules/user/ui/lanuage_selector.dart';
-import 'package:Soc/src/modules/user/ui/user_profile.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/app_bar_with_overlapped_body.dart';
-
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {

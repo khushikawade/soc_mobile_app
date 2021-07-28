@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class InAppUrlLauncer extends StatefulWidget {
@@ -27,6 +28,11 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: CustomAppBarWidget(
@@ -42,10 +48,5 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

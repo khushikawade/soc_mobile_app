@@ -8,6 +8,7 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
@@ -44,7 +45,11 @@ class _ContactPageState extends State<ContactPage> {
     longitude = object["Contact_Office_Location__Longitude__s"] ?? '';
   }
 
-  //TOP SECTION START
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Widget _buildIcon() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -60,7 +65,9 @@ class _ContactPageState extends State<ContactPage> {
                     strokeWidth: 2,
                     backgroundColor: Theme.of(context).accentColor,
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => Icon(
+                    Icons.error,
+                  ),
                 )
               : Container(
                   child: Image.asset(
@@ -314,23 +321,25 @@ class _ContactPageState extends State<ContactPage> {
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
         ),
-        body: Container(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildIcon(),
-            SpacerWidget(_kLabelSpacing),
-            tittleWidget(),
-            SpacerWidget(_kLabelSpacing / 1.5),
-            _buildMapWidget(),
-            _buildaddressWidget(),
-            SpacerWidget(_kLabelSpacing / 1.25),
-            _buildPhoneWidget(),
-            SpacerWidget(_kLabelSpacing / 1.25),
-            _buildEmailWidget()
-          ],
-        )),
+        body: OrientationBuilder(builder: (context, orientation) {
+          return Container(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildIcon(),
+              SpacerWidget(_kLabelSpacing),
+              tittleWidget(),
+              SpacerWidget(_kLabelSpacing / 1.5),
+              _buildMapWidget(),
+              _buildaddressWidget(),
+              SpacerWidget(_kLabelSpacing / 1.25),
+              _buildPhoneWidget(),
+              SpacerWidget(_kLabelSpacing / 1.25),
+              _buildEmailWidget()
+            ],
+          ));
+        }),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

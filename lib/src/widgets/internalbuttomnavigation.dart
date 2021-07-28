@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InternalButtomNavigationBar extends StatefulWidget {
   @override
@@ -19,6 +20,11 @@ class _InternalButtomNavigationBarState
     _selectedIndex = Globals.internalBottombarIndex != null
         ? Globals.internalBottombarIndex
         : 0;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   selectedpage(context, _selectedIndex) {

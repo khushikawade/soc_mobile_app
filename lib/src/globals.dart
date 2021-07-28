@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-String? deviceType;
-var homeobj;
+// String? deviceType;
+// String? phone = 'phone';
 
 class Globals {
   static String? token =

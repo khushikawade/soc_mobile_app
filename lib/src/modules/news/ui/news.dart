@@ -4,6 +4,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -23,6 +24,11 @@ class _NewsPageState extends State<NewsPage> {
   void initState() {
     super.initState();
     bloc.add(FetchNotificationList());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Widget _buildListItems(obj, int index) {

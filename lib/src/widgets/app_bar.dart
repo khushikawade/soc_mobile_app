@@ -1,3 +1,4 @@
+import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
@@ -48,7 +49,6 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       leading: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
             padding: const EdgeInsets.only(
@@ -62,7 +62,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
                 color: AppTheme.kIconColor1,
-                size: 20,
+                size: Globals.deviceType == "phone" ? 14 : 22,
               ),
             ),
           ),
@@ -90,6 +90,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                   const IconData(0xe805,
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg),
+                  size: Globals.deviceType == "phone" ? 20 : 28,
                 ))
             : Container(),
         widget.isShare == true &&
@@ -106,7 +107,10 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                           widget.sharedpopUpheaderText.toString())
                       : print("null");
                 },
-                icon: Icon(Icons.share),
+                icon: Icon(
+                  Icons.share,
+                  size: Globals.deviceType == "phone" ? 18 : 24,
+                ),
               )
             : Container(),
         widget.ishtmlpage == true
@@ -121,7 +125,10 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                           widget.sharedpopUpheaderText.toString())
                       : print("null");
                 },
-                icon: Icon(Icons.share))
+                icon: Icon(
+                  Icons.share,
+                  size: Globals.deviceType == "phone" ? 18 : 24,
+                ))
             : Container(
                 height: 0,
               ),

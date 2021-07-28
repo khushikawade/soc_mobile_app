@@ -1,3 +1,4 @@
+import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
@@ -7,7 +8,8 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
+import 'package:flutter/services.dart';
+
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
 
@@ -56,22 +58,25 @@ class _SliderWidgetState extends State<SliderWidget> {
   @override
   void dispose() {
     _controller.dispose();
+
     super.dispose();
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
+      appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
-          elevation: 0.0,
           leading: InkWell(
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              print("pop");
+            },
             child: Icon(
               const IconData(0xe80d,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
               color: AppTheme.kIconColor1,
-              size: 20,
+              size: Globals.deviceType == "phone" ? 14 : 22,
             ),
           ),
           title: Row(
@@ -99,7 +104,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                     color: widget.currentIndex == 0
                         ? AppTheme.kDecativeIconColor
                         : AppTheme.kBlackColor,
-                    size: 20,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
                   ),
                 ),
               ],
@@ -119,7 +124,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                 color: widget.currentIndex == widget.obj.length - 1
                     ? AppTheme.kDecativeIconColor
                     : AppTheme.kBlackColor,
-                size: 20,
+                size: Globals.deviceType == "phone" ? 20 : 28,
               )),
             ),
             HorzitalSpacerWidget(_kPadding / 3),

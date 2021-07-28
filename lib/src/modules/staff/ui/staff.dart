@@ -9,6 +9,7 @@ import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StaffPage extends StatefulWidget {
@@ -31,7 +32,13 @@ class _StaffPageState extends State<StaffPage> {
   @override
   void initState() {
     super.initState();
+
     _bloc.add(StaffPageEvent());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   _route(StaffList obj, index) {

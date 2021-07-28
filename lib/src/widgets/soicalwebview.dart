@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -6,8 +7,9 @@ import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import '../globals.dart';
+
 import '../overrides.dart';
 
 class SoicalPageWebview extends StatefulWidget {
@@ -51,6 +53,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   @override
   void dispose() {
     super.dispose();
+
     flutterWebviewPlugin.dispose();
   }
 
@@ -79,7 +82,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                     color: AppTheme.kIconColor1,
-                    size: 20,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
                   ),
                 ),
               ),
@@ -99,6 +102,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
                       color: AppTheme.kBlackColor,
+                      size: Globals.deviceType == "phone" ? 20 : 28,
                     ))
                 : Container(
                     height: 0,
@@ -117,6 +121,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                     icon: Icon(
                       Icons.share,
                       color: AppTheme.kIconColor3,
+                      size: Globals.deviceType == "phone" ? 18 : 24,
                     ),
                   )
                 : Container(
@@ -135,6 +140,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
                       color: AppTheme.kBlackColor,
+                      size: Globals.deviceType == "phone" ? 20 : 28,
                     ))
                 : Container(height: 0),
             HorzitalSpacerWidget(_kPadding / 1.5),
@@ -188,6 +194,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
                       color: AppTheme.kBlackColor,
+                      size: Globals.deviceType == "phone" ? 20 : 28,
                     )),
               ],
             )));
