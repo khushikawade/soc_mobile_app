@@ -1,4 +1,3 @@
-import 'package:Soc/src/locale/app_translations.dart';
 import 'package:Soc/src/locale/application.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';

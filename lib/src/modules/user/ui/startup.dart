@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'globals.dart';
-import 'modules/user/bloc/user_bloc.dart';
+import '../../../globals.dart';
+import '../bloc/user_bloc.dart';
 
 class StartupPage extends StatefulWidget {
   @override
@@ -23,15 +23,14 @@ class _StartupPageState extends State<StartupPage> {
   UserBloc _loginBloc = new UserBloc();
   final NewsBloc _newsBloc = new NewsBloc();
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  Map<String, dynamic> _deviceData = <String, dynamic>{};
+  // Map<String, dynamic> _deviceData = <String, dynamic>{};
   AndroidDeviceInfo? andorid;
   IosDeviceInfo? ios;
+
   void initState() {
     super.initState();
-    // getDeviceType();
     getindicatorValue();
     initPlatformState();
-    // getDeviceInfo();
     _loginBloc.add(PerfomLogin());
     _newsBloc.add(FetchNotificationList());
   }
@@ -44,8 +43,7 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   Future<void> initPlatformState() async {
-    Map<String, dynamic> deviceData = <String, dynamic>{};
-
+    // Map<String, dynamic> deviceData = <String, dynamic>{};
     try {
       if (Platform.isAndroid) {
         andorid = await deviceInfoPlugin.androidInfo;
@@ -70,27 +68,18 @@ class _StartupPageState extends State<StartupPage> {
         Globals.release = iosInfo.systemVersion;
         Globals.name = iosInfo.name;
         Globals.model = iosInfo.model;
-        // print('$systemName $version, $name $model');
-        // iOS 13.1, iPhone 11 Pro Max iPhone
       }
     } on PlatformException {
-      deviceData = <String, dynamic>{
-        'Error:': 'Failed to get platform version.'
-      };
+      // deviceData = <String, dynamic>{
+      //   'Error:': 'Failed to get platform version.'
+      // };
     }
 
     if (!mounted) return;
 
-    setState(() {
-      _deviceData = deviceData;
-    });
-  }
-
-  static Future<String> getDeviceInfo() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-    print(iosInfo.model.toLowerCase());
-    return iosInfo.model.toLowerCase();
+    // setState(() {
+    //   _deviceData = deviceData;
+    // });
   }
 
   @override

@@ -61,7 +61,7 @@ class SocialDescription extends StatelessWidget {
   Widget _buildItem(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(_kPadding),
-      child: Container(
+      child: SingleChildScrollView(
         child: Column(
           children: [
             _buildnews(context),
@@ -69,6 +69,7 @@ class SocialDescription extends StatelessWidget {
             _buildnewTimeStamp(context),
             SpacerWidget(_kPadding / 5),
             _buildbuttomsection(context),
+             SpacerWidget(_kPadding * 5.0),
           ],
         ),
       ),

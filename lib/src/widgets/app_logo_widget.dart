@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class BearIconWidget extends StatelessWidget {
+class AppLogoWidget extends StatelessWidget {
   static const double _kIconSize = 45.0;
 
   Widget build(BuildContext context) {

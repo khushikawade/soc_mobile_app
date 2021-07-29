@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 import '../overrides.dart';
@@ -19,9 +18,9 @@ class SoicalPageWebview extends StatefulWidget {
     required this.isSocialpage,
     required this.isbuttomsheet,
   }) : super(key: key);
-  String link;
-  bool isSocialpage;
-  bool isbuttomsheet;
+  final String link;
+  final bool isSocialpage;
+  final bool isbuttomsheet;
 
   @override
   _SoicalPageWebviewState createState() => _SoicalPageWebviewState();
@@ -39,7 +38,6 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   void initState() {
     super.initState();
     url = widget.link;
-
     _onchanged =
         flutterWebviewPlugin.onStateChanged.listen((WebViewStateChanged state) {
       if (mounted) {
@@ -53,7 +51,6 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   @override
   void dispose() {
     super.dispose();
-
     flutterWebviewPlugin.dispose();
   }
 
@@ -88,7 +85,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
               ),
             ],
           ),
-          title: SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
+          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: [
             widget.isSocialpage
                 ? IconButton(

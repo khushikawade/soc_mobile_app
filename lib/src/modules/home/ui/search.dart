@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
-import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -22,8 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
-  bool isbuttomsheet;
-
+  final bool isbuttomsheet;
   SearchPage({Key? key, required this.isbuttomsheet}) : super(key: key);
   @override
   _SearchPageState createState() => _SearchPageState();

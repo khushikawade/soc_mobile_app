@@ -1,7 +1,7 @@
 import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +69,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
         ],
       ),
       title: widget.isCenterIcon != null && widget.isCenterIcon == true
-          ? SizedBox(width: 100.0, height: 60.0, child: BearIconWidget())
+          ? SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())
           : Text(
               widget.appBarTitle,
               style: Theme.of(context).textTheme.headline2,

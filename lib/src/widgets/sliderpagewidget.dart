@@ -3,13 +3,11 @@ import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
 
@@ -83,7 +81,7 @@ class _SliderWidgetState extends State<SliderWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SizedBox(width: 100.0, height: 50.0, child: BearIconWidget()),
+              SizedBox(width: 100.0, height: 50.0, child: AppLogoWidget()),
             ],
           ),
           actions: <Widget>[
