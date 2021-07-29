@@ -87,8 +87,8 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Padding(
           padding: const EdgeInsets.only(
               left: AppTheme.kBodyPadding, right: AppTheme.kBodyPadding),
-          child: SingleChildScrollView(
-            child: Column(
+          child: ListView(children: [
+            Column(
               children: <Widget>[
                 // _listItem(
                 //     AppTranslations.of(context)!.text('select_language'),
@@ -108,7 +108,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 //     'app_info'),
               ],
             ),
-          ),
+          ]),
         ),
       );
 

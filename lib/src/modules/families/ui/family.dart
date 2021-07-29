@@ -183,8 +183,8 @@ class _FamilyPageState extends State<FamilyPage> {
                   backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is FamiliesDataSucess) {
-                return SingleChildScrollView(
-                  child: state.obj != null && state.obj!.length > 0
+                return ListView(children: [
+                  state.obj != null && state.obj!.length > 0
                       ? Container(
                           child: ListView.builder(
                             scrollDirection: Axis.vertical,
@@ -201,7 +201,7 @@ class _FamilyPageState extends State<FamilyPage> {
                           height: MediaQuery.of(context).size.height * 0.8,
                           child: Text("No data found"),
                         ),
-                );
+                ]);
               } else if (state is ErrorLoading) {
                 return Container(
                   alignment: Alignment.center,

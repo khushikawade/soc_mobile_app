@@ -153,15 +153,20 @@ class _EventDescriptionState extends State<EventDescription> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-          color: AppTheme.kListBackgroundColor2,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [_buildItem(widget.obj), buttomButtonsWidget(widget.obj)],
+        body: ListView(children: [
+          Container(
+            color: AppTheme.kListBackgroundColor2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                _buildItem(widget.obj),
+                buttomButtonsWidget(widget.obj)
+              ],
+            ),
           ),
-        ),
+        ]),
         bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

@@ -130,8 +130,8 @@ class _SubListPageState extends State<SubListPage> {
                       backgroundColor: Theme.of(context).accentColor,
                     ));
                   } else if (state is FamiliesSublistSucess) {
-                    return SingleChildScrollView(
-                      child: state.obj != null && state.obj!.length > 0
+                    return ListView(children: [
+                      state.obj != null && state.obj!.length > 0
                           ? SafeArea(
                               child: ListView.builder(
                                 scrollDirection: Axis.vertical,
@@ -151,7 +151,7 @@ class _SubListPageState extends State<SubListPage> {
                               height: MediaQuery.of(context).size.height * 0.8,
                               child: Text("No data found"),
                             ),
-                    );
+                    ]);
                   } else {
                     return Container();
                   }
@@ -166,8 +166,8 @@ class _SubListPageState extends State<SubListPage> {
                           backgroundColor: Theme.of(context).accentColor,
                         ));
                       } else if (state is StaffSubListSucess) {
-                        return SingleChildScrollView(
-                          child: state.obj != null && state.obj!.length > 0
+                        return ListView(children: [
+                          state.obj != null && state.obj!.length > 0
                               ? SafeArea(
                                   child: ListView.builder(
                                     scrollDirection: Axis.vertical,
@@ -190,7 +190,7 @@ class _SubListPageState extends State<SubListPage> {
                                       MediaQuery.of(context).size.height * 0.8,
                                   child: Text("No data found"),
                                 ),
-                        );
+                        ]);
                       } else {
                         return Container();
                       }
