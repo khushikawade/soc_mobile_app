@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,7 @@ class _StartupPageState extends State<StartupPage> {
   bool showlogin = true;
   final HomeBloc _bloc = new HomeBloc();
   UserBloc _loginBloc = new UserBloc();
+  final NewsBloc _newsBloc = new NewsBloc();
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   Map<String, dynamic> _deviceData = <String, dynamic>{};
   AndroidDeviceInfo? andorid;
@@ -31,6 +33,7 @@ class _StartupPageState extends State<StartupPage> {
     initPlatformState();
     // getDeviceInfo();
     _loginBloc.add(PerfomLogin());
+    _newsBloc.add(FetchNotificationList());
   }
 
   getindicatorValue() async {
@@ -82,35 +85,6 @@ class _StartupPageState extends State<StartupPage> {
       _deviceData = deviceData;
     });
   }
-
-  // getDeviceType() async {
-  //   if (Platform.isAndroid) {
-  //     final data = (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
-  //     andorid = await deviceInfoPlugin.androidInfo;
-  //     Globals.phoneModel = andorid!.device;
-  //     Globals.baseOS = andorid!.version.baseOS;
-  //     Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-  //     var androidInfo = await DeviceInfoPlugin().androidInfo;
-  //     Globals.release = androidInfo.version.release;
-  //     // var sdkInt = androidInfo.version.sdkInt;
-  //     Globals.manufacturer = androidInfo.manufacturer;
-  //     Globals.model = androidInfo.model;
-  //     Globals.deviceToken = androidInfo.androidId;
-  //     Globals.myLocale = Localizations.localeOf(context);
-  //     Globals.countrycode = Localizations.localeOf(context).countryCode!;
-
-  //     // print('Android $release (SDK $sdkInt), $manufacturer $model');
-  //   }
-  //   if (Platform.isIOS) {
-  //     var iosInfo = await DeviceInfoPlugin().iosInfo;
-  //     Globals.manufacturer = iosInfo.systemName;
-  //     Globals.release = iosInfo.systemVersion;
-  //     Globals.name = iosInfo.name;
-  //     Globals.model = iosInfo.model;
-  //     // print('$systemName $version, $name $model');
-  //     // iOS 13.1, iPhone 11 Pro Max iPhone
-  //   } else {}
-  // }
 
   static Future<String> getDeviceInfo() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -172,6 +146,25 @@ class _StartupPageState extends State<StartupPage> {
                 height: MediaQuery.of(context).size.height * 0.8,
                 child: Text("Unable to load the data"),
               );
+            }
+          },
+          child: Container(),
+        ),
+        BlocListener<NewsBloc, NewsState>(
+          bloc: _newsBloc,
+          listener: (context, state) async {
+            if (state is NewsLoaded) {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              SharedPreferences intPrefs =
+                  await SharedPreferences.getInstance();
+              intPrefs.getInt("totalCount") == null
+                  ? intPrefs.setInt("totalCount", Globals.notiCount!)
+                  : intPrefs.getInt("totalCount");
+              print(intPrefs.getInt("totalCount"));
+              if (Globals.notiCount! > intPrefs.getInt("totalCount")!) {
+                intPrefs.setInt("totalCount", Globals.notiCount!);
+                prefs.setBool("enableIndicator", true);
+              }
             }
           },
           child: Container(),
