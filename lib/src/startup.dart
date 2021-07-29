@@ -6,12 +6,8 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-<<<<<<< HEAD
-import 'globals.dart' as globals;
-=======
 import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart';
->>>>>>> 456cfa2599cd7ce8f2acc5557b00847aeac09bd3
 import 'modules/user/bloc/user_bloc.dart';
 
 class StartupPage extends StatefulWidget {
@@ -71,8 +67,6 @@ class _StartupPageState extends State<StartupPage> {
       andorid = await deviceInfoPlugin.androidInfo;
       Globals.phoneModel = andorid!.device;
       Globals.baseOS = andorid!.version.baseOS;
-<<<<<<< HEAD
-=======
       Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
       var androidInfo = await DeviceInfoPlugin().androidInfo;
       Globals.release = androidInfo.version.release;
@@ -93,7 +87,6 @@ class _StartupPageState extends State<StartupPage> {
       Globals.model = iosInfo.model;
       // print('$systemName $version, $name $model');
       // iOS 13.1, iPhone 11 Pro Max iPhone
->>>>>>> 456cfa2599cd7ce8f2acc5557b00847aeac09bd3
     } else {}
   }
 
