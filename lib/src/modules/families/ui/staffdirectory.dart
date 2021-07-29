@@ -166,51 +166,35 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
                       child: Column(
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    // mainAxisSize: MainAxisSize.min,
-                    // mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Row(
-                        children: [
-                          obj.titleC != null && obj.titleC.length > 0
-                              ? Text(obj.titleC,
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.start,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(fontWeight: FontWeight.w400))
-                              : Text(
-                                  "No title  found",
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.start,
-                                ),
-                        ],
-                      ),
-                      SpacerWidget(_kLabelSpacing / 2),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                obj.descriptionC != null &&
-                                        obj.descriptionC.length > 0
-                                    ? Text(obj.descriptionC,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.start,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1!
-                                            .copyWith(
-                                                fontWeight: FontWeight.w400))
-                                    : Text(
-                                        "No description found",
-                                      ),
-                              ],
+                      obj.titleC != null && obj.titleC.length > 0
+                          ? Text(obj.titleC,
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(fontWeight: FontWeight.w400))
+                          : Text(
+                              "No title  found ",
+                              textAlign: TextAlign.center,
                             ),
-                            SpacerWidget(_kLabelSpacing * 2),
-                          ]),
+                      SpacerWidget(_kLabelSpacing),
+                      obj.descriptionC != null && obj.descriptionC.length > 0
+                          ? Text(obj.descriptionC,
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(fontWeight: FontWeight.w400))
+                          : Text("No description found ",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(fontWeight: FontWeight.w400)),
+                      SpacerWidget(_kLabelSpacing),
                       InkWell(
                         onTap: () {
                           obj.emailC != null
@@ -235,12 +219,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                           .bodyText1!
                                           .copyWith(
                                               fontWeight: FontWeight.w400),
-                                      textDirection: TextDirection.rtl,
                                     ),
                                   )
                                 : Text(
-                                    "No email found",
-                                    overflow: TextOverflow.ellipsis,
+                                    "No email found  No email found  No email found",
                                     textAlign: TextAlign.start,
                                   ),
                           ],
@@ -255,7 +237,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               : print("No telephone number found");
                         },
                         child: Row(
-                          children: <Widget>[
+                          children: [
                             Icon(
                               Icons.local_phone,
                               size:
@@ -263,12 +245,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             ),
                             HorzitalSpacerWidget(_kLabelSpacing / 2),
                             obj.phoneC != null && obj.phoneC.length > 0
-                                ? Text(
-                                    obj.phoneC,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .copyWith(fontWeight: FontWeight.w400),
+                                ? Expanded(
+                                    child: Text(
+                                      obj.phoneC,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!
+                                          .copyWith(
+                                              fontWeight: FontWeight.w400),
+                                    ),
                                   )
                                 : Text("No telephone number found")
                           ],
