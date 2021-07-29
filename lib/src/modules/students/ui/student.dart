@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/students/ui/apps_folder.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,7 +22,14 @@ class _StudentPageState extends State<StudentPage> {
   @override
   void initState() {
     super.initState();
+
+    super.initState();
     _bloc.add(StudentPageEvent());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   _launchURL(StudentApp obj, subList) async {
@@ -38,6 +46,7 @@ class _StudentPageState extends State<StudentPage> {
                 builder: (BuildContext context) => InAppUrlLauncer(
                       title: obj.titleC!,
                       url: obj.appUrlC!,
+                      isbuttomsheet: true,
                     )));
       } else {
         if (await canLaunch(obj.appUrlC!)) {
@@ -77,7 +86,11 @@ class _StudentPageState extends State<StudentPage> {
                                 ),
                               )
                             : Container(),
-                        Text("${list[index].titleC}"),
+                        Expanded(
+                            child: Text(
+                          "${list[index].titleC}",
+                          textAlign: TextAlign.center,
+                        )),
                       ],
                     ));
               },
@@ -98,7 +111,19 @@ class _StudentPageState extends State<StudentPage> {
                   backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is StudentDataSucess) {
-                return _buildGrid(3, state.obj!, state.subFolder!);
+                return state.obj != null && state.obj!.length > 0
+                    ? _buildGrid(3, state.obj!, state.subFolder!)
+                    : Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Text("No data found"),
+                      );
+              } else if (state is StudentError) {
+                return Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Text("Unable to load the data"),
+                );
               } else {
                 return Container();
               }

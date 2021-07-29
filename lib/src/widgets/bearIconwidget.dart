@@ -1,15 +1,7 @@
-import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 class BearIconWidget extends StatelessWidget {
   static const double _kIconSize = 45.0;
-
-  // final TextStyle buttonstyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Regular",
-  //   fontSize: 14,
-  //   color: AppTheme.kFontColor2,
-  // );
 
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,5 +1,7 @@
-import 'package:Soc/src/modules/families/Submodule/contact/ui/contact.dart';
-// import 'package:Soc/src/modules/families/Submodule/staff_directory/ui/staffdirectory.dart';
+import 'package:Soc/src/Globals.dart';
+import 'package:Soc/src/modules/families/ui/contact.dart';
+import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
@@ -9,6 +11,7 @@ import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FamilyPage extends StatefulWidget {
@@ -31,22 +34,40 @@ class _FamilyPageState extends State<FamilyPage> {
     _bloc.add(FamiliesEvent());
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   _route(FamiliesList obj, index) {
     if (obj.titleC == "Contact") {
       obj.titleC != null
           ? Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      ContactPage(obj: widget.obj)))
+                  builder: (BuildContext context) => ContactPage(
+                        obj: widget.obj,
+                        isbuttomsheet: true,
+                        appBarTitle: obj.titleC!,
+                      )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (BuildContext context) => StaffDirectory(
-      //               obj: obj,
-      //             )));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    isbuttomsheet: true,
+                  )));
+    } else if (obj.titleC == "Calendar/Events") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => EventPage(
+                    isbuttomsheet: true,
+                    appBarTitle: obj.titleC,
+                  )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? Navigator.push(
@@ -54,7 +75,8 @@ class _FamilyPageState extends State<FamilyPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
                         title: obj.titleC!,
-                        url: obj.appUrlC!,
+                        url: obj.appUrlC ?? '',
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
@@ -64,10 +86,13 @@ class _FamilyPageState extends State<FamilyPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
+                        // url: obj.appUrlC ?? '',
+                        isbuttomsheet: true,
+                        ishtml: true,
+                        appbarTitle: obj.titleC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
-      print(obj.pdfURL);
       obj.pdfURL != null
           ? Navigator.push(
               context,
@@ -75,14 +100,19 @@ class _FamilyPageState extends State<FamilyPage> {
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         url: obj.pdfURL,
                         tittle: obj.titleC,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  SubListPage(obj: obj, module: "family")));
+              builder: (BuildContext context) => SubListPage(
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    module: "family",
+                    isbuttomsheet: true,
+                  )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }
@@ -110,6 +140,7 @@ class _FamilyPageState extends State<FamilyPage> {
         leading: Icon(
           Icons.list,
           color: AppTheme.kListIconColor3,
+          size: Globals.deviceType == "phone" ? 22 : 30,
         ),
         title: Text(
           obj.titleC.toString(),
@@ -117,7 +148,7 @@ class _FamilyPageState extends State<FamilyPage> {
         ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
-          size: 18,
+          size: Globals.deviceType == "phone" ? 18 : 26,
           color: AppTheme.kButtonbackColor,
         ),
       ),
@@ -137,21 +168,29 @@ class _FamilyPageState extends State<FamilyPage> {
                 ));
               } else if (state is FamiliesDataSucess) {
                 return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return _buildList(state.obj![index], index);
-                          },
+                  child: state.obj != null && state.obj!.length > 0
+                      ? Container(
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: state.obj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildList(state.obj![index], index);
+                            },
+                          ),
+                        )
+                      : Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Text("No data found"),
                         ),
-                      ),
-                    ],
-                  ),
+                );
+              } else if (state is ErrorLoading) {
+                return Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Text("Unable to load the data"),
                 );
               } else {
                 return Container();

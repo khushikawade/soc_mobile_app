@@ -1,14 +1,27 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+// ignore: must_be_immutable
 class ContactPage extends StatefulWidget {
   var obj;
-  ContactPage({Key? key, required this.obj}) : super(key: key);
+  bool isbuttomsheet;
+  String appBarTitle;
+  ContactPage(
+      {Key? key,
+      required this.obj,
+      required this.isbuttomsheet,
+      required this.appBarTitle})
+      : super(key: key);
 
   @override
   _ContactPageState createState() => _ContactPageState();
@@ -17,7 +30,8 @@ class ContactPage extends StatefulWidget {
 class _ContactPageState extends State<ContactPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
-  static const double _kboxwidth = 300.0;
+  UrlLauncherWidget urlobj = new UrlLauncherWidget();
+
   static const double _kboxborderwidth = 0.75;
   var longitude;
   var latitude;
@@ -27,56 +41,15 @@ class _ContactPageState extends State<ContactPage> {
   void initState() {
     super.initState();
     object = widget.obj;
-    latitude = object["Contact_Office_Location__Latitude__s"];
-    longitude = object["Contact_Office_Location__Longitude__s"];
+    latitude = object["Contact_Office_Location__Latitude__s"] ?? '';
+    longitude = object["Contact_Office_Location__Longitude__s"] ?? '';
   }
 
-  //Style
-  // static const _kheadingStyle = TextStyle(
-  //     fontFamily: "Roboto Bold",
-  //     fontWeight: FontWeight.bold,
-  //     fontSize: 16,
-  //     color: Color(0xff2D3F98));
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
-  // static const _kheading2Style = TextStyle(
-  //     fontFamily: "Roboto Bold",
-  //     fontWeight: FontWeight.w400,
-  //     fontSize: 14,
-  //     color: Color(0xff171717));
-  // static const _ktextStyle = TextStyle(
-  //   fontFamily: "Roboto Medium",
-  //   fontSize: 14,
-  //   fontWeight: FontWeight.w500,
-  //   color: Color(0xff2D3F98),
-  // );
-
-  // static const maptextStyle = TextStyle(
-  //   fontFamily: "Roboto Bold",
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: 12,
-  //   color: Color(0xff0B84FF),
-  // );
-
-  // static const maptext2Style = TextStyle(
-  //   fontFamily: "Roboto Bold",
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: 12,
-  //   color: Color(0xffFF5656),
-  // );
-  // static const maptext3Style = TextStyle(
-  //   fontFamily: "Roboto Bold",
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: 12,
-  //   color: Color(0xffFF9608),
-  // );
-  // static const maptext4Style = TextStyle(
-  //   fontFamily: "Roboto Bold",
-  //   fontWeight: FontWeight.bold,
-  //   fontSize: 12,
-  //   color: Color(0xff368FFF),
-  // );
-
-  //TOP SECTION START
   Widget _buildIcon() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -92,11 +65,13 @@ class _ContactPageState extends State<ContactPage> {
                     strokeWidth: 2,
                     backgroundColor: Theme.of(context).accentColor,
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => Icon(
+                    Icons.error,
+                  ),
                 )
               : Container(
                   child: Image.asset(
-                  'assets/images/address.png',
+                  'assets/images/appicon.png',
                   fit: BoxFit.fill,
                   height: 160,
                   width: MediaQuery.of(context).size.width * 1,
@@ -121,7 +96,7 @@ class _ContactPageState extends State<ContactPage> {
                   object["Contact_Name__c"],
                   style: Theme.of(context).textTheme.headline2,
                 )
-              : Container(),
+              : Container(child: Text("No contact details available ")),
         ],
       ),
     );
@@ -161,9 +136,10 @@ class _ContactPageState extends State<ContactPage> {
           latitude != null
               ? SizedBox(
                   height: _kboxheight * 2,
-                  child: MapSample(
+                  child: GoogleMaps(
                     latitude: latitude,
                     longitude: longitude,
+                    // locationName: 'soc client',
                   ),
                 )
               : Container(),
@@ -229,23 +205,16 @@ class _ContactPageState extends State<ContactPage> {
             ],
           ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              object["Contact_Address__c"] != null
-                  ? Container(
-                      width: MediaQuery.of(context).size.width * .60,
-                      child: Text(
-                        object["Contact_Address__c"],
-                        style: Theme.of(context).textTheme.bodyText2,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 4,
-                        textAlign: TextAlign.start,
-                      ))
-                  : Container(),
-            ],
-          ),
+          object["Contact_Address__c"] != null &&
+                  object["Contact_Address__c"].length > 1
+              ? Expanded(
+                  child: Text(
+                    object["Contact_Address__c"],
+                    style: Theme.of(context).textTheme.bodyText2,
+                    textAlign: TextAlign.start,
+                  ),
+                )
+              : Container(child: Text("No address  available here")),
         ],
       ),
     );
@@ -265,10 +234,21 @@ class _ContactPageState extends State<ContactPage> {
                 .copyWith(color: Color(0xff171717)),
           ),
           HorzitalSpacerWidget(_kLabelSpacing),
-          Text(
-            object["Contact_Phone__c"],
-            style: Theme.of(context).textTheme.bodyText2,
-          )
+          object["Contact_Phone__c"] != null &&
+                  object["Contact_Phone__c"].length > 1
+              ? InkWell(
+                  onTap: () {
+                    object["Contact_Phone__c"] != null
+                        ? urlobj.callurlLaucher(
+                            context, "tel:" + object["Contact_Phone__c"])
+                        : print("No phone");
+                  },
+                  child: Text(
+                    object["Contact_Phone__c"],
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                )
+              : Container(child: Text("No phone  available here"))
         ],
       ),
     );
@@ -305,39 +285,56 @@ class _ContactPageState extends State<ContactPage> {
                 .copyWith(color: Color(0xff171717)),
           ),
           HorzitalSpacerWidget(_kLabelSpacing * 1.5),
-          Text(
-            object["Contact_Email__c"],
-            style: Theme.of(context).textTheme.bodyText2,
-          )
+          object["Contact_Email__c"] != null &&
+                  object["Contact_Email__c"].length > 1
+              ? InkWell(
+                  onTap: () {
+                    object["Contact_Email__c"] != null
+                        ? urlobj.callurlLaucher(
+                            context, 'mailto:"${object["Contact_Email__c"]}"')
+                        : print("null value");
+                  },
+                  child: Text(
+                    object["Contact_Email__c"],
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                )
+              : Container(child: Text("No email  available here"))
         ],
       ),
     );
   }
 
-// BUTTOM SECTION END
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-        isnewsSearchPage: true,
-      ),
-      body: Container(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildIcon(),
-          SpacerWidget(_kLabelSpacing),
-          tittleWidget(),
-          SpacerWidget(_kLabelSpacing / 1.5),
-          _buildMapWidget(),
-          _buildaddressWidget(),
-          SpacerWidget(_kLabelSpacing / 1.25),
-          _buildPhoneWidget(),
-          SpacerWidget(_kLabelSpacing / 1.25),
-          _buildEmailWidget()
-        ],
-      )),
-    );
+        appBar: CustomAppBarWidget(
+          isSearch: true,
+          isShare: false,
+          appBarTitle: "Contact",
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+        ),
+        body: OrientationBuilder(builder: (context, orientation) {
+          return Container(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildIcon(),
+              SpacerWidget(_kLabelSpacing),
+              tittleWidget(),
+              SpacerWidget(_kLabelSpacing / 1.5),
+              _buildMapWidget(),
+              _buildaddressWidget(),
+              SpacerWidget(_kLabelSpacing / 1.25),
+              _buildPhoneWidget(),
+              SpacerWidget(_kLabelSpacing / 1.25),
+              _buildEmailWidget()
+            ],
+          ));
+        }),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }

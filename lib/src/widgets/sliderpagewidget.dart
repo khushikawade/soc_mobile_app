@@ -1,12 +1,17 @@
+import 'package:Soc/src/Globals.dart';
+import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/inappbrowerwidget.dart';
+import 'package:Soc/src/widgets/sharepopmenu.dart';
+import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
+import 'package:flutter/services.dart';
+
 import '../overrides.dart';
+import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
@@ -14,11 +19,13 @@ class SliderWidget extends StatefulWidget {
     required this.obj,
     required this.currentIndex,
     this.issocialpage,
+    required this.iseventpage,
     required this.date,
   });
   var obj;
   int currentIndex;
   bool? issocialpage;
+  bool? iseventpage;
   String date;
 
   @override
@@ -40,15 +47,6 @@ class _SliderWidgetState extends State<SliderWidget> {
   bool first = false;
 
   @override
-  // void didChangeDependencies() {
-  //   WidgetsBinding.instance!.addPostFrameCallback((_) {
-  //     if (_controller.hasClients) _controller.jumpToPage(widget.currentIndex);
-  //   });
-
-  //   super.didChangeDependencies();
-  // }
-
-  @override
   void initState() {
     super.initState();
     object = widget.obj;
@@ -60,22 +58,25 @@ class _SliderWidgetState extends State<SliderWidget> {
   @override
   void dispose() {
     _controller.dispose();
+
     super.dispose();
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
+      appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
-          elevation: 0.0,
           leading: InkWell(
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              print("pop");
+            },
             child: Icon(
               const IconData(0xe80d,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
               color: AppTheme.kIconColor1,
-              size: 20,
+              size: Globals.deviceType == "phone" ? 14 : 22,
             ),
           ),
           title: Row(
@@ -94,7 +95,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                     if (widget.currentIndex > 0) {
                       _controller.previousPage(
                           duration: _kDuration, curve: _kCurve);
-                      // --widget.currentIndex;
                     }
                   },
                   icon: Icon(
@@ -104,7 +104,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                     color: widget.currentIndex == 0
                         ? AppTheme.kDecativeIconColor
                         : AppTheme.kBlackColor,
-                    size: 20,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
                   ),
                 ),
               ],
@@ -115,7 +115,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                 setState(() {});
                 if (widget.currentIndex < object.length - 1) {
                   _controller.nextPage(duration: _kDuration, curve: _kCurve);
-                  // ++widget.currentIndex;
                 }
               },
               icon: (Icon(
@@ -125,7 +124,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                 color: widget.currentIndex == widget.obj.length - 1
                     ? AppTheme.kDecativeIconColor
                     : AppTheme.kBlackColor,
-                size: 20,
+                size: Globals.deviceType == "phone" ? 20 : 28,
               )),
             ),
             HorzitalSpacerWidget(_kPadding / 3),
@@ -136,7 +135,6 @@ class _SliderWidgetState extends State<SliderWidget> {
             controller: _controller,
             itemCount: widget.obj.length,
             onPageChanged: (sliderIndex) {
-              print(sliderIndex);
               if (first) {
                 pageinitialIndex < sliderIndex
                     ? ++widget.currentIndex
@@ -157,10 +155,16 @@ class _SliderWidgetState extends State<SliderWidget> {
             itemBuilder: (BuildContext context, int index) {
               return widget.issocialpage!
                   ? SocialDescription(object: object[widget.currentIndex])
-                  : Newdescription(
-                      obj: object[widget.currentIndex],
-                      date: widget.date,
-                    );
+                  : widget.iseventpage!
+                      ? EventDescription(
+                          obj: object[widget.currentIndex],
+                          isbuttomsheet: true,
+                        )
+                      : Newdescription(
+                          obj: object[widget.currentIndex],
+                          date: widget.date,
+                          isbuttomsheet: true,
+                        );
             },
           ),
         )
@@ -170,67 +174,68 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   Widget buttomButtonsWidget(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(_kPadding / 2),
-      color: AppTheme.kBackgroundColor,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          SizedBox(
-            width: _KButtonSize,
-            height: _KButtonSize / 2,
-            child: ElevatedButton(
-              onPressed: () async {
-                _buildlink();
-
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            InAppBrowser(link: link2, isSocialpage: true)));
-              },
-              child: Text("More"),
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.all(_kPadding),
+        color: AppTheme.kBackgroundColor,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            SizedBox(
+              width: _KButtonSize,
+              height: _KButtonSize / 2,
+              child: ElevatedButton(
+                onPressed: () async {
+                  _buildlink();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SoicalPageWebview(
+                                link: link2,
+                                isSocialpage: true,
+                                isbuttomsheet: true,
+                              )));
+                },
+                child: Text("More"),
+              ),
             ),
-          ),
-          SizedBox(
-            width: _kPadding / 2,
-          ),
-          SizedBox(
-            width: _KButtonSize,
-            height: _KButtonSize / 2,
-            child: ElevatedButton(
-              onPressed: () {
-                _onShareWithEmptyOrigin(context);
-              },
-              child: Text("Share"),
+            HorzitalSpacerWidget(_kPadding / 2),
+            SizedBox(
+              width: _KButtonSize,
+              height: _KButtonSize / 2,
+              child: ElevatedButton(
+                onPressed: () async {
+                  SharePopUp obj = new SharePopUp();
+                  String link = await _buildlink();
+                  final String body =
+                      "${widget.obj[widget.currentIndex].title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}"
+                              " " +
+                          link;
+                  obj.callFunction(context, body, "");
+                },
+                child: Text("Share"),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-// MORE_BUTTON_LINK
-  Future _buildlink() async {
+  Future<String> _buildlink() async {
     link = widget.obj[widget.currentIndex].link.toString();
-
     RegExp exp =
         new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
     Iterable<RegExpMatch> matches = exp.allMatches(link);
     matches.forEach((match) {
       link2 = link.substring(match.start, match.end);
     });
-    print(link2);
+    return link2;
   }
 
-// SHARE BUTTON
-  _onShareWithEmptyOrigin(BuildContext context) async {
-    RenderBox? box = context.findRenderObject() as RenderBox;
-    final String body = widget.obj[widget.currentIndex].title["__cdata"] +
-        " " +
-        widget.obj[widget.currentIndex].link.toString();
-
-    await Share.share(body,
-        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+  void htmlparser() {
+    var doc = parse(object[0].description["__cdata"]);
+    var element = doc.getElementById('content');
+    debugPrint(element!.querySelectorAll('div').toString());
   }
 }

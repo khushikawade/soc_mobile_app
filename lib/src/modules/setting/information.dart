@@ -1,11 +1,9 @@
-import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../../../../overrides.dart' as overrides;
+import '../../overrides.dart' as overrides;
 
 class InformationPage extends StatefulWidget {
   @override
@@ -14,39 +12,7 @@ class InformationPage extends StatefulWidget {
 
 class _InformationPageState extends State<InformationPage> {
   static const double _kLabelSpacing = 17.0;
-
-  //Style
-  // static const _kheadingStyle = TextStyle(
-  //     fontFamily: "Roboto Bold",
-  //     fontWeight: FontWeight.bold,
-  //     fontSize: 22,
-  //     color: Color(0xff2D3F98));
-
-  // static const _ktextStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto",
-  //   fontSize: 14,
-  //   fontWeight: FontWeight.normal,
-  //   color: Color(0xff2D3F98),
-  // );
-
-  // static const _klinkStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto",
-  //   fontSize: 14,
-  //   fontWeight: FontWeight.normal,
-  //   decoration: TextDecoration.underline,
-  //   color: Color(0xff2D3F98),
-  // );
-
-  //TOP SECTION START
-  _launchURL(url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  UrlLauncherWidget urlobj = new UrlLauncherWidget();
 
   Widget _buildIcon() {
     return Row(
@@ -89,9 +55,7 @@ class _InformationPageState extends State<InformationPage> {
       ],
     );
   }
-  //TOP SECTION END
 
-// Middle Section START
   Widget content1Widget() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -163,7 +127,8 @@ class _InformationPageState extends State<InformationPage> {
   Widget _buildPrivacyWidget() {
     return InkWell(
       onTap: () {
-        _launchURL("${overrides.Overrides.privacyPolicyUrl2}");
+        urlobj.callurlLaucher(
+            context, "${overrides.Overrides.privacyPolicyUrl2}");
       },
       child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -179,13 +144,11 @@ class _InformationPageState extends State<InformationPage> {
     );
   }
 
-// Middle Section END
-
-// BUTTOM SECTION START
   Widget privacyWidget() {
     return InkWell(
       onTap: () {
-        _launchURL("${overrides.Overrides.privacyPolicyUrl}");
+        urlobj.callurlLaucher(
+            context, "${overrides.Overrides.privacyPolicyUrl}");
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -202,12 +165,14 @@ class _InformationPageState extends State<InformationPage> {
     );
   }
 
-// BUTTOM SECTION END
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-        isnewsSearchPage: false,
+        appBarTitle: 'Information',
+        isSearch: false,
+        isShare: false,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
       ),
       body: Container(
           child: Column(
@@ -230,7 +195,7 @@ class _InformationPageState extends State<InformationPage> {
           SizedBox(
               width: MediaQuery.of(context).size.width * 1,
               height: 100.0,
-              child: ButtonWidget()),
+              child: ShareButtonWidget()),
         ],
       )),
     );

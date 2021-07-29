@@ -1,4 +1,6 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +8,12 @@ import 'package:flutter/material.dart';
 class Newdescription extends StatefulWidget {
   var obj;
   String date;
-  Newdescription({Key? key, required this.obj, required this.date})
+  bool isbuttomsheet;
+  Newdescription(
+      {Key? key,
+      required this.obj,
+      required this.date,
+      required this.isbuttomsheet})
       : super(key: key);
 
   _NewdescriptionState createState() => _NewdescriptionState();
@@ -16,13 +23,13 @@ class _NewdescriptionState extends State<Newdescription> {
   static const double _kLabelSpacing = 20.0;
 
   _launchURL(obj) async {
-    print(obj);
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => InAppUrlLauncer(
                   title: widget.obj.headings["en"].toString(),
                   url: obj,
+                  isbuttomsheet: true,
                 )));
   }
 
@@ -112,10 +119,12 @@ class _NewdescriptionState extends State<Newdescription> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
-        child: _buildNewsDescription(),
-      ),
-    );
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
+          child: _buildNewsDescription(),
+        ),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }

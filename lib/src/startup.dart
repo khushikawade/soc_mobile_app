@@ -2,10 +2,12 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart';
 import 'modules/user/bloc/user_bloc.dart';
 
@@ -19,15 +21,26 @@ class _StartupPageState extends State<StartupPage> {
   bool showlogin = true;
   final HomeBloc _bloc = new HomeBloc();
   UserBloc _loginBloc = new UserBloc();
+  final NewsBloc _newsBloc = new NewsBloc();
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   Map<String, dynamic> _deviceData = <String, dynamic>{};
   AndroidDeviceInfo? andorid;
   IosDeviceInfo? ios;
   void initState() {
     super.initState();
-    getDeviceType();
-
+    // getDeviceType();
+    getindicatorValue();
+    initPlatformState();
+    // getDeviceInfo();
     _loginBloc.add(PerfomLogin());
+    _newsBloc.add(FetchNotificationList());
+  }
+
+  getindicatorValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.getBool("enableIndicator") == null
+        ? prefs.setBool("enableIndicator", false)
+        : prefs.setBool("enableIndicator", prefs.getBool("enableIndicator")!);
   }
 
   Future<void> initPlatformState() async {
@@ -36,10 +49,30 @@ class _StartupPageState extends State<StartupPage> {
     try {
       if (Platform.isAndroid) {
         andorid = await deviceInfoPlugin.androidInfo;
+        final data =
+            (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
+        // andorid = await deviceInfoPlugin.androidInfo;
+        Globals.phoneModel = andorid!.device;
+        Globals.baseOS = andorid!.version.baseOS;
+        Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
+        var androidInfo = await DeviceInfoPlugin().androidInfo;
+        Globals.release = androidInfo.version.release;
+        // var sdkInt = androidInfo.version.sdkInt;
+        Globals.manufacturer = androidInfo.manufacturer;
+        Globals.model = androidInfo.model;
+        Globals.deviceToken = androidInfo.androidId;
+        Globals.myLocale = Localizations.localeOf(context);
+        Globals.countrycode = Localizations.localeOf(context).countryCode!;
       } else if (Platform.isIOS) {
         ios = await deviceInfoPlugin.iosInfo;
+        var iosInfo = await DeviceInfoPlugin().iosInfo;
+        Globals.manufacturer = iosInfo.systemName;
+        Globals.release = iosInfo.systemVersion;
+        Globals.name = iosInfo.name;
+        Globals.model = iosInfo.model;
+        // print('$systemName $version, $name $model');
+        // iOS 13.1, iPhone 11 Pro Max iPhone
       }
-      // ignore: nullable_type_in_catch_clause
     } on PlatformException {
       deviceData = <String, dynamic>{
         'Error:': 'Failed to get platform version.'
@@ -53,81 +86,10 @@ class _StartupPageState extends State<StartupPage> {
     });
   }
 
-  //  setState(() {
-  //     _deviceData = deviceData;
-  //   });
-  // }
-
-  getDeviceType() async {
-    if (Platform.isAndroid) {
-      final data = (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
-      andorid = await deviceInfoPlugin.androidInfo;
-      Globals.phoneModel = andorid!.device;
-      Globals.baseOS = andorid!.version.baseOS;
-      Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-      print("*********************************");
-      print("${Globals.phoneModel}");
-    } else {
-      // var deviceType = await getDeviceInfo();
-      // Globals.deviceType = deviceType == "ipad" ? "tablet" : "phone";
-      print("else");
-      print("${Globals.phoneModel}");
-    }
-  }
-
-  // Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
-  //   return <String, dynamic>{
-  //     'version.securityPatch': build.version.securityPatch,
-  //     'version.sdkInt': build.version.sdkInt,
-  //     'version.release': build.version.release,
-  //     'version.previewSdkInt': build.version.previewSdkInt,
-  //     'version.incremental': build.version.incremental,
-  //     'version.codename': build.version.codename,
-  //     'version.baseOS': build.version.baseOS,
-  //     'board': build.board,
-  //     'bootloader': build.bootloader,
-  //     'brand': build.brand,
-  //     'device': build.device,
-  //     'display': build.display,
-  //     'fingerprint': build.fingerprint,
-  //     'hardware': build.hardware,
-  //     'host': build.host,
-  //     'id': build.id,
-  //     'manufacturer': build.manufacturer,
-  //     'model': build.model,
-  //     'product': build.product,
-  //     'supported32BitAbis': build.supported32BitAbis,
-  //     'supported64BitAbis': build.supported64BitAbis,
-  //     'supportedAbis': build.supportedAbis,
-  //     'tags': build.tags,
-  //     'type': build.type,
-  //     'isPhysicalDevice': build.isPhysicalDevice,
-  //     'androidId': build.androidId,
-  //     'systemFeatures': build.systemFeatures,
-  //   };
-  // }
-
-  // Map<String, dynamic> _readIosDeviceInfo(IosDeviceInfo data) {
-  //   return <String, dynamic>{
-  //     'name': data.name,
-  //     'systemName': data.systemName,
-  //     'systemVersion': data.systemVersion,
-  //     'model': data.model,
-  //     'localizedModel': data.localizedModel,
-  //     'identifierForVendor': data.identifierForVendor,
-  //     'isPhysicalDevice': data.isPhysicalDevice,
-  //     'utsname.sysname:': data.utsname.sysname,
-  //     'utsname.nodename:': data.utsname.nodename,
-  //     'utsname.release:': data.utsname.release,
-  //     'utsname.version:': data.utsname.version,
-  //     'utsname.machine:': data.utsname.machine,
-  //   };
-  // }
-
   static Future<String> getDeviceInfo() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-
+    print(iosInfo.model.toLowerCase());
     return iosInfo.model.toLowerCase();
   }
 
@@ -153,12 +115,15 @@ class _StartupPageState extends State<StartupPage> {
                   : Container(
                       child: Text("Please refresh your application"),
                     );
+            } else if (state is LoginError) {
+              Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Text("Unable to load the data"),
+              );
             }
           },
-          child: Container(
-            height: 0,
-            width: 0,
-          ),
+          child: Container(),
         ),
         BlocListener<HomeBloc, HomeState>(
           bloc: _bloc,
@@ -175,12 +140,34 @@ class _StartupPageState extends State<StartupPage> {
                         ),
                       ))
                   : Text("No data found");
+            } else if (state is HomeErrorReceived) {
+              Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Text("Unable to load the data"),
+              );
             }
           },
-          child: Container(
-            height: 0,
-            width: 0,
-          ),
+          child: Container(),
+        ),
+        BlocListener<NewsBloc, NewsState>(
+          bloc: _newsBloc,
+          listener: (context, state) async {
+            if (state is NewsLoaded) {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              SharedPreferences intPrefs =
+                  await SharedPreferences.getInstance();
+              intPrefs.getInt("totalCount") == null
+                  ? intPrefs.setInt("totalCount", Globals.notiCount!)
+                  : intPrefs.getInt("totalCount");
+              print(intPrefs.getInt("totalCount"));
+              if (Globals.notiCount! > intPrefs.getInt("totalCount")!) {
+                intPrefs.setInt("totalCount", Globals.notiCount!);
+                prefs.setBool("enableIndicator", true);
+              }
+            }
+          },
+          child: Container(),
         ),
       ],
     ));

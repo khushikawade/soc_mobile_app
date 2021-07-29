@@ -1,4 +1,4 @@
-import '../modal/sub_attributes.dart';
+import 'family_subattributes.dart';
 
 class FamiliesSubList {
   SubAttributes? attributes;

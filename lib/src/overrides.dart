@@ -13,7 +13,4 @@ class Overrides {
   static String? API_BASE_URL =
       'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
-  static const List drawerItems = [
-    {'title': 'Settings', 'path': 'settings', 'icon': 'settings_icon'}
-  ];
 }

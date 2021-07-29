@@ -46,7 +46,6 @@ class LanguageSelector {
         color: AppTheme.kListTileColor,
         child: RadioListTile(
           contentPadding: EdgeInsets.zero,
-          // activeColor: ,
           value: selectedLanguage == languagesMap[language] ? true : false,
           onChanged: (dynamic val) {
             setLanguage(language, context, onLanguageChanged);

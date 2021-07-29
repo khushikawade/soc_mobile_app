@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:hive/hive.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as httpClient;
@@ -9,7 +9,6 @@ import 'db_service_response.model.dart';
 class DbServices {
   getapi(api, {headers}) async {
     try {
-      print('${Overrides.API_BASE_URL}$api');
       final response =
           await httpClient.get(Uri.parse('${Overrides.API_BASE_URL}$api'),
               headers: headers != null
@@ -24,9 +23,7 @@ class DbServices {
         final data = json.decode(response.body);
         return ResponseModel(statusCode: response.statusCode, data: data);
       } else {
-        // print(response.body);
         if (response.body == 'Unauthorized') {
-          // await refreshtoken(); here we should refresh the token // TODO implement refresh session
           ResponseModel _res = await getapi(api, headers: headers);
           return _res;
         }
@@ -43,7 +40,6 @@ class DbServices {
 
   postapi(api, {body, headers}) async {
     try {
-      // print('${Overrides.API_BASE_URL}$api?output=json');
       final response = await httpClient.post(
           Uri.parse('${Overrides.API_BASE_URL}$api?output=json'),
           headers: headers ??
@@ -84,7 +80,6 @@ class DbServices {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json',
-            // 'Authorization': 'Bearer ${Globals.token}'
           },
         ),
       );
@@ -98,6 +93,82 @@ class DbServices {
     } catch (e) {
       if (e.toString().contains("Failed host lookup")) {
         throw ("No Internet Connection.");
+      } else {
+        throw (e);
+      }
+    }
+  }
+
+  // add Data in data base using this method
+  Future<bool> addData(model, tableName) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
+      hiveBox.add(model);
+
+      return true;
+    } catch (e) {
+      if (e.toString().contains("Failed host lookup")) {
+        throw ("NO_CONNECTION");
+      } else {
+        throw (e);
+      }
+    }
+  }
+
+  // get List Object using this method
+  Future<List> getListData(tableName) async {
+    try {
+      var hiveBox = await Hive.openBox(tableName);
+      var list = hiveBox.values.toList();
+      return list;
+    } catch (e) {
+      if (e.toString().contains("Failed host lookup")) {
+        throw ("NO_CONNECTION");
+      } else {
+        throw (e);
+      }
+    }
+  }
+
+  Future<int> getListLength(tableName) async {
+    try {
+      var hiveBox = await Hive.openBox(tableName);
+      var listCount = hiveBox.values.toList();
+      return listCount.length;
+    } catch (e) {
+      if (e.toString().contains("Failed host lookup")) {
+        throw ("NO_CONNECTION");
+      } else {
+        throw (e);
+      }
+    }
+  }
+
+  Future<bool> updateListData(tableName, index, value) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
+
+      hiveBox.putAt(index, value);
+
+      return true;
+    } catch (e) {
+      if (e.toString().contains("Failed host lookup")) {
+        throw ("NO_CONNECTION");
+      } else {
+        throw (e);
+      }
+    }
+  }
+
+  Future<bool> deleteData(tableName, index) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
+      hiveBox.deleteAt(index);
+
+      return true;
+    } catch (e) {
+      if (e.toString().contains("Failed host lookup")) {
+        throw ("NO_CONNECTION");
       } else {
         throw (e);
       }

@@ -1,12 +1,7 @@
 import 'package:Soc/src/locale/app_translations.dart';
 import 'package:Soc/src/locale/application.dart';
-import 'package:Soc/src/modules/user/ui/lanuage_selector.dart';
-import 'package:Soc/src/modules/user/ui/user_profile.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/app_bar_with_overlapped_body.dart';
-import 'package:Soc/src/widgets/icon_selector.dart';
-
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -34,20 +29,20 @@ class _SettingsPageState extends State<SettingsPage> {
     geLanguage();
   }
 
-  _naviage(path) {
-    switch (path) {
-      case 'language_selector':
-        LanguageSelector(context, (newLanguage) {
-          _currentLanguage.value = newLanguage;
-        });
-        break;
-      case 'user_profile':
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => UserProfilePage()));
-        break;
-      default:
-    }
-  }
+  // _naviage(path) {
+  //   switch (path) {
+  //     case 'language_selector':
+  //       LanguageSelector(context, (newLanguage) {
+  //         _currentLanguage.value = newLanguage;
+  //       });
+  //       break;
+  //     case 'user_profile':
+  //       Navigator.push(context,
+  //           MaterialPageRoute(builder: (context) => UserProfilePage()));
+  //       break;
+  //     default:
+  //   }
+  // }
 
   geLanguage() async {
     String _languageCode = await _sharedPref.getString('selected_language');
@@ -66,7 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
               style: Theme.of(context).textTheme.caption,
             ),
             leading: leading,
-            onTap: () => _naviage(path),
+            // onTap: () => _naviage(path),
             trailing: trailing),
       );
 
@@ -96,22 +91,22 @@ class _SettingsPageState extends State<SettingsPage> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                _listItem(
-                    AppTranslations.of(context)!.text('select_language'),
-                    IconSelectorWidget(
-                      'language_icon',
-                      'asset',
-                    ),
-                    'language_selector',
-                    trailing: _languageNameIndicatorTrailing()),
-                _listItem(
-                    AppTranslations.of(context)!.text('profile'),
-                    IconSelectorWidget('profile_icon', 'asset'),
-                    'user_profile'),
-                _listItem(
-                    AppTranslations.of(context)!.text('app_information'),
-                    IconSelectorWidget('informative_icon', 'asset'),
-                    'app_info'),
+                // _listItem(
+                //     AppTranslations.of(context)!.text('select_language'),
+                //     IconSelectorWidget(
+                //       'language_icon',
+                //       'asset',
+                //     ),
+                //     'language_selector',
+                //     trailing: _languageNameIndicatorTrailing()),
+                // _listItem(
+                //     AppTranslations.of(context)!.text('profile'),
+                //     IconSelectorWidget('profile_icon', 'asset'),
+                //     'user_profile'),
+                // _listItem(
+                //     AppTranslations.of(context)!.text('app_information'),
+                //     IconSelectorWidget('informative_icon', 'asset'),
+                //     'app_info'),
               ],
             ),
           ),

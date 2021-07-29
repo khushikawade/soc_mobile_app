@@ -1,33 +1,47 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
+import 'package:Soc/src/modules/families/ui/family.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/news/ui/news.dart';
+import 'package:Soc/src/modules/social/ui/Soical.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
+import 'package:Soc/src/modules/staff/ui/staff.dart';
+import 'package:Soc/src/modules/students/ui/student.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/searchfield.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+// ignore: must_be_immutable
 class SubListPage extends StatefulWidget {
   var obj;
   String? module;
+  bool isbuttomsheet;
+  String appBarTitle;
 
-  SubListPage({Key? key, required this.obj, required this.module})
-      : super(key: key);
+  SubListPage({
+    Key? key,
+    required this.obj,
+    required this.module,
+    required this.isbuttomsheet,
+    required this.appBarTitle,
+  }) : super(key: key);
   @override
   _SubListPageState createState() => _SubListPageState();
 }
 
 class _SubListPageState extends State<SubListPage> {
-  static const double _kLabelSpacing = 17.0;
   FocusNode myFocusNode = new FocusNode();
-
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
   StaffBloc _staffBloc = StaffBloc();
-  String? subModule;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +61,7 @@ class _SubListPageState extends State<SubListPage> {
                   builder: (BuildContext context) => InAppUrlLauncer(
                         title: obj.titleC!,
                         url: obj.appUrlC!,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML" || obj.typeC == "RTF/HTML") {
@@ -56,6 +71,10 @@ class _SubListPageState extends State<SubListPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
+                        // url: obj.appUrlC ?? "",
+                        isbuttomsheet: true,
+                        ishtml: true,
+                        appbarTitle: obj.titleC,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -66,15 +85,12 @@ class _SubListPageState extends State<SubListPage> {
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         url: obj.pdfURL,
                         tittle: obj.titleC,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else {
       print("");
     }
-  }
-
-  Widget _buildSearchfield() {
-    return SearchFieldWidget();
   }
 
   Widget _buildList(int index, Widget listItem, obj) {
@@ -97,8 +113,11 @@ class _SubListPageState extends State<SubListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
-          isnewsDescription: false,
-          isnewsSearchPage: false,
+          isSearch: true,
+          isShare: false,
+          appBarTitle: widget.appBarTitle,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
         ),
         key: _scaffoldKey,
         body: widget.module == "family"
@@ -111,28 +130,27 @@ class _SubListPageState extends State<SubListPage> {
                       backgroundColor: Theme.of(context).accentColor,
                     ));
                   } else if (state is FamiliesSublistSucess) {
-                    subModule = 'subListFamily';
                     return SingleChildScrollView(
-                      child: SafeArea(
-                        child: Column(
-                          children: [
-                            _buildSearchfield(),
-                            ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: state.obj!.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return _buildList(
-                                    index,
-                                    _buildFormName(index, state.obj![index]),
-                                    state.obj![index]);
-                              },
+                      child: state.obj != null && state.obj!.length > 0
+                          ? SafeArea(
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: state.obj!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return _buildList(
+                                      index,
+                                      _buildFormName(index, state.obj![index]),
+                                      state.obj![index]);
+                                },
+                              ),
+                            )
+                          : Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Text("No data found"),
                             ),
-                            // ),
-                          ],
-                        ),
-                      ),
                     );
                   } else {
                     return Container();
@@ -148,35 +166,38 @@ class _SubListPageState extends State<SubListPage> {
                           backgroundColor: Theme.of(context).accentColor,
                         ));
                       } else if (state is StaffSubListSucess) {
-                        subModule = 'subListStaff';
                         return SingleChildScrollView(
-                          child: SafeArea(
-                            child: Column(
-                              children: [
-                                _buildSearchfield(),
-                                ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: state.obj!.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return _buildList(
-                                        index,
-                                        _buildFormName(
-                                            index, state.obj![index]),
-                                        state.obj![index]);
-                                  },
+                          child: state.obj != null && state.obj!.length > 0
+                              ? SafeArea(
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: state.obj!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return _buildList(
+                                          index,
+                                          _buildFormName(
+                                              index, state.obj![index]),
+                                          state.obj![index]);
+                                    },
+                                  ),
+                                )
+                              : Container(
+                                  alignment: Alignment.center,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  child: Text("No data found"),
                                 ),
-                                // ),
-                              ],
-                            ),
-                          ),
                         );
                       } else {
                         return Container();
                       }
                     })
-                : Container());
+                : Container(),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }

@@ -23,7 +23,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         List<StudentApp> appList = [];
         yield Loading();
         List<StudentApp> list = await getStudentDetails();
-        if (list != null && list.length > 0) {
+        if (list.length > 0) {
           for (int i = 0; i < list.length; i++) {
             list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
             if (list[i].appFolderc == null || list[i].appFolderc == "") {
@@ -33,7 +33,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         }
         yield StudentDataSucess(obj: appList, subFolder: list);
       } catch (e) {
-        yield Errorinloading(err: e);
+        yield StudentError(err: e);
       }
     }
   }

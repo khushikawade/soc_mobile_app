@@ -1,6 +1,7 @@
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppsFolderPage extends StatefulWidget {
@@ -46,6 +47,11 @@ class AppsFolderPageState extends State<AppsFolderPage>
     controller!.forward();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   _launchURL(obj) async {
     if (obj.deepLinkC == 'NO') {
       Navigator.push(
@@ -54,6 +60,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC!,
                     url: obj.appUrlC!,
+                    isbuttomsheet: true,
                   )));
     } else {
       await launch(obj.appUrlC!);
@@ -78,48 +85,46 @@ class AppsFolderPageState extends State<AppsFolderPage>
             child: Padding(
               padding: const EdgeInsets.only(
                   top: 20, left: 20.0, right: 20, bottom: 20),
-              child: //Text("Well hello there!"),
-                  apps.length > 0
-                      ? GridView.count(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: _kLableSpacing,
-                          mainAxisSpacing: _kLableSpacing,
-                          children: List.generate(
-                            apps.length,
-                            (index) {
-                              return InkWell(
-                                  onTap: () => _launchURL(apps[index]),
-                                  child: Column(
-                                    children: [
-                                      apps[index].appIconC != null &&
-                                              apps[index].appIconC != ''
-                                          ? SizedBox(
-                                              height: 80,
-                                              width: 80,
-                                              child: CachedNetworkImage(
-                                                imageUrl:
-                                                    apps[index].appIconC ?? '',
-                                                placeholder: (context, url) =>
-                                                    CircularProgressIndicator(),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Icon(Icons.error),
-                                              ),
-                                            )
-                                          : Container(),
-                                      Text(apps[index].appFolderc != null &&
-                                              widget.folderName ==
-                                                  apps[index].appFolderc
-                                          ? "${apps[index].titleC}"
-                                          : ''),
-                                    ],
-                                  ));
-                            },
-                          ),
-                        )
-                      : Center(
-                          child:
-                              Container(child: Text("No apps available here"))),
+              child: apps.length > 0
+                  ? GridView.count(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: _kLableSpacing,
+                      mainAxisSpacing: _kLableSpacing,
+                      children: List.generate(
+                        apps.length,
+                        (index) {
+                          return InkWell(
+                              onTap: () => _launchURL(apps[index]),
+                              child: Column(
+                                children: [
+                                  apps[index].appIconC != null &&
+                                          apps[index].appIconC != ''
+                                      ? SizedBox(
+                                          height: 80,
+                                          width: 80,
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                apps[index].appIconC ?? '',
+                                            placeholder: (context, url) =>
+                                                CircularProgressIndicator(),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          ),
+                                        )
+                                      : Container(),
+                                  Text(apps[index].appFolderc != null &&
+                                          widget.folderName ==
+                                              apps[index].appFolderc
+                                      ? "${apps[index].titleC}"
+                                      : ''),
+                                ],
+                              ));
+                        },
+                      ),
+                    )
+                  : Center(
+                      child: Container(child: Text("No apps available here"))),
             ),
           ),
         ),

@@ -3,7 +3,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -58,7 +57,6 @@ class Utility {
   }
 
   static void showSnackBar(_scaffoldKey, msg, context) {
-    // _scaffoldKey.currentState.removeCurrentSnackBar();
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text("$msg",
           style: TextStyle(
@@ -116,6 +114,28 @@ class Utility {
     final formatter = DateFormat('EEE, d MMM yyyy HH:mm');
     var dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MM/yyyy  hh:mm');
+    final String formatted = formatNew.format(dateTime);
+    return formatted;
+  }
+
+  static convertDateFormat(date) {
+    String dateNew = date;
+
+    final string = dateNew.toString();
+    final formatter = DateFormat('yyyy-MM-dd');
+    var dateTime = formatter.parse(string);
+    final DateFormat formatNew = DateFormat('dd/MM/yyyy');
+    final String formatted = formatNew.format(dateTime);
+    return formatted;
+  }
+
+  static getMonthFromDate(date) {
+    String dateNew = date;
+
+    final string = dateNew.toString();
+    final formatter = DateFormat('yyyy-MM-dd');
+    var dateTime = formatter.parse(string);
+    final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
     final String formatted = formatNew.format(dateTime);
     return formatted;
   }

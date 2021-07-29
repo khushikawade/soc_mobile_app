@@ -1,11 +1,10 @@
-import 'package:Soc/src/app.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -14,23 +13,8 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   static const double _kLabelSpacing = 18.0;
-  bool _lights = false;
-
-  //style
-  // final TextStyle _kheadingStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Medium",
-  //   fontSize: 16,
-  //   color: AppTheme.kFontColor2,
-  // );
-
-  // final TextStyle textStyle = TextStyle(
-  //   height: 1.5,
-  //   fontFamily: "Roboto Regular",
-  //   fontSize: 16,
-  //   fontWeight: FontWeight.normal,
-  //   color: AppTheme.kAccentColor,
-  // );
+  bool _lights = true;
+  UrlLauncherWidget urlobj = new UrlLauncherWidget();
 
   Widget _buildHeading(String tittle) {
     return Row(
@@ -66,6 +50,8 @@ class _SettingPageState extends State<SettingPage> {
                 onChanged: (bool value) {
                   setState(() {
                     _lights = value;
+                    bool status = !value;
+                    OneSignal.shared.disablePush(status);
                   });
                 },
                 activeColor: AppTheme.kactivebackColor,
@@ -100,8 +86,7 @@ class _SettingPageState extends State<SettingPage> {
   Widget _buildLicence() {
     return InkWell(
       onTap: () {
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => SocialSharePlugin()));
+        urlobj.callurlLaucher(context, "https://www.google.com/");
       },
       child: Row(
         children: [
@@ -122,8 +107,11 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
-        isnewsDescription: false,
-        isnewsSearchPage: false,
+        appBarTitle: 'Setting',
+        isSearch: false,
+        isShare: false,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
       ),
       body: Container(
         child: Column(
@@ -138,7 +126,7 @@ class _SettingPageState extends State<SettingPage> {
             SizedBox(
                 width: MediaQuery.of(context).size.width * 1,
                 height: 100.0,
-                child: ButtonWidget()),
+                child: ShareButtonWidget()),
           ],
         ),
       ),

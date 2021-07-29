@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
@@ -18,18 +19,22 @@ class SocialPage extends StatefulWidget {
 class _SocialPageState extends State<SocialPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 48.0;
-  static const double _kPadding = 16.0;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   var object;
-
   SocialBloc bloc = SocialBloc();
 
   void initState() {
     super.initState();
+
+    super.initState();
     bloc.add(SocialPageEvent());
   }
 
-  Widget _buildlist(obj, int index) {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Widget _buildlist(obj, int index, mainObj) {
     var document = parse(obj.description["__cdata"]);
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
@@ -48,39 +53,41 @@ class _SocialPageState extends State<SocialPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
-                        obj: object,
+                        obj: mainObj,
                         currentIndex: index,
                         issocialpage: true,
+                        iseventpage: false,
                         date: '1',
                       )));
         },
         child: Row(
           children: <Widget>[
-            Column(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  width: _kIconSize * 1.4,
-                  height: _kIconSize * 1.5,
-                  child: imageLink != null && imageLink.length > 4
-                      ? ClipRRect(
-                          child: CachedNetworkImage(
-                            imageUrl: imageLink,
-                            placeholder: (context, url) => Container(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                backgroundColor: AppTheme.kAccentColor,
-                              ),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+            Container(
+              alignment: Alignment.center,
+              width: _kIconSize * 1.4,
+              height: _kIconSize * 1.5,
+              child: imageLink != null && imageLink.length > 4
+                  ? ClipRRect(
+                      child: CachedNetworkImage(
+                        imageUrl: imageLink,
+                        placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          width: _kIconSize * 1.4,
+                          height: _kIconSize * 1.5,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            backgroundColor: AppTheme.kAccentColor,
                           ),
-                        )
-                      : Text(''),
-                ),
-              ],
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
+                    )
+                  : Container(
+                      height: _kIconSize * 1.5,
+                      alignment: Alignment.centerLeft,
+                      child:
+                          Image(image: AssetImage("assets/images/appicon.png")),
+                    ),
             ),
             SizedBox(
               width: _kLabelSpacing / 2,
@@ -91,17 +98,18 @@ class _SocialPageState extends State<SocialPage> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                          width: MediaQuery.of(context).size.width * 0.69,
-                          child: Text(
-                            obj.title["__cdata"]
-                                .replaceAll(new RegExp(r'[^\w\s]+'), ''),
-                            // "Check out these book suggestions for your summer reading !",
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-
-                            style: Theme.of(context).textTheme.headline2,
-                          )),
+                      obj.title["__cdata"] != null &&
+                              obj.title["__cdata"].length > 1
+                          ? Container(
+                              width: MediaQuery.of(context).size.width * 0.69,
+                              child: Text(
+                                obj.title["__cdata"]
+                                    .replaceAll(new RegExp(r'[^\w\s]+'), ''),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: Theme.of(context).textTheme.headline2,
+                              ))
+                          : Container()
                     ],
                   ),
                   SizedBox(height: _kLabelSpacing / 2),
@@ -110,12 +118,14 @@ class _SocialPageState extends State<SocialPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                          width: MediaQuery.of(context).size.width * 0.40,
-                          child: Text(
-                            Utility.convertDate(obj.pubDate).toString(),
-                            style: Theme.of(context).textTheme.subtitle1,
-                          )),
+                      obj.pubDate != null && obj.pubDate.length > 1
+                          ? Container(
+                              width: MediaQuery.of(context).size.width * 0.40,
+                              child: Text(
+                                Utility.convertDate(obj.pubDate).toString(),
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ))
+                          : Container()
                     ],
                   ),
                 ]),
@@ -132,16 +142,9 @@ class _SocialPageState extends State<SocialPage> {
       shrinkWrap: true,
       itemCount: obj.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildlist(obj[index], index);
+        return _buildlist(obj[index], index, obj!);
       },
     );
-  }
-
-  void _build(obj) {
-    object = obj;
-    print(
-        "******************************************************************************");
-    // print(object[0].pubDate);
   }
 
   Widget build(BuildContext context) {
@@ -151,15 +154,16 @@ class _SocialPageState extends State<SocialPage> {
             bloc: bloc,
             builder: (BuildContext context, SocialState state) {
               if (state is SocialDataSucess) {
-                _build(state.obj);
-                return state.obj != null
+                return state.obj != null && state.obj!.length > 0
                     ? Container(
                         child: Column(
                           children: [makeList(state.obj)],
                         ),
                       )
-                    : Center(
-                        child: Text("No Data found"),
+                    : Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Text("No data found"),
                       );
               } else if (state is Loading) {
                 return Container(
@@ -170,8 +174,12 @@ class _SocialPageState extends State<SocialPage> {
                   )),
                 );
               }
-              if (state is Errorinloading) {
-                return Text("Unable to load the data");
+              if (state is SocialError) {
+                return Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Text("Unable to load the data"),
+                );
               } else {
                 return Container();
               }

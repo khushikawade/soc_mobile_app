@@ -5,6 +5,7 @@ import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class App extends StatefulWidget {
@@ -19,10 +20,16 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
     _newLocaleDelegate = AppTranslationsDelegate(newLocale: null);
     checkForSetLanguage();
     application.onLocaleChanged = onLocaleChange;
-    //
   }
 
   checkForSetLanguage() async {
@@ -39,18 +46,15 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Soc',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.lightTheme,
-      // home: LoginPage(),
       home: StartupPage(),
       localizationsDelegates: [
         _newLocaleDelegate!,
-        //provides localised strings
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-        //provides RTL support
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: application.supportedLocales(),

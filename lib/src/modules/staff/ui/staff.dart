@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staffmodal.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -6,11 +7,16 @@ import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StaffPage extends StatefulWidget {
-  StaffPage({Key? key, this.title}) : super(key: key);
+  StaffPage({
+    Key? key,
+    this.title,
+  }) : super(key: key);
   final String? title;
   @override
   _StaffPageState createState() => _StaffPageState();
@@ -26,7 +32,13 @@ class _StaffPageState extends State<StaffPage> {
   @override
   void initState() {
     super.initState();
+
     _bloc.add(StaffPageEvent());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   _route(StaffList obj, index) {
@@ -36,24 +48,19 @@ class _StaffPageState extends State<StaffPage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
-                        title: obj.titleC!,
-                        url: obj.urlC!,
-                      )))
+                      title: obj.titleC!, url: obj.urlC!, isbuttomsheet: true)))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "HTML/RTF") {
       obj.rtfHTMLC != null
-          ?
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (BuildContext context) =>
-          //             SubListPage(title: obj.titleC, module: "staff")))
-
-          Navigator.push(
+          ? Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
+                        // url: obj.urlC.toString(),
+                        isbuttomsheet: true,
+                        ishtml: true,
+                        appbarTitle: obj.titleC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -64,14 +71,19 @@ class _StaffPageState extends State<StaffPage> {
                   builder: (BuildContext context) => CommonPdfViewerPage(
                         url: obj.pdfURL,
                         tittle: obj.titleC,
+                        isbuttomsheet: true,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  SubListPage(obj: obj, module: "staff")));
+              builder: (BuildContext context) => SubListPage(
+                    obj: obj,
+                    module: "staff",
+                    isbuttomsheet: true,
+                    appBarTitle: obj.titleC!,
+                  )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }
@@ -79,38 +91,39 @@ class _StaffPageState extends State<StaffPage> {
 
   Widget _buildList(StaffList obj, int index) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: AppTheme.kDividerColor2,
-          width: 0.65,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppTheme.kDividerColor2,
+            width: 0.65,
+          ),
+          borderRadius: BorderRadius.circular(0.0),
+          color: (index % 2 == 0)
+              ? Theme.of(context).backgroundColor
+              : AppTheme.kListBackgroundColor2,
         ),
-        borderRadius: BorderRadius.circular(0.0),
-        color: (index % 2 == 0)
-            ? Theme.of(context).backgroundColor
-            : AppTheme.kListBackgroundColor2,
-      ),
-      child: ListTile(
-        onTap: () {
-          _route(obj, index);
-        },
-        visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        contentPadding:
-            EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: Icon(
-          Icons.list,
-          color: AppTheme.kListIconColor3,
-        ),
-        title: Text(
-          obj.titleC.toString(),
-          style: Theme.of(context).textTheme.bodyText2,
-        ),
-        trailing: Icon(
-          Icons.arrow_forward_ios_rounded,
-          size: 18,
-          color: AppTheme.kButtonbackColor,
-        ),
-      ),
-    );
+        child: obj != null && obj.titleC != null
+            ? ListTile(
+                onTap: () {
+                  _route(obj, index);
+                },
+                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                contentPadding: EdgeInsets.only(
+                    left: _kLabelSpacing, right: _kLabelSpacing / 2),
+                leading: Icon(
+                  Icons.list,
+                  color: AppTheme.kListIconColor3,
+                ),
+                title: Text(
+                  obj.titleC.toString(),
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 18,
+                  color: AppTheme.kButtonbackColor,
+                ),
+              )
+            : Container(child: Text("No contact detail found")));
   }
 
   Widget build(BuildContext context) {
@@ -128,19 +141,31 @@ class _StaffPageState extends State<StaffPage> {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      Container(
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return _buildList(state.obj![index], index);
-                          },
-                        ),
-                      ),
+                      state.obj != null && state.obj!.length > 0
+                          ? Container(
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: state.obj!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return _buildList(state.obj![index], index);
+                                },
+                              ),
+                            )
+                          : Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Text("No data found"),
+                            ),
                     ],
                   ),
+                );
+              } else if (state is ErrorInStaffLoading) {
+                return Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Text("Unable to load the data"),
                 );
               } else {
                 return Container();
