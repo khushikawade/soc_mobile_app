@@ -4,12 +4,11 @@ import 'package:Soc/src/modules/students/ui/apps_folder.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class StudentPage extends StatefulWidget {
-  var homeObj;
+  final homeObj;
   StudentPage({Key? key, this.homeObj}) : super(key: key);
   _StudentPageState createState() => _StudentPageState();
 }

@@ -41,7 +41,7 @@ class DbServices {
   postapi(api, {body, headers}) async {
     try {
       final response = await httpClient.post(
-          Uri.parse('${Overrides.API_BASE_URL}$api?output=json'),
+          Uri.parse('${Overrides.API_BASE_URL}$api'),
           headers: headers ??
               {
                 'Content-Type': 'application/json',
@@ -53,7 +53,6 @@ class DbServices {
         return ResponseModel(statusCode: response.statusCode, data: data);
       } else {
         if (response.body == 'Unauthorized') {
-          print('The token has been expired....');
           ResponseModel _res = await postapi(api, body: body, headers: headers);
           return _res;
         }
@@ -71,19 +70,18 @@ class DbServices {
 
   diopostapi(api, _headers, body) async {
     try {
-      var dio = Dio();
-
+      final dio = Dio();
       Response response = await dio.post(
         '${Overrides.API_BASE_URL}$api',
         data: body,
         options: Options(
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Accept-Language': 'Accept-Language',
+            'authorization': 'Bearer ${Globals.token}'
           },
         ),
       );
-
       final data = response.data;
       if (response.statusCode == 200) {
         return ResponseModel(statusCode: response.statusCode, data: data);
@@ -99,6 +97,8 @@ class DbServices {
     }
   }
 
+  // Local DB operations.
+
   // add Data in data base using this method
   Future<bool> addData(model, tableName) async {
     try {
@@ -113,6 +113,36 @@ class DbServices {
         throw (e);
       }
     }
+  }
+
+  Future login() async {
+     final dio = Dio();
+     FormData formData = FormData.fromMap({
+        "grant_type": "password",
+        "client_id":
+            "3MVG9eMnfmfDO5NC3QXoYv8SGxm3vUnduHs0xb5BwEiLHNXr46uKkiRFMIydXPVwcQG.T2uQ_4.uHRHnDL_tg",
+        "client_secret":
+            "9881213BBC5BA4A71BD3A5A1048815EE6775BC872A86203DA818A51AC7CCA624",
+        "username": "mahendra.patidar@zehntech.com.flutter",
+        "password": "YIB7tewn9joct*voghdVBvxNULlHjFmoQVqseNq1Iz"
+      });
+      Response response = await dio.post(
+        "https://test.salesforce.com/services/oauth2/token",
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        final data = response.data;
+        Globals.token = data["access_token"];
+        return data;
+      } else {
+        throw ("Something went wrong.");
+      }
   }
 
   // get List Object using this method

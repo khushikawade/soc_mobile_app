@@ -8,12 +8,12 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
-import 'package:Soc/src/modules/social/ui/Soical.dart';
+import 'package:Soc/src/modules/social/ui/soical.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/staff/ui/stafflogin.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                     height: 0,
                   ),
             title:
-                SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
+                SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
             actions: <Widget>[
               IconButton(
                   onPressed: () {
@@ -199,34 +199,36 @@ class _HomePageState extends State<HomePage> {
           items: Globals.homeObjet["Bottom_Navigation__c"]
               .split(";")
               .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
-                    icon: Column(children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            e.split("_")[0],
-                            style: Theme.of(context).textTheme.subtitle2,
-                          ),
-                          ValueListenableBuilder(
-                            builder: (BuildContext context, dynamic value,
-                                Widget? child) {
-                              return e.split("_")[0] == "News" &&
-                                      indicator.value == true
-                                  ? Container(
-                                      height: 8,
-                                      width: 8,
-                                      margin: EdgeInsets.only(left: 3),
-                                      decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          shape: BoxShape.circle),
-                                    )
-                                  : Container();
-                            },
-                            valueListenable: indicator,
-                            child: Container(),
-                          ),
-                        ],
-                      ),
+                    icon: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: [
+                      //     Text(
+                      //       e.split("_")[0],
+                      //       style: Theme.of(context).textTheme.subtitle2,
+                      //     ),
+                      //     ValueListenableBuilder(
+                      //       builder: (BuildContext context, dynamic value,
+                      //           Widget? child) {
+                      //         return e.split("_")[0] == "News" &&
+                      //                 indicator.value == true
+                      //             ? Container(
+                      //                 height: 8,
+                      //                 width: 8,
+                      //                 margin: EdgeInsets.only(left: 3),
+                      //                 decoration: BoxDecoration(
+                      //                     color: Colors.red,
+                      //                     shape: BoxShape.circle),
+                      //               )
+                      //             : Container();
+                      //       },
+                      //       valueListenable: indicator,
+                      //       child: Container(),
+                      //     ),
+                      //   ],
+                      // ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5.0),
                         child: Icon(
@@ -236,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ]),
-                    label: '',
+                    label: '${e.split("_")[0]}',
                   ))
               .toList(),
           onTap: (index) {
