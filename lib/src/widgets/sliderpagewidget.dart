@@ -77,7 +77,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
                 color: AppTheme.kIconColor1,
-                size: Globals.deviceType == "phone" ? 14 : 22,
+                size: Globals.deviceType == "phone" ? 17 : 25,
               ),
             ),
             title: Row(
@@ -105,7 +105,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                       color: widget.currentIndex == 0
                           ? AppTheme.kDecativeIconColor
                           : AppTheme.kBlackColor,
-                      size: Globals.deviceType == "phone" ? 14 : 22,
+                      size: Globals.deviceType == "phone" ? 17 : 25,
                     ),
                   ),
                 ],
@@ -125,7 +125,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                   color: widget.currentIndex == widget.obj.length - 1
                       ? AppTheme.kDecativeIconColor
                       : AppTheme.kBlackColor,
-                  size: Globals.deviceType == "phone" ? 14 : 22,
+                  size: Globals.deviceType == "phone" ? 17 : 25,
                 )),
               ),
               HorzitalSpacerWidget(_kPadding / 3),
