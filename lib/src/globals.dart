@@ -27,4 +27,5 @@ class Globals {
   static String? deviceToken;
   static String? countrycode;
   static Locale? myLocale;
+  static int? notiCount;
 }

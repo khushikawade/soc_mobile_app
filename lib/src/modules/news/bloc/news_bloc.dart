@@ -46,6 +46,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        Globals.notiCount = data["total_count"];
         final data1 = data["notifications"];
         final data2 = data1 as List;
 
