@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
     _bloc.initPushState(context);
     _selectedIndex = Globals.outerBottombarIndex ?? 0;
     timer =
-        Timer.periodic(Duration(seconds: 3), (Timer t) => getindicatorValue());
+        Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
   }
 
   getindicatorValue() async {
@@ -109,7 +109,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   selectedScreenBody(context, _selectedIndex, list) {
-    print(list);
     if (list[_selectedIndex].split("_")[0] == "Social") {
       return SocialPage();
     } else if (list[_selectedIndex].split("_")[0] == "News") {

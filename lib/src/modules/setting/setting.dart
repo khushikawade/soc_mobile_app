@@ -15,7 +15,7 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   static const double _kLabelSpacing = 18.0;
-  bool _lights = false;
+  bool _lights = true;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
 
   Widget _buildHeading(String tittle) {

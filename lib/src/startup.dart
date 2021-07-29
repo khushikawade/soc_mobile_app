@@ -26,8 +26,9 @@ class _StartupPageState extends State<StartupPage> {
   IosDeviceInfo? ios;
   void initState() {
     super.initState();
-    getDeviceType();
+    // getDeviceType();
     getindicatorValue();
+    initPlatformState();
     // getDeviceInfo();
     _loginBloc.add(PerfomLogin());
   }
@@ -45,8 +46,29 @@ class _StartupPageState extends State<StartupPage> {
     try {
       if (Platform.isAndroid) {
         andorid = await deviceInfoPlugin.androidInfo;
+        final data =
+            (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
+        // andorid = await deviceInfoPlugin.androidInfo;
+        Globals.phoneModel = andorid!.device;
+        Globals.baseOS = andorid!.version.baseOS;
+        Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
+        var androidInfo = await DeviceInfoPlugin().androidInfo;
+        Globals.release = androidInfo.version.release;
+        // var sdkInt = androidInfo.version.sdkInt;
+        Globals.manufacturer = androidInfo.manufacturer;
+        Globals.model = androidInfo.model;
+        Globals.deviceToken = androidInfo.androidId;
+        Globals.myLocale = Localizations.localeOf(context);
+        Globals.countrycode = Localizations.localeOf(context).countryCode!;
       } else if (Platform.isIOS) {
         ios = await deviceInfoPlugin.iosInfo;
+        var iosInfo = await DeviceInfoPlugin().iosInfo;
+        Globals.manufacturer = iosInfo.systemName;
+        Globals.release = iosInfo.systemVersion;
+        Globals.name = iosInfo.name;
+        Globals.model = iosInfo.model;
+        // print('$systemName $version, $name $model');
+        // iOS 13.1, iPhone 11 Pro Max iPhone
       }
     } on PlatformException {
       deviceData = <String, dynamic>{
@@ -61,34 +83,34 @@ class _StartupPageState extends State<StartupPage> {
     });
   }
 
-  getDeviceType() async {
-    if (Platform.isAndroid) {
-      final data = (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
-      andorid = await deviceInfoPlugin.androidInfo;
-      Globals.phoneModel = andorid!.device;
-      Globals.baseOS = andorid!.version.baseOS;
-      Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-      var androidInfo = await DeviceInfoPlugin().androidInfo;
-      Globals.release = androidInfo.version.release;
-      // var sdkInt = androidInfo.version.sdkInt;
-      Globals.manufacturer = androidInfo.manufacturer;
-      Globals.model = androidInfo.model;
-      Globals.deviceToken = androidInfo.androidId;
-      Globals.myLocale = Localizations.localeOf(context);
-      Globals.countrycode = Localizations.localeOf(context).countryCode!;
+  // getDeviceType() async {
+  //   if (Platform.isAndroid) {
+  //     final data = (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
+  //     andorid = await deviceInfoPlugin.androidInfo;
+  //     Globals.phoneModel = andorid!.device;
+  //     Globals.baseOS = andorid!.version.baseOS;
+  //     Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
+  //     var androidInfo = await DeviceInfoPlugin().androidInfo;
+  //     Globals.release = androidInfo.version.release;
+  //     // var sdkInt = androidInfo.version.sdkInt;
+  //     Globals.manufacturer = androidInfo.manufacturer;
+  //     Globals.model = androidInfo.model;
+  //     Globals.deviceToken = androidInfo.androidId;
+  //     Globals.myLocale = Localizations.localeOf(context);
+  //     Globals.countrycode = Localizations.localeOf(context).countryCode!;
 
-      // print('Android $release (SDK $sdkInt), $manufacturer $model');
-    }
-    if (Platform.isIOS) {
-      var iosInfo = await DeviceInfoPlugin().iosInfo;
-      Globals.manufacturer = iosInfo.systemName;
-      Globals.release = iosInfo.systemVersion;
-      Globals.name = iosInfo.name;
-      Globals.model = iosInfo.model;
-      // print('$systemName $version, $name $model');
-      // iOS 13.1, iPhone 11 Pro Max iPhone
-    } else {}
-  }
+  //     // print('Android $release (SDK $sdkInt), $manufacturer $model');
+  //   }
+  //   if (Platform.isIOS) {
+  //     var iosInfo = await DeviceInfoPlugin().iosInfo;
+  //     Globals.manufacturer = iosInfo.systemName;
+  //     Globals.release = iosInfo.systemVersion;
+  //     Globals.name = iosInfo.name;
+  //     Globals.model = iosInfo.model;
+  //     // print('$systemName $version, $name $model');
+  //     // iOS 13.1, iPhone 11 Pro Max iPhone
+  //   } else {}
+  // }
 
   static Future<String> getDeviceInfo() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
