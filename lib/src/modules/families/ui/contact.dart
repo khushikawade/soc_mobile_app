@@ -51,9 +51,8 @@ class _ContactPageState extends State<ContactPage> {
   }
 
   Widget _buildIcon() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
           child: object["Contact_Image__c"] != null &&
@@ -76,7 +75,7 @@ class _ContactPageState extends State<ContactPage> {
                   height: 160,
                   width: MediaQuery.of(context).size.width * 1,
                 )),
-        )
+        ),
       ],
     );
   }

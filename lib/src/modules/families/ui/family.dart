@@ -13,6 +13,7 @@ import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
@@ -138,9 +139,12 @@ class _FamilyPageState extends State<FamilyPage> {
         contentPadding:
             EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: Icon(
-          Icons.list,
+          IconData(
+            int.parse(obj.appIconC!),
+            fontFamily: 'FontAwesomeSolid',
+            fontPackage: 'font_awesome_flutter',
+          ),
           color: AppTheme.kListIconColor3,
-          size: Globals.deviceType == "phone" ? 22 : 30,
         ),
         title: Text(
           obj.titleC.toString(),
