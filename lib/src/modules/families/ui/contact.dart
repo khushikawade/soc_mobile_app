@@ -51,9 +51,8 @@ class _ContactPageState extends State<ContactPage> {
   }
 
   Widget _buildIcon() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
           child: object["Contact_Image__c"] != null &&
@@ -76,7 +75,7 @@ class _ContactPageState extends State<ContactPage> {
                   height: 160,
                   width: MediaQuery.of(context).size.width * 1,
                 )),
-        )
+        ),
       ],
     );
   }
@@ -314,8 +313,8 @@ class _ContactPageState extends State<ContactPage> {
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
         ),
-        body: OrientationBuilder(builder: (context, orientation) {
-          return Container(
+        body: ListView(children: [
+          Container(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -331,8 +330,8 @@ class _ContactPageState extends State<ContactPage> {
               SpacerWidget(_kLabelSpacing / 1.25),
               _buildEmailWidget()
             ],
-          ));
-        }),
+          )),
+        ]),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

@@ -110,7 +110,11 @@ class _StaffPageState extends State<StaffPage> {
                 contentPadding: EdgeInsets.only(
                     left: _kLabelSpacing, right: _kLabelSpacing / 2),
                 leading: Icon(
-                  Icons.list,
+                  IconData(
+                    int.parse(obj.appIconC!),
+                    fontFamily: 'FontAwesomeSolid',
+                    fontPackage: 'font_awesome_flutter',
+                  ),
                   color: AppTheme.kListIconColor3,
                 ),
                 title: Text(

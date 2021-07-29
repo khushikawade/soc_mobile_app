@@ -60,41 +60,44 @@ class _StudentPageState extends State<StudentPage> {
   Widget _buildGrid(
       int crossaAxisCount, List<StudentApp> list, List<StudentApp> subList) {
     return list.length > 0
-        ? GridView.count(
-            crossAxisCount: crossaAxisCount,
-            crossAxisSpacing: _kLableSpacing,
-            mainAxisSpacing: _kLableSpacing,
-            children: List.generate(
-              list.length,
-              (index) {
-                return InkWell(
-                    onTap: () => _launchURL(list[index], subList),
-                    child: Column(
-                      children: [
-                        list[index].appIconC != null &&
-                                list[index].appIconC != ''
-                            ? SizedBox(
-                                height: MediaQuery.of(context).textScaleFactor * 70,
-                                width: 100,
-                                child: CachedNetworkImage(
-                                  imageUrl: list[index].appIconC ?? '',
-                                  placeholder: (context, url) =>
-                                      CircularProgressIndicator(),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                ),
-                              )
-                            : Container(),
-                        Expanded(
-                            child: Text(
-                          "${list[index].titleC}",
-                          textAlign: TextAlign.center,
-                        )),
-                      ],
-                    ));
-              },
-            ),
-          )
+        ? new OrientationBuilder(builder: (context, orientation) {
+            return GridView.count(
+              childAspectRatio: orientation == Orientation.portrait ? 1 : 3 / 2,
+              crossAxisCount: crossaAxisCount,
+              crossAxisSpacing: _kLableSpacing,
+              mainAxisSpacing: _kLableSpacing,
+              children: List.generate(
+                list.length,
+                (index) {
+                  return InkWell(
+                      onTap: () => _launchURL(list[index], subList),
+                      child: Column(
+                        children: [
+                          list[index].appIconC != null &&
+                                  list[index].appIconC != ''
+                              ? SizedBox(
+                                  height: 100,
+                                  width: 100,
+                                  child: CachedNetworkImage(
+                                    imageUrl: list[index].appIconC ?? '',
+                                    placeholder: (context, url) =>
+                                        CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                )
+                              : Container(),
+                          Expanded(
+                              child: Text(
+                            "${list[index].titleC}",
+                            textAlign: TextAlign.center,
+                          )),
+                        ],
+                      ));
+                },
+              ),
+            );
+          })
         : Container(child: Text("No apps available here"));
   }
 

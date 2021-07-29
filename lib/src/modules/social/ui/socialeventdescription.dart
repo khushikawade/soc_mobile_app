@@ -1,5 +1,8 @@
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/sharepopmenu.dart';
+import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -9,6 +12,7 @@ class SocialDescription extends StatelessWidget {
   var object;
   SocialDescription({required this.object});
   static const double _kPadding = 16.0;
+  static const double _KButtonSize = 110.0;
 
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
@@ -61,15 +65,66 @@ class SocialDescription extends StatelessWidget {
   Widget _buildItem(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(_kPadding),
-      child: SingleChildScrollView(
-        child: Column(
+      child: ListView(children: [
+        Column(
           children: [
             _buildnews(context),
             SpacerWidget(_kPadding / 2),
             _buildnewTimeStamp(context),
             SpacerWidget(_kPadding / 5),
             _buildbuttomsection(context),
-             SpacerWidget(_kPadding * 5.0),
+            SpacerWidget(_kPadding / 2),
+            _buildButton(context),
+            SpacerWidget(_kPadding * 3),
+          ],
+        ),
+      ]),
+    );
+  }
+
+  Widget _buildButton(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.all(_kPadding / 2),
+        color: AppTheme.kBackgroundColor,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            SizedBox(
+              width: _KButtonSize,
+              height: _KButtonSize / 2,
+              child: ElevatedButton(
+                onPressed: () async {
+                  _buildlink();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SoicalPageWebview(
+                                link: link2,
+                                isSocialpage: true,
+                                isbuttomsheet: true,
+                              )));
+                },
+                child: Text("More"),
+              ),
+            ),
+            HorzitalSpacerWidget(_kPadding / 2),
+            SizedBox(
+              width: _KButtonSize,
+              height: _KButtonSize / 2,
+              child: ElevatedButton(
+                onPressed: () async {
+                  SharePopUp obj = new SharePopUp();
+                  String link = await _buildlink();
+                  final String body =
+                      "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}"
+                              " " +
+                          link;
+                  obj.callFunction(context, body, "");
+                },
+                child: Text("Share"),
+              ),
+            ),
           ],
         ),
       ),
@@ -79,7 +134,7 @@ class SocialDescription extends StatelessWidget {
   Widget _buildbuttomsection(BuildContext context) {
     return Column(
       children: [
-        HorzitalSpacerWidget(_kPadding / 2),
+        HorzitalSpacerWidget(_kPadding / 4),
         object.description["__cdata"] != null &&
                 object.description["__cdata"]
                     .toString()
@@ -128,5 +183,16 @@ class SocialDescription extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Container(child: _buildItem(context));
+  }
+
+  Future<String> _buildlink() async {
+    link = object.link.toString();
+    RegExp exp =
+        new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
+    Iterable<RegExpMatch> matches = exp.allMatches(link);
+    matches.forEach((match) {
+      link2 = link.substring(match.start, match.end);
+    });
+    return link2;
   }
 }

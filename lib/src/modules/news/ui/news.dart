@@ -51,6 +51,7 @@ class _NewsPageState extends State<NewsPage> {
                         issocialpage: false,
                         iseventpage: false,
                         date: "$newsTimeStamp",
+                        isbuttomsheet: true,
                       )));
         },
         child: Row(

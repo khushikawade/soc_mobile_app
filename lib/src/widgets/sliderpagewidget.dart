@@ -1,10 +1,11 @@
-import 'package:Soc/src/Globals.dart';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:flutter/material.dart';
@@ -13,18 +14,19 @@ import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
-  SliderWidget({
-    required this.obj,
-    required this.currentIndex,
-    this.issocialpage,
-    required this.iseventpage,
-    required this.date,
-  });
+  SliderWidget(
+      {required this.obj,
+      required this.currentIndex,
+      this.issocialpage,
+      required this.iseventpage,
+      required this.date,
+      required this.isbuttomsheet});
   var obj;
   int currentIndex;
   bool? issocialpage;
   bool? iseventpage;
   String date;
+  bool isbuttomsheet;
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -62,113 +64,113 @@ class _SliderWidgetState extends State<SliderWidget> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          iconTheme: IconThemeData(color: Theme.of(context).accentColor),
-          leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-              print("pop");
-            },
-            child: Icon(
-              const IconData(0xe80d,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: AppTheme.kIconColor1,
-              size: Globals.deviceType == "phone" ? 14 : 22,
-            ),
-          ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(width: 100.0, height: 50.0, child: AppLogoWidget()),
-            ],
-          ),
-          actions: <Widget>[
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () async {
-                    setState(() {});
-                    if (widget.currentIndex > 0) {
-                      _controller.previousPage(
-                          duration: _kDuration, curve: _kCurve);
-                    }
-                  },
-                  icon: Icon(
-                    const IconData(0xe80c,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: widget.currentIndex == 0
-                        ? AppTheme.kDecativeIconColor
-                        : AppTheme.kBlackColor,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  ),
-                ),
-              ],
-            ),
-            HorzitalSpacerWidget(_kPadding / 3),
-            IconButton(
-              onPressed: () async {
-                setState(() {});
-                if (widget.currentIndex < object.length - 1) {
-                  _controller.nextPage(duration: _kDuration, curve: _kCurve);
-                }
+        appBar: AppBar(
+            iconTheme: IconThemeData(color: Theme.of(context).accentColor),
+            leading: InkWell(
+              onTap: () {
+                Navigator.pop(context);
               },
-              icon: (Icon(
-                const IconData(0xe815,
+              child: Icon(
+                const IconData(0xe80d,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
-                color: widget.currentIndex == widget.obj.length - 1
-                    ? AppTheme.kDecativeIconColor
-                    : AppTheme.kBlackColor,
-                size: Globals.deviceType == "phone" ? 20 : 28,
-              )),
+                color: AppTheme.kIconColor1,
+                size: Globals.deviceType == "phone" ? 14 : 22,
+              ),
             ),
-            HorzitalSpacerWidget(_kPadding / 3),
-          ]),
-      body: Column(children: <Widget>[
-        Expanded(
-          child: PageView.builder(
-            controller: _controller,
-            itemCount: widget.obj.length,
-            onPageChanged: (sliderIndex) {
-              if (first) {
-                pageinitialIndex < sliderIndex
-                    ? ++widget.currentIndex
-                    : --widget.currentIndex;
-                pageViewCurrentIndex = sliderIndex;
-                first = false;
-              } else {
-                if (sliderIndex > widget.currentIndex &&
-                    widget.currentIndex < object.length - 1) {
-                  ++widget.currentIndex;
-                } else if (sliderIndex <= widget.currentIndex &&
-                    widget.currentIndex > 0) {
-                  --widget.currentIndex;
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SizedBox(width: 100.0, height: 50.0, child: AppLogoWidget()),
+              ],
+            ),
+            actions: <Widget>[
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      setState(() {});
+                      if (widget.currentIndex > 0) {
+                        _controller.previousPage(
+                            duration: _kDuration, curve: _kCurve);
+                      }
+                    },
+                    icon: Icon(
+                      const IconData(0xe80c,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: widget.currentIndex == 0
+                          ? AppTheme.kDecativeIconColor
+                          : AppTheme.kBlackColor,
+                      size: Globals.deviceType == "phone" ? 14 : 22,
+                    ),
+                  ),
+                ],
+              ),
+              HorzitalSpacerWidget(_kPadding / 3),
+              IconButton(
+                onPressed: () async {
+                  setState(() {});
+                  if (widget.currentIndex < object.length - 1) {
+                    _controller.nextPage(duration: _kDuration, curve: _kCurve);
+                  }
+                },
+                icon: (Icon(
+                  const IconData(0xe815,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: widget.currentIndex == widget.obj.length - 1
+                      ? AppTheme.kDecativeIconColor
+                      : AppTheme.kBlackColor,
+                  size: Globals.deviceType == "phone" ? 14 : 22,
+                )),
+              ),
+              HorzitalSpacerWidget(_kPadding / 3),
+            ]),
+        body: Column(children: <Widget>[
+          Expanded(
+            child: PageView.builder(
+              controller: _controller,
+              itemCount: widget.obj.length,
+              onPageChanged: (sliderIndex) {
+                if (first) {
+                  pageinitialIndex < sliderIndex
+                      ? ++widget.currentIndex
+                      : --widget.currentIndex;
+                  pageViewCurrentIndex = sliderIndex;
+                  first = false;
+                } else {
+                  if (sliderIndex > widget.currentIndex &&
+                      widget.currentIndex < object.length - 1) {
+                    ++widget.currentIndex;
+                  } else if (sliderIndex <= widget.currentIndex &&
+                      widget.currentIndex > 0) {
+                    --widget.currentIndex;
+                  }
                 }
-              }
-              setState(() {});
-            },
-            itemBuilder: (BuildContext context, int index) {
-              return widget.issocialpage!
-                  ? SocialDescription(object: object[widget.currentIndex])
-                  : widget.iseventpage!
-                      ? EventDescription(
-                          obj: object[widget.currentIndex],
-                          isbuttomsheet: true,
-                        )
-                      : Newdescription(
-                          obj: object[widget.currentIndex],
-                          date: widget.date,
-                          isbuttomsheet: true,
-                        );
-            },
-          ),
-        )
-      ]),
-      bottomSheet: widget.issocialpage! ? buttomButtonsWidget(context) : null,
-    );
+                setState(() {});
+              },
+              itemBuilder: (BuildContext context, int index) {
+                return widget.issocialpage!
+                    ? SocialDescription(object: object[widget.currentIndex])
+                    : widget.iseventpage!
+                        ? EventDescription(
+                            obj: object[widget.currentIndex],
+                            isbuttomsheet: true,
+                          )
+                        : Newdescription(
+                            obj: object[widget.currentIndex],
+                            date: widget.date,
+                            isbuttomsheet: true,
+                          );
+              },
+            ),
+          )
+        ]),
+        bottomSheet: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 
   Widget buttomButtonsWidget(BuildContext context) {
