@@ -142,8 +142,8 @@ class _StaffPageState extends State<StaffPage> {
                   backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is StaffDataSucess) {
-                return SingleChildScrollView(
-                  child: Column(
+                return ListView(children: [
+                  Column(
                     children: [
                       state.obj != null && state.obj!.length > 0
                           ? Container(
@@ -164,7 +164,7 @@ class _StaffPageState extends State<StaffPage> {
                             ),
                     ],
                   ),
-                );
+                ]);
               } else if (state is ErrorInStaffLoading) {
                 return Container(
                   alignment: Alignment.center,

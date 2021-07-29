@@ -60,9 +60,14 @@ class _ContactPageState extends State<ContactPage> {
               ? CachedNetworkImage(
                   imageUrl: object["Contact_Image__c"],
                   fit: BoxFit.fill,
-                  placeholder: (context, url) => CircularProgressIndicator(
-                    strokeWidth: 2,
-                    backgroundColor: Theme.of(context).accentColor,
+                  placeholder: (context, url) => Container(
+                    alignment: Alignment.center,
+                    width: 5,
+                    height: 5,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      backgroundColor: AppTheme.kAccentColor,
+                    ),
                   ),
                   errorWidget: (context, url, error) => Icon(
                     Icons.error,
