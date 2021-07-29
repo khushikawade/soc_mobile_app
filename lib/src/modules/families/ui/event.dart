@@ -41,6 +41,7 @@ class _EventPageState extends State<EventPage> {
                       iseventpage: true,
                       currentIndex: index,
                       date: '',
+                      isbuttomsheet: true,
                     )));
       },
       child: Container(

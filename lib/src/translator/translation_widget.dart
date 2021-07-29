@@ -1,4 +1,5 @@
 import 'package:Soc/src/services/shared_preference.dart';
+import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,7 @@ class TranslationWidget extends StatefulWidget {
 
   TranslationWidget({
     @required this.message,
-    @required this.fromLanguage,
+    this.fromLanguage,
     @required this.toLanguage,
     @required this.builder,
     Key? key,
@@ -27,10 +28,9 @@ class _TranslationWidgetState extends State<TranslationWidget> {
   Widget build(BuildContext context) {
     // final fromLanguageCode = Translations.getLanguageCode(widget.fromLanguage);
     final toLanguageCode =
-        _sharedPref.getString('selected_language').toString();
-    //Translations.supportedLanguagesCodes(widget.toLanguage!);
-    final fromLanguageCode = 'en';
-    // Translations.supportedLanguagesCodes(widget.fromLanguage!);
+        Translations.supportedLanguagesCodes(widget.toLanguage!);
+    final fromLanguageCode =
+        Translations.supportedLanguagesCodes(widget.fromLanguage!);
 
     return FutureBuilder(
       future: TranslationAPI.translate(

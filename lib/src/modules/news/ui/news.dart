@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class NewsPage extends StatefulWidget {
+  String? language;
+  NewsPage({Key? key, this.language}) : super(key: key);
   @override
   _NewsPageState createState() => _NewsPageState();
 }
@@ -51,6 +54,7 @@ class _NewsPageState extends State<NewsPage> {
                         issocialpage: false,
                         iseventpage: false,
                         date: "$newsTimeStamp",
+                        isbuttomsheet: true,
                       )));
         },
         child: Row(
@@ -108,12 +112,23 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildnewsHeading(obj) {
     return Container(
         alignment: Alignment.centerLeft,
-        child: Text(
-          obj.contents["en"],
-          overflow: TextOverflow.ellipsis,
-          maxLines: 2,
-          style: Theme.of(context).textTheme.headline4,
-        ));
+        child: widget.language != null
+            ? TranslationWidget(
+                message: obj.contents["en"],
+                fromLanguage: "en",
+                toLanguage: widget.language,
+                builder: (translatedMessage) => Text(
+                  // obj.titleC.toString(),
+                  translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+              )
+            : Text(
+                obj.contents["en"],
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: Theme.of(context).textTheme.headline4,
+              ));
   }
 
   // Widget _buildTimeStamp(NotificationList obj) {

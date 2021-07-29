@@ -15,44 +15,26 @@ class _InformationPageState extends State<InformationPage> {
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
 
   Widget _buildIcon() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-            child: Image.asset(
-          'assets/images/splash_bear_icon.png',
-          fit: BoxFit.fill,
-          height: 188,
-          width: 188,
-        )),
-      ],
-    );
+    return Container(
+        child: Image.asset(
+      'assets/images/splash_bear_icon.png',
+      fit: BoxFit.fill,
+      height: 188,
+      width: 188,
+    ));
   }
 
   Widget tittleWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          "PS 456 Bronx Bears",
-          style: Theme.of(context).textTheme.headline1,
-        )
-      ],
+    return Text(
+      "PS 456 Bronx Bears",
+      style: Theme.of(context).textTheme.headline1,
     );
   }
 
   Widget greetingWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          "Dear User ",
-          style: Theme.of(context).textTheme.bodyText1,
-        )
-      ],
+    return Text(
+      "Dear User ",
+      style: Theme.of(context).textTheme.bodyText1,
     );
   }
 
@@ -61,35 +43,17 @@ class _InformationPageState extends State<InformationPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Thank you so much for using our app.Please",
-              style: Theme.of(context).textTheme.bodyText1,
-            )
-          ],
+        Text(
+          "Thank you so much for using our app.Please",
+          style: Theme.of(context).textTheme.bodyText1,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "feel free to message us for information ,for",
-              style: Theme.of(context).textTheme.bodyText1,
-            )
-          ],
+        Text(
+          "feel free to message us for information ,for",
+          style: Theme.of(context).textTheme.bodyText1,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "support , or to provide feedback",
-              style: Theme.of(context).textTheme.bodyText1,
-            )
-          ],
+        Text(
+          "support , or to provide feedback",
+          style: Theme.of(context).textTheme.bodyText1,
         ),
       ],
     );
@@ -100,25 +64,13 @@ class _InformationPageState extends State<InformationPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "This app was created by sloved .Here is our",
-              style: Theme.of(context).textTheme.bodyText1,
-            )
-          ],
+        Text(
+          "This app was created by sloved .Here is our",
+          style: Theme.of(context).textTheme.bodyText1,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Privacy Policy",
-              style: Theme.of(context).textTheme.bodyText1,
-            )
-          ],
+        Text(
+          "Privacy Policy",
+          style: Theme.of(context).textTheme.bodyText1,
         ),
       ],
     );
@@ -174,30 +126,33 @@ class _InformationPageState extends State<InformationPage> {
         sharedpopBodytext: '',
         sharedpopUpheaderText: '',
       ),
-      body: Container(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildIcon(),
-          SpacerWidget(_kLabelSpacing),
-          tittleWidget(),
-          SpacerWidget(_kLabelSpacing),
-          greetingWidget(),
-          SpacerWidget(_kLabelSpacing),
-          content1Widget(),
-          SpacerWidget(_kLabelSpacing * 1.5),
-          content2Widget(),
-          SpacerWidget(_kLabelSpacing / 2),
-          privacyWidget(),
-          Expanded(child: Container()),
-          _buildPrivacyWidget(),
-          SizedBox(
-              width: MediaQuery.of(context).size.width * 1,
-              height: 100.0,
-              child: ShareButtonWidget()),
-        ],
-      )),
+      body: SingleChildScrollView(
+        child: Container(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildIcon(),
+            SpacerWidget(_kLabelSpacing),
+            tittleWidget(),
+            SpacerWidget(_kLabelSpacing),
+            greetingWidget(),
+            SpacerWidget(_kLabelSpacing),
+            content1Widget(),
+            SpacerWidget(_kLabelSpacing * 1.5),
+            content2Widget(),
+            SpacerWidget(_kLabelSpacing / 2),
+            privacyWidget(),
+            SpacerWidget(_kLabelSpacing * 7),
+            // Expanded(child: Container()),
+            _buildPrivacyWidget(),
+            SizedBox(
+                // width: MediaQuery.of(context).size.width * 1,
+                height: 100.0,
+                child: ShareButtonWidget()),
+          ],
+        )),
+      ),
     );
   }
 }

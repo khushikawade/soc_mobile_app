@@ -18,20 +18,39 @@ class Translations {
     'Russian'
   ];
 
-  static final List<String> supportedLanguagesCodes = [
-    'en',
-    'fr',
-    'it',
-    'ru',
-    'es',
-    'de',
-  ];
+  // static final List<String> supportedCodes = [
+  //   'en',
+  //   'fr',
+  //   'it',
+  //   'ru',
+  //   'es',
+  //   'de',
+  // ];
 
-  //returns the list of supported Locales
-  Iterable<Locale> supportedLocales() =>
-      supportedLanguagesCodes.map<Locale>((language) => Locale(language, ""));
+  static String supportedLanguagesCodes(String language) {
+    switch (language) {
+      case 'English':
+        return 'en';
+      case 'French':
+        return 'fr';
+      case 'Italian':
+        return 'it';
+      case 'Russian':
+        return 'ru';
+      case 'Spanish':
+        return 'es';
+      case 'German':
+        return 'de';
+      default:
+        return 'en';
+    }
+  }
 
-  //function to be invoked when changing the language
+  // returns the list of supported Locales
+  // Iterable<Locale> supportedLocales() =>
+  //     supportedCodes.map<Locale>((language) => Locale(language, ""));
+
+  // function to be invoked when changing the language
   static late LocaleChangeCallback onLocaleChanged;
 }
 

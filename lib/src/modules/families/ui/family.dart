@@ -2,7 +2,6 @@ import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
-import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -18,7 +17,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class FamilyPage extends StatefulWidget {
   var obj;
   var searchObj;
-  FamilyPage({Key? key, this.obj, this.searchObj}) : super(key: key);
+  String? language;
+  FamilyPage({Key? key, this.obj, this.searchObj, this.language})
+      : super(key: key);
 
   @override
   _FamilyPageState createState() => _FamilyPageState();
@@ -28,8 +29,6 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
-  String language1 = Translations.supportedLanguages.first;
-  String language2 = Translations.supportedLanguages.last;
   @override
   void initState() {
     super.initState();
@@ -121,11 +120,7 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   Widget _buildList(FamiliesList obj, int index) {
-    final fromLanguage = language1;
-    final toLanguage = language2;
-    return
-        // child:
-        Container(
+    return Container(
       decoration: BoxDecoration(
         border: Border.all(
           color: AppTheme.kDividerColor2,
@@ -144,20 +139,29 @@ class _FamilyPageState extends State<FamilyPage> {
         contentPadding:
             EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: Icon(
-          Icons.list,
-          color: AppTheme.kListIconColor3,
-          size: Globals.deviceType == "phone" ? 22 : 30,
-        ),
-        title: TranslationWidget(
-          message: obj.titleC,
-          fromLanguage: fromLanguage,
-          toLanguage: toLanguage,
-          builder: (translatedMessage) => Text(
-            // obj.titleC.toString(),
-            translatedMessage.toString(),
-            style: Theme.of(context).textTheme.bodyText2,
+          IconData(
+            int.parse(obj.appIconC!),
+            fontFamily: 'FontAwesomeSolid',
+            fontPackage: 'font_awesome_flutter',
           ),
+          color: AppTheme.kListIconColor3,
         ),
+        title: widget.language != null
+            ? TranslationWidget(
+                message: obj.titleC,
+                fromLanguage: "en",
+                toLanguage: widget.language,
+                builder: (translatedMessage) => Text(
+                  // obj.titleC.toString(),
+                  translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+              )
+            : Text(
+                obj.titleC.toString(),
+                // translatedMessage.toString(),
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 18 : 26,

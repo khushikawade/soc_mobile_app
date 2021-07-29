@@ -4,14 +4,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
 class SocialPage extends StatefulWidget {
-  SocialPage({Key? key, this.title}) : super(key: key);
+  SocialPage({Key? key, this.title, this.language}) : super(key: key);
   final String? title;
+  String? language;
   @override
   _SocialPageState createState() => _SocialPageState();
 }
@@ -53,12 +53,12 @@ class _SocialPageState extends State<SocialPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
-                        obj: mainObj,
-                        currentIndex: index,
-                        issocialpage: true,
-                        iseventpage: false,
-                        date: '1',
-                      )));
+                      obj: mainObj,
+                      currentIndex: index,
+                      issocialpage: true,
+                      iseventpage: false,
+                      date: '1',
+                      isbuttomsheet: true)));
         },
         child: Row(
           children: <Widget>[

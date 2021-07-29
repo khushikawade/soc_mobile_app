@@ -14,19 +14,12 @@ class LanguageSelector {
   }
 
   static final List<String> languagesList = Translations.supportedLanguages;
-  static final List<String> languageCodesList =
-      Translations.supportedLanguagesCodes;
-
-  final Map<dynamic, dynamic> languagesMap = {
-    languagesList[0]: languageCodesList[0],
-    languagesList[1]: languageCodesList[1],
-  };
 
   void setLanguage(language, context, onLanguageChanged) async {
-    Translations.onLocaleChanged(Locale(languagesMap[language]));
-    selectedLanguage = languagesMap[language];
-    await _sharedPref.setString('selected_language', languagesMap[language]);
+    selectedLanguage = language;
+    await _sharedPref.setString('selected_language', language);
     onLanguageChanged(language);
+    print(language);
     Navigator.pop(context);
   }
 
@@ -34,8 +27,8 @@ class LanguageSelector {
     String _languageCode = await _sharedPref.getString('selected_language');
     selectedLanguage = _languageCode;
     if (selectedLanguage == null) {
-      Locale myLocale = Localizations.localeOf(context);
-      selectedLanguage = myLocale.languageCode;
+      // Locale myLocale = Localizations.localeOf(context);
+      selectedLanguage = "English";
     }
     _openSettingsBottomSheet(context, onLanguageChanged);
   }
@@ -45,7 +38,7 @@ class LanguageSelector {
         color: AppTheme.kListTileColor,
         child: RadioListTile(
           contentPadding: EdgeInsets.zero,
-          value: selectedLanguage == languagesMap[language] ? true : false,
+          value: selectedLanguage == language ? true : false,
           onChanged: (dynamic val) {
             setLanguage(language, context, onLanguageChanged);
           },

@@ -13,12 +13,12 @@ class _SettingsPageState extends State<SettingsPage> {
   String? selectedLanguage;
 
   static final List<String> languagesList = Translations.supportedLanguages;
-  static final List<String> languageCodesList =
-      Translations.supportedLanguagesCodes;
-  final Map<dynamic, dynamic> languagesMap = {
-    languageCodesList[0]: languagesList[0],
-    languageCodesList[1]: languagesList[1],
-  };
+  // static final List<String> languageCodesList =
+  //     Translations.supportedLanguagesCodes;
+  // final Map<dynamic, dynamic> languagesMap = {
+  //   languageCodesList[0]: languagesList[0],
+  //   languageCodesList[1]: languagesList[1],
+  // };
 
   final ValueNotifier<String?> _currentLanguage = ValueNotifier<String?>('');
 
@@ -50,7 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
       Locale myLocale = Localizations.localeOf(context);
       selectedLanguage = myLocale.languageCode;
     }
-    _currentLanguage.value = languagesMap[selectedLanguage];
+    // _currentLanguage.value = languagesMap[selectedLanguage];
   }
 
   Widget _listItem(title, leading, path, {trailing}) => Card(

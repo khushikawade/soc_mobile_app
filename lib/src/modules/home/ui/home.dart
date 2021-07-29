@@ -8,14 +8,15 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
-import 'package:Soc/src/modules/social/ui/Soical.dart';
+import 'package:Soc/src/modules/social/ui/soical.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
+import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/bearIconwidget.dart';
+import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,7 +43,10 @@ class _HomePageState extends State<HomePage> {
   var item;
   var item2;
   final ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
+  final ValueNotifier<String> langadded = ValueNotifier<String>("English");
+  final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   Timer? timer;
+  String? selectedLanguage;
   @override
   void initState() {
     super.initState();
@@ -55,12 +59,17 @@ class _HomePageState extends State<HomePage> {
 
   getindicatorValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    selectedLanguage = await _sharedPref.getString('selected_language');
     setState(() {
       _status = prefs.getBool("enableIndicator")!;
       if (_status == true) {
         indicator.value = true;
       } else {
         indicator.value = false;
+      }
+
+      if (selectedLanguage != null) {
+        langadded.value = selectedLanguage!;
       }
     });
   }
@@ -114,19 +123,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   selectedScreenBody(context, _selectedIndex, list) {
-    if (list[_selectedIndex].split("_")[0] == "Social") {
+    if (list[_selectedIndex].split("_")[0].contains("Social")) {
       return SocialPage();
-    } else if (list[_selectedIndex].split("_")[0] == "News") {
+    } else if (list[_selectedIndex].split("_")[0].contains("News")) {
       hideIndicator();
-      return NewsPage();
-    } else if (list[_selectedIndex].split("_")[0] == "Students") {
-      return StudentPage();
-    } else if (list[_selectedIndex].split("_")[0] == "Families") {
+      return NewsPage(
+        language: selectedLanguage,
+      );
+    } else if (list[_selectedIndex].split("_")[0].contains("Student")) {
+      return StudentPage(
+        language: selectedLanguage,
+      );
+    } else if (list[_selectedIndex].split("_")[0].contains("Famil")) {
       return FamilyPage(
         obj: widget.homeObj,
+        language: selectedLanguage,
       );
-    } else if (list[_selectedIndex].split("_")[0] == "Staff") {
-      return StaffPage();
+    } else if (list[_selectedIndex].split("_")[0].contains("Staff")) {
+      return StaffPage(
+        language: selectedLanguage,
+      );
     }
   }
 
@@ -171,11 +187,13 @@ class _HomePageState extends State<HomePage> {
                 //     ?
                 GestureDetector(
               onTap: () {
-                LanguageSelector(context, item, {
-                  // if (statusKey != null) {
-                  //   _bloc.add(UpdateISStatus(
-                  //       improvementSuggId: widget.item.id, statusKey: statusKey));
-                  // }
+                LanguageSelector(context, item, (language) {
+                  if (language != null) {
+                    setState(() {
+                      selectedLanguage = language;
+                      langadded.value = language;
+                    });
+                  }
                 });
               },
               child: Padding(
@@ -185,11 +203,7 @@ class _HomePageState extends State<HomePage> {
                     fontPackage: Overrides.kFontPkg)),
               ),
             ),
-            // : Container(
-            //     height: 0,
-            //   ),
-            title:
-                SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
+            title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
             actions: <Widget>[
               IconButton(
                   onPressed: () {
@@ -219,17 +233,36 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          TranslationWidget(
-                            message: e.split("_")[0],
-                            fromLanguage: language1,
-                            toLanguage: language2,
-                            builder: (translatedMessage) => Expanded(
-                              child: Text(
-                                translatedMessage,
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.subtitle2,
-                              ),
-                            ),
+                          ValueListenableBuilder(
+                            builder: (BuildContext context, dynamic value,
+                                Widget? child) {
+                              return
+
+                                  // selectedLanguage != null ||
+                                  //         langadded.value != "English"
+                                  //     ? TranslationWidget(
+                                  //         message: e.split("_")[0],
+                                  //         toLanguage: langadded.value,
+                                  //         builder: (translatedMessage) => Text(
+                                  //           translatedMessage,
+                                  //           textAlign: TextAlign.center,
+                                  //           style: Theme.of(context)
+                                  //               .textTheme
+                                  //               .subtitle2,
+                                  //         ),
+                                  //       )
+                                  //     :
+
+                                  Expanded(
+                                child: Text(
+                                  e.split("_")[0],
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                ),
+                              );
+                            },
+                            valueListenable: langadded,
+                            child: Container(),
                           ),
                           ValueListenableBuilder(
                             builder: (BuildContext context, dynamic value,
@@ -260,7 +293,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ]),
-                    label: '',
+                    label: '', //'${e.split("_")[0]}',
                   ))
               .toList(),
           onTap: (index) {

@@ -16,7 +16,7 @@ class TranslationAPI {
       final body = json.decode(response.body);
       final translations = body['data']['translations'] as List;
       final translation = translations.first;
-      print(HtmlUnescape().convert(translation['translatedText']));
+      // print(HtmlUnescape().convert(translation['translatedText']));
       return HtmlUnescape().convert(translation['translatedText']);
     } else {
       throw Exception();

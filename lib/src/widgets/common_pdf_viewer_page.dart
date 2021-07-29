@@ -59,15 +59,12 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   @override
   void didUpdateWidget(covariant CommonPdfViewerPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-//_loadPdf();
     changePDF();
   }
 
   @override
   void initState() {
     super.initState();
-    //_loadPdf();
-
     changePDF();
   }
 

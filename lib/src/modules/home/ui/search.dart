@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
-import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -22,8 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
-  bool isbuttomsheet;
-
+  final bool isbuttomsheet;
   SearchPage({Key? key, required this.isbuttomsheet}) : super(key: key);
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -241,7 +239,6 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildIListtem(int index, items) {
     return InkWell(
       onTap: () async {
-        // await _recentListRoute(items[index]);
         await _route(items[index]);
       },
       child: Container(
@@ -349,7 +346,9 @@ class _SearchPageState extends State<SearchPage> {
                             );
                           }).toList(),
                         ))
-                    : Container());
+                    : Container(
+                        height: 0,
+                      ));
           } else if (state is SearchLoading) {
             return Expanded(
               child: Container(
@@ -361,7 +360,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
             );
           } else {
-            return Container();
+            return Container(height: 0);
           }
         });
   }
@@ -439,23 +438,19 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
-        body: OrientationBuilder(builder: (context, orientation) {
-          return Container(
-            child: Column(mainAxisSize: MainAxisSize.max, children: [
-              _buildHeading(),
-              SpacerWidget(_kLabelSpacing / 2),
-              _buildSearchbar(),
-              issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
-              SpacerWidget(_kLabelSpacing),
-              issuggestionList == false
-                  ? _buildHeading2()
-                  : SizedBox(height: 0),
-              issuggestionList == false
-                  ? _buildRecentItemList()
-                  : SizedBox(height: 0),
-            ]),
-          );
-        }),
+        body: Container(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            _buildHeading(),
+            SpacerWidget(_kLabelSpacing / 2),
+            _buildSearchbar(),
+            issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
+            SpacerWidget(_kLabelSpacing),
+            issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
+            issuggestionList == false
+                ? _buildRecentItemList()
+                : SizedBox(height: 0),
+          ]),
+        ),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);
