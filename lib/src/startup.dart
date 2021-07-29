@@ -70,8 +70,6 @@ class _StartupPageState extends State<StartupPage> {
         Globals.release = iosInfo.systemVersion;
         Globals.name = iosInfo.name;
         Globals.model = iosInfo.model;
-        // print('$systemName $version, $name $model');
-        // iOS 13.1, iPhone 11 Pro Max iPhone
       }
     } on PlatformException {
       deviceData = <String, dynamic>{

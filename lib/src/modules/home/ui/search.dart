@@ -241,7 +241,6 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildIListtem(int index, items) {
     return InkWell(
       onTap: () async {
-        // await _recentListRoute(items[index]);
         await _route(items[index]);
       },
       child: Container(
@@ -441,28 +440,18 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: ConstrainedBox(
-              constraints:
-                  BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-              child: IntrinsicHeight(
-                  child: Container(
-                child: Column(mainAxisSize: MainAxisSize.max, children: [
-                  _buildHeading(),
-                  SpacerWidget(_kLabelSpacing / 2),
-                  _buildSearchbar(),
-                  issuggestionList
-                      ? _buildissuggestionList()
-                      : SizedBox(height: 0),
-                  SpacerWidget(_kLabelSpacing),
-                  issuggestionList == false
-                      ? _buildHeading2()
-                      : SizedBox(height: 0),
-                  issuggestionList == false
-                      ? _buildRecentItemList()
-                      : SizedBox(height: 0),
-                ]),
-              ))),
+        body: Container(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            _buildHeading(),
+            SpacerWidget(_kLabelSpacing / 2),
+            _buildSearchbar(),
+            issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
+            SpacerWidget(_kLabelSpacing),
+            issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
+            issuggestionList == false
+                ? _buildRecentItemList()
+                : SizedBox(height: 0),
+          ]),
         ),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
