@@ -10,6 +10,7 @@ import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/modules/social/ui/Soical.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
+import 'package:Soc/src/modules/staff/ui/stafflogin.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';

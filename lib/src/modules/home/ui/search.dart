@@ -439,23 +439,19 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
-        body: OrientationBuilder(builder: (context, orientation) {
-          return Container(
-            child: Column(mainAxisSize: MainAxisSize.max, children: [
-              _buildHeading(),
-              SpacerWidget(_kLabelSpacing / 2),
-              _buildSearchbar(),
-              issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
-              SpacerWidget(_kLabelSpacing),
-              issuggestionList == false
-                  ? _buildHeading2()
-                  : SizedBox(height: 0),
-              issuggestionList == false
-                  ? _buildRecentItemList()
-                  : SizedBox(height: 0),
-            ]),
-          );
-        }),
+        body: Container(
+          child: Column(mainAxisSize: MainAxisSize.max, children: [
+            _buildHeading(),
+            SpacerWidget(_kLabelSpacing / 2),
+            _buildSearchbar(),
+            issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
+            SpacerWidget(_kLabelSpacing),
+            issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
+            issuggestionList == false
+                ? _buildRecentItemList()
+                : SizedBox(height: 0),
+          ]),
+        ),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

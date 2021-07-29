@@ -71,7 +71,8 @@ class _StudentPageState extends State<StudentPage> {
                 return InkWell(
                     onTap: () => _launchURL(list[index], subList),
                     child: Column(
-                      children: [
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
                         list[index].appIconC != null &&
                                 list[index].appIconC != ''
                             ? SizedBox(

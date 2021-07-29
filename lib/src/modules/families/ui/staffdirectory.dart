@@ -99,7 +99,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   icon: Icon(
                     Icons.clear,
                     color: AppTheme.kIconColor,
-                    size: Globals.deviceType == Globals.phone ? 18 : 24,
+                    size: Globals.deviceType == "phone" ? 18 : 24,
                   ),
                 ),
               ),
@@ -206,8 +206,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           children: [
                             Icon(
                               Icons.email,
-                              size:
-                                  Globals.deviceType == Globals.phone ? 20 : 28,
+                              size: Globals.deviceType == "phone" ? 14 : 22,
                             ),
                             HorzitalSpacerWidget(_kLabelSpacing / 2),
                             obj.emailC != null && obj.emailC.length > 0
@@ -240,8 +239,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           children: [
                             Icon(
                               Icons.local_phone,
-                              size:
-                                  Globals.deviceType == Globals.phone ? 20 : 28,
+                              size: Globals.deviceType == "phone" ? 14 : 22,
                             ),
                             HorzitalSpacerWidget(_kLabelSpacing / 2),
                             obj.phoneC != null && obj.phoneC.length > 0

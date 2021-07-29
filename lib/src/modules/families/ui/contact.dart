@@ -314,8 +314,8 @@ class _ContactPageState extends State<ContactPage> {
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
         ),
-        body: OrientationBuilder(builder: (context, orientation) {
-          return Container(
+        body: ListView(children: [
+          Container(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -331,8 +331,8 @@ class _ContactPageState extends State<ContactPage> {
               SpacerWidget(_kLabelSpacing / 1.25),
               _buildEmailWidget()
             ],
-          ));
-        }),
+          )),
+        ]),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

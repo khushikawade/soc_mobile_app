@@ -73,7 +73,7 @@ class _NewdescriptionState extends State<Newdescription> {
                         " " +
                         widget.obj.contents["en"].toString().split(" ")[1] +
                         "...",
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.headline2,
               ),
             ),
             Text(

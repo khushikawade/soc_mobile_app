@@ -69,7 +69,6 @@ class _SliderWidgetState extends State<SliderWidget> {
           leading: InkWell(
             onTap: () {
               Navigator.pop(context);
-              print("pop");
             },
             child: Icon(
               const IconData(0xe80d,
@@ -104,7 +103,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                     color: widget.currentIndex == 0
                         ? AppTheme.kDecativeIconColor
                         : AppTheme.kBlackColor,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
+                    size: Globals.deviceType == "phone" ? 14 : 22,
                   ),
                 ),
               ],
@@ -124,7 +123,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                 color: widget.currentIndex == widget.obj.length - 1
                     ? AppTheme.kDecativeIconColor
                     : AppTheme.kBlackColor,
-                size: Globals.deviceType == "phone" ? 20 : 28,
+                size: Globals.deviceType == "phone" ? 14 : 22,
               )),
             ),
             HorzitalSpacerWidget(_kPadding / 3),
