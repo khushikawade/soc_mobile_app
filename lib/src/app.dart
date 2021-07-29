@@ -1,9 +1,9 @@
 import 'package:Soc/src/locale/app_translations_delegate.dart';
-import 'package:Soc/src/locale/application.dart';
 import 'package:Soc/src/routes.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/language_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -29,7 +29,7 @@ class _AppState extends State<App> {
     super.initState();
     _newLocaleDelegate = AppTranslationsDelegate(newLocale: null);
     checkForSetLanguage();
-    application.onLocaleChanged = onLocaleChange;
+    Translations.onLocaleChanged = onLocaleChange;
   }
 
   checkForSetLanguage() async {

@@ -11,7 +11,10 @@ import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/modules/social/ui/Soical.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
+import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/language_list.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bearIconwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +35,8 @@ class _HomePageState extends State<HomePage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 35.0;
   final NewsBloc _bloc = new NewsBloc();
+  String language1 = Translations.supportedLanguages.first;
+  String language2 = Translations.supportedLanguages.last;
 
   bool _status = false;
   var item;
@@ -161,16 +166,28 @@ class _HomePageState extends State<HomePage> {
         appBar: new AppBar(
             leadingWidth: _kIconSize,
             elevation: 0.0,
-            leading: _selectedIndex == 3
-                ? Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: const Icon(IconData(0xe800,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg)),
-                  )
-                : Container(
-                    height: 0,
-                  ),
+            leading:
+                // _selectedIndex == 3
+                //     ?
+                GestureDetector(
+              onTap: () {
+                LanguageSelector(context, item, {
+                  // if (statusKey != null) {
+                  //   _bloc.add(UpdateISStatus(
+                  //       improvementSuggId: widget.item.id, statusKey: statusKey));
+                  // }
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: const Icon(IconData(0xe800,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg)),
+              ),
+            ),
+            // : Container(
+            //     height: 0,
+            //   ),
             title:
                 SizedBox(width: 100.0, height: 60.0, child: BearIconWidget()),
             actions: <Widget>[
@@ -202,9 +219,17 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            e.split("_")[0],
-                            style: Theme.of(context).textTheme.subtitle2,
+                          TranslationWidget(
+                            message: e.split("_")[0],
+                            fromLanguage: language1,
+                            toLanguage: language2,
+                            builder: (translatedMessage) => Expanded(
+                              child: Text(
+                                translatedMessage,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.subtitle2,
+                              ),
+                            ),
                           ),
                           ValueListenableBuilder(
                             builder: (BuildContext context, dynamic value,

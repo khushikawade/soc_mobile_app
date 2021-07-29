@@ -1,7 +1,6 @@
-import 'package:Soc/src/locale/app_translations.dart';
-import 'package:Soc/src/locale/application.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/language_list.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -13,9 +12,9 @@ class _SettingsPageState extends State<SettingsPage> {
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   String? selectedLanguage;
 
-  static final List<String> languagesList = application.supportedLanguages;
+  static final List<String> languagesList = Translations.supportedLanguages;
   static final List<String> languageCodesList =
-      application.supportedLanguagesCodes;
+      Translations.supportedLanguagesCodes;
   final Map<dynamic, dynamic> languagesMap = {
     languageCodesList[0]: languagesList[0],
     languageCodesList[1]: languagesList[1],

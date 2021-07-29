@@ -1,8 +1,7 @@
-import 'package:Soc/src/locale/app_translations.dart';
-import 'package:Soc/src/locale/application.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -10,13 +9,13 @@ class LanguageSelector {
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   String? selectedLanguage;
 
-  LanguageSelector(context, onLanguageChanged) {
+  LanguageSelector(context, item, onLanguageChanged) {
     geLanguage(context, onLanguageChanged);
   }
 
-  static final List<String> languagesList = application.supportedLanguages;
+  static final List<String> languagesList = Translations.supportedLanguages;
   static final List<String> languageCodesList =
-      application.supportedLanguagesCodes;
+      Translations.supportedLanguagesCodes;
 
   final Map<dynamic, dynamic> languagesMap = {
     languagesList[0]: languageCodesList[0],
@@ -24,7 +23,7 @@ class LanguageSelector {
   };
 
   void setLanguage(language, context, onLanguageChanged) async {
-    application.onLocaleChanged(Locale(languagesMap[language]));
+    Translations.onLocaleChanged(Locale(languagesMap[language]));
     selectedLanguage = languagesMap[language];
     await _sharedPref.setString('selected_language', languagesMap[language]);
     onLanguageChanged(language);
@@ -57,38 +56,40 @@ class LanguageSelector {
 
   _openSettingsBottomSheet(context, onLanguageChanged) {
     Utility.showBottomSheet(
-        Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 30, left: 30, right: 15, bottom: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(
-                      AppTranslations.of(context)!.text('change_language'),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6!
-                          .copyWith(fontSize: AppTheme.kBottomSheetTitleSize),
-                    ),
-                    IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                  ],
+        SingleChildScrollView(
+          child: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 30, left: 30, right: 15, bottom: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        "Select language",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(fontSize: AppTheme.kBottomSheetTitleSize),
+                      ),
+                      IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          }),
+                    ],
+                  ),
                 ),
-              ),
-              _buildLanguagesList(context, onLanguageChanged),
-              SpacerWidget(30)
-            ],
+                _buildLanguagesList(context, onLanguageChanged),
+                SpacerWidget(30)
+              ],
+            ),
           ),
         ),
         context);

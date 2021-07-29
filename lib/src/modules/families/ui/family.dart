@@ -2,6 +2,8 @@ import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
+import 'package:Soc/src/translator/language_list.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
@@ -11,7 +13,6 @@ import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FamilyPage extends StatefulWidget {
@@ -27,7 +28,8 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
-
+  String language1 = Translations.supportedLanguages.first;
+  String language2 = Translations.supportedLanguages.last;
   @override
   void initState() {
     super.initState();
@@ -119,7 +121,11 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   Widget _buildList(FamiliesList obj, int index) {
-    return Container(
+    final fromLanguage = language1;
+    final toLanguage = language2;
+    return
+        // child:
+        Container(
       decoration: BoxDecoration(
         border: Border.all(
           color: AppTheme.kDividerColor2,
@@ -142,9 +148,15 @@ class _FamilyPageState extends State<FamilyPage> {
           color: AppTheme.kListIconColor3,
           size: Globals.deviceType == "phone" ? 22 : 30,
         ),
-        title: Text(
-          obj.titleC.toString(),
-          style: Theme.of(context).textTheme.bodyText2,
+        title: TranslationWidget(
+          message: obj.titleC,
+          fromLanguage: fromLanguage,
+          toLanguage: toLanguage,
+          builder: (translatedMessage) => Text(
+            // obj.titleC.toString(),
+            translatedMessage.toString(),
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,

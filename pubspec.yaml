@@ -62,7 +62,8 @@ dependencies:
   android_intent:
   # device_calendar: ^3.1.0
   add_2_calendar: ^2.1.0
-  
+  html_unescape: ^2.0.0
+  translator: ^0.1.7
 
   
 

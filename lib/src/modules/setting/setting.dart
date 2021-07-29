@@ -5,6 +5,7 @@ import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -14,7 +15,29 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   static const double _kLabelSpacing = 18.0;
   bool _lights = true;
+  bool? push;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
+  @override
+  void initState() {
+    super.initState();
+    OneSignal.shared
+        .getDeviceState()
+        .then((value) => {pushState(value!.pushDisabled)});
+  }
+
+  pushState(data) async {
+    SharedPreferences pushStatus = await SharedPreferences.getInstance();
+    pushStatus.setBool("push", data);
+    setState(() {
+      push = pushStatus.getBool("push")!;
+    });
+
+    print(push);
+
+    if (push == null) {
+      push = true;
+    }
+  }
 
   Widget _buildHeading(String tittle) {
     return Row(
@@ -47,12 +70,13 @@ class _SettingPageState extends State<SettingPage> {
               padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
               child: Switch(
                 value: _lights,
-                onChanged: (bool value) {
+                onChanged: (bool value) async {
                   setState(() {
                     _lights = value;
-                    bool status = !value;
-                    OneSignal.shared.disablePush(status);
+                    bool status = !_lights;
+                    OneSignal.shared.disablePush(push!);
                   });
+                  //
                 },
                 activeColor: AppTheme.kactivebackColor,
                 activeTrackColor: AppTheme.kactiveTrackColor,
