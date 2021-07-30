@@ -25,8 +25,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
   bool isbuttomsheet;
-
-  SearchPage({Key? key, required this.isbuttomsheet}) : super(key: key);
+  String? language;
+  SearchPage({Key? key, required this.isbuttomsheet, required this.language})
+      : super(key: key);
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -74,6 +75,7 @@ class _SearchPageState extends State<SearchPage> {
                         obj: Globals.homeObjet,
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC!,
+                        language: widget.language!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
@@ -84,6 +86,7 @@ class _SearchPageState extends State<SearchPage> {
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
+                    language: widget.language,
                   )));
     } else if (obj.deepLink != null) {
       if (obj.deepLink == 'NO') {
@@ -94,6 +97,7 @@ class _SearchPageState extends State<SearchPage> {
                       title: obj.titleC!,
                       url: obj.appURLC!,
                       isbuttomsheet: true,
+                      language: widget.language,
                     )));
       } else {
         if (await canLaunch(obj.appURLC!)) {
@@ -111,6 +115,7 @@ class _SearchPageState extends State<SearchPage> {
                         title: obj.titleC!,
                         url: obj.urlC!,
                         isbuttomsheet: true,
+                        language: widget.language,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
@@ -120,7 +125,7 @@ class _SearchPageState extends State<SearchPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        // url: obj.urlC,
+                        language: widget.language,
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
@@ -135,6 +140,7 @@ class _SearchPageState extends State<SearchPage> {
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
+                        language: widget.language,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
@@ -146,6 +152,7 @@ class _SearchPageState extends State<SearchPage> {
                     module: "family",
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,
+                    language: widget.language,
                   )));
     } else {
       Utility.showSnackBar(

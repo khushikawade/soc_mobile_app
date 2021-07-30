@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
@@ -24,14 +25,16 @@ class SubListPage extends StatefulWidget {
   String? module;
   bool isbuttomsheet;
   String appBarTitle;
+  String? language;
 
-  SubListPage({
-    Key? key,
-    required this.obj,
-    required this.module,
-    required this.isbuttomsheet,
-    required this.appBarTitle,
-  }) : super(key: key);
+  SubListPage(
+      {Key? key,
+      required this.obj,
+      required this.module,
+      required this.isbuttomsheet,
+      required this.appBarTitle,
+      required this.language})
+      : super(key: key);
   @override
   _SubListPageState createState() => _SubListPageState();
 }
@@ -62,6 +65,7 @@ class _SubListPageState extends State<SubListPage> {
                         title: obj.titleC!,
                         url: obj.appUrlC!,
                         isbuttomsheet: true,
+                        language: widget.language,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML" || obj.typeC == "RTF/HTML") {
@@ -71,10 +75,10 @@ class _SubListPageState extends State<SubListPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        // url: obj.appUrlC ?? "",
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC,
+                        language: widget.language,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -86,6 +90,7 @@ class _SubListPageState extends State<SubListPage> {
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
+                        language: widget.language,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else {
@@ -103,10 +108,20 @@ class _SubListPageState extends State<SubListPage> {
 
   Widget _buildFormName(int index, obj) {
     return InkWell(
-      child: Text(
-        obj.titleC.toString(),
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
+      child: widget.language != null && widget.language != "English"
+          ? TranslationWidget(
+              message: obj.titleC.toString(),
+              fromLanguage: "en",
+              toLanguage: widget.language,
+              builder: (translatedMessage) => Text(
+                translatedMessage.toString(),
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+            )
+          : Text(
+              obj.titleC.toString(),
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
     );
   }
 
@@ -118,6 +133,7 @@ class _SubListPageState extends State<SubListPage> {
           appBarTitle: widget.appBarTitle,
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
+          language: widget.language,
         ),
         key: _scaffoldKey,
         body: widget.module == "family"
@@ -149,7 +165,17 @@ class _SubListPageState extends State<SubListPage> {
                           : Container(
                               alignment: Alignment.center,
                               height: MediaQuery.of(context).size.height * 0.8,
-                              child: Text("No data found"),
+                              child: widget.language != null &&
+                                      widget.language != "English"
+                                  ? TranslationWidget(
+                                      message: "No data found",
+                                      fromLanguage: "en",
+                                      toLanguage: widget.language,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                      ),
+                                    )
+                                  : Text("No data found"),
                             ),
                     ]);
                   } else {
@@ -188,7 +214,17 @@ class _SubListPageState extends State<SubListPage> {
                                   alignment: Alignment.center,
                                   height:
                                       MediaQuery.of(context).size.height * 0.8,
-                                  child: Text("No data found"),
+                                  child: widget.language != null &&
+                                          widget.language != "English"
+                                      ? TranslationWidget(
+                                          message: "No data found",
+                                          fromLanguage: "en",
+                                          toLanguage: widget.language,
+                                          builder: (translatedMessage) => Text(
+                                            translatedMessage.toString(),
+                                          ),
+                                        )
+                                      : Text("No data found"),
                                 ),
                         ]);
                       } else {

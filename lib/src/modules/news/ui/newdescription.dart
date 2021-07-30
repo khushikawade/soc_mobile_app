@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -9,11 +10,13 @@ class Newdescription extends StatefulWidget {
   final obj;
   final String date;
   final bool isbuttomsheet;
+  String? language;
   Newdescription(
       {Key? key,
       required this.obj,
       required this.date,
-      required this.isbuttomsheet})
+      required this.isbuttomsheet,
+      required this.language})
       : super(key: key);
   _NewdescriptionState createState() => _NewdescriptionState();
 }
@@ -29,6 +32,7 @@ class _NewdescriptionState extends State<Newdescription> {
                   title: widget.obj.headings["en"].toString(),
                   url: obj,
                   isbuttomsheet: true,
+                  language: widget.language,
                 )));
   }
 
@@ -66,33 +70,80 @@ class _NewdescriptionState extends State<Newdescription> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Expanded(
-                  child: Text(
-                    widget.obj.headings != "" &&
-                            widget.obj.headings != null &&
-                            widget.obj.headings.length > 0
-                        ? widget.obj.headings["en"].toString()
-                        : widget.obj.contents["en"].toString().split(" ")[0] +
-                            " " +
-                            widget.obj.contents["en"].toString().split(" ")[1] +
-                            "...",
-                    style: Theme.of(context).textTheme.headline2,
-                  ),
+                  child: widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: widget.obj.headings != "" &&
+                                  widget.obj.headings != null &&
+                                  widget.obj.headings.length > 0
+                              ? widget.obj.headings["en"].toString()
+                              : widget.obj.contents["en"]
+                                      .toString()
+                                      .split(" ")[0] +
+                                  " " +
+                                  widget.obj.contents["en"]
+                                      .toString()
+                                      .split(" ")[1] +
+                                  "...",
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline2,
+                          ),
+                        )
+                      : Text(
+                          widget.obj.headings != "" &&
+                                  widget.obj.headings != null &&
+                                  widget.obj.headings.length > 0
+                              ? widget.obj.headings["en"].toString()
+                              : widget.obj.contents["en"]
+                                      .toString()
+                                      .split(" ")[0] +
+                                  " " +
+                                  widget.obj.contents["en"]
+                                      .toString()
+                                      .split(" ")[1] +
+                                  "...",
+                          style: Theme.of(context).textTheme.headline2,
+                        ),
                 ),
-                Text(
-                  widget.date,
-                  style: Theme.of(context).textTheme.subtitle1,
-                  textAlign: TextAlign.justify,
-                ),
+                widget.language != null && widget.language != "English"
+                    ? TranslationWidget(
+                        message: widget.date,
+                        toLanguage: widget.language,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                          style: Theme.of(context).textTheme.subtitle1,
+                          textAlign: TextAlign.justify,
+                        ),
+                      )
+                    : Text(
+                        widget.date,
+                        style: Theme.of(context).textTheme.subtitle1,
+                        textAlign: TextAlign.justify,
+                      ),
               ],
             ),
             Container(
               child: Wrap(
                 children: [
-                  Text(
-                    widget.obj.contents["en"].toString(),
-                    style: Theme.of(context).textTheme.bodyText1,
-                    textAlign: TextAlign.left,
-                  ),
+                  widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: widget.obj.contents["en"].toString(),
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.bodyText1,
+                            textAlign: TextAlign.left,
+                          ),
+                        )
+                      : Text(
+                          widget.obj.contents["en"].toString(),
+                          style: Theme.of(context).textTheme.bodyText1,
+                          textAlign: TextAlign.left,
+                        ),
                 ],
               ),
             ),
@@ -104,14 +155,32 @@ class _NewdescriptionState extends State<Newdescription> {
               child: widget.obj.url != null
                   ? Wrap(
                       children: [
-                        Text(
-                          widget.obj.url.toString(),
-                          style:
-                              Theme.of(context).textTheme.bodyText1?.copyWith(
-                                    decoration: TextDecoration.underline,
-                                  ),
-                          textAlign: TextAlign.justify,
-                        ),
+                        widget.language != null && widget.language != "English"
+                            ? TranslationWidget(
+                                message: widget.obj.url.toString(),
+                                toLanguage: widget.language,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                  textAlign: TextAlign.justify,
+                                ),
+                              )
+                            : Text(
+                                widget.obj.url.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                textAlign: TextAlign.justify,
+                              ),
                       ],
                     )
                   : Container(),
@@ -124,14 +193,12 @@ class _NewdescriptionState extends State<Newdescription> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        body: 
-        Padding(
+        body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
           child: _buildNewsDescription(),
         ),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
-            : null
-            );
+            : null);
   }
 }

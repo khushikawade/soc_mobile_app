@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
@@ -12,13 +13,15 @@ import 'package:path_provider/path_provider.dart';
 class CommonPdfViewerPage extends StatefulWidget {
   final String? url;
   String? tittle = '';
+  String? language;
 
   bool isbuttomsheet;
   CommonPdfViewerPage(
       {Key? key,
       @required this.url,
       @required this.tittle,
-      required this.isbuttomsheet})
+      required this.isbuttomsheet,
+      required this.language})
       : super(key: key);
   @override
   _CommonPdfViewerPageState createState() => _CommonPdfViewerPageState();
@@ -82,6 +85,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
           appBarTitle: widget.tittle!,
           sharedpopBodytext: widget.url.toString(),
           sharedpopUpheaderText: "Please check out this",
+          language: widget.language,
         ),
         body: widget.url != null && widget.url != ""
             ? document == null
@@ -100,7 +104,20 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                     zoomSteps: 2,
                     scrollDirection: Axis.vertical,
                   )
-            : Text("No Document Found"),
+            : Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: widget.language != null && widget.language != "English"
+                    ? TranslationWidget(
+                        message: "No Document Found",
+                        fromLanguage: "en",
+                        toLanguage: widget.language,
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                        ),
+                      )
+                    : Text("No Document Found"),
+              ),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

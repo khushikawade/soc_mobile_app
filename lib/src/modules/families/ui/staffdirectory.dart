@@ -3,6 +3,7 @@ import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
@@ -18,11 +19,13 @@ class StaffDirectory extends StatefulWidget {
   var obj;
   bool isbuttomsheet;
   String appBarTitle;
+  String? language;
   StaffDirectory(
       {Key? key,
       required this.obj,
       required this.isbuttomsheet,
-      required this.appBarTitle})
+      required this.appBarTitle,
+      required this.language})
       : super(key: key);
 
   @override
@@ -54,12 +57,24 @@ class _StaffDirectoryState extends State<StaffDirectory> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            tittle,
-            style: Theme.of(context).textTheme.headline6!.copyWith(
-                  color: AppTheme.kFontColor2,
+          widget.language != null && widget.language != "English"
+              ? TranslationWidget(
+                  message: tittle,
+                  toLanguage: widget.language,
+                  fromLanguage: "en",
+                  builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.headline6!.copyWith(
+                          color: AppTheme.kFontColor2,
+                        ),
+                  ),
+                )
+              : Text(
+                  tittle,
+                  style: Theme.of(context).textTheme.headline6!.copyWith(
+                        color: AppTheme.kFontColor2,
+                      ),
                 ),
-          ),
         ],
       ),
     );
@@ -170,27 +185,40 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      obj.titleC != null && obj.titleC.length > 0
-                          ? Text(obj.titleC,
+                      widget.language != null && widget.language != "English"
+                          ? TranslationWidget(
+                              message: obj.titleC ?? "-",
+                              toLanguage: widget.language,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                  textAlign: TextAlign.start,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(fontWeight: FontWeight.w400)),
+                            )
+                          : Text(obj.titleC ?? "-",
                               textAlign: TextAlign.start,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText1!
-                                  .copyWith(fontWeight: FontWeight.w400))
-                          : Text(
-                              "No title  found ",
-                              textAlign: TextAlign.center,
-                            ),
+                                  .copyWith(fontWeight: FontWeight.w400)),
                       SpacerWidget(_kLabelSpacing),
-                      obj.descriptionC != null && obj.descriptionC.length > 0
-                          ? Text(obj.descriptionC,
+                      widget.language != null && widget.language != "English"
+                          ? TranslationWidget(
+                              message: obj.descriptionC ?? "-",
+                              toLanguage: widget.language,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                  textAlign: TextAlign.start,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(fontWeight: FontWeight.w400)))
+                          : Text(obj.descriptionC ?? "-",
                               textAlign: TextAlign.start,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(fontWeight: FontWeight.w400))
-                          : Text("No description found ",
-                              textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText1!
@@ -210,21 +238,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               size: Globals.deviceType == "phone" ? 14 : 22,
                             ),
                             HorzitalSpacerWidget(_kLabelSpacing / 2),
-                            obj.emailC != null && obj.emailC.length > 0
-                                ? Expanded(
-                                    child: Text(
-                                      obj.emailC,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1!
-                                          .copyWith(
-                                              fontWeight: FontWeight.w400),
-                                    ),
-                                  )
-                                : Text(
-                                    "No email found  No email found  No email found",
-                                    textAlign: TextAlign.start,
-                                  ),
+                            Expanded(
+                              child: Text(
+                                obj.emailC ?? "-",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .copyWith(fontWeight: FontWeight.w400),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -243,18 +265,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               size: Globals.deviceType == "phone" ? 14 : 22,
                             ),
                             HorzitalSpacerWidget(_kLabelSpacing / 2),
-                            obj.phoneC != null && obj.phoneC.length > 0
-                                ? Expanded(
-                                    child: Text(
-                                      obj.phoneC,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1!
-                                          .copyWith(
-                                              fontWeight: FontWeight.w400),
-                                    ),
-                                  )
-                                : Text("No telephone number found")
+                            Expanded(
+                              child: Text(
+                                obj.phoneC ?? "-",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .copyWith(fontWeight: FontWeight.w400),
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -272,6 +291,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
           sharedpopUpheaderText: '',
           isShare: false,
           isCenterIcon: true,
+          language: widget.language,
         ),
         body: ListView(children: [
           SafeArea(
@@ -306,7 +326,17 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     return Container(
                       alignment: Alignment.center,
                       height: MediaQuery.of(context).size.height * 0.8,
-                      child: Text("Unable to load the data"),
+                      child: widget.language != null &&
+                              widget.language != "English"
+                          ? TranslationWidget(
+                              message: "Unable to load the data",
+                              toLanguage: widget.language,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Text(
+                                translatedMessage.toString(),
+                              ),
+                            )
+                          : Text("Unable to load the data"),
                     );
                   } else {
                     return Container();

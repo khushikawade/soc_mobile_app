@@ -55,6 +55,7 @@ class _NewsPageState extends State<NewsPage> {
                         iseventpage: false,
                         date: "$newsTimeStamp",
                         isbuttomsheet: true,
+                        language: widget.language,
                       )));
         },
         child: Row(
@@ -112,7 +113,7 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildnewsHeading(obj) {
     return Container(
         alignment: Alignment.centerLeft,
-        child: widget.language != null
+        child: widget.language != null && widget.language != "English"
             ? TranslationWidget(
                 message: obj.contents["en"],
                 fromLanguage: "en",
@@ -172,7 +173,15 @@ class _NewsPageState extends State<NewsPage> {
                                 alignment: Alignment.center,
                                 height:
                                     MediaQuery.of(context).size.height * 0.8,
-                                child: Text("No news found"),
+                                child: widget.language != null &&
+                                        widget.language != "English"
+                                    ? TranslationWidget(
+                                        message: "No news found",
+                                        toLanguage: widget.language,
+                                        fromLanguage: "en",
+                                        builder: (translatedMessage) =>
+                                            Text(translatedMessage))
+                                    : Text("No news found"),
                               );
                       } else if (state is NewsLoading) {
                         return Container(
@@ -186,7 +195,15 @@ class _NewsPageState extends State<NewsPage> {
                         return Container(
                           alignment: Alignment.center,
                           height: MediaQuery.of(context).size.height * 0.8,
-                          child: Text("Unable to load the data"),
+                          child: widget.language != null &&
+                                  widget.language != "English"
+                              ? TranslationWidget(
+                                  message: "Unable to load the data",
+                                  toLanguage: widget.language,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) =>
+                                      Text(translatedMessage))
+                              : Text("Unable to load the data"),
                         );
                       } else {
                         return Container();

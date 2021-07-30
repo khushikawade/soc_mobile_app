@@ -1,6 +1,7 @@
 import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -11,16 +12,17 @@ import '../overrides.dart';
 
 // ignore: must_be_immutable
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-  CustomAppBarWidget({
-    Key? key,
-    required this.isSearch,
-    required this.isShare,
-    required this.appBarTitle,
-    required this.sharedpopUpheaderText,
-    required this.sharedpopBodytext,
-    this.isCenterIcon,
-    this.ishtmlpage,
-  })  : preferredSize = Size.fromHeight(60.0),
+  CustomAppBarWidget(
+      {Key? key,
+      required this.isSearch,
+      required this.isShare,
+      required this.appBarTitle,
+      required this.sharedpopUpheaderText,
+      required this.sharedpopBodytext,
+      this.isCenterIcon,
+      this.ishtmlpage,
+      required this.language})
+      : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? islinearProgress = false;
   String appBarTitle;
@@ -30,6 +32,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   String? sharedpopUpheaderText;
   bool? ishtmlpage;
   bool? isCenterIcon;
+  String? language;
 
   @override
   final Size preferredSize;
@@ -51,14 +54,27 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       leading: BackButtonWidget(),
       title: widget.isCenterIcon != null && widget.isCenterIcon == true
           ? SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())
-          : Text(
-              widget.appBarTitle,
-              style: Theme.of(context).textTheme.headline2,
-              textAlign: TextAlign.center,
-            ),
+          : widget.language != null && widget.language != "English"
+              ? TranslationWidget(
+                  message: widget.appBarTitle,
+                  fromLanguage: "en",
+                  toLanguage: widget.language,
+                  builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.headline2,
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : Text(
+                  widget.appBarTitle,
+                  style: Theme.of(context).textTheme.headline2,
+                  textAlign: TextAlign.center,
+                ),
       actions: [
         widget.isSearch == true
-            ? SearchButtonWidget()
+            ? SearchButtonWidget(
+                language: widget.language,
+              )
             : Container(
                 height: 0,
               ),

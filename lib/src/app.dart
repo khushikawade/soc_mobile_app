@@ -1,12 +1,9 @@
-import 'package:Soc/src/locale/app_translations_delegate.dart';
 import 'package:Soc/src/routes.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/modules/user/ui/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/language_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 class App extends StatefulWidget {
   @override

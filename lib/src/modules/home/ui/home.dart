@@ -54,8 +54,8 @@ class _HomePageState extends State<HomePage> {
 
     _bloc.initPushState(context);
     _selectedIndex = Globals.outerBottombarIndex ?? 0;
-    timer =
-        Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
+    // timer =
+    //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
   }
 
   getindicatorValue() async {
@@ -93,8 +93,12 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(builder: (context) => InformationPage()));
             break;
           case IconsMenu.Setting:
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SettingPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingPage(
+                          language: selectedLanguage,
+                        )));
             break;
           case IconsMenu.Permissions:
             AppSettings.openAppSettings();
@@ -126,7 +130,9 @@ class _HomePageState extends State<HomePage> {
 
   selectedScreenBody(context, _selectedIndex, list) {
     if (list[_selectedIndex].split("_")[0].contains("Social")) {
-      return SocialPage();
+      return SocialPage(
+        language: selectedLanguage,
+      );
     } else if (list[_selectedIndex].split("_")[0].contains("News")) {
       hideIndicator();
       return NewsPage(
@@ -207,7 +213,9 @@ class _HomePageState extends State<HomePage> {
             ),
             title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
             actions: <Widget>[
-              SearchButtonWidget(),
+              SearchButtonWidget(
+                language: selectedLanguage,
+              ),
               _buildPopupMenuWidget(),
             ]),
         body: selectedScreenBody(context, _selectedIndex,
@@ -221,7 +229,7 @@ class _HomePageState extends State<HomePage> {
                     icon: Column(children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [ 
+                        children: [
                           ValueListenableBuilder(
                             builder: (BuildContext context, dynamic value,
                                 Widget? child) {

@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import '../../overrides.dart' as overrides;
 
 class InformationPage extends StatefulWidget {
+  InformationPage({Key? key, this.language}) : super(key: key);
+
+  String? language;
   @override
   _InformationPageState createState() => _InformationPageState();
 }
@@ -125,6 +128,7 @@ class _InformationPageState extends State<InformationPage> {
         isShare: false,
         sharedpopBodytext: '',
         sharedpopUpheaderText: '',
+        language: widget.language,
       ),
       body: ListView(children: [
         Container(
@@ -145,7 +149,11 @@ class _InformationPageState extends State<InformationPage> {
             privacyWidget(),
             SpacerWidget(_kLabelSpacing * 7),
             _buildPrivacyWidget(),
-            SizedBox(height: 100.0, child: ShareButtonWidget()),
+            SizedBox(
+                height: 100.0,
+                child: ShareButtonWidget(
+                  language: widget.language,
+                )),
           ],
         )),
       ]),

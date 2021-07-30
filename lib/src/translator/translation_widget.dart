@@ -1,4 +1,3 @@
-import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
 import 'package:flutter/material.dart';
@@ -23,20 +22,14 @@ class TranslationWidget extends StatefulWidget {
 
 class _TranslationWidgetState extends State<TranslationWidget> {
   String? translation;
-  final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   @override
   Widget build(BuildContext context) {
     // final fromLanguageCode = Translations.getLanguageCode(widget.fromLanguage);
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
-    final fromLanguageCode =
-        Translations.supportedLanguagesCodes(widget.fromLanguage!);
 
     return FutureBuilder(
-      future: TranslationAPI.translate(
-          widget.message! /*, fromLanguageCode,*/, toLanguageCode),
-      //future: TranslationApi.translate2(
-      //    widget.message, fromLanguageCode, toLanguageCode),
+      future: TranslationAPI.translate(widget.message!, toLanguageCode),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:

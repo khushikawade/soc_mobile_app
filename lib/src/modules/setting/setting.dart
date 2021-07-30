@@ -1,4 +1,5 @@
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -8,6 +9,8 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
+  String? language;
+  SettingPage({Key? key, required this.language}) : super(key: key);
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -52,7 +55,16 @@ class _SettingPageState extends State<SettingPage> {
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Text(tittle, style: Theme.of(context).textTheme.headline3),
+            child: widget.language != null && widget.language != "English"
+                ? TranslationWidget(
+                    message: tittle,
+                    fromLanguage: "en",
+                    toLanguage: widget.language,
+                    builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline3),
+                  )
+                : Text(tittle, style: Theme.of(context).textTheme.headline3),
           ),
         ),
       ],
@@ -90,19 +102,30 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget _buildNotification() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: ListTile(
-            leading: Text("Enable Notification",
+        widget.language != null && widget.language != "English"
+            ? Container(
+                padding: EdgeInsets.all(16),
+                child: TranslationWidget(
+                  message: "Enable Notification",
+                  fromLanguage: "en",
+                  toLanguage: widget.language,
+                  builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(fontWeight: FontWeight.normal)),
+                ),
+              )
+            : Text("Enable Notification",
                 style: Theme.of(context)
                     .textTheme
                     .headline2!
                     .copyWith(fontWeight: FontWeight.normal)),
-            trailing: _buildSwitch(),
-          ),
-        )
+        _buildSwitch(),
       ],
     );
   }
@@ -112,18 +135,25 @@ class _SettingPageState extends State<SettingPage> {
       onTap: () {
         urlobj.callurlLaucher(context, "https://www.google.com/");
       },
-      child: Row(
-        children: [
-          Expanded(
-            child: ListTile(
-              leading: Text("Open Source licences",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(fontWeight: FontWeight.normal)),
-            ),
-          )
-        ],
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: widget.language != null && widget.language != "English"
+            ? TranslationWidget(
+                message: "Open Source licences",
+                fromLanguage: "en",
+                toLanguage: widget.language,
+                builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(fontWeight: FontWeight.normal)),
+              )
+            : Text("Open Source licences",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.normal)),
       ),
     );
   }
@@ -136,6 +166,7 @@ class _SettingPageState extends State<SettingPage> {
         isShare: false,
         sharedpopBodytext: '',
         sharedpopUpheaderText: '',
+        language: widget.language,
       ),
       body: Container(
         child: Column(
@@ -150,7 +181,9 @@ class _SettingPageState extends State<SettingPage> {
             SizedBox(
                 width: MediaQuery.of(context).size.width * 1,
                 height: 100.0,
-                child: ShareButtonWidget()),
+                child: ShareButtonWidget(
+                  language: widget.language,
+                )),
           ],
         ),
       ),
