@@ -9,8 +9,9 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
 class SocialPage extends StatefulWidget {
-  SocialPage({Key? key, this.title}) : super(key: key);
+  SocialPage({Key? key, this.title, this.language}) : super(key: key);
   final String? title;
+  String? language;
   @override
   _SocialPageState createState() => _SocialPageState();
 }

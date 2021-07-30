@@ -1,23 +1,20 @@
-import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staffmodal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StaffPage extends StatefulWidget {
-  StaffPage({
-    Key? key,
-    this.title,
-  }) : super(key: key);
+  StaffPage({Key? key, this.title, this.language}) : super(key: key);
   final String? title;
+  String? language;
+
   @override
   _StaffPageState createState() => _StaffPageState();
 }
@@ -32,7 +29,6 @@ class _StaffPageState extends State<StaffPage> {
   @override
   void initState() {
     super.initState();
-
     _bloc.add(StaffPageEvent());
   }
 
@@ -118,17 +114,40 @@ class _StaffPageState extends State<StaffPage> {
                   color: AppTheme.kListIconColor3,
                   size: Globals.deviceType == "phone" ? 18 : 26,
                 ),
-                title: Text(
-                  obj.titleC.toString(),
-                  style: Theme.of(context).textTheme.bodyText2,
-                ),
+                title: widget.language != null
+                    ? TranslationWidget(
+                        message: obj.titleC.toString(),
+                        fromLanguage: "en",
+                        toLanguage: widget.language,
+                        builder: (translatedMessage) => Text(
+                          // obj.titleC.toString(),
+                          translatedMessage.toString(),
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                      )
+                    : Text(
+                        obj.titleC.toString(),
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
                 trailing: Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: Globals.deviceType == "phone" ? 16 : 24,
                   color: AppTheme.kButtonbackColor,
                 ),
               )
-            : Container(child: Text("No contact detail found")));
+            : Container(
+                child: widget.language != null
+                    ? TranslationWidget(
+                        message: "No data found",
+                        fromLanguage: "en",
+                        toLanguage: widget.language,
+                        builder: (translatedMessage) => Text(
+                          // obj.titleC.toString(),
+                          translatedMessage.toString(),
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                      )
+                    : Text("No data found")));
   }
 
   Widget build(BuildContext context) {

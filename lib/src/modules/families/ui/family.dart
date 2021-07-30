@@ -2,6 +2,7 @@ import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
@@ -11,14 +12,14 @@ import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
   var searchObj;
-  FamilyPage({Key? key, this.obj, this.searchObj}) : super(key: key);
+  String? language;
+  FamilyPage({Key? key, this.obj, this.searchObj, this.language})
+      : super(key: key);
 
   @override
   _FamilyPageState createState() => _FamilyPageState();
@@ -28,7 +29,6 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
-
   @override
   void initState() {
     super.initState();
@@ -147,10 +147,22 @@ class _FamilyPageState extends State<FamilyPage> {
           color: AppTheme.kListIconColor3,
           size: Globals.deviceType == "phone" ? 18 : 26,
         ),
-        title: Text(
-          obj.titleC.toString(),
-          style: Theme.of(context).textTheme.bodyText2,
-        ),
+        title: widget.language != null
+            ? TranslationWidget(
+                message: obj.titleC,
+                fromLanguage: "en",
+                toLanguage: widget.language,
+                builder: (translatedMessage) => Text(
+                  // obj.titleC.toString(),
+                  translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+              )
+            : Text(
+                obj.titleC.toString(),
+                // translatedMessage.toString(),
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 18 : 26,
