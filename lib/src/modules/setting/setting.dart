@@ -181,7 +181,6 @@ class _SettingPageState extends State<SettingPage> {
             _buildNotification(),
             _buildHeading("Acknowledgements"),
             _buildLicence(),
-            Expanded(child: Container()),
             SizedBox(
                 width: MediaQuery.of(context).size.width * 1,
                 height: 100.0,

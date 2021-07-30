@@ -1,5 +1,3 @@
-import 'package:Soc/src/routes.dart';
-import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/modules/user/ui/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +9,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  // AppTranslationsDelegate? _newLocaleDelegate;
-  final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
-
   @override
   void initState() {
     super.initState();
@@ -24,20 +19,6 @@ class _AppState extends State<App> {
       DeviceOrientation.portraitDown,
     ]);
     super.initState();
-    // _newLocaleDelegate = AppTranslationsDelegate(newLocale: null);
-    checkForSetLanguage();
-    // Translations.onLocaleChanged = onLocaleChange;
-  }
-
-  checkForSetLanguage() async {
-    String _languageCode = await _sharedPref.getString('selected_language');
-    // if (_languageCode != null && _languageCode != '') {
-    //   _newLocaleDelegate =
-    //       AppTranslationsDelegate(newLocale: Locale(_languageCode));
-    // } else {
-    //   _newLocaleDelegate = AppTranslationsDelegate(newLocale: null);
-    // }
-    setState(() {});
   }
 
   @override
@@ -48,20 +29,6 @@ class _AppState extends State<App> {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.lightTheme,
       home: StartupPage(),
-      // localizationsDelegates: [
-      //   _newLocaleDelegate!,
-      //   GlobalMaterialLocalizations.delegate,
-      //   GlobalCupertinoLocalizations.delegate,
-      //   GlobalWidgetsLocalizations.delegate,
-      // ],
-      // supportedLocales: application.supportedLocales(),
-      routes: routes,
     );
   }
-
-  // void onLocaleChange(Locale locale) {
-  //   setState(() {
-  //     _newLocaleDelegate = AppTranslationsDelegate(newLocale: locale);
-  //   });
-  // }
 }

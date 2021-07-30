@@ -1,5 +1,7 @@
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
 
 class TranslationWidget extends StatefulWidget {
@@ -47,14 +49,13 @@ class _TranslationWidgetState extends State<TranslationWidget> {
   }
 
   Widget buildWaiting() => translation == null
-      ? Center(
+      ? ShimmerLoading(
+          isLoading: true,
           child: Container(
-          height: 10,
-          width: 10,
-          child: CircularProgressIndicator(
-            strokeWidth: 1,
-            backgroundColor: Theme.of(context).accentColor,
+            height: 20,
+            width: 40,
+            color: Colors.white,
           ),
-        ))
+        )
       : widget.builder!(translation!);
 }

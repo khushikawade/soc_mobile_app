@@ -27,7 +27,6 @@ class LanguageSelector {
     String _languageCode = await _sharedPref.getString('selected_language');
     selectedLanguage = _languageCode;
     if (selectedLanguage == null) {
-      // Locale myLocale = Localizations.localeOf(context);
       selectedLanguage = "English";
     }
     _openSettingsBottomSheet(context, onLanguageChanged);
@@ -35,15 +34,24 @@ class LanguageSelector {
 
   Widget _listTile(String language, context, onLanguageChanged) => Container(
         margin: EdgeInsets.only(left: 30, right: 30, bottom: 12),
-        color: AppTheme.kListTileColor,
-        child: RadioListTile(
-          contentPadding: EdgeInsets.zero,
-          value: selectedLanguage == language ? true : false,
-          onChanged: (dynamic val) {
-            setLanguage(language, context, onLanguageChanged);
-          },
-          groupValue: true,
-          title: Text(language, style: Theme.of(context).textTheme.caption),
+        // color: AppTheme.kListTileColor,
+        color: (languagesList.indexOf(language) % 2 == 0)
+            ? Theme.of(context).backgroundColor
+            : AppTheme.kListBackgroundColor2,
+        child: Theme(
+          data: ThemeData(
+            unselectedWidgetColor: AppTheme.kListIconColor3,
+          ),
+          child: RadioListTile(
+            activeColor: AppTheme.kAccentColor,
+            contentPadding: EdgeInsets.zero,
+            value: selectedLanguage == language ? true : false,
+            onChanged: (dynamic val) {
+              setLanguage(language, context, onLanguageChanged);
+            },
+            groupValue: true,
+            title: Text(language, style: Theme.of(context).textTheme.caption),
+          ),
         ),
       );
 
