@@ -1,8 +1,8 @@
 import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +10,8 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
+  String? language;
+  SettingPage({Key? key, required this.language}) : super(key: key);
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -42,16 +44,31 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _buildHeading(String tittle) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: _kLabelSpacing / 1.5),
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: AppTheme.kOnPrimaryColor,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: _kLabelSpacing),
-        child: Text(tittle, style: Theme.of(context).textTheme.headline3),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(vertical: _kLabelSpacing / 1.5),
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: AppTheme.kOnPrimaryColor,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: _kLabelSpacing),
+            child: widget.language != null && widget.language != "English"
+                ? TranslationWidget(
+                    message: tittle,
+                    fromLanguage: "en",
+                    toLanguage: widget.language,
+                    builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline3),
+                  )
+                : Text(tittle, style: Theme.of(context).textTheme.headline3),
+          ),
+        ),
+      ],
     );
   }
 
@@ -85,15 +102,32 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _buildNotification() {
-    return Expanded(
-      child: ListTile(
-        leading: Text("Enable Notification",
-            style: Theme.of(context)
-                .textTheme
-                .headline2!
-                .copyWith(fontWeight: FontWeight.normal)),
-        trailing: _buildSwitch(),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        widget.language != null && widget.language != "English"
+            ? Container(
+                padding: EdgeInsets.all(16),
+                child: TranslationWidget(
+                  message: "Enable Notification",
+                  fromLanguage: "en",
+                  toLanguage: widget.language,
+                  builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(fontWeight: FontWeight.normal)),
+                ),
+              )
+            : Text("Enable Notification",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.normal)),
+        _buildSwitch(),
+      ],
     );
   }
 
@@ -107,14 +141,25 @@ class _SettingPageState extends State<SettingPage> {
 
         // urlobj.callurlLaucher(context, "https://www.google.com/");
       },
-      child: Expanded(
-        child: ListTile(
-          leading: Text("Open Source licences",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline2!
-                  .copyWith(fontWeight: FontWeight.normal)),
-        ),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: widget.language != null && widget.language != "English"
+            ? TranslationWidget(
+                message: "Open Source licences",
+                fromLanguage: "en",
+                toLanguage: widget.language,
+                builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(fontWeight: FontWeight.normal)),
+              )
+            : Text("Open Source licences",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.normal)),
       ),
     );
   }
@@ -127,6 +172,7 @@ class _SettingPageState extends State<SettingPage> {
         isShare: false,
         sharedpopBodytext: '',
         sharedpopUpheaderText: '',
+        language: widget.language,
       ),
       body: Container(
         child: ListView(
@@ -135,6 +181,13 @@ class _SettingPageState extends State<SettingPage> {
             _buildNotification(),
             _buildHeading("Acknowledgements"),
             _buildLicence(),
+            Expanded(child: Container()),
+            SizedBox(
+                width: MediaQuery.of(context).size.width * 1,
+                height: 100.0,
+                child: ShareButtonWidget(
+                  language: widget.language,
+                )),
           ],
         ),
       ),
@@ -142,7 +195,9 @@ class _SettingPageState extends State<SettingPage> {
         child: SizedBox(
             width: MediaQuery.of(context).size.width * 1,
             height: 100.0,
-            child: ShareButtonWidget()),
+            child: ShareButtonWidget(
+              language: widget.language,
+            )),
       ),
     );
   }

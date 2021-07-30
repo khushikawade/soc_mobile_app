@@ -1,5 +1,6 @@
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
@@ -10,7 +11,8 @@ import 'package:flutter_html/flutter_html.dart';
 // ignore: must_be_immutable
 class SocialDescription extends StatelessWidget {
   var object;
-  SocialDescription({required this.object});
+  String? language;
+  SocialDescription({required this.object, this.language});
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
 
@@ -105,7 +107,16 @@ class SocialDescription extends StatelessWidget {
                                 isbuttomsheet: true,
                               )));
                 },
-                child: Text("More"),
+                child: language != null && language != "English"
+                    ? TranslationWidget(
+                        message: "More",
+                        toLanguage: language,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                        ),
+                      )
+                    : Text("More"),
               ),
             ),
             HorzitalSpacerWidget(_kPadding / 2),
@@ -122,7 +133,16 @@ class SocialDescription extends StatelessWidget {
                           link;
                   obj.callFunction(context, body, "");
                 },
-                child: Text("Share"),
+                child: language != null && language != "English"
+                    ? TranslationWidget(
+                        message: "Share".toString(),
+                        toLanguage: language,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                        ),
+                      )
+                    : Text("Share"),
               ),
             ),
           ],
@@ -132,6 +152,9 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildbuttomsection(BuildContext context) {
+    print(
+      object.description["__cdata"],
+    );
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),
@@ -148,10 +171,19 @@ class SocialDescription extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Image(image: AssetImage("assets/images/appicon.png")),
               ),
-        Html(
-          data:
-              "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
-        )
+        language != null && language != "English"
+            ? TranslationWidget(
+                message: object.description["__cdata"],
+                fromLanguage: "en",
+                toLanguage: language,
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                ),
+              )
+            : Html(
+                data:
+                    "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+              )
       ],
     );
   }
@@ -161,12 +193,31 @@ class SocialDescription extends StatelessWidget {
       object != null && object.title["__cdata"].length > 1
           ? Container(
               alignment: Alignment.centerLeft,
-              child: Text(
-                "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
-                textAlign: TextAlign.left,
-              ),
+              child: language != null && language != "English"
+                  ? TranslationWidget(
+                      message:
+                          "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+                      fromLanguage: "en",
+                      toLanguage: language,
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                      ),
+                    )
+                  : Text(
+                      "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+                      textAlign: TextAlign.left,
+                    ),
             )
-          : Text("-"),
+          : language != null && language != "English"
+              ? TranslationWidget(
+                  message: "No headline found",
+                  fromLanguage: "en",
+                  toLanguage: language,
+                  builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                  ),
+                )
+              : Text("No headline found"),
       SpacerWidget(_kPadding),
     ]);
   }
@@ -174,10 +225,19 @@ class SocialDescription extends StatelessWidget {
   Widget _buildnewTimeStamp(BuildContext context) {
     return Container(
         child: object != null && object.pubDate.length > 1
-            ? Text(
-                Utility.convertDate(object.pubDate).toString(),
-                style: Theme.of(context).textTheme.subtitle1,
-              )
+            ? language != null && language != "English"
+                ? TranslationWidget(
+                    message: Utility.convertDate(object.pubDate).toString(),
+                    toLanguage: language,
+                    builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  )
+                : Text(
+                    Utility.convertDate(object.pubDate).toString(),
+                    style: Theme.of(context).textTheme.subtitle1,
+                  )
             : Container());
   }
 

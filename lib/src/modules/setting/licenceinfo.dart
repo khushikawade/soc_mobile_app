@@ -1,13 +1,12 @@
 import 'package:Soc/oss_licenses.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class Licenceinfo extends StatefulWidget {
-  Licenceinfo({Key? key, this.title}) : super(key: key);
+  Licenceinfo({Key? key, this.title, this.language}) : super(key: key);
   final String? title;
+  String? language;
   @override
   _LicenceinfoState createState() => _LicenceinfoState();
 }
@@ -128,11 +127,13 @@ class _LicenceinfoState extends State<Licenceinfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarWidget(
-          isSearch: false,
-          isShare: false,
-          appBarTitle: "Open Source Licence",
-          sharedpopUpheaderText: '',
-          sharedpopBodytext: ''),
+        isSearch: false,
+        isShare: false,
+        appBarTitle: "Open Source Licence",
+        sharedpopUpheaderText: '',
+        sharedpopBodytext: '',
+        language: widget.language,
+      ),
       body: SafeArea(
         child: Column(children: [
           Expanded(

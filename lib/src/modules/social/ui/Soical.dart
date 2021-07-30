@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -53,12 +54,14 @@ class _SocialPageState extends State<SocialPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
-                      obj: mainObj,
-                      currentIndex: index,
-                      issocialpage: true,
-                      iseventpage: false,
-                      date: '1',
-                      isbuttomsheet: true)));
+                        obj: mainObj,
+                        currentIndex: index,
+                        issocialpage: true,
+                        iseventpage: false,
+                        date: '1',
+                        isbuttomsheet: true,
+                        language: widget.language,
+                      )));
         },
         child: Row(
           children: <Widget>[
@@ -102,12 +105,30 @@ class _SocialPageState extends State<SocialPage> {
                               obj.title["__cdata"].length > 1
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.69,
-                              child: Text(
-                                "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                style: Theme.of(context).textTheme.headline2,
-                              ))
+                              child: widget.language != null &&
+                                      widget.language != "English"
+                                  ? TranslationWidget(
+                                      message:
+                                          "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+                                      fromLanguage: "en",
+                                      toLanguage: widget.language,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline2,
+                                      ),
+                                    )
+                                  : Text(
+                                      "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style:
+                                          Theme.of(context).textTheme.headline2,
+                                    ),
+                            )
                           : Container()
                     ],
                   ),
@@ -120,10 +141,26 @@ class _SocialPageState extends State<SocialPage> {
                       obj.pubDate != null && obj.pubDate.length > 1
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.40,
-                              child: Text(
-                                Utility.convertDate(obj.pubDate).toString(),
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ))
+                              child: widget.language != null &&
+                                      widget.language != "English"
+                                  ? TranslationWidget(
+                                      message: Utility.convertDate(obj.pubDate)
+                                          .toString(),
+                                      fromLanguage: "en",
+                                      toLanguage: widget.language,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
+                                      ),
+                                    )
+                                  : Text(
+                                      Utility.convertDate(obj.pubDate)
+                                          .toString(),
+                                      style:
+                                          Theme.of(context).textTheme.subtitle1,
+                                    ))
                           : Container()
                     ],
                   ),
@@ -160,11 +197,19 @@ class _SocialPageState extends State<SocialPage> {
                     )
                   : Expanded(
                       child: Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Text("No data found"),
-                      ),
-                    );
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: widget.language != null &&
+                                  widget.language != "English"
+                              ? TranslationWidget(
+                                  message: "No data found",
+                                  toLanguage: widget.language,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                  ),
+                                )
+                              : Text("No data found")));
             } else if (state is Loading) {
               return Container(
                 height: MediaQuery.of(context).size.height * 0.8,
@@ -178,7 +223,16 @@ class _SocialPageState extends State<SocialPage> {
               return Container(
                 alignment: Alignment.center,
                 height: MediaQuery.of(context).size.height * 0.8,
-                child: Text("Unable to load the data"),
+                child: widget.language != null && widget.language != "English"
+                    ? TranslationWidget(
+                        message: "Unable to load the data",
+                        toLanguage: widget.language,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                        ),
+                      )
+                    : Text("Unable to load the data"),
               );
             } else {
               return Container();

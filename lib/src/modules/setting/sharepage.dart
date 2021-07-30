@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import '../../overrides.dart';
 
 class SharePage extends StatefulWidget {
+  SharePage({Key? key, this.language}) : super(key: key);
+  String? language;
   @override
   _SharePageState createState() => _SharePageState();
 }
@@ -66,6 +68,7 @@ class _SharePageState extends State<SharePage> {
         isShare: false,
         sharedpopBodytext: '',
         sharedpopUpheaderText: '',
+        language: widget.language,
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,

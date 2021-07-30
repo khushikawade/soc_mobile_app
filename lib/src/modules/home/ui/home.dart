@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
-import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information.dart';
@@ -15,7 +14,6 @@ import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
@@ -26,7 +24,9 @@ import '../../../overrides.dart';
 class HomePage extends StatefulWidget {
   final String? title;
   var homeObj;
-  HomePage({Key? key, this.title, this.homeObj}) : super(key: key);
+  String? language;
+  HomePage({Key? key, this.title, this.homeObj, this.language})
+      : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -54,8 +54,8 @@ class _HomePageState extends State<HomePage> {
 
     _bloc.initPushState(context);
     _selectedIndex = Globals.outerBottombarIndex ?? 0;
-    timer =
-        Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
+    // timer =
+    //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
   }
 
   getindicatorValue() async {
@@ -97,11 +97,16 @@ class _HomePageState extends State<HomePage> {
                           isbuttomsheet: true,
                           ishtml: true,
                           appbarTitle: "Information",
+                          language: widget.language,
                         )));
             break;
           case IconsMenu.Setting:
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SettingPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingPage(
+                          language: selectedLanguage,
+                        )));
             break;
           case IconsMenu.Permissions:
             AppSettings.openAppSettings();
@@ -133,7 +138,9 @@ class _HomePageState extends State<HomePage> {
 
   selectedScreenBody(context, _selectedIndex, list) {
     if (list[_selectedIndex].split("_")[0].contains("Social")) {
-      return SocialPage();
+      return SocialPage(
+        language: selectedLanguage,
+      );
     } else if (list[_selectedIndex].split("_")[0].contains("News")) {
       hideIndicator();
       return NewsPage(
@@ -214,7 +221,9 @@ class _HomePageState extends State<HomePage> {
             ),
             title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
             actions: <Widget>[
-              SearchButtonWidget(),
+              SearchButtonWidget(
+                language: selectedLanguage,
+              ),
               _buildPopupMenuWidget(),
             ]),
         body: selectedScreenBody(context, _selectedIndex,

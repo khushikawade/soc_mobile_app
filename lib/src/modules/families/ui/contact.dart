@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
@@ -8,19 +9,19 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class ContactPage extends StatefulWidget {
   final obj;
   bool isbuttomsheet;
   String appBarTitle;
+  String? language;
   ContactPage(
       {Key? key,
       required this.obj,
       required this.isbuttomsheet,
-      required this.appBarTitle})
+      required this.appBarTitle,
+      required this.language})
       : super(key: key);
 
   @override
@@ -88,11 +89,31 @@ class _ContactPageState extends State<ContactPage> {
       ),
       child: widget.obj["Contact_Name__c"] != null &&
               widget.obj["Contact_Name__c"].length > 0
-          ? Text(
-              widget.obj["Contact_Name__c"],
-              style: Theme.of(context).textTheme.headline2,
-            )
-          : Text("-"),
+          ? widget.language != null && widget.language != "English"
+              ? TranslationWidget(
+                  message: widget.obj["Contact_Name__c"],
+                  toLanguage: widget.language,
+                  fromLanguage: "en",
+                  builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.headline2,
+                  ),
+                )
+              : Text(
+                  widget.obj["Contact_Name__c"],
+                  style: Theme.of(context).textTheme.headline2,
+                )
+          : Container(
+              child: widget.language != null && widget.language != "English"
+                  ? TranslationWidget(
+                      message: "No contact details available ",
+                      toLanguage: widget.language,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                      ),
+                    )
+                  : Text("No contact details available ")),
     );
   }
 
@@ -179,25 +200,60 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Text(
-            "Address:",
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(color: Color(0xff171717)),
-            textAlign: TextAlign.center,
-          ),
+          widget.language != null && widget.language != "English"
+              ? TranslationWidget(
+                  message: "Address:",
+                  toLanguage: widget.language,
+                  fromLanguage: "en",
+                  builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1!
+                        .copyWith(color: Color(0xff171717)),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : Text(
+                  "Address :",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .copyWith(color: Color(0xff171717)),
+                  textAlign: TextAlign.center,
+                ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           widget.obj["Contact_Address__c"] != null &&
                   widget.obj["Contact_Address__c"].length > 1
               ? Expanded(
-                  child: Text(
-                    widget.obj["Contact_Address__c"],
-                    style: Theme.of(context).textTheme.bodyText2,
-                    textAlign: TextAlign.start,
-                  ),
+                  child: widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: widget.obj["Contact_Address__c"],
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.bodyText2,
+                            textAlign: TextAlign.start,
+                          ),
+                        )
+                      : Text(
+                          widget.obj["Contact_Address__c"],
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.start,
+                        ),
                 )
-              : Text("-"),
+              : Container(
+                  child: widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: "No address  available here",
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                          ),
+                        )
+                      : Text("No address  available here")),
         ],
       ),
     );
@@ -209,13 +265,26 @@ class _ContactPageState extends State<ContactPage> {
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
       child: Row(
         children: [
-          Text(
-            "Phone:",
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(color: Color(0xff171717)),
-          ),
+          widget.language != null && widget.language != "English"
+              ? TranslationWidget(
+                  message: "Phone :",
+                  toLanguage: widget.language,
+                  fromLanguage: "en",
+                  builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1!
+                        .copyWith(color: Color(0xff171717)),
+                  ),
+                )
+              : Text(
+                  "Phone:",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .copyWith(color: Color(0xff171717)),
+                ),
           HorzitalSpacerWidget(_kLabelSpacing),
           widget.obj["Contact_Phone__c"] != null &&
                   widget.obj["Contact_Phone__c"].length > 1
@@ -226,12 +295,33 @@ class _ContactPageState extends State<ContactPage> {
                           context, "tel:" + widget.obj["Contact_Phone__c"]);
                     }
                   },
-                  child: Text(
-                    widget.obj["Contact_Phone__c"],
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
+                  child: widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: widget.obj["Contact_Phone__c"],
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                        )
+                      : Text(
+                          widget.obj["Contact_Phone__c"],
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
                 )
-              : Text("-")
+              : Container(
+                  child: widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: "No phone  available here",
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                        )
+                      : Text("No phone  available here"))
         ],
       ),
     );
@@ -260,13 +350,26 @@ class _ContactPageState extends State<ContactPage> {
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
       child: Row(
         children: [
-          Text(
-            "Email",
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(color: Color(0xff171717)),
-          ),
+          widget.language != null && widget.language != "English"
+              ? TranslationWidget(
+                  message: "Email :",
+                  toLanguage: widget.language,
+                  fromLanguage: "en",
+                  builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1!
+                        .copyWith(color: Color(0xff171717)),
+                  ),
+                )
+              : Text(
+                  "Email",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .copyWith(color: Color(0xff171717)),
+                ),
           HorzitalSpacerWidget(_kLabelSpacing * 1.5),
           widget.obj["Contact_Email__c"] != null &&
                   widget.obj["Contact_Email__c"].length > 1
@@ -282,7 +385,17 @@ class _ContactPageState extends State<ContactPage> {
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 )
-              : Text("-")
+              : Container(
+                  child: widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: "No email  available here",
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                          ),
+                        )
+                      : Text("No email  available here"))
         ],
       ),
     );
@@ -296,6 +409,7 @@ class _ContactPageState extends State<ContactPage> {
           appBarTitle: widget.appBarTitle,
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
+          language: widget.language,
         ),
         body: ListView(children: [
           _buildIcon(),

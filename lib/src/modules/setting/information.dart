@@ -153,14 +153,13 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/share_button.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // ignore: must_be_immutable
 class InformationPage extends StatefulWidget {
   String htmlText;
-
+  String? language;
   bool isbuttomsheet;
   bool ishtml;
   String appbarTitle;
@@ -169,7 +168,7 @@ class InformationPage extends StatefulWidget {
   InformationPage({
     Key? key,
     required this.htmlText,
-    // required this.url,
+    required this.language,
     required this.isbuttomsheet,
     required this.ishtml,
     required this.appbarTitle,
@@ -221,10 +220,16 @@ class _InformationPageState extends State<InformationPage> {
           ishtmlpage: widget.ishtml,
           sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
           sharedpopUpheaderText: "Please checkout this link",
+          language: widget.language,
         ),
         body: ListView(children: [
           _buildContent1(),
-          SizedBox(height: 100.0, child: ShareButtonWidget())
+          SizedBox(
+            height: 100.0,
+            child: ShareButtonWidget(
+              language: widget.language,
+            ),
+          )
         ]),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
