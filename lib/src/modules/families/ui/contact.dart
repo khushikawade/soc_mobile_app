@@ -84,37 +84,23 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget tittleWidget() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: _kLabelSpacing,
-      ),
-      child: widget.obj["Contact_Name__c"] != null &&
-              widget.obj["Contact_Name__c"].length > 0
-          ? widget.language != null && widget.language != "English"
-              ? TranslationWidget(
-                  message: widget.obj["Contact_Name__c"],
-                  toLanguage: widget.language,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline2,
-                  ),
-                )
-              : Text(
-                  widget.obj["Contact_Name__c"],
+        padding: const EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing,
+        ),
+        child: widget.language != null && widget.language != "English"
+            ? TranslationWidget(
+                message: widget.obj["Contact_Name__c"] ?? "-",
+                toLanguage: widget.language,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
                   style: Theme.of(context).textTheme.headline2,
-                )
-          : Container(
-              child: widget.language != null && widget.language != "English"
-                  ? TranslationWidget(
-                      message: "No contact details available ",
-                      toLanguage: widget.language,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                      ),
-                    )
-                  : Text("No contact details available ")),
-    );
+                ),
+              )
+            : Text(
+                widget.obj["Contact_Name__c"] ?? "-",
+                style: Theme.of(context).textTheme.headline2,
+              ));
   }
 
   Widget _buildMapWidget() {

@@ -186,7 +186,7 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
-          appBarTitle: widget.appbarTitle,
+          appBarTitle: 'Setting',
           isSearch: false,
           isShare: false,
           sharedpopBodytext: '',
@@ -194,22 +194,20 @@ class _SettingPageState extends State<SettingPage> {
           language: widget.language,
         ),
         body: Container(
-          child: ListView(
-            children: [
-              _buildHeading("Push Notifcation"),
-              _buildNotification(),
-              _buildHeading("Acknowledgements"),
-              _buildLicence(),
-              SpacerWidget(_kLabelSpacing * 20),
-              SizedBox(
-                  width: MediaQuery.of(context).size.width * 1,
-                  height: 100.0,
-                  child: ShareButtonWidget(
-                    language: widget.language,
-                  )),
-            ],
-          ),
-        ),
+            child: ListView(
+          children: [
+            _buildHeading("Push Notifcation"),
+            _buildNotification(),
+            _buildHeading("Acknowledgements"),
+            _buildLicence(),
+            SizedBox(
+                width: MediaQuery.of(context).size.width * 1,
+                height: 100.0,
+                child: ShareButtonWidget(
+                  language: widget.language,
+                )),
+          ],
+        )),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

@@ -8,6 +8,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/Strings.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
@@ -227,10 +228,21 @@ class _SearchPageState extends State<SearchPage> {
                 : Center(
                     child: Padding(
                       padding: const EdgeInsets.all(25.0),
-                      child: Text(
-                        'No Recent Item Found',
-                        textAlign: TextAlign.end,
-                      ),
+                      child: widget.language != null &&
+                              widget.language != "English"
+                          ? TranslationWidget(
+                              message: 'No Recent Item Found',
+                              toLanguage: widget.language,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Text(
+                                translatedMessage.toString(),
+                                textAlign: TextAlign.end,
+                              ),
+                            )
+                          : Text(
+                              'No Recent Item Found',
+                              textAlign: TextAlign.end,
+                            ),
                     ),
                   );
           } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -282,12 +294,24 @@ class _SearchPageState extends State<SearchPage> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          items[index].titleC != null &&
-                                  items[index].titleC.isNotEmpty
-                              ? '${items[index].titleC} '
-                              : '',
-                        ),
+                        widget.language != null && widget.language != "English"
+                            ? TranslationWidget(
+                                message: items[index].titleC != null &&
+                                        items[index].titleC.isNotEmpty
+                                    ? '${items[index].titleC} '
+                                    : '',
+                                toLanguage: widget.language,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                ),
+                              )
+                            : Text(
+                                items[index].titleC != null &&
+                                        items[index].titleC.isNotEmpty
+                                    ? '${items[index].titleC} '
+                                    : '',
+                              ),
                       ]),
                 )
               ])),
@@ -332,11 +356,25 @@ class _SearchPageState extends State<SearchPage> {
                                     : Theme.of(context).backgroundColor,
                               ),
                               child: ListTile(
-                                  title: Text(
-                                    data.titleC,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
-                                  ),
+                                  title: widget.language != null &&
+                                          widget.language != "English"
+                                      ? TranslationWidget(
+                                          message: data.titleC,
+                                          toLanguage: widget.language,
+                                          fromLanguage: "en",
+                                          builder: (translatedMessage) => Text(
+                                            translatedMessage.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1,
+                                          ),
+                                        )
+                                      : Text(
+                                          data.titleC,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1,
+                                        ),
                                   onTap: () async {
                                     _route(data);
                                     if (data != null) {
@@ -383,11 +421,22 @@ class _SearchPageState extends State<SearchPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
-        Text(
-          "Search",
-          style: Theme.of(context).appBarTheme.titleTextStyle,
-          textAlign: TextAlign.left,
-        ),
+        widget.language != null && widget.language != "English"
+            ? TranslationWidget(
+                message: "Search",
+                toLanguage: widget.language,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                  style: Theme.of(context).appBarTheme.titleTextStyle,
+                  textAlign: TextAlign.left,
+                ),
+              )
+            : Text(
+                "Search",
+                style: Theme.of(context).appBarTheme.titleTextStyle,
+                textAlign: TextAlign.left,
+              ),
       ],
     );
   }
@@ -397,13 +446,26 @@ class _SearchPageState extends State<SearchPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
-        Text(
-          "Recent Search",
-          style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                fontSize: 18,
+        widget.language != null && widget.language != "English"
+            ? TranslationWidget(
+                message: "Recent Search",
+                toLanguage: widget.language,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                  style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
+                        fontSize: 18,
+                      ),
+                  textAlign: TextAlign.left,
+                ),
+              )
+            : Text(
+                "Recent Search",
+                style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
+                      fontSize: 18,
+                    ),
+                textAlign: TextAlign.left,
               ),
-          textAlign: TextAlign.left,
-        ),
       ],
     );
   }

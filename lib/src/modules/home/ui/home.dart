@@ -44,7 +44,8 @@ class _HomePageState extends State<HomePage> {
   var item;
   var item2;
   final ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
-  final ValueNotifier<String> langadded = ValueNotifier<String>("English");
+  final ValueNotifier<String> languageChanged =
+      ValueNotifier<String>("English");
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   Timer? timer;
   String? selectedLanguage;
@@ -54,8 +55,8 @@ class _HomePageState extends State<HomePage> {
 
     _bloc.initPushState(context);
     _selectedIndex = Globals.outerBottombarIndex ?? 0;
-    // timer =
-    //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
+    timer =
+        Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
   }
 
   getindicatorValue() async {
@@ -70,7 +71,7 @@ class _HomePageState extends State<HomePage> {
       }
 
       if (selectedLanguage != null) {
-        langadded.value = selectedLanguage!;
+        languageChanged.value = selectedLanguage!;
       }
     });
   }
@@ -97,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                           isbuttomsheet: true,
                           ishtml: true,
                           appbarTitle: "Information",
-                          language: widget.language,
+                          language: selectedLanguage,
                         )));
             break;
           case IconsMenu.Setting:
@@ -209,7 +210,7 @@ class _HomePageState extends State<HomePage> {
                   if (language != null) {
                     setState(() {
                       selectedLanguage = language;
-                      langadded.value = language;
+                      languageChanged.value = language;
                     });
                   }
                 });
@@ -260,15 +261,18 @@ class _HomePageState extends State<HomePage> {
                                   //       )
                                   //     :
 
-                                  Expanded(
-                                child: Text(
-                                  e.split("_")[0],
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                ),
+                                  Wrap(
+                                children: [
+                                  Text(
+                                    e.split("_")[0],
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle2,
+                                  ),
+                                ],
                               );
                             },
-                            valueListenable: langadded,
+                            valueListenable: languageChanged,
                             child: Container(),
                           ),
                           ValueListenableBuilder(
@@ -277,6 +281,7 @@ class _HomePageState extends State<HomePage> {
                               return e.split("_")[0] == "News" &&
                                       indicator.value == true
                                   ? Container(
+                                      alignment: Alignment.centerLeft,
                                       height: 8,
                                       width: 8,
                                       margin: EdgeInsets.only(left: 3),
