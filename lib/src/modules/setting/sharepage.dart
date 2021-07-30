@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -43,6 +44,7 @@ class _SharePageState extends State<SharePage> {
                       child: Icon(
                         buttonicon,
                         color: AppTheme.kIconColor3,
+                        size: Globals.deviceType == "phone" ? 20 : 28,
                       ))),
               HorzitalSpacerWidget(_kPadding * 2),
               Text(

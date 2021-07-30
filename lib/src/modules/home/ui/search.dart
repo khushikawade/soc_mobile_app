@@ -3,11 +3,14 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
+import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/Strings.dart';
+import 'package:Soc/src/widgets/app_logo_widget.dart';
+import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
@@ -21,7 +24,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
-  final bool isbuttomsheet;
+  bool isbuttomsheet;
+
   SearchPage({Key? key, required this.isbuttomsheet}) : super(key: key);
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -37,7 +41,7 @@ class _SearchPageState extends State<SearchPage> {
   final _debouncer = Debouncer(milliseconds: 500);
   HomeBloc _searchBloc = new HomeBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  static const double _kIconSize = 35.0;
+  static const double _kIconSize = 38.0;
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -239,6 +243,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildIListtem(int index, items) {
     return InkWell(
       onTap: () async {
+        // await _recentListRoute(items[index]);
         await _route(items[index]);
       },
       child: Container(
@@ -405,41 +410,12 @@ class _SearchPageState extends State<SearchPage> {
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         appBar: new AppBar(
-          elevation: 0.0,
-          leading: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 10),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Icon(
-                    const IconData(0xe80d,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kIconColor1,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          title: Padding(
-            padding: const EdgeInsets.only(top: _kLabelSpacing / 2),
-            child: Image.asset(
-              'assets/images/bear.png',
-              fit: BoxFit.fill,
-              height: _kIconSize,
-              width: _kIconSize * 2,
-            ),
-          ),
-        ),
+            elevation: 0.0,
+            leading: BackButtonWidget(),
+            title:
+                SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
         body: Container(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
+          child: Column(mainAxisSize: MainAxisSize.max, children: [
             _buildHeading(),
             SpacerWidget(_kLabelSpacing / 2),
             _buildSearchbar(),

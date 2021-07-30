@@ -9,7 +9,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class StudentPage extends StatefulWidget {
   final homeObj;
-  StudentPage({Key? key, this.homeObj}) : super(key: key);
+  String? language;
+  StudentPage({Key? key, this.homeObj, this.language}) : super(key: key);
   _StudentPageState createState() => _StudentPageState();
 }
 

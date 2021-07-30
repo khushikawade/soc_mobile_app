@@ -2,7 +2,9 @@ import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
+import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:flutter/material.dart';
 import '../overrides.dart';
@@ -46,28 +48,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0.0,
-      leading: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-                top: _kLabelSpacing, left: _kLabelSpacing / 1.5),
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(
-                const IconData(0xe80d,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kIconColor1,
-                size: Globals.deviceType == "phone" ? 14 : 22,
-              ),
-            ),
-          ),
-        ],
-      ),
+      leading: BackButtonWidget(),
       title: widget.isCenterIcon != null && widget.isCenterIcon == true
           ? SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())
           : Text(
@@ -77,22 +58,10 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
             ),
       actions: [
         widget.isSearch == true
-            ? IconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SearchPage(
-                                isbuttomsheet: true,
-                              )));
-                },
-                icon: Icon(
-                  const IconData(0xe805,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  size: Globals.deviceType == "phone" ? 20 : 28,
-                ))
-            : Container(),
+            ? SearchButtonWidget()
+            : Container(
+                height: 0,
+              ),
         widget.isShare == true &&
                 widget.isShare == true &&
                 widget.sharedpopBodytext != 'null'

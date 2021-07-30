@@ -136,8 +136,8 @@ class _EventPageState extends State<EventPage> {
             isShare: false,
             sharedpopUpheaderText: "",
             sharedpopBodytext: ""),
-        body: SingleChildScrollView(
-          child: SafeArea(
+        body: ListView(children: [
+          SafeArea(
               child: BlocBuilder<FamilyBloc, FamilyState>(
                   bloc: _eventBloc,
                   builder: (BuildContext contxt, FamilyState state) {
@@ -176,7 +176,7 @@ class _EventPageState extends State<EventPage> {
                       return Container();
                     }
                   })),
-        ),
+        ]),
         bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

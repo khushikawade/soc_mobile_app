@@ -54,20 +54,17 @@ class _InternalButtomNavigationBarState
           .split(";")
           .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
                 icon: Column(children: [
-                  Text(
-                    e.split("_")[0],
-                    style: Theme.of(context).textTheme.subtitle2,
-                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 5.0),
                     child: Icon(
                       IconData(int.parse(e.split("_")[1]),
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
+                      size: Globals.deviceType == "phone" ? 24 : 32,
                     ),
                   ),
                 ]),
-                label: '',
+                label: '${e.split("_")[0]}',
               ))
           .toList(),
       onTap: (index) {

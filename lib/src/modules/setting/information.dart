@@ -126,8 +126,8 @@ class _InformationPageState extends State<InformationPage> {
         sharedpopBodytext: '',
         sharedpopUpheaderText: '',
       ),
-      body: SingleChildScrollView(
-        child: Container(
+      body: ListView(children: [
+        Container(
             child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -144,15 +144,11 @@ class _InformationPageState extends State<InformationPage> {
             SpacerWidget(_kLabelSpacing / 2),
             privacyWidget(),
             SpacerWidget(_kLabelSpacing * 7),
-            // Expanded(child: Container()),
             _buildPrivacyWidget(),
-            SizedBox(
-                // width: MediaQuery.of(context).size.width * 1,
-                height: 100.0,
-                child: ShareButtonWidget()),
+            SizedBox(height: 100.0, child: ShareButtonWidget()),
           ],
         )),
-      ),
+      ]),
     );
   }
 }

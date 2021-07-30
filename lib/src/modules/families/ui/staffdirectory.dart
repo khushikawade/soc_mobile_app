@@ -88,6 +88,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   const IconData(0xe805,
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg),
+                  size: Globals.deviceType == "phone" ? 20 : 28,
                   color: AppTheme.kprefixIconColor,
                 ),
                 suffix: IconButton(
@@ -272,8 +273,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
           isShare: false,
           isCenterIcon: true,
         ),
-        body: SingleChildScrollView(
-          child: SafeArea(
+        body: ListView(children: [
+          SafeArea(
             child: BlocBuilder<FamilyBloc, FamilyState>(
                 bloc: _bloc,
                 builder: (BuildContext contxt, FamilyState state) {
@@ -285,23 +286,21 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           backgroundColor: Theme.of(context).accentColor,
                         )));
                   } else if (state is SDDataSucess) {
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          _buildHeading("STAFF DIRECTORY"),
-                          Container(
-                            child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: state.obj!.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return contactItem(state.obj![index], index);
-                              },
-                            ),
+                    return Column(
+                      children: [
+                        _buildHeading("STAFF DIRECTORY"),
+                        Container(
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: state.obj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return contactItem(state.obj![index], index);
+                            },
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     );
                   } else if (state is ErrorLoading) {
                     return Container(
@@ -314,7 +313,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   }
                 }),
           ),
-        ),
+        ]),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

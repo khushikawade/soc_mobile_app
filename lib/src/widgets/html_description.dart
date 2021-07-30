@@ -69,9 +69,9 @@ class _AboutusPageState extends State<AboutusPage> {
           sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
           sharedpopUpheaderText: "Please checkout this link",
         ),
-        body: SingleChildScrollView(
-          child: _buildContent1(),
-        ),
+        body: ListView(children: [
+          _buildContent1(),
+        ]),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

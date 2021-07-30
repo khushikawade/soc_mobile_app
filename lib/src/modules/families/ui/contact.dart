@@ -13,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class ContactPage extends StatefulWidget {
-  var obj;
+  final obj;
   bool isbuttomsheet;
   String appBarTitle;
   ContactPage(
@@ -35,14 +35,10 @@ class _ContactPageState extends State<ContactPage> {
   static const double _kboxborderwidth = 0.75;
   var longitude;
   var latitude;
-  var object;
 
   @override
   void initState() {
     super.initState();
-    object = widget.obj;
-    latitude = object["Contact_Office_Location__Latitude__s"] ?? '';
-    longitude = object["Contact_Office_Location__Longitude__s"] ?? '';
   }
 
   @override
@@ -55,14 +51,19 @@ class _ContactPageState extends State<ContactPage> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          child: object["Contact_Image__c"] != null &&
-                  object["Contact_Image__c"].length > 0
+          child: widget.obj["Contact_Image__c"] != null &&
+                  widget.obj["Contact_Image__c"].length > 0
               ? CachedNetworkImage(
-                  imageUrl: object["Contact_Image__c"],
+                  imageUrl: widget.obj["Contact_Image__c"],
                   fit: BoxFit.fill,
-                  placeholder: (context, url) => CircularProgressIndicator(
-                    strokeWidth: 2,
-                    backgroundColor: Theme.of(context).accentColor,
+                  placeholder: (context, url) => Container(
+                    alignment: Alignment.center,
+                    width: 5,
+                    height: 5,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      backgroundColor: AppTheme.kAccentColor,
+                    ),
                   ),
                   errorWidget: (context, url, error) => Icon(
                     Icons.error,
@@ -89,10 +90,10 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          object["Contact_Name__c"] != null &&
-                  object["Contact_Name__c"].length > 0
+          widget.obj["Contact_Name__c"] != null &&
+                  widget.obj["Contact_Name__c"].length > 0
               ? Text(
-                  object["Contact_Name__c"],
+                  widget.obj["Contact_Name__c"],
                   style: Theme.of(context).textTheme.headline2,
                 )
               : Container(child: Text("No contact details available ")),
@@ -132,12 +133,15 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          latitude != null
+          widget.obj["Contact_Office_Location__Latitude__s"] != null &&
+                  widget.obj["Contact_Office_Location__Longitude__s"] != null
               ? SizedBox(
                   height: _kboxheight * 2,
                   child: GoogleMaps(
-                    latitude: latitude,
-                    longitude: longitude,
+                    latitude:
+                        widget.obj["Contact_Office_Location__Latitude__s"],
+                    longitude:
+                        widget.obj["Contact_Office_Location__Longitude__s"],
                     // locationName: 'soc client',
                   ),
                 )
@@ -204,11 +208,11 @@ class _ContactPageState extends State<ContactPage> {
             ],
           ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
-          object["Contact_Address__c"] != null &&
-                  object["Contact_Address__c"].length > 1
+          widget.obj["Contact_Address__c"] != null &&
+                  widget.obj["Contact_Address__c"].length > 1
               ? Expanded(
                   child: Text(
-                    object["Contact_Address__c"],
+                    widget.obj["Contact_Address__c"],
                     style: Theme.of(context).textTheme.bodyText2,
                     textAlign: TextAlign.start,
                   ),
@@ -233,17 +237,17 @@ class _ContactPageState extends State<ContactPage> {
                 .copyWith(color: Color(0xff171717)),
           ),
           HorzitalSpacerWidget(_kLabelSpacing),
-          object["Contact_Phone__c"] != null &&
-                  object["Contact_Phone__c"].length > 1
+          widget.obj["Contact_Phone__c"] != null &&
+                  widget.obj["Contact_Phone__c"].length > 1
               ? InkWell(
                   onTap: () {
-                    object["Contact_Phone__c"] != null
+                    widget.obj["Contact_Phone__c"] != null
                         ? urlobj.callurlLaucher(
-                            context, "tel:" + object["Contact_Phone__c"])
+                            context, "tel:" + widget.obj["Contact_Phone__c"])
                         : print("No phone");
                   },
                   child: Text(
-                    object["Contact_Phone__c"],
+                    widget.obj["Contact_Phone__c"],
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 )
@@ -284,17 +288,17 @@ class _ContactPageState extends State<ContactPage> {
                 .copyWith(color: Color(0xff171717)),
           ),
           HorzitalSpacerWidget(_kLabelSpacing * 1.5),
-          object["Contact_Email__c"] != null &&
-                  object["Contact_Email__c"].length > 1
+          widget.obj["Contact_Email__c"] != null &&
+                  widget.obj["Contact_Email__c"].length > 1
               ? InkWell(
                   onTap: () {
-                    object["Contact_Email__c"] != null
-                        ? urlobj.callurlLaucher(
-                            context, 'mailto:"${object["Contact_Email__c"]}"')
+                    widget.obj["Contact_Email__c"] != null
+                        ? urlobj.callurlLaucher(context,
+                            'mailto:"${widget.obj["Contact_Email__c"]}"')
                         : print("null value");
                   },
                   child: Text(
-                    object["Contact_Email__c"],
+                    widget.obj["Contact_Email__c"],
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 )
