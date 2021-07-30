@@ -171,13 +171,13 @@ class _FamilyPageState extends State<FamilyPage> {
                   backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is FamiliesDataSucess) {
-                return SingleChildScrollView(
+                return Container(
                   child: state.obj != null && state.obj!.length > 0
                       ? Container(
                           child: ListView.builder(
                             scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            // shrinkWrap: true,
+                            // physics: NeverScrollableScrollPhysics(),
                             itemCount: state.obj!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return _buildList(state.obj![index], index);

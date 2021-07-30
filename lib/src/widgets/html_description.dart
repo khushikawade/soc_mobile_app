@@ -60,22 +60,20 @@ class _AboutusPageState extends State<AboutusPage> {
   }
 
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          appBar: CustomAppBarWidget(
-            isSearch: false,
-            isShare: false,
-            appBarTitle: widget.appbarTitle,
-            ishtmlpage: widget.ishtml,
-            sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
-            sharedpopUpheaderText: "Please checkout this link",
-          ),
-          body: SingleChildScrollView(
-            child: _buildContent1(),
-          ),
-          bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-              ? InternalButtomNavigationBar()
-              : null),
-    );
+    return Scaffold(
+        appBar: CustomAppBarWidget(
+          isSearch: false,
+          isShare: false,
+          appBarTitle: widget.appbarTitle,
+          ishtmlpage: widget.ishtml,
+          sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
+          sharedpopUpheaderText: "Please checkout this link",
+        ),
+        body: SingleChildScrollView(
+          child: _buildContent1(),
+        ),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }
