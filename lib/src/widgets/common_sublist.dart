@@ -130,28 +130,24 @@ class _SubListPageState extends State<SubListPage> {
                       backgroundColor: Theme.of(context).accentColor,
                     ));
                   } else if (state is FamiliesSublistSucess) {
-                    return ListView(children: [
-                      state.obj != null && state.obj!.length > 0
-                          ? SafeArea(
-                              child: ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: state.obj!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return _buildList(
-                                      index,
-                                      _buildFormName(index, state.obj![index]),
-                                      state.obj![index]);
-                                },
-                              ),
-                            )
-                          : Container(
-                              alignment: Alignment.center,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: Text("No data found"),
+                    return state.obj != null && state.obj!.length > 0
+                        ? SafeArea(
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: state.obj!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return _buildList(
+                                    index,
+                                    _buildFormName(index, state.obj![index]),
+                                    state.obj![index]);
+                              },
                             ),
-                    ]);
+                          )
+                        : Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Text("No data found"),
+                          );
                   } else {
                     return Container();
                   }
@@ -166,31 +162,29 @@ class _SubListPageState extends State<SubListPage> {
                           backgroundColor: Theme.of(context).accentColor,
                         ));
                       } else if (state is StaffSubListSucess) {
-                        return ListView(children: [
-                          state.obj != null && state.obj!.length > 0
-                              ? SafeArea(
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: state.obj!.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return _buildList(
-                                          index,
-                                          _buildFormName(
-                                              index, state.obj![index]),
-                                          state.obj![index]);
-                                    },
-                                  ),
-                                )
-                              : Container(
-                                  alignment: Alignment.center,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.8,
-                                  child: Text("No data found"),
+                        return state.obj != null && state.obj!.length > 0
+                            ? SafeArea(
+                                child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  // shrinkWrap: true,
+                                  // physics: NeverScrollableScrollPhysics(),
+                                  itemCount: state.obj!.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return _buildList(
+                                        index,
+                                        _buildFormName(
+                                            index, state.obj![index]),
+                                        state.obj![index]);
+                                  },
                                 ),
-                        ]);
+                              )
+                            : Container(
+                                alignment: Alignment.center,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                child: Text("No data found"),
+                              );
                       } else {
                         return Container();
                       }

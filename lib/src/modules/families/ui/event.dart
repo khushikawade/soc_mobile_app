@@ -105,26 +105,20 @@ class _EventPageState extends State<EventPage> {
   }
 
   Widget _buildHeading(String tittle) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.only(
-              top: _kLabelSpacing / 1.5, bottom: _kLabelSpacing / 1.5),
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 0,
-            ),
-            color: AppTheme.kOnPrimaryColor,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Text(tittle, style: Theme.of(context).textTheme.headline3),
-          ),
+    return Container(
+      padding: EdgeInsets.only(
+          top: _kLabelSpacing / 1.5, bottom: _kLabelSpacing / 1.5),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 0,
         ),
-      ],
+        color: AppTheme.kOnPrimaryColor,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: _kLabelSpacing),
+        child: Text(tittle, style: Theme.of(context).textTheme.headline3),
+      ),
     );
   }
 
@@ -136,26 +130,24 @@ class _EventPageState extends State<EventPage> {
             isShare: false,
             sharedpopUpheaderText: "",
             sharedpopBodytext: ""),
-        body: ListView(children: [
-          SafeArea(
-              child: BlocBuilder<FamilyBloc, FamilyState>(
-                  bloc: _eventBloc,
-                  builder: (BuildContext contxt, FamilyState state) {
-                    if (state is FamilyLoading) {
-                      return Container(
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator(
-                            backgroundColor: Theme.of(context).accentColor,
-                          ));
-                    } else if (state is CalendarListSuccess) {
-                      return Column(
-                        children: [
-                          _buildHeading("Upcoming"),
-                          ListView.builder(
+        body: SafeArea(
+            child: BlocBuilder<FamilyBloc, FamilyState>(
+                bloc: _eventBloc,
+                builder: (BuildContext contxt, FamilyState state) {
+                  if (state is FamilyLoading) {
+                    return Container(
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator(
+                          backgroundColor: Theme.of(context).accentColor,
+                        ));
+                  } else if (state is CalendarListSuccess) {
+                    return Column(
+                      children: [
+                        _buildHeading("Upcoming"),
+                        Expanded(
+                          child: ListView.builder(
                             scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
                             itemCount: state.obj!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return state.obj!.length > 0
@@ -164,19 +156,19 @@ class _EventPageState extends State<EventPage> {
                                   : Container();
                             },
                           ),
-                        ],
-                      );
-                    } else if (state is ErrorLoading) {
-                      return Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Text("Unable to load the data"),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  })),
-        ]),
+                        ),
+                      ],
+                    );
+                  } else if (state is ErrorLoading) {
+                    return Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Text("Unable to load the data"),
+                    );
+                  } else {
+                    return Container();
+                  }
+                })),
         bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

@@ -135,55 +135,55 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget makeList(obj) {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: obj.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _buildlist(obj[index], index, obj!);
-      },
+    return Expanded(
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: obj.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildlist(obj[index], index, obj!);
+        },
+      ),
     );
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(children: [
-        BlocBuilder(
-            bloc: bloc,
-            builder: (BuildContext context, SocialState state) {
-              if (state is SocialDataSucess) {
-                return state.obj != null && state.obj!.length > 0
-                    ? Container(
-                        child: Column(
-                          children: [makeList(state.obj)],
-                        ),
-                      )
-                    : Container(
+      body: BlocBuilder(
+          bloc: bloc,
+          builder: (BuildContext context, SocialState state) {
+            if (state is SocialDataSucess) {
+              return state.obj != null && state.obj!.length > 0
+                  ? Container(
+                      child: Column(
+                        children: [makeList(state.obj)],
+                      ),
+                    )
+                  : Expanded(
+                      child: Container(
                         alignment: Alignment.center,
                         height: MediaQuery.of(context).size.height * 0.8,
                         child: Text("No data found"),
-                      );
-              } else if (state is Loading) {
-                return Container(
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Center(
-                      child: CircularProgressIndicator(
-                    backgroundColor: AppTheme.kAccentColor,
-                  )),
-                );
-              }
-              if (state is SocialError) {
-                return Container(
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Text("Unable to load the data"),
-                );
-              } else {
-                return Container();
-              }
-            }),
-      ]),
+                      ),
+                    );
+            } else if (state is Loading) {
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Center(
+                    child: CircularProgressIndicator(
+                  backgroundColor: AppTheme.kAccentColor,
+                )),
+              );
+            }
+            if (state is SocialError) {
+              return Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Text("Unable to load the data"),
+              );
+            } else {
+              return Container();
+            }
+          }),
     );
   }
 }

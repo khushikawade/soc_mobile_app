@@ -178,7 +178,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   .bodyText1!
                                   .copyWith(fontWeight: FontWeight.w400))
                           : Text(
-                              "No title  found ",
+                              "-",
                               textAlign: TextAlign.center,
                             ),
                       SpacerWidget(_kLabelSpacing),
@@ -189,19 +189,17 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   .textTheme
                                   .bodyText1!
                                   .copyWith(fontWeight: FontWeight.w400))
-                          : Text("No description found ",
+                          : Text(
+                              "- ",
                               textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(fontWeight: FontWeight.w400)),
+                            ),
                       SpacerWidget(_kLabelSpacing),
                       InkWell(
                         onTap: () {
-                          obj.emailC != null
-                              ? objurl.callurlLaucher(
-                                  context, 'mailto:"${obj.emailC}"')
-                              : print("No email found");
+                          if (obj.emailC != null) {
+                            objurl.callurlLaucher(
+                                context, 'mailto:"${obj.emailC}"');
+                          }
                         },
                         child: Row(
                           children: [
@@ -222,8 +220,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                     ),
                                   )
                                 : Text(
-                                    "No email found  No email found  No email found",
-                                    textAlign: TextAlign.start,
+                                    "-",
+                                    textAlign: TextAlign.center,
                                   ),
                           ],
                         ),
@@ -231,10 +229,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       SpacerWidget(_kLabelSpacing / 2),
                       InkWell(
                         onTap: () {
-                          obj.phoneC != null
-                              ? objurl.callurlLaucher(
-                                  context, "tel:" + obj.phoneC)
-                              : print("No telephone number found");
+                          if (obj.phoneC != null) {
+                            objurl.callurlLaucher(context, "tel:" + obj.phoneC);
+                          }
                         },
                         child: Row(
                           children: [
@@ -254,7 +251,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                               fontWeight: FontWeight.w400),
                                     ),
                                   )
-                                : Text("No telephone number found")
+                                : Text("-")
                           ],
                         ),
                       ),
@@ -273,47 +270,43 @@ class _StaffDirectoryState extends State<StaffDirectory> {
           isShare: false,
           isCenterIcon: true,
         ),
-        body: ListView(children: [
-          SafeArea(
-            child: BlocBuilder<FamilyBloc, FamilyState>(
-                bloc: _bloc,
-                builder: (BuildContext contxt, FamilyState state) {
-                  if (state is FamilyInitial || state is FamilyLoading) {
-                    return Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).accentColor,
-                        )));
-                  } else if (state is SDDataSucess) {
-                    return Column(
-                      children: [
-                        _buildHeading("STAFF DIRECTORY"),
-                        Container(
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: state.obj!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return contactItem(state.obj![index], index);
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  } else if (state is ErrorLoading) {
-                    return Container(
-                      alignment: Alignment.center,
+        body: SafeArea(
+          child: BlocBuilder<FamilyBloc, FamilyState>(
+              bloc: _bloc,
+              builder: (BuildContext contxt, FamilyState state) {
+                if (state is FamilyInitial || state is FamilyLoading) {
+                  return Container(
                       height: MediaQuery.of(context).size.height * 0.8,
-                      child: Text("Unable to load the data"),
-                    );
-                  } else {
-                    return Container();
-                  }
-                }),
-          ),
-        ]),
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        backgroundColor: Theme.of(context).accentColor,
+                      )));
+                } else if (state is SDDataSucess) {
+                  return Column(
+                    children: [
+                      _buildHeading("STAFF DIRECTORY"),
+                      Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: state.obj!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return contactItem(state.obj![index], index);
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (state is ErrorLoading) {
+                  return Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Text("Unable to load the data"),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+        ),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

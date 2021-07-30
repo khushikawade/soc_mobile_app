@@ -77,14 +77,12 @@ class _EventDescriptionState extends State<EventDescription> {
         UrlLauncherWidget obj = new UrlLauncherWidget();
         obj.callurlLaucher(context, list.inviteLink);
       },
-      child: Container(
-        child: Text(
-          list.inviteLink!,
-          style: Theme.of(context)
-              .textTheme
-              .headline4!
-              .copyWith(decoration: TextDecoration.underline),
-        ),
+      child: Text(
+        list.inviteLink!,
+        style: Theme.of(context)
+            .textTheme
+            .headline4!
+            .copyWith(decoration: TextDecoration.underline),
       ),
     );
   }

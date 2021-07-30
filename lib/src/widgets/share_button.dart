@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class ShareButtonWidget extends StatelessWidget {
   static const double _kLabelSpacing = 17.0;
   SharePopUp obj = new SharePopUp();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -16,11 +17,10 @@ class ShareButtonWidget extends StatelessWidget {
             flex: 1,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SharePage(),
-                  ),
-                );
+                obj.callFunction(
+                    context,
+                    "Hi, I downloaded the PS 456 Bronx Bears app. You should check it out! Download the app at https://play.google.com/store/apps/details?id=com.app.p1676CB",
+                    "Love the PS 456 Bronx Bears app!");
               },
               child: Text("Share this app"),
             ),

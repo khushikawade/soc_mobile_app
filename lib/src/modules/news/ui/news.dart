@@ -142,67 +142,64 @@ class _NewsPageState extends State<NewsPage> {
   // }
 
   Widget _buildList(obj) {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: obj.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _buildListItems(obj[index], index);
-      },
+    return Expanded(
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        // shrinkWrap: true,
+        // physics: NeverScrollableScrollPhysics(),
+        itemCount: obj.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildListItems(obj[index], index);
+        },
+      ),
     );
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BlocBuilder(
-                    bloc: bloc,
-                    builder: (BuildContext context, NewsState state) {
-                      if (state is NewsLoaded) {
-                        return state.obj != null && state.obj!.length > 0
-                            ? _buildList(state.obj)
-                            : Container(
-                                alignment: Alignment.center,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
-                                child: Text("No news found"),
-                              );
-                      } else if (state is NewsLoading) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(
-                              child: CircularProgressIndicator(
-                            backgroundColor: Theme.of(context).accentColor,
-                          )),
-                        );
-                      } else if (state is NewsErrorReceived) {
-                        return Container(
+          BlocBuilder(
+              bloc: bloc,
+              builder: (BuildContext context, NewsState state) {
+                if (state is NewsLoaded) {
+                  return state.obj != null && state.obj!.length > 0
+                      ? _buildList(state.obj)
+                      : Container(
                           alignment: Alignment.center,
                           height: MediaQuery.of(context).size.height * 0.8,
-                          child: Text("Unable to load the data"),
+                          child: Text("No news found"),
                         );
-                      } else {
-                        return Container();
-                      }
-                    }),
-                BlocListener<NewsBloc, NewsState>(
-                  bloc: bloc,
-                  listener: (context, state) async {
-                    if (state is NewsLoaded) {
-                      object = state.obj;
-                    }
-                  },
-                  child: Container(),
-                ),
-              ],
-            ),
+                } else if (state is NewsLoading) {
+                  return Expanded(
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        backgroundColor: Theme.of(context).accentColor,
+                      )),
+                    ),
+                  );
+                } else if (state is NewsErrorReceived) {
+                  return Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Text("Unable to load the data"),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+          BlocListener<NewsBloc, NewsState>(
+            bloc: bloc,
+            listener: (context, state) async {
+              if (state is NewsLoaded) {
+                object = state.obj;
+              }
+            },
+            child: Container(),
           ),
         ],
       ),

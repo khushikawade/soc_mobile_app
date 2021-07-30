@@ -166,7 +166,7 @@ class SocialDescription extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
             )
-          : Text("No headline found"),
+          : Text("-"),
       SpacerWidget(_kPadding),
     ]);
   }

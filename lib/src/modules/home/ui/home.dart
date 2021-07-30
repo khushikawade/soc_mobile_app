@@ -89,8 +89,15 @@ class _HomePageState extends State<HomePage> {
       onSelected: (value) {
         switch (value) {
           case IconsMenu.Information:
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => InformationPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => InformationPage(
+                          htmlText: Globals.homeObjet["App_Information__c"],
+                          isbuttomsheet: true,
+                          ishtml: true,
+                          appbarTitle: "Information",
+                        )));
             break;
           case IconsMenu.Setting:
             Navigator.push(context,
@@ -221,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                     icon: Column(children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [ 
+                        children: [
                           ValueListenableBuilder(
                             builder: (BuildContext context, dynamic value,
                                 Widget? child) {

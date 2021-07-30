@@ -1,6 +1,8 @@
+import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -40,22 +42,16 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _buildHeading(String tittle) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(vertical: _kLabelSpacing / 1.5),
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            color: AppTheme.kOnPrimaryColor,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Text(tittle, style: Theme.of(context).textTheme.headline3),
-          ),
-        ),
-      ],
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: _kLabelSpacing / 1.5),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: AppTheme.kOnPrimaryColor,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: _kLabelSpacing),
+        child: Text(tittle, style: Theme.of(context).textTheme.headline3),
+      ),
     );
   }
 
@@ -89,41 +85,36 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _buildNotification() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: ListTile(
-            leading: Text("Enable Notification",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(fontWeight: FontWeight.normal)),
-            trailing: _buildSwitch(),
-          ),
-        )
-      ],
+    return Expanded(
+      child: ListTile(
+        leading: Text("Enable Notification",
+            style: Theme.of(context)
+                .textTheme
+                .headline2!
+                .copyWith(fontWeight: FontWeight.normal)),
+        trailing: _buildSwitch(),
+      ),
     );
   }
 
   Widget _buildLicence() {
     return InkWell(
       onTap: () {
-        urlobj.callurlLaucher(context, "https://www.google.com/");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Licenceinfo()));
+
+        // urlobj.callurlLaucher(context, "https://www.google.com/");
       },
-      child: Row(
-        children: [
-          Expanded(
-            child: ListTile(
-              leading: Text("Open Source licences",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(fontWeight: FontWeight.normal)),
-            ),
-          )
-        ],
+      child: Expanded(
+        child: ListTile(
+          leading: Text("Open Source licences",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline2!
+                  .copyWith(fontWeight: FontWeight.normal)),
+        ),
       ),
     );
   }
@@ -138,21 +129,20 @@ class _SettingPageState extends State<SettingPage> {
         sharedpopUpheaderText: '',
       ),
       body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             _buildHeading("Push Notifcation"),
             _buildNotification(),
             _buildHeading("Acknowledgements"),
             _buildLicence(),
-            Expanded(child: Container()),
-            SizedBox(
-                width: MediaQuery.of(context).size.width * 1,
-                height: 100.0,
-                child: ShareButtonWidget()),
           ],
         ),
+      ),
+      bottomSheet: SafeArea(
+        child: SizedBox(
+            width: MediaQuery.of(context).size.width * 1,
+            height: 100.0,
+            child: ShareButtonWidget()),
       ),
     );
   }
