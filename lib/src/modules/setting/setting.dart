@@ -1,8 +1,12 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +15,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
   String? language;
-  SettingPage({Key? key, required this.language}) : super(key: key);
+  bool isbuttomsheet;
+  String appbarTitle;
+  SettingPage(
+      {Key? key,
+      required this.language,
+      required this.isbuttomsheet,
+      required this.appbarTitle})
+      : super(key: key);
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -104,7 +115,7 @@ class _SettingPageState extends State<SettingPage> {
   Widget _buildNotification() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         widget.language != null && widget.language != "English"
             ? Container(
@@ -113,19 +124,25 @@ class _SettingPageState extends State<SettingPage> {
                   message: "Enable Notification",
                   fromLanguage: "en",
                   toLanguage: widget.language,
-                  builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(fontWeight: FontWeight.normal)),
+                  builder: (translatedMessage) => Padding(
+                    padding: const EdgeInsets.only(left: _kLabelSpacing),
+                    child: Text(translatedMessage.toString(),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(fontWeight: FontWeight.normal)),
+                  ),
                 ),
               )
-            : Text("Enable Notification",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(fontWeight: FontWeight.normal)),
+            : Padding(
+                padding: const EdgeInsets.only(left: _kLabelSpacing),
+                child: Text("Enable Notification",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(fontWeight: FontWeight.normal)),
+              ),
         _buildSwitch(),
       ],
     );
@@ -137,7 +154,9 @@ class _SettingPageState extends State<SettingPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => Licenceinfo()));
+                builder: (BuildContext context) => Licenceinfo(
+                      language: widget.language,
+                    )));
 
         // urlobj.callurlLaucher(context, "https://www.google.com/");
       },
@@ -166,39 +185,33 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        appBarTitle: 'Setting',
-        isSearch: false,
-        isShare: false,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-        language: widget.language,
-      ),
-      body: Container(
-        child: ListView(
-          children: [
-            _buildHeading("Push Notifcation"),
-            _buildNotification(),
-            _buildHeading("Acknowledgements"),
-            _buildLicence(),
-            Expanded(child: Container()),
-            SizedBox(
-                width: MediaQuery.of(context).size.width * 1,
-                height: 100.0,
-                child: ShareButtonWidget(
-                  language: widget.language,
-                )),
-          ],
+        appBar: CustomAppBarWidget(
+          appBarTitle: widget.appbarTitle,
+          isSearch: false,
+          isShare: false,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+          language: widget.language,
         ),
-      ),
-      bottomSheet: SafeArea(
-        child: SizedBox(
-            width: MediaQuery.of(context).size.width * 1,
-            height: 100.0,
-            child: ShareButtonWidget(
-              language: widget.language,
-            )),
-      ),
-    );
+        body: Container(
+          child: ListView(
+            children: [
+              _buildHeading("Push Notifcation"),
+              _buildNotification(),
+              _buildHeading("Acknowledgements"),
+              _buildLicence(),
+              SpacerWidget(_kLabelSpacing * 20),
+              SizedBox(
+                  width: MediaQuery.of(context).size.width * 1,
+                  height: 100.0,
+                  child: ShareButtonWidget(
+                    language: widget.language,
+                  )),
+            ],
+          ),
+        ),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }

@@ -106,6 +106,8 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(
                     builder: (context) => SettingPage(
                           language: selectedLanguage,
+                          isbuttomsheet: true,
+                          appbarTitle: "Setting",
                         )));
             break;
           case IconsMenu.Permissions:
