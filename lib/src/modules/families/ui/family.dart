@@ -186,17 +186,13 @@ class _FamilyPageState extends State<FamilyPage> {
               } else if (state is FamiliesDataSucess) {
                 return Container(
                   child: state.obj != null && state.obj!.length > 0
-                      ? Container(
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            // shrinkWrap: true,
-                            // physics: NeverScrollableScrollPhysics(),
-                            itemCount: state.obj!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return _buildList(state.obj![index], index);
-                            },
-                          ),
-                        )
+                      ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: state.obj!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return _buildList(state.obj![index], index);
+                        },
+                      )
                       : Container(
                           alignment: Alignment.center,
                           height: MediaQuery.of(context).size.height * 0.8,

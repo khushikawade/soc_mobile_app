@@ -163,29 +163,25 @@ class _StaffPageState extends State<StaffPage> {
                   backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is StaffDataSucess) {
-                return ListView(children: [
-                  Column(
-                    children: [
-                      state.obj != null && state.obj!.length > 0
-                          ? Container(
-                              child: ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: state.obj!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return _buildList(state.obj![index], index);
-                                },
-                              ),
-                            )
-                          : Container(
-                              alignment: Alignment.center,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: Text("No data found"),
+                return Column(
+                  children: [
+                    state.obj != null && state.obj!.length > 0
+                        ? Expanded(
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: state.obj!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return _buildList(state.obj![index], index);
+                              },
                             ),
-                    ],
-                  ),
-                ]);
+                          )
+                        : Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Text("No data found"),
+                          ),
+                  ],
+                );
               } else if (state is ErrorInStaffLoading) {
                 return Container(
                   alignment: Alignment.center,
