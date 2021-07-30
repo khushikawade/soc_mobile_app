@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:Soc/src/Globals.dart';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
+import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
@@ -57,34 +58,13 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   @override
   Widget build(BuildContext context) {
     return WebviewScaffold(
-        url: url,
-        withJavascript: false,
+        url: url != null ? url : "www.google.com",
+        withJavascript: true,
         withZoom: false,
         hidden: true,
         appBar: AppBar(
           elevation: 0.0,
-          leading: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 10),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Icon(
-                    const IconData(0xe80d,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kIconColor1,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          leading: BackButtonWidget(),
           title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: [
             widget.isSocialpage
@@ -104,7 +84,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                 : Container(
                     height: 0,
                   ),
-            HorzitalSpacerWidget(_kPadding / 1.5),
+            HorzitalSpacerWidget(_kPadding / 1.2),
             widget.isSocialpage
                 ? IconButton(
                     padding: EdgeInsets.zero,
@@ -124,7 +104,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                 : Container(
                     height: 0,
                   ),
-            HorzitalSpacerWidget(_kPadding / 1.5),
+            HorzitalSpacerWidget(_kPadding / 1.2),
             widget.isSocialpage
                 ? IconButton(
                     padding: EdgeInsets.zero,

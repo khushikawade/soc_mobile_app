@@ -145,6 +145,7 @@ class _FamilyPageState extends State<FamilyPage> {
             fontPackage: 'font_awesome_flutter',
           ),
           color: AppTheme.kListIconColor3,
+          size: Globals.deviceType == "phone" ? 18 : 26,
         ),
         title: Text(
           obj.titleC.toString(),

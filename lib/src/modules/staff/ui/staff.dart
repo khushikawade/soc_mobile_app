@@ -116,6 +116,7 @@ class _StaffPageState extends State<StaffPage> {
                     fontPackage: 'font_awesome_flutter',
                   ),
                   color: AppTheme.kListIconColor3,
+                  size: Globals.deviceType == "phone" ? 18 : 26,
                 ),
                 title: Text(
                   obj.titleC.toString(),
@@ -123,7 +124,7 @@ class _StaffPageState extends State<StaffPage> {
                 ),
                 trailing: Icon(
                   Icons.arrow_forward_ios_rounded,
-                  size: 18,
+                  size: Globals.deviceType == "phone" ? 16 : 24,
                   color: AppTheme.kButtonbackColor,
                 ),
               )

@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
+import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
@@ -35,6 +36,7 @@ class SliderWidget extends StatefulWidget {
 class _SliderWidgetState extends State<SliderWidget> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
+  static const double _kLabelSpacing = 15.0;
   var _controller = new PageController();
   static const _kDuration = const Duration(milliseconds: 400);
   int pageinitialIndex = 0;
@@ -66,25 +68,9 @@ class _SliderWidgetState extends State<SliderWidget> {
     return Scaffold(
         appBar: AppBar(
             iconTheme: IconThemeData(color: Theme.of(context).accentColor),
-            leading: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(
-                const IconData(0xe80d,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kIconColor1,
-                size: Globals.deviceType == "phone" ? 17 : 25,
-              ),
-            ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(width: 100.0, height: 50.0, child: AppLogoWidget()),
-              ],
-            ),
+            elevation: 0.0,
+            leading: BackButtonWidget(),
+            title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
             actions: <Widget>[
               Row(
                 children: [
@@ -103,7 +89,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                       color: widget.currentIndex == 0
                           ? AppTheme.kDecativeIconColor
                           : AppTheme.kBlackColor,
-                      size: Globals.deviceType == "phone" ? 17 : 25,
+                      size: Globals.deviceType == "phone" ? 18 : 26,
                     ),
                   ),
                 ],
@@ -123,7 +109,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                   color: widget.currentIndex == widget.obj.length - 1
                       ? AppTheme.kDecativeIconColor
                       : AppTheme.kBlackColor,
-                  size: Globals.deviceType == "phone" ? 17 : 25,
+                  size: Globals.deviceType == "phone" ? 18 : 26,
                 )),
               ),
               HorzitalSpacerWidget(_kPadding / 3),

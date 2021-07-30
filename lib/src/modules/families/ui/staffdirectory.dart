@@ -88,6 +88,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   const IconData(0xe805,
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg),
+                  size: Globals.deviceType == "phone" ? 20 : 28,
                   color: AppTheme.kprefixIconColor,
                 ),
                 suffix: IconButton(

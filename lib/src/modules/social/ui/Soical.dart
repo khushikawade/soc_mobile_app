@@ -102,8 +102,7 @@ class _SocialPageState extends State<SocialPage> {
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.69,
                               child: Text(
-                                obj.title["__cdata"]
-                                    .replaceAll(new RegExp(r'[^\w\s]+'), ''),
+                                "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 style: Theme.of(context).textTheme.headline2,

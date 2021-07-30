@@ -14,6 +14,7 @@ import 'package:Soc/src/modules/staff/ui/stafflogin.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
+import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,6 +71,7 @@ class _HomePageState extends State<HomePage> {
         const IconData(0xe806,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         color: AppTheme.kIconColor2,
+        size: Globals.deviceType == "phone" ? 20 : 28,
       ),
       onSelected: (value) {
         switch (value) {
@@ -165,30 +167,19 @@ class _HomePageState extends State<HomePage> {
             leading: _selectedIndex == 3
                 ? Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: const Icon(IconData(0xe800,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg)),
+                    child: Icon(
+                      const IconData(0xe800,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      size: Globals.deviceType == "phone" ? 22 : 30,
+                    ),
                   )
                 : Container(
                     height: 0,
                   ),
-            title:
-                SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+            title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
             actions: <Widget>[
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SearchPage(
-                                  isbuttomsheet: true,
-                                )));
-                  },
-                  icon: Icon(
-                    const IconData(0xe805,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                  )),
+              SearchButtonWidget(),
               _buildPopupMenuWidget(),
             ]),
         body: selectedScreenBody(context, _selectedIndex,
@@ -199,9 +190,7 @@ class _HomePageState extends State<HomePage> {
           items: Globals.homeObjet["Bottom_Navigation__c"]
               .split(";")
               .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
-                    icon: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
+                    icon: Column(mainAxisSize: MainAxisSize.min, children: [
                       // Row(
                       //   mainAxisAlignment: MainAxisAlignment.center,
                       //   children: [
@@ -235,6 +224,7 @@ class _HomePageState extends State<HomePage> {
                           IconData(int.parse(e.split("_")[1]),
                               fontFamily: Overrides.kFontFam,
                               fontPackage: Overrides.kFontPkg),
+                          size: Globals.deviceType == "phone" ? 24 : 32,
                         ),
                       ),
                     ]),
