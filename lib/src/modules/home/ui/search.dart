@@ -212,16 +212,17 @@ class _SearchPageState extends State<SearchPage> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return snapshot.data != null && snapshot.data.length > 0
-                ? ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    reverse: true,
-                    padding: EdgeInsets.only(top: 10, bottom: 100),
-                    itemCount:
-                        snapshot.data.length < 5 ? snapshot.data.length : 5,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _buildIListtem(index, snapshot.data);
-                    },
+                ? Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      // shrinkWrap: true,
+                      // reverse: true,
+                      itemCount:
+                          snapshot.data.length < 5 ? snapshot.data.length : 5,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _buildIListtem(index, snapshot.data);
+                      },
+                    ),
                   )
                 : Center(
                     child: Padding(
@@ -314,7 +315,7 @@ class _SearchPageState extends State<SearchPage> {
                               bottomLeft: Radius.circular(5.0)),
                         ),
                         child: ListView(
-                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
                           padding: EdgeInsets.all(_kLabelSpacing / 2),
                           children: state.obj.map<Widget>((data) {
                             return Container(

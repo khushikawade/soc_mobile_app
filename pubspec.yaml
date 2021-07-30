@@ -66,6 +66,7 @@ dependencies:
   translator: ^0.1.7
   font_awesome_flutter: ^9.1.0
   package_info: ^2.0.2
+  flutter_oss_licenses: ^1.0.1
   
 
   

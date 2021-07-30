@@ -186,6 +186,36 @@ class _NewdescriptionState extends State<Newdescription> {
                   : Container(),
             ),
           ],
+        ),
+        Container(
+          child: Wrap(
+            children: [
+              Text(
+                widget.obj.contents["en"].toString(),
+                style: Theme.of(context).textTheme.bodyText1,
+                textAlign: TextAlign.left,
+              ),
+            ],
+          ),
+        ),
+        SpacerWidget(_kLabelSpacing),
+        GestureDetector(
+          onTap: () {
+            _launchURL(widget.obj.url);
+          },
+          child: widget.obj.url != null
+              ? Wrap(
+                  children: [
+                    Text(
+                      widget.obj.url.toString(),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            decoration: TextDecoration.underline,
+                          ),
+                      textAlign: TextAlign.justify,
+                    ),
+                  ],
+                )
+              : Container(),
         )
       ],
     );

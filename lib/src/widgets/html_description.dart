@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -74,23 +75,21 @@ class _AboutusPageState extends State<AboutusPage> {
   }
 
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          appBar: CustomAppBarWidget(
-            isSearch: false,
-            isShare: false,
-            appBarTitle: widget.appbarTitle,
-            ishtmlpage: widget.ishtml,
-            sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
-            sharedpopUpheaderText: "Please checkout this link",
-            language: widget.language,
-          ),
-          body: ListView(children: [
-            _buildContent1(),
-          ]),
-          bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-              ? InternalButtomNavigationBar()
-              : null),
-    );
+    return Scaffold(
+        appBar: CustomAppBarWidget(
+          isSearch: false,
+          isShare: false,
+          appBarTitle: widget.appbarTitle,
+          ishtmlpage: widget.ishtml,
+          sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
+          sharedpopUpheaderText: "Please checkout this link",
+          language: widget.language,
+        ),
+        body: ListView(children: [
+          _buildContent1(),
+        ]),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -133,7 +134,12 @@ class _SettingPageState extends State<SettingPage> {
   Widget _buildLicence() {
     return InkWell(
       onTap: () {
-        urlobj.callurlLaucher(context, "https://www.google.com/");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Licenceinfo()));
+
+        // urlobj.callurlLaucher(context, "https://www.google.com/");
       },
       child: Container(
         padding: EdgeInsets.all(16),
@@ -169,9 +175,7 @@ class _SettingPageState extends State<SettingPage> {
         language: widget.language,
       ),
       body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             _buildHeading("Push Notifcation"),
             _buildNotification(),
@@ -186,6 +190,14 @@ class _SettingPageState extends State<SettingPage> {
                 )),
           ],
         ),
+      ),
+      bottomSheet: SafeArea(
+        child: SizedBox(
+            width: MediaQuery.of(context).size.width * 1,
+            height: 100.0,
+            child: ShareButtonWidget(
+              language: widget.language,
+            )),
       ),
     );
   }

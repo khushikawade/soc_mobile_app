@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:Soc/src/Globals.dart';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -12,7 +12,6 @@ import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class StaffDirectory extends StatefulWidget {
@@ -226,10 +225,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       SpacerWidget(_kLabelSpacing),
                       InkWell(
                         onTap: () {
-                          obj.emailC != null
-                              ? objurl.callurlLaucher(
-                                  context, 'mailto:"${obj.emailC}"')
-                              : print("No email found");
+                          if (obj.emailC != null) {
+                            objurl.callurlLaucher(
+                                context, 'mailto:"${obj.emailC}"');
+                          }
                         },
                         child: Row(
                           children: [
@@ -253,10 +252,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       SpacerWidget(_kLabelSpacing / 2),
                       InkWell(
                         onTap: () {
-                          obj.phoneC != null
-                              ? objurl.callurlLaucher(
-                                  context, "tel:" + obj.phoneC)
-                              : print("No telephone number found");
+                          if (obj.phoneC != null) {
+                            objurl.callurlLaucher(context, "tel:" + obj.phoneC);
+                          }
                         },
                         child: Row(
                           children: [
@@ -293,57 +291,30 @@ class _StaffDirectoryState extends State<StaffDirectory> {
           isCenterIcon: true,
           language: widget.language,
         ),
-        body: ListView(children: [
-          SafeArea(
-            child: BlocBuilder<FamilyBloc, FamilyState>(
-                bloc: _bloc,
-                builder: (BuildContext contxt, FamilyState state) {
-                  if (state is FamilyInitial || state is FamilyLoading) {
-                    return Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).accentColor,
-                        )));
-                  } else if (state is SDDataSucess) {
-                    return Column(
-                      children: [
-                        _buildHeading("STAFF DIRECTORY"),
-                        Container(
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: state.obj!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return contactItem(state.obj![index], index);
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  } else if (state is ErrorLoading) {
-                    return Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      child: widget.language != null &&
-                              widget.language != "English"
-                          ? TranslationWidget(
-                              message: "Unable to load the data",
-                              toLanguage: widget.language,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
-                              ),
-                            )
-                          : Text("Unable to load the data"),
-                    );
-                  } else {
-                    return Container();
-                  }
-                }),
-          ),
-        ]),
+        body: SafeArea(
+          child: BlocBuilder<FamilyBloc, FamilyState>(
+              bloc: _bloc,
+              builder: (BuildContext contxt, FamilyState state) {
+                if (state is FamilyInitial || state is FamilyLoading) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child:
+                        widget.language != null && widget.language != "English"
+                            ? TranslationWidget(
+                                message: "Unable to load the data",
+                                toLanguage: widget.language,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                ),
+                              )
+                            : Text("Unable to load the data"),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+        ),
         bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

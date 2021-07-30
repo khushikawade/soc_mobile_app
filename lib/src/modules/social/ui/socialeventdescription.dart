@@ -152,7 +152,9 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildbuttomsection(BuildContext context) {
-    print( object.description["__cdata"],);
+    print(
+      object.description["__cdata"],
+    );
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),

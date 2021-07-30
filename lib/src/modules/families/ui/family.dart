@@ -189,18 +189,14 @@ class _FamilyPageState extends State<FamilyPage> {
                   backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is FamiliesDataSucess) {
-                return ListView(children: [
-                  state.obj != null && state.obj!.length > 0
-                      ? Container(
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: state.obj!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return _buildList(state.obj![index], index);
-                            },
-                          ),
+                return Container(
+                  child: state.obj != null && state.obj!.length > 0
+                      ? ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: state.obj!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return _buildList(state.obj![index], index);
+                          },
                         )
                       : Container(
                           alignment: Alignment.center,
@@ -217,7 +213,7 @@ class _FamilyPageState extends State<FamilyPage> {
                                 )
                               : Text("No data found"),
                         ),
-                ]);
+                );
               } else if (state is ErrorLoading) {
                 return Container(
                   alignment: Alignment.center,
