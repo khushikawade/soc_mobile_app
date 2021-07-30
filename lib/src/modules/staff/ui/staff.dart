@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staffmodal.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -20,7 +21,6 @@ class StaffPage extends StatefulWidget {
 }
 
 class _StaffPageState extends State<StaffPage> {
-  static const double _kIconSize = 188;
   static const double _kLabelSpacing = 20.0;
   FocusNode myFocusNode = new FocusNode();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -97,7 +97,7 @@ class _StaffPageState extends State<StaffPage> {
               ? Theme.of(context).backgroundColor
               : AppTheme.kListBackgroundColor2,
         ),
-        child: obj != null && obj.titleC != null
+        child: obj.titleC != null && obj.titleC!.length > 0
             ? ListTile(
                 onTap: () {
                   _route(obj, index);

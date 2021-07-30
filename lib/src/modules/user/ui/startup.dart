@@ -23,7 +23,6 @@ class _StartupPageState extends State<StartupPage> {
   UserBloc _loginBloc = new UserBloc();
   final NewsBloc _newsBloc = new NewsBloc();
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  // Map<String, dynamic> _deviceData = <String, dynamic>{};
   AndroidDeviceInfo? andorid;
   IosDeviceInfo? ios;
 
@@ -43,7 +42,6 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   Future<void> initPlatformState() async {
-    // Map<String, dynamic> deviceData = <String, dynamic>{};
     try {
       if (Platform.isAndroid) {
         andorid = await deviceInfoPlugin.androidInfo;
@@ -76,10 +74,6 @@ class _StartupPageState extends State<StartupPage> {
     }
 
     if (!mounted) return;
-
-    // setState(() {
-    //   _deviceData = deviceData;
-    // });
   }
 
   @override
