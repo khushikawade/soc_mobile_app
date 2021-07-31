@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
@@ -109,7 +110,7 @@ class _NewdescriptionState extends State<Newdescription> {
                 ),
                 widget.language != null && widget.language != "English"
                     ? TranslationWidget(
-                        message: widget.date,
+                        message: Utility.getUSADateFormat(widget.date),
                         toLanguage: widget.language,
                         fromLanguage: "en",
                         builder: (translatedMessage) => Text(

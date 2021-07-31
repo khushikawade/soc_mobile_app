@@ -182,12 +182,14 @@ class _NewsPageState extends State<NewsPage> {
                             : Text("No news found"),
                       );
               } else if (state is NewsLoading) {
-                return Container(
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Center(
-                      child: CircularProgressIndicator(
-                    backgroundColor: Theme.of(context).accentColor,
-                  )),
+                return Expanded(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).accentColor,
+                    )),
+                  ),
                 );
               } else if (state is NewsErrorReceived) {
                 return Container(
@@ -213,10 +215,12 @@ class _NewsPageState extends State<NewsPage> {
                   ),
                 );
               } else if (state is NewsErrorReceived) {
-                return Container(
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Text("Unable to load the data"),
+                return Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Text("Unable to load the data"),
+                  ),
                 );
               } else {
                 return Container();

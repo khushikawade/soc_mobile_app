@@ -211,35 +211,39 @@ class _EventPageState extends State<EventPage> {
                 bloc: _eventBloc,
                 builder: (BuildContext contxt, FamilyState state) {
                   if (state is FamilyLoading) {
-                    return Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        alignment: Alignment.center,
-                        child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).accentColor,
-                        ));
+                    return Expanded(
+                      child: Container(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator(
+                            backgroundColor: Theme.of(context).accentColor,
+                          )),
+                    );
                   } else if (state is CalendarListSuccess) {
                     return Column(
                       children: [
                         _buildHeading("Upcoming"),
-                        ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return state.obj!.length > 0
-                                ? _buildList(
-                                    state.obj![index], index, state.obj)
-                                : widget.language != null &&
-                                        widget.language != "English"
-                                    ? TranslationWidget(
-                                        message: "No data found",
-                                        toLanguage: widget.language,
-                                        fromLanguage: "en",
-                                        builder: (translatedMessage) => Text(
-                                          translatedMessage.toString(),
-                                        ),
-                                      )
-                                    : Text("No data found");
-                          },
+                        Expanded(
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: state.obj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return state.obj!.length > 0
+                                  ? _buildList(
+                                      state.obj![index], index, state.obj)
+                                  : widget.language != null &&
+                                          widget.language != "English"
+                                      ? TranslationWidget(
+                                          message: "No data found",
+                                          toLanguage: widget.language,
+                                          fromLanguage: "en",
+                                          builder: (translatedMessage) => Text(
+                                            translatedMessage.toString(),
+                                          ),
+                                        )
+                                      : Text("No data found");
+                            },
+                          ),
                         ),
                       ],
                     );

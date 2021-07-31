@@ -310,6 +310,27 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               )
                             : Text("Unable to load the data"),
                   );
+                } else if (state is SDDataSucess) {
+                  return Column(
+                    children: [
+                      _buildHeading("STAFF DIRECTORY"),
+                      Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: state.obj!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return contactItem(state.obj![index], index);
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (state is ErrorLoading) {
+                  return Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Text("Unable to load the data"),
+                  );
                 } else {
                   return Container();
                 }

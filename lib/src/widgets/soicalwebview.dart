@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
@@ -39,29 +40,21 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   void initState() {
     super.initState();
     url = widget.link;
-    _onchanged =
-        flutterWebviewPlugin.onStateChanged.listen((WebViewStateChanged state) {
-      if (mounted) {
-        if (state.type == WebViewState.finishLoad) {
-        } else if (state.type == WebViewState.abortLoad) {
-        } else if (state.type == WebViewState.startLoad) {}
-      }
-    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    flutterWebviewPlugin.dispose();
+    // flutterWebviewPlugin.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return WebviewScaffold(
         url: url != null ? url : "www.google.com",
-        withJavascript: true,
-        withZoom: false,
-        hidden: true,
+        // withJavascript: true,
+        // withZoom: false,
+        // hidden: true,
         appBar: AppBar(
           elevation: 0.0,
           leading: BackButtonWidget(),
@@ -124,7 +117,6 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
           ],
         ),
         initialChild: Container(
-          color: Colors.white,
           child: const Center(
             child: CircularProgressIndicator(
               strokeWidth: 2,

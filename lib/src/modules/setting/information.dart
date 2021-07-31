@@ -3,8 +3,10 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 
 // ignore: must_be_immutable
 class InformationPage extends StatefulWidget {
@@ -30,6 +32,7 @@ class InformationPage extends StatefulWidget {
 class _InformationPageState extends State<InformationPage> {
   static const double _kLabelSpacing = 20.0;
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+  UrlLauncherWidget urlobj = new UrlLauncherWidget();
 
   Widget _buildContent1() {
     return Container(
@@ -46,6 +49,13 @@ class _InformationPageState extends State<InformationPage> {
           //         ),
           //       )
           //     :
+          // Linkify(
+          //     onOpen: (link) async {
+          //       urlobj.callurlLaucher(context, link);
+          //     },
+          //     linkStyle: TextStyle(color: Colors.blue),
+          //     text:
+
           Html(
             data: widget.htmlText,
             style: {
@@ -65,7 +75,12 @@ class _InformationPageState extends State<InformationPage> {
               ),
               'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
             },
-          ),
+            onLinkTap: (url, _, __, ___) {
+              print("Opening $url...");
+            },
+          )
+
+          // )
         ],
       ),
     );
