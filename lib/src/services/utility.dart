@@ -112,7 +112,7 @@ class Utility {
 
     final string = dateNew.toString();
     final formatter = DateFormat('EEE, d MMM yyyy HH:mm');
-    var dateTime = formatter.parse(string);
+    final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MM/yyyy  hh:mm');
     final String formatted = formatNew.format(dateTime);
     return formatted;

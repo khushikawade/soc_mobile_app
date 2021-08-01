@@ -15,7 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ignore: must_be_immutable
 class StaffDirectory extends StatefulWidget {
-  var obj;
+  final obj;
   bool isbuttomsheet;
   String appBarTitle;
   String? language;
@@ -33,7 +33,7 @@ class StaffDirectory extends StatefulWidget {
 
 class _StaffDirectoryState extends State<StaffDirectory> {
   static const double _kLabelSpacing = 16.0;
-  var _controller = TextEditingController();
+  final _controller = TextEditingController();
   FamilyBloc _bloc = FamilyBloc();
   UrlLauncherWidget objurl = new UrlLauncherWidget();
 
@@ -297,19 +297,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               builder: (BuildContext contxt, FamilyState state) {
                 if (state is FamilyInitial || state is FamilyLoading) {
                   return Container(
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    child:
-                        widget.language != null && widget.language != "English"
-                            ? TranslationWidget(
-                                message: "Unable to load the data",
-                                toLanguage: widget.language,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                ),
-                              )
-                            : Text("Unable to load the data"),
-                  );
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Theme.of(context).accentColor,
+                      ));
                 } else if (state is SDDataSucess) {
                   return Column(
                     children: [
@@ -326,11 +318,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     ],
                   );
                 } else if (state is ErrorLoading) {
-                  return Container(
-                    alignment: Alignment.center,
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    child: Text("Unable to load the data"),
-                  );
+                  return widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: "Unable to load the data",
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                                translatedMessage.toString(),
+                              ))
+                      : Text("Unable to load the data");
                 } else {
                   return Container();
                 }

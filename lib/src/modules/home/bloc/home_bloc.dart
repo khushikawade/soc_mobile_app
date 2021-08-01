@@ -24,7 +24,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is FetchBottomNavigationBar) {
       try {
         yield HomeLoading();
-        var data = await fetchBottomNavigationBar();
+        final data = await fetchBottomNavigationBar();
 
         yield BottomNavigationBarSuccess(obj: data);
       } catch (e) {

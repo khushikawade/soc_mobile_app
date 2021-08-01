@@ -234,7 +234,9 @@ class AppTheme {
                 ? kSubtitle2FontSize
                 : kSubtitle2FontSize + _kSize),
         selectedIconTheme: IconThemeData(
-          color: Color(0xFF4a5aa6),
+          color: Colors.red,
+
+          // Color(0xFF4a5aa6),
         ),
         unselectedIconTheme: IconThemeData(
           color: Color(0xff89A7D7),
@@ -245,7 +247,8 @@ class AppTheme {
             fontSize: Globals.deviceType == "phone"
                 ? kSubtitle2FontSize
                 : kSubtitle2FontSize + _kSize),
-        selectedItemColor: Color(0xff4a5aa6),
+        selectedItemColor: Colors.red,
+        //  Color(0xff4a5aa6),
         unselectedItemColor: Color(0xff89A7D7),
         showUnselectedLabels: true,
       ));

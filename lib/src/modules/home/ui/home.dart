@@ -23,7 +23,7 @@ import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
-  var homeObj;
+  final homeObj;
   String? language;
   HomePage({Key? key, this.title, this.homeObj, this.language})
       : super(key: key);

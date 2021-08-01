@@ -110,7 +110,7 @@ class _NewdescriptionState extends State<Newdescription> {
                 ),
                 widget.language != null && widget.language != "English"
                     ? TranslationWidget(
-                        message: Utility.getUSADateFormat(widget.date),
+                        message: widget.date,
                         toLanguage: widget.language,
                         fromLanguage: "en",
                         builder: (translatedMessage) => Text(

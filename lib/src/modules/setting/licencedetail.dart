@@ -182,7 +182,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         children: <Widget>[
           Expanded(
             child: Text(
-              "${list["authors"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "").replaceAll("*", "")}",
+              "${list["authors"].toString().replaceAll('[', '').replaceAll(']', '')}",
               style: Theme.of(context)
                   .textTheme
                   .headline3!
@@ -224,7 +224,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                 .textTheme
                 .headline3!
                 .copyWith(color: Colors.black, height: 1.5),
-            textAlign: TextAlign.left,
+            textAlign: TextAlign.start,
           ),
         )),
       ],
@@ -249,17 +249,20 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                   _buildname(list[index]),
                   SpacerWidget(_kLabelSpacing / 2),
                   _buildVersion(list[index]),
+
+                  SpacerWidget(_kLabelSpacing / 2),
+                  _buildlicenseInfoHeading(),
+                  _buildlicenseInfo(list[index]),
+                  _buildhomepage(list[index]),
+
                   SpacerWidget(_kLabelSpacing / 2),
                   _buildauthorsHeading(),
                   _buildauthors(list[index]),
                   SpacerWidget(_kLabelSpacing / 2),
-                  _buildHomeHeading(),
-                  _buildhomepage(list[index]),
+                  // _buildHomeHeading(),
+                  // _buildhomepage(list[index]),
                   // SpacerWidget(_kLabelSpacing / 2),
-                  description(list[index]),
-                  SpacerWidget(_kLabelSpacing / 2),
-                  _buildlicenseInfoHeading(),
-                  _buildlicenseInfo(list[index]),
+                  // description(list[index]),
                 ])
               : Container(
                   height: 0,

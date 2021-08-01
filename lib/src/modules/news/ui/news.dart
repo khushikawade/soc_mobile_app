@@ -115,7 +115,7 @@ class _NewsPageState extends State<NewsPage> {
         alignment: Alignment.centerLeft,
         child: widget.language != null && widget.language != "English"
             ? TranslationWidget(
-                message: obj.contents["en"],
+                message: obj.contents["en"] ?? '-',
                 fromLanguage: "en",
                 toLanguage: widget.language,
                 builder: (translatedMessage) => Text(
@@ -125,7 +125,7 @@ class _NewsPageState extends State<NewsPage> {
                 ),
               )
             : Text(
-                obj.contents["en"],
+                obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: Theme.of(context).textTheme.headline4,

@@ -31,6 +31,7 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
+  var object;
   @override
   void initState() {
     super.initState();
@@ -172,7 +173,7 @@ class _FamilyPageState extends State<FamilyPage> {
               ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
-          size: Globals.deviceType == "phone" ? 18 : 26,
+          size: Globals.deviceType == "phone" ? 12 : 20,
           color: AppTheme.kButtonbackColor,
         ),
       ),
@@ -191,31 +192,29 @@ class _FamilyPageState extends State<FamilyPage> {
                   backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is FamiliesDataSucess) {
-                return Container(
-                  child: state.obj != null && state.obj!.length > 0
-                      ? ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return _buildList(state.obj![index], index);
-                          },
-                        )
-                      : Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: widget.language != null &&
-                                  widget.language != "English"
-                              ? TranslationWidget(
-                                  message: "No data found",
-                                  toLanguage: widget.language,
-                                  fromLanguage: "en",
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                  ),
-                                )
-                              : Text("No data found"),
-                        ),
-                );
+                return state.obj != null && state.obj!.length > 0
+                    ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: state.obj!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return _buildList(state.obj![index], index);
+                        },
+                      )
+                    : Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: widget.language != null &&
+                                widget.language != "English"
+                            ? TranslationWidget(
+                                message: "No data found",
+                                toLanguage: widget.language,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                ),
+                              )
+                            : Text("No data found"),
+                      );
               } else if (state is ErrorLoading) {
                 return Container(
                   alignment: Alignment.center,
