@@ -163,48 +163,48 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildSearchbar() {
     return SizedBox(
-        height: 50,
-        child: Container(
-            padding: EdgeInsets.symmetric(
-                vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
-            color: AppTheme.kFieldbackgroundColor,
-            child: TextFormField(
-              focusNode: myFocusNode,
-              controller: _controller,
-              cursorColor: Colors.black,
-              decoration: InputDecoration(
-                isDense: true,
-                hintText: 'Search',
-                contentPadding: EdgeInsets.symmetric(
-                    vertical: _kLabelSpacing / 2,
-                    horizontal: _kLabelSpacing / 2),
-                filled: true,
-                fillColor: AppTheme.kBackgroundColor,
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(
-                  const IconData(0xe805,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: AppTheme.kprefixIconColor,
-                  size: Globals.deviceType == "phone" ? 20 : 28,
-                ),
-                suffix: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _controller.clear();
-                      issuggestionList = false;
-                      FocusScope.of(context).requestFocus(FocusNode());
-                    });
-                  },
-                  icon: Icon(
-                    Icons.clear,
-                    color: AppTheme.kIconColor,
-                    size: Globals.deviceType == "phone" ? 18 : 24,
-                  ),
+      height: 50,
+      child: Container(
+          padding: EdgeInsets.symmetric(
+              vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
+          color: AppTheme.kFieldbackgroundColor,
+          child: TextFormField(
+            focusNode: myFocusNode,
+            controller: _controller,
+            cursorColor: Colors.black,
+            decoration: InputDecoration(
+              isDense: true,
+              hintText: 'Search',
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: _kLabelSpacing / 2, horizontal: _kLabelSpacing / 2),
+              filled: true,
+              fillColor: AppTheme.kBackgroundColor,
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(
+                const IconData(0xe805,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kprefixIconColor,
+                size: Globals.deviceType == "phone" ? 20 : 28,
+              ),
+              suffix: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _controller.clear();
+                    issuggestionList = false;
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  });
+                },
+                icon: Icon(
+                  Icons.clear,
+                  color: AppTheme.kIconColor,
+                  size: Globals.deviceType == "phone" ? 18 : 24,
                 ),
               ),
-              onChanged: onItemChanged,
-            )));
+            ),
+            onChanged: onItemChanged,
+          )),
+    );
   }
 
   Widget _buildRecentItemList() {
@@ -370,7 +370,7 @@ class _SearchPageState extends State<SearchPage> {
                                           ),
                                         )
                                       : Text(
-                                          data.titleC,
+                                          data.titleC ?? '-',
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyText1,

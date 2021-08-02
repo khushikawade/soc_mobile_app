@@ -1,0 +1,272 @@
+import 'package:Soc/oss_licenses.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/weburllauncher.dart';
+import 'package:flutter/material.dart';
+
+class LicenceDetailPage extends StatefulWidget {
+  String? language;
+  int index;
+  LicenceDetailPage(
+      {Key? key, this.title, required this.language, required this.index})
+      : super(key: key);
+  final String? title;
+  @override
+  _LicenceDetailPageState createState() => _LicenceDetailPageState();
+}
+
+class _LicenceDetailPageState extends State<LicenceDetailPage> {
+  static const double _kIconSize = 188;
+  static const double _kLabelSpacing = 20.0;
+  FocusNode myFocusNode = new FocusNode();
+  OSSLicensesInfo obj = new OSSLicensesInfo();
+  UrlLauncherWidget urlobj = new UrlLauncherWidget();
+  int? index;
+  var list;
+  @override
+  void initState() {
+    super.initState();
+    list = obj.ossLicenses.values.toList();
+    index = int.parse(widget.index.toString());
+  }
+
+  // UI Widget
+
+  Widget description(list) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              list["description"].toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .headline3!
+                  .copyWith(color: Colors.black),
+              textAlign: TextAlign.justify,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildname(list) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              list["name"].toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .headline2!
+                  .copyWith(color: Colors.black),
+              textAlign: TextAlign.start,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHomeHeading() {
+    return Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing,
+        ),
+        child: Text(
+          "Homepage:",
+          style: Theme.of(context)
+              .textTheme
+              .headline3!
+              .copyWith(color: Colors.black),
+          textAlign: TextAlign.start,
+        ));
+  }
+
+  Widget _buildhomepage(list) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                urlobj.callurlLaucher(context, "${list["homepage"]}");
+              },
+              child: Text(
+                list["homepage"].toString(),
+                style: Theme.of(context).textTheme.headline3!.copyWith(
+                    decoration: TextDecoration.underline,
+                    color: AppTheme.kAccentColor),
+                textAlign: TextAlign.start,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVersion(list) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "Version:",
+            style: Theme.of(context)
+                .textTheme
+                .headline3!
+                .copyWith(color: Colors.black),
+            textAlign: TextAlign.start,
+          ),
+          HorzitalSpacerWidget(_kLabelSpacing / 2),
+          Expanded(
+            child: Text(
+              list["version"].toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .headline3!
+                  .copyWith(color: Colors.black),
+              textAlign: TextAlign.start,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildauthorsHeading() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: Text(
+        "Authors:",
+        style: Theme.of(context)
+            .textTheme
+            .headline3!
+            .copyWith(color: Colors.black),
+        textAlign: TextAlign.start,
+      ),
+    );
+  }
+
+  Widget _buildauthors(list) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              "${list["authors"].toString().replaceAll('[', '').replaceAll(']', '')}",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline3!
+                  .copyWith(color: Colors.black),
+              textAlign: TextAlign.left,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildlicenseInfoHeading() {
+    return Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing,
+        ),
+        child: Text(
+          "License:",
+          style: Theme.of(context)
+              .textTheme
+              .headline3!
+              .copyWith(color: Colors.black),
+          textAlign: TextAlign.start,
+        ));
+  }
+
+  Widget _buildlicenseInfo(list) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+            child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: _kLabelSpacing,
+          ),
+          child: Text(
+            "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "").replaceAll("*", "").replaceAll("     ", "")}",
+            style: Theme.of(context)
+                .textTheme
+                .headline3!
+                .copyWith(color: Colors.black, height: 1.5),
+            textAlign: TextAlign.start,
+          ),
+        )),
+      ],
+    );
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CustomAppBarWidget(
+        isSearch: false,
+        isShare: false,
+        appBarTitle: "Licence Detail",
+        sharedpopUpheaderText: '',
+        sharedpopBodytext: '',
+        language: widget.language,
+      ),
+      body: Container(
+          color: AppTheme.kListBackgroundColor2,
+          child: list != null && list.length > 0
+              ? ListView(children: [
+                  SpacerWidget(_kLabelSpacing / 2),
+                  _buildname(list[index]),
+                  SpacerWidget(_kLabelSpacing / 2),
+                  _buildVersion(list[index]),
+
+                  SpacerWidget(_kLabelSpacing / 2),
+                  _buildlicenseInfoHeading(),
+                  _buildlicenseInfo(list[index]),
+                  _buildhomepage(list[index]),
+
+                  SpacerWidget(_kLabelSpacing / 2),
+                  _buildauthorsHeading(),
+                  _buildauthors(list[index]),
+                  SpacerWidget(_kLabelSpacing / 2),
+                  // _buildHomeHeading(),
+                  // _buildhomepage(list[index]),
+                  // SpacerWidget(_kLabelSpacing / 2),
+                  // description(list[index]),
+                ])
+              : Container(
+                  height: 0,
+                )),
+    );
+  }
+}

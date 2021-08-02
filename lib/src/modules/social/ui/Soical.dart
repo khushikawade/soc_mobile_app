@@ -36,7 +36,7 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget _buildlist(obj, int index, mainObj) {
-    var document = parse(obj.description["__cdata"]);
+    final document = parse(obj.description["__cdata"]);
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
 

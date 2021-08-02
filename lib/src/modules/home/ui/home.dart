@@ -23,7 +23,7 @@ import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
-  var homeObj;
+  final homeObj;
   String? language;
   HomePage({Key? key, this.title, this.homeObj, this.language})
       : super(key: key);
@@ -107,6 +107,8 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(
                     builder: (context) => SettingPage(
                           language: selectedLanguage,
+                          isbuttomsheet: true,
+                          appbarTitle: "Setting",
                         )));
             break;
           case IconsMenu.Permissions:

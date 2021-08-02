@@ -38,7 +38,7 @@ getDeviceType() async {
     final data = (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
     Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
   } else if (Platform.isIOS) {
-    var deviceType = await getDeviceInfo();
+    final deviceType = await getDeviceInfo();
     Globals.deviceType = deviceType == "ipad" ? "tablet" : "phone";
   }
 }

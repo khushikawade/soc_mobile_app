@@ -134,7 +134,7 @@ class _EventPageState extends State<EventPage> {
                           ),
                         )
                       : Text(
-                          list.titleC!,
+                          list.titleC ?? '-',
                           style: Theme.of(context).textTheme.headline5,
                         ),
                   subtitle: widget.language != null &&
@@ -221,25 +221,27 @@ class _EventPageState extends State<EventPage> {
                     return Column(
                       children: [
                         _buildHeading("Upcoming"),
-                        ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return state.obj!.length > 0
-                                ? _buildList(
-                                    state.obj![index], index, state.obj)
-                                : widget.language != null &&
-                                        widget.language != "English"
-                                    ? TranslationWidget(
-                                        message: "No data found",
-                                        toLanguage: widget.language,
-                                        fromLanguage: "en",
-                                        builder: (translatedMessage) => Text(
-                                          translatedMessage.toString(),
-                                        ),
-                                      )
-                                    : Text("No data found");
-                          },
+                        Expanded(
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: state.obj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return state.obj!.length > 0
+                                  ? _buildList(
+                                      state.obj![index], index, state.obj)
+                                  : widget.language != null &&
+                                          widget.language != "English"
+                                      ? TranslationWidget(
+                                          message: "No data found",
+                                          toLanguage: widget.language,
+                                          fromLanguage: "en",
+                                          builder: (translatedMessage) => Text(
+                                            translatedMessage.toString(),
+                                          ),
+                                        )
+                                      : Text("No data found");
+                            },
+                          ),
                         ),
                       ],
                     );

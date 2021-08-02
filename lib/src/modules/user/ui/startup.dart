@@ -51,7 +51,7 @@ class _StartupPageState extends State<StartupPage> {
         Globals.phoneModel = andorid!.device;
         Globals.baseOS = andorid!.version.baseOS;
         Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-        var androidInfo = await DeviceInfoPlugin().androidInfo;
+        final androidInfo = await DeviceInfoPlugin().androidInfo;
         Globals.release = androidInfo.version.release;
         // var sdkInt = androidInfo.version.sdkInt;
         Globals.manufacturer = androidInfo.manufacturer;

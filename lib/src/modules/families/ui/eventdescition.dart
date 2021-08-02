@@ -54,7 +54,7 @@ class _EventDescriptionState extends State<EventDescription> {
                   ),
                 )
               : Text(
-                  list.titleC!,
+                  list.titleC ?? '-',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headline2,
                 ),
@@ -123,7 +123,7 @@ class _EventDescriptionState extends State<EventDescription> {
         obj.callurlLaucher(context, list.inviteLink);
       },
       child: Text(
-        list.inviteLink!,
+        list.inviteLink ?? '-',
         style: Theme.of(context)
             .textTheme
             .headline4!

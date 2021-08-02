@@ -48,37 +48,30 @@ class _ContactPageState extends State<ContactPage> {
   }
 
   Widget _buildIcon() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          child: widget.obj["Contact_Image__c"] != null &&
-                  widget.obj["Contact_Image__c"].length > 0
-              ? CachedNetworkImage(
-                  imageUrl: widget.obj["Contact_Image__c"],
-                  fit: BoxFit.fill,
-                  placeholder: (context, url) => Container(
-                    alignment: Alignment.center,
-                    width: 5,
-                    height: 5,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      backgroundColor: AppTheme.kAccentColor,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Icon(
-                    Icons.error,
-                  ),
-                )
-              : Container(
-                  child: Image.asset(
-                  'assets/images/appicon.png',
-                  fit: BoxFit.fill,
-                  height: 160,
-                  width: MediaQuery.of(context).size.width * 1,
-                )),
-        ),
-      ],
+    return Container(
+      child: widget.obj != null && widget.obj["Contact_Image__c"] != null
+          ? CachedNetworkImage(
+              imageUrl: widget.obj["Contact_Image__c"],
+              fit: BoxFit.fill,
+              placeholder: (context, url) => Container(
+                alignment: Alignment.center,
+                width: 5,
+                height: 5,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  backgroundColor: AppTheme.kAccentColor,
+                ),
+              ),
+              errorWidget: (context, url, error) => Icon(
+                Icons.error,
+              ),
+            )
+          : Container(
+              child: Image.asset(
+              'assets/images/appicon.png',
+              height: 160,
+              width: MediaQuery.of(context).size.width * 1,
+            )),
     );
   }
 
@@ -87,7 +80,9 @@ class _ContactPageState extends State<ContactPage> {
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
         ),
-        child: widget.language != null && widget.language != "English"
+        child: widget.obj["Contact_Name__c"] != null &&
+                widget.language != null &&
+                widget.language != "English"
             ? TranslationWidget(
                 message: widget.obj["Contact_Name__c"] ?? "-",
                 toLanguage: widget.language,
@@ -140,7 +135,9 @@ class _ContactPageState extends State<ContactPage> {
                 // locationName: 'soc client',
               ),
             )
-          : Container(),
+          : Container(
+              height: 0,
+            ),
     );
   }
 
@@ -209,37 +206,24 @@ class _ContactPageState extends State<ContactPage> {
                   textAlign: TextAlign.center,
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
-          widget.obj["Contact_Address__c"] != null &&
-                  widget.obj["Contact_Address__c"].length > 1
-              ? Expanded(
-                  child: widget.language != null && widget.language != "English"
-                      ? TranslationWidget(
-                          message: widget.obj["Contact_Address__c"],
-                          toLanguage: widget.language,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            style: Theme.of(context).textTheme.bodyText2,
-                            textAlign: TextAlign.start,
-                          ),
-                        )
-                      : Text(
-                          widget.obj["Contact_Address__c"],
-                          style: Theme.of(context).textTheme.bodyText2,
-                          textAlign: TextAlign.start,
-                        ),
-                )
-              : Container(
-                  child: widget.language != null && widget.language != "English"
-                      ? TranslationWidget(
-                          message: "No address  available here",
-                          toLanguage: widget.language,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                          ),
-                        )
-                      : Text("No address  available here")),
+          Expanded(
+            child: widget.language != null && widget.language != "English"
+                ? TranslationWidget(
+                    message: widget.obj["Contact_Address__c"] ?? '-',
+                    toLanguage: widget.language,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.bodyText2,
+                      textAlign: TextAlign.start,
+                    ),
+                  )
+                : Text(
+                    widget.obj["Contact_Address__c"] ?? '-',
+                    style: Theme.of(context).textTheme.bodyText2,
+                    textAlign: TextAlign.start,
+                  ),
+          )
         ],
       ),
     );
@@ -272,42 +256,28 @@ class _ContactPageState extends State<ContactPage> {
                       .copyWith(color: Color(0xff171717)),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing),
-          widget.obj["Contact_Phone__c"] != null &&
-                  widget.obj["Contact_Phone__c"].length > 1
-              ? InkWell(
-                  onTap: () {
-                    if (widget.obj["Contact_Phone__c"] != null) {
-                      urlobj.callurlLaucher(
-                          context, "tel:" + widget.obj["Contact_Phone__c"]);
-                    }
-                  },
-                  child: widget.language != null && widget.language != "English"
-                      ? TranslationWidget(
-                          message: widget.obj["Contact_Phone__c"],
-                          toLanguage: widget.language,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            style: Theme.of(context).textTheme.bodyText2,
-                          ),
-                        )
-                      : Text(
-                          widget.obj["Contact_Phone__c"],
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                )
-              : Container(
-                  child: widget.language != null && widget.language != "English"
-                      ? TranslationWidget(
-                          message: "No phone  available here",
-                          toLanguage: widget.language,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            style: Theme.of(context).textTheme.bodyText2,
-                          ),
-                        )
-                      : Text("No phone  available here"))
+          InkWell(
+            onTap: () {
+              if (widget.obj["Contact_Phone__c"] != null) {
+                urlobj.callurlLaucher(
+                    context, "tel:" + widget.obj["Contact_Phone__c"]);
+              }
+            },
+            child: widget.language != null && widget.language != "English"
+                ? TranslationWidget(
+                    message: widget.obj["Contact_Phone__c"] ?? '-',
+                    toLanguage: widget.language,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                  )
+                : Text(
+                    widget.obj["Contact_Phone__c"] ?? '-',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+          )
         ],
       ),
     );
@@ -357,31 +327,18 @@ class _ContactPageState extends State<ContactPage> {
                       .copyWith(color: Color(0xff171717)),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing * 1.5),
-          widget.obj["Contact_Email__c"] != null &&
-                  widget.obj["Contact_Email__c"].length > 1
-              ? InkWell(
-                  onTap: () {
-                    widget.obj["Contact_Email__c"] != null
-                        ? urlobj.callurlLaucher(context,
-                            'mailto:"${widget.obj["Contact_Email__c"]}"')
-                        : print("null value");
-                  },
-                  child: Text(
-                    widget.obj["Contact_Email__c"],
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                )
-              : Container(
-                  child: widget.language != null && widget.language != "English"
-                      ? TranslationWidget(
-                          message: "No email  available here",
-                          toLanguage: widget.language,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                          ),
-                        )
-                      : Text("No email  available here"))
+          InkWell(
+            onTap: () {
+              widget.obj["Contact_Email__c"] != null
+                  ? urlobj.callurlLaucher(
+                      context, 'mailto:"${widget.obj["Contact_Email__c"]}"')
+                  : print("null value");
+            },
+            child: Text(
+              widget.obj["Contact_Email__c"] ?? '-',
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
+          )
         ],
       ),
     );

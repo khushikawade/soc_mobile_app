@@ -1,12 +1,15 @@
 import 'package:Soc/oss_licenses.dart';
+import 'package:Soc/src/modules/setting/licencedetail.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class Licenceinfo extends StatefulWidget {
-  Licenceinfo({Key? key, this.title, this.language}) : super(key: key);
-  final String? title;
   String? language;
+  Licenceinfo({Key? key, this.title, required this.language}) : super(key: key);
+  final String? title;
   @override
   _LicenceinfoState createState() => _LicenceinfoState();
 }
@@ -21,9 +24,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
   @override
   void initState() {
     super.initState();
-
     _list = obj.ossLicenses.values.toList();
-    print(_list[1]["name"]);
   }
 
   Widget _buildList(
@@ -31,42 +32,35 @@ class _LicenceinfoState extends State<Licenceinfo> {
     int index,
   ) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LicenceDetailPage(
+                      language: widget.language,
+                      index: index,
+                    )));
+      },
       child: Container(
-          decoration: BoxDecoration(
-            border: (index % 2 == 0)
-                ? Border.all(color: AppTheme.kListBackgroundColor2)
-                : Border.all(color: Theme.of(context).backgroundColor),
-            borderRadius: BorderRadius.circular(0.0),
-            color: (index % 2 == 0)
-                ? AppTheme.kListBackgroundColor2
-                : Theme.of(context).backgroundColor,
-          ),
-          child: Container(
+        decoration: BoxDecoration(
+          border: (index % 2 == 0)
+              ? Border.all(color: AppTheme.kListBackgroundColor2)
+              : Border.all(color: Theme.of(context).backgroundColor),
+          borderRadius: BorderRadius.circular(0.0),
+          color: (index % 2 == 0)
+              ? AppTheme.kListBackgroundColor2
+              : Theme.of(context).backgroundColor,
+        ),
+        child: Container(
             child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: _kLabelSpacing * 1,
-                    vertical: _kLabelSpacing / 2),
-                child: ListTile(
-                  leading: Text(
-                    list[index]["name"]!,
-                    // style: Theme.of(context).textTheme.headline5,
-                  ),
-                  // title: Text(
-                  //   list[index]["name"]!,
-                  //   style: Theme.of(context).textTheme.headline5,
-                  // ),
-                  // subtitle: Text(
-                  //   Utility.convertDateFormat(list.startDate!) +
-                  //       " - " +
-                  //       Utility.convertDateFormat(list.endDate!),
-                  //   style: Theme.of(context)
-                  //       .textTheme
-                  //       .headline2!
-                  //       .copyWith(fontWeight: FontWeight.normal, height: 1.5),
-                  // ),
-                )),
-          )),
+          padding: const EdgeInsets.symmetric(
+              horizontal: _kLabelSpacing * 1, vertical: _kLabelSpacing),
+          child: Text(
+            list[index]["name"] ?? '-',
+            // style: Theme.of(context).textTheme.headline5,
+          ),
+        )),
+      ),
     );
   }
 
