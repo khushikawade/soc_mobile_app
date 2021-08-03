@@ -1,83 +1,250 @@
-import 'dart:ui';
-
 class Translations {
-  static final Translations _application = Translations._internal();
+  // static final Translations _application = Translations._internal();
 
-  factory Translations() {
-    return _application;
-  }
+  // factory Translations() {
+  //   return _application;
+  // }
 
-  Translations._internal();
+  // Translations._internal();
 
   static final List<String> supportedLanguages = [
-    'English',
-    'Spanish',
-    'French',
-    'German',
-    'Italian',
-    'Russian',
+    'Afrikaans',
+    'Albanian',
     'Amharic',
     'Arabic',
+    'Armenian',
+    'Azerbaijani',
     'Basque',
+    'Belarusian',
     'Bengali',
-    'English(UK)',
-    'Portuguese (Brazil)',
+    'Bosnian',
     'Bulgarian',
     'Catalan',
-    'Cherokee',
+    'Cebuano',
+    'Chinese (Simplified)',
+    'Chinese (Traditional)',
+    'Corsican',
     'Croatian',
     'Czech',
     'Danish',
     'Dutch',
+    'English',
+    // 'English(UK)',
+    'Esperanto',
     'Estonian',
-    'Filipino',
     'Finnish',
+    'French',
+    'Frisian',
+    'Galician',
+    'Georgian',
+    'German',
     'Greek',
     'Gujarati',
+    'Haitian Creole',
+    'Hausa',
+    'Hawaiian',
     'Hebrew',
     'Hindi',
+    'Hmong',
     'Hungarian',
     'Icelandic',
+    'Igbo',
     'Indonesian',
+    'Irish',
+    'Italian',
     'Japanese',
+    'Javanese',
     'Kannada',
+    'Kazakh',
+    'Khmer',
+    'Kinyarwanda',
     'Korean',
+    'Kurdish',
+    'Kyrgyz',
+    'Lao',
+    'Latin',
     'Latvian',
     'Lithuanian',
+    'Luxembourgish',
+    'Macedonian',
+    'Malagasy',
     'Malay',
     'Malayalam',
+    'Maltese',
+    'Maori',
     'Marathi',
+    'Mongolian',
+    'Myanmar (Burmese)',
+    'Nepali',
     'Norwegian',
+    'Nyanja (Chichewa)',
+    'Odia (Oriya)',
+    'Pashto',
+    'Persian',
     'Polish',
     'Portuguese (Portugal)',
+    'Portuguese (Brazil)',
+    'Punjabi',
     'Romanian',
+    'Russian',
+    'Samoan',
+    'Scots Gaelic',
     'Serbian',
-    'Chinese(PRC)',
+    'Sesotho',
+    'Shona',
+    'Sindhi',
+    'Sinhala (Sinhalese)',
     'Slovak',
     'Slovenian',
+    'Somali',
+    'Spanish',
+    'Sundanese',
     'Swahili',
+    'Swedish',
+    'Tagalog (Filipino)	',
+    'Tajik',
     'Tamil',
+    'Tatar',
     'Telugu',
     'Thai',
-    'Chinese (Taiwan)',
     'Turkish',
-    'Urdu',
+    'Turkmen',
     'Ukrainian',
+    'Urdu',
+    'Uyghur',
+    'Uzbek',
     'Vietnamese',
     'Welsh',
+    'Xhosa',
+    'Yiddish',
+    'Yoruba',
+    'Zulu'
   ];
-
-  // static final List<String> supportedCodes = [
-  //   'en',
-  //   'fr',
-  //   'it',
-  //   'ru',
-  //   'es',
-  //   'de',
-  // ];
 
   static String supportedLanguagesCodes(String language) {
     switch (language) {
+      case 'Afrikaans':
+        return 'af';
+      case 'Albanian':
+        return 'sq';
+      case 'Armenian':
+        return 'hy';
+      case 'Azerbaijani':
+        return 'az';
+      case 'Belarusian':
+        return 'be';
+      case 'Bosnian':
+        return 'bs';
+      case 'Cebuano':
+        return 'ceb';
+      case 'Chinese (Simplified)':
+        return 'zh';
+      case 'Chinese (Traditional)':
+        return 'zh-TW';
+      case 'Corsican':
+        return 'co';
+      case 'Esperanto':
+        return 'eo';
+      case 'Frisian':
+        return 'fy';
+      case 'Galician':
+        return 'gl';
+      case 'Georgian':
+        return 'ka';
+      case 'Haitian Creole':
+        return 'ht';
+      case 'Hausa':
+        return 'ha';
+      case 'Hawaiian':
+        return 'haw';
+      case 'Hmong':
+        return 'hmn';
+      case 'Igbo':
+        return 'ig';
+      case 'Irish':
+        return 'ga';
+      case 'Javanese':
+        return 'jv';
+      case 'Kazakh':
+        return 'kk';
+      case 'Khmer':
+        return 'km';
+      case 'Kinyarwanda':
+        return 'rw';
+      case 'Kurdish':
+        return 'ku';
+      case 'Kyrgyz':
+        return 'ky';
+      case 'Lao':
+        return 'lo';
+      case 'Latin':
+        return 'la';
+      case 'Luxembourgish':
+        return 'lb';
+      case 'Macedonian':
+        return 'mk';
+      case 'Malagasy':
+        return 'mg';
+      case 'Maltese':
+        return 'mt';
+      case 'Maori':
+        return 'mi';
+      case 'Mongolian':
+        return 'mn';
+      case 'Myanmar (Burmese)':
+        return 'my';
+      case 'Nepali':
+        return 'ne';
+      case 'Nyanja (Chichewa)':
+        return 'ny';
+      case 'Odia (Oriya)':
+        return 'or';
+      case 'Pashto':
+        return 'ps';
+      case 'Persian':
+        return 'fa';
+      case 'Punjabi':
+        return 'pa';
+      case 'Samoan':
+        return 'sm';
+      case 'Scots Gaelic':
+        return 'gd';
+      case 'Sesotho':
+        return 'st';
+      case 'Shona':
+        return 'sn';
+      case 'Sindhi':
+        return 'sd';
+      case 'Sinhala (Sinhalese)':
+        return 'si';
+      case 'Somali':
+        return 'so';
+      case 'Sundanese':
+        return 'su';
+      case 'Swedish':
+        return 'sv';
+      case 'Tagalog (Filipino)':
+        return 'tl';
+      case 'Tajik':
+        return 'tg';
+      case 'Tatar':
+        return 'tt';
+      case 'Turkmen':
+        return 'tk';
+      case 'Urdu':
+        return 'ur';
+      case 'Uyghur':
+        return 'ug';
+      case 'Uzbek':
+        return 'uz';
+      case 'Xhosa':
+        return 'xh';
+      case 'Yiddish':
+        return 'yi';
+      case 'Yoruba':
+        return 'yo';
+      case 'Zulu':
+        return 'zu';
       case 'English':
         return 'en';
       case 'French':
@@ -99,9 +266,9 @@ class Translations {
       case 'Bengali':
         return 'bn';
       case 'English(UK)':
-        return 'en-GB';
+        return 'en-gb';
       case 'Portuguese (Brazil)':
-        return 'pt-BR';
+        return 'pt-br';
       case 'Bulgarian':
         return 'bg';
       case 'Catalan':
@@ -192,15 +359,4 @@ class Translations {
         return 'en';
     }
   }
-
-  // returns the list of supported Locales
-  // Iterable<Locale> supportedLocales() =>
-  //     supportedCodes.map<Locale>((language) => Locale(language, ""));
-
-  // function to be invoked when changing the language
-  static late LocaleChangeCallback onLocaleChanged;
 }
-
-Translations application = Translations();
-
-typedef void LocaleChangeCallback(Locale locale);

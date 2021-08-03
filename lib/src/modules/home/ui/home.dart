@@ -14,6 +14,7 @@ import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
@@ -244,33 +245,30 @@ class _HomePageState extends State<HomePage> {
                           ValueListenableBuilder(
                             builder: (BuildContext context, dynamic value,
                                 Widget? child) {
-                              return
-
-                                  // selectedLanguage != null ||
-                                  //         langadded.value != "English"
-                                  //     ? TranslationWidget(
-                                  //         message: e.split("_")[0],
-                                  //         toLanguage: langadded.value,
-                                  //         builder: (translatedMessage) => Text(
-                                  //           translatedMessage,
-                                  //           textAlign: TextAlign.center,
-                                  //           style: Theme.of(context)
-                                  //               .textTheme
-                                  //               .subtitle2,
-                                  //         ),
-                                  //       )
-                                  //     :
-
-                                  Wrap(
-                                children: [
-                                  Text(
-                                    e.split("_")[0],
-                                    textAlign: TextAlign.center,
-                                    style:
-                                        Theme.of(context).textTheme.subtitle2,
-                                  ),
-                                ],
-                              );
+                              return selectedLanguage != null ||
+                                      languageChanged.value != "English"
+                                  ? TranslationWidget(
+                                      message: e.split("_")[0],
+                                      toLanguage: languageChanged.value,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2,
+                                      ),
+                                    )
+                                  : Wrap(
+                                      children: [
+                                        Text(
+                                          e.split("_")[0],
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2,
+                                        ),
+                                      ],
+                                    );
                             },
                             valueListenable: languageChanged,
                             child: Container(),

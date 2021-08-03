@@ -152,9 +152,16 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildbuttomsection(BuildContext context) {
-    print(
-      object.description["__cdata"],
-    );
+    var data = object.description["__cdata"]
+        .toString()
+        .split("<div>")[2]
+        .split("\\n")[0];
+    var data2 = object.description["__cdata"]
+        .toString()
+        .split("\\n#")[1]
+        .split("</div>")[0];
+    // print(data);
+    print(data2);
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),
@@ -172,17 +179,29 @@ class SocialDescription extends StatelessWidget {
                 child: Image(image: AssetImage("assets/images/appicon.png")),
               ),
         language != null && language != "English"
-            ? TranslationWidget(
-                message: object.description["__cdata"],
-                fromLanguage: "en",
-                toLanguage: language,
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                ),
+            ? Column(
+                children: [
+                  TranslationWidget(
+                    message: data,
+                    fromLanguage: "en",
+                    toLanguage: language,
+                    builder: (translatedMessage) => Text(
+                      translatedMessage
+                          .toString()
+                          .replaceAll(new RegExp(r'[\\]+'), '\n')
+                          .replaceAll("n.", ".")
+                          .replaceAll("\nn", "\n")
+                          .replaceAll("\\ n ", ""),
+                    ),
+                  ),
+                  Text(
+                    "#" + data2,
+                  )
+                ],
               )
             : Html(
                 data:
-                    "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+                    "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")}",
               )
       ],
     );

@@ -46,10 +46,8 @@ class _SettingPageState extends State<SettingPage> {
       push = pushStatus.getBool("push")!;
     });
 
-    print(push);
-
     if (push == null) {
-      push = true;
+      push = false;
     }
   }
 
@@ -92,11 +90,12 @@ class _SettingPageState extends State<SettingPage> {
             child: Padding(
               padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
               child: Switch(
-                value: _lights,
+                value: push != null ? _lights = !push! : _lights,
                 onChanged: (bool value) async {
                   setState(() {
                     _lights = value;
-                    bool status = !_lights;
+                    // bool status = !_lights;
+                    push = !push!;
                     OneSignal.shared.disablePush(push!);
                   });
                   //

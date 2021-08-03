@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 import 'package:translator/translator.dart';
 
@@ -9,15 +8,16 @@ class TranslationAPI {
   static Future<String> translate(String message, String toLanguageCode) async {
     final response = await http.post(
       Uri.parse(
-          'https://translation.googleapis.com/language/translate/v2?target=$toLanguageCode&key=$_apiKey&q=$message'),
+          'https://translation.googleapis.com/language/translate/v2?target=$toLanguageCode&key=$_apiKey&q=$message&format=text'),
     );
 
     if (response.statusCode == 200) {
       final body = json.decode(response.body);
       final translations = body['data']['translations'] as List;
       final translation = translations.first;
-      // print(HtmlUnescape().convert(translation['translatedText']));
-      return HtmlUnescape().convert(translation['translatedText']);
+
+      return translation['translatedText'];
+      //HtmlUnescape().convert(translation['translatedText']);
     } else {
       throw Exception();
     }
