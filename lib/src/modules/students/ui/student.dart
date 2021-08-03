@@ -142,7 +142,7 @@ class _StudentPageState extends State<StudentPage> {
               if (state is StudentInitial || state is Loading) {
                 return Center(
                     child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
+                  
                 ));
               } else if (state is StudentDataSucess) {
                 return state.obj != null && state.obj!.length > 0

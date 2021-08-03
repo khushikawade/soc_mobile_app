@@ -136,7 +136,7 @@ class _FamilyPageState extends State<FamilyPage> {
         borderRadius: BorderRadius.circular(0.0),
         color: (index % 2 == 0)
             ? Theme.of(context).backgroundColor
-            : AppTheme.kListBackgroundColor2,
+            : Theme.of(context).colorScheme.secondary,
       ),
       child: ListTile(
         onTap: () {
@@ -188,7 +188,7 @@ class _FamilyPageState extends State<FamilyPage> {
               if (state is FamilyInitial || state is FamilyLoading) {
                 return Center(
                     child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
+                  
                 ));
               } else if (state is FamiliesDataSucess) {
                 return state.obj != null && state.obj!.length > 0

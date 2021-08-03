@@ -39,7 +39,7 @@ class _NewsPageState extends State<NewsPage> {
       ),
       color: (index % 2 == 0)
           ? Theme.of(context).backgroundColor
-          : AppTheme.kListBackgroundColor2,
+          : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -70,7 +70,7 @@ class _NewsPageState extends State<NewsPage> {
                           alignment: Alignment.center,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            backgroundColor: AppTheme.kAccentColor,
+                            
                           ),
                         ),
                         errorWidget: (context, url, error) => Icon(Icons.error),
@@ -186,7 +186,7 @@ class _NewsPageState extends State<NewsPage> {
                         height: MediaQuery.of(context).size.height * 0.8,
                         child: Center(
                             child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).accentColor,
+                          
                         )),
                       ),
                     );
@@ -210,7 +210,7 @@ class _NewsPageState extends State<NewsPage> {
                         height: MediaQuery.of(context).size.height * 0.8,
                         child: Center(
                             child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).accentColor,
+                          
                         )),
                       ),
                     );

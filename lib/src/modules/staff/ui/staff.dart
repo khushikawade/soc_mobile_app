@@ -103,7 +103,7 @@ class _StaffPageState extends State<StaffPage> {
           borderRadius: BorderRadius.circular(0.0),
           color: (index % 2 == 0)
               ? Theme.of(context).backgroundColor
-              : AppTheme.kListBackgroundColor2,
+              : Theme.of(context).colorScheme.secondary,
         ),
         child: obj.titleC != null && obj.titleC!.length > 0
             ? ListTile(
@@ -167,7 +167,7 @@ class _StaffPageState extends State<StaffPage> {
               if (state is StaffInitial || state is StaffLoading) {
                 return Center(
                     child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
+                  
                 ));
               } else if (state is StaffDataSucess) {
                 return Column(

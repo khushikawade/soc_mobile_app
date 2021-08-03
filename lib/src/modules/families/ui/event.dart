@@ -219,7 +219,7 @@ class _EventPageState extends State<EventPage> {
                         height: MediaQuery.of(context).size.height * 0.8,
                         alignment: Alignment.center,
                         child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).accentColor,
+                          
                         ));
                   } else if (state is CalendarListSuccess) {
                     return Column(

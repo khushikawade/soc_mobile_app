@@ -55,7 +55,7 @@ class _NewdescriptionState extends State<Newdescription> {
                         placeholder: (context, url) =>
                             CircularProgressIndicator(
                           strokeWidth: 2,
-                          backgroundColor: Theme.of(context).accentColor,
+                          
                         ),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                       )

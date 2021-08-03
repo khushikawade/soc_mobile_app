@@ -144,7 +144,7 @@ class _SubListPageState extends State<SubListPage> {
                   if (state is FamilyInitial || state is FamilyLoading) {
                     return Center(
                         child: CircularProgressIndicator(
-                      backgroundColor: Theme.of(context).accentColor,
+                      
                     ));
                   } else if (state is FamiliesSublistSucess) {
                     return state.obj != null && state.obj!.length > 0
@@ -188,7 +188,7 @@ class _SubListPageState extends State<SubListPage> {
                       if (state is StaffInitial || state is StaffLoading) {
                         return Center(
                             child: CircularProgressIndicator(
-                          backgroundColor: Theme.of(context).accentColor,
+                          
                         ));
                       } else if (state is StaffSubListSucess) {
                         return state.obj != null && state.obj!.length > 0
@@ -229,8 +229,9 @@ class _SubListPageState extends State<SubListPage> {
                       }
                     })
                 : Container(),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+        // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+        //     ? InternalButtomNavigationBar()
+        //     : null
+            );
   }
 }

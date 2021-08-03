@@ -118,7 +118,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
           child: const Center(
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              backgroundColor: AppTheme.kAccentColor,
+              
             ),
           ),
         ),

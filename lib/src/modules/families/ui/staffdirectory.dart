@@ -132,11 +132,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
             decoration: BoxDecoration(
               border: (index % 2 == 0)
-                  ? Border.all(color: AppTheme.ListColor2)
+                  ? Border.all(color: Theme.of(context).colorScheme.secondary,)
                   : Border.all(color: Theme.of(context).backgroundColor),
               borderRadius: BorderRadius.circular(0.0),
               color: (index % 2 == 0)
-                  ? AppTheme.ListColor2
+                  ? Theme.of(context).colorScheme.secondary
                   : Theme.of(context).backgroundColor,
               boxShadow: [
                 BoxShadow(
@@ -303,7 +303,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       height: MediaQuery.of(context).size.height * 0.8,
                       alignment: Alignment.center,
                       child: CircularProgressIndicator(
-                        backgroundColor: Theme.of(context).accentColor,
+                        
                       ));
                 } else if (state is SDDataSucess) {
                   return Column(

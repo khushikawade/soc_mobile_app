@@ -88,7 +88,6 @@ class SocialDescription extends StatelessWidget {
     return SafeArea(
       child: Container(
         padding: EdgeInsets.all(_kPadding / 2),
-        color: AppTheme.kBackgroundColor,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[

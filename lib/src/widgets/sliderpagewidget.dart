@@ -70,7 +70,6 @@ class _SliderWidgetState extends State<SliderWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            iconTheme: IconThemeData(color: Theme.of(context).accentColor),
             elevation: 0.0,
             leading: BackButtonWidget(),
             title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
@@ -89,9 +88,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                       const IconData(0xe80c,
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
-                      color: widget.currentIndex == 0
-                          ? AppTheme.kDecativeIconColor
-                          : AppTheme.kBlackColor,
                       size: Globals.deviceType == "phone" ? 18 : 26,
                     ),
                   ),
@@ -109,9 +105,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                   const IconData(0xe815,
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg),
-                  color: widget.currentIndex == widget.obj.length - 1
-                      ? AppTheme.kDecativeIconColor
-                      : AppTheme.kBlackColor,
                   size: Globals.deviceType == "phone" ? 18 : 26,
                 )),
               ),

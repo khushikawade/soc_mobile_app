@@ -251,7 +251,7 @@ class _SearchPageState extends State<SearchPage> {
                 height: MediaQuery.of(context).size.height * 0.7,
                 child: Center(
                     child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
+                  
                 )),
               ),
             );
@@ -407,7 +407,7 @@ class _SearchPageState extends State<SearchPage> {
                 height: MediaQuery.of(context).size.height * 0.7,
                 child: Center(
                     child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
+                  
                 )),
               ),
             );

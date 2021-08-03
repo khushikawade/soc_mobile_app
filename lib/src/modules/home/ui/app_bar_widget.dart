@@ -8,6 +8,7 @@ import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       icon: Icon(
         const IconData(0xe806,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        color: AppTheme.kIconColor2,
         size: Globals.deviceType == "phone" ? 20 : 28,
       ),
       onSelected: (value) {
@@ -86,7 +86,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         builder: (BuildContext context, StateSetter setState) {
       // child:
       return AppBar(
-          backgroundColor: Colors.white,
           leadingWidth: _kIconSize,
           elevation: 0.0,
           leading: IconButton(

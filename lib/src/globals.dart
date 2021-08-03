@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
+import 'modules/home/models/app_setting.dart';
+
 class Globals {
   static var iosInfo;
   static var androidInfo;
@@ -14,6 +16,7 @@ class Globals {
   static int? outerBottombarIndex;
   static int? internalBottombarIndex;
   static var homeObjet;
+  static late AppSetting appSetting;
   // static GlobalKey<NavigatorState>? appNavigator;
   static Locale? myLocale;
   static int? notiCount;

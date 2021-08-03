@@ -388,7 +388,8 @@ class _HomePageState extends State<HomePage> {
         screens: _buildScreens(),
         items: _navBarsItems(),
         confineInSafeArea: true,
-        backgroundColor: Colors.white, // Default is Colors.white.
+        backgroundColor:
+            Theme.of(context).backgroundColor, // Default is Colors.white.
         handleAndroidBackButtonPress: true, // Default is true.
         resizeToAvoidBottomInset:
             true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
@@ -397,11 +398,10 @@ class _HomePageState extends State<HomePage> {
             true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
         decoration: NavBarDecoration(
             borderRadius: BorderRadius.circular(25.0),
-            colorBehindNavBar: Colors.grey,
             boxShadow: [
               BoxShadow(
                 color: Colors.grey,
-                blurRadius: 5.0,
+                blurRadius: 10.0,
               ),
             ]),
         popAllScreensOnTapOfSelectedTab: true,

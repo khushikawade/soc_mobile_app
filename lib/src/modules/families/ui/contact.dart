@@ -59,7 +59,6 @@ class _ContactPageState extends State<ContactPage> {
                 height: 5,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  backgroundColor: AppTheme.kAccentColor,
                 ),
               ),
               errorWidget: (context, url, error) => Icon(
