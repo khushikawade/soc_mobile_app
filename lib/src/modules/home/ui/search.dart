@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
-import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -329,7 +328,7 @@ class _SearchPageState extends State<SearchPage> {
                         margin: EdgeInsets.only(
                             left: _kLabelSpacing / 2,
                             right: _kLabelSpacing / 2,
-                            bottom: _kLabelSpacing * 2),
+                            bottom: _kLabelSpacing),
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: Colors.grey,
@@ -402,14 +401,17 @@ class _SearchPageState extends State<SearchPage> {
                       ));
           } else if (state is SearchLoading) {
             return Expanded(
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.7,
                 child: Center(
-                    child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
-                )),
+              child: Container(
+                alignment: Alignment.center,
+                width: _kIconSize * 1.4,
+                height: _kIconSize * 1.5,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  backgroundColor: AppTheme.kAccentColor,
+                ),
               ),
-            );
+            ));
           } else {
             return Container(height: 0);
           }

@@ -1,8 +1,6 @@
 import 'package:Soc/oss_licenses.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +17,6 @@ class LicenceDetailPage extends StatefulWidget {
 }
 
 class _LicenceDetailPageState extends State<LicenceDetailPage> {
-  static const double _kIconSize = 188;
   static const double _kLabelSpacing = 20.0;
   FocusNode myFocusNode = new FocusNode();
   OSSLicensesInfo obj = new OSSLicensesInfo();
@@ -47,7 +44,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
               list["description"].toString(),
               style: Theme.of(context)
                   .textTheme
-                  .headline3!
+                  .bodyText1!
                   .copyWith(color: Colors.black),
               textAlign: TextAlign.justify,
             ),
@@ -81,21 +78,6 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
     );
   }
 
-  Widget _buildHomeHeading() {
-    return Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing,
-        ),
-        child: Text(
-          "Homepage:",
-          style: Theme.of(context)
-              .textTheme
-              .headline3!
-              .copyWith(color: Colors.black),
-          textAlign: TextAlign.start,
-        ));
-  }
-
   Widget _buildhomepage(list) {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -110,7 +92,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
               },
               child: Text(
                 list["homepage"].toString(),
-                style: Theme.of(context).textTheme.headline3!.copyWith(
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
                     decoration: TextDecoration.underline,
                     color: AppTheme.kAccentColor),
                 textAlign: TextAlign.start,
@@ -132,20 +114,20 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            "Version:",
+            "Version : ",
             style: Theme.of(context)
                 .textTheme
-                .headline3!
+                .bodyText1!
                 .copyWith(color: Colors.black),
             textAlign: TextAlign.start,
           ),
-          HorzitalSpacerWidget(_kLabelSpacing / 2),
+          // HorzitalSpacerWidget(_kLabelSpacing / 5),
           Expanded(
             child: Text(
               list["version"].toString(),
               style: Theme.of(context)
                   .textTheme
-                  .headline3!
+                  .bodyText1!
                   .copyWith(color: Colors.black),
               textAlign: TextAlign.start,
             ),
@@ -161,10 +143,10 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         horizontal: _kLabelSpacing,
       ),
       child: Text(
-        "Authors:",
+        "Authors : ",
         style: Theme.of(context)
             .textTheme
-            .headline3!
+            .bodyText1!
             .copyWith(color: Colors.black),
         textAlign: TextAlign.start,
       ),
@@ -185,7 +167,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
               "${list["authors"].toString().replaceAll('[', '').replaceAll(']', '')}",
               style: Theme.of(context)
                   .textTheme
-                  .headline3!
+                  .bodyText1!
                   .copyWith(color: Colors.black),
               textAlign: TextAlign.left,
             ),
@@ -201,10 +183,10 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           horizontal: _kLabelSpacing,
         ),
         child: Text(
-          "License:",
+          "License : ",
           style: Theme.of(context)
               .textTheme
-              .headline3!
+              .bodyText1!
               .copyWith(color: Colors.black),
           textAlign: TextAlign.start,
         ));
@@ -219,10 +201,10 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
             horizontal: _kLabelSpacing,
           ),
           child: Text(
-            "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "").replaceAll("*", "").replaceAll("     ", "")}",
+            "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "").replaceAll("*", "").replaceAll("     ", "").toLowerCase()}",
             style: Theme.of(context)
                 .textTheme
-                .headline3!
+                .bodyText1!
                 .copyWith(color: Colors.black, height: 1.5),
             textAlign: TextAlign.start,
           ),
@@ -249,20 +231,15 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                   _buildname(list[index]),
                   SpacerWidget(_kLabelSpacing / 2),
                   _buildVersion(list[index]),
-
                   SpacerWidget(_kLabelSpacing / 2),
                   _buildlicenseInfoHeading(),
                   _buildlicenseInfo(list[index]),
+                  SpacerWidget(_kLabelSpacing / 5),
                   _buildhomepage(list[index]),
-
                   SpacerWidget(_kLabelSpacing / 2),
                   _buildauthorsHeading(),
                   _buildauthors(list[index]),
                   SpacerWidget(_kLabelSpacing / 2),
-                  // _buildHomeHeading(),
-                  // _buildhomepage(list[index]),
-                  // SpacerWidget(_kLabelSpacing / 2),
-                  // description(list[index]),
                 ])
               : Container(
                   height: 0,
