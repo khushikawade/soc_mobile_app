@@ -142,10 +142,7 @@ class _SubListPageState extends State<SubListPage> {
               bloc: _bloc,
               builder: (BuildContext contxt, FamilyState state) {
                 if (state is FamilyInitial || state is FamilyLoading) {
-                  return Center(
-                      child: CircularProgressIndicator(
-                    backgroundColor: Theme.of(context).accentColor,
-                  ));
+                  return Center(child: CircularProgressIndicator());
                 } else if (state is FamiliesSublistSucess) {
                   return state.obj != null && state.obj!.length > 0
                       ? SafeArea(
@@ -186,10 +183,7 @@ class _SubListPageState extends State<SubListPage> {
                   bloc: _staffBloc,
                   builder: (BuildContext contxt, StaffState state) {
                     if (state is StaffInitial || state is StaffLoading) {
-                      return Center(
-                          child: CircularProgressIndicator(
-                        backgroundColor: Theme.of(context).accentColor,
-                      ));
+                      return Center(child: CircularProgressIndicator());
                     } else if (state is StaffSubListSucess) {
                       return state.obj != null && state.obj!.length > 0
                           ? SafeArea(
