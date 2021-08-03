@@ -48,7 +48,7 @@ class _StaffPageState extends State<StaffPage> {
                         title: obj.titleC!,
                         url: obj.urlC!,
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "HTML/RTF") {
@@ -62,7 +62,7 @@ class _StaffPageState extends State<StaffPage> {
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -74,7 +74,7 @@ class _StaffPageState extends State<StaffPage> {
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
@@ -86,7 +86,7 @@ class _StaffPageState extends State<StaffPage> {
                     module: "staff",
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,
-                    language: widget.language,
+                    language: Globals.selectedLanguage,
                   )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
@@ -122,11 +122,12 @@ class _StaffPageState extends State<StaffPage> {
                   color: AppTheme.kListIconColor3,
                   size: Globals.deviceType == "phone" ? 18 : 26,
                 ),
-                title: widget.language != null && widget.language != "English"
+                title: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: obj.titleC.toString(),
                         fromLanguage: "en",
-                        toLanguage: widget.language,
+                        toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) => Text(
                           translatedMessage.toString(),
                           style: Theme.of(context).textTheme.bodyText2,
@@ -143,11 +144,12 @@ class _StaffPageState extends State<StaffPage> {
                 ),
               )
             : Container(
-                child: widget.language != null && widget.language != "English"
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: "No data found",
                         fromLanguage: "en",
-                        toLanguage: widget.language,
+                        toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) => Text(
                           translatedMessage.toString(),
                         ),
@@ -158,7 +160,7 @@ class _StaffPageState extends State<StaffPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-          appBar: AppBarWidget(),
+        appBar: AppBarWidget(),
         body: BlocBuilder<StaffBloc, StaffState>(
             bloc: _bloc,
             builder: (BuildContext contxt, StaffState state) {
@@ -185,12 +187,12 @@ class _StaffPageState extends State<StaffPage> {
                         : Container(
                             alignment: Alignment.center,
                             height: MediaQuery.of(context).size.height * 0.8,
-                            child: widget.language != null &&
-                                    widget.language != "English"
+                            child: Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English"
                                 ? TranslationWidget(
                                     message: "No data found",
                                     fromLanguage: "en",
-                                    toLanguage: widget.language,
+                                    toLanguage: Globals.selectedLanguage,
                                     builder: (translatedMessage) => Text(
                                       // obj.titleC.toString(),
                                       translatedMessage.toString(),
@@ -204,11 +206,12 @@ class _StaffPageState extends State<StaffPage> {
                 return Container(
                   alignment: Alignment.center,
                   height: MediaQuery.of(context).size.height * 0.8,
-                  child: widget.language != null && widget.language != "English"
+                  child: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
                       ? TranslationWidget(
                           message: "Unable to load the data",
                           fromLanguage: "en",
-                          toLanguage: widget.language,
+                          toLanguage: Globals.selectedLanguage,
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
                           ),

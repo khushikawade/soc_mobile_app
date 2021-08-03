@@ -65,7 +65,7 @@ class _SubListPageState extends State<SubListPage> {
                         title: obj.titleC!,
                         url: obj.appUrlC!,
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML" || obj.typeC == "RTF/HTML") {
@@ -78,7 +78,7 @@ class _SubListPageState extends State<SubListPage> {
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -90,7 +90,7 @@ class _SubListPageState extends State<SubListPage> {
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else {
@@ -108,11 +108,12 @@ class _SubListPageState extends State<SubListPage> {
 
   Widget _buildFormName(int index, obj) {
     return InkWell(
-      child: widget.language != null && widget.language != "English"
+      child: Globals.selectedLanguage != null &&
+              Globals.selectedLanguage != "English"
           ? TranslationWidget(
               message: obj.titleC.toString(),
               fromLanguage: "en",
-              toLanguage: widget.language,
+              toLanguage: Globals.selectedLanguage,
               builder: (translatedMessage) => Text(
                 translatedMessage.toString(),
                 style: Theme.of(context).textTheme.bodyText1,
@@ -133,7 +134,7 @@ class _SubListPageState extends State<SubListPage> {
           appBarTitle: widget.appBarTitle,
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
-          language: widget.language,
+          language: Globals.selectedLanguage,
         ),
         key: _scaffoldKey,
         body: widget.module == "family"
@@ -164,12 +165,12 @@ class _SubListPageState extends State<SubListPage> {
                         : Container(
                             alignment: Alignment.center,
                             height: MediaQuery.of(context).size.height * 0.8,
-                            child: widget.language != null &&
-                                    widget.language != "English"
+                            child: Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English"
                                 ? TranslationWidget(
                                     message: "No data found",
                                     fromLanguage: "en",
-                                    toLanguage: widget.language,
+                                    toLanguage: Globals.selectedLanguage,
                                     builder: (translatedMessage) => Text(
                                       translatedMessage.toString(),
                                     ),
@@ -211,12 +212,12 @@ class _SubListPageState extends State<SubListPage> {
                                 alignment: Alignment.center,
                                 height:
                                     MediaQuery.of(context).size.height * 0.8,
-                                child: widget.language != null &&
-                                        widget.language != "English"
+                                child: Globals.selectedLanguage != null &&
+                                        Globals.selectedLanguage != "English"
                                     ? TranslationWidget(
                                         message: "No data found",
                                         fromLanguage: "en",
-                                        toLanguage: widget.language,
+                                        toLanguage: Globals.selectedLanguage,
                                         builder: (translatedMessage) => Text(
                                           translatedMessage.toString(),
                                         ),

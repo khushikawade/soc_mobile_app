@@ -46,7 +46,7 @@ class _EventPageState extends State<EventPage> {
                       currentIndex: index,
                       date: '',
                       isbuttomsheet: true,
-                      language: widget.language,
+                      language: Globals.selectedLanguage,
                     )));
       },
       child: Container(
@@ -72,13 +72,14 @@ class _EventPageState extends State<EventPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        widget.language != null && widget.language != "English"
+                        Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
                             ? TranslationWidget(
                                 message:
                                     Utility.convertDateFormat(list.startDate!)
                                         .toString()
                                         .substring(0, 2),
-                                toLanguage: widget.language,
+                                toLanguage: Globals.selectedLanguage,
                                 fromLanguage: "en",
                                 builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
@@ -91,13 +92,14 @@ class _EventPageState extends State<EventPage> {
                                     .substring(0, 2),
                                 style: Theme.of(context).textTheme.headline5,
                               ),
-                        widget.language != null && widget.language != "English"
+                        Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
                             ? TranslationWidget(
                                 message:
                                     Utility.getMonthFromDate(list.startDate!)
                                         .toString()
                                         .split("/")[1],
-                                toLanguage: widget.language,
+                                toLanguage: Globals.selectedLanguage,
                                 fromLanguage: "en",
                                 builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
@@ -123,10 +125,11 @@ class _EventPageState extends State<EventPage> {
                       ],
                     ),
                   ),
-                  title: widget.language != null && widget.language != "English"
+                  title: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
                       ? TranslationWidget(
                           message: list.titleC!,
-                          toLanguage: widget.language,
+                          toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
@@ -137,13 +140,13 @@ class _EventPageState extends State<EventPage> {
                           list.titleC ?? '-',
                           style: Theme.of(context).textTheme.headline5,
                         ),
-                  subtitle: widget.language != null &&
-                          widget.language != "English"
+                  subtitle: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
                       ? TranslationWidget(
                           message: Utility.convertDateFormat(list.startDate!) +
                               " - " +
                               Utility.convertDateFormat(list.endDate!),
-                          toLanguage: widget.language,
+                          toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
@@ -182,10 +185,11 @@ class _EventPageState extends State<EventPage> {
       ),
       child: Padding(
         padding: const EdgeInsets.only(left: _kLabelSpacing),
-        child: widget.language != null && widget.language != "English"
+        child: Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: tittle,
-                toLanguage: widget.language,
+                toLanguage: Globals.selectedLanguage,
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
@@ -204,7 +208,7 @@ class _EventPageState extends State<EventPage> {
           isShare: false,
           sharedpopUpheaderText: "",
           sharedpopBodytext: "",
-          language: widget.language,
+          language: Globals.selectedLanguage,
         ),
         body: SafeArea(
             child: BlocBuilder<FamilyBloc, FamilyState>(
@@ -229,11 +233,11 @@ class _EventPageState extends State<EventPage> {
                               return state.obj!.length > 0
                                   ? _buildList(
                                       state.obj![index], index, state.obj)
-                                  : widget.language != null &&
-                                          widget.language != "English"
+                                  : Globals.selectedLanguage != null &&
+                                          Globals.selectedLanguage != "English"
                                       ? TranslationWidget(
                                           message: "No data found",
-                                          toLanguage: widget.language,
+                                          toLanguage: Globals.selectedLanguage,
                                           fromLanguage: "en",
                                           builder: (translatedMessage) => Text(
                                             translatedMessage.toString(),
@@ -249,11 +253,11 @@ class _EventPageState extends State<EventPage> {
                     return Container(
                       alignment: Alignment.center,
                       height: MediaQuery.of(context).size.height * 0.8,
-                      child: widget.language != null &&
-                              widget.language != "English"
+                      child: Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English"
                           ? TranslationWidget(
                               message: "Unable to load the data",
-                              toLanguage: widget.language,
+                              toLanguage: Globals.selectedLanguage,
                               fromLanguage: "en",
                               builder: (translatedMessage) => Text(
                                 translatedMessage.toString(),

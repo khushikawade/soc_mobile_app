@@ -76,7 +76,7 @@ class _SearchPageState extends State<SearchPage> {
                         obj: Globals.homeObjet,
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC!,
-                        language: widget.language!,
+                        language: Globals.selectedLanguage!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
@@ -87,7 +87,7 @@ class _SearchPageState extends State<SearchPage> {
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
-                    language: widget.language,
+                    language: Globals.selectedLanguage,
                   )));
     } else if (obj.deepLink != null) {
       if (obj.deepLink == 'NO') {
@@ -98,7 +98,7 @@ class _SearchPageState extends State<SearchPage> {
                       title: obj.titleC!,
                       url: obj.appURLC!,
                       isbuttomsheet: true,
-                      language: widget.language,
+                      language: Globals.selectedLanguage,
                     )));
       } else {
         if (await canLaunch(obj.appURLC!)) {
@@ -116,7 +116,7 @@ class _SearchPageState extends State<SearchPage> {
                         title: obj.titleC!,
                         url: obj.urlC!,
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
@@ -126,7 +126,7 @@ class _SearchPageState extends State<SearchPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
@@ -141,7 +141,7 @@ class _SearchPageState extends State<SearchPage> {
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
@@ -153,7 +153,7 @@ class _SearchPageState extends State<SearchPage> {
                     module: "family",
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,
-                    language: widget.language,
+                    language: Globals.selectedLanguage,
                   )));
     } else {
       Utility.showSnackBar(
@@ -228,11 +228,11 @@ class _SearchPageState extends State<SearchPage> {
                 : Center(
                     child: Padding(
                       padding: const EdgeInsets.all(25.0),
-                      child: widget.language != null &&
-                              widget.language != "English"
+                      child: Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English"
                           ? TranslationWidget(
                               message: 'No Recent Item Found',
-                              toLanguage: widget.language,
+                              toLanguage: Globals.selectedLanguage,
                               fromLanguage: "en",
                               builder: (translatedMessage) => Text(
                                 translatedMessage.toString(),
@@ -294,13 +294,14 @@ class _SearchPageState extends State<SearchPage> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        widget.language != null && widget.language != "English"
+                        Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
                             ? TranslationWidget(
                                 message: items[index].titleC != null &&
                                         items[index].titleC.isNotEmpty
                                     ? '${items[index].titleC} '
                                     : '',
-                                toLanguage: widget.language,
+                                toLanguage: Globals.selectedLanguage,
                                 fromLanguage: "en",
                                 builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
@@ -356,11 +357,11 @@ class _SearchPageState extends State<SearchPage> {
                                     : Theme.of(context).backgroundColor,
                               ),
                               child: ListTile(
-                                  title: widget.language != null &&
-                                          widget.language != "English"
+                                  title: Globals.selectedLanguage != null &&
+                                          Globals.selectedLanguage != "English"
                                       ? TranslationWidget(
                                           message: data.titleC,
-                                          toLanguage: widget.language,
+                                          toLanguage: Globals.selectedLanguage,
                                           fromLanguage: "en",
                                           builder: (translatedMessage) => Text(
                                             translatedMessage.toString(),
@@ -421,10 +422,11 @@ class _SearchPageState extends State<SearchPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
-        widget.language != null && widget.language != "English"
+        Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: "Search",
-                toLanguage: widget.language,
+                toLanguage: Globals.selectedLanguage,
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
@@ -446,10 +448,11 @@ class _SearchPageState extends State<SearchPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
-        widget.language != null && widget.language != "English"
+        Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: "Recent Search",
-                toLanguage: widget.language,
+                toLanguage: Globals.selectedLanguage,
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),

@@ -36,11 +36,12 @@ class _AboutusPageState extends State<AboutusPage> {
       margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Wrap(
         children: [
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: widget.htmlText,
                   fromLanguage: "en",
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Html(
                     data: translatedMessage.toString(),
                   ),
@@ -80,7 +81,7 @@ class _AboutusPageState extends State<AboutusPage> {
           ishtmlpage: widget.ishtml,
           sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
           sharedpopUpheaderText: "Please checkout this link",
-          language: widget.language,
+          language: Globals.selectedLanguage,
         ),
         body: ListView(children: [
           _buildContent1(),

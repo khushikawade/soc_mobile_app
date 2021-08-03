@@ -144,19 +144,19 @@ class _SliderWidgetState extends State<SliderWidget> {
                 return widget.issocialpage!
                     ? SocialDescription(
                         object: object[widget.currentIndex],
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )
                     : widget.iseventpage!
                         ? EventDescription(
                             obj: object[widget.currentIndex],
                             isbuttomsheet: true,
-                            language: widget.language,
+                            language: Globals.selectedLanguage,
                           )
                         : Newdescription(
                             obj: object[widget.currentIndex],
                             date: widget.date,
                             isbuttomsheet: true,
-                            language: widget.language,
+                            language: Globals.selectedLanguage,
                           );
               },
             ),
@@ -190,10 +190,11 @@ class _SliderWidgetState extends State<SliderWidget> {
                                 isbuttomsheet: true,
                               )));
                 },
-                child: widget.language != null && widget.language != "English"
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: "More",
-                        toLanguage: widget.language,
+                        toLanguage: Globals.selectedLanguage,
                         fromLanguage: "en",
                         builder: (translatedMessage) => Text(
                           translatedMessage.toString(),
@@ -216,10 +217,11 @@ class _SliderWidgetState extends State<SliderWidget> {
                           link;
                   obj.callFunction(context, body, "");
                 },
-                child: widget.language != null && widget.language != "English"
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: "Share",
-                        toLanguage: widget.language,
+                        toLanguage: Globals.selectedLanguage,
                         fromLanguage: "en",
                         builder: (translatedMessage) => Text(
                           translatedMessage.toString(),
