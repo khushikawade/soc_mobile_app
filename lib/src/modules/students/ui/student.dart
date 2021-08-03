@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,11 @@ class _StudentPageState extends State<StudentPage> {
     if (obj.appUrlC == 'app_folder') {
       showDialog(
         context: context,
-        builder: (_) => AppsFolderPage(obj: subList, folderName: obj.titleC!),
+        builder: (_) => AppsFolderPage(
+          obj: subList,
+          folderName: obj.titleC!,
+          language: widget.language,
+        ),
       );
     } else {
       if (obj.deepLinkC == 'NO') {
@@ -48,6 +53,7 @@ class _StudentPageState extends State<StudentPage> {
                       title: obj.titleC!,
                       url: obj.appUrlC!,
                       isbuttomsheet: true,
+                      language: widget.language,
                     )));
       } else {
         if (await canLaunch(obj.appUrlC!)) {
@@ -90,17 +96,39 @@ class _StudentPageState extends State<StudentPage> {
                                 )
                               : Container(),
                           Expanded(
-                              child: Text(
-                            "${list[index].titleC}",
-                            textAlign: TextAlign.center,
-                          )),
+                              child: widget.language != null &&
+                                      widget.language != "English"
+                                  ? TranslationWidget(
+                                      message: "${list[index].titleC}",
+                                      fromLanguage: "en",
+                                      toLanguage: widget.language,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    )
+                                  : Text(
+                                      "${list[index].titleC}",
+                                      textAlign: TextAlign.center,
+                                    )),
                         ],
                       ));
                 },
               ),
             );
           })
-        : Container(child: Text("No apps available here"));
+        : Container(
+            child: widget.language != null && widget.language != "English"
+                ? TranslationWidget(
+                    message: "No apps available here",
+                    fromLanguage: "en",
+                    toLanguage: widget.language,
+                    builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : Text("No apps available here"));
   }
 
   @override
@@ -121,13 +149,34 @@ class _StudentPageState extends State<StudentPage> {
                     : Container(
                         alignment: Alignment.center,
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: Text("No data found"),
+                        child: widget.language != null &&
+                                widget.language != "English"
+                            ? TranslationWidget(
+                                message: "No data found",
+                                fromLanguage: "en",
+                                toLanguage: widget.language,
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                  textAlign: TextAlign.center,
+                                ),
+                              )
+                            : Text("No data found"),
                       );
               } else if (state is StudentError) {
                 return Container(
                   alignment: Alignment.center,
                   height: MediaQuery.of(context).size.height * 0.8,
-                  child: Text("Unable to load the data"),
+                  child: widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: "Unable to load the data",
+                          fromLanguage: "en",
+                          toLanguage: widget.language,
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : Text("Unable to load the data"),
                 );
               } else {
                 return Container();

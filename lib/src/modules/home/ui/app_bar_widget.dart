@@ -33,11 +33,23 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         switch (value) {
           case IconsMenu.Information:
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => InformationPage()));
+                MaterialPageRoute(builder: (context) => InformationPage(
+
+                  language: 'English',
+                  appbarTitle: 'Information',
+                  htmlText: '',
+                  isbuttomsheet: true,
+                  ishtml: true,
+
+                )));
             break;
           case IconsMenu.Setting:
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SettingPage()));
+                MaterialPageRoute(builder: (context) => SettingPage(
+                  language: 'English',
+                  appbarTitle: '',
+                  isbuttomsheet: true,
+                )));
             break;
           case IconsMenu.Permissions:
             AppSettings.openAppSettings();
@@ -91,7 +103,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         ),
         title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
         actions: <Widget>[
-          SearchButtonWidget(),
+          SearchButtonWidget(language: 'English',),
           _buildPopupMenuWidget(context),
         ]);
   }

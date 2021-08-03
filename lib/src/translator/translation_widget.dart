@@ -1,6 +1,6 @@
-import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
 
 class TranslationWidget extends StatefulWidget {
@@ -23,20 +23,14 @@ class TranslationWidget extends StatefulWidget {
 
 class _TranslationWidgetState extends State<TranslationWidget> {
   String? translation;
-  final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   @override
   Widget build(BuildContext context) {
     // final fromLanguageCode = Translations.getLanguageCode(widget.fromLanguage);
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
-    final fromLanguageCode =
-        Translations.supportedLanguagesCodes(widget.fromLanguage!);
 
     return FutureBuilder(
-      future: TranslationAPI.translate(
-          widget.message! /*, fromLanguageCode,*/, toLanguageCode),
-      //future: TranslationApi.translate2(
-      //    widget.message, fromLanguageCode, toLanguageCode),
+      future: TranslationAPI.translate(widget.message!, toLanguageCode),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -54,14 +48,13 @@ class _TranslationWidgetState extends State<TranslationWidget> {
   }
 
   Widget buildWaiting() => translation == null
-      ? Center(
+      ? ShimmerLoading(
+          isLoading: true,
           child: Container(
-          height: 10,
-          width: 10,
-          child: CircularProgressIndicator(
-            strokeWidth: 1,
-            backgroundColor: Theme.of(context).accentColor,
+            height: 20,
+            width: 40,
+            color: Colors.white,
           ),
-        ))
+        )
       : widget.builder!(translation!);
 }

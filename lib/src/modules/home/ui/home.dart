@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
-import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information.dart';
@@ -28,8 +27,10 @@ import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
-  var homeObj;
-  HomePage({Key? key, this.title, this.homeObj}) : super(key: key);
+  final homeObj;
+  String? language;
+  HomePage({Key? key, this.title, this.homeObj, this.language})
+      : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -47,7 +48,8 @@ class _HomePageState extends State<HomePage> {
   var item;
   var item2;
   final ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
-  final ValueNotifier<String> langadded = ValueNotifier<String>("English");
+  final ValueNotifier<String> languageChanged =
+      ValueNotifier<String>("English");
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   Timer? timer;
   String? selectedLanguage;
@@ -77,7 +79,7 @@ class _HomePageState extends State<HomePage> {
       }
 
       if (selectedLanguage != null) {
-        langadded.value = selectedLanguage!;
+        languageChanged.value = selectedLanguage!;
       }
     });
   }
@@ -96,12 +98,26 @@ class _HomePageState extends State<HomePage> {
       onSelected: (value) {
         switch (value) {
           case IconsMenu.Information:
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => InformationPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => InformationPage(
+                          htmlText: Globals.homeObjet["App_Information__c"],
+                          isbuttomsheet: true,
+                          ishtml: true,
+                          appbarTitle: "Information",
+                          language: selectedLanguage,
+                        )));
             break;
           case IconsMenu.Setting:
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SettingPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingPage(
+                          language: selectedLanguage,
+                          isbuttomsheet: true,
+                          appbarTitle: "Setting",
+                        )));
             break;
           case IconsMenu.Permissions:
             AppSettings.openAppSettings();
@@ -173,7 +189,9 @@ class _HomePageState extends State<HomePage> {
 
   selectedScreenBody(context, _selectedIndex, list) {
     if (list[_selectedIndex].split("_")[0].contains("Social")) {
-      return SocialPage();
+      return SocialPage(
+        language: selectedLanguage,
+      );
     } else if (list[_selectedIndex].split("_")[0].contains("News")) {
       hideIndicator();
       return NewsPage(

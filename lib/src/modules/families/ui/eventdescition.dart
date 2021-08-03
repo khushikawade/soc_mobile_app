@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/calendar_list.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -13,7 +14,12 @@ import 'package:flutter/material.dart';
 class EventDescription extends StatefulWidget {
   var obj;
   bool? isbuttomsheet;
-  EventDescription({Key? key, required this.obj, required this.isbuttomsheet})
+  String? language;
+  EventDescription(
+      {Key? key,
+      required this.obj,
+      required this.isbuttomsheet,
+      required this.language})
       : super(key: key);
 
   @override
@@ -36,32 +42,71 @@ class _EventDescriptionState extends State<EventDescription> {
       child: Column(
         children: [
           SpacerWidget(_kPadding / 2),
-          Text(
-            list.titleC!,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline2,
-          ),
+          widget.language != null && widget.language != "English"
+              ? TranslationWidget(
+                  message: list.titleC!,
+                  toLanguage: widget.language,
+                  fromLanguage: "en",
+                  builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline2,
+                  ),
+                )
+              : Text(
+                  list.titleC ?? '-',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline2,
+                ),
           SpacerWidget(_kPadding / 4),
           divider(),
           SpacerWidget(_kPadding / 2),
           Container(
             alignment: Alignment.centerLeft,
-            child: Text(
-              Utility.convertDateFormat(list.startDate!) +
-                  " - " +
-                  Utility.convertDateFormat(list.endDate!),
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
+            child: widget.language != null && widget.language != "English"
+                ? TranslationWidget(
+                    message: Utility.convertDateFormat(list.startDate!) +
+                        " - " +
+                        Utility.convertDateFormat(list.endDate!),
+                    toLanguage: widget.language,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  )
+                : Text(
+                    Utility.convertDateFormat(list.startDate!) +
+                        " - " +
+                        Utility.convertDateFormat(list.endDate!),
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
           ),
           SpacerWidget(_kPadding / 2),
           Container(
             alignment: Alignment.centerLeft,
-            child: Text(
-              list.description ?? "",
-              textAlign: TextAlign.center,
-              style:
-                  Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 16),
-            ),
+            child: widget.language != null && widget.language != "English"
+                ? TranslationWidget(
+                    message: list.description ?? "",
+                    toLanguage: widget.language,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1!
+                          .copyWith(fontSize: 16),
+                    ),
+                  )
+                : Text(
+                    list.description ?? "",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1!
+                        .copyWith(fontSize: 16),
+                  ),
           ),
           SpacerWidget(_kPadding / 2),
           list.inviteLink != null ? _buildEventLink(list) : Container(),
@@ -77,14 +122,12 @@ class _EventDescriptionState extends State<EventDescription> {
         UrlLauncherWidget obj = new UrlLauncherWidget();
         obj.callurlLaucher(context, list.inviteLink);
       },
-      child: Container(
-        child: Text(
-          list.inviteLink!,
-          style: Theme.of(context)
-              .textTheme
-              .headline4!
-              .copyWith(decoration: TextDecoration.underline),
-        ),
+      child: Text(
+        list.inviteLink ?? '-',
+        style: Theme.of(context)
+            .textTheme
+            .headline4!
+            .copyWith(decoration: TextDecoration.underline),
       ),
     );
   }
@@ -112,13 +155,23 @@ class _EventDescriptionState extends State<EventDescription> {
                   child: ElevatedButton(
                     onPressed: () {
                       SharePopUp obj = new SharePopUp();
-
                       obj.callFunction(context, list.inviteLink!, list.titleC!);
                     },
-                    child: Text(
-                      "Share",
-                      style: _kbuttonTextStyle,
-                    ),
+                    child:
+                        widget.language != null && widget.language != "English"
+                            ? TranslationWidget(
+                                message: "Share",
+                                toLanguage: widget.language,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                  style: _kbuttonTextStyle,
+                                ),
+                              )
+                            : Text(
+                                "Share",
+                                style: _kbuttonTextStyle,
+                              ),
                   ),
                 )
               : Container(),
@@ -134,7 +187,17 @@ class _EventDescriptionState extends State<EventDescription> {
                   buildEvent(list),
                 );
               },
-              child: Text("Save event", style: _kbuttonTextStyle),
+              child: widget.language != null && widget.language != "English"
+                  ? TranslationWidget(
+                      message: "Save event",
+                      toLanguage: widget.language,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: _kbuttonTextStyle,
+                      ),
+                    )
+                  : Text("Save event", style: _kbuttonTextStyle),
             ),
           ),
         ],

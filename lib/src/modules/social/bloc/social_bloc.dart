@@ -38,8 +38,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       http.Response response = await http.get(link);
       if (response.statusCode == 200) {
         xml2json.parse(response.body);
-        var jsondata = xml2json.toGData();
-        var data = json.decode(jsondata);
+        final jsondata = xml2json.toGData();
+        final data = json.decode(jsondata);
         final data1 = data["rss"]["channel"]["item"];
         final data2 = data1 as List;
         return data1.map((i) {

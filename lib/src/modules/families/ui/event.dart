@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
@@ -10,8 +11,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ignore: must_be_immutable
 class EventPage extends StatefulWidget {
-  EventPage({required this.isbuttomsheet, required this.appBarTitle});
-
+  EventPage(
+      {required this.isbuttomsheet,
+      required this.appBarTitle,
+      required this.language});
+  String? language;
   bool? isbuttomsheet;
   String? appBarTitle;
 
@@ -42,6 +46,7 @@ class _EventPageState extends State<EventPage> {
                       currentIndex: index,
                       date: '',
                       isbuttomsheet: true,
+                      language: widget.language,
                     )));
       },
       child: Container(
@@ -67,116 +72,199 @@ class _EventPageState extends State<EventPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          Utility.convertDateFormat(list.startDate!)
-                              .toString()
-                              .substring(0, 2),
+                        widget.language != null && widget.language != "English"
+                            ? TranslationWidget(
+                                message:
+                                    Utility.convertDateFormat(list.startDate!)
+                                        .toString()
+                                        .substring(0, 2),
+                                toLanguage: widget.language,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                              )
+                            : Text(
+                                Utility.convertDateFormat(list.startDate!)
+                                    .toString()
+                                    .substring(0, 2),
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                        widget.language != null && widget.language != "English"
+                            ? TranslationWidget(
+                                message:
+                                    Utility.getMonthFromDate(list.startDate!)
+                                        .toString()
+                                        .split("/")[1],
+                                toLanguage: widget.language,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline2!
+                                      .copyWith(
+                                          fontWeight: FontWeight.normal,
+                                          height: 1.5),
+                                ),
+                              )
+                            : Text(
+                                Utility.getMonthFromDate(list.startDate!)
+                                    .toString()
+                                    .split("/")[1],
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                        fontWeight: FontWeight.normal,
+                                        height: 1.5),
+                              )
+                      ],
+                    ),
+                  ),
+                  title: widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: list.titleC!,
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline5,
+                          ),
+                        )
+                      : Text(
+                          list.titleC ?? '-',
                           style: Theme.of(context).textTheme.headline5,
                         ),
-                        Text(
-                          Utility.getMonthFromDate(list.startDate!)
-                              .toString()
-                              .split("/")[1],
+                  subtitle: widget.language != null &&
+                          widget.language != "English"
+                      ? TranslationWidget(
+                          message: Utility.convertDateFormat(list.startDate!) +
+                              " - " +
+                              Utility.convertDateFormat(list.endDate!),
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(
+                                    fontWeight: FontWeight.normal, height: 1.5),
+                          ),
+                        )
+                      : Text(
+                          Utility.convertDateFormat(list.startDate!) +
+                              " - " +
+                              Utility.convertDateFormat(list.endDate!),
                           style: Theme.of(context)
                               .textTheme
                               .headline2!
                               .copyWith(
                                   fontWeight: FontWeight.normal, height: 1.5),
-                        )
-                      ],
-                    ),
-                  ),
-                  title: Text(
-                    list.titleC!,
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  subtitle: Text(
-                    Utility.convertDateFormat(list.startDate!) +
-                        " - " +
-                        Utility.convertDateFormat(list.endDate!),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(fontWeight: FontWeight.normal, height: 1.5),
-                  ),
+                        ),
                 )),
           )),
     );
   }
 
   Widget _buildHeading(String tittle) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.only(
-              top: _kLabelSpacing / 1.5, bottom: _kLabelSpacing / 1.5),
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 0,
-            ),
-            color: AppTheme.kOnPrimaryColor,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Text(tittle, style: Theme.of(context).textTheme.headline3),
-          ),
+    return Container(
+      padding: EdgeInsets.only(
+          top: _kLabelSpacing / 1.5, bottom: _kLabelSpacing / 1.5),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 0,
         ),
-      ],
+        color: AppTheme.kOnPrimaryColor,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: _kLabelSpacing),
+        child: widget.language != null && widget.language != "English"
+            ? TranslationWidget(
+                message: tittle,
+                toLanguage: widget.language,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.headline3),
+              )
+            : Text(tittle, style: Theme.of(context).textTheme.headline3),
+      ),
     );
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
-            appBarTitle: widget.appBarTitle!,
-            isSearch: true,
-            isShare: false,
-            sharedpopUpheaderText: "",
-            sharedpopBodytext: ""),
-        body: ListView(children: [
-          SafeArea(
-              child: BlocBuilder<FamilyBloc, FamilyState>(
-                  bloc: _eventBloc,
-                  builder: (BuildContext contxt, FamilyState state) {
-                    if (state is FamilyLoading) {
-                      return Container(
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator(
-                            backgroundColor: Theme.of(context).accentColor,
-                          ));
-                    } else if (state is CalendarListSuccess) {
-                      return Column(
-                        children: [
-                          _buildHeading("Upcoming"),
-                          ListView.builder(
+          appBarTitle: widget.appBarTitle!,
+          isSearch: true,
+          isShare: false,
+          sharedpopUpheaderText: "",
+          sharedpopBodytext: "",
+          language: widget.language,
+        ),
+        body: SafeArea(
+            child: BlocBuilder<FamilyBloc, FamilyState>(
+                bloc: _eventBloc,
+                builder: (BuildContext contxt, FamilyState state) {
+                  if (state is FamilyLoading) {
+                    return Container(
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator(
+                          backgroundColor: Theme.of(context).accentColor,
+                        ));
+                  } else if (state is CalendarListSuccess) {
+                    return Column(
+                      children: [
+                        _buildHeading("Upcoming"),
+                        Expanded(
+                          child: ListView.builder(
                             scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
                             itemCount: state.obj!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return state.obj!.length > 0
                                   ? _buildList(
                                       state.obj![index], index, state.obj)
-                                  : Container();
+                                  : widget.language != null &&
+                                          widget.language != "English"
+                                      ? TranslationWidget(
+                                          message: "No data found",
+                                          toLanguage: widget.language,
+                                          fromLanguage: "en",
+                                          builder: (translatedMessage) => Text(
+                                            translatedMessage.toString(),
+                                          ),
+                                        )
+                                      : Text("No data found");
                             },
                           ),
-                        ],
-                      );
-                    } else if (state is ErrorLoading) {
-                      return Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Text("Unable to load the data"),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  })),
-        ]),
+                        ),
+                      ],
+                    );
+                  } else if (state is ErrorLoading) {
+                    return Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: widget.language != null &&
+                              widget.language != "English"
+                          ? TranslationWidget(
+                              message: "Unable to load the data",
+                              toLanguage: widget.language,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Text(
+                                translatedMessage.toString(),
+                              ),
+                            )
+                          : Text("Unable to load the data"),
+                    );
+                  } else {
+                    return Container();
+                  }
+                })),
         bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
             ? InternalButtomNavigationBar()
             : null);

@@ -116,40 +116,40 @@ class DbServices {
   }
 
   Future login() async {
-     final dio = Dio();
-     FormData formData = FormData.fromMap({
-        "grant_type": "password",
-        "client_id":
-            "3MVG9eMnfmfDO5NC3QXoYv8SGxm3vUnduHs0xb5BwEiLHNXr46uKkiRFMIydXPVwcQG.T2uQ_4.uHRHnDL_tg",
-        "client_secret":
-            "9881213BBC5BA4A71BD3A5A1048815EE6775BC872A86203DA818A51AC7CCA624",
-        "username": "mahendra.patidar@zehntech.com.flutter",
-        "password": "YIB7tewn9joct*voghdVBvxNULlHjFmoQVqseNq1Iz"
-      });
-      Response response = await dio.post(
-        "https://test.salesforce.com/services/oauth2/token",
-        data: formData,
-        options: Options(
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json',
-          },
-        ),
-      );
-      if (response.statusCode == 200) {
-        final data = response.data;
-        Globals.token = data["access_token"];
-        return data;
-      } else {
-        throw ("Something went wrong.");
-      }
+    final dio = Dio();
+    FormData formData = FormData.fromMap({
+      "grant_type": "password",
+      "client_id":
+          "3MVG9eMnfmfDO5NC3QXoYv8SGxm3vUnduHs0xb5BwEiLHNXr46uKkiRFMIydXPVwcQG.T2uQ_4.uHRHnDL_tg",
+      "client_secret":
+          "9881213BBC5BA4A71BD3A5A1048815EE6775BC872A86203DA818A51AC7CCA624",
+      "username": "mahendra.patidar@zehntech.com.flutter",
+      "password": "YIB7tewn9joct*voghdVBvxNULlHjFmoQVqseNq1Iz"
+    });
+    Response response = await dio.post(
+      "https://test.salesforce.com/services/oauth2/token",
+      data: formData,
+      options: Options(
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      final data = response.data;
+      Globals.token = data["access_token"];
+      return data;
+    } else {
+      throw ("Something went wrong.");
+    }
   }
 
   // get List Object using this method
   Future<List> getListData(tableName) async {
     try {
-      var hiveBox = await Hive.openBox(tableName);
-      var list = hiveBox.values.toList();
+      final hiveBox = await Hive.openBox(tableName);
+      final list = hiveBox.values.toList();
       return list;
     } catch (e) {
       if (e.toString().contains("Failed host lookup")) {
@@ -162,8 +162,8 @@ class DbServices {
 
   Future<int> getListLength(tableName) async {
     try {
-      var hiveBox = await Hive.openBox(tableName);
-      var listCount = hiveBox.values.toList();
+      final hiveBox = await Hive.openBox(tableName);
+      final listCount = hiveBox.values.toList();
       return listCount.length;
     } catch (e) {
       if (e.toString().contains("Failed host lookup")) {

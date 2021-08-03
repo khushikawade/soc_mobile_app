@@ -1,11 +1,15 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 class SearchButtonWidget extends StatelessWidget {
   static const double _kIconSize = 45.0;
+  String? language;
+  SearchButtonWidget({
+    Key? key,
+    required this.language,
+  }) : super(key: key);
 
   Widget build(BuildContext context) {
     return IconButton(
@@ -15,6 +19,7 @@ class SearchButtonWidget extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => SearchPage(
                         isbuttomsheet: true,
+                        language: language,
                       )));
         },
         icon: Icon(

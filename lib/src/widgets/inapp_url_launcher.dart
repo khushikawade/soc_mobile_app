@@ -10,13 +10,15 @@ class InAppUrlLauncer extends StatefulWidget {
   final String url;
   final bool? hideHeader;
   bool isbuttomsheet;
+  String? language;
   @override
   InAppUrlLauncer(
       {Key? key,
       required this.title,
       required this.url,
       this.hideHeader,
-      required this.isbuttomsheet})
+      required this.isbuttomsheet,
+      required this.language})
       : super(key: key);
   _InAppUrlLauncerState createState() => new _InAppUrlLauncerState();
 }
@@ -41,6 +43,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
           appBarTitle: widget.title,
           sharedpopBodytext: widget.url.toString(),
           sharedpopUpheaderText: "Please checkout this link",
+          language: widget.language,
         ),
         body: WebView(
           initialUrl: '${widget.url}',

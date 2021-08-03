@@ -67,6 +67,11 @@ dependencies:
   translator: ^0.1.7
   html_unescape: ^2.0.0
   persistent_bottom_nav_bar: ^4.0.2
+  flutter_oss_licenses: ^1.0.1
+  shimmer: ^2.0.0
+  
+
+  
 
   # social_share_plugin: ^0.3.1+1
   # firebase_dynamic_links: ^2.0.1 TODO configure the app

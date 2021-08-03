@@ -8,6 +8,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/Strings.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
@@ -25,8 +26,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
   bool isbuttomsheet;
-
-  SearchPage({Key? key, required this.isbuttomsheet}) : super(key: key);
+  String? language;
+  SearchPage({Key? key, required this.isbuttomsheet, required this.language})
+      : super(key: key);
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -74,6 +76,7 @@ class _SearchPageState extends State<SearchPage> {
                         obj: Globals.homeObjet,
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC!,
+                        language: widget.language!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
@@ -84,6 +87,7 @@ class _SearchPageState extends State<SearchPage> {
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
+                    language: widget.language,
                   )));
     } else if (obj.deepLink != null) {
       if (obj.deepLink == 'NO') {
@@ -94,6 +98,7 @@ class _SearchPageState extends State<SearchPage> {
                       title: obj.titleC!,
                       url: obj.appURLC!,
                       isbuttomsheet: true,
+                      language: widget.language,
                     )));
       } else {
         if (await canLaunch(obj.appURLC!)) {
@@ -111,6 +116,7 @@ class _SearchPageState extends State<SearchPage> {
                         title: obj.titleC!,
                         url: obj.urlC!,
                         isbuttomsheet: true,
+                        language: widget.language,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
@@ -120,7 +126,7 @@ class _SearchPageState extends State<SearchPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        // url: obj.urlC,
+                        language: widget.language,
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
@@ -135,6 +141,7 @@ class _SearchPageState extends State<SearchPage> {
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
+                        language: widget.language,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
@@ -146,6 +153,7 @@ class _SearchPageState extends State<SearchPage> {
                     module: "family",
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,
+                    language: widget.language,
                   )));
     } else {
       Utility.showSnackBar(
@@ -155,48 +163,48 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildSearchbar() {
     return SizedBox(
-        height: 50,
-        child: Container(
-            padding: EdgeInsets.symmetric(
-                vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
-            color: AppTheme.kFieldbackgroundColor,
-            child: TextFormField(
-              focusNode: myFocusNode,
-              controller: _controller,
-              cursorColor: Colors.black,
-              decoration: InputDecoration(
-                isDense: true,
-                hintText: 'Search',
-                contentPadding: EdgeInsets.symmetric(
-                    vertical: _kLabelSpacing / 2,
-                    horizontal: _kLabelSpacing / 2),
-                filled: true,
-                fillColor: AppTheme.kBackgroundColor,
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(
-                  const IconData(0xe805,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: AppTheme.kprefixIconColor,
-                  size: Globals.deviceType == "phone" ? 20 : 28,
-                ),
-                suffix: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _controller.clear();
-                      issuggestionList = false;
-                      FocusScope.of(context).requestFocus(FocusNode());
-                    });
-                  },
-                  icon: Icon(
-                    Icons.clear,
-                    color: AppTheme.kIconColor,
-                    size: Globals.deviceType == "phone" ? 18 : 24,
-                  ),
+      height: 50,
+      child: Container(
+          padding: EdgeInsets.symmetric(
+              vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
+          color: AppTheme.kFieldbackgroundColor,
+          child: TextFormField(
+            focusNode: myFocusNode,
+            controller: _controller,
+            cursorColor: Colors.black,
+            decoration: InputDecoration(
+              isDense: true,
+              hintText: 'Search',
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: _kLabelSpacing / 2, horizontal: _kLabelSpacing / 2),
+              filled: true,
+              fillColor: AppTheme.kBackgroundColor,
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(
+                const IconData(0xe805,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kprefixIconColor,
+                size: Globals.deviceType == "phone" ? 20 : 28,
+              ),
+              suffix: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _controller.clear();
+                    issuggestionList = false;
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  });
+                },
+                icon: Icon(
+                  Icons.clear,
+                  color: AppTheme.kIconColor,
+                  size: Globals.deviceType == "phone" ? 18 : 24,
                 ),
               ),
-              onChanged: onItemChanged,
-            )));
+            ),
+            onChanged: onItemChanged,
+          )),
+    );
   }
 
   Widget _buildRecentItemList() {
@@ -205,24 +213,36 @@ class _SearchPageState extends State<SearchPage> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return snapshot.data != null && snapshot.data.length > 0
-                ? ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    reverse: true,
-                    padding: EdgeInsets.only(top: 10, bottom: 100),
-                    itemCount:
-                        snapshot.data.length < 5 ? snapshot.data.length : 5,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _buildIListtem(index, snapshot.data);
-                    },
+                ? Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      // shrinkWrap: true,
+                      // reverse: true,
+                      itemCount:
+                          snapshot.data.length < 5 ? snapshot.data.length : 5,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _buildIListtem(index, snapshot.data);
+                      },
+                    ),
                   )
                 : Center(
                     child: Padding(
                       padding: const EdgeInsets.all(25.0),
-                      child: Text(
-                        'No Recent Item Found',
-                        textAlign: TextAlign.end,
-                      ),
+                      child: widget.language != null &&
+                              widget.language != "English"
+                          ? TranslationWidget(
+                              message: 'No Recent Item Found',
+                              toLanguage: widget.language,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Text(
+                                translatedMessage.toString(),
+                                textAlign: TextAlign.end,
+                              ),
+                            )
+                          : Text(
+                              'No Recent Item Found',
+                              textAlign: TextAlign.end,
+                            ),
                     ),
                   );
           } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -274,12 +294,24 @@ class _SearchPageState extends State<SearchPage> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          items[index].titleC != null &&
-                                  items[index].titleC.isNotEmpty
-                              ? '${items[index].titleC} '
-                              : '',
-                        ),
+                        widget.language != null && widget.language != "English"
+                            ? TranslationWidget(
+                                message: items[index].titleC != null &&
+                                        items[index].titleC.isNotEmpty
+                                    ? '${items[index].titleC} '
+                                    : '',
+                                toLanguage: widget.language,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                ),
+                              )
+                            : Text(
+                                items[index].titleC != null &&
+                                        items[index].titleC.isNotEmpty
+                                    ? '${items[index].titleC} '
+                                    : '',
+                              ),
                       ]),
                 )
               ])),
@@ -307,7 +339,7 @@ class _SearchPageState extends State<SearchPage> {
                               bottomLeft: Radius.circular(5.0)),
                         ),
                         child: ListView(
-                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
                           padding: EdgeInsets.all(_kLabelSpacing / 2),
                           children: state.obj.map<Widget>((data) {
                             return Container(
@@ -324,11 +356,25 @@ class _SearchPageState extends State<SearchPage> {
                                     : Theme.of(context).backgroundColor,
                               ),
                               child: ListTile(
-                                  title: Text(
-                                    data.titleC,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
-                                  ),
+                                  title: widget.language != null &&
+                                          widget.language != "English"
+                                      ? TranslationWidget(
+                                          message: data.titleC,
+                                          toLanguage: widget.language,
+                                          fromLanguage: "en",
+                                          builder: (translatedMessage) => Text(
+                                            translatedMessage.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1,
+                                          ),
+                                        )
+                                      : Text(
+                                          data.titleC ?? '-',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1,
+                                        ),
                                   onTap: () async {
                                     _route(data);
                                     if (data != null) {
@@ -375,11 +421,22 @@ class _SearchPageState extends State<SearchPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
-        Text(
-          "Search",
-          style: Theme.of(context).appBarTheme.titleTextStyle,
-          textAlign: TextAlign.left,
-        ),
+        widget.language != null && widget.language != "English"
+            ? TranslationWidget(
+                message: "Search",
+                toLanguage: widget.language,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                  style: Theme.of(context).appBarTheme.titleTextStyle,
+                  textAlign: TextAlign.left,
+                ),
+              )
+            : Text(
+                "Search",
+                style: Theme.of(context).appBarTheme.titleTextStyle,
+                textAlign: TextAlign.left,
+              ),
       ],
     );
   }
@@ -389,13 +446,26 @@ class _SearchPageState extends State<SearchPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
-        Text(
-          "Recent Search",
-          style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                fontSize: 18,
+        widget.language != null && widget.language != "English"
+            ? TranslationWidget(
+                message: "Recent Search",
+                toLanguage: widget.language,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                  style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
+                        fontSize: 18,
+                      ),
+                  textAlign: TextAlign.left,
+                ),
+              )
+            : Text(
+                "Recent Search",
+                style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
+                      fontSize: 18,
+                    ),
+                textAlign: TextAlign.left,
               ),
-          textAlign: TextAlign.left,
-        ),
       ],
     );
   }

@@ -20,6 +20,9 @@ class AppTheme {
   static const Color kShadowColor = Color(0xff000000);
   static const Color kTxtfieldBorderColor = Color(0xffBCC5D4);
 
+  static Color? kShimmerBaseColor = Colors.grey[300];
+  static Color? kShimmerHighlightColor = Colors.grey[100];
+
   static const Color kTxtFieldColor = Colors.grey;
   static Color kListTileColor = Color(0xffD8D8D8).withOpacity(0.12);
   static Color kIconColor = Color(0xff535353).withOpacity(0.75);
