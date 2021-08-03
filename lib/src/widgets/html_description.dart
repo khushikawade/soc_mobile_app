@@ -2,7 +2,6 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -37,9 +36,7 @@ class _AboutusPageState extends State<AboutusPage> {
       margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Wrap(
         children: [
-          widget.language != null &&
-                  widget.language != "English" &&
-                  widget.language != "English"
+          widget.language != null && widget.language != "English"
               ? TranslationWidget(
                   message: widget.htmlText,
                   fromLanguage: "en",

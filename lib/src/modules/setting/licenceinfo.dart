@@ -1,9 +1,8 @@
 import 'package:Soc/oss_licenses.dart';
 import 'package:Soc/src/modules/setting/licencedetail.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class Licenceinfo extends StatefulWidget {
@@ -15,7 +14,7 @@ class Licenceinfo extends StatefulWidget {
 }
 
 class _LicenceinfoState extends State<Licenceinfo> {
-  static const double _kIconSize = 188;
+  // static const double _kIconSize = 188;
   static const double _kLabelSpacing = 20.0;
   FocusNode myFocusNode = new FocusNode();
   OSSLicensesInfo obj = new OSSLicensesInfo();
@@ -55,24 +54,38 @@ class _LicenceinfoState extends State<Licenceinfo> {
             child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: _kLabelSpacing * 1, vertical: _kLabelSpacing),
-          child: Text(
-            list[index]["name"] ?? '-',
-            // style: Theme.of(context).textTheme.headline5,
-          ),
+          child: widget.language != null && widget.language != "English"
+              ? TranslationWidget(
+                  message: list[index]["name"] ?? '-',
+                  fromLanguage: "en",
+                  toLanguage: widget.language,
+                  builder: (translatedMessage) => Text(
+                    translatedMessage,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: Colors.black),
+                    textAlign: TextAlign.start,
+                  ),
+                )
+              : Text(
+                  list[index]["name"] ?? '-',
+                  // style: Theme.of(context).textTheme.headline5,
+                ),
         )),
       ),
     );
   }
 
-  Widget _buildHeading() {
-    return InkWell(
-      onTap: () {},
-      child: Text(
-        "Open Source Licence",
-        style: Theme.of(context).textTheme.headline2,
-      ),
-    );
-  }
+  // Widget _buildHeading() {
+  //   return InkWell(
+  //     onTap: () {},
+  //     child: Text(
+  //       "Open Source Licence",
+  //       style: Theme.of(context).textTheme.headline2,
+  //     ),
+  //   );
+  // }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,7 +109,21 @@ class _LicenceinfoState extends State<Licenceinfo> {
                         _list,
                         index,
                       )
-                    : Container();
+                    : Expanded(
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: widget.language != null &&
+                                    widget.language != "English"
+                                ? TranslationWidget(
+                                    message: "No data found",
+                                    toLanguage: widget.language,
+                                    fromLanguage: "en",
+                                    builder: (translatedMessage) => Text(
+                                      translatedMessage.toString(),
+                                    ),
+                                  )
+                                : Text("No data found")));
               },
             ),
           ),

@@ -39,38 +39,36 @@ class _InformationPageState extends State<InformationPage> {
       margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Wrap(
         children: [
-          // widget.language != null &&
-          //         widget.language != "English" &&
-          //         widget.language != "English"
-          //     ? TranslationWidget(
-          //         message: widget.htmlText,
-          //         fromLanguage: "en",
-          //         toLanguage: widget.language,
-          //         builder: (translatedMessage) => Html(
-          //           data: translatedMessage.toString(),
-          //         ),
-          //       )
-          //     :
-          Html(
-            data: widget.htmlText,
-            style: {
-              "table": Style(
-                backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-              ),
-              "tr": Style(
-                border: Border(bottom: BorderSide(color: Colors.grey)),
-              ),
-              "th": Style(
-                padding: EdgeInsets.all(6),
-                backgroundColor: Colors.grey,
-              ),
-              "td": Style(
-                padding: EdgeInsets.all(6),
-                alignment: Alignment.topLeft,
-              ),
-              'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-            },
-          ),
+          widget.language != null && widget.language != "English"
+              ? TranslationWidget(
+                  message: widget.htmlText,
+                  fromLanguage: "en",
+                  toLanguage: widget.language,
+                  builder: (translatedMessage) => Html(
+                    data: translatedMessage.toString(),
+                  ),
+                )
+              : Html(
+                  data: widget.htmlText,
+                  style: {
+                    "table": Style(
+                      backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                    ),
+                    "tr": Style(
+                      border: Border(bottom: BorderSide(color: Colors.grey)),
+                    ),
+                    "th": Style(
+                      padding: EdgeInsets.all(6),
+                      backgroundColor: Colors.grey,
+                    ),
+                    "td": Style(
+                      padding: EdgeInsets.all(6),
+                      alignment: Alignment.topLeft,
+                    ),
+                    'h5':
+                        Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                  },
+                ),
         ],
       ),
     );
