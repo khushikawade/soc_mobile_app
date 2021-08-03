@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
+import 'package:Soc/src/modules/social/modal/models/social.dart';
 import 'package:Soc/src/modules/social/ui/soical.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
@@ -18,7 +19,9 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../overrides.dart';
 
@@ -50,6 +53,9 @@ class _HomePageState extends State<HomePage> {
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   Timer? timer;
   String? selectedLanguage;
+
+  late PersistentTabController _controller;
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +64,7 @@ class _HomePageState extends State<HomePage> {
     _selectedIndex = Globals.outerBottombarIndex ?? 0;
     timer =
         Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
+    _controller = PersistentTabController(initialIndex: 0);
   }
 
   getindicatorValue() async {
@@ -140,6 +147,46 @@ class _HomePageState extends State<HomePage> {
     prefs.setBool("enableIndicator", false);
   }
 
+  List<Widget> _buildScreens() {
+    List<Widget> _screens = [];
+    Globals.homeObjet["Bottom_Navigation__c"]
+        .split(";")
+        .forEach((String element) {
+      element = element.toLowerCase();
+      if (element.contains('news')) {
+        _screens.add(
+          NewsPage(
+            language: selectedLanguage,
+          ),
+        );
+      } else if (element.contains('student')) {
+        _screens.add(
+          StudentPage(
+            language: selectedLanguage,
+          ),
+        );
+      } else if (element.contains('families')) {
+        _screens.add(
+          FamilyPage(
+            obj: widget.homeObj,
+            language: selectedLanguage,
+          ),
+        );
+      } else if (element.contains('staff')) {
+        _screens.add(StaffPage(
+          language: selectedLanguage,
+        ));
+      } else if (element.contains('social')) {
+        _screens.add(
+          SocialPage(
+            language: selectedLanguage,
+          ),
+        );
+      }
+    });
+    return _screens;
+  }
+
   selectedScreenBody(context, _selectedIndex, list) {
     if (list[_selectedIndex].split("_")[0].contains("Social")) {
       return SocialPage(
@@ -194,127 +241,197 @@ class _HomePageState extends State<HomePage> {
             ));
   }
 
+  List<PersistentBottomNavBarItem> _navBarsItems() {
+    return Globals.homeObjet["Bottom_Navigation__c"]
+        .split(";")
+        .map<PersistentBottomNavBarItem>(
+          (item) => PersistentBottomNavBarItem(
+            // contentPadding: 15,
+            icon: Icon(
+              IconData(int.parse(item.split("_")[1]),
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
+              // size: Globals.deviceType == "phone" ? 24 : 32,
+            ),
+            title: ("${item.split("_")[0]}"),
+            activeColorPrimary: Theme.of(context).primaryColor,
+            inactiveColorPrimary: CupertinoColors.systemGrey,
+          ),
+        )
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => _onBackPressed(),
-      child: Scaffold(
-        appBar: new AppBar(
-            leadingWidth: _kIconSize,
-            elevation: 0.0,
-            leading:
-                // _selectedIndex == 3
-                //     ?
-                GestureDetector(
-              onTap: () {
-                LanguageSelector(context, item, (language) {
-                  if (language != null) {
-                    setState(() {
-                      selectedLanguage = language;
-                      languageChanged.value = language;
-                    });
-                  }
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: const Icon(IconData(0xe800,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg)),
-              ),
-            ),
-            title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
-            actions: <Widget>[
-              SearchButtonWidget(
-                language: selectedLanguage,
-              ),
-              _buildPopupMenuWidget(),
-            ]),
-        body: selectedScreenBody(context, _selectedIndex,
-            Globals.homeObjet["Bottom_Navigation__c"].split(";")),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _selectedIndex,
-          items: Globals.homeObjet["Bottom_Navigation__c"]
-              .split(";")
-              .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
-                    icon: Column(children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ValueListenableBuilder(
-                            builder: (BuildContext context, dynamic value,
-                                Widget? child) {
-                              return selectedLanguage != null ||
-                                      languageChanged.value != "English"
-                                  ? TranslationWidget(
-                                      message: e.split("_")[0],
-                                      toLanguage: languageChanged.value,
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage,
-                                        textAlign: TextAlign.center,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle2,
-                                      ),
-                                    )
-                                  : Wrap(
-                                      children: [
-                                        Text(
-                                          e.split("_")[0],
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle2,
-                                        ),
-                                      ],
-                                    );
-                            },
-                            valueListenable: languageChanged,
-                            child: Container(),
-                          ),
-                          ValueListenableBuilder(
-                            builder: (BuildContext context, dynamic value,
-                                Widget? child) {
-                              return e.split("_")[0] == "News" &&
-                                      indicator.value == true
-                                  ? Container(
-                                      alignment: Alignment.centerLeft,
-                                      height: 8,
-                                      width: 8,
-                                      margin: EdgeInsets.only(left: 3),
-                                      decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          shape: BoxShape.circle),
-                                    )
-                                  : Container();
-                            },
-                            valueListenable: indicator,
-                            child: Container(),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Icon(
-                          IconData(int.parse(e.split("_")[1]),
-                              fontFamily: Overrides.kFontFam,
-                              fontPackage: Overrides.kFontPkg),
-                          size: Globals.deviceType == "phone" ? 24 : 32,
-                        ),
-                      ),
-                    ]),
-                    label: '', //'${e.split("_")[0]}',
-                  ))
-              .toList(),
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-              Globals.internalBottombarIndex = index;
-            });
-          },
-        ),
-      ),
-    );
+    // return WillPopScope(
+    //   onWillPop: () => _onBackPressed(),
+    //   child: Scaffold(
+    //     appBar: new AppBar(
+    //         leadingWidth: _kIconSize,
+    //         elevation: 0.0,
+    //         leading:
+    //             // _selectedIndex == 3
+    //             //     ?
+    //             GestureDetector(
+    //           onTap: () {
+    //             LanguageSelector(context, item, (language) {
+    //               if (language != null) {
+    //                 setState(() {
+    //                   selectedLanguage = language;
+    //                   langadded.value = language;
+    //                 });
+    //               }
+    //             });
+    //           },
+    //           child: Padding(
+    //             padding: const EdgeInsets.all(12.0),
+    //             child: const Icon(IconData(0xe800,
+    //                 fontFamily: Overrides.kFontFam,
+    //                 fontPackage: Overrides.kFontPkg)),
+    //           ),
+    //         ),
+    //         title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+    //         actions: <Widget>[
+    //           SearchButtonWidget(),
+    //           _buildPopupMenuWidget(),
+    //         ]),
+    //     body: selectedScreenBody(context, _selectedIndex,
+    //         Globals.homeObjet["Bottom_Navigation__c"].split(";")),
+    //     bottomNavigationBar: BottomNavigationBar(
+    //       type: BottomNavigationBarType.fixed,
+    //       currentIndex: _selectedIndex,
+    //       items: Globals.homeObjet["Bottom_Navigation__c"]
+    //           .split(";")
+    //           .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
+    //                 icon: Column(children: [
+    //                   Row(
+    //                     mainAxisAlignment: MainAxisAlignment.center,
+    //                     children: [
+    //                       ValueListenableBuilder(
+    //                         builder: (BuildContext context, dynamic value,
+    //                             Widget? child) {
+    //                           return Expanded(
+    //                             child: Text(
+    //                               e.split("_")[0],
+    //                               textAlign: TextAlign.center,
+    //                               style: Theme.of(context).textTheme.subtitle2,
+    //                             ),
+    //                           );
+    //                         },
+    //                         valueListenable: langadded,
+    //                         child: Container(),
+    //                       ),
+    //                       ValueListenableBuilder(
+    //                         builder: (BuildContext context, dynamic value,
+    //                             Widget? child) {
+    //                           return e.split("_")[0] == "News" &&
+    //                                   indicator.value == true
+    //                               ? Container(
+    //                                   height: 8,
+    //                                   width: 8,
+    //                                   margin: EdgeInsets.only(left: 3),
+    //                                   decoration: BoxDecoration(
+    //                                       color: Colors.red,
+    //                                       shape: BoxShape.circle),
+    //                                 )
+    //                               : Container();
+    //                         },
+    //                         valueListenable: indicator,
+    //                         child: Container(),
+    //                       ),
+    //                     ],
+    //                   ),
+    //                   Padding(
+    //                     padding: const EdgeInsets.only(top: 5.0),
+    //                     child: Icon(
+    //                       IconData(int.parse(e.split("_")[1]),
+    //                           fontFamily: Overrides.kFontFam,
+    //                           fontPackage: Overrides.kFontPkg),
+    //                       size: Globals.deviceType == "phone" ? 24 : 32,
+    //                     ),
+    //                   ),
+    //                 ]),
+    //                 label: '', //'${e.split("_")[0]}',
+    //               ))
+    //           .toList(),
+    //       onTap: (index) {
+    //         setState(() {
+    //           _selectedIndex = index;
+    //           Globals.internalBottombarIndex = index;
+    //         });
+    //       },
+    //     ),
+    //   ),
+    // );
+
+    return Scaffold(
+        // appBar: new AppBar(
+        //     backgroundColor: Colors.white,
+        //     leadingWidth: _kIconSize,
+        //     elevation: 0.0,
+        //     leading:
+        //         // _selectedIndex == 3
+        //         //     ?
+        //         GestureDetector(
+        //       onTap: () {
+        //         LanguageSelector(context, item, (language) {
+        //           if (language != null) {
+        //             setState(() {
+        //               selectedLanguage = language;
+        //               langadded.value = language;
+        //             });
+        //           }
+        //         });
+        //       },
+        //       child: Padding(
+        //         padding: const EdgeInsets.all(12.0),
+        //         child: const Icon(IconData(0xe800,
+        //             fontFamily: Overrides.kFontFam,
+        //             fontPackage: Overrides.kFontPkg)),
+        //       ),
+        //     ),
+        //     title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+        //     actions: <Widget>[
+        //       SearchButtonWidget(),
+        //       _buildPopupMenuWidget(),
+        //     ]),
+        body: PersistentTabView(
+          context,
+          controller: _controller,
+          screens: _buildScreens(),
+          items: _navBarsItems(),
+          confineInSafeArea: true,
+          backgroundColor: Colors.white, // Default is Colors.white.
+          handleAndroidBackButtonPress: true, // Default is true.
+          resizeToAvoidBottomInset:
+              true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+          stateManagement: true, // Default is true.
+          hideNavigationBarWhenKeyboardShows:
+              true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+          decoration: NavBarDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+              colorBehindNavBar: Colors.grey,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  blurRadius: 5.0,
+                ),
+              ]),
+          popAllScreensOnTapOfSelectedTab: true,
+          popActionScreens: PopActionScreensType.all,
+          itemAnimationProperties: ItemAnimationProperties(
+            // Navigation Bar's items animation properties.
+            duration: Duration(milliseconds: 200),
+            curve: Curves.ease,
+          ),
+          screenTransitionAnimation: ScreenTransitionAnimation(
+            // Screen transition animation on change of selected tab.
+            animateTabTransition: true,
+            curve: Curves.ease,
+            duration: Duration(milliseconds: 200),
+          ),
+          navBarStyle: NavBarStyle
+              .style6, // Choose the nav bar style with this property.
+        ));
   }
 }

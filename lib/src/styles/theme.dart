@@ -7,7 +7,7 @@ class AppTheme {
 
   //Colors
 
-  static const Color kPrimaryColor = Color(0xffffffff);
+  static const Color kPrimaryColor = Colors.blue;
   static const Color kAccentColor = Color(0xff2D3F98);
   static const Color kBlackColor = Colors.black;
   static const Color kBackgroundColor = Colors.white;
@@ -78,15 +78,15 @@ class AppTheme {
       backgroundColor: kBackgroundColor,
       appBarTheme: AppBarTheme(
         titleTextStyle: TextStyle(
-            color: kOnPrimaryColor,
+            color: kPrimaryColor,
             fontSize: Globals.deviceType == "phone"
                 ? kTitleFontSize
                 : kTitleFontSize + _kSize),
-        color: kPrimaryColor,
-        foregroundColor: kOnPrimaryColor,
+        color: kBackgroundColor,
+        foregroundColor: kPrimaryColor,
         centerTitle: true,
         iconTheme: IconThemeData(
-          color: kOnPrimaryColor,
+          color: kPrimaryColor,
         ),
       ),
       colorScheme: ColorScheme.light(

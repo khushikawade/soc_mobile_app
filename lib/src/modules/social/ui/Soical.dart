@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
@@ -185,6 +186,7 @@ class _SocialPageState extends State<SocialPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+       appBar: AppBarWidget(),
       body: BlocBuilder(
           bloc: bloc,
           builder: (BuildContext context, SocialState state) {

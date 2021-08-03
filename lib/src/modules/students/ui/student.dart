@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
@@ -133,6 +134,7 @@ class _StudentPageState extends State<StudentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBarWidget(),
         body: BlocBuilder<StudentBloc, StudentState>(
             bloc: _bloc,
             builder: (BuildContext contxt, StudentState state) {
