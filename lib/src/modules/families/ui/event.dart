@@ -202,75 +202,76 @@ class _EventPageState extends State<EventPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          appBarTitle: widget.appBarTitle!,
-          isSearch: true,
-          isShare: false,
-          sharedpopUpheaderText: "",
-          sharedpopBodytext: "",
-          language: Globals.selectedLanguage,
-        ),
-        body: SafeArea(
-            child: BlocBuilder<FamilyBloc, FamilyState>(
-                bloc: _eventBloc,
-                builder: (BuildContext contxt, FamilyState state) {
-                  if (state is FamilyLoading) {
-                    return Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        alignment: Alignment.center,
-                        child: CircularProgressIndicator(
-                          
-                        ));
-                  } else if (state is CalendarListSuccess) {
-                    return Column(
-                      children: [
-                        _buildHeading("Upcoming"),
-                        Expanded(
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            itemCount: state.obj!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return state.obj!.length > 0
-                                  ? _buildList(
-                                      state.obj![index], index, state.obj)
-                                  : Globals.selectedLanguage != null &&
-                                          Globals.selectedLanguage != "English"
-                                      ? TranslationWidget(
-                                          message: "No data found",
-                                          toLanguage: Globals.selectedLanguage,
-                                          fromLanguage: "en",
-                                          builder: (translatedMessage) => Text(
-                                            translatedMessage.toString(),
-                                          ),
-                                        )
-                                      : Text("No data found");
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  } else if (state is ErrorLoading) {
-                    return Container(
-                      alignment: Alignment.center,
+      appBar: CustomAppBarWidget(
+        appBarTitle: widget.appBarTitle!,
+        isSearch: true,
+        isShare: false,
+        sharedpopUpheaderText: "",
+        sharedpopBodytext: "",
+        language: Globals.selectedLanguage,
+      ),
+      body: SafeArea(
+          child: BlocBuilder<FamilyBloc, FamilyState>(
+              bloc: _eventBloc,
+              builder: (BuildContext contxt, FamilyState state) {
+                if (state is FamilyLoading) {
+                  return Container(
                       height: MediaQuery.of(context).size.height * 0.8,
-                      child: Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? TranslationWidget(
-                              message: "Unable to load the data",
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
-                              ),
-                            )
-                          : Text("Unable to load the data"),
-                    );
-                  } else {
-                    return Container();
-                  }
-                })),
-        bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Theme.of(context).accentColor,
+                      ));
+                } else if (state is CalendarListSuccess) {
+                  return Column(
+                    children: [
+                      _buildHeading("Upcoming"),
+                      Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: state.obj!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return state.obj!.length > 0
+                                ? _buildList(
+                                    state.obj![index], index, state.obj)
+                                : Globals.selectedLanguage != null &&
+                                        Globals.selectedLanguage != "English"
+                                    ? TranslationWidget(
+                                        message: "No data found",
+                                        toLanguage: Globals.selectedLanguage,
+                                        fromLanguage: "en",
+                                        builder: (translatedMessage) => Text(
+                                          translatedMessage.toString(),
+                                        ),
+                                      )
+                                    : Text("No data found");
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (state is ErrorLoading) {
+                  return Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English"
+                        ? TranslationWidget(
+                            message: "Unable to load the data",
+                            toLanguage: Globals.selectedLanguage,
+                            fromLanguage: "en",
+                            builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                            ),
+                          )
+                        : Text("Unable to load the data"),
+                  );
+                } else {
+                  return Container();
+                }
+              })),
+      // bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

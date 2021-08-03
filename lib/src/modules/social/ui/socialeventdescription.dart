@@ -160,7 +160,7 @@ class SocialDescription extends StatelessWidget {
         .split("\\n#")[1]
         .split("</div>")[0];
     // print(data);
-    print(data2);
+    // print(data2);
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),

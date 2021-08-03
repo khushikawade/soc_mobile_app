@@ -128,110 +128,107 @@ class _SubListPageState extends State<SubListPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: true,
-          isShare: false,
-          appBarTitle: widget.appBarTitle,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
-          language: Globals.selectedLanguage,
-        ),
-        key: _scaffoldKey,
-        body: widget.module == "family"
-            ? BlocBuilder<FamilyBloc, FamilyState>(
-                bloc: _bloc,
-                builder: (BuildContext contxt, FamilyState state) {
-                  if (state is FamilyInitial || state is FamilyLoading) {
-                    return Center(
-                        child: CircularProgressIndicator(
-                      
-                    ));
-                  } else if (state is FamiliesSublistSucess) {
-                    return state.obj != null && state.obj!.length > 0
-                        ? SafeArea(
-                            child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: state.obj!.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return _buildList(
-                                    index,
-                                    _buildFormName(index, state.obj![index]),
-                                    state.obj![index]);
-                              },
-                            ),
-                          )
-                        : Container(
-                            alignment: Alignment.center,
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Globals.selectedLanguage != null &&
-                                    Globals.selectedLanguage != "English"
-                                ? TranslationWidget(
-                                    message: "No data found",
-                                    fromLanguage: "en",
-                                    toLanguage: Globals.selectedLanguage,
-                                    builder: (translatedMessage) => Text(
-                                      translatedMessage.toString(),
-                                    ),
-                                  )
-                                : Text("No data found"),
-                          );
-                  } else {
-                    return Container();
-                  }
-                })
-            : widget.module == 'staff'
-                ? BlocBuilder<StaffBloc, StaffState>(
-                    bloc: _staffBloc,
-                    builder: (BuildContext contxt, StaffState state) {
-                      if (state is StaffInitial || state is StaffLoading) {
-                        return Center(
-                            child: CircularProgressIndicator(
-                          
-                        ));
-                      } else if (state is StaffSubListSucess) {
-                        return state.obj != null && state.obj!.length > 0
-                            ? SafeArea(
-                                child: ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: state.obj!.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return _buildList(
-                                        index,
-                                        _buildFormName(
-                                            index, state.obj![index]),
-                                        state.obj![index]);
-                                  },
-                                ),
-                              )
-                            : Container(
-                                alignment: Alignment.center,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
-                                child: Globals.selectedLanguage != null &&
-                                        Globals.selectedLanguage != "English"
-                                    ? TranslationWidget(
-                                        message: "No data found",
-                                        fromLanguage: "en",
-                                        toLanguage: Globals.selectedLanguage,
-                                        builder: (translatedMessage) => Text(
-                                          translatedMessage.toString(),
-                                        ),
-                                      )
-                                    : Text("No data found"),
-                              );
-                      } else {
-                        return Container();
-                      }
-                    })
-                : Container(),
-        // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-        //     ? InternalButtomNavigationBar()
-        //     : null
-            );
+      appBar: CustomAppBarWidget(
+        isSearch: true,
+        isShare: false,
+        appBarTitle: widget.appBarTitle,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
+        language: Globals.selectedLanguage,
+      ),
+      key: _scaffoldKey,
+      body: widget.module == "family"
+          ? BlocBuilder<FamilyBloc, FamilyState>(
+              bloc: _bloc,
+              builder: (BuildContext contxt, FamilyState state) {
+                if (state is FamilyInitial || state is FamilyLoading) {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).accentColor,
+                  ));
+                } else if (state is FamiliesSublistSucess) {
+                  return state.obj != null && state.obj!.length > 0
+                      ? SafeArea(
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: state.obj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildList(
+                                  index,
+                                  _buildFormName(index, state.obj![index]),
+                                  state.obj![index]);
+                            },
+                          ),
+                        )
+                      : Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Globals.selectedLanguage != null &&
+                                  Globals.selectedLanguage != "English"
+                              ? TranslationWidget(
+                                  message: "No data found",
+                                  fromLanguage: "en",
+                                  toLanguage: Globals.selectedLanguage,
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                  ),
+                                )
+                              : Text("No data found"),
+                        );
+                } else {
+                  return Container();
+                }
+              })
+          : widget.module == 'staff'
+              ? BlocBuilder<StaffBloc, StaffState>(
+                  bloc: _staffBloc,
+                  builder: (BuildContext contxt, StaffState state) {
+                    if (state is StaffInitial || state is StaffLoading) {
+                      return Center(
+                          child: CircularProgressIndicator(
+                        backgroundColor: Theme.of(context).accentColor,
+                      ));
+                    } else if (state is StaffSubListSucess) {
+                      return state.obj != null && state.obj!.length > 0
+                          ? SafeArea(
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: state.obj!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return _buildList(
+                                      index,
+                                      _buildFormName(index, state.obj![index]),
+                                      state.obj![index]);
+                                },
+                              ),
+                            )
+                          : Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Globals.selectedLanguage != null &&
+                                      Globals.selectedLanguage != "English"
+                                  ? TranslationWidget(
+                                      message: "No data found",
+                                      fromLanguage: "en",
+                                      toLanguage: Globals.selectedLanguage,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                      ),
+                                    )
+                                  : Text("No data found"),
+                            );
+                    } else {
+                      return Container();
+                    }
+                  })
+              : Container(),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

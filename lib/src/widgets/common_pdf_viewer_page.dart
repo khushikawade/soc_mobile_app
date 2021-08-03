@@ -79,48 +79,49 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: false,
-          isShare: true,
-          appBarTitle: widget.tittle!,
-          sharedpopBodytext: widget.url.toString(),
-          sharedpopUpheaderText: "Please check out this",
-          language: Globals.selectedLanguage,
-        ),
-        body: widget.url != null && widget.url != ""
-            ? document == null
-                ? Center(
-                    child: CircularProgressIndicator(
-                    valueColor:
-                        new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
-                  ))
-                : PDFViewer(
-                    document: document!,
-                    enableSwipeNavigation: true,
-                    showIndicator: true,
-                    lazyLoad: false,
-                    showNavigation: false,
-                    showPicker: false,
-                    zoomSteps: 2,
-                    scrollDirection: Axis.vertical,
-                  )
-            : Container(
-                alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.7,
-                child: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
-                    ? TranslationWidget(
-                        message: "No Document Found",
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                        ),
-                      )
-                    : Text("No Document Found"),
-              ),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+      appBar: CustomAppBarWidget(
+        isSearch: false,
+        isShare: true,
+        appBarTitle: widget.tittle!,
+        sharedpopBodytext: widget.url.toString(),
+        sharedpopUpheaderText: "Please check out this",
+        language: Globals.selectedLanguage,
+      ),
+      body: widget.url != null && widget.url != ""
+          ? document == null
+              ? Center(
+                  child: CircularProgressIndicator(
+                  valueColor:
+                      new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
+                ))
+              : PDFViewer(
+                  document: document!,
+                  enableSwipeNavigation: true,
+                  showIndicator: true,
+                  lazyLoad: false,
+                  showNavigation: false,
+                  showPicker: false,
+                  zoomSteps: 2,
+                  scrollDirection: Axis.vertical,
+                )
+          : Container(
+              alignment: Alignment.center,
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English"
+                  ? TranslationWidget(
+                      message: "No Document Found",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                      ),
+                    )
+                  : Text("No Document Found"),
+            ),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

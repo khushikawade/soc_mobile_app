@@ -37,19 +37,20 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: false,
-          isShare: true,
-          appBarTitle: widget.title,
-          sharedpopBodytext: widget.url.toString(),
-          sharedpopUpheaderText: "Please checkout this link",
-          language: Globals.selectedLanguage,
-        ),
-        body: WebView(
-          initialUrl: '${widget.url}',
-        ),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+      appBar: CustomAppBarWidget(
+        isSearch: false,
+        isShare: true,
+        appBarTitle: widget.title,
+        sharedpopBodytext: widget.url.toString(),
+        sharedpopUpheaderText: "Please checkout this link",
+        language: Globals.selectedLanguage,
+      ),
+      body: WebView(
+        initialUrl: '${widget.url}',
+      ),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }
