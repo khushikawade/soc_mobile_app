@@ -228,12 +228,13 @@ class _NewdescriptionState extends State<Newdescription> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
-          child: _buildNewsDescription(),
-        ),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
+        child: _buildNewsDescription(),
+      ),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

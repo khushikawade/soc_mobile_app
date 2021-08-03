@@ -480,28 +480,28 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        resizeToAvoidBottomInset: true,
-        appBar: new AppBar(
-            elevation: 0.0,
-            leading: BackButtonWidget(),
-            title:
-                SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
-        body: Container(
-          child: Column(mainAxisSize: MainAxisSize.max, children: [
-            _buildHeading(),
-            SpacerWidget(_kLabelSpacing / 2),
-            _buildSearchbar(),
-            issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
-            SpacerWidget(_kLabelSpacing),
-            issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
-            issuggestionList == false
-                ? _buildRecentItemList()
-                : SizedBox(height: 0),
-          ]),
-        ),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+      key: _scaffoldKey,
+      resizeToAvoidBottomInset: true,
+      appBar: new AppBar(
+          elevation: 0.0,
+          leading: BackButtonWidget(),
+          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
+      body: Container(
+        child: Column(mainAxisSize: MainAxisSize.max, children: [
+          _buildHeading(),
+          SpacerWidget(_kLabelSpacing / 2),
+          _buildSearchbar(),
+          issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
+          SpacerWidget(_kLabelSpacing),
+          issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
+          issuggestionList == false
+              ? _buildRecentItemList()
+              : SizedBox(height: 0),
+        ]),
+      ),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

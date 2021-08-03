@@ -285,59 +285,60 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          appBarTitle: widget.appBarTitle,
-          isSearch: true,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
-          isShare: false,
-          isCenterIcon: true,
-          language: Globals.selectedLanguage,
-        ),
-        body: SafeArea(
-          child: BlocBuilder<FamilyBloc, FamilyState>(
-              bloc: _bloc,
-              builder: (BuildContext contxt, FamilyState state) {
-                if (state is FamilyInitial || state is FamilyLoading) {
-                  return Container(
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator(
-                        backgroundColor: Theme.of(context).accentColor,
-                      ));
-                } else if (state is SDDataSucess) {
-                  return Column(
-                    children: [
-                      _buildHeading("STAFF DIRECTORY"),
-                      Expanded(
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return contactItem(state.obj![index], index);
-                          },
-                        ),
+      appBar: CustomAppBarWidget(
+        appBarTitle: widget.appBarTitle,
+        isSearch: true,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
+        isShare: false,
+        isCenterIcon: true,
+        language: Globals.selectedLanguage,
+      ),
+      body: SafeArea(
+        child: BlocBuilder<FamilyBloc, FamilyState>(
+            bloc: _bloc,
+            builder: (BuildContext contxt, FamilyState state) {
+              if (state is FamilyInitial || state is FamilyLoading) {
+                return Container(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).accentColor,
+                    ));
+              } else if (state is SDDataSucess) {
+                return Column(
+                  children: [
+                    _buildHeading("STAFF DIRECTORY"),
+                    Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: state.obj!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return contactItem(state.obj![index], index);
+                        },
                       ),
-                    ],
-                  );
-                } else if (state is ErrorLoading) {
-                  return Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message: "Unable to load the data",
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
-                              ))
-                      : Text("Unable to load the data");
-                } else {
-                  return Container();
-                }
-              }),
-        ),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+                    ),
+                  ],
+                );
+              } else if (state is ErrorLoading) {
+                return Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
+                    ? TranslationWidget(
+                        message: "Unable to load the data",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                            ))
+                    : Text("Unable to load the data");
+              } else {
+                return Container();
+              }
+            }),
+      ),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

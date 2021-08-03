@@ -76,26 +76,27 @@ class _InformationPageState extends State<InformationPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: false,
-          isShare: false,
-          appBarTitle: widget.appbarTitle,
-          ishtmlpage: widget.ishtml,
-          sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
-          sharedpopUpheaderText: "Please checkout this link",
-          language: Globals.selectedLanguage,
-        ),
-        body: ListView(children: [
-          _buildContent1(),
-          SizedBox(
-            height: 100.0,
-            child: ShareButtonWidget(
-              language: Globals.selectedLanguage,
-            ),
-          )
-        ]),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+      appBar: CustomAppBarWidget(
+        isSearch: false,
+        isShare: false,
+        appBarTitle: widget.appbarTitle,
+        ishtmlpage: widget.ishtml,
+        sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
+        sharedpopUpheaderText: "Please checkout this link",
+        language: Globals.selectedLanguage,
+      ),
+      body: ListView(children: [
+        _buildContent1(),
+        SizedBox(
+          height: 100.0,
+          child: ShareButtonWidget(
+            language: Globals.selectedLanguage,
+          ),
+        )
+      ]),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

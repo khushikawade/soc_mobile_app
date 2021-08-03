@@ -180,32 +180,33 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          appBarTitle: 'Setting',
-          isSearch: false,
-          isShare: false,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
-          language: Globals.selectedLanguage,
-        ),
-        body: Container(
-            child: ListView(
-          children: [
-            _buildHeading("Push Notifcation"),
-            _buildNotification(),
-            _buildHeading("Acknowledgements"),
-            _buildLicence(),
-            HorzitalSpacerWidget(_kLabelSpacing * 20),
-            SizedBox(
-                width: MediaQuery.of(context).size.width * 1,
-                height: 100.0,
-                child: ShareButtonWidget(
-                  language: Globals.selectedLanguage,
-                )),
-          ],
-        )),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+      appBar: CustomAppBarWidget(
+        appBarTitle: 'Setting',
+        isSearch: false,
+        isShare: false,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
+        language: Globals.selectedLanguage,
+      ),
+      body: Container(
+          child: ListView(
+        children: [
+          _buildHeading("Push Notifcation"),
+          _buildNotification(),
+          _buildHeading("Acknowledgements"),
+          _buildLicence(),
+          HorzitalSpacerWidget(_kLabelSpacing * 20),
+          SizedBox(
+              width: MediaQuery.of(context).size.width * 1,
+              height: 100.0,
+              child: ShareButtonWidget(
+                language: Globals.selectedLanguage,
+              )),
+        ],
+      )),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

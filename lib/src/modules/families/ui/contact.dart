@@ -351,28 +351,29 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: true,
-          isShare: false,
-          appBarTitle: widget.appBarTitle,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
-          language: Globals.selectedLanguage,
-        ),
-        body: ListView(children: [
-          _buildIcon(),
-          SpacerWidget(_kLabelSpacing),
-          tittleWidget(),
-          SpacerWidget(_kLabelSpacing / 1.5),
-          _buildMapWidget(),
-          _buildaddressWidget(),
-          SpacerWidget(_kLabelSpacing / 1.25),
-          _buildPhoneWidget(),
-          SpacerWidget(_kLabelSpacing / 1.25),
-          _buildEmailWidget(),
-        ]),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+      appBar: CustomAppBarWidget(
+        isSearch: true,
+        isShare: false,
+        appBarTitle: widget.appBarTitle,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
+        language: Globals.selectedLanguage,
+      ),
+      body: ListView(children: [
+        _buildIcon(),
+        SpacerWidget(_kLabelSpacing),
+        tittleWidget(),
+        SpacerWidget(_kLabelSpacing / 1.5),
+        _buildMapWidget(),
+        _buildaddressWidget(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        _buildPhoneWidget(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        _buildEmailWidget(),
+      ]),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

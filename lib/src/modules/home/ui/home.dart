@@ -13,6 +13,7 @@ import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,62 +80,62 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Widget _buildPopupMenuWidget() {
-    return PopupMenuButton<IconMenu>(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(2),
-      ),
-      icon: Icon(
-        const IconData(0xe806,
-            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        color: AppTheme.kIconColor2,
-        size: Globals.deviceType == "phone" ? 20 : 28,
-      ),
-      onSelected: (value) {
-        switch (value) {
-          case IconsMenu.Information:
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => InformationPage(
-                          htmlText: Globals.homeObjet["App_Information__c"],
-                          isbuttomsheet: true,
-                          ishtml: true,
-                          appbarTitle: "Information",
-                          // language: selectedLanguage,
-                        )));
-            break;
-          case IconsMenu.Setting:
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SettingPage(
-                          isbuttomsheet: true,
-                          appbarTitle: "Setting",
-                        )));
-            break;
-          case IconsMenu.Permissions:
-            AppSettings.openAppSettings();
-            break;
-        }
-      },
-      itemBuilder: (context) => IconsMenu.items
-          .map((item) => PopupMenuItem<IconMenu>(
-              value: item,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: _kLabelSpacing / 4, vertical: 0),
-                child: Text(
-                  item.text,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: Color(0xff474D55)),
-                ),
-              )))
-          .toList(),
-    );
-  }
+  // Widget _buildPopupMenuWidget() {
+  //   return PopupMenuButton<IconMenu>(
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(2),
+  //     ),
+  //     icon: Icon(
+  //       const IconData(0xe806,
+  //           fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+  //       color: AppTheme.kIconColor2,
+  //       size: Globals.deviceType == "phone" ? 20 : 28,
+  //     ),
+  //     onSelected: (value) {
+  //       switch (value) {
+  //         case IconsMenu.Information:
+  //           Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                   builder: (context) => InformationPage(
+  //                         htmlText: Globals.homeObjet["App_Information__c"],
+  //                         isbuttomsheet: true,
+  //                         ishtml: true,
+  //                         appbarTitle: "Information",
+  //                         // language: selectedLanguage,
+  //                       )));
+  //           break;
+  //         case IconsMenu.Setting:
+  //           Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                   builder: (context) => SettingPage(
+  //                         isbuttomsheet: true,
+  //                         appbarTitle: "Setting",
+  //                       )));
+  //           break;
+  //         case IconsMenu.Permissions:
+  //           AppSettings.openAppSettings();
+  //           break;
+  //       }
+  //     },
+  //     itemBuilder: (context) => IconsMenu.items
+  //         .map((item) => PopupMenuItem<IconMenu>(
+  //             value: item,
+  //             child: Padding(
+  //               padding: const EdgeInsets.symmetric(
+  //                   horizontal: _kLabelSpacing / 4, vertical: 0),
+  //               child: Text(
+  //                 item.text,
+  //                 style: Theme.of(context)
+  //                     .textTheme
+  //                     .bodyText1!
+  //                     .copyWith(color: Color(0xff474D55)),
+  //               ),
+  //             )))
+  //         .toList(),
+  //   );
+  // }
 
   hideIndicator() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -149,32 +150,23 @@ class _HomePageState extends State<HomePage> {
       element = element.toLowerCase();
       if (element.contains('news')) {
         _screens.add(
-          NewsPage(
-              // language: selectedLanguage,
-              ),
+          NewsPage(),
         );
       } else if (element.contains('student')) {
         _screens.add(
-          StudentPage(
-              // language: selectedLanguage,
-              ),
+          StudentPage(),
         );
       } else if (element.contains('families')) {
         _screens.add(
           FamilyPage(
             obj: widget.homeObj,
-            // language: selectedLanguage,
           ),
         );
       } else if (element.contains('staff')) {
-        _screens.add(StaffPage(
-            // language: selectedLanguage,
-            ));
+        _screens.add(StaffPage());
       } else if (element.contains('social')) {
         _screens.add(
-          SocialPage(
-              // language: selectedLanguage,
-              ),
+          SocialPage(),
         );
       }
     });
@@ -230,25 +222,23 @@ class _HomePageState extends State<HomePage> {
     return Globals.homeObjet["Bottom_Navigation__c"]
         .split(";")
         .map<PersistentBottomNavBarItem>(
-          (item) => PersistentBottomNavBarItem(
-            // contentPadding: 15,
-            icon: Column(
-              children: [
-                Icon(
-                  IconData(int.parse(item.split("_")[1]),
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  // size: Globals.deviceType == "phone" ? 24 : 32,
-                ),
-              ],
-            ),
-
-            title: ("${item.split("_")[0]}"),
-            activeColorPrimary: Theme.of(context).primaryColor,
-            inactiveColorPrimary: CupertinoColors.systemGrey,
+      (item) {
+        return PersistentBottomNavBarItem(
+          // contentPadding: 15,
+          icon: Icon(
+            IconData(int.parse(item.split("_")[1]),
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            // size: Globals.deviceType == "phone" ? 24 : 32,
           ),
-        )
-        .toList();
+
+          title: ("${item.split("_")[0]}"),
+
+          activeColorPrimary: Theme.of(context).primaryColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey,
+        );
+      },
+    ).toList();
   }
 
   @override
