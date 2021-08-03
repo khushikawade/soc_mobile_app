@@ -7,17 +7,12 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
-import 'package:Soc/src/modules/social/modal/models/social.dart';
 import 'package:Soc/src/modules/social/ui/soical.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/shared_preference.dart';
-import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/app_logo_widget.dart';
-import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +47,7 @@ class _HomePageState extends State<HomePage> {
       ValueNotifier<String>("English");
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   Timer? timer;
-  String? selectedLanguage;
+  // String? selectedLanguage;
 
   late PersistentTabController _controller;
 
@@ -69,7 +64,7 @@ class _HomePageState extends State<HomePage> {
 
   getindicatorValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    selectedLanguage = await _sharedPref.getString('selected_language');
+    Globals.selectedLanguage = await _sharedPref.getString('selected_language');
     setState(() {
       _status = prefs.getBool("enableIndicator")!;
       if (_status == true) {
@@ -78,8 +73,8 @@ class _HomePageState extends State<HomePage> {
         indicator.value = false;
       }
 
-      if (selectedLanguage != null) {
-        languageChanged.value = selectedLanguage!;
+      if (Globals.selectedLanguage != null) {
+        languageChanged.value = Globals.selectedLanguage!;
       }
     });
   }
@@ -106,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                           isbuttomsheet: true,
                           ishtml: true,
                           appbarTitle: "Information",
-                          language: selectedLanguage,
+                          // language: selectedLanguage,
                         )));
             break;
           case IconsMenu.Setting:
@@ -114,7 +109,6 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => SettingPage(
-                          language: selectedLanguage,
                           isbuttomsheet: true,
                           appbarTitle: "Setting",
                         )));
@@ -156,31 +150,31 @@ class _HomePageState extends State<HomePage> {
       if (element.contains('news')) {
         _screens.add(
           NewsPage(
-            language: selectedLanguage,
-          ),
+              // language: selectedLanguage,
+              ),
         );
       } else if (element.contains('student')) {
         _screens.add(
           StudentPage(
-            language: selectedLanguage,
-          ),
+              // language: selectedLanguage,
+              ),
         );
       } else if (element.contains('families')) {
         _screens.add(
           FamilyPage(
             obj: widget.homeObj,
-            language: selectedLanguage,
+            // language: selectedLanguage,
           ),
         );
       } else if (element.contains('staff')) {
         _screens.add(StaffPage(
-          language: selectedLanguage,
-        ));
+            // language: selectedLanguage,
+            ));
       } else if (element.contains('social')) {
         _screens.add(
           SocialPage(
-            language: selectedLanguage,
-          ),
+              // language: selectedLanguage,
+              ),
         );
       }
     });
@@ -189,27 +183,18 @@ class _HomePageState extends State<HomePage> {
 
   selectedScreenBody(context, _selectedIndex, list) {
     if (list[_selectedIndex].split("_")[0].contains("Social")) {
-      return SocialPage(
-        language: selectedLanguage,
-      );
+      return SocialPage();
     } else if (list[_selectedIndex].split("_")[0].contains("News")) {
       hideIndicator();
-      return NewsPage(
-        language: selectedLanguage,
-      );
+      return NewsPage();
     } else if (list[_selectedIndex].split("_")[0].contains("Student")) {
-      return StudentPage(
-        language: selectedLanguage,
-      );
+      return StudentPage();
     } else if (list[_selectedIndex].split("_")[0].contains("Famil")) {
       return FamilyPage(
         obj: widget.homeObj,
-        language: selectedLanguage,
       );
     } else if (list[_selectedIndex].split("_")[0].contains("Staff")) {
-      return StaffPage(
-        language: selectedLanguage,
-      );
+      return StaffPage();
     }
   }
 
@@ -364,74 +349,77 @@ class _HomePageState extends State<HomePage> {
     //   ),
     // );
 
-    return Scaffold(
-        // appBar: new AppBar(
-        //     backgroundColor: Colors.white,
-        //     leadingWidth: _kIconSize,
-        //     elevation: 0.0,
-        //     leading:
-        //         // _selectedIndex == 3
-        //         //     ?
-        //         GestureDetector(
-        //       onTap: () {
-        //         LanguageSelector(context, item, (language) {
-        //           if (language != null) {
-        //             setState(() {
-        //               selectedLanguage = language;
-        //               langadded.value = language;
-        //             });
-        //           }
-        //         });
-        //       },
-        //       child: Padding(
-        //         padding: const EdgeInsets.all(12.0),
-        //         child: const Icon(IconData(0xe800,
-        //             fontFamily: Overrides.kFontFam,
-        //             fontPackage: Overrides.kFontPkg)),
-        //       ),
-        //     ),
-        //     title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
-        //     actions: <Widget>[
-        //       SearchButtonWidget(),
-        //       _buildPopupMenuWidget(),
-        //     ]),
-        body: PersistentTabView(
-          context,
-          controller: _controller,
-          screens: _buildScreens(),
-          items: _navBarsItems(),
-          confineInSafeArea: true,
-          backgroundColor: Colors.white, // Default is Colors.white.
-          handleAndroidBackButtonPress: true, // Default is true.
-          resizeToAvoidBottomInset:
-              true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-          stateManagement: true, // Default is true.
-          hideNavigationBarWhenKeyboardShows:
-              true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-          decoration: NavBarDecoration(
-              borderRadius: BorderRadius.circular(25.0),
-              colorBehindNavBar: Colors.grey,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  blurRadius: 5.0,
-                ),
-              ]),
-          popAllScreensOnTapOfSelectedTab: true,
-          popActionScreens: PopActionScreensType.all,
-          itemAnimationProperties: ItemAnimationProperties(
-            // Navigation Bar's items animation properties.
-            duration: Duration(milliseconds: 200),
-            curve: Curves.ease,
-          ),
-          screenTransitionAnimation: ScreenTransitionAnimation(
-            // Screen transition animation on change of selected tab.
-            animateTabTransition: true,
-            curve: Curves.ease,
-            duration: Duration(milliseconds: 200),
-          ),
-          navBarStyle: NavBarStyle
-              .style6, // Choose the nav bar style with this property.
-        ));
+    return WillPopScope(
+      onWillPop: () => _onBackPressed(),
+      child: Scaffold(
+          // appBar: new AppBar(
+          //     backgroundColor: Colors.white,
+          //     leadingWidth: _kIconSize,
+          //     elevation: 0.0,
+          //     leading:
+          //         // _selectedIndex == 3
+          //         //     ?
+          //         GestureDetector(
+          //       onTap: () {
+          //         LanguageSelector(context, item, (language) {
+          //           if (language != null) {
+          //             setState(() {
+          //               selectedLanguage = language;
+          //               langadded.value = language;
+          //             });
+          //           }
+          //         });
+          //       },
+          //       child: Padding(
+          //         padding: const EdgeInsets.all(12.0),
+          //         child: const Icon(IconData(0xe800,
+          //             fontFamily: Overrides.kFontFam,
+          //             fontPackage: Overrides.kFontPkg)),
+          //       ),
+          //     ),
+          //     title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          //     actions: <Widget>[
+          //       SearchButtonWidget(),
+          //       _buildPopupMenuWidget(),
+          //     ]),
+          body: PersistentTabView(
+        context,
+        controller: _controller,
+        screens: _buildScreens(),
+        items: _navBarsItems(),
+        confineInSafeArea: true,
+        backgroundColor: Colors.white, // Default is Colors.white.
+        handleAndroidBackButtonPress: true, // Default is true.
+        resizeToAvoidBottomInset:
+            true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+        stateManagement: true, // Default is true.
+        hideNavigationBarWhenKeyboardShows:
+            true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+        decoration: NavBarDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            colorBehindNavBar: Colors.grey,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 5.0,
+              ),
+            ]),
+        popAllScreensOnTapOfSelectedTab: true,
+        popActionScreens: PopActionScreensType.all,
+        itemAnimationProperties: ItemAnimationProperties(
+          // Navigation Bar's items animation properties.
+          duration: Duration(milliseconds: 200),
+          curve: Curves.ease,
+        ),
+        screenTransitionAnimation: ScreenTransitionAnimation(
+          // Screen transition animation on change of selected tab.
+          animateTabTransition: true,
+          curve: Curves.ease,
+          duration: Duration(milliseconds: 200),
+        ),
+        navBarStyle:
+            NavBarStyle.style6, // Choose the nav bar style with this property.
+      )),
+    );
   }
 }

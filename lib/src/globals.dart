@@ -17,4 +17,5 @@ class Globals {
   // static GlobalKey<NavigatorState>? appNavigator;
   static Locale? myLocale;
   static int? notiCount;
+  static String? selectedLanguage;
 }

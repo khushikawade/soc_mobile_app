@@ -1,21 +1,19 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppsFolderPage extends StatefulWidget {
   List obj = [];
   String folderName;
-  String? language;
   @override
-  AppsFolderPage(
-      {Key? key,
-      required this.obj,
-      required this.folderName,
-      required this.language})
-      : super(key: key);
+  AppsFolderPage({
+    Key? key,
+    required this.obj,
+    required this.folderName,
+  }) : super(key: key);
   @override
   State<StatefulWidget> createState() => AppsFolderPageState();
 }
@@ -63,7 +61,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                     title: obj.titleC!,
                     url: obj.appUrlC!,
                     isbuttomsheet: true,
-                    language: widget.language,
+                    language: Globals.selectedLanguage,
                   )));
     } else {
       await launch(obj.appUrlC!);
@@ -116,8 +114,8 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                           ),
                                         )
                                       : Container(),
-                                  widget.language != null &&
-                                          widget.language != "English"
+                                  Globals.selectedLanguage != null &&
+                                          Globals.selectedLanguage != "English"
                                       ? TranslationWidget(
                                           message:
                                               apps[index].appFolderc != null &&
@@ -126,7 +124,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                   ? "${apps[index].titleC}"
                                                   : '',
                                           fromLanguage: "en",
-                                          toLanguage: widget.language,
+                                          toLanguage: Globals.selectedLanguage,
                                           builder: (translatedMessage) => Text(
                                             translatedMessage.toString(),
                                             style: Theme.of(context)
@@ -146,12 +144,12 @@ class AppsFolderPageState extends State<AppsFolderPage>
                     )
                   : Center(
                       child: Container(
-                          child: widget.language != null &&
-                                  widget.language != "English"
+                          child: Globals.selectedLanguage != null &&
+                                  Globals.selectedLanguage != "English"
                               ? TranslationWidget(
                                   message: "No apps available here",
                                   fromLanguage: "en",
-                                  toLanguage: widget.language,
+                                  toLanguage: Globals.selectedLanguage,
                                   builder: (translatedMessage) => Text(
                                     translatedMessage.toString(),
                                   ),

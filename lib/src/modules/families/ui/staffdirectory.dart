@@ -56,10 +56,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: tittle,
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
@@ -184,10 +185,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      widget.language != null && widget.language != "English"
+                      Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English"
                           ? TranslationWidget(
                               message: obj.titleC ?? "-",
-                              toLanguage: widget.language,
+                              toLanguage: Globals.selectedLanguage,
                               fromLanguage: "en",
                               builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
@@ -204,10 +206,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   .bodyText1!
                                   .copyWith(fontWeight: FontWeight.w400)),
                       SpacerWidget(_kLabelSpacing),
-                      widget.language != null && widget.language != "English"
+                      Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English"
                           ? TranslationWidget(
                               message: obj.descriptionC ?? "-",
-                              toLanguage: widget.language,
+                              toLanguage: Globals.selectedLanguage,
                               fromLanguage: "en",
                               builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
@@ -289,7 +292,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
           sharedpopUpheaderText: '',
           isShare: false,
           isCenterIcon: true,
-          language: widget.language,
+          language: Globals.selectedLanguage,
         ),
         body: SafeArea(
           child: BlocBuilder<FamilyBloc, FamilyState>(
@@ -318,10 +321,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     ],
                   );
                 } else if (state is ErrorLoading) {
-                  return widget.language != null && widget.language != "English"
+                  return Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
                       ? TranslationWidget(
                           message: "Unable to load the data",
-                          toLanguage: widget.language,
+                          toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                                 translatedMessage.toString(),

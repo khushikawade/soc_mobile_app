@@ -13,14 +13,10 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
-  String? language;
   bool isbuttomsheet;
   String appbarTitle;
   SettingPage(
-      {Key? key,
-      required this.language,
-      required this.isbuttomsheet,
-      required this.appbarTitle})
+      {Key? key, required this.isbuttomsheet, required this.appbarTitle})
       : super(key: key);
   @override
   _SettingPageState createState() => _SettingPageState();
@@ -64,11 +60,12 @@ class _SettingPageState extends State<SettingPage> {
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: tittle,
                     fromLanguage: "en",
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
                         translatedMessage.toString(),
                         style: Theme.of(context).textTheme.headline3),
@@ -115,13 +112,14 @@ class _SettingPageState extends State<SettingPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        widget.language != null && widget.language != "English"
+        Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? Container(
                 padding: EdgeInsets.all(16),
                 child: TranslationWidget(
                   message: "Enable Notification",
                   fromLanguage: "en",
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Padding(
                     padding: const EdgeInsets.only(left: _kLabelSpacing),
                     child: Text(translatedMessage.toString(),
@@ -152,19 +150,18 @@ class _SettingPageState extends State<SettingPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => Licenceinfo(
-                      language: widget.language,
-                    )));
+                builder: (BuildContext context) => Licenceinfo()));
 
         // urlobj.callurlLaucher(context, "https://www.google.com/");
       },
       child: Container(
         padding: EdgeInsets.all(16),
-        child: widget.language != null && widget.language != "English"
+        child: Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: "Open Source licences",
                 fromLanguage: "en",
-                toLanguage: widget.language,
+                toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     style: Theme.of(context)
@@ -189,7 +186,7 @@ class _SettingPageState extends State<SettingPage> {
           isShare: false,
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
-          language: widget.language,
+          language: Globals.selectedLanguage,
         ),
         body: Container(
             child: ListView(
@@ -203,7 +200,7 @@ class _SettingPageState extends State<SettingPage> {
                 width: MediaQuery.of(context).size.width * 1,
                 height: 100.0,
                 child: ShareButtonWidget(
-                  language: widget.language,
+                  language: Globals.selectedLanguage,
                 )),
           ],
         )),

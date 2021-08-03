@@ -85,7 +85,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
           appBarTitle: widget.tittle!,
           sharedpopBodytext: widget.url.toString(),
           sharedpopUpheaderText: "Please check out this",
-          language: widget.language,
+          language: Globals.selectedLanguage,
         ),
         body: widget.url != null && widget.url != ""
             ? document == null
@@ -107,11 +107,12 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
             : Container(
                 alignment: Alignment.center,
                 height: MediaQuery.of(context).size.height * 0.7,
-                child: widget.language != null && widget.language != "English"
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: "No Document Found",
                         fromLanguage: "en",
-                        toLanguage: widget.language,
+                        toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) => Text(
                           translatedMessage.toString(),
                         ),

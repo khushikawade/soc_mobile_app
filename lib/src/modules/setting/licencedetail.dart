@@ -1,5 +1,5 @@
 import 'package:Soc/oss_licenses.dart';
-import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -9,10 +9,8 @@ import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 
 class LicenceDetailPage extends StatefulWidget {
-  String? language;
   int index;
-  LicenceDetailPage(
-      {Key? key, this.title, required this.language, required this.index})
+  LicenceDetailPage({Key? key, this.title, required this.index})
       : super(key: key);
   final String? title;
   @override
@@ -44,11 +42,12 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
       child: Row(
         children: [
           Expanded(
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: list["description"].toString(),
                     fromLanguage: "en",
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
                       translatedMessage,
                       style: Theme.of(context)
@@ -82,11 +81,12 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: list["name"].toString(),
                     fromLanguage: "en",
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
                       translatedMessage,
                       style: Theme.of(context)
@@ -115,11 +115,11 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
   //       padding: const EdgeInsets.symmetric(
   //         horizontal: _kLabelSpacing,
   //       ),
-  //       child: widget.language != null && widget.language != "English"
+  //       child:  Globals.selectedLanguage != null &&  Globals.selectedLanguage != "English"
   //           ? TranslationWidget(
   //               message: "Homepage:",
   //               fromLanguage: "en",
-  //               toLanguage: widget.language,
+  //               toLanguage:  Globals.selectedLanguage,
   //               builder: (translatedMessage) => Text(
   //                 translatedMessage,
   //                 style: Theme.of(context)
@@ -151,11 +151,12 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
               onTap: () {
                 urlobj.callurlLaucher(context, "${list["homepage"]}");
               },
-              child: widget.language != null && widget.language != "English"
+              child: Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English"
                   ? TranslationWidget(
                       message: list["homepage"].toString(),
                       fromLanguage: "en",
-                      toLanguage: widget.language,
+                      toLanguage: Globals.selectedLanguage,
                       builder: (translatedMessage) => Text(
                         translatedMessage,
                         style: Theme.of(context).textTheme.headline3!.copyWith(
@@ -187,11 +188,12 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: "Version:",
                   fromLanguage: "en",
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Text(
                     translatedMessage,
                     style: Theme.of(context)
@@ -211,11 +213,12 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: list["version"].toString(),
                     fromLanguage: "en",
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
                       translatedMessage,
                       style: Theme.of(context)
@@ -244,11 +247,12 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
       padding: const EdgeInsets.symmetric(
         horizontal: _kLabelSpacing,
       ),
-      child: widget.language != null && widget.language != "English"
+      child: Globals.selectedLanguage != null &&
+              Globals.selectedLanguage != "English"
           ? TranslationWidget(
               message: "Authors:",
               fromLanguage: "en",
-              toLanguage: widget.language,
+              toLanguage: Globals.selectedLanguage,
               builder: (translatedMessage) => Text(
                 translatedMessage,
                 style: Theme.of(context)
@@ -279,12 +283,13 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message:
                         "${list["authors"].toString().replaceAll('[', '').replaceAll(']', '')}",
                     fromLanguage: "en",
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
                       translatedMessage,
                       style: Theme.of(context)
@@ -313,11 +318,12 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
         ),
-        child: widget.language != null && widget.language != "English"
+        child: Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: "License:",
                 fromLanguage: "en",
-                toLanguage: widget.language,
+                toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
                   style: Theme.of(context)
@@ -345,12 +351,13 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           padding: const EdgeInsets.symmetric(
             horizontal: _kLabelSpacing,
           ),
-          child: widget.language != null && widget.language != "English"
+          child: Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message:
                       "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "").replaceAll("*", "").replaceAll("     ", "")}",
                   fromLanguage: "en",
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Text(
                     translatedMessage,
                     style: Theme.of(context)
@@ -381,7 +388,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         appBarTitle: "Licence Detail",
         sharedpopUpheaderText: '',
         sharedpopBodytext: '',
-        language: widget.language,
+        language: Globals.selectedLanguage,
       ),
       body: Container(
           color: AppTheme.kListBackgroundColor2,

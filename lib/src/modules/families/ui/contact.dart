@@ -81,11 +81,11 @@ class _ContactPageState extends State<ContactPage> {
           horizontal: _kLabelSpacing,
         ),
         child: widget.obj["Contact_Name__c"] != null &&
-                widget.language != null &&
-                widget.language != "English"
+                Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: widget.obj["Contact_Name__c"] ?? "-",
-                toLanguage: widget.language,
+                toLanguage: Globals.selectedLanguage,
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
@@ -183,10 +183,11 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: "Address:",
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
@@ -207,10 +208,11 @@ class _ContactPageState extends State<ContactPage> {
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: widget.obj["Contact_Address__c"] ?? '-',
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
@@ -235,10 +237,11 @@ class _ContactPageState extends State<ContactPage> {
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
       child: Row(
         children: [
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: "Phone :",
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
@@ -263,10 +266,11 @@ class _ContactPageState extends State<ContactPage> {
                     context, "tel:" + widget.obj["Contact_Phone__c"]);
               }
             },
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: widget.obj["Contact_Phone__c"] ?? '-',
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
@@ -306,10 +310,11 @@ class _ContactPageState extends State<ContactPage> {
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
       child: Row(
         children: [
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: "Email :",
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
@@ -352,7 +357,7 @@ class _ContactPageState extends State<ContactPage> {
           appBarTitle: widget.appBarTitle,
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
-          language: widget.language,
+          language: Globals.selectedLanguage,
         ),
         body: ListView(children: [
           _buildIcon(),

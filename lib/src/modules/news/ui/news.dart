@@ -1,18 +1,14 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class NewsPage extends StatefulWidget {
-  String? language;
-  NewsPage({Key? key, this.language}) : super(key: key);
   @override
   _NewsPageState createState() => _NewsPageState();
 }
@@ -56,7 +52,7 @@ class _NewsPageState extends State<NewsPage> {
                         iseventpage: false,
                         date: "$newsTimeStamp",
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )));
         },
         child: Row(
@@ -114,11 +110,12 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildnewsHeading(obj) {
     return Container(
         alignment: Alignment.centerLeft,
-        child: widget.language != null && widget.language != "English"
+        child: Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: obj.contents["en"] ?? '-',
                 fromLanguage: "en",
-                toLanguage: widget.language,
+                toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
                   // obj.titleC.toString(),
                   translatedMessage.toString(),
@@ -173,11 +170,11 @@ class _NewsPageState extends State<NewsPage> {
                         : Container(
                             alignment: Alignment.center,
                             height: MediaQuery.of(context).size.height * 0.8,
-                            child: widget.language != null &&
-                                    widget.language != "English"
+                            child: Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English"
                                 ? TranslationWidget(
                                     message: "No news found",
-                                    toLanguage: widget.language,
+                                    toLanguage: Globals.selectedLanguage,
                                     fromLanguage: "en",
                                     builder: (translatedMessage) =>
                                         Text(translatedMessage))
@@ -197,11 +194,11 @@ class _NewsPageState extends State<NewsPage> {
                     return Container(
                       alignment: Alignment.center,
                       height: MediaQuery.of(context).size.height * 0.8,
-                      child: widget.language != null &&
-                              widget.language != "English"
+                      child: Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English"
                           ? TranslationWidget(
                               message: "Unable to load the data",
-                              toLanguage: widget.language,
+                              toLanguage: Globals.selectedLanguage,
                               fromLanguage: "en",
                               builder: (translatedMessage) =>
                                   Text(translatedMessage))

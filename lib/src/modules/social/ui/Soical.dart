@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -11,9 +12,9 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
 class SocialPage extends StatefulWidget {
-  SocialPage({Key? key, this.title, this.language}) : super(key: key);
+  SocialPage({Key? key, this.title}) : super(key: key);
   final String? title;
-  String? language;
+
   @override
   _SocialPageState createState() => _SocialPageState();
 }
@@ -61,7 +62,7 @@ class _SocialPageState extends State<SocialPage> {
                         iseventpage: false,
                         date: '1',
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )));
         },
         child: Row(
@@ -106,13 +107,13 @@ class _SocialPageState extends State<SocialPage> {
                               obj.title["__cdata"].length > 1
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.69,
-                              child: widget.language != null &&
-                                      widget.language != "English"
+                              child: Globals.selectedLanguage != null &&
+                                      Globals.selectedLanguage != "English"
                                   ? TranslationWidget(
                                       message:
                                           "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
                                       fromLanguage: "en",
-                                      toLanguage: widget.language,
+                                      toLanguage: Globals.selectedLanguage,
                                       builder: (translatedMessage) => Text(
                                         translatedMessage.toString(),
                                         overflow: TextOverflow.ellipsis,
@@ -142,13 +143,13 @@ class _SocialPageState extends State<SocialPage> {
                       obj.pubDate != null && obj.pubDate.length > 1
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.40,
-                              child: widget.language != null &&
-                                      widget.language != "English"
+                              child: Globals.selectedLanguage != null &&
+                                      Globals.selectedLanguage != "English"
                                   ? TranslationWidget(
                                       message: Utility.convertDate(obj.pubDate)
                                           .toString(),
                                       fromLanguage: "en",
-                                      toLanguage: widget.language,
+                                      toLanguage: Globals.selectedLanguage,
                                       builder: (translatedMessage) => Text(
                                         translatedMessage.toString(),
                                         style: Theme.of(context)
@@ -186,7 +187,7 @@ class _SocialPageState extends State<SocialPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBarWidget(),
+      appBar: AppBarWidget(),
       body: BlocBuilder(
           bloc: bloc,
           builder: (BuildContext context, SocialState state) {
@@ -201,11 +202,11 @@ class _SocialPageState extends State<SocialPage> {
                       child: Container(
                           alignment: Alignment.center,
                           height: MediaQuery.of(context).size.height * 0.8,
-                          child: widget.language != null &&
-                                  widget.language != "English"
+                          child: Globals.selectedLanguage != null &&
+                                  Globals.selectedLanguage != "English"
                               ? TranslationWidget(
                                   message: "No data found",
-                                  toLanguage: widget.language,
+                                  toLanguage: Globals.selectedLanguage,
                                   fromLanguage: "en",
                                   builder: (translatedMessage) => Text(
                                     translatedMessage.toString(),
@@ -225,10 +226,11 @@ class _SocialPageState extends State<SocialPage> {
               return Container(
                 alignment: Alignment.center,
                 height: MediaQuery.of(context).size.height * 0.8,
-                child: widget.language != null && widget.language != "English"
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: "Unable to load the data",
-                        toLanguage: widget.language,
+                        toLanguage: Globals.selectedLanguage,
                         fromLanguage: "en",
                         builder: (translatedMessage) => Text(
                           translatedMessage.toString(),

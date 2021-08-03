@@ -43,7 +43,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
           appBarTitle: widget.title,
           sharedpopBodytext: widget.url.toString(),
           sharedpopUpheaderText: "Please checkout this link",
-          language: widget.language,
+          language: Globals.selectedLanguage,
         ),
         body: WebView(
           initialUrl: '${widget.url}',

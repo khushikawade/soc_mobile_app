@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
@@ -11,8 +12,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class StudentPage extends StatefulWidget {
   final homeObj;
-  String? language;
-  StudentPage({Key? key, this.homeObj, this.language}) : super(key: key);
+
+  StudentPage({Key? key, this.homeObj}) : super(key: key);
   _StudentPageState createState() => _StudentPageState();
 }
 
@@ -41,7 +42,6 @@ class _StudentPageState extends State<StudentPage> {
         builder: (_) => AppsFolderPage(
           obj: subList,
           folderName: obj.titleC!,
-          language: widget.language,
         ),
       );
     } else {
@@ -53,7 +53,7 @@ class _StudentPageState extends State<StudentPage> {
                       title: obj.titleC!,
                       url: obj.appUrlC!,
                       isbuttomsheet: true,
-                      language: widget.language,
+                      language: Globals.selectedLanguage,
                     )));
       } else {
         if (await canLaunch(obj.appUrlC!)) {
@@ -96,12 +96,12 @@ class _StudentPageState extends State<StudentPage> {
                                 )
                               : Container(),
                           Expanded(
-                              child: widget.language != null &&
-                                      widget.language != "English"
+                              child: Globals.selectedLanguage != null &&
+                                      Globals.selectedLanguage != "English"
                                   ? TranslationWidget(
                                       message: "${list[index].titleC}",
                                       fromLanguage: "en",
-                                      toLanguage: widget.language,
+                                      toLanguage: Globals.selectedLanguage,
                                       builder: (translatedMessage) => Text(
                                         translatedMessage.toString(),
                                         textAlign: TextAlign.center,
@@ -118,11 +118,12 @@ class _StudentPageState extends State<StudentPage> {
             );
           })
         : Container(
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: "No apps available here",
                     fromLanguage: "en",
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
                       textAlign: TextAlign.center,
@@ -134,7 +135,7 @@ class _StudentPageState extends State<StudentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(),
+        appBar: AppBarWidget(),
         body: BlocBuilder<StudentBloc, StudentState>(
             bloc: _bloc,
             builder: (BuildContext contxt, StudentState state) {
@@ -149,12 +150,12 @@ class _StudentPageState extends State<StudentPage> {
                     : Container(
                         alignment: Alignment.center,
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: widget.language != null &&
-                                widget.language != "English"
+                        child: Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
                             ? TranslationWidget(
                                 message: "No data found",
                                 fromLanguage: "en",
-                                toLanguage: widget.language,
+                                toLanguage: Globals.selectedLanguage,
                                 builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
                                   textAlign: TextAlign.center,
@@ -166,11 +167,12 @@ class _StudentPageState extends State<StudentPage> {
                 return Container(
                   alignment: Alignment.center,
                   height: MediaQuery.of(context).size.height * 0.8,
-                  child: widget.language != null && widget.language != "English"
+                  child: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
                       ? TranslationWidget(
                           message: "Unable to load the data",
                           fromLanguage: "en",
-                          toLanguage: widget.language,
+                          toLanguage: Globals.selectedLanguage,
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
                             textAlign: TextAlign.center,
