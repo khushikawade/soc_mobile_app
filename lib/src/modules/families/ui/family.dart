@@ -2,6 +2,7 @@ import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
+import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -175,6 +176,7 @@ class _FamilyPageState extends State<FamilyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
+        appBar: AppBarWidget(),
         body: BlocBuilder<FamilyBloc, FamilyState>(
             bloc: _bloc,
             builder: (BuildContext contxt, FamilyState state) {
@@ -187,12 +189,12 @@ class _FamilyPageState extends State<FamilyPage> {
                 return Container(
                   child: state.obj != null && state.obj!.length > 0
                       ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: state.obj!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buildList(state.obj![index], index);
-                        },
-                      )
+                          scrollDirection: Axis.vertical,
+                          itemCount: state.obj!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return _buildList(state.obj![index], index);
+                          },
+                        )
                       : Container(
                           alignment: Alignment.center,
                           height: MediaQuery.of(context).size.height * 0.8,
