@@ -89,11 +89,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           backgroundColor: Colors.white,
           leadingWidth: _kIconSize,
           elevation: 0.0,
-          leading:
-              // _selectedIndex == 3
-              //     ?
-              GestureDetector(
-            onTap: () {
+          leading: IconButton(
+            icon: const Icon(IconData(0xe800,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg)),
+            onPressed: () {
               LanguageSelector(context, item, (language) {
                 if (language != null) {
                   setState(() {
@@ -103,13 +103,26 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 }
               });
             },
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: const Icon(IconData(0xe800,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg)),
-            ),
           ),
+
+          //     GestureDetector(
+          //   onTap: () {
+          //     LanguageSelector(context, item, (language) {
+          //       if (language != null) {
+          //         setState(() {
+          //           Globals.selectedLanguage = language;
+          //           languageChanged.value = language;
+          //         });
+          //       }
+          //     });
+          //   },
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(12.0),
+          //     child: const Icon(IconData(0xe800,
+          //         fontFamily: Overrides.kFontFam,
+          //         fontPackage: Overrides.kFontPkg)),
+          //   ),
+          // ),
           title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: <Widget>[
             SearchButtonWidget(
