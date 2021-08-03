@@ -179,25 +179,18 @@ class SocialDescription extends StatelessWidget {
                 child: Image(image: AssetImage("assets/images/appicon.png")),
               ),
         language != null && language != "English"
-            ? Column(
-                children: [
-                  TranslationWidget(
-                    message: data,
-                    fromLanguage: "en",
-                    toLanguage: language,
-                    builder: (translatedMessage) => Text(
-                      translatedMessage
-                          .toString()
-                          .replaceAll(new RegExp(r'[\\]+'), '\n')
-                          .replaceAll("n.", ".")
-                          .replaceAll("\nn", "\n")
-                          .replaceAll("\\ n ", ""),
-                    ),
-                  ),
-                  Text(
-                    "#" + data2,
-                  )
-                ],
+            ? TranslationWidget(
+                message: "${data + "#" + data2}",
+                fromLanguage: "en",
+                toLanguage: language,
+                builder: (translatedMessage) => Text(
+                  translatedMessage
+                      .toString()
+                      .replaceAll(new RegExp(r'[\\]+'), '\n')
+                      .replaceAll("n.", ".")
+                      .replaceAll("\nn", "\n")
+                      .replaceAll("\\ n ", ""),
+                ),
               )
             : Html(
                 data:
