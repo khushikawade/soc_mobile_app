@@ -25,7 +25,6 @@ class _TranslationWidgetState extends State<TranslationWidget> {
   String? translation;
   @override
   Widget build(BuildContext context) {
-    // final fromLanguageCode = Translations.getLanguageCode(widget.fromLanguage);
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
 
