@@ -232,12 +232,17 @@ class _HomePageState extends State<HomePage> {
         .map<PersistentBottomNavBarItem>(
           (item) => PersistentBottomNavBarItem(
             // contentPadding: 15,
-            icon: Icon(
-              IconData(int.parse(item.split("_")[1]),
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              // size: Globals.deviceType == "phone" ? 24 : 32,
+            icon: Column(
+              children: [
+                Icon(
+                  IconData(int.parse(item.split("_")[1]),
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  // size: Globals.deviceType == "phone" ? 24 : 32,
+                ),
+              ],
             ),
+
             title: ("${item.split("_")[0]}"),
             activeColorPrimary: Theme.of(context).primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
