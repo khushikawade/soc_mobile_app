@@ -23,6 +23,7 @@ class Newdescription extends StatefulWidget {
 
 class _NewdescriptionState extends State<Newdescription> {
   static const double _kLabelSpacing = 20.0;
+  static const double _kIconSize = 45.0;
 
   _launchURL(obj) async {
     Navigator.push(
@@ -59,8 +60,21 @@ class _NewdescriptionState extends State<Newdescription> {
                       )
                     : Container(
                         alignment: Alignment.center,
-                        child: Image(
-                            image: AssetImage("assets/images/appicon.png")),
+                        child: ClipRRect(
+                          child: CachedNetworkImage(
+                            imageUrl: Globals.homeObjet["App_Logo__c"],
+                            placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              width: _kIconSize * 1.4,
+                              height: _kIconSize * 1.5,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                        ),
                       ),
               ),
             ),

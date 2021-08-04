@@ -169,7 +169,7 @@ class _SliderWidgetState extends State<SliderWidget> {
     return SafeArea(
       child: Container(
         padding: EdgeInsets.all(_kPadding),
-        color: AppTheme.kBackgroundColor,
+        color: Theme.of(context).backgroundColor,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[

@@ -151,7 +151,7 @@ class _FamilyPageState extends State<FamilyPage> {
             fontFamily: 'FontAwesomeSolid',
             fontPackage: 'font_awesome_flutter',
           ),
-          color: AppTheme.kListIconColor3,
+          // color: AppTheme.kListIconColor3,
           size: Globals.deviceType == "phone" ? 18 : 26,
         ),
         title: Globals.selectedLanguage != null &&
@@ -172,7 +172,7 @@ class _FamilyPageState extends State<FamilyPage> {
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
-          color: AppTheme.kButtonbackColor,
+          // color: AppTheme.kButtonbackColor,
         ),
       ),
     );
@@ -186,10 +186,7 @@ class _FamilyPageState extends State<FamilyPage> {
             bloc: _bloc,
             builder: (BuildContext contxt, FamilyState state) {
               if (state is FamilyInitial || state is FamilyLoading) {
-                return Center(
-                    child: CircularProgressIndicator(
-                  
-                ));
+                return Center(child: CircularProgressIndicator());
               } else if (state is FamiliesDataSucess) {
                 return state.obj != null && state.obj!.length > 0
                     ? ListView.builder(

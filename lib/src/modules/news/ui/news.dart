@@ -70,7 +70,6 @@ class _NewsPageState extends State<NewsPage> {
                           alignment: Alignment.center,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            
                           ),
                         ),
                         errorWidget: (context, url, error) => Icon(Icons.error),
@@ -79,8 +78,21 @@ class _NewsPageState extends State<NewsPage> {
                   : Container(
                       height: _kIconSize * 1.5,
                       alignment: Alignment.centerLeft,
-                      child:
-                          Image(image: AssetImage("assets/images/appicon.png")),
+                      child: ClipRRect(
+                        child: CachedNetworkImage(
+                          imageUrl: Globals.homeObjet["App_Logo__c"],
+                          placeholder: (context, url) => Container(
+                            alignment: Alignment.center,
+                            width: _kIconSize * 1.4,
+                            height: _kIconSize * 1.5,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
+                      ),
                     ),
             ),
             SizedBox(
@@ -184,10 +196,7 @@ class _NewsPageState extends State<NewsPage> {
                     return Expanded(
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          
-                        )),
+                        child: Center(child: CircularProgressIndicator()),
                       ),
                     );
                   } else if (state is NewsErrorReceived) {
@@ -208,10 +217,7 @@ class _NewsPageState extends State<NewsPage> {
                     return Expanded(
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          
-                        )),
+                        child: Center(child: CircularProgressIndicator()),
                       ),
                     );
                   } else if (state is NewsErrorReceived) {

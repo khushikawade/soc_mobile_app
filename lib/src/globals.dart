@@ -21,4 +21,6 @@ class Globals {
   static Locale? myLocale;
   static int? notiCount;
   static String? selectedLanguage;
+  static String? appLogo;
+  static bool? isnetworkexception = false;
 }

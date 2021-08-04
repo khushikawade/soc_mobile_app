@@ -28,7 +28,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     try {
       await _dbServices.login();
     } catch (e) {
-      throw (e);
+      throw (e) {
+        if (e.toString().contains('Failed host lookup')) {
+          throw ('NO_CONNECTION');
+        } else {
+          throw (e);
+        }
+      };
     }
   }
 }

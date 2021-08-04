@@ -174,36 +174,29 @@ class _SearchPageState extends State<SearchPage> {
             decoration: InputDecoration(
               isDense: true,
               hintText: 'Search',
-              contentPadding: EdgeInsets.symmetric(
-                  vertical: _kLabelSpacing / 1.5,
-                  horizontal: _kLabelSpacing / 2),
               filled: true,
-              fillColor: AppTheme.kBackgroundColor,
-              border: OutlineInputBorder(),
+              fillColor: Theme.of(context).backgroundColor,
               prefixIcon: Icon(
                 const IconData(0xe805,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kprefixIconColor,
                 size: Globals.deviceType == "phone" ? 20 : 28,
               ),
-              suffix: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _controller.clear();
-                      issuggestionList = false;
-                      FocusScope.of(context).requestFocus(FocusNode());
-                    });
-                  },
-                  icon: Icon(
-                    Icons.clear,
-                    color: AppTheme.kIconColor,
-                    size: Globals.deviceType == "phone" ? 18 : 26,
-                  ),
-                ),
-              ),
+              suffixIcon: _controller.text.isEmpty
+                  ? null
+                  : InkWell(
+                      onTap: () {
+                        setState(() {
+                          _controller.clear();
+                          issuggestionList = false;
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        });
+                      },
+                      child: Icon(
+                        Icons.clear,
+                        size: Globals.deviceType == "phone" ? 20 : 28,
+                      ),
+                    ),
             ),
             onChanged: onItemChanged,
           )),
@@ -326,77 +319,71 @@ class _SearchPageState extends State<SearchPage> {
             return Expanded(
                 child: state.obj.map != null && state.obj.length > 0
                     ? Container(
-                        margin: EdgeInsets.only(
-                            left: _kLabelSpacing / 2,
-                            right: _kLabelSpacing / 2,
-                            bottom: _kLabelSpacing),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(5.0),
-                              bottomLeft: Radius.circular(5.0)),
-                        ),
+                        // margin: EdgeInsets.only(
+                        //     left: _kLabelSpacing / 2,
+                        //     right: _kLabelSpacing / 2,
+                        //     bottom: _kLabelSpacing),
+                        // decoration: BoxDecoration(),
                         child: ListView(
-                          scrollDirection: Axis.vertical,
-                          padding: EdgeInsets.all(_kLabelSpacing / 2),
-                          children: state.obj.map<Widget>((data) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                border: (state.obj.indexOf(data) % 2 == 0)
-                                    ? Border.all(
-                                        color: AppTheme.kListBackgroundColor3)
-                                    : Border.all(
-                                        color:
-                                            Theme.of(context).backgroundColor),
-                                borderRadius: BorderRadius.circular(0.0),
-                                color: (state.obj.indexOf(data) % 2 == 0)
-                                    ? AppTheme.kListBackgroundColor3
-                                    : Theme.of(context).backgroundColor,
-                              ),
-                              child: ListTile(
-                                  title: Globals.selectedLanguage != null &&
-                                          Globals.selectedLanguage != "English"
-                                      ? TranslationWidget(
-                                          message: data.titleC,
-                                          toLanguage: Globals.selectedLanguage,
-                                          fromLanguage: "en",
-                                          builder: (translatedMessage) => Text(
-                                            translatedMessage.toString(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1,
-                                          ),
-                                        )
-                                      : Text(
-                                          data.titleC ?? '-',
+                        scrollDirection: Axis.vertical,
+                        padding: EdgeInsets.all(_kLabelSpacing / 2),
+                        children: state.obj.map<Widget>((data) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: (state.obj.indexOf(data) % 2 == 0)
+                                  ? Border.all(
+                                      color: Theme.of(context).backgroundColor)
+                                  : Border.all(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                              borderRadius: BorderRadius.circular(0.0),
+                              color: (state.obj.indexOf(data) % 2 == 0)
+                                  ? Theme.of(context).backgroundColor
+                                  : Theme.of(context).colorScheme.secondary,
+                            ),
+                            child: ListTile(
+                                title: Globals.selectedLanguage != null &&
+                                        Globals.selectedLanguage != "English"
+                                    ? TranslationWidget(
+                                        message: data.titleC,
+                                        toLanguage: Globals.selectedLanguage,
+                                        fromLanguage: "en",
+                                        builder: (translatedMessage) => Text(
+                                          translatedMessage.toString(),
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyText1,
                                         ),
-                                  onTap: () async {
-                                    _route(data);
-                                    if (data != null) {
-                                      deleteItem();
-                                      final recentitem = Recent(
-                                          1,
-                                          data.titleC,
-                                          data.appURLC,
-                                          data.urlC,
-                                          data.id,
-                                          data.name,
-                                          data.pdfURL,
-                                          data.rtfHTMLC,
-                                          data.typeC,
-                                          data.deepLink);
+                                      )
+                                    : Text(
+                                        data.titleC ?? '-',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1,
+                                      ),
+                                onTap: () async {
+                                  _route(data);
+                                  if (data != null) {
+                                    deleteItem();
+                                    final recentitem = Recent(
+                                        1,
+                                        data.titleC,
+                                        data.appURLC,
+                                        data.urlC,
+                                        data.id,
+                                        data.name,
+                                        data.pdfURL,
+                                        data.rtfHTMLC,
+                                        data.typeC,
+                                        data.deepLink);
 
-                                      addtoDataBase(recentitem);
-                                    }
-                                  }),
-                            );
-                          }).toList(),
-                        ))
+                                    addtoDataBase(recentitem);
+                                  }
+                                }),
+                          );
+                        }).toList(),
+                      ))
                     : Container(
                         height: 0,
                       ));
@@ -495,9 +482,9 @@ class _SearchPageState extends State<SearchPage> {
           issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
           SpacerWidget(_kLabelSpacing),
           issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
-          issuggestionList == false
-              ? _buildRecentItemList()
-              : SizedBox(height: 0),
+          // issuggestionList == false
+          //     ? _buildRecentItemList()
+          //     : SizedBox(height: 0),
         ]),
       ),
     );

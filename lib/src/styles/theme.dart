@@ -175,6 +175,7 @@ class AppTheme {
             new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         hintStyle: TextStyle(
             color: kTxtFieldColor,
+            height: 1.2,
             fontSize: Globals.deviceType == "phone"
                 ? kSubtitleFontSize
                 : kSubtitleFontSize + _kSize),

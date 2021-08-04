@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -5,6 +6,7 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -15,6 +17,7 @@ class SocialDescription extends StatelessWidget {
   SocialDescription({required this.object, this.language});
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
+  static const double _kIconSize = 45.0;
 
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
@@ -175,7 +178,20 @@ class SocialDescription extends StatelessWidget {
                     ">")
             : Container(
                 alignment: Alignment.center,
-                child: Image(image: AssetImage("assets/images/appicon.png")),
+                child: ClipRRect(
+                  child: CachedNetworkImage(
+                    imageUrl: Globals.homeObjet["App_Logo__c"],
+                    placeholder: (context, url) => Container(
+                      alignment: Alignment.center,
+                      width: _kIconSize * 1.4,
+                      height: _kIconSize * 1.5,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
               ),
         language != null && language != "English"
             ? TranslationWidget(

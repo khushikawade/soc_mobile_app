@@ -30,6 +30,8 @@ class ContactPage extends StatefulWidget {
 class _ContactPageState extends State<ContactPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
+  static const double _kIconSize = 45.0;
+
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
 
   static const double _kboxborderwidth = 0.75;
@@ -65,11 +67,21 @@ class _ContactPageState extends State<ContactPage> {
               ),
             )
           : Container(
-              child: Image.asset(
-              'assets/images/appicon.png',
-              height: 160,
-              width: MediaQuery.of(context).size.width * 1,
-            )),
+              child: ClipRRect(
+                child: CachedNetworkImage(
+                  imageUrl: Globals.homeObjet["App_Logo__c"],
+                  placeholder: (context, url) => Container(
+                    alignment: Alignment.center,
+                    width: _kIconSize * 1.4,
+                    height: _kIconSize * 1.5,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              ),
+            ),
     );
   }
 

@@ -89,9 +89,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           leadingWidth: _kIconSize,
           elevation: 0.0,
           leading: IconButton(
-            icon: const Icon(IconData(0xe800,
-                fontFamily: Overrides.kFontFam,
-                fontPackage: Overrides.kFontPkg)),
+            icon: Icon(
+              IconData(0xe800,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
+              size: Globals.deviceType == "phone" ? 24 : 32,
+            ),
             onPressed: () {
               LanguageSelector(context, item, (language) {
                 if (language != null) {

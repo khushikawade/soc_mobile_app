@@ -118,7 +118,6 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
         child: const Center(
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            backgroundColor: AppTheme.kAccentColor,
           ),
         ),
       ),
@@ -129,7 +128,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
     return SafeArea(
         child: Container(
             padding: EdgeInsets.all(_kPadding / 2),
-            color: AppTheme.kBackgroundColor,
+            color: Theme.of(context).backgroundColor,
             child: Column(
               // mainAxisSize: MainAxisSize.max,
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
