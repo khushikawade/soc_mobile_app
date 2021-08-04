@@ -3,7 +3,8 @@ import 'package:Soc/src/modules/families/modal/family_attributes.dart';
 class FamiliesList {
   Attributes? attributes;
   String? titleC;
-  String? appIconC;
+  String? appIconC; //
+  String? appIconUrlC;
   String? appUrlC;
   String? pdfURL;
   String? id;
@@ -21,6 +22,7 @@ class FamiliesList {
       this.id,
       this.name,
       this.rtfHTMLC,
+      this.appIconUrlC,
       this.typeC,
       this.sortOredr});
 
@@ -30,6 +32,7 @@ class FamiliesList {
           : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
       titleC: json['Title__c'] as String?,
       appIconC: json['App_Icon__c'] as String?,
+      appIconUrlC: json['App_Icon_URL__c'] as String?,
       appUrlC: json['URL__c'] as String?,
       pdfURL: json['PDF_URL__c'] as String?,
       id: json['Id'] as String?,

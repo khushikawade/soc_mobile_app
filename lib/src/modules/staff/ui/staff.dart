@@ -9,6 +9,7 @@ import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -93,6 +94,44 @@ class _StaffPageState extends State<StaffPage> {
     }
   }
 
+  Widget _buildLeading(StaffList obj) {
+    if (obj.appIconUrlC != null) {
+      return Container(
+        child: ClipRRect(
+          child: SizedBox(
+            height: 20,
+            width: 20,
+            child: CachedNetworkImage(
+              imageUrl: obj.appIconUrlC!,
+              fit: BoxFit.cover,
+              height: 20,
+              width: 20,
+              placeholder: (context, url) => Container(
+                alignment: Alignment.center,
+                // width: _kIconSize * 1.4,
+                // height: _kIconSize * 1.5,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Icon(
+        IconData(
+          int.parse('0x${obj.appIconC!}'),
+          fontFamily: 'FontAwesomeSolid',
+          fontPackage: 'font_awesome_flutter',
+        ),
+        // color: AppTheme.kListIconColor3,
+        size: Globals.deviceType == "phone" ? 18 : 26,
+      );
+    }
+  }
+
   Widget _buildList(StaffList obj, int index) {
     return Container(
         decoration: BoxDecoration(
@@ -113,15 +152,16 @@ class _StaffPageState extends State<StaffPage> {
                 visualDensity: VisualDensity(horizontal: 0, vertical: 0),
                 contentPadding: EdgeInsets.only(
                     left: _kLabelSpacing, right: _kLabelSpacing / 2),
-                leading: Icon(
-                  IconData(
-                    int.parse('0x${obj.appIconC!}'),
-                    fontFamily: 'FontAwesomeSolid',
-                    fontPackage: 'font_awesome_flutter',
-                  ),
-                  // color: AppTheme.kListIconColor3,
-                  size: Globals.deviceType == "phone" ? 18 : 26,
-                ),
+                leading: _buildLeading(obj),
+                // leading: Icon(
+                //   IconData(
+                //     int.parse('0x${obj.appIconC!}'),
+                //     fontFamily: 'FontAwesomeSolid',
+                //     fontPackage: 'font_awesome_flutter',
+                //   ),
+                //   // color: AppTheme.kListIconColor3,
+                //   size: Globals.deviceType == "phone" ? 18 : 26,
+                // ),
                 title: Globals.selectedLanguage != null &&
                         Globals.selectedLanguage != "English"
                     ? TranslationWidget(
