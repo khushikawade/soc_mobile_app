@@ -206,7 +206,6 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                       .textTheme
                       .headline3!
                       .copyWith(color: Colors.black),
-                  textAlign: TextAlign.start,
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
@@ -221,7 +220,6 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                           .textTheme
                           .headline3!
                           .copyWith(color: Colors.black),
-                      textAlign: TextAlign.start,
                     ),
                   )
                 : Text(

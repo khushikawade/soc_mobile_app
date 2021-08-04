@@ -265,7 +265,6 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildIListtem(int index, items) {
     return InkWell(
       onTap: () async {
-        // await _recentListRoute(items[index]);
         await _route(items[index]);
       },
       child: Container(
