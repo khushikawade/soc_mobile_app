@@ -74,7 +74,7 @@ class AppTheme {
 
   static final ThemeData lightTheme = ThemeData(
       // fontFamily: 'Roboto',
-      primaryColor: Colors.green,
+      primaryColor: Colors.blue,
       accentColor: kAccentColor,
       errorColor: Colors.red,
       cardTheme: CardTheme(color: kCardColor),
