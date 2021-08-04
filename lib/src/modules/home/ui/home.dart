@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage> {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              backgroundColor: AppTheme.kBackgroundColor,
+              backgroundColor: Theme.of(context).backgroundColor,
               title: Text(
                 "Do you want to exit the app?",
                 style: Theme.of(context).textTheme.headline2,

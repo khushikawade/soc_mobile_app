@@ -62,25 +62,53 @@ class _NewsPageState extends State<NewsPage> {
               height: _kIconSize * 1.5,
               child: obj.image != null
                   ? ClipRRect(
-                      child: CachedNetworkImage(
-                        imageUrl: obj.image!,
-                        height: _kIconSize * 1.5,
-                        width: _kIconSize * 1.4,
-                        placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            
+                      child: SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: CachedNetworkImage(
+                          imageUrl: obj.image!,
+                          height: 100,
+                          width: 100,
+                          // height: _kIconSize * 1.5,
+                          fit: BoxFit.cover,
+                          // width: _kIconSize * 1.4,
+                          placeholder: (context, url) => Container(
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
                           ),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                     )
                   : Container(
                       height: _kIconSize * 1.5,
                       alignment: Alignment.centerLeft,
-                      child:
-                          Image(image: AssetImage("assets/images/appicon.png")),
+                      child: ClipRRect(
+                        child: SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: CachedNetworkImage(
+                            imageUrl: Globals.homeObjet["App_Logo__c"],
+                            fit: BoxFit.cover,
+                            height: 100,
+                            width: 100,
+                            placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              // width: _kIconSize * 1.4,
+                              // height: _kIconSize * 1.5,
+
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                        ),
+                      ),
                     ),
             ),
             SizedBox(
@@ -184,10 +212,7 @@ class _NewsPageState extends State<NewsPage> {
                     return Expanded(
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          
-                        )),
+                        child: Center(child: CircularProgressIndicator()),
                       ),
                     );
                   } else if (state is NewsErrorReceived) {
@@ -208,10 +233,7 @@ class _NewsPageState extends State<NewsPage> {
                     return Expanded(
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          
-                        )),
+                        child: Center(child: CircularProgressIndicator()),
                       ),
                     );
                   } else if (state is NewsErrorReceived) {

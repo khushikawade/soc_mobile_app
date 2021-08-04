@@ -119,7 +119,7 @@ class _StaffPageState extends State<StaffPage> {
                     fontFamily: 'FontAwesomeSolid',
                     fontPackage: 'font_awesome_flutter',
                   ),
-                  color: AppTheme.kListIconColor3,
+                  // color: AppTheme.kListIconColor3,
                   size: Globals.deviceType == "phone" ? 18 : 26,
                 ),
                 title: Globals.selectedLanguage != null &&
@@ -165,10 +165,7 @@ class _StaffPageState extends State<StaffPage> {
             bloc: _bloc,
             builder: (BuildContext contxt, StaffState state) {
               if (state is StaffInitial || state is StaffLoading) {
-                return Center(
-                    child: CircularProgressIndicator(
-                  
-                ));
+                return Center(child: CircularProgressIndicator());
               } else if (state is StaffDataSucess) {
                 return Column(
                   children: [

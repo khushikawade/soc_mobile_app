@@ -80,19 +80,35 @@ class _StartupPageState extends State<StartupPage> {
     if (!mounted) return;
   }
 
+  Widget _buildSplashScreen() {
+    return Center(
+      child: SizedBox(
+        height: 200,
+        width: 200,
+        child:
+            Image.asset('assets/images/splash_bear_icon.png', fit: BoxFit.fill),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(
       children: [
-        Center(
-          child: SizedBox(
-            height: 200,
-            width: 200,
-            child: Image.asset('assets/images/splash_bear_icon.png',
-                fit: BoxFit.fill),
-          ),
-        ),
+        Globals.isnetworkexception!
+            ? Container(child: Text("error"))
+            : _buildSplashScreen(),
+        // Globals.isnetworkexception!
+        //     ? Center(
+        //         child: SizedBox(
+        //           height: 200,
+        //           width: 200,
+        //           child: Text("Unable to load the data"),
+        //         ),
+        //       )
+        //     :
+
         BlocListener<UserBloc, UserState>(
           bloc: _loginBloc,
           listener: (context, state) async {
@@ -103,10 +119,12 @@ class _StartupPageState extends State<StartupPage> {
                       child: Text("Please refresh your application"),
                     );
             } else if (state is LoginError) {
-              Container(
-                alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Text("Unable to load the data"),
+              Center(
+                child: Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Text("Unable to load the data"),
+                ),
               );
             }
           },

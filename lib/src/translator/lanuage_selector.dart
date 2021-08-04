@@ -1,3 +1,5 @@
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -14,6 +16,9 @@ class LanguageSelector {
   }
 
   static final List<String> languagesList = Translations.supportedLanguages;
+  static const double _kLabelSpacing = 20.0;
+  var _controller = TextEditingController();
+  FocusNode myFocusNode = new FocusNode();
 
   void setLanguage(language, context, onLanguageChanged) async {
     selectedLanguage = language;
@@ -62,6 +67,14 @@ class LanguageSelector {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Row(
+                  children: [
+                    Expanded(
+                      // wrap your Column in Expanded
+                      child: Container(child: _buildSearchbar(context)),
+                    ),
+                  ],
+                ),
                 Padding(
                   padding: const EdgeInsets.only(
                       top: 30, left: 30, right: 15, bottom: 30),
@@ -69,6 +82,7 @@ class LanguageSelector {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: [
+                      // _buildSearchbar(context),
                       Text(
                         "Select language",
                         style: Theme.of(context)
@@ -80,6 +94,7 @@ class LanguageSelector {
                           icon: Icon(
                             Icons.close,
                             color: Theme.of(context).colorScheme.secondary,
+                            size: Globals.deviceType == "phone" ? 14 : 22,
                           ),
                           onPressed: () {
                             Navigator.pop(context);
@@ -94,6 +109,51 @@ class LanguageSelector {
           ),
         ),
         context);
+  }
+
+  Widget _buildSearchbar(BuildContext context) {
+    return TextFormField(
+      focusNode: myFocusNode,
+      controller: _controller,
+      cursorColor: Colors.black,
+      decoration: InputDecoration(
+        isDense: true,
+        hintText: 'Search',
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: BorderSide.none),
+        filled: true,
+        fillColor: Theme.of(context).backgroundColor,
+        prefixIcon: Icon(
+          const IconData(0xe805,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          size: Globals.deviceType == "phone" ? 20 : 28,
+        ),
+        suffixIcon: _controller.text.isEmpty
+            ? null
+            : InkWell(
+                onTap: () {
+                  _controller.clear();
+
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: Icon(
+                  Icons.clear,
+                  size: Globals.deviceType == "phone" ? 20 : 28,
+                ),
+              ),
+      ),
+      onChanged: onItemChanged,
+    );
+  }
+
+  onItemChanged(String value) {
+    // suggestionlist = true;
+    // setState(() {
+    //   newDataList = mainDataList
+    //       .where((string) => string.toLowerCase().contains(value.toLowerCase()))
+    //       .toList();
+    // });
   }
 
   _buildLanguagesList(context, onLanguageChanged) {

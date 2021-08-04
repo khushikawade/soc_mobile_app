@@ -6,7 +6,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -33,6 +32,7 @@ class StaffDirectory extends StatefulWidget {
 
 class _StaffDirectoryState extends State<StaffDirectory> {
   static const double _kLabelSpacing = 16.0;
+  static const double _kIconSize = 45.0;
   final _controller = TextEditingController();
   FamilyBloc _bloc = FamilyBloc();
   UrlLauncherWidget objurl = new UrlLauncherWidget();
@@ -72,7 +72,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               : Text(
                   tittle,
                   style: Theme.of(context).textTheme.headline6!.copyWith(
-                        color: AppTheme.kFontColor2,
+                      // color: AppTheme.kFontColor2,
                       ),
                 ),
         ],
@@ -97,14 +97,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   vertical: _kLabelSpacing / 2,
                 ),
                 filled: true,
-                fillColor: AppTheme.kBackgroundColor,
+                fillColor: Theme.of(context).backgroundColor,
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(
                   const IconData(0xe805,
                       fontFamily: Overrides.kFontFam,
                       fontPackage: Overrides.kFontPkg),
                   size: Globals.deviceType == "phone" ? 20 : 28,
-                  color: AppTheme.kprefixIconColor,
+                  // color: AppTheme.kprefixIconColor,
                 ),
                 suffix: IconButton(
                   onPressed: () {
@@ -114,7 +114,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   },
                   icon: Icon(
                     Icons.clear,
-                    color: AppTheme.kIconColor,
+                    // color: AppTheme.kIconColor,
                     size: Globals.deviceType == "phone" ? 18 : 26,
                   ),
                 ),
@@ -132,12 +132,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
             decoration: BoxDecoration(
               border: (index % 2 == 0)
-                  ? Border.all(color: Theme.of(context).colorScheme.secondary,)
-                  : Border.all(color: Theme.of(context).backgroundColor),
+                  ? Border.all(
+                      color: Theme.of(context).backgroundColor,
+                    )
+                  : Border.all(color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(0.0),
               color: (index % 2 == 0)
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).backgroundColor,
+                  ? Theme.of(context).backgroundColor
+                  : Theme.of(context).colorScheme.secondary,
               boxShadow: [
                 BoxShadow(
                   color: Color.fromRGBO(0, 0, 0, 0.2),
@@ -165,20 +167,27 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   child: Center(
                                     child: CircularProgressIndicator(
                                       strokeWidth: 1,
-                                      backgroundColor:
-                                          Theme.of(context).accentColor,
                                     ),
                                   ))),
                         )
                       : Center(
                           child: Container(
-                              child: Image.asset(
-                            'assets/images/appicon.png',
-                            fit: BoxFit.fill,
-                            height: 60,
-                            width: 60,
-                          )),
-                        ),
+                          child: ClipRRect(
+                            child: CachedNetworkImage(
+                              imageUrl: Globals.homeObjet["App_Logo__c"],
+                              placeholder: (context, url) => Container(
+                                alignment: Alignment.center,
+                                width: _kIconSize * 1.4,
+                                height: _kIconSize * 1.5,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
+                          ),
+                        )),
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
                       child: Column(
@@ -302,9 +311,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 return Container(
                     height: MediaQuery.of(context).size.height * 0.8,
                     alignment: Alignment.center,
-                    child: CircularProgressIndicator(
-                      backgroundColor: Theme.of(context).accentColor,
-                    ));
+                    child: CircularProgressIndicator());
               } else if (state is SDDataSucess) {
                 return Column(
                   children: [
@@ -336,9 +343,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               }
             }),
       ),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }
