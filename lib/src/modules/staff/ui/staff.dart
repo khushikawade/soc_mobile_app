@@ -115,7 +115,7 @@ class _StaffPageState extends State<StaffPage> {
                     left: _kLabelSpacing, right: _kLabelSpacing / 2),
                 leading: Icon(
                   IconData(
-                    int.parse(obj.appIconC!),
+                    int.parse('0x${obj.appIconC!}'),
                     fontFamily: 'FontAwesomeSolid',
                     fontPackage: 'font_awesome_flutter',
                   ),
