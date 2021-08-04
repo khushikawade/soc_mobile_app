@@ -1,6 +1,4 @@
-import 'package:Soc/src/Globals.dart';
-import 'package:Soc/src/modules/home/ui/search.dart';
-import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
@@ -8,7 +6,6 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:flutter/material.dart';
-import '../overrides.dart';
 
 // ignore: must_be_immutable
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
@@ -54,11 +51,12 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       leading: BackButtonWidget(),
       title: widget.isCenterIcon != null && widget.isCenterIcon == true
           ? SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())
-          : widget.language != null && widget.language != "English"
+          : Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: widget.appBarTitle,
                   fromLanguage: "en",
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     style: Theme.of(context).textTheme.headline2,
@@ -73,7 +71,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       actions: [
         widget.isSearch == true
             ? SearchButtonWidget(
-                language: widget.language,
+                language: Globals.selectedLanguage,
               )
             : Container(
                 height: 0,

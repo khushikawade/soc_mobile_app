@@ -59,7 +59,6 @@ class _ContactPageState extends State<ContactPage> {
                 height: 5,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  backgroundColor: AppTheme.kAccentColor,
                 ),
               ),
               errorWidget: (context, url, error) => Icon(
@@ -81,11 +80,11 @@ class _ContactPageState extends State<ContactPage> {
           horizontal: _kLabelSpacing,
         ),
         child: widget.obj["Contact_Name__c"] != null &&
-                widget.language != null &&
-                widget.language != "English"
+                Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: widget.obj["Contact_Name__c"] ?? "-",
-                toLanguage: widget.language,
+                toLanguage: Globals.selectedLanguage,
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
@@ -183,10 +182,11 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
-                  message: "Address : ",
-                  toLanguage: widget.language,
+                  message: "Address:",
+                  toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
@@ -207,10 +207,11 @@ class _ContactPageState extends State<ContactPage> {
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: widget.obj["Contact_Address__c"] ?? '-',
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
@@ -235,10 +236,11 @@ class _ContactPageState extends State<ContactPage> {
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
       child: Row(
         children: [
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
-                  message: "Phone : ",
-                  toLanguage: widget.language,
+                  message: "Phone :",
+                  toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
@@ -263,10 +265,11 @@ class _ContactPageState extends State<ContactPage> {
                     context, "tel:" + widget.obj["Contact_Phone__c"]);
               }
             },
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: widget.obj["Contact_Phone__c"] ?? '-',
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
@@ -306,10 +309,11 @@ class _ContactPageState extends State<ContactPage> {
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
       child: Row(
         children: [
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
-                  message: "Email : ",
-                  toLanguage: widget.language,
+                  message: "Email :",
+                  toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
@@ -346,28 +350,29 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: true,
-          isShare: false,
-          appBarTitle: widget.appBarTitle,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
-          language: widget.language,
-        ),
-        body: ListView(children: [
-          _buildIcon(),
-          SpacerWidget(_kLabelSpacing),
-          tittleWidget(),
-          SpacerWidget(_kLabelSpacing / 1.5),
-          _buildMapWidget(),
-          _buildaddressWidget(),
-          SpacerWidget(_kLabelSpacing / 1.25),
-          _buildPhoneWidget(),
-          SpacerWidget(_kLabelSpacing / 1.25),
-          _buildEmailWidget(),
-        ]),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+      appBar: CustomAppBarWidget(
+        isSearch: true,
+        isShare: false,
+        appBarTitle: widget.appBarTitle,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
+        language: Globals.selectedLanguage,
+      ),
+      body: ListView(children: [
+        _buildIcon(),
+        SpacerWidget(_kLabelSpacing),
+        tittleWidget(),
+        SpacerWidget(_kLabelSpacing / 1.5),
+        _buildMapWidget(),
+        _buildaddressWidget(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        _buildPhoneWidget(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        _buildEmailWidget(),
+      ]),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

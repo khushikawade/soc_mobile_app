@@ -33,7 +33,7 @@ class _NewdescriptionState extends State<Newdescription> {
                   title: widget.obj.headings["en"].toString(),
                   url: obj,
                   isbuttomsheet: true,
-                  language: widget.language,
+                  language: Globals.selectedLanguage,
                 )));
   }
 
@@ -55,7 +55,7 @@ class _NewdescriptionState extends State<Newdescription> {
                         placeholder: (context, url) =>
                             CircularProgressIndicator(
                           strokeWidth: 2,
-                          backgroundColor: Theme.of(context).accentColor,
+                          
                         ),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                       )
@@ -71,7 +71,8 @@ class _NewdescriptionState extends State<Newdescription> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Expanded(
-                  child: widget.language != null && widget.language != "English"
+                  child: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
                       ? TranslationWidget(
                           message: widget.obj.headings != "" &&
                                   widget.obj.headings != null &&
@@ -85,7 +86,7 @@ class _NewdescriptionState extends State<Newdescription> {
                                       .toString()
                                       .split(" ")[1] +
                                   "...",
-                          toLanguage: widget.language,
+                          toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
@@ -108,10 +109,11 @@ class _NewdescriptionState extends State<Newdescription> {
                           style: Theme.of(context).textTheme.headline2,
                         ),
                 ),
-                widget.language != null && widget.language != "English"
+                Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: widget.date,
-                        toLanguage: widget.language,
+                        toLanguage: Globals.selectedLanguage,
                         fromLanguage: "en",
                         builder: (translatedMessage) => Text(
                           translatedMessage.toString(),
@@ -129,10 +131,11 @@ class _NewdescriptionState extends State<Newdescription> {
             Container(
               child: Wrap(
                 children: [
-                  widget.language != null && widget.language != "English"
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
                       ? TranslationWidget(
                           message: widget.obj.contents["en"].toString(),
-                          toLanguage: widget.language,
+                          toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
@@ -156,10 +159,11 @@ class _NewdescriptionState extends State<Newdescription> {
               child: widget.obj.url != null
                   ? Wrap(
                       children: [
-                        widget.language != null && widget.language != "English"
+                        Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
                             ? TranslationWidget(
                                 message: widget.obj.url.toString(),
-                                toLanguage: widget.language,
+                                toLanguage: Globals.selectedLanguage,
                                 fromLanguage: "en",
                                 builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
@@ -224,12 +228,13 @@ class _NewdescriptionState extends State<Newdescription> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
-          child: _buildNewsDescription(),
-        ),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
+        child: _buildNewsDescription(),
+      ),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

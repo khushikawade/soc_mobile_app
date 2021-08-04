@@ -1,4 +1,5 @@
 import 'package:Soc/oss_licenses.dart';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/setting/licencedetail.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -6,8 +7,10 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 
 class Licenceinfo extends StatefulWidget {
-  String? language;
-  Licenceinfo({Key? key, this.title, required this.language}) : super(key: key);
+  Licenceinfo({
+    Key? key,
+    this.title,
+  }) : super(key: key);
   final String? title;
   @override
   _LicenceinfoState createState() => _LicenceinfoState();
@@ -36,7 +39,6 @@ class _LicenceinfoState extends State<Licenceinfo> {
             context,
             MaterialPageRoute(
                 builder: (context) => LicenceDetailPage(
-                      language: widget.language,
                       index: index,
                     )));
       },
@@ -54,11 +56,12 @@ class _LicenceinfoState extends State<Licenceinfo> {
             child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: _kLabelSpacing * 1, vertical: _kLabelSpacing),
-          child: widget.language != null && widget.language != "English"
+          child: Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: list[index]["name"] ?? '-',
                   fromLanguage: "en",
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Text(
                     translatedMessage,
                     style: Theme.of(context)
@@ -95,7 +98,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
         appBarTitle: "Open Source Licence",
         sharedpopUpheaderText: '',
         sharedpopBodytext: '',
-        language: widget.language,
+        language: Globals.selectedLanguage,
       ),
       body: SafeArea(
         child: Column(children: [
@@ -113,11 +116,11 @@ class _LicenceinfoState extends State<Licenceinfo> {
                         child: Container(
                             alignment: Alignment.center,
                             height: MediaQuery.of(context).size.height * 0.8,
-                            child: widget.language != null &&
-                                    widget.language != "English"
+                            child: Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English"
                                 ? TranslationWidget(
                                     message: "No data found",
-                                    toLanguage: widget.language,
+                                    toLanguage: Globals.selectedLanguage,
                                     fromLanguage: "en",
                                     builder: (translatedMessage) => Text(
                                       translatedMessage.toString(),

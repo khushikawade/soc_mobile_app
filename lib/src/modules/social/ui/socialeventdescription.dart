@@ -88,7 +88,6 @@ class SocialDescription extends StatelessWidget {
     return SafeArea(
       child: Container(
         padding: EdgeInsets.all(_kPadding / 2),
-        color: AppTheme.kBackgroundColor,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
@@ -161,7 +160,7 @@ class SocialDescription extends StatelessWidget {
         .split("\\n#")[1]
         .split("</div>")[0];
     // print(data);
-    print(data2);
+    // print(data2);
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),

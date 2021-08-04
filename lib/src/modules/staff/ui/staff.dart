@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staffmodal.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -47,7 +48,7 @@ class _StaffPageState extends State<StaffPage> {
                         title: obj.titleC!,
                         url: obj.urlC!,
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "HTML/RTF") {
@@ -61,7 +62,7 @@ class _StaffPageState extends State<StaffPage> {
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF") {
@@ -73,7 +74,7 @@ class _StaffPageState extends State<StaffPage> {
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
@@ -85,7 +86,7 @@ class _StaffPageState extends State<StaffPage> {
                     module: "staff",
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,
-                    language: widget.language,
+                    language: Globals.selectedLanguage,
                   )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
@@ -102,7 +103,7 @@ class _StaffPageState extends State<StaffPage> {
           borderRadius: BorderRadius.circular(0.0),
           color: (index % 2 == 0)
               ? Theme.of(context).backgroundColor
-              : AppTheme.kListBackgroundColor2,
+              : Theme.of(context).colorScheme.secondary,
         ),
         child: obj.titleC != null && obj.titleC!.length > 0
             ? ListTile(
@@ -121,11 +122,12 @@ class _StaffPageState extends State<StaffPage> {
                   color: AppTheme.kListIconColor3,
                   size: Globals.deviceType == "phone" ? 18 : 26,
                 ),
-                title: widget.language != null && widget.language != "English"
+                title: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: obj.titleC.toString(),
                         fromLanguage: "en",
-                        toLanguage: widget.language,
+                        toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) => Text(
                           translatedMessage.toString(),
                           style: Theme.of(context).textTheme.bodyText2,
@@ -142,11 +144,12 @@ class _StaffPageState extends State<StaffPage> {
                 ),
               )
             : Container(
-                child: widget.language != null && widget.language != "English"
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: "No data found",
                         fromLanguage: "en",
-                        toLanguage: widget.language,
+                        toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) => Text(
                           translatedMessage.toString(),
                         ),
@@ -157,48 +160,58 @@ class _StaffPageState extends State<StaffPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
+        appBar: AppBarWidget(),
         body: BlocBuilder<StaffBloc, StaffState>(
             bloc: _bloc,
             builder: (BuildContext contxt, StaffState state) {
               if (state is StaffInitial || state is StaffLoading) {
                 return Center(
                     child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
+                  
                 ));
               } else if (state is StaffDataSucess) {
-                return state.obj != null && state.obj!.length > 0
-                    ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: state.obj!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buildList(state.obj![index], index);
-                        },
-                      )
-                    : Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: widget.language != null &&
-                                widget.language != "English"
-                            ? TranslationWidget(
-                                message: "No data found",
-                                fromLanguage: "en",
-                                toLanguage: widget.language,
-                                builder: (translatedMessage) => Text(
-                                  // obj.titleC.toString(),
-                                  translatedMessage.toString(),
-                                ),
-                              )
-                            : Text("No data found"),
-                      );
+                return Column(
+                  children: [
+                    state.obj != null && state.obj!.length > 0
+                        ? Container(
+                            child: Expanded(
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: state.obj!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return _buildList(state.obj![index], index);
+                                },
+                              ),
+                            ),
+                          )
+                        : Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English"
+                                ? TranslationWidget(
+                                    message: "No data found",
+                                    fromLanguage: "en",
+                                    toLanguage: Globals.selectedLanguage,
+                                    builder: (translatedMessage) => Text(
+                                      // obj.titleC.toString(),
+                                      translatedMessage.toString(),
+                                    ),
+                                  )
+                                : Text("No data found"),
+                          ),
+                  ],
+                );
               } else if (state is ErrorInStaffLoading) {
                 return Container(
                   alignment: Alignment.center,
                   height: MediaQuery.of(context).size.height * 0.8,
-                  child: widget.language != null && widget.language != "English"
+                  child: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
                       ? TranslationWidget(
                           message: "Unable to load the data",
                           fromLanguage: "en",
-                          toLanguage: widget.language,
+                          toLanguage: Globals.selectedLanguage,
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
                           ),

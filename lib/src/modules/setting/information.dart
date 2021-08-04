@@ -11,7 +11,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 class InformationPage extends StatefulWidget {
   String htmlText;
-  String? language;
+
   bool isbuttomsheet;
   bool ishtml;
   String appbarTitle;
@@ -20,7 +20,6 @@ class InformationPage extends StatefulWidget {
   InformationPage({
     Key? key,
     required this.htmlText,
-    required this.language,
     required this.isbuttomsheet,
     required this.ishtml,
     required this.appbarTitle,
@@ -39,11 +38,12 @@ class _InformationPageState extends State<InformationPage> {
       margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Wrap(
         children: [
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: widget.htmlText,
                   fromLanguage: "en",
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Html(
                     data: translatedMessage.toString(),
                   ),
@@ -76,26 +76,27 @@ class _InformationPageState extends State<InformationPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: false,
-          isShare: false,
-          appBarTitle: widget.appbarTitle,
-          ishtmlpage: widget.ishtml,
-          sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
-          sharedpopUpheaderText: "Please checkout this link",
-          language: widget.language,
-        ),
-        body: ListView(children: [
-          _buildContent1(),
-          SizedBox(
-            height: 100.0,
-            child: ShareButtonWidget(
-              language: widget.language,
-            ),
-          )
-        ]),
-        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+      appBar: CustomAppBarWidget(
+        isSearch: false,
+        isShare: false,
+        appBarTitle: widget.appbarTitle,
+        ishtmlpage: widget.ishtml,
+        sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
+        sharedpopUpheaderText: "Please checkout this link",
+        language: Globals.selectedLanguage,
+      ),
+      body: ListView(children: [
+        _buildContent1(),
+        SizedBox(
+          height: 100.0,
+          child: ShareButtonWidget(
+            language: Globals.selectedLanguage,
+          ),
+        )
+      ]),
+      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

@@ -62,12 +62,14 @@ dependencies:
   android_intent:
   # device_calendar: ^3.1.0
   add_2_calendar: ^2.1.0
-  html_unescape: ^2.0.0
-  translator: ^0.1.7
   font_awesome_flutter: ^9.1.0
   package_info: ^2.0.2
+  translator: ^0.1.7
+  html_unescape: ^2.0.0
+  persistent_bottom_nav_bar: ^4.0.2
   flutter_oss_licenses: ^1.0.1
   shimmer: ^2.0.0
+  adaptive_theme: ^2.2.0
   flutter_offline: ^2.0.0
   
 
@@ -101,8 +103,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    # - assets/locale/localization_en.json
-    # - assets/locale/localization_nl.json
+    - assets/locale/localization_en.json
+    - assets/locale/localization_nl.json
     - assets/images/
     - assets/images/image-icons/
 

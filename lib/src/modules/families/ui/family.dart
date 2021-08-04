@@ -1,7 +1,7 @@
-import 'package:Soc/src/Globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
+import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -11,17 +11,14 @@ import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:Soc/src/globals.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
   var searchObj;
-  String? language;
-  FamilyPage({Key? key, this.obj, this.searchObj, this.language})
-      : super(key: key);
+  FamilyPage({Key? key, this.obj, this.searchObj}) : super(key: key);
 
   @override
   _FamilyPageState createState() => _FamilyPageState();
@@ -53,7 +50,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         obj: widget.obj,
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC!,
-                        language: widget.language ?? "English",
+                        language: Globals.selectedLanguage ?? "English",
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
@@ -64,7 +61,7 @@ class _FamilyPageState extends State<FamilyPage> {
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
-                    language: widget.language,
+                    language: Globals.selectedLanguage,
                   )));
     } else if (obj.titleC == "Calendar/Events") {
       Navigator.push(
@@ -73,7 +70,7 @@ class _FamilyPageState extends State<FamilyPage> {
               builder: (BuildContext context) => EventPage(
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC,
-                    language: widget.language,
+                    language: Globals.selectedLanguage,
                   )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
@@ -84,7 +81,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         title: obj.titleC!,
                         url: obj.appUrlC ?? '',
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
@@ -98,7 +95,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
@@ -110,7 +107,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
-                        language: widget.language,
+                        language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
@@ -122,7 +119,7 @@ class _FamilyPageState extends State<FamilyPage> {
                     obj: obj,
                     module: "family",
                     isbuttomsheet: true,
-                    language: widget.language,
+                    language: Globals.selectedLanguage,
                   )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
@@ -139,7 +136,7 @@ class _FamilyPageState extends State<FamilyPage> {
         borderRadius: BorderRadius.circular(0.0),
         color: (index % 2 == 0)
             ? Theme.of(context).backgroundColor
-            : AppTheme.kListBackgroundColor2,
+            : Theme.of(context).colorScheme.secondary,
       ),
       child: ListTile(
         onTap: () {
@@ -157,11 +154,12 @@ class _FamilyPageState extends State<FamilyPage> {
           color: AppTheme.kListIconColor3,
           size: Globals.deviceType == "phone" ? 18 : 26,
         ),
-        title: widget.language != null && widget.language != "English"
+        title: Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: obj.titleC,
                 fromLanguage: "en",
-                toLanguage: widget.language,
+                toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
                   style: Theme.of(context).textTheme.bodyText2,
@@ -183,13 +181,14 @@ class _FamilyPageState extends State<FamilyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
+        appBar: AppBarWidget(),
         body: BlocBuilder<FamilyBloc, FamilyState>(
             bloc: _bloc,
             builder: (BuildContext contxt, FamilyState state) {
               if (state is FamilyInitial || state is FamilyLoading) {
                 return Center(
                     child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
+                  
                 ));
               } else if (state is FamiliesDataSucess) {
                 return state.obj != null && state.obj!.length > 0
@@ -203,11 +202,11 @@ class _FamilyPageState extends State<FamilyPage> {
                     : Container(
                         alignment: Alignment.center,
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: widget.language != null &&
-                                widget.language != "English"
+                        child: Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
                             ? TranslationWidget(
                                 message: "No data found",
-                                toLanguage: widget.language,
+                                toLanguage: Globals.selectedLanguage,
                                 fromLanguage: "en",
                                 builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
@@ -219,10 +218,11 @@ class _FamilyPageState extends State<FamilyPage> {
                 return Container(
                   alignment: Alignment.center,
                   height: MediaQuery.of(context).size.height * 0.8,
-                  child: widget.language != null && widget.language != "English"
+                  child: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
                       ? TranslationWidget(
                           message: "Unable to load the data",
-                          toLanguage: widget.language,
+                          toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),

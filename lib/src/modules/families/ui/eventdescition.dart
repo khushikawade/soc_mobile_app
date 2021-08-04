@@ -42,10 +42,11 @@ class _EventDescriptionState extends State<EventDescription> {
       child: Column(
         children: [
           SpacerWidget(_kPadding / 2),
-          widget.language != null && widget.language != "English"
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: list.titleC!,
-                  toLanguage: widget.language,
+                  toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
@@ -63,12 +64,13 @@ class _EventDescriptionState extends State<EventDescription> {
           SpacerWidget(_kPadding / 2),
           Container(
             alignment: Alignment.centerLeft,
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: Utility.convertDateFormat(list.startDate!) +
                         " - " +
                         Utility.convertDateFormat(list.endDate!),
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
@@ -85,10 +87,11 @@ class _EventDescriptionState extends State<EventDescription> {
           SpacerWidget(_kPadding / 2),
           Container(
             alignment: Alignment.centerLeft,
-            child: widget.language != null && widget.language != "English"
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: list.description ?? "",
-                    toLanguage: widget.language,
+                    toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
@@ -157,21 +160,21 @@ class _EventDescriptionState extends State<EventDescription> {
                       SharePopUp obj = new SharePopUp();
                       obj.callFunction(context, list.inviteLink!, list.titleC!);
                     },
-                    child:
-                        widget.language != null && widget.language != "English"
-                            ? TranslationWidget(
-                                message: "Share",
-                                toLanguage: widget.language,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  style: _kbuttonTextStyle,
-                                ),
-                              )
-                            : Text(
-                                "Share",
-                                style: _kbuttonTextStyle,
-                              ),
+                    child: Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English"
+                        ? TranslationWidget(
+                            message: "Share",
+                            toLanguage: Globals.selectedLanguage,
+                            fromLanguage: "en",
+                            builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              style: _kbuttonTextStyle,
+                            ),
+                          )
+                        : Text(
+                            "Share",
+                            style: _kbuttonTextStyle,
+                          ),
                   ),
                 )
               : Container(),
@@ -187,10 +190,11 @@ class _EventDescriptionState extends State<EventDescription> {
                   buildEvent(list),
                 );
               },
-              child: widget.language != null && widget.language != "English"
+              child: Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English"
                   ? TranslationWidget(
                       message: "Save event",
-                      toLanguage: widget.language,
+                      toLanguage: Globals.selectedLanguage,
                       fromLanguage: "en",
                       builder: (translatedMessage) => Text(
                         translatedMessage.toString(),
@@ -216,22 +220,20 @@ class _EventDescriptionState extends State<EventDescription> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(children: [
-          Container(
-            color: AppTheme.kListBackgroundColor2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                _buildItem(widget.obj),
-                buttomButtonsWidget(widget.obj)
-              ],
-            ),
+      body: ListView(children: [
+        Container(
+          color: AppTheme.kListBackgroundColor2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [_buildItem(widget.obj), buttomButtonsWidget(widget.obj)],
           ),
-        ]),
-        bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
-            ? InternalButtomNavigationBar()
-            : null);
+        ),
+      ]),
+      // bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
+      //     ? InternalButtomNavigationBar()
+      //     : null
+    );
   }
 }

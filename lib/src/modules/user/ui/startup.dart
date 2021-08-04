@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -115,6 +116,7 @@ class _StartupPageState extends State<StartupPage> {
           bloc: _bloc,
           listener: (context, state) async {
             if (state is BottomNavigationBarSuccess) {
+              AppTheme.setDynamicTheme(Globals.appSetting, context);
               Globals.homeObjet = state.obj;
               state.obj != null
                   ? Navigator.pushReplacement(
