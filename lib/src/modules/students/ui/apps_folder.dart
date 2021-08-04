@@ -1,3 +1,4 @@
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +8,14 @@ import 'package:url_launcher/url_launcher.dart';
 class AppsFolderPage extends StatefulWidget {
   List obj = [];
   String folderName;
-
+  String? language;
   @override
-  AppsFolderPage({
-    Key? key,
-    required this.obj,
-    required this.folderName,
-  }) : super(key: key);
+  AppsFolderPage(
+      {Key? key,
+      required this.obj,
+      required this.folderName,
+      required this.language})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() => AppsFolderPageState();
 }
@@ -61,6 +63,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                     title: obj.titleC!,
                     url: obj.appUrlC!,
                     isbuttomsheet: true,
+                    language: widget.language,
                   )));
     } else {
       await launch(obj.appUrlC!);
@@ -113,18 +116,47 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                           ),
                                         )
                                       : Container(),
-                                  Text(apps[index].appFolderc != null &&
-                                          widget.folderName ==
-                                              apps[index].appFolderc
-                                      ? "${apps[index].titleC}"
-                                      : ''),
+                                  widget.language != null &&
+                                          widget.language != "English"
+                                      ? TranslationWidget(
+                                          message:
+                                              apps[index].appFolderc != null &&
+                                                      widget.folderName ==
+                                                          apps[index].appFolderc
+                                                  ? "${apps[index].titleC}"
+                                                  : '',
+                                          fromLanguage: "en",
+                                          toLanguage: widget.language,
+                                          builder: (translatedMessage) => Text(
+                                            translatedMessage.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2,
+                                          ),
+                                        )
+                                      : Text(apps[index].appFolderc != null &&
+                                              widget.folderName ==
+                                                  apps[index].appFolderc
+                                          ? "${apps[index].titleC}"
+                                          : ''),
                                 ],
                               ));
                         },
                       ),
                     )
                   : Center(
-                      child: Container(child: Text("No apps available here"))),
+                      child: Container(
+                          child: widget.language != null &&
+                                  widget.language != "English"
+                              ? TranslationWidget(
+                                  message: "No apps available here",
+                                  fromLanguage: "en",
+                                  toLanguage: widget.language,
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                  ),
+                                )
+                              : Text("No apps available here"))),
             ),
           ),
         ),

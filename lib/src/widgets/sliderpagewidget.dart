@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -21,13 +22,15 @@ class SliderWidget extends StatefulWidget {
       this.issocialpage,
       required this.iseventpage,
       required this.date,
-      required this.isbuttomsheet});
+      required this.isbuttomsheet,
+      required this.language});
   var obj;
   int currentIndex;
   bool? issocialpage;
   bool? iseventpage;
   String date;
   bool isbuttomsheet;
+  String? language;
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -139,16 +142,21 @@ class _SliderWidgetState extends State<SliderWidget> {
               },
               itemBuilder: (BuildContext context, int index) {
                 return widget.issocialpage!
-                    ? SocialDescription(object: object[widget.currentIndex])
+                    ? SocialDescription(
+                        object: object[widget.currentIndex],
+                        language: widget.language,
+                      )
                     : widget.iseventpage!
                         ? EventDescription(
                             obj: object[widget.currentIndex],
                             isbuttomsheet: true,
+                            language: widget.language,
                           )
                         : Newdescription(
                             obj: object[widget.currentIndex],
                             date: widget.date,
                             isbuttomsheet: true,
+                            language: widget.language,
                           );
               },
             ),
@@ -182,7 +190,16 @@ class _SliderWidgetState extends State<SliderWidget> {
                                 isbuttomsheet: true,
                               )));
                 },
-                child: Text("More"),
+                child: widget.language != null && widget.language != "English"
+                    ? TranslationWidget(
+                        message: "More",
+                        toLanguage: widget.language,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                        ),
+                      )
+                    : Text("More"),
               ),
             ),
             HorzitalSpacerWidget(_kPadding / 2),
@@ -199,7 +216,16 @@ class _SliderWidgetState extends State<SliderWidget> {
                           link;
                   obj.callFunction(context, body, "");
                 },
-                child: Text("Share"),
+                child: widget.language != null && widget.language != "English"
+                    ? TranslationWidget(
+                        message: "Share",
+                        toLanguage: widget.language,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                        ),
+                      )
+                    : Text("Share"),
               ),
             ),
           ],

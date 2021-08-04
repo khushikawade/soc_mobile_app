@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -35,7 +36,7 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget _buildlist(obj, int index, mainObj) {
-    var document = parse(obj.description["__cdata"]);
+    final document = parse(obj.description["__cdata"]);
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
 
@@ -53,12 +54,14 @@ class _SocialPageState extends State<SocialPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
-                      obj: mainObj,
-                      currentIndex: index,
-                      issocialpage: true,
-                      iseventpage: false,
-                      date: '1',
-                      isbuttomsheet: true)));
+                        obj: mainObj,
+                        currentIndex: index,
+                        issocialpage: true,
+                        iseventpage: false,
+                        date: '1',
+                        isbuttomsheet: true,
+                        language: widget.language,
+                      )));
         },
         child: Row(
           children: <Widget>[
@@ -102,12 +105,30 @@ class _SocialPageState extends State<SocialPage> {
                               obj.title["__cdata"].length > 1
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.69,
-                              child: Text(
-                                "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                style: Theme.of(context).textTheme.headline2,
-                              ))
+                              child: widget.language != null &&
+                                      widget.language != "English"
+                                  ? TranslationWidget(
+                                      message:
+                                          "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+                                      fromLanguage: "en",
+                                      toLanguage: widget.language,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline2,
+                                      ),
+                                    )
+                                  : Text(
+                                      "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style:
+                                          Theme.of(context).textTheme.headline2,
+                                    ),
+                            )
                           : Container()
                     ],
                   ),
@@ -120,10 +141,26 @@ class _SocialPageState extends State<SocialPage> {
                       obj.pubDate != null && obj.pubDate.length > 1
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.40,
-                              child: Text(
-                                Utility.convertDate(obj.pubDate).toString(),
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ))
+                              child: widget.language != null &&
+                                      widget.language != "English"
+                                  ? TranslationWidget(
+                                      message: Utility.convertDate(obj.pubDate)
+                                          .toString(),
+                                      fromLanguage: "en",
+                                      toLanguage: widget.language,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
+                                      ),
+                                    )
+                                  : Text(
+                                      Utility.convertDate(obj.pubDate)
+                                          .toString(),
+                                      style:
+                                          Theme.of(context).textTheme.subtitle1,
+                                    ))
                           : Container()
                     ],
                   ),
@@ -135,55 +172,72 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget makeList(obj) {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: obj.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _buildlist(obj[index], index, obj!);
-      },
+    return Expanded(
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: obj.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildlist(obj[index], index, obj!);
+        },
+      ),
     );
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(children: [
-        BlocBuilder(
-            bloc: bloc,
-            builder: (BuildContext context, SocialState state) {
-              if (state is SocialDataSucess) {
-                return state.obj != null && state.obj!.length > 0
-                    ? Container(
-                        child: Column(
-                          children: [makeList(state.obj)],
+      body: BlocBuilder(
+          bloc: bloc,
+          builder: (BuildContext context, SocialState state) {
+            if (state is SocialDataSucess) {
+              return state.obj != null && state.obj!.length > 0
+                  ? Container(
+                      child: Column(
+                        children: [makeList(state.obj)],
+                      ),
+                    )
+                  : Expanded(
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: widget.language != null &&
+                                  widget.language != "English"
+                              ? TranslationWidget(
+                                  message: "No data found",
+                                  toLanguage: widget.language,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                  ),
+                                )
+                              : Text("No data found")));
+            } else if (state is Loading) {
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Center(
+                    child: CircularProgressIndicator(
+                  backgroundColor: AppTheme.kAccentColor,
+                )),
+              );
+            }
+            if (state is SocialError) {
+              return Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: widget.language != null && widget.language != "English"
+                    ? TranslationWidget(
+                        message: "Unable to load the data",
+                        toLanguage: widget.language,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
                         ),
                       )
-                    : Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Text("No data found"),
-                      );
-              } else if (state is Loading) {
-                return Container(
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Center(
-                      child: CircularProgressIndicator(
-                    backgroundColor: AppTheme.kAccentColor,
-                  )),
-                );
-              }
-              if (state is SocialError) {
-                return Container(
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Text("Unable to load the data"),
-                );
-              } else {
-                return Container();
-              }
-            }),
-      ]),
+                    : Text("Unable to load the data"),
+              );
+            } else {
+              return Container();
+            }
+          }),
     );
   }
 }

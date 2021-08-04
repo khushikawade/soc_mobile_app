@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
-import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/setting/information.dart';
@@ -25,8 +24,10 @@ import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
-  var homeObj;
-  HomePage({Key? key, this.title, this.homeObj}) : super(key: key);
+  final homeObj;
+  String? language;
+  HomePage({Key? key, this.title, this.homeObj, this.language})
+      : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -44,7 +45,8 @@ class _HomePageState extends State<HomePage> {
   var item;
   var item2;
   final ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
-  final ValueNotifier<String> langadded = ValueNotifier<String>("English");
+  final ValueNotifier<String> languageChanged =
+      ValueNotifier<String>("English");
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   Timer? timer;
   String? selectedLanguage;
@@ -70,7 +72,7 @@ class _HomePageState extends State<HomePage> {
       }
 
       if (selectedLanguage != null) {
-        langadded.value = selectedLanguage!;
+        languageChanged.value = selectedLanguage!;
       }
     });
   }
@@ -89,12 +91,26 @@ class _HomePageState extends State<HomePage> {
       onSelected: (value) {
         switch (value) {
           case IconsMenu.Information:
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => InformationPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => InformationPage(
+                          htmlText: Globals.homeObjet["App_Information__c"],
+                          isbuttomsheet: true,
+                          ishtml: true,
+                          appbarTitle: "Information",
+                          language: selectedLanguage,
+                        )));
             break;
           case IconsMenu.Setting:
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SettingPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SettingPage(
+                          language: selectedLanguage,
+                          isbuttomsheet: true,
+                          appbarTitle: "Setting",
+                        )));
             break;
           case IconsMenu.Permissions:
             AppSettings.openAppSettings();
@@ -126,7 +142,9 @@ class _HomePageState extends State<HomePage> {
 
   selectedScreenBody(context, _selectedIndex, list) {
     if (list[_selectedIndex].split("_")[0].contains("Social")) {
-      return SocialPage();
+      return SocialPage(
+        language: selectedLanguage,
+      );
     } else if (list[_selectedIndex].split("_")[0].contains("News")) {
       hideIndicator();
       return NewsPage(
@@ -193,21 +211,26 @@ class _HomePageState extends State<HomePage> {
                   if (language != null) {
                     setState(() {
                       selectedLanguage = language;
-                      langadded.value = language;
+                      languageChanged.value = language;
                     });
                   }
                 });
               },
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: const Icon(IconData(0xe800,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg)),
+                child: Icon(
+                  IconData(0xe800,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  size: Globals.deviceType == "phone" ? 24 : 32,
+                ),
               ),
             ),
             title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
             actions: <Widget>[
-              SearchButtonWidget(),
+              SearchButtonWidget(
+                language: selectedLanguage,
+              ),
               _buildPopupMenuWidget(),
             ]),
         body: selectedScreenBody(context, _selectedIndex,
@@ -221,36 +244,36 @@ class _HomePageState extends State<HomePage> {
                     icon: Column(children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [ 
+                        children: [
                           ValueListenableBuilder(
                             builder: (BuildContext context, dynamic value,
                                 Widget? child) {
-                              return
-
-                                  // selectedLanguage != null ||
-                                  //         langadded.value != "English"
-                                  //     ? TranslationWidget(
-                                  //         message: e.split("_")[0],
-                                  //         toLanguage: langadded.value,
-                                  //         builder: (translatedMessage) => Text(
-                                  //           translatedMessage,
-                                  //           textAlign: TextAlign.center,
-                                  //           style: Theme.of(context)
-                                  //               .textTheme
-                                  //               .subtitle2,
-                                  //         ),
-                                  //       )
-                                  //     :
-
-                                  Expanded(
-                                child: Text(
-                                  e.split("_")[0],
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                ),
-                              );
+                              return selectedLanguage != null ||
+                                      languageChanged.value != "English"
+                                  ? TranslationWidget(
+                                      message: e.split("_")[0],
+                                      toLanguage: languageChanged.value,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2,
+                                      ),
+                                    )
+                                  : Wrap(
+                                      children: [
+                                        Text(
+                                          e.split("_")[0],
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2,
+                                        ),
+                                      ],
+                                    );
                             },
-                            valueListenable: langadded,
+                            valueListenable: languageChanged,
                             child: Container(),
                           ),
                           ValueListenableBuilder(
@@ -259,6 +282,7 @@ class _HomePageState extends State<HomePage> {
                               return e.split("_")[0] == "News" &&
                                       indicator.value == true
                                   ? Container(
+                                      alignment: Alignment.centerLeft,
                                       height: 8,
                                       width: 8,
                                       margin: EdgeInsets.only(left: 3),

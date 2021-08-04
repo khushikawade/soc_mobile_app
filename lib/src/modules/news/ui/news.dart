@@ -55,6 +55,7 @@ class _NewsPageState extends State<NewsPage> {
                         iseventpage: false,
                         date: "$newsTimeStamp",
                         isbuttomsheet: true,
+                        language: widget.language,
                       )));
         },
         child: Row(
@@ -112,9 +113,9 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildnewsHeading(obj) {
     return Container(
         alignment: Alignment.centerLeft,
-        child: widget.language != null
+        child: widget.language != null && widget.language != "English"
             ? TranslationWidget(
-                message: obj.contents["en"],
+                message: obj.contents["en"] ?? '-',
                 fromLanguage: "en",
                 toLanguage: widget.language,
                 builder: (translatedMessage) => Text(
@@ -124,7 +125,7 @@ class _NewsPageState extends State<NewsPage> {
                 ),
               )
             : Text(
-                obj.contents["en"],
+                obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: Theme.of(context).textTheme.headline4,
@@ -142,70 +143,99 @@ class _NewsPageState extends State<NewsPage> {
   // }
 
   Widget _buildList(obj) {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: obj.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _buildListItems(obj[index], index);
-      },
+    return Expanded(
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        // shrinkWrap: true,
+        // physics: NeverScrollableScrollPhysics(),
+        itemCount: obj.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildListItems(obj[index], index);
+        },
+      ),
     );
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BlocBuilder(
-                    bloc: bloc,
-                    builder: (BuildContext context, NewsState state) {
-                      if (state is NewsLoaded) {
-                        return state.obj != null && state.obj!.length > 0
-                            ? _buildList(state.obj)
-                            : Container(
-                                alignment: Alignment.center,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
-                                child: Text("No news found"),
-                              );
-                      } else if (state is NewsLoading) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(
-                              child: CircularProgressIndicator(
-                            backgroundColor: Theme.of(context).accentColor,
-                          )),
-                        );
-                      } else if (state is NewsErrorReceived) {
-                        return Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Text("Unable to load the data"),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }),
-                BlocListener<NewsBloc, NewsState>(
-                  bloc: bloc,
-                  listener: (context, state) async {
-                    if (state is NewsLoaded) {
-                      object = state.obj;
-                    }
-                  },
-                  child: Container(),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+        body: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BlocBuilder(
+            bloc: bloc,
+            builder: (BuildContext context, NewsState state) {
+              if (state is NewsLoaded) {
+                return state.obj != null && state.obj!.length > 0
+                    ? _buildList(state.obj)
+                    : Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: widget.language != null &&
+                                widget.language != "English"
+                            ? TranslationWidget(
+                                message: "No news found",
+                                toLanguage: widget.language,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) =>
+                                    Text(translatedMessage))
+                            : Text("No news found"),
+                      );
+              } else if (state is NewsLoading) {
+                return Expanded(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).accentColor,
+                    )),
+                  ),
+                );
+              } else if (state is NewsErrorReceived) {
+                return Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: "Unable to load the data",
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) =>
+                              Text(translatedMessage))
+                      : Text("Unable to load the data"),
+                );
+              } else if (state is NewsLoading) {
+                return Expanded(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      backgroundColor: Theme.of(context).accentColor,
+                    )),
+                  ),
+                );
+              } else if (state is NewsErrorReceived) {
+                return Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Text("Unable to load the data"),
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            }),
+        BlocListener<NewsBloc, NewsState>(
+          bloc: bloc,
+          listener: (context, state) async {
+            if (state is NewsLoaded) {
+              object = state.obj;
+            }
+          },
+          child: Container(),
+        ),
+      ],
+    ));
   }
 }

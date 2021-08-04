@@ -9,7 +9,6 @@ import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-
 import '../overrides.dart';
 
 class SoicalPageWebview extends StatefulWidget {
@@ -39,29 +38,21 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   void initState() {
     super.initState();
     url = widget.link;
-    _onchanged =
-        flutterWebviewPlugin.onStateChanged.listen((WebViewStateChanged state) {
-      if (mounted) {
-        if (state.type == WebViewState.finishLoad) {
-        } else if (state.type == WebViewState.abortLoad) {
-        } else if (state.type == WebViewState.startLoad) {}
-      }
-    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    flutterWebviewPlugin.dispose();
+    // flutterWebviewPlugin.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return WebviewScaffold(
         url: url != null ? url : "www.google.com",
-        withJavascript: true,
-        withZoom: false,
-        hidden: true,
+        // withJavascript: true,
+        // withZoom: false,
+        // hidden: true,
         appBar: AppBar(
           elevation: 0.0,
           leading: BackButtonWidget(),
@@ -98,7 +89,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                     icon: Icon(
                       Icons.share,
                       color: AppTheme.kIconColor3,
-                      size: Globals.deviceType == "phone" ? 18 : 24,
+                      size: Globals.deviceType == "phone" ? 18 : 26,
                     ),
                   )
                 : Container(
@@ -124,7 +115,6 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
           ],
         ),
         initialChild: Container(
-          color: Colors.white,
           child: const Center(
             child: CircularProgressIndicator(
               strokeWidth: 2,

@@ -11,8 +11,10 @@ import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
@@ -29,6 +31,7 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
+  var object;
   @override
   void initState() {
     super.initState();
@@ -50,6 +53,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         obj: widget.obj,
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC!,
+                        language: widget.language ?? "English",
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.titleC == "Staff Directory") {
@@ -60,6 +64,7 @@ class _FamilyPageState extends State<FamilyPage> {
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
+                    language: widget.language,
                   )));
     } else if (obj.titleC == "Calendar/Events") {
       Navigator.push(
@@ -68,6 +73,7 @@ class _FamilyPageState extends State<FamilyPage> {
               builder: (BuildContext context) => EventPage(
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC,
+                    language: widget.language,
                   )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
@@ -78,6 +84,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         title: obj.titleC!,
                         url: obj.appUrlC ?? '',
                         isbuttomsheet: true,
+                        language: widget.language,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
@@ -91,6 +98,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
+                        language: widget.language,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
@@ -102,6 +110,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
+                        language: widget.language,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
@@ -113,6 +122,7 @@ class _FamilyPageState extends State<FamilyPage> {
                     obj: obj,
                     module: "family",
                     isbuttomsheet: true,
+                    language: widget.language,
                   )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
@@ -147,25 +157,23 @@ class _FamilyPageState extends State<FamilyPage> {
           color: AppTheme.kListIconColor3,
           size: Globals.deviceType == "phone" ? 18 : 26,
         ),
-        title: widget.language != null
+        title: widget.language != null && widget.language != "English"
             ? TranslationWidget(
                 message: obj.titleC,
                 fromLanguage: "en",
                 toLanguage: widget.language,
                 builder: (translatedMessage) => Text(
-                  // obj.titleC.toString(),
                   translatedMessage.toString(),
                   style: Theme.of(context).textTheme.bodyText2,
                 ),
               )
             : Text(
                 obj.titleC.toString(),
-                // translatedMessage.toString(),
                 style: Theme.of(context).textTheme.bodyText2,
               ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
-          size: Globals.deviceType == "phone" ? 18 : 26,
+          size: Globals.deviceType == "phone" ? 12 : 20,
           color: AppTheme.kButtonbackColor,
         ),
       ),
@@ -184,26 +192,43 @@ class _FamilyPageState extends State<FamilyPage> {
                   backgroundColor: Theme.of(context).accentColor,
                 ));
               } else if (state is FamiliesDataSucess) {
-                return Container(
-                  child: state.obj != null && state.obj!.length > 0
-                      ? ListView.builder(
+                return state.obj != null && state.obj!.length > 0
+                    ? ListView.builder(
                         scrollDirection: Axis.vertical,
                         itemCount: state.obj!.length,
                         itemBuilder: (BuildContext context, int index) {
                           return _buildList(state.obj![index], index);
                         },
                       )
-                      : Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Text("No data found"),
-                        ),
-                );
+                    : Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: widget.language != null &&
+                                widget.language != "English"
+                            ? TranslationWidget(
+                                message: "No data found",
+                                toLanguage: widget.language,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                ),
+                              )
+                            : Text("No data found"),
+                      );
               } else if (state is ErrorLoading) {
                 return Container(
                   alignment: Alignment.center,
                   height: MediaQuery.of(context).size.height * 0.8,
-                  child: Text("Unable to load the data"),
+                  child: widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: "Unable to load the data",
+                          toLanguage: widget.language,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                          ),
+                        )
+                      : Text("Unable to load the data"),
                 );
               } else {
                 return Container();

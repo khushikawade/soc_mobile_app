@@ -1,5 +1,10 @@
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +13,15 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
+  String? language;
+  bool isbuttomsheet;
+  String appbarTitle;
+  SettingPage(
+      {Key? key,
+      required this.language,
+      required this.isbuttomsheet,
+      required this.appbarTitle})
+      : super(key: key);
   @override
   _SettingPageState createState() => _SettingPageState();
 }
@@ -32,10 +46,8 @@ class _SettingPageState extends State<SettingPage> {
       push = pushStatus.getBool("push")!;
     });
 
-    print(push);
-
     if (push == null) {
-      push = true;
+      push = false;
     }
   }
 
@@ -52,7 +64,16 @@ class _SettingPageState extends State<SettingPage> {
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Text(tittle, style: Theme.of(context).textTheme.headline3),
+            child: widget.language != null && widget.language != "English"
+                ? TranslationWidget(
+                    message: tittle,
+                    fromLanguage: "en",
+                    toLanguage: widget.language,
+                    builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline3),
+                  )
+                : Text(tittle, style: Theme.of(context).textTheme.headline3),
           ),
         ),
       ],
@@ -69,11 +90,12 @@ class _SettingPageState extends State<SettingPage> {
             child: Padding(
               padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
               child: Switch(
-                value: _lights,
+                value: push != null ? _lights = !push! : _lights,
                 onChanged: (bool value) async {
                   setState(() {
                     _lights = value;
-                    bool status = !_lights;
+                    // bool status = !_lights;
+                    push = !push!;
                     OneSignal.shared.disablePush(push!);
                   });
                   //
@@ -90,19 +112,36 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget _buildNotification() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
-          child: ListTile(
-            leading: Text("Enable Notification",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(fontWeight: FontWeight.normal)),
-            trailing: _buildSwitch(),
-          ),
-        )
+        widget.language != null && widget.language != "English"
+            ? Container(
+                padding: EdgeInsets.all(16),
+                child: TranslationWidget(
+                  message: "Enable Notification",
+                  fromLanguage: "en",
+                  toLanguage: widget.language,
+                  builder: (translatedMessage) => Padding(
+                    padding: const EdgeInsets.only(left: _kLabelSpacing),
+                    child: Text(translatedMessage.toString(),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(fontWeight: FontWeight.normal)),
+                  ),
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.only(left: _kLabelSpacing),
+                child: Text("Enable Notification",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(fontWeight: FontWeight.normal)),
+              ),
+        _buildSwitch(),
       ],
     );
   }
@@ -110,50 +149,66 @@ class _SettingPageState extends State<SettingPage> {
   Widget _buildLicence() {
     return InkWell(
       onTap: () {
-        urlobj.callurlLaucher(context, "https://www.google.com/");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Licenceinfo(
+                      language: widget.language,
+                    )));
+
+        // urlobj.callurlLaucher(context, "https://www.google.com/");
       },
-      child: Row(
-        children: [
-          Expanded(
-            child: ListTile(
-              leading: Text("Open Source licences",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(fontWeight: FontWeight.normal)),
-            ),
-          )
-        ],
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: widget.language != null && widget.language != "English"
+            ? TranslationWidget(
+                message: "Open Source licences",
+                fromLanguage: "en",
+                toLanguage: widget.language,
+                builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(fontWeight: FontWeight.normal)),
+              )
+            : Text("Open Source licences",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.normal)),
       ),
     );
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        appBarTitle: 'Setting',
-        isSearch: false,
-        isShare: false,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-      ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        appBar: CustomAppBarWidget(
+          appBarTitle: 'Setting',
+          isSearch: false,
+          isShare: false,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+          language: widget.language,
+        ),
+        body: Container(
+            child: ListView(
           children: [
             _buildHeading("Push Notifcation"),
             _buildNotification(),
             _buildHeading("Acknowledgements"),
             _buildLicence(),
-            Expanded(child: Container()),
+            HorzitalSpacerWidget(_kLabelSpacing * 20),
             SizedBox(
                 width: MediaQuery.of(context).size.width * 1,
                 height: 100.0,
-                child: ShareButtonWidget()),
+                child: ShareButtonWidget(
+                  language: widget.language,
+                )),
           ],
-        ),
-      ),
-    );
+        )),
+        bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
+            ? InternalButtomNavigationBar()
+            : null);
   }
 }

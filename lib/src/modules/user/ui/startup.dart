@@ -23,7 +23,6 @@ class _StartupPageState extends State<StartupPage> {
   UserBloc _loginBloc = new UserBloc();
   final NewsBloc _newsBloc = new NewsBloc();
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  // Map<String, dynamic> _deviceData = <String, dynamic>{};
   AndroidDeviceInfo? andorid;
   IosDeviceInfo? ios;
 
@@ -43,31 +42,33 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   Future<void> initPlatformState() async {
-    // Map<String, dynamic> deviceData = <String, dynamic>{};
     try {
       if (Platform.isAndroid) {
         andorid = await deviceInfoPlugin.androidInfo;
-        final data =
-            (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
-        // andorid = await deviceInfoPlugin.androidInfo;
-        Globals.phoneModel = andorid!.device;
+        // final data =
+        //     (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
+
+        // Globals.phoneModel = andorid!.device;
         Globals.baseOS = andorid!.version.baseOS;
-        Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-        var androidInfo = await DeviceInfoPlugin().androidInfo;
-        Globals.release = androidInfo.version.release;
-        // var sdkInt = androidInfo.version.sdkInt;
-        Globals.manufacturer = androidInfo.manufacturer;
-        Globals.model = androidInfo.model;
-        Globals.deviceToken = androidInfo.androidId;
+        // Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
+        Globals.androidInfo = await DeviceInfoPlugin().androidInfo;
+
+        // Globals.release = androidInfo.version.release;
+        // // var sdkInt = androidInfo.version.sdkInt;
+        // Globals.manufacturer = androidInfo.manufacturer;
+        // Globals.model = androidInfo.model;
+        // Globals.deviceToken = androidInfo.androidId;
         Globals.myLocale = Localizations.localeOf(context);
-        Globals.countrycode = Localizations.localeOf(context).countryCode!;
+        // Globals.countrycode = Localizations.localeOf(context).countryCode!;
       } else if (Platform.isIOS) {
         ios = await deviceInfoPlugin.iosInfo;
         var iosInfo = await DeviceInfoPlugin().iosInfo;
-        Globals.manufacturer = iosInfo.systemName;
-        Globals.release = iosInfo.systemVersion;
-        Globals.name = iosInfo.name;
-        Globals.model = iosInfo.model;
+        Globals.iosInfo = iosInfo;
+
+        // Globals.manufacturer = iosInfo.systemName;
+        // Globals.release = iosInfo.systemVersion;
+        // Globals.name = iosInfo.name;
+        // Globals.model = iosInfo.model;
       }
     } on PlatformException {
       // deviceData = <String, dynamic>{
@@ -76,10 +77,6 @@ class _StartupPageState extends State<StartupPage> {
     }
 
     if (!mounted) return;
-
-    // setState(() {
-    //   _deviceData = deviceData;
-    // });
   }
 
   @override
