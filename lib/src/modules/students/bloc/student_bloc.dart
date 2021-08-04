@@ -41,7 +41,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   Future<List<StudentApp>> getStudentDetails() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,App_URL__c,Deep_Link__c,Id,Name,App_Folder__c,Sort_Order__c FROM Student_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,App_Icon_URL__c, App_URL__c,Deep_Link__c,Id,Name,App_Folder__c,Sort_Order__c FROM Student_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
       if (response.statusCode == 200) {
         return response.data["records"]
             .map<StudentApp>((i) => StudentApp.fromJson(i))
