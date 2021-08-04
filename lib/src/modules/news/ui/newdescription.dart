@@ -55,7 +55,6 @@ class _NewdescriptionState extends State<Newdescription> {
                         placeholder: (context, url) =>
                             CircularProgressIndicator(
                           strokeWidth: 2,
-                          
                         ),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                       )
@@ -232,9 +231,6 @@ class _NewdescriptionState extends State<Newdescription> {
         padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
         child: _buildNewsDescription(),
       ),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

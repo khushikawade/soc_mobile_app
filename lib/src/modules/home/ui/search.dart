@@ -175,7 +175,8 @@ class _SearchPageState extends State<SearchPage> {
               isDense: true,
               hintText: 'Search',
               contentPadding: EdgeInsets.symmetric(
-                  vertical: _kLabelSpacing / 2, horizontal: _kLabelSpacing / 2),
+                  vertical: _kLabelSpacing / 1.5,
+                  horizontal: _kLabelSpacing / 2),
               filled: true,
               fillColor: AppTheme.kBackgroundColor,
               border: OutlineInputBorder(),
@@ -251,10 +252,7 @@ class _SearchPageState extends State<SearchPage> {
             return Expanded(
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.7,
-                child: Center(
-                    child: CircularProgressIndicator(
-                  
-                )),
+                child: Center(child: CircularProgressIndicator()),
               ),
             );
           } else
@@ -272,8 +270,8 @@ class _SearchPageState extends State<SearchPage> {
           padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
           decoration: BoxDecoration(
             color: (index % 2 == 0)
-                ? AppTheme.kListBackgroundColor3
-                : Theme.of(context).backgroundColor,
+                ? Theme.of(context).backgroundColor
+                : Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(4),
             boxShadow: [
               BoxShadow(

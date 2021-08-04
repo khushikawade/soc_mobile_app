@@ -204,9 +204,6 @@ class _SettingPageState extends State<SettingPage> {
               )),
         ],
       )),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

@@ -132,12 +132,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
             decoration: BoxDecoration(
               border: (index % 2 == 0)
-                  ? Border.all(color: Theme.of(context).colorScheme.secondary,)
-                  : Border.all(color: Theme.of(context).backgroundColor),
+                  ? Border.all(
+                      color: Theme.of(context).backgroundColor,
+                    )
+                  : Border.all(color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(0.0),
               color: (index % 2 == 0)
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).backgroundColor,
+                  ? Theme.of(context).backgroundColor
+                  : Theme.of(context).colorScheme.secondary,
               boxShadow: [
                 BoxShadow(
                   color: Color.fromRGBO(0, 0, 0, 0.2),
@@ -336,9 +338,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               }
             }),
       ),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

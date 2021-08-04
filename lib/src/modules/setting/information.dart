@@ -94,9 +94,6 @@ class _InformationPageState extends State<InformationPage> {
           ),
         )
       ]),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

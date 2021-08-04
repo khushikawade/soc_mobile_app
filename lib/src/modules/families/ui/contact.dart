@@ -106,7 +106,7 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              color: AppTheme.kTxtfieldBorderColor,
+              // color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildmap(),
@@ -122,7 +122,7 @@ class _ContactPageState extends State<ContactPage> {
           right: _kLabelSpacing / 3,
           left: _kLabelSpacing / 3),
       decoration: BoxDecoration(
-          color: AppTheme.kmapBackgroundColor,
+          // color: AppTheme.kmapBackgroundColor,
           borderRadius: BorderRadius.all(Radius.circular(4.0))),
       child: widget.obj["Contact_Office_Location__Latitude__s"] != null &&
               widget.obj["Contact_Office_Location__Longitude__s"] != null
@@ -150,7 +150,7 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              color: AppTheme.kTxtfieldBorderColor,
+              // color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildphone(),
@@ -166,7 +166,7 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              color: AppTheme.kTxtfieldBorderColor,
+              // color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildaddress(),
@@ -296,7 +296,7 @@ class _ContactPageState extends State<ContactPage> {
           decoration: BoxDecoration(
               border: Border.all(
                 width: _kboxborderwidth,
-                color: AppTheme.kTxtfieldBorderColor,
+                // color: AppTheme.kTxtfieldBorderColor,
               ),
               borderRadius: BorderRadius.all(Radius.circular(4.0))),
           child: _builEmail()),

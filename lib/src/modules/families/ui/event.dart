@@ -52,12 +52,12 @@ class _EventPageState extends State<EventPage> {
       child: Container(
           decoration: BoxDecoration(
             border: (index % 2 == 0)
-                ? Border.all(color: AppTheme.kListBackgroundColor2)
-                : Border.all(color: Theme.of(context).backgroundColor),
+                ? Border.all(color: Theme.of(context).backgroundColor)
+                : Border.all(color: Theme.of(context).colorScheme.secondary),
             borderRadius: BorderRadius.circular(0.0),
             color: (index % 2 == 0)
-                ? AppTheme.kListBackgroundColor2
-                : Theme.of(context).backgroundColor,
+                ? Theme.of(context).backgroundColor
+                : Theme.of(context).colorScheme.secondary,
           ),
           child: Container(
             child: Padding(
@@ -269,9 +269,6 @@ class _EventPageState extends State<EventPage> {
                   return Container();
                 }
               })),
-      // bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

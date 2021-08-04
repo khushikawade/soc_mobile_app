@@ -231,9 +231,6 @@ class _EventDescriptionState extends State<EventDescription> {
           ),
         ),
       ]),
-      // bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

@@ -61,7 +61,7 @@ class DbServices {
       }
     } catch (e) {
       if (e.toString().contains('Failed host lookup')) {
-        throw ('No Internet connection');
+        throw ('NO_CONNECTION');
       } else {
         throw (e);
       }
@@ -90,7 +90,7 @@ class DbServices {
       }
     } catch (e) {
       if (e.toString().contains("Failed host lookup")) {
-        throw ("No Internet Connection.");
+        throw ("NO_CONNECTION");
       } else {
         throw (e);
       }
