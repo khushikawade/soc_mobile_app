@@ -22,7 +22,7 @@ class StaffPage extends StatefulWidget {
 }
 
 class _StaffPageState extends State<StaffPage> {
-  static const double _kLabelSpacing = 20.0;
+  static const double _kLabelSpacing = 16.0;
   FocusNode myFocusNode = new FocusNode();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   StaffBloc _bloc = StaffBloc();

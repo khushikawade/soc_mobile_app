@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
-import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -187,18 +186,21 @@ class _SearchPageState extends State<SearchPage> {
                 color: AppTheme.kprefixIconColor,
                 size: Globals.deviceType == "phone" ? 20 : 28,
               ),
-              suffix: IconButton(
-                onPressed: () {
-                  setState(() {
-                    _controller.clear();
-                    issuggestionList = false;
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  });
-                },
-                icon: Icon(
-                  Icons.clear,
-                  color: AppTheme.kIconColor,
-                  size: Globals.deviceType == "phone" ? 18 : 24,
+              suffix: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _controller.clear();
+                      issuggestionList = false;
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    });
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    color: AppTheme.kIconColor,
+                    size: Globals.deviceType == "phone" ? 18 : 26,
+                  ),
                 ),
               ),
             ),
@@ -263,7 +265,6 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildIListtem(int index, items) {
     return InkWell(
       onTap: () async {
-        // await _recentListRoute(items[index]);
         await _route(items[index]);
       },
       child: Container(
@@ -330,7 +331,7 @@ class _SearchPageState extends State<SearchPage> {
                         margin: EdgeInsets.only(
                             left: _kLabelSpacing / 2,
                             right: _kLabelSpacing / 2,
-                            bottom: _kLabelSpacing * 2),
+                            bottom: _kLabelSpacing),
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: Colors.grey,
@@ -403,14 +404,16 @@ class _SearchPageState extends State<SearchPage> {
                       ));
           } else if (state is SearchLoading) {
             return Expanded(
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.7,
                 child: Center(
-                    child: CircularProgressIndicator(
-                  
-                )),
+              child: Container(
+                alignment: Alignment.center,
+                width: _kIconSize * 1.4,
+                height: _kIconSize * 1.5,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
               ),
-            );
+            ));
           } else {
             return Container(height: 0);
           }

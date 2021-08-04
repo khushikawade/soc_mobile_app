@@ -198,7 +198,7 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                 )
               : Text(
-                  "Address :",
+                  "Address : ",
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1!
@@ -251,13 +251,13 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                 )
               : Text(
-                  "Phone:",
+                  "Phone : ",
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1!
                       .copyWith(color: Color(0xff171717)),
                 ),
-          HorzitalSpacerWidget(_kLabelSpacing),
+          HorzitalSpacerWidget(_kLabelSpacing / 2),
           InkWell(
             onTap: () {
               if (widget.obj["Contact_Phone__c"] != null) {
@@ -324,13 +324,13 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                 )
               : Text(
-                  "Email",
+                  "Email : ",
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1!
                       .copyWith(color: Color(0xff171717)),
                 ),
-          HorzitalSpacerWidget(_kLabelSpacing * 1.5),
+          HorzitalSpacerWidget(_kLabelSpacing / 2),
           InkWell(
             onTap: () {
               widget.obj["Contact_Email__c"] != null

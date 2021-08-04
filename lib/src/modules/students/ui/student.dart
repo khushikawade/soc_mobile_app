@@ -72,8 +72,8 @@ class _StudentPageState extends State<StudentPage> {
             return GridView.count(
               childAspectRatio: orientation == Orientation.portrait ? 1 : 3 / 2,
               crossAxisCount: crossaAxisCount,
-              crossAxisSpacing: _kLableSpacing,
-              mainAxisSpacing: _kLableSpacing,
+              crossAxisSpacing: _kLableSpacing * 1.2,
+              mainAxisSpacing: _kLableSpacing * 1.2,
               children: List.generate(
                 list.length,
                 (index) {
