@@ -185,7 +185,7 @@ class _ContactPageState extends State<ContactPage> {
         children: <Widget>[
           widget.language != null && widget.language != "English"
               ? TranslationWidget(
-                  message: "Address:",
+                  message: "Address : ",
                   toLanguage: widget.language,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
@@ -198,7 +198,7 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                 )
               : Text(
-                  "Address :",
+                  "Address : ",
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1!
@@ -237,7 +237,7 @@ class _ContactPageState extends State<ContactPage> {
         children: [
           widget.language != null && widget.language != "English"
               ? TranslationWidget(
-                  message: "Phone :",
+                  message: "Phone : ",
                   toLanguage: widget.language,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
@@ -249,13 +249,13 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                 )
               : Text(
-                  "Phone:",
+                  "Phone : ",
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1!
                       .copyWith(color: Color(0xff171717)),
                 ),
-          HorzitalSpacerWidget(_kLabelSpacing),
+          HorzitalSpacerWidget(_kLabelSpacing / 2),
           InkWell(
             onTap: () {
               if (widget.obj["Contact_Phone__c"] != null) {
@@ -308,7 +308,7 @@ class _ContactPageState extends State<ContactPage> {
         children: [
           widget.language != null && widget.language != "English"
               ? TranslationWidget(
-                  message: "Email :",
+                  message: "Email : ",
                   toLanguage: widget.language,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
@@ -320,13 +320,13 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                 )
               : Text(
-                  "Email",
+                  "Email : ",
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1!
                       .copyWith(color: Color(0xff171717)),
                 ),
-          HorzitalSpacerWidget(_kLabelSpacing * 1.5),
+          HorzitalSpacerWidget(_kLabelSpacing / 2),
           InkWell(
             onTap: () {
               widget.obj["Contact_Email__c"] != null

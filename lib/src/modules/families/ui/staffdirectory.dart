@@ -114,7 +114,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   icon: Icon(
                     Icons.clear,
                     color: AppTheme.kIconColor,
-                    size: Globals.deviceType == "phone" ? 18 : 24,
+                    size: Globals.deviceType == "phone" ? 18 : 26,
                   ),
                 ),
               ),

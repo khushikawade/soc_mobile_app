@@ -68,10 +68,9 @@ class _EventPageState extends State<EventPage> {
                   leading: Container(
                     alignment: Alignment.center,
                     width: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      children: <Widget>[
                         widget.language != null && widget.language != "English"
                             ? TranslationWidget(
                                 message:
@@ -109,16 +108,18 @@ class _EventPageState extends State<EventPage> {
                                           height: 1.5),
                                 ),
                               )
-                            : Text(
-                                Utility.getMonthFromDate(list.startDate!)
-                                    .toString()
-                                    .split("/")[1],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        fontWeight: FontWeight.normal,
-                                        height: 1.5),
+                            : Expanded(
+                                child: Text(
+                                  Utility.getMonthFromDate(list.startDate!)
+                                      .toString()
+                                      .split("/")[1],
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline2!
+                                      .copyWith(
+                                          fontWeight: FontWeight.normal,
+                                          height: 1.5),
+                                ),
                               )
                       ],
                     ),

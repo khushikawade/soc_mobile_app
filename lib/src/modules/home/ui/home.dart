@@ -218,9 +218,12 @@ class _HomePageState extends State<HomePage> {
               },
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: const Icon(IconData(0xe800,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg)),
+                child: Icon(
+                  IconData(0xe800,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  size: Globals.deviceType == "phone" ? 24 : 32,
+                ),
               ),
             ),
             title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),

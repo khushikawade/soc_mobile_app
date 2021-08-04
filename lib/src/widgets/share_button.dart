@@ -46,7 +46,10 @@ class ShareButtonWidget extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 final String body =
-                    "Description of the problem: [Please describe the issue you are encountering here...] \nApp: Bronx Bears 1.10.0.0(1.2021.521.1630) \nDevice : ${Globals.manufacturer} ${Globals.release ?? ""} ${Globals.name ?? ""} ${Globals.model} \nuser/release-keys OS : ${Globals.baseOS} \nLocale :${Globals.myLocale}${Globals.countrycode != "" ? "_" "${Globals.countrycode}" : ""}  \nDeployment time : - \nDeployment: - \nUserToken : ${Globals.deviceID} \nDeviceToken : ${Globals.deviceToken} \nDrawingNo. : -";
+                    "Description of the problem: [Please describe the issue you are encountering here...] \nApp: Bronx Bears 1.10.0.0(1.2021.521.1630) \nDevice : ${Globals.manufacturer} ${Globals.release ?? ""} ${Globals.name ?? ""} ${Globals.model}  \nLocale :${Globals.myLocale}${Globals.countrycode != "" ? "_" "${Globals.countrycode}" : ""}    \nUserToken : ${Globals.deviceID} \nDeviceToken : ${Globals.deviceToken} ";
+
+                //  final String body =
+                //       "Description of the problem: [Please describe the issue you are encountering here...] \nApp: Bronx Bears 1.10.0.0(1.2021.521.1630) \nDevice : ${Globals.manufacturer} ${Globals.release ?? ""} ${Globals.name ?? ""} ${Globals.model} \nuser/release-keys OS : ${Globals.baseOS} \nLocale :${Globals.myLocale}${Globals.countrycode != "" ? "_" "${Globals.countrycode}" : ""}  \nDeployment time : - \nDeployment: - \nUserToken : ${Globals.deviceID} \nDeviceToken : ${Globals.deviceToken} \nDrawingNo. : -";
                 final subject = "Problem with the PS 456 Bronx Bears-app";
                 obj.callFunction(context, body, subject);
               },

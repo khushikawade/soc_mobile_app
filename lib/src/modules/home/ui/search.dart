@@ -186,18 +186,21 @@ class _SearchPageState extends State<SearchPage> {
                 color: AppTheme.kprefixIconColor,
                 size: Globals.deviceType == "phone" ? 20 : 28,
               ),
-              suffix: IconButton(
-                onPressed: () {
-                  setState(() {
-                    _controller.clear();
-                    issuggestionList = false;
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  });
-                },
-                icon: Icon(
-                  Icons.clear,
-                  color: AppTheme.kIconColor,
-                  size: Globals.deviceType == "phone" ? 18 : 24,
+              suffix: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _controller.clear();
+                      issuggestionList = false;
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    });
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    color: AppTheme.kIconColor,
+                    size: Globals.deviceType == "phone" ? 18 : 26,
+                  ),
                 ),
               ),
             ),

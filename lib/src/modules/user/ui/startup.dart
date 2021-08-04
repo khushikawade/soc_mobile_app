@@ -7,6 +7,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
 import '../bloc/user_bloc.dart';
@@ -25,6 +26,7 @@ class _StartupPageState extends State<StartupPage> {
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   AndroidDeviceInfo? andorid;
   IosDeviceInfo? ios;
+  final connected = ConnectivityResult.none;
 
   void initState() {
     super.initState();
@@ -79,80 +81,109 @@ class _StartupPageState extends State<StartupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        Center(
-          child: SizedBox(
-            height: 200,
-            width: 200,
-            child: Image.asset('assets/images/splash_bear_icon.png',
-                fit: BoxFit.fill),
-          ),
+        body: Stack(children: [
+      Center(
+        child: SizedBox(
+          height: 200,
+          width: 200,
+          child: Image.asset('assets/images/splash_bear_icon.png',
+              fit: BoxFit.fill),
         ),
-        BlocListener<UserBloc, UserState>(
-          bloc: _loginBloc,
-          listener: (context, state) async {
-            if (state is LoginSuccess) {
-              Globals.token != null && Globals.token != " "
-                  ? _bloc.add(FetchBottomNavigationBar())
-                  : Container(
-                      child: Text("Please refresh your application"),
-                    );
-            } else if (state is LoginError) {
-              Container(
-                alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Text("Unable to load the data"),
-              );
-            }
-          },
-          child: Container(),
-        ),
-        BlocListener<HomeBloc, HomeState>(
-          bloc: _bloc,
-          listener: (context, state) async {
-            if (state is BottomNavigationBarSuccess) {
-              Globals.homeObjet = state.obj;
-              state.obj != null
-                  ? Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomePage(
-                          title: "SOC",
-                          homeObj: state.obj,
-                        ),
-                      ))
-                  : Text("No data found");
-            } else if (state is HomeErrorReceived) {
-              Container(
-                alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Text("Unable to load the data"),
-              );
-            }
-          },
-          child: Container(),
-        ),
-        BlocListener<NewsBloc, NewsState>(
-          bloc: _newsBloc,
-          listener: (context, state) async {
-            if (state is NewsLoaded) {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              SharedPreferences intPrefs =
-                  await SharedPreferences.getInstance();
-              intPrefs.getInt("totalCount") == null
-                  ? intPrefs.setInt("totalCount", Globals.notiCount!)
-                  : intPrefs.getInt("totalCount");
-              print(intPrefs.getInt("totalCount"));
-              if (Globals.notiCount! > intPrefs.getInt("totalCount")!) {
-                intPrefs.setInt("totalCount", Globals.notiCount!);
-                prefs.setBool("enableIndicator", true);
-              }
-            }
-          },
-          child: Container(),
-        ),
-      ],
-    ));
+      )
+    ]));
   }
 }
+
+    
+    
+    
+    
+//     Scaffold(body: OfflineBuilder(connectivityBuilder: (
+//       BuildContext context,
+//       ConnectivityResult connectivity,
+//       Widget child,
+//     ) {
+//       final bool connected = connectivity != ConnectivityResult.none;
+//       return connected
+//           ? Stack(
+//               children: [
+//                 Center(
+//                   child: SizedBox(
+//                     height: 200,
+//                     width: 200,
+//                     child: Image.asset('assets/images/splash_bear_icon.png',
+//                         fit: BoxFit.fill),
+//                   ),
+//                 ),
+//                 BlocListener<UserBloc, UserState>(
+//                   bloc: _loginBloc,
+//                   listener: (context, state) async {
+//                     if (state is LoginSuccess) {
+//                       Globals.token != null && Globals.token != " "
+//                           ? _bloc.add(FetchBottomNavigationBar())
+//                           : Container(
+//                               child: Text("Please refresh your application"),
+//                             );
+//                     } else if (state is LoginError) {
+//                       Container(
+//                         alignment: Alignment.center,
+//                         height: MediaQuery.of(context).size.height * 0.8,
+//                         child: Text("Unable to load the data"),
+//                       );
+//                     }
+//                   },
+//                   child: Container(),
+//                 ),
+//                 BlocListener<HomeBloc, HomeState>(
+//                   bloc: _bloc,
+//                   listener: (context, state) async {
+//                     if (state is BottomNavigationBarSuccess) {
+//                       Globals.homeObjet = state.obj;
+//                       state.obj != null
+//                           ? Navigator.pushReplacement(
+//                               context,
+//                               MaterialPageRoute(
+//                                 builder: (context) => HomePage(
+//                                   title: "SOC",
+//                                   homeObj: state.obj,
+//                                 ),
+//                               ))
+//                           : Text("No data found");
+//                     } else if (state is HomeErrorReceived) {
+//                       Container(
+//                         alignment: Alignment.center,
+//                         height: MediaQuery.of(context).size.height * 0.8,
+//                         child: Text("Unable to load the data"),
+//                       );
+//                     }
+//                   },
+//                   child: Container(),
+//                 ),
+//                 BlocListener<NewsBloc, NewsState>(
+//                   bloc: _newsBloc,
+//                   listener: (context, state) async {
+//                     if (state is NewsLoaded) {
+//                       SharedPreferences prefs =
+//                           await SharedPreferences.getInstance();
+//                       SharedPreferences intPrefs =
+//                           await SharedPreferences.getInstance();
+//                       intPrefs.getInt("totalCount") == null
+//                           ? intPrefs.setInt("totalCount", Globals.notiCount!)
+//                           : intPrefs.getInt("totalCount");
+//                       print(intPrefs.getInt("totalCount"));
+//                       if (Globals.notiCount! > intPrefs.getInt("totalCount")!) {
+//                         intPrefs.setInt("totalCount", Globals.notiCount!);
+//                         prefs.setBool("enableIndicator", true);
+//                       }
+//                     }
+//                   },
+//                   child: Container(),
+//                 ),
+//               ],
+//             )
+//           : Center(
+//               child: Text('Just Turn Off Your Internet '),
+//             );
+//     }));
+//   }
+// }

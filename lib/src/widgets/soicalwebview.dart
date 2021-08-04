@@ -89,7 +89,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                     icon: Icon(
                       Icons.share,
                       color: AppTheme.kIconColor3,
-                      size: Globals.deviceType == "phone" ? 18 : 24,
+                      size: Globals.deviceType == "phone" ? 18 : 26,
                     ),
                   )
                 : Container(
