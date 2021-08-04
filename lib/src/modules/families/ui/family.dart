@@ -147,7 +147,7 @@ class _FamilyPageState extends State<FamilyPage> {
             EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: Icon(
           IconData(
-            int.parse(obj.appIconC!),
+            int.parse('0x${obj.appIconC!}'),
             fontFamily: 'FontAwesomeSolid',
             fontPackage: 'font_awesome_flutter',
           ),
