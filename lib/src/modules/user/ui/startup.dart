@@ -118,7 +118,7 @@ class _StartupPageState extends State<StartupPage> {
                   : Container(
                       child: Text("Please refresh your application"),
                     );
-            } else if (state is LoginError) {
+            } else if (state is ErrorReceived) {
               Center(
                 child: Container(
                   alignment: Alignment.center,
