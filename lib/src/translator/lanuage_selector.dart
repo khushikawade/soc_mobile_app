@@ -81,14 +81,6 @@ class LanguageSelector {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Row(
-                    //   children: [
-                    //     Expanded(
-                    //       // wrap your Column in Expanded
-                    //       child: Container(child: _buildSearchbar(co)),
-                    //     ),
-                    //   ],
-                    // ),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       Text(
                         "Select language",
@@ -97,60 +89,60 @@ class LanguageSelector {
                             .headline6!
                             .copyWith(fontSize: AppTheme.kBottomSheetTitleSize),
                       ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Icon(
-                          Icons.clear,
-                          size: Globals.deviceType == "phone" ? 20 : 28,
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     Navigator.pop(context);
+                      //   },
+                      //   child: Icon(
+                      //     Icons.clear,
+                      //     size: Globals.deviceType == "phone" ? 20 : 28,
+                      //   ),
+                      // ),
                     ]),
 
-                    TextFormField(
-                        focusNode: myFocusNode,
-                        controller: _controller,
-                        cursorColor: Colors.black,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          hintText: 'Search',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide.none),
-                          filled: true,
-                          fillColor: Theme.of(context).backgroundColor,
-                          prefixIcon: Icon(
-                            const IconData(0xe805,
-                                fontFamily: Overrides.kFontFam,
-                                fontPackage: Overrides.kFontPkg),
-                            size: Globals.deviceType == "phone" ? 20 : 28,
-                          ),
-                          suffixIcon: _controller.text.isEmpty
-                              ? null
-                              : InkWell(
-                                  onTap: () {
-                                    _controller.clear();
-
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                  },
-                                  child: Icon(
-                                    Icons.clear,
-                                    size:
-                                        Globals.deviceType == "phone" ? 20 : 28,
-                                  ),
-                                ),
-                        ),
-                        onChanged: (value) {
-                          onItemChanged(value, setState);
-                        }),
-
-                    // issuggestionList!
-                    //     ? _buildsuggestiontlist()
-                    //     : Container(
-                    //         height: 0,
+                    // TextFormField(
+                    //     focusNode: myFocusNode,
+                    //     controller: _controller,
+                    //     cursorColor: Colors.black,
+                    //     decoration: InputDecoration(
+                    //       isDense: true,
+                    //       hintText: 'Search',
+                    //       border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(15.0),
+                    //           borderSide: BorderSide.none),
+                    //       filled: true,
+                    //       fillColor: Theme.of(context).backgroundColor,
+                    //       prefixIcon: Icon(
+                    //         const IconData(0xe805,
+                    //             fontFamily: Overrides.kFontFam,
+                    //             fontPackage: Overrides.kFontPkg),
+                    //         size: Globals.deviceType == "phone" ? 20 : 28,
                     //       ),
+                    //       suffixIcon: _controller.text.isEmpty
+                    //           ? null
+                    //           : InkWell(
+                    //               onTap: () {
+                    //                 _controller.clear();
+
+                    //                 FocusScope.of(context)
+                    //                     .requestFocus(FocusNode());
+                    //               },
+                    //               child: Icon(
+                    //                 Icons.clear,
+                    //                 size:
+                    //                     Globals.deviceType == "phone" ? 20 : 28,
+                    //               ),
+                    //             ),
+                    //     ),
+                    //     onChanged: (value) {
+                    //       onItemChanged(value, setState);
+                    //     }),
+
+                    issuggestionList!
+                        ? _buildsuggestiontlist(context, onLanguageChanged)
+                        : Container(
+                            height: 0,
+                          ),
 
                     // _buildSearchbar(context, setState),
                     // Padding(
@@ -329,7 +321,7 @@ class LanguageSelector {
     );
   }
 
-  Widget _buildsuggestiontlist(language, context, onLanguageChanged) {
+  Widget _buildsuggestiontlist(context, onLanguageChanged) {
     return Expanded(
       child: Container(
           child: ListView(
