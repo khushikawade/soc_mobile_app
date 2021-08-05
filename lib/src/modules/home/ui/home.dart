@@ -58,8 +58,8 @@ class _HomePageState extends State<HomePage> {
 
     _bloc.initPushState(context);
     _selectedIndex = Globals.outerBottombarIndex ?? 0;
-    timer =
-        Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
+    // timer =
+    //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
     _controller = PersistentTabController(initialIndex: 0);
   }
 
@@ -73,7 +73,6 @@ class _HomePageState extends State<HomePage> {
       } else {
         indicator.value = false;
       }
-
       if (Globals.selectedLanguage != null) {
         languageChanged.value = Globals.selectedLanguage!;
       }

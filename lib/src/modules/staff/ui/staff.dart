@@ -200,7 +200,9 @@ class _StaffPageState extends State<StaffPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBarWidget(),
+        appBar: AppBarWidget( refresh: (v) {
+            setState(() {});
+          },),
         body: BlocBuilder<StaffBloc, StaffState>(
             bloc: _bloc,
             builder: (BuildContext contxt, StaffState state) {
