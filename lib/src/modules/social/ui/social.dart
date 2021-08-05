@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -26,21 +27,8 @@ class _SocialPageState extends State<SocialPage> {
 
   void initState() {
     super.initState();
-    // myDataListener();
-
     bloc.add(SocialPageEvent());
   }
-
-  // myDataListener() {
-  //   ValueListenableBuilder(
-  //     builder: (BuildContext context, dynamic value, Widget? child) {
-  //       setState(() {});
-  //       return Container();
-  //     },
-  //     valueListenable: Globals.languageChanged,
-  //     child: Container(),
-  //   );
-  // }
 
   @override
   void dispose() {
@@ -86,13 +74,15 @@ class _SocialPageState extends State<SocialPage> {
                       child: CachedNetworkImage(
                         imageUrl: imageLink,
                         placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          width: _kIconSize * 1.4,
-                          height: _kIconSize * 1.5,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        ),
+                            alignment: Alignment.center,
+                            child: ShimmerLoading(
+                              isLoading: true,
+                              child: Container(
+                                width: _kIconSize * 1.4,
+                                height: _kIconSize * 1.5,
+                                color: Colors.white,
+                              ),
+                            )),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                     )
@@ -103,13 +93,15 @@ class _SocialPageState extends State<SocialPage> {
                         child: CachedNetworkImage(
                           imageUrl: Globals.homeObjet["App_Logo__c"],
                           placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
-                          ),
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width: _kIconSize * 1.4,
+                                  height: _kIconSize * 1.5,
+                                  color: Colors.white,
+                                ),
+                              )),
                           errorWidget: (context, url, error) =>
                               Icon(Icons.error),
                         ),
@@ -209,7 +201,11 @@ class _SocialPageState extends State<SocialPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(),
+      appBar: AppBarWidget(
+        refresh: (v) {
+          setState(() {});
+        },
+      ),
       body: BlocBuilder(
           bloc: bloc,
           builder: (BuildContext context, SocialState state) {

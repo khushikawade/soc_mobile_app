@@ -9,6 +9,7 @@ import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -107,13 +108,15 @@ class _StaffPageState extends State<StaffPage> {
               height: 20,
               width: 20,
               placeholder: (context, url) => Container(
-                alignment: Alignment.center,
-                // width: _kIconSize * 1.4,
-                // height: _kIconSize * 1.5,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                ),
-              ),
+                  alignment: Alignment.center,
+                  child: ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      height: 20,
+                      width: 20,
+                      color: Colors.white,
+                    ),
+                  )),
               errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           ),
@@ -200,7 +203,11 @@ class _StaffPageState extends State<StaffPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBarWidget(),
+        appBar: AppBarWidget(
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
         body: BlocBuilder<StaffBloc, StaffState>(
             bloc: _bloc,
             builder: (BuildContext contxt, StaffState state) {

@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,9 @@ class _NewsPageState extends State<NewsPage> {
 
   hideIndicator() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("enableIndicator", false);
+    setState(() {
+      prefs.setBool("enableIndicator", false);
+    });
   }
 
   @override
@@ -66,54 +69,49 @@ class _NewsPageState extends State<NewsPage> {
           children: <Widget>[
             Container(
               alignment: Alignment.centerLeft,
+              width: _kIconSize * 1.4,
               height: _kIconSize * 1.5,
               child: obj.image != null
                   ? ClipRRect(
-                      child: SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: CachedNetworkImage(
-                          imageUrl: obj.image!,
-                          height: 100,
-                          width: 100,
-                          // height: _kIconSize * 1.5,
-                          fit: BoxFit.cover,
-                          // width: _kIconSize * 1.4,
-                          placeholder: (context, url) => Container(
+                      child: CachedNetworkImage(
+                        imageUrl: obj.image!,
+
+                        // height: _kIconSize * 1.5,
+                        fit: BoxFit.fill,
+                        // width: _kIconSize * 1.4,
+                        placeholder: (context, url) => Container(
                             alignment: Alignment.center,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
-                          ),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
+                            child: ShimmerLoading(
+                              isLoading: true,
+                              child: Container(
+                                width: _kIconSize * 1.4,
+                                height: _kIconSize * 1.5,
+                                color: Colors.white,
+                              ),
+                            )),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                     )
                   : Container(
+                      width: _kIconSize * 1.4,
                       height: _kIconSize * 1.5,
                       alignment: Alignment.centerLeft,
                       child: ClipRRect(
-                        child: SizedBox(
-                          height: 100,
-                          width: 100,
-                          child: CachedNetworkImage(
-                            imageUrl: Globals.homeObjet["App_Logo__c"],
-                            fit: BoxFit.cover,
-                            height: 100,
-                            width: 100,
-                            placeholder: (context, url) => Container(
+                        child: CachedNetworkImage(
+                          imageUrl: Globals.homeObjet["App_Logo__c"],
+                          fit: BoxFit.fill,
+                          placeholder: (context, url) => Container(
                               alignment: Alignment.center,
-                              // width: _kIconSize * 1.4,
-                              // height: _kIconSize * 1.5,
-
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width: _kIconSize * 1.4,
+                                  height: _kIconSize * 1.5,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
                       ),
                     ),
@@ -191,7 +189,11 @@ class _NewsPageState extends State<NewsPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWidget(),
+        appBar: AppBarWidget(
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,21 +237,6 @@ class _NewsPageState extends State<NewsPage> {
                               builder: (translatedMessage) =>
                                   Text(translatedMessage))
                           : Text("Unable to load the data"),
-                    );
-                  } else if (state is NewsLoading) {
-                    return Expanded(
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                    );
-                  } else if (state is NewsErrorReceived) {
-                    return Expanded(
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Text("Unable to load the data"),
-                      ),
                     );
                   } else {
                     return Container();

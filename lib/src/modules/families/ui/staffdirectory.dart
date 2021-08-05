@@ -6,6 +6,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -157,18 +158,21 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   obj.imageUrlC != null && obj.imageUrlC.length > 0
                       ? Center(
                           child: CachedNetworkImage(
-                              imageUrl: obj.imageUrlC,
-                              fit: BoxFit.fill,
-                              width: 60,
-                              height: 60,
-                              placeholder: (context, url) => SizedBox(
-                                  height: 5,
-                                  width: 5,
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1,
-                                    ),
-                                  ))),
+                            imageUrl: obj.imageUrlC,
+                            fit: BoxFit.fill,
+                            width: 60,
+                            height: 60,
+                            placeholder: (context, url) => Container(
+                                alignment: Alignment.center,
+                                child: ShimmerLoading(
+                                  isLoading: true,
+                                  child: Container(
+                                    width: _kIconSize * 1.4,
+                                    height: _kIconSize * 1.5,
+                                    color: Colors.white,
+                                  ),
+                                )),
+                          ),
                         )
                       : Center(
                           child: Container(
@@ -176,13 +180,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             child: CachedNetworkImage(
                               imageUrl: Globals.homeObjet["App_Logo__c"],
                               placeholder: (context, url) => Container(
-                                alignment: Alignment.center,
-                                width: _kIconSize * 1.4,
-                                height: _kIconSize * 1.5,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              ),
+                                  alignment: Alignment.center,
+                                  child: ShimmerLoading(
+                                    isLoading: true,
+                                    child: Container(
+                                      width: _kIconSize * 1.4,
+                                      height: _kIconSize * 1.5,
+                                      color: Colors.white,
+                                    ),
+                                  )),
                               errorWidget: (context, url, error) =>
                                   Icon(Icons.error),
                             ),

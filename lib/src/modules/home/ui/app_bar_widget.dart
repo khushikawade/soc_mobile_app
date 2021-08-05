@@ -3,24 +3,24 @@ import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  static const double _kIconSize = 35.0;
-  static const double height = 60;
-  static const double _kLabelSpacing = 16.0;
-  String language1 = Translations.supportedLanguages.first;
-  String language2 = Translations.supportedLanguages.last;
-  var item;
-  // final ValueNotifier<String> languageChanged =
-  //     ValueNotifier<String>("English");
+  final double _kIconSize = 35.0;
+  final double height = 60;
+  final double _kLabelSpacing = 16.0;
+  final String language1 = Translations.supportedLanguages.first;
+  final String language2 = Translations.supportedLanguages.last;
+  final ValueNotifier<String> languageChanged =
+      ValueNotifier<String>("English");
+  final ValueChanged? refresh;
+
+  AppBarWidget({Key? key, required this.refresh}) : super(key: key);
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -66,7 +66,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           .map((item) => PopupMenuItem<IconMenu>(
               value: item,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                     horizontal: _kLabelSpacing / 4, vertical: 0),
                 child: Text(
                   item.text,
@@ -84,7 +84,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-      // child:
       return AppBar(
           leadingWidth: _kIconSize,
           elevation: 0.0,
@@ -96,35 +95,18 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               size: Globals.deviceType == "phone" ? 24 : 32,
             ),
             onPressed: () {
-              LanguageSelector(context, item, (language) {
+              setState(() {});
+              LanguageSelector(context, null, (language) {
                 if (language != null) {
                   setState(() {
                     Globals.selectedLanguage = language;
                     Globals.languageChanged.value = language;
                   });
+                  refresh!(true);
                 }
               });
             },
           ),
-
-          //     GestureDetector(
-          //   onTap: () {
-          //     LanguageSelector(context, item, (language) {
-          //       if (language != null) {
-          //         setState(() {
-          //           Globals.selectedLanguage = language;
-          //           languageChanged.value = language;
-          //         });
-          //       }
-          //     });
-          //   },
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(12.0),
-          //     child: const Icon(IconData(0xe800,
-          //         fontFamily: Overrides.kFontFam,
-          //         fontPackage: Overrides.kFontPkg)),
-          //   ),
-          // ),
           title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: <Widget>[
             SearchButtonWidget(

@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -140,13 +141,15 @@ class _FamilyPageState extends State<FamilyPage> {
               height: 20,
               width: 20,
               placeholder: (context, url) => Container(
-                alignment: Alignment.center,
-                // width: _kIconSize * 1.4,
-                // height: _kIconSize * 1.5,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                ),
-              ),
+                  alignment: Alignment.center,
+                  child: ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      // width: _kIconSize * 1.4,
+                      // height: _kIconSize * 1.5,
+                      color: Colors.white,
+                    ),
+                  )),
               errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           ),
@@ -212,7 +215,11 @@ class _FamilyPageState extends State<FamilyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBarWidget(),
+        appBar: AppBarWidget(
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
         body: BlocBuilder<FamilyBloc, FamilyState>(
             bloc: _bloc,
             builder: (BuildContext contxt, FamilyState state) {

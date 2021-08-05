@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,8 +89,14 @@ class _StudentPageState extends State<StudentPage> {
                                   width: 100,
                                   child: CachedNetworkImage(
                                     imageUrl: list[index].appIconC ?? '',
-                                    placeholder: (context, url) =>
-                                        CircularProgressIndicator(),
+                                    placeholder: (context, url) => Container(
+                                        alignment: Alignment.center,
+                                        child: ShimmerLoading(
+                                          isLoading: true,
+                                          child: Container(
+                                            color: Colors.white,
+                                          ),
+                                        )),
                                     errorWidget: (context, url, error) =>
                                         Icon(Icons.error),
                                   ),
@@ -135,15 +142,16 @@ class _StudentPageState extends State<StudentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWidget(),
+        appBar: AppBarWidget(
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
         body: BlocBuilder<StudentBloc, StudentState>(
             bloc: _bloc,
             builder: (BuildContext contxt, StudentState state) {
               if (state is StudentInitial || state is Loading) {
-                return Center(
-                    child: CircularProgressIndicator(
-                  
-                ));
+                return Center(child: CircularProgressIndicator());
               } else if (state is StudentDataSucess) {
                 return state.obj != null && state.obj!.length > 0
                     ? _buildGrid(3, state.obj!, state.subFolder!)

@@ -4,7 +4,7 @@ import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
 
 class TranslationWidget extends StatefulWidget {
-  var message;
+  final String? message;
   final String? fromLanguage;
   final String? toLanguage;
   final Widget Function(String translation)? builder;

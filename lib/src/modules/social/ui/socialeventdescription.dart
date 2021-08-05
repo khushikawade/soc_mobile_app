@@ -3,6 +3,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -190,13 +191,15 @@ class SocialDescription extends StatelessWidget {
                   child: CachedNetworkImage(
                     imageUrl: Globals.homeObjet["App_Logo__c"],
                     placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      width: _kIconSize * 1.4,
-                      height: _kIconSize * 1.5,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    ),
+                        alignment: Alignment.center,
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            width: _kIconSize * 1.4,
+                            height: _kIconSize * 1.5,
+                            color: Colors.white,
+                          ),
+                        )),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
