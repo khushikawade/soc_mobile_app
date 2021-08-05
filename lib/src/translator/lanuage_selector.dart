@@ -17,7 +17,6 @@ class LanguageSelector {
 
   static final List<String> languagesList = Translations.supportedLanguages;
   static List<String> newList = [""];
-  static const double _kLabelSpacing = 20.0;
   var _controller = TextEditingController();
   FocusNode myFocusNode = new FocusNode();
   bool? issuggestionList = false;
@@ -41,7 +40,6 @@ class LanguageSelector {
 
   Widget _listTile(String language, context, onLanguageChanged) => Container(
         margin: EdgeInsets.only(left: 30, right: 30, bottom: 12),
-        // color: AppTheme.kListTileColor,
         color: (languagesList.indexOf(language) % 2 == 0)
             ? Theme.of(context).backgroundColor
             : AppTheme.kListBackgroundColor2,
@@ -89,78 +87,66 @@ class LanguageSelector {
                             .headline6!
                             .copyWith(fontSize: AppTheme.kBottomSheetTitleSize),
                       ),
-                      // InkWell(
-                      //   onTap: () {
-                      //     Navigator.pop(context);
-                      //   },
-                      //   child: Icon(
-                      //     Icons.clear,
-                      //     size: Globals.deviceType == "phone" ? 20 : 28,
-                      //   ),
-                      // ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          size: Globals.deviceType == "phone" ? 20 : 28,
+                        ),
+                      ),
                     ]),
+                    TextFormField(
+                        focusNode: myFocusNode,
+                        controller: _controller,
+                        cursorColor: Colors.black,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          hintText: 'Search',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none),
+                          filled: true,
+                          fillColor: Theme.of(context).backgroundColor,
+                          prefixIcon: Icon(
+                            const IconData(0xe805,
+                                fontFamily: Overrides.kFontFam,
+                                fontPackage: Overrides.kFontPkg),
+                            size: Globals.deviceType == "phone" ? 20 : 28,
+                          ),
+                          suffixIcon: _controller.text.isEmpty
+                              ? null
+                              : InkWell(
+                                  onTap: () {
+                                    _controller.clear();
 
-                    // TextFormField(
-                    //     focusNode: myFocusNode,
-                    //     controller: _controller,
-                    //     cursorColor: Colors.black,
-                    //     decoration: InputDecoration(
-                    //       isDense: true,
-                    //       hintText: 'Search',
-                    //       border: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(15.0),
-                    //           borderSide: BorderSide.none),
-                    //       filled: true,
-                    //       fillColor: Theme.of(context).backgroundColor,
-                    //       prefixIcon: Icon(
-                    //         const IconData(0xe805,
-                    //             fontFamily: Overrides.kFontFam,
-                    //             fontPackage: Overrides.kFontPkg),
-                    //         size: Globals.deviceType == "phone" ? 20 : 28,
-                    //       ),
-                    //       suffixIcon: _controller.text.isEmpty
-                    //           ? null
-                    //           : InkWell(
-                    //               onTap: () {
-                    //                 _controller.clear();
-
-                    //                 FocusScope.of(context)
-                    //                     .requestFocus(FocusNode());
-                    //               },
-                    //               child: Icon(
-                    //                 Icons.clear,
-                    //                 size:
-                    //                     Globals.deviceType == "phone" ? 20 : 28,
-                    //               ),
-                    //             ),
-                    //     ),
-                    //     onChanged: (value) {
-                    //       onItemChanged(value, setState);
-                    //     }),
-
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                  },
+                                  child: Icon(
+                                    Icons.clear,
+                                    size:
+                                        Globals.deviceType == "phone" ? 20 : 28,
+                                  ),
+                                ),
+                        ),
+                        onChanged: (value) {
+                          onItemChanged(value, setState);
+                        }),
                     issuggestionList!
                         ? _buildsuggestiontlist(context, onLanguageChanged)
                         : Container(
                             height: 0,
                           ),
-
-                    // _buildSearchbar(context, setState),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(
-                    //       top: 30, left: 30, right: 15, bottom: 30),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     mainAxisSize: MainAxisSize.max,
-                    //     children: [
-                    //       // _buildSearchbar(context),
-                    //     ],
-                    //   ),
-                    // ),
-
-                    Expanded(
-                      child: _buildLanguagesList(context, onLanguageChanged),
-                    ),
-                    // SpacerWidget(30)
+                    issuggestionList!
+                        ? Container(
+                            height: 0,
+                          )
+                        : Expanded(
+                            child:
+                                _buildLanguagesList(context, onLanguageChanged),
+                          ),
                   ],
                 ),
               );
@@ -177,141 +163,6 @@ class LanguageSelector {
     });
     issuggestionList = true;
   }
-
-  // //   Utility.showBottomSheet(
-  // //       Container(
-  // //         height: MediaQuery.of(context).size.width * 0.95,
-  // //         child: Column(
-  // //           mainAxisSize: MainAxisSize.min,
-  // //           children: [
-  // //             // Row(
-  // //             //   children: [
-  // //             //     Expanded(
-  // //             //       // wrap your Column in Expanded
-  // //             //       child: Container(child: _buildSearchbar(co)),
-  // //             //     ),
-  // //             //   ],
-  // //             // ),
-  // //             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-  // //               Text(
-  // //                 "Select language",
-  // //                 style: Theme.of(context)
-  // //                     .textTheme
-  // //                     .headline6!
-  // //                     .copyWith(fontSize: AppTheme.kBottomSheetTitleSize),
-  // //               ),
-  // //               InkWell(
-  // //                 onTap: () {
-  // //                   Navigator.pop(context);
-  // //                 },
-  // //                 child: Icon(
-  // //                   Icons.clear,
-  // //                   size: Globals.deviceType == "phone" ? 20 : 28,
-  // //                 ),
-  // //               ),
-  // //             ]),
-
-  // //         TextFormField(
-  // //     focusNode: myFocusNode,
-  // //     controller: _controller,
-  // //     cursorColor: Colors.black,
-  // //     decoration: InputDecoration(
-  // //       isDense: true,
-  // //       hintText: 'Search',
-  // //       border: OutlineInputBorder(
-  // //           borderRadius: BorderRadius.circular(15.0),
-  // //           borderSide: BorderSide.none),
-  // //       filled: true,
-  // //       fillColor: Theme.of(context).backgroundColor,
-  // //       prefixIcon: Icon(
-  // //         const IconData(0xe805,
-  // //             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-  // //         size: Globals.deviceType == "phone" ? 20 : 28,
-  // //       ),
-  // //       suffixIcon: _controller.text.isEmpty
-  // //           ? null
-  // //           : InkWell(
-  // //               onTap: () {
-  // //                 _controller.clear();
-
-  // //                 FocusScope.of(context).requestFocus(FocusNode());
-  // //               },
-  // //               child: Icon(
-  // //                 Icons.clear,
-  // //                 size: Globals.deviceType == "phone" ? 20 : 28,
-  // //               ),
-  // //             ),
-  // //     ),
-  // //     onChanged: onItemChanged(),
-  // //   )
-
-  // //             // _buildSearchbar(context, setState),
-  // //             // Padding(
-  // //             //   padding: const EdgeInsets.only(
-  // //             //       top: 30, left: 30, right: 15, bottom: 30),
-  // //             //   child: Row(
-  // //             //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  // //             //     mainAxisSize: MainAxisSize.max,
-  // //             //     children: [
-  // //             //       // _buildSearchbar(context),
-  // //             //     ],
-  // //             //   ),
-  // //             // ),
-
-  // //             Expanded(
-  // //               child: _buildLanguagesList(context, onLanguageChanged),
-  // //             ),
-  // //             // SpacerWidget(30)
-  // //           ],
-  // //         ),
-  // //       ),
-  // //       context);
-  // // }
-
-  // Widget _buildSearchbar(BuildContext context, StateSetter setState) {
-  //   return TextFormField(
-  //     focusNode: myFocusNode,
-  //     controller: _controller,
-  //     cursorColor: Colors.black,
-  //     decoration: InputDecoration(
-  //       isDense: true,
-  //       hintText: 'Search',
-  //       border: OutlineInputBorder(
-  //           borderRadius: BorderRadius.circular(15.0),
-  //           borderSide: BorderSide.none),
-  //       filled: true,
-  //       fillColor: Theme.of(context).backgroundColor,
-  //       prefixIcon: Icon(
-  //         const IconData(0xe805,
-  //             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-  //         size: Globals.deviceType == "phone" ? 20 : 28,
-  //       ),
-  //       suffixIcon: _controller.text.isEmpty
-  //           ? null
-  //           : InkWell(
-  //               onTap: () {
-  //                 _controller.clear();
-
-  //                 FocusScope.of(context).requestFocus(FocusNode());
-  //               },
-  //               child: Icon(
-  //                 Icons.clear,
-  //                 size: Globals.deviceType == "phone" ? 20 : 28,
-  //               ),
-  //             ),
-  //     ),
-  //     onChanged: onItemChanged(),
-  //   );
-  // }
-
-  // onItemChanged() {
-  //   // suggestionlist = true;
-  //   // setState(() {
-  //   //   languagesList
-  //   //       .where((string) => string.toLowerCase().contains(value.toLowerCase()))
-  //   //       .toList();
-  //   // });
-  // }
 
   _buildLanguagesList(context, onLanguageChanged) {
     return ListView(
@@ -331,11 +182,6 @@ class LanguageSelector {
           return ListTile(
               title: Text(
                 data,
-                style: TextStyle(
-                    fontFamily: 'SF UI Display Bold',
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontSize: 17),
               ),
               onTap: () {
                 setLanguage(data, context, onLanguageChanged);

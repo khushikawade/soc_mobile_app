@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/model/search_list.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:flutter/material.dart';
@@ -119,15 +121,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       if (response.statusCode == 200) {
         final data = response.data;
-
+        Globals.appSetting = AppSetting.fromJson(data);
         return data;
       }
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("Please check your Internet Connection.");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 
@@ -142,11 +140,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             .toList();
       }
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("Please check your Internet Connection.");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 }

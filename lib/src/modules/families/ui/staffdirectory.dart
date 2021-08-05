@@ -343,7 +343,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         builder: (translatedMessage) => Text(
                               translatedMessage.toString(),
                             ))
-                    : Text("Unable to load the data");
+                    : Center(child: Text("Unable to load the data"));
               } else {
                 return Container();
               }
