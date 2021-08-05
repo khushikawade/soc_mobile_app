@@ -219,9 +219,11 @@ class SocialDescription extends StatelessWidget {
                       .replaceAll("\\ n ", ""),
                 ),
               )
-            : Html(
-                data:
-                    "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")}",
+            : Center(
+                child: Html(
+                  data:
+                      "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")}",
+                ),
               )
       ],
     );

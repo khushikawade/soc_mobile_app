@@ -55,7 +55,7 @@ class _SettingPageState extends State<SettingPage> {
           padding: EdgeInsets.symmetric(vertical: _kLabelSpacing / 1.5),
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            color: AppTheme.kOnPrimaryColor,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),

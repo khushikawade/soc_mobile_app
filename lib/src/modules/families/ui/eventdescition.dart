@@ -167,12 +167,12 @@ class _EventDescriptionState extends State<EventDescription> {
                             fromLanguage: "en",
                             builder: (translatedMessage) => Text(
                               translatedMessage.toString(),
-                              style: _kbuttonTextStyle,
+                              // style: _kbuttonTextStyle,
                             ),
                           )
                         : Text(
                             "Share",
-                            style: _kbuttonTextStyle,
+                            // style: _kbuttonTextStyle,
                           ),
                   ),
                 )
@@ -197,10 +197,13 @@ class _EventDescriptionState extends State<EventDescription> {
                       fromLanguage: "en",
                       builder: (translatedMessage) => Text(
                         translatedMessage.toString(),
-                        style: _kbuttonTextStyle,
+                        // style: _kbuttonTextStyle,
                       ),
                     )
-                  : Text("Save event", style: _kbuttonTextStyle),
+                  : Text(
+                      "Save event",
+                      // style: _kbuttonTextStyle
+                    ),
             ),
           ),
         ],

@@ -52,7 +52,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
         border: Border.all(
           width: 0,
         ),
-        color: AppTheme.kOnPrimaryColor,
+        color: Theme.of(context).colorScheme.secondary,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

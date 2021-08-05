@@ -36,8 +36,8 @@ class _SearchPageState extends State<SearchPage> {
   bool issuggestionList = false;
   static const double _kLabelSpacing = 20.0;
   var _controller = TextEditingController();
-  final backColor = AppTheme.kactivebackColor;
-  final sebarcolor = AppTheme.kFieldbackgroundColor;
+  // final backColor = AppTheme.kactivebackColor;
+  // final sebarcolor = AppTheme.kFieldbackgroundColor;
   FocusNode myFocusNode = new FocusNode();
   final _debouncer = Debouncer(milliseconds: 500);
   HomeBloc _searchBloc = new HomeBloc();
@@ -162,7 +162,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildSearchbar() {
     return SizedBox(
-      height: 50,
+      height: 51,
       child: Container(
           padding: EdgeInsets.symmetric(
               vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
@@ -212,8 +212,6 @@ class _SearchPageState extends State<SearchPage> {
                 ? Expanded(
                     child: ListView.builder(
                       scrollDirection: Axis.vertical,
-                      // shrinkWrap: true,
-                      // reverse: true,
                       itemCount:
                           snapshot.data.length < 5 ? snapshot.data.length : 5,
                       itemBuilder: (BuildContext context, int index) {
@@ -468,25 +466,25 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      resizeToAvoidBottomInset: true,
-      appBar: new AppBar(
-          elevation: 0.0,
-          leading: BackButtonWidget(),
-          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
-      body: Container(
-        child: Column(mainAxisSize: MainAxisSize.max, children: [
-          _buildHeading(),
-          SpacerWidget(_kLabelSpacing / 2),
-          _buildSearchbar(),
-          issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
-          SpacerWidget(_kLabelSpacing),
-          issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
-          // issuggestionList == false
-          //     ? _buildRecentItemList()
-          //     : SizedBox(height: 0),
-        ]),
-      ),
-    );
+        key: _scaffoldKey,
+        resizeToAvoidBottomInset: true,
+        appBar: new AppBar(
+            elevation: 0.0,
+            leading: BackButtonWidget(),
+            title:
+                SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
+        body: Container(
+          child: Column(mainAxisSize: MainAxisSize.max, children: [
+            _buildHeading(),
+            SpacerWidget(_kLabelSpacing / 2),
+            _buildSearchbar(),
+            issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
+            SpacerWidget(_kLabelSpacing),
+            issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
+            issuggestionList == false
+                ? _buildRecentItemList()
+                : SizedBox(height: 0),
+          ]),
+        ));
   }
 }
