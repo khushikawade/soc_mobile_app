@@ -52,7 +52,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
         border: Border.all(
           width: 0,
         ),
-        color: AppTheme.kOnPrimaryColor,
+        color: Theme.of(context).colorScheme.secondary,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -343,7 +343,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         builder: (translatedMessage) => Text(
                               translatedMessage.toString(),
                             ))
-                    : Text("Unable to load the data");
+                    : Center(child: Text("Unable to load the data"));
               } else {
                 return Container();
               }

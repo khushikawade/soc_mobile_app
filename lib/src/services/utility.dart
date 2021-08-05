@@ -85,16 +85,25 @@ class Utility {
 
   static showBottomSheet(body, context) {
     return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.circular(AppTheme.kBottomSheetModalUpperRadius),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      context: context,
-      builder: (context) => Material(
-        child: body,
-      ),
-    );
+        // isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.only(
+                topLeft: Radius.circular(AppTheme.kBottomSheetModalUpperRadius),
+                topRight:
+                    Radius.circular(AppTheme.kBottomSheetModalUpperRadius))),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        context: context,
+        builder: (context) {
+          {
+            return StatefulBuilder(
+              builder: (BuildContext context,
+                      StateSetter setState /*You can rename this!*/) =>
+                  Material(
+                child: body,
+              ),
+            );
+          }
+        });
   }
 
   static void printWrapped(String text) {

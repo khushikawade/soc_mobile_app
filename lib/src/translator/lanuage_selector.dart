@@ -16,9 +16,10 @@ class LanguageSelector {
   }
 
   static final List<String> languagesList = Translations.supportedLanguages;
-  static const double _kLabelSpacing = 20.0;
+  static List<String> newList = [""];
   var _controller = TextEditingController();
   FocusNode myFocusNode = new FocusNode();
+  bool? issuggestionList = false;
 
   void setLanguage(language, context, onLanguageChanged) async {
     selectedLanguage = language;
@@ -39,7 +40,6 @@ class LanguageSelector {
 
   Widget _listTile(String language, context, onLanguageChanged) => Container(
         margin: EdgeInsets.only(left: 30, right: 30, bottom: 12),
-        // color: AppTheme.kListTileColor,
         color: (languagesList.indexOf(language) % 2 == 0)
             ? Theme.of(context).backgroundColor
             : AppTheme.kListBackgroundColor2,
@@ -61,28 +61,25 @@ class LanguageSelector {
       );
 
   _openSettingsBottomSheet(context, onLanguageChanged) {
-    Utility.showBottomSheet(
-        SingleChildScrollView(
-          child: Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
+    showModalBottomSheet(
+        // isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.only(
+                topLeft: Radius.circular(AppTheme.kBottomSheetModalUpperRadius),
+                topRight:
+                    Radius.circular(AppTheme.kBottomSheetModalUpperRadius))),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        context: context,
+        builder: (context) {
+          {
+            return StatefulBuilder(builder: (BuildContext context,
+                StateSetter setState /*You can rename this!*/) {
+              return Container(
+                height: MediaQuery.of(context).size.width * 0.95,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      // wrap your Column in Expanded
-                      child: Container(child: _buildSearchbar(context)),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 30, left: 30, right: 15, bottom: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      // _buildSearchbar(context),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       Text(
                         "Select language",
                         style: Theme.of(context)
@@ -90,77 +87,108 @@ class LanguageSelector {
                             .headline6!
                             .copyWith(fontSize: AppTheme.kBottomSheetTitleSize),
                       ),
-                      IconButton(
-                          icon: Icon(
-                            Icons.close,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: Globals.deviceType == "phone" ? 14 : 22,
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          size: Globals.deviceType == "phone" ? 20 : 28,
+                        ),
+                      ),
+                    ]),
+                    TextFormField(
+                        focusNode: myFocusNode,
+                        controller: _controller,
+                        cursorColor: Colors.black,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          hintText: 'Search',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide.none),
+                          filled: true,
+                          fillColor: Theme.of(context).backgroundColor,
+                          prefixIcon: Icon(
+                            const IconData(0xe805,
+                                fontFamily: Overrides.kFontFam,
+                                fontPackage: Overrides.kFontPkg),
+                            size: Globals.deviceType == "phone" ? 20 : 28,
                           ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          }),
-                    ],
-                  ),
+                          suffixIcon: _controller.text.isEmpty
+                              ? null
+                              : InkWell(
+                                  onTap: () {
+                                    _controller.clear();
+
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                  },
+                                  child: Icon(
+                                    Icons.clear,
+                                    size:
+                                        Globals.deviceType == "phone" ? 20 : 28,
+                                  ),
+                                ),
+                        ),
+                        onChanged: (value) {
+                          onItemChanged(value, setState);
+                        }),
+                    issuggestionList!
+                        ? _buildsuggestiontlist(context, onLanguageChanged)
+                        : Container(
+                            height: 0,
+                          ),
+                    issuggestionList!
+                        ? Container(
+                            height: 0,
+                          )
+                        : Expanded(
+                            child:
+                                _buildLanguagesList(context, onLanguageChanged),
+                          ),
+                  ],
                 ),
-                _buildLanguagesList(context, onLanguageChanged),
-                SpacerWidget(30)
-              ],
-            ),
-          ),
-        ),
-        context);
+              );
+            });
+          }
+        });
   }
 
-  Widget _buildSearchbar(BuildContext context) {
-    return TextFormField(
-      focusNode: myFocusNode,
-      controller: _controller,
-      cursorColor: Colors.black,
-      decoration: InputDecoration(
-        isDense: true,
-        hintText: 'Search',
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15.0),
-            borderSide: BorderSide.none),
-        filled: true,
-        fillColor: Theme.of(context).backgroundColor,
-        prefixIcon: Icon(
-          const IconData(0xe805,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          size: Globals.deviceType == "phone" ? 20 : 28,
-        ),
-        suffixIcon: _controller.text.isEmpty
-            ? null
-            : InkWell(
-                onTap: () {
-                  _controller.clear();
-
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                child: Icon(
-                  Icons.clear,
-                  size: Globals.deviceType == "phone" ? 20 : 28,
-                ),
-              ),
-      ),
-      onChanged: onItemChanged,
-    );
-  }
-
-  onItemChanged(String value) {
-    // suggestionlist = true;
-    // setState(() {
-    //   newDataList = mainDataList
-    //       .where((string) => string.toLowerCase().contains(value.toLowerCase()))
-    //       .toList();
-    // });
+  onItemChanged(String value, StateSetter setState) {
+    setState(() {
+      newList = languagesList
+          .where((string) => string.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+    issuggestionList = true;
   }
 
   _buildLanguagesList(context, onLanguageChanged) {
-    return Column(
+    return ListView(
       children: languagesList
           .map<Widget>((i) => _listTile(i, context, onLanguageChanged))
           .toList(),
+    );
+  }
+
+  Widget _buildsuggestiontlist(context, onLanguageChanged) {
+    return Expanded(
+      child: Container(
+          child: ListView(
+        shrinkWrap: true,
+        padding: EdgeInsets.all(12.0),
+        children: newList.map((data) {
+          return ListTile(
+              title: Text(
+                data,
+              ),
+              onTap: () {
+                setLanguage(data, context, onLanguageChanged);
+                // =data
+              });
+        }).toList(),
+      )),
     );
   }
 }

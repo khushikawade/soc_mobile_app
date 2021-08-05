@@ -183,7 +183,7 @@ class _StaffPageState extends State<StaffPage> {
                 trailing: Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: Globals.deviceType == "phone" ? 12 : 20,
-                  color: AppTheme.kButtonbackColor,
+                  // color: AppTheme.kButtonbackColor,
                 ),
               )
             : Container(
