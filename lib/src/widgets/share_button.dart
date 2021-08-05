@@ -24,7 +24,8 @@ class ShareButtonWidget extends StatelessWidget {
                     "Hi, I downloaded the PS 456 Bronx Bears app. You should check it out! Download the app at https://play.google.com/store/apps/details?id=com.app.p1676CB",
                     "Love the PS 456 Bronx Bears app!");
               },
-              child: language != null && language != "English"
+              child: Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English"
                   ? Container(
                       child: TranslationWidget(
                         message: "Share this app",
@@ -52,7 +53,8 @@ class ShareButtonWidget extends StatelessWidget {
                 final subject = "Problem with the PS 456 Bronx Bears-app";
                 obj.callFunction(context, body, subject);
               },
-              child: language != null && language != "English"
+              child: Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English"
                   ? Container(
                       child: TranslationWidget(
                         message: "I need support",

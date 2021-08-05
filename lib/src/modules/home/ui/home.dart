@@ -33,9 +33,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
-  static const double _kLabelSpacing = 16.0;
-  static const double _kIconSize = 35.0;
+  // int _selectedIndex = 0;
+  // static const double _kLabelSpacing = 16.0;
+  // static const double _kIconSize = 35.0;
   final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     _bloc.initPushState(context);
-    _selectedIndex = Globals.outerBottombarIndex ?? 0;
+    // _selectedIndex = Globals.outerBottombarIndex ?? 0;
     timer =
         Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
     _controller = PersistentTabController(initialIndex: 0);

@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -107,7 +108,8 @@ class SocialDescription extends StatelessWidget {
                                 isbuttomsheet: true,
                               )));
                 },
-                child: language != null && language != "English"
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: "More",
                         toLanguage: language,
@@ -133,7 +135,8 @@ class SocialDescription extends StatelessWidget {
                           link;
                   obj.callFunction(context, body, "");
                 },
-                child: language != null && language != "English"
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: "Share".toString(),
                         toLanguage: language,
@@ -178,7 +181,8 @@ class SocialDescription extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Image(image: AssetImage("assets/images/appicon.png")),
               ),
-        language != null && language != "English"
+        Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: "${data + "#" + data2}",
                 fromLanguage: "en",
@@ -205,7 +209,8 @@ class SocialDescription extends StatelessWidget {
       object != null && object.title["__cdata"].length > 1
           ? Container(
               alignment: Alignment.centerLeft,
-              child: language != null && language != "English"
+              child: Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English"
                   ? TranslationWidget(
                       message:
                           "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
@@ -220,7 +225,8 @@ class SocialDescription extends StatelessWidget {
                       textAlign: TextAlign.left,
                     ),
             )
-          : language != null && language != "English"
+          : Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message: "No headline found",
                   fromLanguage: "en",
@@ -237,7 +243,8 @@ class SocialDescription extends StatelessWidget {
   Widget _buildnewTimeStamp(BuildContext context) {
     return Container(
         child: object != null && object.pubDate.length > 1
-            ? language != null && language != "English"
+            ? Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: Utility.convertDate(object.pubDate).toString(),
                     toLanguage: language,
