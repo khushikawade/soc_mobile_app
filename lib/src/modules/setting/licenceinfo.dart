@@ -45,12 +45,12 @@ class _LicenceinfoState extends State<Licenceinfo> {
       child: Container(
         decoration: BoxDecoration(
           border: (index % 2 == 0)
-              ? Border.all(color: AppTheme.kListBackgroundColor2)
-              : Border.all(color: Theme.of(context).backgroundColor),
+              ? Border.all(color: Theme.of(context).backgroundColor)
+              : Border.all(color: Theme.of(context).colorScheme.secondary),
           borderRadius: BorderRadius.circular(0.0),
           color: (index % 2 == 0)
-              ? AppTheme.kListBackgroundColor2
-              : Theme.of(context).backgroundColor,
+              ? Theme.of(context).backgroundColor
+              : Theme.of(context).colorScheme.secondary,
         ),
         child: Container(
             child: Padding(

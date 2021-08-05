@@ -15,7 +15,7 @@ import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -142,10 +142,7 @@ class _SubListPageState extends State<SubListPage> {
               bloc: _bloc,
               builder: (BuildContext contxt, FamilyState state) {
                 if (state is FamilyInitial || state is FamilyLoading) {
-                  return Center(
-                      child: CircularProgressIndicator(
-                    backgroundColor: Theme.of(context).accentColor,
-                  ));
+                  return Center(child: CircularProgressIndicator());
                 } else if (state is FamiliesSublistSucess) {
                   return state.obj != null && state.obj!.length > 0
                       ? SafeArea(
@@ -186,10 +183,7 @@ class _SubListPageState extends State<SubListPage> {
                   bloc: _staffBloc,
                   builder: (BuildContext contxt, StaffState state) {
                     if (state is StaffInitial || state is StaffLoading) {
-                      return Center(
-                          child: CircularProgressIndicator(
-                        backgroundColor: Theme.of(context).accentColor,
-                      ));
+                      return Center(child: CircularProgressIndicator());
                     } else if (state is StaffSubListSucess) {
                       return state.obj != null && state.obj!.length > 0
                           ? SafeArea(
@@ -226,9 +220,6 @@ class _SubListPageState extends State<SubListPage> {
                     }
                   })
               : Container(),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

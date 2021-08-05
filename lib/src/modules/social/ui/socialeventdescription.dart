@@ -1,11 +1,11 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -16,6 +16,7 @@ class SocialDescription extends StatelessWidget {
   SocialDescription({required this.object, this.language});
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
+  static const double _kIconSize = 45.0;
 
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
@@ -89,7 +90,6 @@ class SocialDescription extends StatelessWidget {
     return SafeArea(
       child: Container(
         padding: EdgeInsets.all(_kPadding / 2),
-        color: AppTheme.kBackgroundColor,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
@@ -155,31 +155,51 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildbuttomsection(BuildContext context) {
-    var data = object.description["__cdata"]
-        .toString()
-        .split("<div>")[2]
-        .split("\\n")[0];
-    var data2 = object.description["__cdata"]
-        .toString()
-        .split("\\n#")[1]
-        .split("</div>")[0];
-    // print(data);
-    // print(data2);
+    String data = object.description["__cdata"].toString().contains("\\n")
+        ? object.description["__cdata"]
+            .toString()
+            .split("<div>")[2]
+            .split("\\n")[0]
+        : "";
+    String data2 = object.description["__cdata"].toString().contains("\\n")
+        ? object.description["__cdata"]
+            .toString()
+            .split("\\n#")[1]
+            .split("</div>")[0]
+        : "";
+
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),
-        object.description["__cdata"] != null &&
+        object.description != null &&
+                object.description["__cdata"] != null &&
                 object.description["__cdata"]
                     .toString()
                     .contains("<img src=") &&
                 object.description["__cdata"].toString().split('"')[1] != ""
-            ? Html(
-                data: "<img" +
-                    "${object.description["__cdata"].toString().split("<img")[1].split(">")[0]}" +
-                    ">")
+            ? Container(
+                alignment: Alignment.center,
+                child: Html(
+                    data: "<img" +
+                        "${object.description["__cdata"].toString().split("<img")[1].split(">")[0]}" +
+                        ">"),
+              )
             : Container(
                 alignment: Alignment.center,
-                child: Image(image: AssetImage("assets/images/appicon.png")),
+                child: ClipRRect(
+                  child: CachedNetworkImage(
+                    imageUrl: Globals.homeObjet["App_Logo__c"],
+                    placeholder: (context, url) => Container(
+                      alignment: Alignment.center,
+                      width: _kIconSize * 1.4,
+                      height: _kIconSize * 1.5,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
               ),
         Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English"
@@ -206,36 +226,24 @@ class SocialDescription extends StatelessWidget {
 
   Widget _buildnews(BuildContext context) {
     return Wrap(children: [
-      object != null && object.title["__cdata"].length > 1
-          ? Container(
-              alignment: Alignment.centerLeft,
-              child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English"
-                  ? TranslationWidget(
-                      message:
-                          "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
-                      fromLanguage: "en",
-                      toLanguage: language,
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                      ),
-                    )
-                  : Text(
-                      "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
-                      textAlign: TextAlign.left,
-                    ),
-            )
-          : Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
-              ? TranslationWidget(
-                  message: "No headline found",
-                  fromLanguage: "en",
-                  toLanguage: language,
-                  builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                  ),
-                )
-              : Text("No headline found"),
+      Container(
+        alignment: Alignment.centerLeft,
+        child: Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
+            ? TranslationWidget(
+                message:
+                    "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+                fromLanguage: "en",
+                toLanguage: language,
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                ),
+              )
+            : Text(
+                "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+                textAlign: TextAlign.left,
+              ),
+      ),
       SpacerWidget(_kPadding),
     ]);
   }

@@ -3,7 +3,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -31,6 +30,8 @@ class ContactPage extends StatefulWidget {
 class _ContactPageState extends State<ContactPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
+  static const double _kIconSize = 45.0;
+
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
 
   static const double _kboxborderwidth = 0.75;
@@ -59,7 +60,6 @@ class _ContactPageState extends State<ContactPage> {
                 height: 5,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  backgroundColor: AppTheme.kAccentColor,
                 ),
               ),
               errorWidget: (context, url, error) => Icon(
@@ -67,11 +67,21 @@ class _ContactPageState extends State<ContactPage> {
               ),
             )
           : Container(
-              child: Image.asset(
-              'assets/images/appicon.png',
-              height: 160,
-              width: MediaQuery.of(context).size.width * 1,
-            )),
+              child: ClipRRect(
+                child: CachedNetworkImage(
+                  imageUrl: Globals.homeObjet["App_Logo__c"],
+                  placeholder: (context, url) => Container(
+                    alignment: Alignment.center,
+                    width: _kIconSize * 1.4,
+                    height: _kIconSize * 1.5,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              ),
+            ),
     );
   }
 
@@ -107,7 +117,7 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              color: AppTheme.kTxtfieldBorderColor,
+              // color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildmap(),
@@ -123,7 +133,7 @@ class _ContactPageState extends State<ContactPage> {
           right: _kLabelSpacing / 3,
           left: _kLabelSpacing / 3),
       decoration: BoxDecoration(
-          color: AppTheme.kmapBackgroundColor,
+          // color: AppTheme.kmapBackgroundColor,
           borderRadius: BorderRadius.all(Radius.circular(4.0))),
       child: widget.obj["Contact_Office_Location__Latitude__s"] != null &&
               widget.obj["Contact_Office_Location__Longitude__s"] != null
@@ -151,7 +161,7 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              color: AppTheme.kTxtfieldBorderColor,
+              // color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildphone(),
@@ -167,7 +177,7 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              color: AppTheme.kTxtfieldBorderColor,
+              // color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildaddress(),
@@ -199,7 +209,7 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                 )
               : Text(
-                  "Address :",
+                  "Address : ",
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1!
@@ -252,13 +262,13 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                 )
               : Text(
-                  "Phone:",
+                  "Phone : ",
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1!
                       .copyWith(color: Color(0xff171717)),
                 ),
-          HorzitalSpacerWidget(_kLabelSpacing),
+          HorzitalSpacerWidget(_kLabelSpacing / 2),
           InkWell(
             onTap: () {
               if (widget.obj["Contact_Phone__c"] != null) {
@@ -297,7 +307,7 @@ class _ContactPageState extends State<ContactPage> {
           decoration: BoxDecoration(
               border: Border.all(
                 width: _kboxborderwidth,
-                color: AppTheme.kTxtfieldBorderColor,
+                // color: AppTheme.kTxtfieldBorderColor,
               ),
               borderRadius: BorderRadius.all(Radius.circular(4.0))),
           child: _builEmail()),
@@ -325,13 +335,13 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                 )
               : Text(
-                  "Email",
+                  "Email : ",
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1!
                       .copyWith(color: Color(0xff171717)),
                 ),
-          HorzitalSpacerWidget(_kLabelSpacing * 1.5),
+          HorzitalSpacerWidget(_kLabelSpacing / 2),
           InkWell(
             onTap: () {
               widget.obj["Contact_Email__c"] != null
@@ -371,9 +381,6 @@ class _ContactPageState extends State<ContactPage> {
         SpacerWidget(_kLabelSpacing / 1.25),
         _buildEmailWidget(),
       ]),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

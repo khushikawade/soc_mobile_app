@@ -7,7 +7,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
+
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +91,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                         fontPackage: Overrides.kFontPkg),
                     color: widget.currentIndex == 0
                         ? AppTheme.kDecativeIconColor
-                        : AppTheme.kBlackColor,
+                        : null,
                     size: Globals.deviceType == "phone" ? 18 : 26,
                   ),
                 ),
@@ -111,7 +111,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                     fontPackage: Overrides.kFontPkg),
                 color: widget.currentIndex == widget.obj.length - 1
                     ? AppTheme.kDecativeIconColor
-                    : AppTheme.kBlackColor,
+                    : null,
                 size: Globals.deviceType == "phone" ? 18 : 26,
               )),
             ),
@@ -162,9 +162,6 @@ class _SliderWidgetState extends State<SliderWidget> {
           ),
         )
       ]),
-      // bottomSheet: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 
@@ -172,7 +169,7 @@ class _SliderWidgetState extends State<SliderWidget> {
     return SafeArea(
       child: Container(
         padding: EdgeInsets.all(_kPadding),
-        color: AppTheme.kBackgroundColor,
+        color: Theme.of(context).backgroundColor,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[

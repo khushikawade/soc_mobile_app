@@ -14,6 +14,7 @@ class _BottomBavBarWidgetState extends State<BottomBavBarWidget> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      backgroundColor: Theme.of(context).backgroundColor,
       type: BottomNavigationBarType.fixed,
       // currentIndex: _selectedIndex,
       items: Globals.homeObjet["Bottom_Navigation__c"]

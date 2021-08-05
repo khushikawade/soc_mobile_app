@@ -4,7 +4,6 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,12 +51,12 @@ class _EventPageState extends State<EventPage> {
       child: Container(
           decoration: BoxDecoration(
             border: (index % 2 == 0)
-                ? Border.all(color: AppTheme.kListBackgroundColor2)
-                : Border.all(color: Theme.of(context).backgroundColor),
+                ? Border.all(color: Theme.of(context).backgroundColor)
+                : Border.all(color: Theme.of(context).colorScheme.secondary),
             borderRadius: BorderRadius.circular(0.0),
             color: (index % 2 == 0)
-                ? AppTheme.kListBackgroundColor2
-                : Theme.of(context).backgroundColor,
+                ? Theme.of(context).backgroundColor
+                : Theme.of(context).colorScheme.secondary,
           ),
           child: Container(
             child: Padding(
@@ -68,12 +67,10 @@ class _EventPageState extends State<EventPage> {
                   leading: Container(
                     alignment: Alignment.center,
                     width: 30,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      children: <Widget>[
+                        widget.language != null && widget.language != "English"
                             ? TranslationWidget(
                                 message:
                                     Utility.convertDateFormat(list.startDate!)
@@ -111,16 +108,18 @@ class _EventPageState extends State<EventPage> {
                                           height: 1.5),
                                 ),
                               )
-                            : Text(
-                                Utility.getMonthFromDate(list.startDate!)
-                                    .toString()
-                                    .split("/")[1],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        fontWeight: FontWeight.normal,
-                                        height: 1.5),
+                            : Expanded(
+                                child: Text(
+                                  Utility.getMonthFromDate(list.startDate!)
+                                      .toString()
+                                      .split("/")[1],
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline2!
+                                      .copyWith(
+                                          fontWeight: FontWeight.normal,
+                                          height: 1.5),
+                                ),
                               )
                       ],
                     ),
@@ -218,9 +217,7 @@ class _EventPageState extends State<EventPage> {
                   return Container(
                       height: MediaQuery.of(context).size.height * 0.8,
                       alignment: Alignment.center,
-                      child: CircularProgressIndicator(
-                        backgroundColor: Theme.of(context).accentColor,
-                      ));
+                      child: CircularProgressIndicator());
                 } else if (state is CalendarListSuccess) {
                   return Column(
                     children: [
@@ -269,9 +266,6 @@ class _EventPageState extends State<EventPage> {
                   return Container();
                 }
               })),
-      // bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

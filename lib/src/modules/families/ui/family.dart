@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
@@ -126,6 +127,44 @@ class _FamilyPageState extends State<FamilyPage> {
     }
   }
 
+  Widget _buildLeading(FamiliesList obj) {
+    if (obj.appIconUrlC != null) {
+      return Container(
+        child: ClipRRect(
+          child: SizedBox(
+            height: 20,
+            width: 20,
+            child: CachedNetworkImage(
+              imageUrl: obj.appIconUrlC!,
+              fit: BoxFit.cover,
+              height: 20,
+              width: 20,
+              placeholder: (context, url) => Container(
+                alignment: Alignment.center,
+                // width: _kIconSize * 1.4,
+                // height: _kIconSize * 1.5,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              ),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Icon(
+        IconData(
+          int.parse('0x${obj.appIconC!}'),
+          fontFamily: 'FontAwesomeSolid',
+          fontPackage: 'font_awesome_flutter',
+        ),
+        // color: AppTheme.kListIconColor3,
+        size: Globals.deviceType == "phone" ? 18 : 26,
+      );
+    }
+  }
+
   Widget _buildList(FamiliesList obj, int index) {
     return Container(
       decoration: BoxDecoration(
@@ -136,7 +175,7 @@ class _FamilyPageState extends State<FamilyPage> {
         borderRadius: BorderRadius.circular(0.0),
         color: (index % 2 == 0)
             ? Theme.of(context).backgroundColor
-            : AppTheme.kListBackgroundColor2,
+            : Theme.of(context).colorScheme.secondary,
       ),
       child: ListTile(
         onTap: () {
@@ -145,15 +184,7 @@ class _FamilyPageState extends State<FamilyPage> {
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         contentPadding:
             EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: Icon(
-          IconData(
-            int.parse(obj.appIconC!),
-            fontFamily: 'FontAwesomeSolid',
-            fontPackage: 'font_awesome_flutter',
-          ),
-          color: AppTheme.kListIconColor3,
-          size: Globals.deviceType == "phone" ? 18 : 26,
-        ),
+        leading: _buildLeading(obj),
         title: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English"
             ? TranslationWidget(
@@ -172,7 +203,7 @@ class _FamilyPageState extends State<FamilyPage> {
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
-          color: AppTheme.kButtonbackColor,
+          // color: AppTheme.kButtonbackColor,
         ),
       ),
     );
@@ -186,10 +217,7 @@ class _FamilyPageState extends State<FamilyPage> {
             bloc: _bloc,
             builder: (BuildContext contxt, FamilyState state) {
               if (state is FamilyInitial || state is FamilyLoading) {
-                return Center(
-                    child: CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
-                ));
+                return Center(child: CircularProgressIndicator());
               } else if (state is FamiliesDataSucess) {
                 return state.obj != null && state.obj!.length > 0
                     ? ListView.builder(

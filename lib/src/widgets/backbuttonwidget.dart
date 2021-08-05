@@ -22,7 +22,6 @@ class BackButtonWidget extends StatelessWidget {
               const IconData(0xe80d,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
-              color: AppTheme.kIconColor1,
               size: Globals.deviceType == "phone" ? 20 : 28,
             ),
           ),

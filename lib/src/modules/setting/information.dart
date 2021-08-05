@@ -1,7 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
@@ -94,9 +93,6 @@ class _InformationPageState extends State<InformationPage> {
           ),
         )
       ]),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

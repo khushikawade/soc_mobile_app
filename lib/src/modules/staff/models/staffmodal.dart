@@ -4,6 +4,7 @@ class StaffList {
   Attributes? attributes;
   String? titleC;
   dynamic appIconC;
+  String? appIconUrlC;
   dynamic urlC;
   String? id;
   String? name;
@@ -18,6 +19,7 @@ class StaffList {
       this.appIconC,
       this.urlC,
       this.id,
+      this.appIconUrlC,
       this.name,
       this.pdfURL,
       this.rtfHTMLC,
@@ -29,6 +31,7 @@ class StaffList {
           ? null
           : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
       titleC: json['Title__c'] as String?,
+      appIconUrlC: json['App_Icon_URL__c'] as String?,
       appIconC: json['App_Icon__c'] as String?,
       urlC: json['URL__c'] as String?,
       pdfURL: json['PDF_URL__c'] as String?,

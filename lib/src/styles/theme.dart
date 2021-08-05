@@ -1,4 +1,7 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -7,7 +10,7 @@ class AppTheme {
 
   //Colors
 
-  static const Color kPrimaryColor = Colors.blue;
+  static Color kPrimaryColor = Colors.greenAccent;
   static const Color kAccentColor = Color(0xff2D3F98);
   static const Color kBlackColor = Colors.black;
   static const Color kBackgroundColor = Colors.white;
@@ -71,30 +74,9 @@ class AppTheme {
 
   static final ThemeData lightTheme = ThemeData(
       // fontFamily: 'Roboto',
-      primaryColor: kPrimaryColor,
+      primaryColor: Colors.blue,
       accentColor: kAccentColor,
       errorColor: Colors.red,
-      scaffoldBackgroundColor: kBackgroundColor,
-      backgroundColor: kBackgroundColor,
-      appBarTheme: AppBarTheme(
-        titleTextStyle: TextStyle(
-            color: kPrimaryColor,
-            fontSize: Globals.deviceType == "phone"
-                ? kTitleFontSize
-                : kTitleFontSize + _kSize),
-        color: kBackgroundColor,
-        foregroundColor: kPrimaryColor,
-        centerTitle: true,
-        iconTheme: IconThemeData(
-          color: kPrimaryColor,
-        ),
-      ),
-      colorScheme: ColorScheme.light(
-        primary: kPrimaryColor,
-        onPrimary: kOnPrimaryColor,
-        // primaryVariant: Colors.white38,
-        secondary: kSecondaryColor,
-      ),
       cardTheme: CardTheme(color: kCardColor),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: kPrimaryColor, foregroundColor: kOnPrimaryColor),
@@ -193,6 +175,7 @@ class AppTheme {
             new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         hintStyle: TextStyle(
             color: kTxtFieldColor,
+            height: 1.2,
             fontSize: Globals.deviceType == "phone"
                 ? kSubtitleFontSize
                 : kSubtitleFontSize + _kSize),
@@ -205,22 +188,6 @@ class AppTheme {
                 BorderSide(width: kBorderWidth, color: kTxtfieldBorderColor),
             borderRadius: BorderRadius.circular(kBorderRadius)),
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-              textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(
-                fontSize: Globals.deviceType == "phone"
-                    ? kButtonFontSize
-                    : kButtonFontSize + _kSize,
-                fontWeight: FontWeight.w500,
-                color: kBlackColor,
-              )),
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(kButtonbackColor),
-              minimumSize: MaterialStateProperty.all<Size>(Size.fromHeight(56)),
-              shape: MaterialStateProperty.all<OutlinedBorder>(
-                  new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(kBorderRadius))),
-              foregroundColor: MaterialStateProperty.all<Color>(kBlackColor))),
       radioTheme: RadioThemeData(
           overlayColor: MaterialStateProperty.all<Color>(kSecondaryColor),
           fillColor: MaterialStateProperty.all<Color>(kBackgroundColor)),
@@ -249,4 +216,63 @@ class AppTheme {
         unselectedItemColor: Color(0xff89A7D7),
         showUnselectedLabels: true,
       ));
+
+  static setDynamicTheme(AppSetting appSetting, BuildContext context) {
+    Color _primaryColor = Utility.getColorFromHex(appSetting.primaryColorC!);
+    Color _secondaryColor =
+        Utility.getColorFromHex(appSetting.secondaryColorC!);
+    Color _backgroundColor =
+        Utility.getColorFromHex(appSetting.backgroundColorC!);
+
+    AdaptiveTheme.of(context).setTheme(
+        light: AdaptiveTheme.of(context).lightTheme.copyWith(
+              //Primary color
+              primaryColor: _primaryColor,
+              colorScheme: ColorScheme.light(
+                  onPrimary: _primaryColor,
+                  primary: _primaryColor,
+                  secondary: _secondaryColor,
+                  background: _backgroundColor),
+              //Background color
+              backgroundColor: _backgroundColor,
+              scaffoldBackgroundColor: _backgroundColor,
+              accentColor: _primaryColor,
+              appBarTheme: AppBarTheme(
+                titleTextStyle: TextStyle(
+                    color: _primaryColor,
+                    fontSize: Globals.deviceType == "phone"
+                        ? kTitleFontSize
+                        : kTitleFontSize + _kSize),
+                color: _backgroundColor,
+                foregroundColor: _primaryColor,
+                centerTitle: true,
+                iconTheme: IconThemeData(
+                  color: _primaryColor,
+                ),
+              ),
+              iconTheme: IconThemeData(
+                color: _primaryColor,
+              ),
+
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ButtonStyle(
+                      textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(
+                        fontSize: Globals.deviceType == "phone"
+                            ? kButtonFontSize
+                            : kButtonFontSize + _kSize,
+                        fontWeight: FontWeight.w500,
+                        color: _backgroundColor,
+                      )),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(_primaryColor),
+                      minimumSize:
+                          MaterialStateProperty.all<Size>(Size.fromHeight(56)),
+                      shape: MaterialStateProperty.all<OutlinedBorder>(
+                          new RoundedRectangleBorder(
+                              borderRadius:
+                                  new BorderRadius.circular(kBorderRadius))),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(_backgroundColor))),
+            ));
+  }
 }

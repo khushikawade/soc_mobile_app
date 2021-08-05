@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/families/modal/calendar_list.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -231,9 +230,6 @@ class _EventDescriptionState extends State<EventDescription> {
           ),
         ),
       ]),
-      // bottomNavigationBar: widget.isbuttomsheet! && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

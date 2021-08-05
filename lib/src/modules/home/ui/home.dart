@@ -2,19 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
-import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
-import 'package:Soc/src/modules/setting/information.dart';
-import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/modules/social/ui/soical.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/shared_preference.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -43,7 +38,7 @@ class _HomePageState extends State<HomePage> {
   bool _status = false;
   var item;
   var item2;
-  final ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
+  // final ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
@@ -55,29 +50,29 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
+    getindicatorValue();
     _bloc.initPushState(context);
     // _selectedIndex = Globals.outerBottombarIndex ?? 0;
-    timer =
-        Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
+    // timer =
+    //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
     _controller = PersistentTabController(initialIndex: 0);
   }
 
   getindicatorValue() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
     Globals.selectedLanguage = await _sharedPref.getString('selected_language');
-    setState(() {
-      _status = prefs.getBool("enableIndicator")!;
-      if (_status == true) {
-        indicator.value = true;
-      } else {
-        indicator.value = false;
-      }
+    // setState(() {
+    //   _status = prefs.getBool("enableIndicator")!;
+    //   if (_status == true) {
+    //     Globals.indicator.value = true;
+    //   } else {
+    //     indicator.value = false;
+    //   }
 
-      if (Globals.selectedLanguage != null) {
-        languageChanged.value = Globals.selectedLanguage!;
-      }
-    });
+    //   if (Globals.selectedLanguage != null) {
+    //     languageChanged.value = Globals.selectedLanguage!;
+    //   }
+    // });
   }
 
   // Widget _buildPopupMenuWidget() {
@@ -137,10 +132,10 @@ class _HomePageState extends State<HomePage> {
   //   );
   // }
 
-  hideIndicator() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("enableIndicator", false);
-  }
+  // hideIndicator() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.setBool("enableIndicator", false);
+  // }
 
   List<Widget> _buildScreens() {
     List<Widget> _screens = [];
@@ -149,6 +144,8 @@ class _HomePageState extends State<HomePage> {
         .forEach((String element) {
       element = element.toLowerCase();
       if (element.contains('news')) {
+        // hideIndicator();
+
         _screens.add(
           NewsPage(),
         );
@@ -173,31 +170,51 @@ class _HomePageState extends State<HomePage> {
     return _screens;
   }
 
-  selectedScreenBody(context, _selectedIndex, list) {
-    if (list[_selectedIndex].split("_")[0].contains("Social")) {
-      return SocialPage();
-    } else if (list[_selectedIndex].split("_")[0].contains("News")) {
-      hideIndicator();
-      return NewsPage();
-    } else if (list[_selectedIndex].split("_")[0].contains("Student")) {
-      return StudentPage();
-    } else if (list[_selectedIndex].split("_")[0].contains("Famil")) {
-      return FamilyPage(
-        obj: widget.homeObj,
-      );
-    } else if (list[_selectedIndex].split("_")[0].contains("Staff")) {
-      return StaffPage();
-    }
-  }
+  // selectedScreenBody(context, _selectedIndex, list) {
+  //   if (list[_selectedIndex].split("_")[0].contains("Social")) {
+  //     return SocialPage();
+  //   } else if (list[_selectedIndex].split("_")[0].contains("News")) {
+  //     hideIndicator();
+  //     return NewsPage();
+  //   } else if (list[_selectedIndex].split("_")[0].contains("Student")) {
+  //     return StudentPage();
+  //   } else if (list[_selectedIndex].split("_")[0].contains("Famil")) {
+  //     return FamilyPage(
+  //       obj: widget.homeObj,
+  //     );
+  //   } else if (list[_selectedIndex].split("_")[0].contains("Staff")) {
+  //     return StaffPage();
+  //   }
+  // }
 
   _onBackPressed() {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              backgroundColor: AppTheme.kBackgroundColor,
-              title: Text(
-                "Do you want to exit the app?",
-                style: Theme.of(context).textTheme.headline2,
+              backgroundColor: Theme.of(context).backgroundColor,
+              title: ValueListenableBuilder(
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return Globals.languageChanged.value != "English" &&
+                          Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: "Do you want to exit the app?",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: Theme.of(context).textTheme.headline2,
+                          ),
+                        )
+                      : Text(
+                          "Do you want to exit the app?",
+                          style: Theme.of(context).textTheme.headline2,
+                        );
+                },
+                valueListenable: Globals.languageChanged,
+                child: Container(),
               ),
               actions: <Widget>[
                 TextButton(
@@ -225,11 +242,37 @@ class _HomePageState extends State<HomePage> {
       (item) {
         return PersistentBottomNavBarItem(
           // contentPadding: 15,
-          icon: Icon(
-            IconData(int.parse(item.split("_")[1]),
-                fontFamily: Overrides.kFontFam,
-                fontPackage: Overrides.kFontPkg),
-            // size: Globals.deviceType == "phone" ? 24 : 32,
+          icon: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ValueListenableBuilder(
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return item.split("_")[0] == "News" &&
+                          Globals.indicator.value == true
+                      ? Wrap(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: 8, right: 2),
+                              height: 8,
+                              width: 8,
+                              decoration: BoxDecoration(
+                                  color: Colors.red, shape: BoxShape.circle),
+                            ),
+                          ],
+                        )
+                      : Container();
+                },
+                valueListenable: Globals.indicator,
+                child: Container(),
+              ),
+              Icon(
+                IconData(int.parse(item.split("_")[1]),
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                // size: Globals.deviceType == "phone" ? 24 : 32,
+              ),
+            ],
           ),
 
           title: ("${item.split("_")[0]}"),
@@ -383,7 +426,8 @@ class _HomePageState extends State<HomePage> {
         screens: _buildScreens(),
         items: _navBarsItems(),
         confineInSafeArea: true,
-        backgroundColor: Colors.white, // Default is Colors.white.
+        backgroundColor:
+            Theme.of(context).backgroundColor, // Default is Colors.white.
         handleAndroidBackButtonPress: true, // Default is true.
         resizeToAvoidBottomInset:
             true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
@@ -392,11 +436,10 @@ class _HomePageState extends State<HomePage> {
             true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
         decoration: NavBarDecoration(
             borderRadius: BorderRadius.circular(25.0),
-            colorBehindNavBar: Colors.grey,
             boxShadow: [
               BoxShadow(
                 color: Colors.grey,
-                blurRadius: 5.0,
+                blurRadius: 10.0,
               ),
             ]),
         popAllScreensOnTapOfSelectedTab: true,

@@ -12,11 +12,11 @@ class ListWidget extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
           border: (index! % 2 == 0)
-              ? Border.all(color: AppTheme.kListBackgroundColor2)
+              ? Border.all(color: Theme.of(context).colorScheme.secondary)
               : Border.all(color: Theme.of(context).backgroundColor),
           borderRadius: BorderRadius.circular(0.0),
           color: (index! % 2 == 0)
-              ? AppTheme.kListBackgroundColor2
+              ? Theme.of(context).colorScheme.secondary
               : Theme.of(context).backgroundColor,
         ),
         child: Container(

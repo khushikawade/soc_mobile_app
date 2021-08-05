@@ -139,4 +139,12 @@ class Utility {
     final String formatted = formatNew.format(dateTime);
     return formatted;
   }
+
+  static Color getColorFromHex(String hexCode) {
+    try {
+      return Color(int.parse("0xff${hexCode.split('#')[1]}"));
+    } catch (e) {
+      return Colors.blue;
+    }
+  }
 }

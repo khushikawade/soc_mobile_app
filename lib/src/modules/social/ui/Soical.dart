@@ -5,7 +5,6 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html/dom.dart' as dom;
@@ -27,10 +26,21 @@ class _SocialPageState extends State<SocialPage> {
 
   void initState() {
     super.initState();
+    // myDataListener();
 
-    super.initState();
     bloc.add(SocialPageEvent());
   }
+
+  // myDataListener() {
+  //   ValueListenableBuilder(
+  //     builder: (BuildContext context, dynamic value, Widget? child) {
+  //       setState(() {});
+  //       return Container();
+  //     },
+  //     valueListenable: Globals.languageChanged,
+  //     child: Container(),
+  //   );
+  // }
 
   @override
   void dispose() {
@@ -49,7 +59,7 @@ class _SocialPageState extends State<SocialPage> {
       ),
       color: (index % 2 == 0)
           ? Theme.of(context).backgroundColor
-          : AppTheme.kListBackgroundColor2,
+          : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -81,7 +91,6 @@ class _SocialPageState extends State<SocialPage> {
                           height: _kIconSize * 1.5,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            backgroundColor: AppTheme.kAccentColor,
                           ),
                         ),
                         errorWidget: (context, url, error) => Icon(Icons.error),
@@ -90,8 +99,21 @@ class _SocialPageState extends State<SocialPage> {
                   : Container(
                       height: _kIconSize * 1.5,
                       alignment: Alignment.centerLeft,
-                      child:
-                          Image(image: AssetImage("assets/images/appicon.png")),
+                      child: ClipRRect(
+                        child: CachedNetworkImage(
+                          imageUrl: Globals.homeObjet["App_Logo__c"],
+                          placeholder: (context, url) => Container(
+                            alignment: Alignment.center,
+                            width: _kIconSize * 1.4,
+                            height: _kIconSize * 1.5,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
+                      ),
                     ),
             ),
             SizedBox(
@@ -216,10 +238,7 @@ class _SocialPageState extends State<SocialPage> {
             } else if (state is Loading) {
               return Container(
                 height: MediaQuery.of(context).size.height * 0.8,
-                child: Center(
-                    child: CircularProgressIndicator(
-                  backgroundColor: AppTheme.kAccentColor,
-                )),
+                child: Center(child: CircularProgressIndicator()),
               );
             }
             if (state is SocialError) {

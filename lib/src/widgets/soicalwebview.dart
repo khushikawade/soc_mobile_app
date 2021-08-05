@@ -4,7 +4,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
+
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +89,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                   icon: Icon(
                     Icons.share,
                     color: AppTheme.kIconColor3,
-                    size: Globals.deviceType == "phone" ? 18 : 24,
+                    size: Globals.deviceType == "phone" ? 18 : 26,
                   ),
                 )
               : Container(
@@ -118,13 +118,9 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
         child: const Center(
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            backgroundColor: AppTheme.kAccentColor,
           ),
         ),
       ),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 
@@ -132,7 +128,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
     return SafeArea(
         child: Container(
             padding: EdgeInsets.all(_kPadding / 2),
-            color: AppTheme.kBackgroundColor,
+            color: Theme.of(context).backgroundColor,
             child: Column(
               // mainAxisSize: MainAxisSize.max,
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
