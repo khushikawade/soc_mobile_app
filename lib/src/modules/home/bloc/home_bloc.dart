@@ -89,6 +89,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               "fields": [
                 "Title__c",
                 "App_URL__c",
+                "App_Icon_URL__c",
                 "Deep_Link__c",
                 "Id",
                 "Name",

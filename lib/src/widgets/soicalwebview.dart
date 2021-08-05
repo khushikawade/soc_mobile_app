@@ -69,7 +69,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                     IconData(0xe80f,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kBlackColor,
+                    // color: AppTheme.kBlackColor,
                     size: Globals.deviceType == "phone" ? 20 : 28,
                   ))
               : Container(
@@ -88,7 +88,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                   },
                   icon: Icon(
                     Icons.share,
-                    color: AppTheme.kIconColor3,
+                    // color: AppTheme.kIconColor3,
                     size: Globals.deviceType == "phone" ? 18 : 26,
                   ),
                 )
@@ -107,7 +107,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                     IconData(0xe80e,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kBlackColor,
+                    // color: AppTheme.kBlackColor,
                     size: Globals.deviceType == "phone" ? 20 : 28,
                   ))
               : Container(height: 0),
@@ -157,7 +157,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                       IconData(0xe80f,
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
-                      color: AppTheme.kBlackColor,
+                      // color: AppTheme.kBlackColor,
                       size: Globals.deviceType == "phone" ? 20 : 28,
                     )),
               ],
