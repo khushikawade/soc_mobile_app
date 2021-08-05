@@ -6,6 +6,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
+import 'package:Soc/src/translator/test.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
@@ -96,6 +97,13 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               size: Globals.deviceType == "phone" ? 24 : 32,
             ),
             onPressed: () {
+              // LanguageSelector(context, item, (language));
+
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (BuildContext context) => Buttomsearch()));
+
               LanguageSelector(context, item, (language) {
                 if (language != null) {
                   setState(() {

@@ -162,8 +162,7 @@ class SocialDescription extends StatelessWidget {
         .toString()
         .split("\\n#")[1]
         .split("</div>")[0];
-    // print(data);
-    // print(data2);
+
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),
@@ -181,14 +180,14 @@ class SocialDescription extends StatelessWidget {
                 child: ClipRRect(
                   child: CachedNetworkImage(
                     imageUrl: Globals.homeObjet["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      width: _kIconSize * 1.4,
-                      height: _kIconSize * 1.5,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    ),
+                    // placeholder: (context, url) => Container(
+                    //   alignment: Alignment.center,
+                    //   width: _kIconSize * 1.4,
+                    //   height: _kIconSize * 1.5,
+                    //   child: CircularProgressIndicator(
+                    //     strokeWidth: 2,
+                    //   ),
+                    // ),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
@@ -207,9 +206,11 @@ class SocialDescription extends StatelessWidget {
                       .replaceAll("\\ n ", ""),
                 ),
               )
-            : Html(
-                data:
-                    "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")}",
+            : Center(
+                child: Html(
+                  data:
+                      "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")}",
+                ),
               )
       ],
     );

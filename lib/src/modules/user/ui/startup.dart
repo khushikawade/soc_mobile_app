@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _StartupPageState extends State<StartupPage> {
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   AndroidDeviceInfo? andorid;
   IosDeviceInfo? ios;
+  bool? isnetworkisuue = false;
 
   void initState() {
     super.initState();
@@ -96,48 +98,16 @@ class _StartupPageState extends State<StartupPage> {
     return Scaffold(
         body: Stack(
       children: [
-        // Column(
-        //   children: [
-        //     Container(
-        //       alignment: Alignment.center,
-        //       height: MediaQuery.of(context).size.height * 0.8,
-        //       child: Text("Please check internet connection"),
-        //     ),
-        //     ElevatedButton(
-        //       onPressed: () {
-        //         _loginBloc.add(PerfomLogin());
-        //       },
-        //       child: Text('Refresh'),
-        //       style: ElevatedButton.styleFrom(
-        //         padding: EdgeInsets.all(20),
-        //         // primary:
-        //         //     Theme.of(context).colorScheme.onPrimary, // <-- Button color
-        //         // onPrimary:
-        //         //     Theme.of(context).colorScheme.primary, // <-- Splash color
-        //       ),
-        //     )
-        //   ],
-        // ),
-        _buildSplashScreen(),
-        // Globals.isnetworkexception!
-        //     ? Container(child: Text("error"))
-        //     : _buildSplashScreen(),
-        // Globals.isnetworkexception!
-        //     ? Center(
-        //         child: SizedBox(
-        //           height: 200,
-        //           width: 200,
-        //           child: Text("Unable to load the data"),
-        //         ),
-        //       )
-        //     :
-
         BlocBuilder<UserBloc, UserState>(
             bloc: _loginBloc,
             builder: (BuildContext contxt, UserState state) {
+              if (state is Loading) {
+                return _buildSplashScreen();
+              }
+
               if (state is ErrorReceived) {
                 // if (state.err == "NO_CONNECTION") {
-
+                isnetworkisuue = true;
                 return Column(
                   children: [
                     Container(
@@ -145,25 +115,24 @@ class _StartupPageState extends State<StartupPage> {
                       height: MediaQuery.of(context).size.height * 0.8,
                       child: Text("Please check internet connection"),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _loginBloc.add(PerfomLogin());
-                      },
-                      child: Text('Refresh'),
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(20),
-                        // primary:
-                        //     Theme.of(context).colorScheme.onPrimary, // <-- Button color
-                        // onPrimary:
-                        //     Theme.of(context).colorScheme.primary, // <-- Splash color
-                      ),
-                    )
+                    IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                        onPressed: () {
+                          _loginBloc.add(PerfomLogin());
+                        },
+                        icon: Icon(
+                          IconData(0xe80f,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          color: AppTheme.kBlackColor,
+                          size: Globals.deviceType == "phone" ? 20 : 28,
+                        ))
                   ],
                 );
               }
               return Container();
             }),
-
         BlocListener<UserBloc, UserState>(
           bloc: _loginBloc,
           listener: (context, state) async {

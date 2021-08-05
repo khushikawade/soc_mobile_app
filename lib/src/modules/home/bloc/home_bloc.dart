@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/model/search_list.dart';
-import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -27,7 +24,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is FetchBottomNavigationBar) {
       try {
         yield HomeLoading();
-        final data = await fetchBottomNavigationBar();
+        var data = await fetchBottomNavigationBar();
+
         yield BottomNavigationBarSuccess(obj: data);
       } catch (e) {
         yield HomeErrorReceived(err: e);
@@ -90,7 +88,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             {
               "fields": [
                 "Title__c",
-                "App_Icon__c",
                 "App_URL__c",
                 "Deep_Link__c",
                 "Id",
@@ -121,7 +118,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        Globals.appSetting = AppSetting.fromJson(data);
+
         return data;
       }
     } catch (e) {

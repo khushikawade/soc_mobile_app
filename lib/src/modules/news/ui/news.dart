@@ -93,8 +93,8 @@ class _NewsPageState extends State<NewsPage> {
                           child: CachedNetworkImage(
                             imageUrl: Globals.homeObjet["App_Logo__c"],
                             fit: BoxFit.cover,
-                            height: 100,
-                            width: 100,
+                            height: 50,
+                            width: 50,
                             placeholder: (context, url) => Container(
                               alignment: Alignment.center,
                               // width: _kIconSize * 1.4,
