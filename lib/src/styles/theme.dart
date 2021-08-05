@@ -273,6 +273,96 @@ class AppTheme {
                                   new BorderRadius.circular(kBorderRadius))),
                       foregroundColor:
                           MaterialStateProperty.all<Color>(_backgroundColor))),
+
+              //Text Theme starts
+
+              textTheme: TextTheme(
+                headline1: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kHeadline1TextFontSize
+                      : kHeadline1TextFontSize + _kSize,
+                  fontFamily: 'Roboto Bold',
+                  fontWeight: FontWeight.bold,
+                  color: _primaryColor,
+                ),
+                headline2: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kHeadline2TextFontSize
+                      : kHeadline2TextFontSize + _kSize,
+                  fontFamily: 'Roboto Bold',
+                  fontWeight: FontWeight.bold,
+                  color: _primaryColor,
+                ),
+                headline3: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kHeadline2TextFontSize
+                      : kHeadline2TextFontSize + _kSize,
+                  fontFamily: 'Roboto Bold',
+                  color: kFontColor2,
+                ),
+                headline4: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kHeadline4TextFontSize
+                      : kHeadline4TextFontSize + _kSize,
+                  fontFamily: 'Roboto Bold',
+                  fontWeight: FontWeight.w400,
+                  color: _primaryColor,
+                ),
+                headline5: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kHeadline1TextFontSize
+                      : kHeadline1TextFontSize + _kSize,
+                  fontFamily: 'Roboto Bold',
+                  fontWeight: FontWeight.w600,
+                  color: _primaryColor,
+                ),
+                headline6: TextStyle(
+                    fontSize: Globals.deviceType == "phone"
+                        ? kTitleFontSize
+                        : kTitleFontSize + _kSize,
+                    color: _primaryColor,
+                    fontFamily: 'Roboto-SemiBold'),
+                caption: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kCaptionFontSize
+                      : kCaptionFontSize + _kSize,
+                  color: kFontColor1,
+                  fontWeight: FontWeight.normal,
+                  height: 1.2,
+                ),
+                subtitle1: TextStyle(
+                    fontSize: Globals.deviceType == "phone"
+                        ? kSubtitleFontSize
+                        : kSubtitleFontSize + _kSize,
+                    color: _primaryColor,
+                    fontWeight: FontWeight.normal),
+                subtitle2: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kSubtitle2FontSize
+                      : kSubtitle2FontSize + _kSize,
+                  color: _primaryColor,
+                  fontFamily: 'Roboto Regular',
+                ),
+                bodyText1: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kBodyText1FontSize
+                      : kBodyText1FontSize + _kSize,
+                  color: _primaryColor,
+                  fontWeight: FontWeight.normal,
+                  fontFamily: 'Roboto Regular',
+                  height: 1.5,
+                ),
+                bodyText2: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kBodyText1FontSize
+                      : kBodyText1FontSize + _kSize,
+                  color: _primaryColor,
+                  fontFamily: 'Roboto Regular',
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
+              ),
+              //Text theme ends
             ));
   }
 }
