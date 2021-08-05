@@ -68,7 +68,6 @@ class _HomePageState extends State<HomePage> {
         .forEach((String element) {
       element = element.toLowerCase();
       if (element.contains('news')) {
-        Globals.indicator.value = false;
         _screens.add(NewsPage());
       } else if (element.contains('student')) {
         _screens.add(StudentPage());

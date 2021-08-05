@@ -71,6 +71,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     }
   }
 
+  void setData() {}
   Future<void> initPushState(context) async {
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
@@ -88,12 +89,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       } else {
         Globals.indicator.value = false;
       }
-
-      // if (Globals.selectedLanguage != null) {
-      //   languageChanged.value = Globals.selectedLanguage!;
       // }
-      // });
-
       print(
           "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
       // SharedPreferences prefs = await SharedPreferences.getInstance();
