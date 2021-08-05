@@ -184,7 +184,11 @@ class _NewsPageState extends State<NewsPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWidget(),
+        appBar: AppBarWidget(
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

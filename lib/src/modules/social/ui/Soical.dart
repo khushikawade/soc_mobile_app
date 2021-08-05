@@ -199,7 +199,11 @@ class _SocialPageState extends State<SocialPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(),
+      appBar: AppBarWidget(
+         refresh: (v) {
+            setState(() {});
+          },
+      ),
       body: BlocBuilder(
           bloc: bloc,
           builder: (BuildContext context, SocialState state) {

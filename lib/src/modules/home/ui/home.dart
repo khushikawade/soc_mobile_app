@@ -73,7 +73,6 @@ class _HomePageState extends State<HomePage> {
       } else {
         indicator.value = false;
       }
-
       if (Globals.selectedLanguage != null) {
         languageChanged.value = Globals.selectedLanguage!;
       }

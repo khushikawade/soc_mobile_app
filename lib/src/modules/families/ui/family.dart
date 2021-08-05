@@ -212,7 +212,11 @@ class _FamilyPageState extends State<FamilyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBarWidget(),
+        appBar: AppBarWidget(
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
         body: BlocBuilder<FamilyBloc, FamilyState>(
             bloc: _bloc,
             builder: (BuildContext contxt, FamilyState state) {
