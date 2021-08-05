@@ -96,9 +96,32 @@ class _StartupPageState extends State<StartupPage> {
     return Scaffold(
         body: Stack(
       children: [
-        Globals.isnetworkexception!
-            ? Container(child: Text("error"))
-            : _buildSplashScreen(),
+        // Column(
+        //   children: [
+        //     Container(
+        //       alignment: Alignment.center,
+        //       height: MediaQuery.of(context).size.height * 0.8,
+        //       child: Text("Please check internet connection"),
+        //     ),
+        //     ElevatedButton(
+        //       onPressed: () {
+        //         _loginBloc.add(PerfomLogin());
+        //       },
+        //       child: Text('Refresh'),
+        //       style: ElevatedButton.styleFrom(
+        //         padding: EdgeInsets.all(20),
+        //         // primary:
+        //         //     Theme.of(context).colorScheme.onPrimary, // <-- Button color
+        //         // onPrimary:
+        //         //     Theme.of(context).colorScheme.primary, // <-- Splash color
+        //       ),
+        //     )
+        //   ],
+        // ),
+        _buildSplashScreen(),
+        // Globals.isnetworkexception!
+        //     ? Container(child: Text("error"))
+        //     : _buildSplashScreen(),
         // Globals.isnetworkexception!
         //     ? Center(
         //         child: SizedBox(
@@ -109,6 +132,38 @@ class _StartupPageState extends State<StartupPage> {
         //       )
         //     :
 
+        BlocBuilder<UserBloc, UserState>(
+            bloc: _loginBloc,
+            builder: (BuildContext contxt, UserState state) {
+              if (state is ErrorReceived) {
+                // if (state.err == "NO_CONNECTION") {
+
+                return Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Text("Please check internet connection"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _loginBloc.add(PerfomLogin());
+                      },
+                      child: Text('Refresh'),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(20),
+                        // primary:
+                        //     Theme.of(context).colorScheme.onPrimary, // <-- Button color
+                        // onPrimary:
+                        //     Theme.of(context).colorScheme.primary, // <-- Splash color
+                      ),
+                    )
+                  ],
+                );
+              }
+              return Container();
+            }),
+
         BlocListener<UserBloc, UserState>(
           bloc: _loginBloc,
           listener: (context, state) async {
@@ -118,14 +173,6 @@ class _StartupPageState extends State<StartupPage> {
                   : Container(
                       child: Text("Please refresh your application"),
                     );
-            } else if (state is ErrorReceived) {
-              Center(
-                child: Container(
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Text("Unable to load the data"),
-                ),
-              );
             }
           },
           child: Container(),

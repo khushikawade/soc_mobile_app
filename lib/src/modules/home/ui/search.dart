@@ -482,9 +482,9 @@ class _SearchPageState extends State<SearchPage> {
           issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
           SpacerWidget(_kLabelSpacing),
           issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
-          // issuggestionList == false
-          //     ? _buildRecentItemList()
-          //     : SizedBox(height: 0),
+          issuggestionList == false
+              ? _buildRecentItemList()
+              : SizedBox(height: 0),
         ]),
       ),
     );
