@@ -85,7 +85,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-      // child:
       return AppBar(
           leadingWidth: _kIconSize,
           elevation: 0.0,
@@ -102,32 +101,13 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 if (language != null) {
                   setState(() {
                     Globals.selectedLanguage = language;
-                    languageChanged.value = language;
+                    Globals.languageChanged.value = language;
                   });
                   refresh!(true);
                 }
               });
             },
           ),
-
-          //     GestureDetector(
-          //   onTap: () {
-          //     LanguageSelector(context, item, (language) {
-          //       if (language != null) {
-          //         setState(() {
-          //           Globals.selectedLanguage = language;
-          //           languageChanged.value = language;
-          //         });
-          //       }
-          //     });
-          //   },
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(12.0),
-          //     child: const Icon(IconData(0xe800,
-          //         fontFamily: Overrides.kFontFam,
-          //         fontPackage: Overrides.kFontPkg)),
-          //   ),
-          // ),
           title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: <Widget>[
             SearchButtonWidget(

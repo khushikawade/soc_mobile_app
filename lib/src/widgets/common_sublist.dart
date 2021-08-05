@@ -1,13 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
-import 'package:Soc/src/modules/families/ui/family.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
-import 'package:Soc/src/modules/news/ui/news.dart';
-import 'package:Soc/src/modules/social/ui/soical.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
-import 'package:Soc/src/modules/staff/ui/staff.dart';
-import 'package:Soc/src/modules/students/ui/student.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';

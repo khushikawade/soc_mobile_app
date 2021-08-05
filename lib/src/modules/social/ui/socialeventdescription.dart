@@ -1,9 +1,9 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -109,7 +109,8 @@ class SocialDescription extends StatelessWidget {
                                 isbuttomsheet: true,
                               )));
                 },
-                child: language != null && language != "English"
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: "More",
                         toLanguage: language,
@@ -135,7 +136,8 @@ class SocialDescription extends StatelessWidget {
                           link;
                   obj.callFunction(context, body, "");
                 },
-                child: language != null && language != "English"
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
                     ? TranslationWidget(
                         message: "Share".toString(),
                         toLanguage: language,
@@ -154,45 +156,56 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildbuttomsection(BuildContext context) {
-    var data = object.description["__cdata"]
-        .toString()
-        .split("<div>")[2]
-        .split("\\n")[0];
-    var data2 = object.description["__cdata"]
-        .toString()
-        .split("\\n#")[1]
-        .split("</div>")[0];
+    String data = object.description["__cdata"].toString().contains("\\n")
+        ? object.description["__cdata"]
+            .toString()
+            .split("<div>")[2]
+            .split("\\n")[0]
+        : "";
+    String data2 = object.description["__cdata"].toString().contains("\\n")
+        ? object.description["__cdata"]
+            .toString()
+            .split("\\n#")[1]
+            .split("</div>")[0]
+        : "";
 
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),
-        object.description["__cdata"] != null &&
+        object.description != null &&
+                object.description["__cdata"] != null &&
                 object.description["__cdata"]
                     .toString()
                     .contains("<img src=") &&
                 object.description["__cdata"].toString().split('"')[1] != ""
-            ? Html(
-                data: "<img" +
-                    "${object.description["__cdata"].toString().split("<img")[1].split(">")[0]}" +
-                    ">")
+            ? Container(
+                alignment: Alignment.center,
+                child: Html(
+                    data: "<img" +
+                        "${object.description["__cdata"].toString().split("<img")[1].split(">")[0]}" +
+                        ">"),
+              )
             : Container(
                 alignment: Alignment.center,
                 child: ClipRRect(
                   child: CachedNetworkImage(
                     imageUrl: Globals.homeObjet["App_Logo__c"],
-                    // placeholder: (context, url) => Container(
-                    //   alignment: Alignment.center,
-                    //   width: _kIconSize * 1.4,
-                    //   height: _kIconSize * 1.5,
-                    //   child: CircularProgressIndicator(
-                    //     strokeWidth: 2,
-                    //   ),
-                    // ),
+                    placeholder: (context, url) => Container(
+                        alignment: Alignment.center,
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            width: _kIconSize * 1.4,
+                            height: _kIconSize * 1.5,
+                            color: Colors.white,
+                          ),
+                        )),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
               ),
-        language != null && language != "English"
+        Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
             ? TranslationWidget(
                 message: "${data + "#" + data2}",
                 fromLanguage: "en",
@@ -218,34 +231,24 @@ class SocialDescription extends StatelessWidget {
 
   Widget _buildnews(BuildContext context) {
     return Wrap(children: [
-      object != null && object.title["__cdata"].length > 1
-          ? Container(
-              alignment: Alignment.centerLeft,
-              child: language != null && language != "English"
-                  ? TranslationWidget(
-                      message:
-                          "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
-                      fromLanguage: "en",
-                      toLanguage: language,
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                      ),
-                    )
-                  : Text(
-                      "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
-                      textAlign: TextAlign.left,
-                    ),
-            )
-          : language != null && language != "English"
-              ? TranslationWidget(
-                  message: "No headline found",
-                  fromLanguage: "en",
-                  toLanguage: language,
-                  builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                  ),
-                )
-              : Text("No headline found"),
+      Container(
+        alignment: Alignment.centerLeft,
+        child: Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English"
+            ? TranslationWidget(
+                message:
+                    "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+                fromLanguage: "en",
+                toLanguage: language,
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                ),
+              )
+            : Text(
+                "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+                textAlign: TextAlign.left,
+              ),
+      ),
       SpacerWidget(_kPadding),
     ]);
   }
@@ -253,7 +256,8 @@ class SocialDescription extends StatelessWidget {
   Widget _buildnewTimeStamp(BuildContext context) {
     return Container(
         child: object != null && object.pubDate.length > 1
-            ? language != null && language != "English"
+            ? Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English"
                 ? TranslationWidget(
                     message: Utility.convertDate(object.pubDate).toString(),
                     toLanguage: language,

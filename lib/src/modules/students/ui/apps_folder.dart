@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -107,7 +108,14 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                             imageUrl:
                                                 apps[index].appIconC ?? '',
                                             placeholder: (context, url) =>
-                                                CircularProgressIndicator(),
+                                                Container(
+                                                    alignment: Alignment.center,
+                                                    child: ShimmerLoading(
+                                                      isLoading: true,
+                                                      child: Container(
+                                                        color: Colors.white,
+                                                      ),
+                                                    )),
                                             errorWidget:
                                                 (context, url, error) =>
                                                     Icon(Icons.error),
