@@ -23,4 +23,7 @@ class Globals {
   static String? selectedLanguage;
   static String? appLogo;
   static bool? isnetworkexception = false;
+  static ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
+  static ValueNotifier<String> languageChanged =
+      ValueNotifier<String>("English");
 }

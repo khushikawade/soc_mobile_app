@@ -15,6 +15,7 @@ part 'news_state.dart';
 
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
   var data;
+  bool _status = false;
   NewsBloc() : super(NewsInitial());
   NewsState get initialState => NewsInitial();
 
@@ -77,9 +78,25 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      // setState(() {
+      _status = prefs.getBool("enableIndicator")!;
+      if (_status == true) {
+        Globals.indicator.value = true;
+      } else {
+        Globals.indicator.value = false;
+      }
+
+      // if (Globals.selectedLanguage != null) {
+      //   languageChanged.value = Globals.selectedLanguage!;
+      // }
+      // });
+
       print(
           "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool("enableIndicator", true);
     });
 

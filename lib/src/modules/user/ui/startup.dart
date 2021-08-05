@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,10 @@ class _StartupPageState extends State<StartupPage> {
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   AndroidDeviceInfo? andorid;
   IosDeviceInfo? ios;
+  // Timer? timer;
+  // bool _status = false;
+  final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
+  final ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
 
   void initState() {
     super.initState();
@@ -33,6 +39,8 @@ class _StartupPageState extends State<StartupPage> {
     initPlatformState();
     _loginBloc.add(PerfomLogin());
     _newsBloc.add(FetchNotificationList());
+    // timer =
+    //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
   }
 
   getindicatorValue() async {
@@ -40,6 +48,8 @@ class _StartupPageState extends State<StartupPage> {
     prefs.getBool("enableIndicator") == null
         ? prefs.setBool("enableIndicator", false)
         : prefs.setBool("enableIndicator", prefs.getBool("enableIndicator")!);
+
+    Globals.selectedLanguage = await _sharedPref.getString('selected_language');
   }
 
   Future<void> initPlatformState() async {
@@ -113,6 +123,15 @@ class _StartupPageState extends State<StartupPage> {
           bloc: _loginBloc,
           listener: (context, state) async {
             if (state is LoginSuccess) {
+              // SharedPreferences prefs = await SharedPreferences.getInstance();
+              // setState(() {
+              //   _status = prefs.getBool("enableIndicator")!;
+              //   if (_status == true) {
+              //     indicator.value = true;
+              //   } else {
+              //     indicator.value = false;
+              //   }
+              // });
               Globals.token != null && Globals.token != " "
                   ? _bloc.add(FetchBottomNavigationBar())
                   : Container(

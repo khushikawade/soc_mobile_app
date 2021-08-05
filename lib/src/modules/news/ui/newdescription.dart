@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -52,10 +53,16 @@ class _NewdescriptionState extends State<Newdescription> {
                     ? CachedNetworkImage(
                         imageUrl: widget.obj.image,
                         fit: BoxFit.fill,
-                        placeholder: (context, url) =>
-                            CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
+                        placeholder: (context, url) => Container(
+                            alignment: Alignment.center,
+                            child: ShimmerLoading(
+                              isLoading: true,
+                              child: Container(
+                                width: _kIconSize * 1.4,
+                                height: _kIconSize * 1.5,
+                                color: Colors.white,
+                              ),
+                            )),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                       )
                     : Container(
@@ -64,13 +71,15 @@ class _NewdescriptionState extends State<Newdescription> {
                           child: CachedNetworkImage(
                             imageUrl: Globals.homeObjet["App_Logo__c"],
                             placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
-                            ),
+                                alignment: Alignment.center,
+                                child: ShimmerLoading(
+                                  isLoading: true,
+                                  child: Container(
+                                    width: _kIconSize * 1.4,
+                                    height: _kIconSize * 1.5,
+                                    color: Colors.white,
+                                  ),
+                                )),
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
                           ),

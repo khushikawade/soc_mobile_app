@@ -20,7 +20,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       ValueNotifier<String>("English");
   final ValueChanged? refresh;
 
-  AppBarWidget({Key? key, required this.refresh}) : super(key : key);
+  AppBarWidget({Key? key, required this.refresh}) : super(key: key);
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -84,7 +84,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-      // child:
       return AppBar(
           leadingWidth: _kIconSize,
           elevation: 0.0,
@@ -96,37 +95,18 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               size: Globals.deviceType == "phone" ? 24 : 32,
             ),
             onPressed: () {
-              setState((){});
+              setState(() {});
               LanguageSelector(context, null, (language) {
                 if (language != null) {
                   setState(() {
                     Globals.selectedLanguage = language;
-                    languageChanged.value = language;
+                    Globals.languageChanged.value = language;
                   });
                   refresh!(true);
                 }
               });
             },
           ),
-
-          //     GestureDetector(
-          //   onTap: () {
-          //     LanguageSelector(context, item, (language) {
-          //       if (language != null) {
-          //         setState(() {
-          //           Globals.selectedLanguage = language;
-          //           languageChanged.value = language;
-          //         });
-          //       }
-          //     });
-          //   },
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(12.0),
-          //     child: const Icon(IconData(0xe800,
-          //         fontFamily: Overrides.kFontFam,
-          //         fontPackage: Overrides.kFontPkg)),
-          //   ),
-          // ),
           title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: <Widget>[
             SearchButtonWidget(
