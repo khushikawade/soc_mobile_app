@@ -30,7 +30,7 @@ class _StartupPageState extends State<StartupPage> {
   AndroidDeviceInfo? andorid;
   IosDeviceInfo? ios;
   bool? isnetworkisuue = false;
-  final SharedPreferencesFn _sharedPref = SharedPreferencesFn()
+  final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
 
   void initState() {
     super.initState();
