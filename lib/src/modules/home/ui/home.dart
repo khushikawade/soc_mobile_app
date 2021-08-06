@@ -53,11 +53,11 @@ class _HomePageState extends State<HomePage> {
     Globals.selectedLanguage = await _sharedPref.getString('selected_language');
   }
 
-  hideIndicator() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  // hideIndicator() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.setBool("enableIndicator", false);
-  }
+  //   // prefs.setBool("enableIndicator", false);
+  // }
 
   List<Widget> _buildScreens() {
     List<Widget> _screens = [];
@@ -192,7 +192,9 @@ class _HomePageState extends State<HomePage> {
         screens: _buildScreens(),
         onItemSelected: (int i) {
           print('Changed...');
-          setState(() {});
+          setState(() {
+            Globals.indicator.value = false;
+          });
         },
         items: _navBarsItems(),
         confineInSafeArea: true,
