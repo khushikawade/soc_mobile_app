@@ -4,7 +4,6 @@ import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class LanguageSelector {
@@ -43,10 +42,14 @@ class LanguageSelector {
   Widget _listTile(
           String language, context, onLanguageChanged, bool issuggestionList) =>
       Container(
-        margin: EdgeInsets.only(left: 30, right: 30, bottom: 12),
+        margin: EdgeInsets.only(
+          top: 5,
+          left: 30,
+          right: 30,
+        ),
         color: (languagesList.indexOf(language) % 2 == 0)
-            ? Theme.of(context).backgroundColor
-            : AppTheme.kListBackgroundColor2,
+            ? Theme.of(context).colorScheme.background
+            : Theme.of(context).colorScheme.secondary,
         child: Theme(
           data: ThemeData(
             unselectedWidgetColor: AppTheme.kListIconColor3,
@@ -98,11 +101,9 @@ class LanguageSelector {
             return StatefulBuilder(builder: (BuildContext context,
                 StateSetter setState /*You can rename this!*/) {
               return Container(
-                height: MediaQuery.of(context).size.width * 0.95,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    SpacerWidget(_kLabelSpacing),
                     ListTile(
                       title: Text(
                         "Select language",
@@ -122,11 +123,9 @@ class LanguageSelector {
                         ),
                       ),
                     ),
-                    // SpacerWidget(_kLabelSpacing),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: _kLabelSpacing / 1.5,
-                          vertical: _kLabelSpacing),
+                          horizontal: _kLabelSpacing / 1.5),
                       child: SizedBox(
                         height: 51,
                         child: Container(
@@ -228,18 +227,7 @@ class LanguageSelector {
               children: newList
                   .map<Widget>((data) =>
                       _listTile(data, context, onLanguageChanged, true))
-                  .toList()
-
-              //  ListTile(
-              //     title: Text(
-              //       data,
-              //     ),
-              //     onTap: () {
-              //       issuggestionList = false;
-              //       setLanguage(data, context, onLanguageChanged);
-              //     });
-              // }).toList(),
-              )),
+                  .toList())),
     );
   }
 }
