@@ -1,8 +1,11 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -37,6 +40,30 @@ class _InformationPageState extends State<InformationPage> {
       margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Wrap(
         children: [
+          Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English" &&
+                  widget.htmlText.toString().contains("src=") &&
+                  widget.htmlText.toString().split('"')[1] != ""
+              ? Container(
+                  alignment: Alignment.center,
+                  child: ClipRRect(
+                    child: CachedNetworkImage(
+                      imageUrl: Utility.getHTMLImgSrc(widget.htmlText),
+                      placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: ShimmerLoading(
+                            isLoading: true,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              height: MediaQuery.of(context).size.width * 0.8,
+                              color: Colors.white,
+                            ),
+                          )),
+                      errorWidget: (context, url, error) => Container(),
+                    ),
+                  ),
+                )
+              : Container(),
           Globals.selectedLanguage != null &&
                   Globals.selectedLanguage != "English"
               ? TranslationWidget(

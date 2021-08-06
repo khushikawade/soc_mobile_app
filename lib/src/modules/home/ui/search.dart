@@ -24,8 +24,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
-  bool isbuttomsheet;
-  String? language;
+  final bool isbuttomsheet;
+  final String? language;
   SearchPage({Key? key, required this.isbuttomsheet, required this.language})
       : super(key: key);
   @override
@@ -474,8 +474,8 @@ class _SearchPageState extends State<SearchPage> {
                 SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
         body: Container(
           child: Column(mainAxisSize: MainAxisSize.max, children: [
-            _buildHeading(),
-            SpacerWidget(_kLabelSpacing / 2),
+            // _buildHeading(),
+            // SpacerWidget(_kLabelSpacing / 2),
             _buildSearchbar(),
             issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
             SpacerWidget(_kLabelSpacing),
