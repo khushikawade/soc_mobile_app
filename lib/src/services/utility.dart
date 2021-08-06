@@ -6,6 +6,7 @@ import 'package:Soc/src/translator/translator_api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:html/parser.dart';
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -166,6 +167,21 @@ class Utility {
       return Color(int.parse("0xff${hexCode.split('#')[1]}"));
     } catch (e) {
       return Colors.blue;
+    }
+  }
+
+  static String getHTMLImgSrc(str) {
+    try {
+      String htmlTxt = str.replaceAll("\n", "");
+      var document = parse(htmlTxt);
+      var img = document.getElementsByTagName('img');
+      if (img.length > 0) {
+        return img[0].attributes['src']!;
+      } else {
+        return '';
+      }
+    } catch (e) {
+      return '';
     }
   }
 }

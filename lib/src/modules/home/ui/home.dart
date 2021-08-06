@@ -46,7 +46,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getindicatorValue();
     _bloc.initPushState(context);
-
     _controller = PersistentTabController(initialIndex: 0);
   }
 
@@ -191,6 +190,10 @@ class _HomePageState extends State<HomePage> {
         context,
         controller: _controller,
         screens: _buildScreens(),
+        onItemSelected: (int i) {
+          print('Changed...');
+          setState(() {});
+        },
         items: _navBarsItems(),
         confineInSafeArea: true,
         backgroundColor:
