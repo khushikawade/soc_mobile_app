@@ -74,14 +74,14 @@ class SocialDescription extends StatelessWidget {
       child: ListView(children: [
         Column(
           children: [
-            // _buildnews(context),
-            // SpacerWidget(_kPadding / 2),
-            // _buildnewTimeStamp(context),
-            // SpacerWidget(_kPadding / 5),
+            _buildnews(context),
+            SpacerWidget(_kPadding / 2),
+            _buildnewTimeStamp(context),
+            SpacerWidget(_kPadding / 5),
             _buildBottomSection(context),
-            // SpacerWidget(_kPadding / 2),
-            // _buildButton(context),
-            // SpacerWidget(_kPadding * 3),
+            SpacerWidget(_kPadding / 2),
+            _buildButton(context),
+            SpacerWidget(_kPadding * 3),
           ],
         ),
       ]),
@@ -170,12 +170,12 @@ class SocialDescription extends StatelessWidget {
             .split("</div>")[0]
         : "";
 
-    String _socialDescription = object.description["__cdata"]
-        .toString()
-        .replaceAll(new RegExp(r'[\\]+'), '\n')
-        .replaceAll("n.", ".")
-        .replaceAll("\nn", "\n")
-        .replaceAll("n ", "");
+    // String _socialDescription = object.description["__cdata"]
+    //     .toString()
+    //     .replaceAll(new RegExp(r'[\\]+'), '\n')
+    //     .replaceAll("n.", ".")
+    //     .replaceAll("\nn", "\n")
+    //     .replaceAll("n ", "");
 
     return Column(
       children: [
