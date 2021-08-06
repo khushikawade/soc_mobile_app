@@ -20,6 +20,7 @@ class StudentPage extends StatefulWidget {
 
 class _StudentPageState extends State<StudentPage> {
   static const double _kLableSpacing = 10.0;
+  int? gridLength;
 
   StudentBloc _bloc = StudentBloc();
 
@@ -66,13 +67,24 @@ class _StudentPageState extends State<StudentPage> {
     }
   }
 
-  Widget _buildGrid(
-      int crossaAxisCount, List<StudentApp> list, List<StudentApp> subList) {
+  Widget _buildGrid(List<StudentApp> list, List<StudentApp> subList) {
     return list.length > 0
         ? new OrientationBuilder(builder: (context, orientation) {
             return GridView.count(
               childAspectRatio: orientation == Orientation.portrait ? 1 : 3 / 2,
-              crossAxisCount: crossaAxisCount,
+              crossAxisCount: orientation == Orientation.portrait &&
+                      Globals.deviceType == "phone"
+                  ? 3
+                  : (orientation == Orientation.landscape &&
+                          Globals.deviceType == "phone")
+                      ? 4
+                      : orientation == Orientation.portrait &&
+                              Globals.deviceType != "phone"
+                          ? 4
+                          : orientation == Orientation.landscape &&
+                                  Globals.deviceType != "phone"
+                              ? 5
+                              : 3,
               crossAxisSpacing: _kLableSpacing * 1.2,
               mainAxisSpacing: _kLableSpacing * 1.2,
               children: List.generate(
@@ -154,7 +166,7 @@ class _StudentPageState extends State<StudentPage> {
                 return Center(child: CircularProgressIndicator());
               } else if (state is StudentDataSucess) {
                 return state.obj != null && state.obj!.length > 0
-                    ? _buildGrid(3, state.obj!, state.subFolder!)
+                    ? _buildGrid(state.obj!, state.subFolder!)
                     : Container(
                         alignment: Alignment.center,
                         height: MediaQuery.of(context).size.height * 0.8,
@@ -177,16 +189,18 @@ class _StudentPageState extends State<StudentPage> {
                   height: MediaQuery.of(context).size.height * 0.8,
                   child: Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message: "Unable to load the data",
-                          fromLanguage: "en",
-                          toLanguage: Globals.selectedLanguage,
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            textAlign: TextAlign.center,
+                      ? Center(
+                          child: TranslationWidget(
+                            message: "Unable to load the data",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         )
-                      : Text("Unable to load the data"),
+                      : Center(child: Text("Unable to load the data")),
                 );
               } else {
                 return Container();

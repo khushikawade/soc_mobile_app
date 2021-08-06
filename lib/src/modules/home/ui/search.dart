@@ -174,7 +174,7 @@ class _SearchPageState extends State<SearchPage> {
               isDense: true,
               hintText: 'Search',
               filled: true,
-              fillColor: Theme.of(context).backgroundColor,
+              fillColor: Theme.of(context).colorScheme.background,
               prefixIcon: Icon(
                 const IconData(0xe805,
                     fontFamily: Overrides.kFontFam,
@@ -260,7 +260,7 @@ class _SearchPageState extends State<SearchPage> {
           padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
           decoration: BoxDecoration(
             color: (index % 2 == 0)
-                ? Theme.of(context).backgroundColor
+                ? Theme.of(context).colorScheme.background
                 : Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(4),
             boxShadow: [
@@ -329,14 +329,16 @@ class _SearchPageState extends State<SearchPage> {
                             decoration: BoxDecoration(
                               border: (state.obj.indexOf(data) % 2 == 0)
                                   ? Border.all(
-                                      color: Theme.of(context).backgroundColor)
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background)
                                   : Border.all(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .secondary),
                               borderRadius: BorderRadius.circular(0.0),
                               color: (state.obj.indexOf(data) % 2 == 0)
-                                  ? Theme.of(context).backgroundColor
+                                  ? Theme.of(context).colorScheme.background
                                   : Theme.of(context).colorScheme.secondary,
                             ),
                             child: ListTile(
@@ -350,14 +352,22 @@ class _SearchPageState extends State<SearchPage> {
                                           translatedMessage.toString(),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1,
+                                              .bodyText1!
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
                                         ),
                                       )
                                     : Text(
                                         data.titleC ?? '-',
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1,
+                                            .bodyText1!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
                                       ),
                                 onTap: () async {
                                   _route(data);
@@ -415,13 +425,19 @@ class _SearchPageState extends State<SearchPage> {
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
-                  style: Theme.of(context).appBarTheme.titleTextStyle,
+                  style: Theme.of(context)
+                      .appBarTheme
+                      .titleTextStyle!
+                      .copyWith(color: Theme.of(context).colorScheme.primary),
                   textAlign: TextAlign.left,
                 ),
               )
             : Text(
                 "Search",
-                style: Theme.of(context).appBarTheme.titleTextStyle,
+                style: Theme.of(context)
+                    .appBarTheme
+                    .titleTextStyle!
+                    .copyWith(color: Theme.of(context).colorScheme.primary),
                 textAlign: TextAlign.left,
               ),
       ],
@@ -442,16 +458,15 @@ class _SearchPageState extends State<SearchPage> {
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
                   style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                        fontSize: 18,
-                      ),
+                      fontSize: 18,
+                      color: Theme.of(context).colorScheme.primary),
                   textAlign: TextAlign.left,
                 ),
               )
             : Text(
                 "Recent Search",
                 style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                      fontSize: 18,
-                    ),
+                    fontSize: 18, color: Theme.of(context).colorScheme.primary),
                 textAlign: TextAlign.left,
               ),
       ],

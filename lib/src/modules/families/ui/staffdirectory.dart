@@ -66,61 +66,19 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     style: Theme.of(context).textTheme.headline6!.copyWith(
-                          color: AppTheme.kFontColor2,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                   ),
                 )
               : Text(
                   tittle,
                   style: Theme.of(context).textTheme.headline6!.copyWith(
-                      // color: AppTheme.kFontColor2,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                 ),
         ],
       ),
     );
-  }
-
-  Widget _buildSearchbar() {
-    return SizedBox(
-        height: 50,
-        child: Container(
-            padding: EdgeInsets.symmetric(
-                vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
-            color: AppTheme.kFieldbackgroundColor,
-            child: TextFormField(
-              controller: _controller,
-              cursorColor: Colors.black,
-              decoration: InputDecoration(
-                isDense: true,
-                labelText: 'Search School App',
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: _kLabelSpacing / 2,
-                ),
-                filled: true,
-                fillColor: Theme.of(context).backgroundColor,
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(
-                  const IconData(0xe805,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  size: Globals.deviceType == "phone" ? 20 : 28,
-                  // color: AppTheme.kprefixIconColor,
-                ),
-                suffix: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _controller.clear();
-                    });
-                  },
-                  icon: Icon(
-                    Icons.clear,
-                    // color: AppTheme.kIconColor,
-                    size: Globals.deviceType == "phone" ? 18 : 26,
-                  ),
-                ),
-              ),
-            )));
   }
 
   Widget contactItem(obj, index) {
@@ -134,12 +92,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
             decoration: BoxDecoration(
               border: (index % 2 == 0)
                   ? Border.all(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                     )
                   : Border.all(color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(0.0),
               color: (index % 2 == 0)
-                  ? Theme.of(context).backgroundColor
+                  ? Theme.of(context).colorScheme.background
                   : Theme.of(context).colorScheme.secondary,
               boxShadow: [
                 BoxShadow(

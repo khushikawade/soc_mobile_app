@@ -200,63 +200,66 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWidget(
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: BlocBuilder(
-          bloc: bloc,
-          builder: (BuildContext context, SocialState state) {
-            if (state is SocialDataSucess) {
-              return state.obj != null && state.obj!.length > 0
-                  ? Container(
-                      child: Column(
-                        children: [makeList(state.obj)],
-                      ),
-                    )
-                  : Expanded(
-                      child: Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English"
-                              ? TranslationWidget(
-                                  message: "No data found",
-                                  toLanguage: Globals.selectedLanguage,
-                                  fromLanguage: "en",
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                  ),
-                                )
-                              : Text("No data found")));
-            } else if (state is Loading) {
-              return Container(
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-            if (state is SocialError) {
-              return Container(
-                alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
-                    ? TranslationWidget(
-                        message: "Unable to load the data",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25.0),
+      child: Scaffold(
+        appBar: AppBarWidget(
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
+        body: BlocBuilder(
+            bloc: bloc,
+            builder: (BuildContext context, SocialState state) {
+              if (state is SocialDataSucess) {
+                return state.obj != null && state.obj!.length > 0
+                    ? Container(
+                        child: Column(
+                          children: [makeList(state.obj)],
                         ),
                       )
-                    : Text("Unable to load the data"),
-              );
-            } else {
-              return Container();
-            }
-          }),
+                    : Expanded(
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English"
+                                ? TranslationWidget(
+                                    message: "No data found",
+                                    toLanguage: Globals.selectedLanguage,
+                                    fromLanguage: "en",
+                                    builder: (translatedMessage) => Text(
+                                      translatedMessage.toString(),
+                                    ),
+                                  )
+                                : Text("No data found")));
+              } else if (state is Loading) {
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              if (state is SocialError) {
+                return Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: "Unable to load the data",
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                          ),
+                        )
+                      : Text("Unable to load the data"),
+                );
+              } else {
+                return Container();
+              }
+            }),
+      ),
     );
   }
 }

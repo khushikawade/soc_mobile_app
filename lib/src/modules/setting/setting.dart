@@ -67,9 +67,12 @@ class _SettingPageState extends State<SettingPage> {
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
                         translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.headline3),
+                        style: Theme.of(context).textTheme.headline2!.copyWith(
+                            color: Theme.of(context).colorScheme.primary)),
                   )
-                : Text(tittle, style: Theme.of(context).textTheme.headline3),
+                : Text(tittle,
+                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: Theme.of(context).colorScheme.primary)),
           ),
         ),
       ],
@@ -90,7 +93,7 @@ class _SettingPageState extends State<SettingPage> {
                 onChanged: (bool value) async {
                   setState(() {
                     _lights = value;
-                    // bool status = !_lights;
+
                     push = !push!;
                     OneSignal.shared.disablePush(push!);
                   });
@@ -123,20 +126,18 @@ class _SettingPageState extends State<SettingPage> {
                     padding: const EdgeInsets.only(left: _kLabelSpacing),
                     child: Text(translatedMessage.toString(),
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline2!
-                            .copyWith(fontWeight: FontWeight.normal)),
+                        style: Theme.of(context).textTheme.headline2!.copyWith(
+                            fontWeight: FontWeight.normal,
+                            color: Theme.of(context).colorScheme.primary)),
                   ),
                 ),
               )
             : Padding(
                 padding: const EdgeInsets.only(left: _kLabelSpacing),
                 child: Text("Enable Notification",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(fontWeight: FontWeight.normal)),
+                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                        fontWeight: FontWeight.normal,
+                        color: Theme.of(context).colorScheme.primary)),
               ),
         _buildSwitch(),
       ],
@@ -163,16 +164,14 @@ class _SettingPageState extends State<SettingPage> {
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(fontWeight: FontWeight.normal)),
+                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                        fontWeight: FontWeight.normal,
+                        color: Theme.of(context).colorScheme.primary)),
               )
             : Text("Open Source licences",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(fontWeight: FontWeight.normal)),
+                style: Theme.of(context).textTheme.headline2!.copyWith(
+                    fontWeight: FontWeight.normal,
+                    color: Theme.of(context).colorScheme.primary)),
       ),
     );
   }
