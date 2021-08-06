@@ -185,13 +185,13 @@ class _HomePageState extends State<HomePage> {
         screens: _buildScreens(),
         onItemSelected: (int i) {
           print('Changed...');
-          setState(() {});
-          // List title = [];
-          // title.addAll(Globals.homeObjet["Bottom_Navigation__c"].split(";"));
-          // // print(title);
-          // title.forEach((element) {
-          //   print(element);
-          // });
+          if (i == 1) {
+            setState(() {
+              Globals.indicator.value = false;
+            });
+          } else {
+            setState(() {});
+          }
         },
         items: _navBarsItems(),
         confineInSafeArea: true,

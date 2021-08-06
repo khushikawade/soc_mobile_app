@@ -64,7 +64,7 @@ class Utility {
           style: TextStyle(
               color: Theme.of(context).backgroundColor,
               fontWeight: FontWeight.w600)),
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: Colors.black.withOpacity(0.8),
       padding: EdgeInsets.only(
         left: 16,
       ),
