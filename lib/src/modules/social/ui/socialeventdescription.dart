@@ -73,14 +73,14 @@ class SocialDescription extends StatelessWidget {
       child: ListView(children: [
         Column(
           children: [
-            _buildnews(context),
-            SpacerWidget(_kPadding / 2),
-            _buildnewTimeStamp(context),
-            SpacerWidget(_kPadding / 5),
-            _buildbuttomsection(context),
-            SpacerWidget(_kPadding / 2),
-            _buildButton(context),
-            SpacerWidget(_kPadding * 3),
+            // _buildnews(context),
+            // SpacerWidget(_kPadding / 2),
+            // _buildnewTimeStamp(context),
+            // SpacerWidget(_kPadding / 5),
+            _buildBottomSection(context),
+            // SpacerWidget(_kPadding / 2),
+            // _buildButton(context),
+            // SpacerWidget(_kPadding * 3),
           ],
         ),
       ]),
@@ -155,7 +155,7 @@ class SocialDescription extends StatelessWidget {
     );
   }
 
-  Widget _buildbuttomsection(BuildContext context) {
+  Widget _buildBottomSection(BuildContext context) {
     String data = object.description["__cdata"].toString().contains("\\n")
         ? object.description["__cdata"]
             .toString()
@@ -169,6 +169,13 @@ class SocialDescription extends StatelessWidget {
             .split("</div>")[0]
         : "";
 
+    String _socialDescription = object.description["__cdata"]
+        .toString()
+        .replaceAll(new RegExp(r'[\\]+'), '\n')
+        .replaceAll("n.", ".")
+        .replaceAll("\nn", "\n")
+        .replaceAll("n ", "");
+
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),
@@ -180,10 +187,27 @@ class SocialDescription extends StatelessWidget {
                 object.description["__cdata"].toString().split('"')[1] != ""
             ? Container(
                 alignment: Alignment.center,
-                child: Html(
-                    data: "<img" +
-                        "${object.description["__cdata"].toString().split("<img")[1].split(">")[0]}" +
-                        ">"),
+                child: ClipRRect(
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        Utility.getHTMLImgSrc(object.description["__cdata"]),
+                    placeholder: (context, url) => Container(
+                        alignment: Alignment.center,
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            width: _kIconSize * 1.4,
+                            height: _kIconSize * 1.5,
+                            color: Colors.white,
+                          ),
+                        )),
+                    errorWidget: (context, url, error) => Container(),
+                  ),
+                ),
+                // child: Html(
+                //     data: "<img" +
+                //         "${object.description["__cdata"].toString().split("<img")[1].split(">")[0]}" +
+                //         ">"),
               )
             : Container(
                 alignment: Alignment.center,
@@ -221,6 +245,12 @@ class SocialDescription extends StatelessWidget {
               )
             : Center(
                 child: Html(
+                  onImageError: (m, d) {},
+                  customRender: {
+                    "img": (RenderContext context, Widget child) {
+                      return Container();
+                    },
+                  },
                   data:
                       "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")}",
                 ),
