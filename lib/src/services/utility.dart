@@ -62,9 +62,18 @@ class Utility {
   static void showSnackBar(_scaffoldKey, msg, context) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text("$msg",
+          textAlign: TextAlign.left,
           style: TextStyle(
               color: Theme.of(context).backgroundColor,
               fontWeight: FontWeight.w600)),
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      padding: EdgeInsets.only(
+        left: 16,
+      ),
+      margin: EdgeInsets.only(left: 16, right: 16, bottom: 30.0),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      behavior: SnackBarBehavior.floating,
       duration: Duration(seconds: 3),
     ));
   }
@@ -74,7 +83,7 @@ class Utility {
   }
 
   static void upliftPage(context, _scrollController) {
-    var d = MediaQuery.of(context).viewInsets.bottom;
+    final d = MediaQuery.of(context).viewInsets.bottom;
     if (d > 0) {
       Timer(
           Duration(milliseconds: 50),
@@ -135,7 +144,7 @@ class Utility {
 
     final string = dateNew.toString();
     final formatter = DateFormat('yyyy-MM-dd');
-    var dateTime = formatter.parse(string);
+    final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MM/yyyy');
     final String formatted = formatNew.format(dateTime);
     return formatted;
@@ -146,7 +155,7 @@ class Utility {
 
     final string = dateNew.toString();
     final formatter = DateFormat('yyyy-MM-dd');
-    var dateTime = formatter.parse(string);
+    final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
     final String formatted = formatNew.format(dateTime);
     return formatted;

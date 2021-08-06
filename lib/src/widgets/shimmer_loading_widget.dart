@@ -4,7 +4,7 @@ import 'package:shimmer/shimmer.dart';
 
 // ignore: must_be_immutable
 class ShimmerLoading extends StatelessWidget {
-  var child;
+  final child;
   bool? isLoading = false;
 
   ShimmerLoading({Key? key, @required this.child, @required this.isLoading})

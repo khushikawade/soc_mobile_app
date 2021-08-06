@@ -14,7 +14,7 @@ part 'news_event.dart';
 part 'news_state.dart';
 
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
-  var data;
+  // final data;
   bool _status = false;
   NewsBloc() : super(NewsInitial());
   NewsState get initialState => NewsInitial();

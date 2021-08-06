@@ -24,7 +24,7 @@ class SliderWidget extends StatefulWidget {
       required this.date,
       required this.isbuttomsheet,
       required this.language});
-  var obj;
+  final obj;
   int currentIndex;
   bool? issocialpage;
   bool? iseventpage;
@@ -169,7 +169,7 @@ class _SliderWidgetState extends State<SliderWidget> {
     return SafeArea(
       child: Container(
         padding: EdgeInsets.all(_kPadding),
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).colorScheme.background,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
@@ -246,8 +246,8 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   void htmlparser() {
-    var doc = parse(object[0].description["__cdata"]);
-    var element = doc.getElementById('content');
+    final doc = parse(object[0].description["__cdata"]);
+    final element = doc.getElementById('content');
     debugPrint(element!.querySelectorAll('div').toString());
   }
 }

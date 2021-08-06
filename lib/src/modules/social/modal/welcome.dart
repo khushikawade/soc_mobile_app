@@ -15,7 +15,7 @@ class Welcome {
     // this.content,
   });
 
-  var title;
+  final title;
   // Creator? description;
   // String? link;
   // String? guid;

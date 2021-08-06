@@ -9,7 +9,7 @@ class StudentApp {
   String? id;
   String? name;
   String? appFolderc;
-  var sortOredr;
+  final sortOredr;
 
   StudentApp(
       {this.attributes,

@@ -14,7 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ignore: must_be_immutable
 class SubListPage extends StatefulWidget {
-  var obj;
+  final obj;
   String? module;
   bool isbuttomsheet;
   String appBarTitle;

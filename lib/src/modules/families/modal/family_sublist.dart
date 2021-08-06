@@ -9,7 +9,7 @@ class FamiliesSubList {
   String? name;
   String? rtfHTMLC;
   String? typeC;
-  var sortOredr;
+  final sortOredr;
 
   FamiliesSubList(
       {this.attributes,
