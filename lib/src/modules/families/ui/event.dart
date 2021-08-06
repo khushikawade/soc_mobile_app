@@ -51,11 +51,11 @@ class _EventPageState extends State<EventPage> {
       child: Container(
           decoration: BoxDecoration(
             border: (index % 2 == 0)
-                ? Border.all(color: Theme.of(context).backgroundColor)
+                ? Border.all(color: Theme.of(context).colorScheme.background)
                 : Border.all(color: Theme.of(context).colorScheme.secondary),
             borderRadius: BorderRadius.circular(0.0),
             color: (index % 2 == 0)
-                ? Theme.of(context).backgroundColor
+                ? Theme.of(context).colorScheme.background
                 : Theme.of(context).colorScheme.secondary,
           ),
           child: Container(

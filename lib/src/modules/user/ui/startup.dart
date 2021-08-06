@@ -132,7 +132,6 @@ class _StartupPageState extends State<StartupPage> {
                           IconData(0xe80f,
                               fontFamily: Overrides.kFontFam,
                               fontPackage: Overrides.kFontPkg),
-                          color: AppTheme.kBlackColor,
                           size: Globals.deviceType == "phone" ? 20 : 28,
                         ))
                   ],

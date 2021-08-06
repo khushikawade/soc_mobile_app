@@ -90,7 +90,7 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
-  Widget tittleWidget() {
+  Widget _buildTitleWidget() {
     return Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
@@ -174,7 +174,7 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
-  Widget _buildaddressWidget() {
+  Widget _buildAddressWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Container(
@@ -377,10 +377,10 @@ class _ContactPageState extends State<ContactPage> {
       body: ListView(children: [
         _buildIcon(),
         SpacerWidget(_kLabelSpacing),
-        tittleWidget(),
+        _buildTitleWidget(),
         SpacerWidget(_kLabelSpacing / 1.5),
         _buildMapWidget(),
-        _buildaddressWidget(),
+        _buildAddressWidget(),
         SpacerWidget(_kLabelSpacing / 1.25),
         _buildPhoneWidget(),
         SpacerWidget(_kLabelSpacing / 1.25),

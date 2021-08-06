@@ -174,7 +174,7 @@ class _FamilyPageState extends State<FamilyPage> {
         ),
         borderRadius: BorderRadius.circular(0.0),
         color: (index % 2 == 0)
-            ? Theme.of(context).backgroundColor
+            ? Theme.of(context).colorScheme.background
             : Theme.of(context).colorScheme.secondary,
       ),
       child: ListTile(
