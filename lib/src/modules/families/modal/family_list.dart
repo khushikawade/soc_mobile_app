@@ -11,7 +11,7 @@ class FamiliesList {
   String? name;
   String? rtfHTMLC;
   String? typeC;
-  var sortOredr;
+  final sortOredr;
 
   FamiliesList(
       {this.attributes,

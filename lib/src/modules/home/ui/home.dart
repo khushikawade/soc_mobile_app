@@ -31,7 +31,6 @@ class _HomePageState extends State<HomePage> {
   final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
-
   var item;
   var item2;
 

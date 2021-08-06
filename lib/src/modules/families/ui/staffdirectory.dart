@@ -336,13 +336,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               } else if (state is ErrorLoading) {
                 return Globals.selectedLanguage != null &&
                         Globals.selectedLanguage != "English"
-                    ? TranslationWidget(
-                        message: "Unable to load the data",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                            ))
+                    ? Center(
+                        child: TranslationWidget(
+                            message: "Unable to load the data",
+                            toLanguage: Globals.selectedLanguage,
+                            fromLanguage: "en",
+                            builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                )),
+                      )
                     : Center(child: Text("Unable to load the data"));
               } else {
                 return Container();

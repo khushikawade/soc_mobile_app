@@ -18,7 +18,7 @@ import 'package:Soc/src/globals.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
-  var searchObj;
+  final searchObj;
   FamilyPage({Key? key, this.obj, this.searchObj}) : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
-  var object;
+
   @override
   void initState() {
     super.initState();

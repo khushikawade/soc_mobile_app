@@ -13,7 +13,7 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  var data;
+  // final data;
   HomeBloc() : super(HomeInitial());
   final DbServices _dbServices = DbServices();
 
@@ -26,7 +26,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is FetchBottomNavigationBar) {
       try {
         yield HomeLoading();
-        var data = await fetchBottomNavigationBar();
+        final data = await fetchBottomNavigationBar();
 
         yield BottomNavigationBarSuccess(obj: data);
       } catch (e) {

@@ -74,7 +74,7 @@ class Utility {
   }
 
   static void upliftPage(context, _scrollController) {
-    var d = MediaQuery.of(context).viewInsets.bottom;
+    final d = MediaQuery.of(context).viewInsets.bottom;
     if (d > 0) {
       Timer(
           Duration(milliseconds: 50),
@@ -135,7 +135,7 @@ class Utility {
 
     final string = dateNew.toString();
     final formatter = DateFormat('yyyy-MM-dd');
-    var dateTime = formatter.parse(string);
+    final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MM/yyyy');
     final String formatted = formatNew.format(dateTime);
     return formatted;
@@ -146,7 +146,7 @@ class Utility {
 
     final string = dateNew.toString();
     final formatter = DateFormat('yyyy-MM-dd');
-    var dateTime = formatter.parse(string);
+    final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
     final String formatted = formatNew.format(dateTime);
     return formatted;

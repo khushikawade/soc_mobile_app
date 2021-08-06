@@ -17,7 +17,7 @@ class Loading extends SocialState {
 class SocialError extends SocialState {
   final err;
   SocialError({this.err});
-  SocialError copyWith({var err}) {
+  SocialError copyWith({final err}) {
     return SocialError(err: err ?? this.err);
   }
 
@@ -31,7 +31,7 @@ class SocialDataSucess extends SocialState {
 
   SocialDataSucess({this.obj});
 
-  SocialDataSucess copyWith({var obj}) {
+  SocialDataSucess copyWith({final obj}) {
     return SocialDataSucess(obj: obj ?? this.obj);
   }
 

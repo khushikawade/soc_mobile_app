@@ -7,12 +7,12 @@ class Globals {
   static var androidInfo;
   static String? token = '';
   // static bool? isOpenByLink;
-  // static var loggedInUser;
+  // static final loggedInUser;
   static String? baseOS;
   static String? deviceType;
   static String? deviceID;
   // static String? phone = 'phone';
-  // var object;
+  // final object;
   static int? outerBottombarIndex;
   static int? internalBottombarIndex;
   static var homeObjet;
