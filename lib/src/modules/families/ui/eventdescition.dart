@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class EventDescription extends StatefulWidget {
-  var obj;
+  final obj;
   bool? isbuttomsheet;
   String? language;
   EventDescription(
@@ -29,11 +29,11 @@ class _EventDescriptionState extends State<EventDescription> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 95.0;
 
-  static const _kbuttonTextStyle = TextStyle(
-      fontWeight: FontWeight.normal,
-      fontFamily: "Roboto Regular",
-      fontSize: 12,
-      color: AppTheme.kFontColor1);
+  // static const _kbuttonTextStyle = TextStyle(
+  //     fontWeight: FontWeight.normal,
+  //     fontFamily: "Roboto Regular",
+  //     fontSize: 12,
+  //     color: AppTheme.kFontColor1);
 
   Widget _buildItem(CalendarList list) {
     return Container(

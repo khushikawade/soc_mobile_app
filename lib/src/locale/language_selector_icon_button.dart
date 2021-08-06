@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // import 'package:containerapp/src/overrides.dart' as overries;
 
 class LanguageSelectorIconButton extends StatelessWidget {
-  var color;
+  final color;
   LanguageSelectorIconButton(this.color);
   @override
   Widget build(BuildContext context) {

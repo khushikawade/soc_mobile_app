@@ -89,7 +89,7 @@ class OSSLicensesInfo {
     "archive": {
       "name": "archive",
       "description":
-          "Provides encoders and decoders for various archive and compression formats such as zip, tar, bzip2, gzip, and zlib.",
+          "Provides encoders and decoders for finalious archive and compression formats such as zip, tar, bzip2, gzip, and zlib.",
       "homepage": null,
       "authors": [],
       "version": "3.1.2",
@@ -940,7 +940,7 @@ class OSSLicensesInfo {
     "image": {
       "name": "image",
       "description":
-          "Provides server and web apps the ability to load, manipulate, and save images with various image file formats including PNG, JPEG, GIF, BMP, WebP, TIFF, TGA, PSD, PVR, and OpenEXR.",
+          "Provides server and web apps the ability to load, manipulate, and save images with finalious image file formats including PNG, JPEG, GIF, BMP, WebP, TIFF, TGA, PSD, PVR, and OpenEXR.",
       "homepage": "https://github.com/brendan-duncan/image",
       "authors": [],
       "version": "3.0.2",

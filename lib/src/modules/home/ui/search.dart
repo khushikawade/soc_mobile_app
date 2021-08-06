@@ -35,9 +35,8 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   bool issuggestionList = false;
   static const double _kLabelSpacing = 20.0;
-  var _controller = TextEditingController();
-  // final backColor = AppTheme.kactivebackColor;
-  // final sebarcolor = AppTheme.kFieldbackgroundColor;
+  final _controller = TextEditingController();
+
   FocusNode myFocusNode = new FocusNode();
   final _debouncer = Debouncer(milliseconds: 500);
   HomeBloc _searchBloc = new HomeBloc();

@@ -49,14 +49,15 @@ class SocialDescription extends StatelessWidget {
         .getElementsByClassName("time")[0]
         .innerHtml);
 
-    var temp = object.description["__cdata"].getElementsByClassName("temp")[0];
+    final temp =
+        object.description["__cdata"].getElementsByClassName("temp")[0];
     data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<span>")));
     data.add(temp
         .getElementsByTagName("small")[0]
         .innerHtml
         .replaceAll(RegExp("[(|)|℃]"), ""));
 
-    var rows = object.description["__cdata"]
+    final rows = object.description["__cdata"]
         .getElementsByTagName("table")[0]
         .getElementsByTagName("td");
 

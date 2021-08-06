@@ -128,7 +128,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
     return SafeArea(
         child: Container(
             padding: EdgeInsets.all(_kPadding / 2),
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).colorScheme.background,
             child: Column(
               // mainAxisSize: MainAxisSize.max,
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,

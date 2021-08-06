@@ -10,7 +10,7 @@ class StaffSubList {
   String? typeC;
   String? rtfHTMLC;
   String? pdfURL;
-  var sortOredr;
+  final sortOredr;
 
   StaffSubList(
       {this.attributes,

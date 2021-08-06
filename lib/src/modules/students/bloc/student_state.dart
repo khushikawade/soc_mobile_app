@@ -17,7 +17,7 @@ class Loading extends StudentState {
 class StudentError extends StudentState {
   final err;
   StudentError({this.err});
-  StudentError copyWith({var err}) {
+  StudentError copyWith({final err}) {
     return StudentError(err: err ?? this.err);
   }
 
@@ -32,7 +32,7 @@ class StudentDataSucess extends StudentState {
 
   StudentDataSucess({this.obj, this.subFolder});
 
-  StudentDataSucess copyWith({var obj, var subFolder}) {
+  StudentDataSucess copyWith({final obj, final subFolder}) {
     return StudentDataSucess(
         obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }

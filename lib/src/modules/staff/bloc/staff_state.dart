@@ -17,7 +17,7 @@ class StaffLoading extends StaffState {
 class ErrorInStaffLoading extends StaffState {
   final err;
   ErrorInStaffLoading({this.err});
-  ErrorInStaffLoading copyWith({var err}) {
+  ErrorInStaffLoading copyWith({final err}) {
     return ErrorInStaffLoading(err: err ?? this.err);
   }
 
@@ -32,7 +32,7 @@ class StaffDataSucess extends StaffState {
 
   StaffDataSucess({this.obj, this.subFolder});
 
-  StaffDataSucess copyWith({var obj, var subFolder}) {
+  StaffDataSucess copyWith({final obj, final subFolder}) {
     return StaffDataSucess(
         obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }
@@ -47,7 +47,7 @@ class StaffSubListSucess extends StaffState {
 
   StaffSubListSucess({this.obj, this.subFolder});
 
-  StaffSubListSucess copyWith({var obj, var subFolder}) {
+  StaffSubListSucess copyWith({final obj, final subFolder}) {
     return StaffSubListSucess(
         obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }

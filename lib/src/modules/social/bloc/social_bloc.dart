@@ -11,7 +11,7 @@ part 'social_event.dart';
 part 'social_state.dart';
 
 class SocialBloc extends Bloc<SocialEvent, SocialState> {
-  var data;
+  // final data;
   SocialBloc() : super(SocialInitial());
 
   SocialState get initialState => SocialInitial();
@@ -33,7 +33,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future getEventDetails() async {
     try {
-      var link = Uri.parse("${overrides.Overrides.socialPagexmlUrl}");
+      final link = Uri.parse("${overrides.Overrides.socialPagexmlUrl}");
       Xml2Json xml2json = new Xml2Json();
       http.Response response = await http.get(link);
       if (response.statusCode == 200) {

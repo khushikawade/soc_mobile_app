@@ -1,10 +1,10 @@
 class Item {
-  var title;
-  var description;
+  final title;
+  final description;
   final link;
   final guid;
-  var creator;
-  var pubDate;
+  final creator;
+  final pubDate;
   String? content;
 
   Item({

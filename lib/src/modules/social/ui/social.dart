@@ -22,7 +22,7 @@ class SocialPage extends StatefulWidget {
 class _SocialPageState extends State<SocialPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 48.0;
-  var object;
+
   SocialBloc bloc = SocialBloc();
 
   void initState() {
@@ -46,7 +46,7 @@ class _SocialPageState extends State<SocialPage> {
         vertical: _kLabelSpacing / 2,
       ),
       color: (index % 2 == 0)
-          ? Theme.of(context).backgroundColor
+          ? Theme.of(context).colorScheme.background
           : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () {

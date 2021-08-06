@@ -11,7 +11,6 @@ import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +18,7 @@ import 'package:Soc/src/globals.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
-  var searchObj;
+  final searchObj;
   FamilyPage({Key? key, this.obj, this.searchObj}) : super(key: key);
 
   @override
@@ -30,7 +29,7 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
-  var object;
+
   @override
   void initState() {
     super.initState();
@@ -141,15 +140,13 @@ class _FamilyPageState extends State<FamilyPage> {
               height: 20,
               width: 20,
               placeholder: (context, url) => Container(
-                  alignment: Alignment.center,
-                  child: ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      // width: _kIconSize * 1.4,
-                      // height: _kIconSize * 1.5,
-                      color: Colors.white,
-                    ),
-                  )),
+                alignment: Alignment.center,
+                // width: _kIconSize * 1.4,
+                // height: _kIconSize * 1.5,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              ),
               errorWidget: (context, url, error) => Icon(Icons.error),
             ),
           ),
