@@ -144,7 +144,7 @@ class _StaffPageState extends State<StaffPage> {
           ),
           borderRadius: BorderRadius.circular(0.0),
           color: (index % 2 == 0)
-              ? Theme.of(context).backgroundColor
+              ? Theme.of(context).colorScheme.background
               : Theme.of(context).colorScheme.secondary,
         ),
         child: obj.titleC != null && obj.titleC!.length > 0

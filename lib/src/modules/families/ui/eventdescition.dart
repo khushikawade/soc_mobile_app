@@ -224,7 +224,6 @@ class _EventDescriptionState extends State<EventDescription> {
     return Scaffold(
       body: ListView(children: [
         Container(
-          color: AppTheme.kListBackgroundColor2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,

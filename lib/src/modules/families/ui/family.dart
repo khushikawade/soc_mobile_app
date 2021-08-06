@@ -174,7 +174,7 @@ class _FamilyPageState extends State<FamilyPage> {
         ),
         borderRadius: BorderRadius.circular(0.0),
         color: (index % 2 == 0)
-            ? Theme.of(context).backgroundColor
+            ? Theme.of(context).colorScheme.background
             : Theme.of(context).colorScheme.secondary,
       ),
       child: ListTile(
@@ -210,61 +210,64 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBarWidget(
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
-        body: BlocBuilder<FamilyBloc, FamilyState>(
-            bloc: _bloc,
-            builder: (BuildContext contxt, FamilyState state) {
-              if (state is FamilyInitial || state is FamilyLoading) {
-                return Center(child: CircularProgressIndicator());
-              } else if (state is FamiliesDataSucess) {
-                return state.obj != null && state.obj!.length > 0
-                    ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: state.obj!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buildList(state.obj![index], index);
-                        },
-                      )
-                    : Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
-                            ? TranslationWidget(
-                                message: "No data found",
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                ),
-                              )
-                            : Text("No data found"),
-                      );
-              } else if (state is ErrorLoading) {
-                return Container(
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message: "Unable to load the data",
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                          ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0),
+      child: Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBarWidget(
+            refresh: (v) {
+              setState(() {});
+            },
+          ),
+          body: BlocBuilder<FamilyBloc, FamilyState>(
+              bloc: _bloc,
+              builder: (BuildContext contxt, FamilyState state) {
+                if (state is FamilyInitial || state is FamilyLoading) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is FamiliesDataSucess) {
+                  return state.obj != null && state.obj!.length > 0
+                      ? ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: state.obj!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return _buildList(state.obj![index], index);
+                          },
                         )
-                      : Text("Unable to load the data"),
-                );
-              } else {
-                return Container();
-              }
-            }));
+                      : Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Globals.selectedLanguage != null &&
+                                  Globals.selectedLanguage != "English"
+                              ? TranslationWidget(
+                                  message: "No data found",
+                                  toLanguage: Globals.selectedLanguage,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                  ),
+                                )
+                              : Text("No data found"),
+                        );
+                } else if (state is ErrorLoading) {
+                  return Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English"
+                        ? TranslationWidget(
+                            message: "Unable to load the data",
+                            toLanguage: Globals.selectedLanguage,
+                            fromLanguage: "en",
+                            builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                            ),
+                          )
+                        : Text("Unable to load the data"),
+                  );
+                } else {
+                  return Container();
+                }
+              })),
+    );
   }
 }

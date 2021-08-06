@@ -90,7 +90,7 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
-  Widget tittleWidget() {
+  Widget _buildTitleWidget() {
     return Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
@@ -122,7 +122,7 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              // color: AppTheme.kTxtfieldBorderColor,
+              color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildmap(),
@@ -138,7 +138,7 @@ class _ContactPageState extends State<ContactPage> {
           right: _kLabelSpacing / 3,
           left: _kLabelSpacing / 3),
       decoration: BoxDecoration(
-          // color: AppTheme.kmapBackgroundColor,
+          color: AppTheme.kmapBackgroundColor,
           borderRadius: BorderRadius.all(Radius.circular(4.0))),
       child: widget.obj["Contact_Office_Location__Latitude__s"] != null &&
               widget.obj["Contact_Office_Location__Longitude__s"] != null
@@ -166,7 +166,7 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              // color: AppTheme.kTxtfieldBorderColor,
+              color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildphone(),
@@ -174,7 +174,7 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
-  Widget _buildaddressWidget() {
+  Widget _buildAddressWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Container(
@@ -182,7 +182,7 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             border: Border.all(
               width: _kboxborderwidth,
-              // color: AppTheme.kTxtfieldBorderColor,
+              color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         child: _buildaddress(),
@@ -312,7 +312,7 @@ class _ContactPageState extends State<ContactPage> {
           decoration: BoxDecoration(
               border: Border.all(
                 width: _kboxborderwidth,
-                // color: AppTheme.kTxtfieldBorderColor,
+                color: AppTheme.kTxtfieldBorderColor,
               ),
               borderRadius: BorderRadius.all(Radius.circular(4.0))),
           child: _builEmail()),
@@ -377,10 +377,10 @@ class _ContactPageState extends State<ContactPage> {
       body: ListView(children: [
         _buildIcon(),
         SpacerWidget(_kLabelSpacing),
-        tittleWidget(),
+        _buildTitleWidget(),
         SpacerWidget(_kLabelSpacing / 1.5),
         _buildMapWidget(),
-        _buildaddressWidget(),
+        _buildAddressWidget(),
         SpacerWidget(_kLabelSpacing / 1.25),
         _buildPhoneWidget(),
         SpacerWidget(_kLabelSpacing / 1.25),

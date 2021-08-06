@@ -48,7 +48,7 @@ class _NewsPageState extends State<NewsPage> {
         vertical: _kLabelSpacing / 2,
       ),
       color: (index % 2 == 0)
-          ? Theme.of(context).backgroundColor
+          ? Theme.of(context).colorScheme.background
           : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () {
@@ -129,9 +129,6 @@ class _NewsPageState extends State<NewsPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         _buildnewsHeading(obj),
-                        // SizedBox(height: _kLabelSpacing / 3),
-                        // Container(child: _buildTimeStamp(obj)),
-                        // SizedBox(height: _kLabelSpacing / 4),
                       ])),
             ),
           ],
@@ -152,7 +149,10 @@ class _NewsPageState extends State<NewsPage> {
                 builder: (translatedMessage) => Text(
                   // obj.titleC.toString(),
                   translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2!
+                      .copyWith(color: Theme.of(context).colorScheme.primary),
                 ),
               )
             : Text(
@@ -188,70 +188,73 @@ class _NewsPageState extends State<NewsPage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarWidget(
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BlocBuilder(
-                bloc: bloc,
-                builder: (BuildContext context, NewsState state) {
-                  if (state is NewsLoaded) {
-                    return state.obj != null && state.obj!.length > 0
-                        ? _buildList(state.obj)
-                        : Container(
-                            alignment: Alignment.center,
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Globals.selectedLanguage != null &&
-                                    Globals.selectedLanguage != "English"
-                                ? TranslationWidget(
-                                    message: "No news found",
-                                    toLanguage: Globals.selectedLanguage,
-                                    fromLanguage: "en",
-                                    builder: (translatedMessage) =>
-                                        Text(translatedMessage))
-                                : Text("No news found"),
-                          );
-                  } else if (state is NewsLoading) {
-                    return Expanded(
-                      child: Container(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25.0),
+      child: Scaffold(
+          appBar: AppBarWidget(
+            refresh: (v) {
+              setState(() {});
+            },
+          ),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BlocBuilder(
+                  bloc: bloc,
+                  builder: (BuildContext context, NewsState state) {
+                    if (state is NewsLoaded) {
+                      return state.obj != null && state.obj!.length > 0
+                          ? _buildList(state.obj)
+                          : Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Globals.selectedLanguage != null &&
+                                      Globals.selectedLanguage != "English"
+                                  ? TranslationWidget(
+                                      message: "No news found",
+                                      toLanguage: Globals.selectedLanguage,
+                                      fromLanguage: "en",
+                                      builder: (translatedMessage) =>
+                                          Text(translatedMessage))
+                                  : Text("No news found"),
+                            );
+                    } else if (state is NewsLoading) {
+                      return Expanded(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                      );
+                    } else if (state is NewsErrorReceived) {
+                      return Container(
+                        alignment: Alignment.center,
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                    );
-                  } else if (state is NewsErrorReceived) {
-                    return Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      child: Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? TranslationWidget(
-                              message: "Unable to load the data",
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) =>
-                                  Text(translatedMessage))
-                          : Text("Unable to load the data"),
-                    );
-                  } else {
-                    return Container();
+                        child: Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
+                            ? TranslationWidget(
+                                message: "Unable to load the data",
+                                toLanguage: Globals.selectedLanguage,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) =>
+                                    Text(translatedMessage))
+                            : Text("Unable to load the data"),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  }),
+              BlocListener<NewsBloc, NewsState>(
+                bloc: bloc,
+                listener: (context, state) async {
+                  if (state is NewsLoaded) {
+                    object = state.obj;
                   }
-                }),
-            BlocListener<NewsBloc, NewsState>(
-              bloc: bloc,
-              listener: (context, state) async {
-                if (state is NewsLoaded) {
-                  object = state.obj;
-                }
-              },
-              child: Container(),
-            ),
-          ],
-        ));
+                },
+                child: Container(),
+              ),
+            ],
+          )),
+    );
   }
 }

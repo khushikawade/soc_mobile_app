@@ -51,11 +51,11 @@ class _EventPageState extends State<EventPage> {
       child: Container(
           decoration: BoxDecoration(
             border: (index % 2 == 0)
-                ? Border.all(color: Theme.of(context).backgroundColor)
+                ? Border.all(color: Theme.of(context).colorScheme.background)
                 : Border.all(color: Theme.of(context).colorScheme.secondary),
             borderRadius: BorderRadius.circular(0.0),
             color: (index % 2 == 0)
-                ? Theme.of(context).backgroundColor
+                ? Theme.of(context).colorScheme.background
                 : Theme.of(context).colorScheme.secondary,
           ),
           child: Container(
@@ -180,7 +180,6 @@ class _EventPageState extends State<EventPage> {
           border: Border.all(
             width: 0,
           ),
-          // color: AppTheme.kOnPrimaryColor,
           color: Theme.of(context).colorScheme.secondary),
       child: Padding(
         padding: const EdgeInsets.only(left: _kLabelSpacing),
@@ -192,9 +191,14 @@ class _EventPageState extends State<EventPage> {
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline3),
+                    style: Theme.of(context).textTheme.headline3!.copyWith(
+                        color: Theme.of(context).colorScheme.primary)),
               )
-            : Text(tittle, style: Theme.of(context).textTheme.headline3),
+            : Text(tittle,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline3!
+                    .copyWith(color: Theme.of(context).colorScheme.primary)),
       ),
     );
   }
