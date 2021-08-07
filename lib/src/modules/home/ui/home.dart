@@ -13,7 +13,6 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
@@ -52,12 +51,6 @@ class _HomePageState extends State<HomePage> {
   getindicatorValue() async {
     Globals.selectedLanguage = await _sharedPref.getString('selected_language');
   }
-
-  // hideIndicator() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  //   // prefs.setBool("enableIndicator", false);
-  // }
 
   List<Widget> _buildScreens() {
     List<Widget> _screens = [];
@@ -192,9 +185,13 @@ class _HomePageState extends State<HomePage> {
         screens: _buildScreens(),
         onItemSelected: (int i) {
           print('Changed...');
-          setState(() {
-            Globals.indicator.value = false;
-          });
+          if (i == 1) {
+            setState(() {
+              Globals.indicator.value = false;
+            });
+          } else {
+            setState(() {});
+          }
         },
         items: _navBarsItems(),
         confineInSafeArea: true,

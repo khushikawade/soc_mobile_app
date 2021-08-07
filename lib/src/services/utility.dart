@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/translator/translator_api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -67,7 +64,7 @@ class Utility {
           style: TextStyle(
               color: Theme.of(context).backgroundColor,
               fontWeight: FontWeight.w600)),
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: Colors.black.withOpacity(0.8),
       padding: EdgeInsets.only(
         left: 16,
       ),
