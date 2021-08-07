@@ -1,7 +1,6 @@
 import 'package:Soc/oss_licenses.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/setting/licencedetail.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +16,10 @@ class Licenceinfo extends StatefulWidget {
 }
 
 class _LicenceinfoState extends State<Licenceinfo> {
-  // static const double _kIconSize = 188;
   static const double _kLabelSpacing = 20.0;
   FocusNode myFocusNode = new FocusNode();
   OSSLicensesInfo obj = new OSSLicensesInfo();
-  // UI Widget
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
   var _list;
   @override
   void initState() {
@@ -67,13 +65,16 @@ class _LicenceinfoState extends State<Licenceinfo> {
                     style: Theme.of(context)
                         .textTheme
                         .headline2!
-                        .copyWith(color: Colors.black),
+                        .copyWith(color: Theme.of(context).colorScheme.primary),
                     textAlign: TextAlign.start,
                   ),
                 )
               : Text(
                   list[index]["name"] ?? '-',
-                  // style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(color: Theme.of(context).colorScheme.primary),
                 ),
         )),
       ),
@@ -92,46 +93,55 @@ class _LicenceinfoState extends State<Licenceinfo> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        isSearch: false,
-        isShare: false,
-        appBarTitle: "Open Source Licence",
-        sharedpopUpheaderText: '',
-        sharedpopBodytext: '',
-        language: Globals.selectedLanguage,
-      ),
-      body: SafeArea(
-        child: Column(children: [
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: _list.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _list.length > 0
-                    ? _buildList(
-                        _list,
-                        index,
-                      )
-                    : Expanded(
-                        child: Container(
-                            alignment: Alignment.center,
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Globals.selectedLanguage != null &&
-                                    Globals.selectedLanguage != "English"
-                                ? TranslationWidget(
-                                    message: "No data found",
-                                    toLanguage: Globals.selectedLanguage,
-                                    fromLanguage: "en",
-                                    builder: (translatedMessage) => Text(
-                                      translatedMessage.toString(),
-                                    ),
-                                  )
-                                : Text("No data found")));
-              },
+        appBar: CustomAppBarWidget(
+          isSearch: false,
+          isShare: false,
+          appBarTitle: "Open Source Licence",
+          sharedpopUpheaderText: '',
+          sharedpopBodytext: '',
+          language: Globals.selectedLanguage,
+        ),
+        body: SafeArea(
+          child: RefreshIndicator(
+            key: refreshKey,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 25),
+              child: Column(children: [
+                Expanded(
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: _list.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _list.length > 0
+                          ? _buildList(
+                              _list,
+                              index,
+                            )
+                          : Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Globals.selectedLanguage != null &&
+                                      Globals.selectedLanguage != "English"
+                                  ? TranslationWidget(
+                                      message: "No data found",
+                                      toLanguage: Globals.selectedLanguage,
+                                      fromLanguage: "en",
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                      ),
+                                    )
+                                  : Center(child: Text("No data found")));
+                    },
+                  ),
+                ),
+              ]),
             ),
+            onRefresh: refreshPage,
           ),
-        ]),
-      ),
-    );
+        ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
   }
 }

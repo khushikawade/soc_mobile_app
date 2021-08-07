@@ -155,7 +155,8 @@ class _StartupPageState extends State<StartupPage> {
               Globals.token != null && Globals.token != " "
                   ? _bloc.add(FetchBottomNavigationBar())
                   : Container(
-                      child: Text("Please refresh your application"),
+                      child: Center(
+                          child: Text("Please refresh your application")),
                     );
             }
           },
@@ -176,12 +177,12 @@ class _StartupPageState extends State<StartupPage> {
                           homeObj: state.obj,
                         ),
                       ))
-                  : Text("No data found");
+                  : Center(child: Text("No data found"));
             } else if (state is HomeErrorReceived) {
               Container(
                 alignment: Alignment.center,
                 height: MediaQuery.of(context).size.height * 0.8,
-                child: Text("Unable to load the data"),
+                child: Center(child: Text("Unable to load the data")),
               );
             }
           },

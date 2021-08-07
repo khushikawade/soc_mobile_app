@@ -29,6 +29,7 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -39,6 +40,11 @@ class _FamilyPageState extends State<FamilyPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _bloc.add(FamiliesEvent());
   }
 
   _route(FamiliesList obj, index) {
@@ -211,63 +217,71 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 30.0),
-      child: Scaffold(
+        padding: const EdgeInsets.only(bottom: 30.0),
+        child: Scaffold(
           key: _scaffoldKey,
           appBar: AppBarWidget(
             refresh: (v) {
               setState(() {});
             },
           ),
-          body: BlocBuilder<FamilyBloc, FamilyState>(
-              bloc: _bloc,
-              builder: (BuildContext contxt, FamilyState state) {
-                if (state is FamilyInitial || state is FamilyLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is FamiliesDataSucess) {
-                  return state.obj != null && state.obj!.length > 0
-                      ? ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return _buildList(state.obj![index], index);
-                          },
-                        )
-                      : Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English"
-                              ? TranslationWidget(
-                                  message: "No data found",
-                                  toLanguage: Globals.selectedLanguage,
-                                  fromLanguage: "en",
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                  ),
-                                )
-                              : Text("No data found"),
-                        );
-                } else if (state is ErrorLoading) {
-                  return Container(
-                    alignment: Alignment.center,
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    child: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? TranslationWidget(
-                            message: "Unable to load the data",
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                            ),
+          body: RefreshIndicator(
+            key: refreshKey,
+            child: BlocBuilder<FamilyBloc, FamilyState>(
+                bloc: _bloc,
+                builder: (BuildContext contxt, FamilyState state) {
+                  if (state is FamilyInitial || state is FamilyLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is FamiliesDataSucess) {
+                    return state.obj != null && state.obj!.length > 0
+                        ? ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: state.obj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildList(state.obj![index], index);
+                            },
                           )
-                        : Text("Unable to load the data"),
-                  );
-                } else {
-                  return Container();
-                }
-              })),
-    );
+                        : ListView(children: [
+                            Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Globals.selectedLanguage != null &&
+                                      Globals.selectedLanguage != "English"
+                                  ? TranslationWidget(
+                                      message: "No data found",
+                                      toLanguage: Globals.selectedLanguage,
+                                      fromLanguage: "en",
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                      ),
+                                    )
+                                  : Text("No data found"),
+                            ),
+                          ]);
+                  } else if (state is ErrorLoading) {
+                    return ListView(children: [
+                      Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
+                            ? TranslationWidget(
+                                message: "Unable to load the data",
+                                toLanguage: Globals.selectedLanguage,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                ),
+                              )
+                            : Text("Unable to load the data"),
+                      ),
+                    ]);
+                  } else {
+                    return Container();
+                  }
+                }),
+            onRefresh: refreshPage,
+          ),
+        ));
   }
 }

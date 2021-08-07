@@ -102,7 +102,7 @@ class LanguageSelector {
                 StateSetter setState /*You can rename this!*/) {
               return new OrientationBuilder(builder: (context, orientation) {
                 return Container(
-                  height: MediaQuery.of(context).size.width * 0.95,
+                  height: MediaQuery.of(context).size.width * 1,
                   child: Column(
                     children: [
                       ListTile(
@@ -218,10 +218,13 @@ class LanguageSelector {
   }
 
   _buildLanguagesList(context, onLanguageChanged) {
-    return ListView(
-      children: languagesList
-          .map<Widget>((i) => _listTile(i, context, onLanguageChanged, false))
-          .toList(),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25),
+      child: ListView(
+        children: languagesList
+            .map<Widget>((i) => _listTile(i, context, onLanguageChanged, false))
+            .toList(),
+      ),
     );
   }
 

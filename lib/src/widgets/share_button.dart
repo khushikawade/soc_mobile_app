@@ -12,7 +12,11 @@ class ShareButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(_kLabelSpacing),
+      padding: const EdgeInsets.only(
+          top: _kLabelSpacing,
+          bottom: _kLabelSpacing * 2,
+          right: _kLabelSpacing,
+          left: _kLabelSpacing),
       child: Row(
         children: <Widget>[
           Expanded(

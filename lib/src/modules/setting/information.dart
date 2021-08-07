@@ -108,7 +108,7 @@ class _InformationPageState extends State<InformationPage> {
         appBarTitle: widget.appbarTitle,
         ishtmlpage: widget.ishtml,
         sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
-        sharedpopUpheaderText: "Please checkout this link",
+        sharedpopUpheaderText: "Please checkout this ",
         language: Globals.selectedLanguage,
       ),
       body: ListView(children: [

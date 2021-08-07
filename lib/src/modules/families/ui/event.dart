@@ -223,10 +223,10 @@ class _EventPageState extends State<EventPage> {
                       alignment: Alignment.center,
                       child: CircularProgressIndicator());
                 } else if (state is CalendarListSuccess) {
-                  return Column(
-                    children: [
-                      _buildHeading("Upcoming"),
-                      Expanded(
+                  return Column(children: [
+                    _buildHeading("Upcoming"),
+                    Container(
+                      child: Expanded(
                         child: ListView.builder(
                           scrollDirection: Axis.vertical,
                           itemCount: state.obj!.length,
@@ -244,12 +244,12 @@ class _EventPageState extends State<EventPage> {
                                           translatedMessage.toString(),
                                         ),
                                       )
-                                    : Text("No data found");
+                                    : Center(child: Text("No data found"));
                           },
                         ),
                       ),
-                    ],
-                  );
+                    ),
+                  ]);
                 } else if (state is ErrorLoading) {
                   return Container(
                     alignment: Alignment.center,

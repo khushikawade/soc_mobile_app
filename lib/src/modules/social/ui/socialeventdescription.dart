@@ -18,6 +18,7 @@ class SocialDescription extends StatelessWidget {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
   static const double _kIconSize = 45.0;
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
@@ -70,22 +71,25 @@ class SocialDescription extends StatelessWidget {
 
   Widget _buildItem(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(_kPadding),
-      child: ListView(children: [
-        Column(
-          children: [
-            _buildnews(context),
-            SpacerWidget(_kPadding / 2),
-            _buildnewTimeStamp(context),
-            SpacerWidget(_kPadding / 5),
-            _buildBottomSection(context),
-            SpacerWidget(_kPadding / 2),
-            _buildButton(context),
-            SpacerWidget(_kPadding * 3),
-          ],
-        ),
-      ]),
-    );
+        padding: const EdgeInsets.all(_kPadding),
+        child: RefreshIndicator(
+          key: refreshKey,
+          child: ListView(children: [
+            Column(
+              children: [
+                _buildnews(context),
+                SpacerWidget(_kPadding / 2),
+                _buildnewTimeStamp(context),
+                SpacerWidget(_kPadding / 5),
+                _buildBottomSection(context),
+                SpacerWidget(_kPadding / 2),
+                _buildButton(context),
+                SpacerWidget(_kPadding * 3),
+              ],
+            ),
+          ]),
+          onRefresh: refreshPage,
+        ));
   }
 
   Widget _buildButton(BuildContext context) {
@@ -154,6 +158,10 @@ class SocialDescription extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
   }
 
   Widget _buildBottomSection(BuildContext context) {

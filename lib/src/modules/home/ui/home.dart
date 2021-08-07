@@ -37,7 +37,6 @@ class _HomePageState extends State<HomePage> {
       ValueNotifier<String>("English");
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   Timer? timer;
-
   late PersistentTabController _controller;
 
   @override

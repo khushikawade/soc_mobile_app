@@ -110,35 +110,6 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
     );
   }
 
-  // Widget _buildHomeHeading() {
-  //   return Padding(
-  //       padding: const EdgeInsets.symmetric(
-  //         horizontal: _kLabelSpacing,
-  //       ),
-  //       child:  Globals.selectedLanguage != null &&  Globals.selectedLanguage != "English"
-  //           ? TranslationWidget(
-  //               message: "Homepage:",
-  //               fromLanguage: "en",
-  //               toLanguage:  Globals.selectedLanguage,
-  //               builder: (translatedMessage) => Text(
-  //                 translatedMessage,
-  //                 style: Theme.of(context)
-  //                     .textTheme
-  //                     .headline3!
-  //                     .copyWith(color: Colors.black),
-  //                 textAlign: TextAlign.start,
-  //               ),
-  //             )
-  //           : Text(
-  //               "Homepage:",
-  //               style: Theme.of(context)
-  //                   .textTheme
-  //                   .headline3!
-  //                   .copyWith(color: Colors.black),
-  //               textAlign: TextAlign.start,
-  //             ));
-  // }
-
   Widget _buildhomepage(list) {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -389,7 +360,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         language: Globals.selectedLanguage,
       ),
       body: Container(
-          color: AppTheme.kListBackgroundColor2,
+          color: Theme.of(context).colorScheme.background,
           child: list != null && list.length > 0
               ? ListView(children: [
                   SpacerWidget(_kLabelSpacing / 2),

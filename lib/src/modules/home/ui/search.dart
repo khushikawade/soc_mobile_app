@@ -36,6 +36,7 @@ class _SearchPageState extends State<SearchPage> {
   bool issuggestionList = false;
   static const double _kLabelSpacing = 20.0;
   final _controller = TextEditingController();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   FocusNode myFocusNode = new FocusNode();
   final _debouncer = Debouncer(milliseconds: 500);
@@ -214,30 +215,32 @@ class _SearchPageState extends State<SearchPage> {
                       itemCount:
                           snapshot.data.length < 5 ? snapshot.data.length : 5,
                       itemBuilder: (BuildContext context, int index) {
-                        return _buildIListtem(index, snapshot.data);
+                        return _buildItem(index, snapshot.data);
                       },
                     ),
                   )
-                : Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(25.0),
-                      child: Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? TranslationWidget(
-                              message: 'No Recent Item Found',
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
+                : ListView(children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(25.0),
+                        child: Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
+                            ? TranslationWidget(
+                                message: 'No Recent Item Found',
+                                toLanguage: Globals.selectedLanguage,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                  textAlign: TextAlign.end,
+                                ),
+                              )
+                            : Text(
+                                'No Recent Item Found',
                                 textAlign: TextAlign.end,
                               ),
-                            )
-                          : Text(
-                              'No Recent Item Found',
-                              textAlign: TextAlign.end,
-                            ),
+                      ),
                     ),
-                  );
+                  ]);
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Expanded(
               child: Container(
@@ -250,7 +253,7 @@ class _SearchPageState extends State<SearchPage> {
         });
   }
 
-  Widget _buildIListtem(int index, items) {
+  Widget _buildItem(int index, items) {
     return InkWell(
       onTap: () async {
         await _route(items[index]);
@@ -316,11 +319,6 @@ class _SearchPageState extends State<SearchPage> {
             return Expanded(
                 child: state.obj.map != null && state.obj.length > 0
                     ? Container(
-                        // margin: EdgeInsets.only(
-                        //     left: _kLabelSpacing / 2,
-                        //     right: _kLabelSpacing / 2,
-                        //     bottom: _kLabelSpacing),
-                        // decoration: BoxDecoration(),
                         child: ListView(
                         scrollDirection: Axis.vertical,
                         padding: EdgeInsets.all(_kLabelSpacing / 2),
@@ -487,18 +485,27 @@ class _SearchPageState extends State<SearchPage> {
             leading: BackButtonWidget(),
             title:
                 SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
-        body: Container(
-          child: Column(mainAxisSize: MainAxisSize.max, children: [
-            // _buildHeading(),
-            // SpacerWidget(_kLabelSpacing / 2),
-            _buildSearchbar(),
-            issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
-            SpacerWidget(_kLabelSpacing),
-            issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
-            issuggestionList == false
-                ? _buildRecentItemList()
-                : SizedBox(height: 0),
-          ]),
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: Container(
+            child: Column(mainAxisSize: MainAxisSize.max, children: [
+              // _buildHeading(),
+              // SpacerWidget(_kLabelSpacing / 2),
+              _buildSearchbar(),
+              issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
+              SpacerWidget(_kLabelSpacing / 2),
+              // issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
+              issuggestionList == false
+                  ? _buildRecentItemList()
+                  : SizedBox(height: 0),
+            ]),
+          ),
+          onRefresh: refreshPage,
         ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    setState(() {});
   }
 }

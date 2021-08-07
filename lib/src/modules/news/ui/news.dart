@@ -19,6 +19,8 @@ class _NewsPageState extends State<NewsPage> {
   static const double _kIconSize = 48.0;
   static const double _kLabelSpacing = 20.0;
   NewsBloc bloc = new NewsBloc();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+
   var object;
   String newsTimeStamp = '';
 
@@ -75,10 +77,7 @@ class _NewsPageState extends State<NewsPage> {
                   ? ClipRRect(
                       child: CachedNetworkImage(
                         imageUrl: obj.image!,
-
-                        // height: _kIconSize * 1.5,
                         fit: BoxFit.fill,
-                        // width: _kIconSize * 1.4,
                         placeholder: (context, url) => Container(
                             alignment: Alignment.center,
                             child: ShimmerLoading(
@@ -177,8 +176,6 @@ class _NewsPageState extends State<NewsPage> {
     return Expanded(
       child: ListView.builder(
         scrollDirection: Axis.vertical,
-        // shrinkWrap: true,
-        // physics: NeverScrollableScrollPhysics(),
         itemCount: obj.length,
         itemBuilder: (BuildContext context, int index) {
           return _buildListItems(obj[index], index);
@@ -189,72 +186,86 @@ class _NewsPageState extends State<NewsPage> {
 
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 25.0),
-      child: Scaffold(
+        padding: const EdgeInsets.only(bottom: 25.0),
+        child: Scaffold(
           appBar: AppBarWidget(
             refresh: (v) {
               setState(() {});
             },
           ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BlocBuilder(
+          body: RefreshIndicator(
+            key: refreshKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BlocBuilder(
+                    bloc: bloc,
+                    builder: (BuildContext context, NewsState state) {
+                      if (state is NewsLoaded) {
+                        return state.obj != null && state.obj!.length > 0
+                            ? _buildList(state.obj)
+                            : ListView(children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  child: Globals.selectedLanguage != null &&
+                                          Globals.selectedLanguage != "English"
+                                      ? TranslationWidget(
+                                          message: "No news found",
+                                          toLanguage: Globals.selectedLanguage,
+                                          fromLanguage: "en",
+                                          builder: (translatedMessage) =>
+                                              Text(translatedMessage))
+                                      : Text("No news found"),
+                                ),
+                              ]);
+                      } else if (state is NewsLoading) {
+                        return Expanded(
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                        );
+                      } else if (state is NewsErrorReceived) {
+                        return ListView(children: [
+                          Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English"
+                                ? TranslationWidget(
+                                    message: "Unable to load the data",
+                                    toLanguage: Globals.selectedLanguage,
+                                    fromLanguage: "en",
+                                    builder: (translatedMessage) =>
+                                        Text(translatedMessage))
+                                : Text("Unable to load the data"),
+                          ),
+                        ]);
+                      } else {
+                        return Container();
+                      }
+                    }),
+                BlocListener<NewsBloc, NewsState>(
                   bloc: bloc,
-                  builder: (BuildContext context, NewsState state) {
+                  listener: (context, state) async {
                     if (state is NewsLoaded) {
-                      return state.obj != null && state.obj!.length > 0
-                          ? _buildList(state.obj)
-                          : Container(
-                              alignment: Alignment.center,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
-                                  ? TranslationWidget(
-                                      message: "No news found",
-                                      toLanguage: Globals.selectedLanguage,
-                                      fromLanguage: "en",
-                                      builder: (translatedMessage) =>
-                                          Text(translatedMessage))
-                                  : Text("No news found"),
-                            );
-                    } else if (state is NewsLoading) {
-                      return Expanded(
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                      );
-                    } else if (state is NewsErrorReceived) {
-                      return Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
-                            ? TranslationWidget(
-                                message: "Unable to load the data",
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) =>
-                                    Text(translatedMessage))
-                            : Text("Unable to load the data"),
-                      );
-                    } else {
-                      return Container();
+                      object = state.obj;
                     }
-                  }),
-              BlocListener<NewsBloc, NewsState>(
-                bloc: bloc,
-                listener: (context, state) async {
-                  if (state is NewsLoaded) {
-                    object = state.obj;
-                  }
-                },
-                child: Container(),
-              ),
-            ],
-          )),
-    );
+                  },
+                  child: Container(),
+                ),
+              ],
+            ),
+            onRefresh: refreshPage,
+          ),
+        ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    setState(() {});
   }
 }

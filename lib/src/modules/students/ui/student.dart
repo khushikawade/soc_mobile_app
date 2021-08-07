@@ -21,6 +21,7 @@ class StudentPage extends StatefulWidget {
 class _StudentPageState extends State<StudentPage> {
   static const double _kLableSpacing = 10.0;
   int? gridLength;
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   StudentBloc _bloc = StudentBloc();
 
@@ -28,7 +29,6 @@ class _StudentPageState extends State<StudentPage> {
   void initState() {
     super.initState();
 
-    super.initState();
     _bloc.add(StudentPageEvent());
   }
 
@@ -136,7 +136,7 @@ class _StudentPageState extends State<StudentPage> {
               ),
             );
           })
-        : Container(
+        : Center(
             child: Globals.selectedLanguage != null &&
                     Globals.selectedLanguage != "English"
                 ? TranslationWidget(
@@ -148,7 +148,14 @@ class _StudentPageState extends State<StudentPage> {
                       textAlign: TextAlign.center,
                     ),
                   )
-                : Text("No apps available here"));
+                : Center(child: Text("No apps available here")),
+          );
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+    _bloc.add(StudentPageEvent());
   }
 
   @override
@@ -159,52 +166,58 @@ class _StudentPageState extends State<StudentPage> {
             setState(() {});
           },
         ),
-        body: BlocBuilder<StudentBloc, StudentState>(
-            bloc: _bloc,
-            builder: (BuildContext contxt, StudentState state) {
-              if (state is StudentInitial || state is Loading) {
-                return Center(child: CircularProgressIndicator());
-              } else if (state is StudentDataSucess) {
-                return state.obj != null && state.obj!.length > 0
-                    ? _buildGrid(state.obj!, state.subFolder!)
-                    : Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
-                            ? TranslationWidget(
-                                message: "No data found",
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: BlocBuilder<StudentBloc, StudentState>(
+              bloc: _bloc,
+              builder: (BuildContext contxt, StudentState state) {
+                if (state is StudentInitial || state is Loading) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is StudentDataSucess) {
+                  return state.obj != null && state.obj!.length > 0
+                      ? _buildGrid(state.obj!, state.subFolder!)
+                      : Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Globals.selectedLanguage != null &&
+                                  Globals.selectedLanguage != "English"
+                              ? TranslationWidget(
+                                  message: "No data found",
+                                  fromLanguage: "en",
+                                  toLanguage: Globals.selectedLanguage,
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )
+                              : Center(child: Text("No data found")),
+                        );
+                } else if (state is StudentError) {
+                  return ListView(children: [
+                    Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English"
+                          ? Center(
+                              child: TranslationWidget(
+                                message: "Unable to load the data",
                                 fromLanguage: "en",
                                 toLanguage: Globals.selectedLanguage,
                                 builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
                                   textAlign: TextAlign.center,
                                 ),
-                              )
-                            : Text("No data found"),
-                      );
-              } else if (state is StudentError) {
-                return Container(
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? Center(
-                          child: TranslationWidget(
-                            message: "Unable to load the data",
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        )
-                      : Center(child: Text("Unable to load the data")),
-                );
-              } else {
-                return Container();
-              }
-            }));
+                              ),
+                            )
+                          : Center(child: Text("Unable to load the data")),
+                    ),
+                  ]);
+                } else {
+                  return Container();
+                }
+              }),
+          onRefresh: refreshPage,
+        ));
   }
 }
