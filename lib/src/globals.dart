@@ -7,18 +7,16 @@ class Globals {
   static var iosInfo;
   static var androidInfo;
   static String? token = '';
-  // static bool? isOpenByLink;
-  // static final loggedInUser;
+
   static String? baseOS;
   static String? deviceType;
   static String? deviceID;
-  // static String? phone = 'phone';
-  // final object;
+
   static int? outerBottombarIndex;
   static int? internalBottombarIndex;
   static var homeObjet;
   static late AppSetting appSetting;
-  // static GlobalKey<NavigatorState>? appNavigator;
+
   static Locale? myLocale;
   static int? notiCount;
   static String? selectedLanguage;
@@ -28,4 +26,9 @@ class Globals {
   static ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
   static final scaffoldKey = GlobalKey<ScaffoldState>();
+  // static GlobalKey<NavigatorState>? appNavigator;
+  // static String? phone = 'phone';
+  // final object;
+  // static bool? isOpenByLink;
+  // static final loggedInUser;
 }

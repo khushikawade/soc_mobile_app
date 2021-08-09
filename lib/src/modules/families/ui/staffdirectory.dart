@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -37,7 +38,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   final _controller = TextEditingController();
   FamilyBloc _bloc = FamilyBloc();
   UrlLauncherWidget objurl = new UrlLauncherWidget();
-
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
   @override
   void initState() {
     super.initState();
@@ -268,47 +270,86 @@ class _StaffDirectoryState extends State<StaffDirectory> {
         language: Globals.selectedLanguage,
       ),
       body: SafeArea(
-        child: BlocBuilder<FamilyBloc, FamilyState>(
-            bloc: _bloc,
-            builder: (BuildContext contxt, FamilyState state) {
-              if (state is FamilyInitial || state is FamilyLoading) {
-                return Container(
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    alignment: Alignment.center,
-                    child: CircularProgressIndicator());
-              } else if (state is SDDataSucess) {
-                return Column(
-                  children: [
-                    _buildHeading("STAFF DIRECTORY"),
-                    Expanded(
-                      child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: state.obj!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return contactItem(state.obj![index], index);
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              } else if (state is ErrorLoading) {
-                return Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
-                    ? Center(
-                        child: TranslationWidget(
-                            message: "Unable to load the data",
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                )),
-                      )
-                    : Center(child: Text("Unable to load the data"));
-              } else {
-                return Container();
-              }
-            }),
+        child: RefreshIndicator(
+          key: refreshKey,
+          child: Column(
+            children: [
+              Expanded(
+                child: BlocBuilder<FamilyBloc, FamilyState>(
+                    bloc: _bloc,
+                    builder: (BuildContext contxt, FamilyState state) {
+                      if (state is FamilyInitial || state is FamilyLoading) {
+                        return Container(
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator());
+                      } else if (state is SDDataSucess) {
+                        return Column(
+                          children: [
+                            _buildHeading("STAFF DIRECTORY"),
+                            Expanded(
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: state.obj!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return contactItem(state.obj![index], index);
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      } else if (state is ErrorLoading) {
+                        return ListView(children: [
+                          Globals.selectedLanguage != null &&
+                                  Globals.selectedLanguage != "English"
+                              ? Center(
+                                  child: TranslationWidget(
+                                      message: "Unable to load the data",
+                                      toLanguage: Globals.selectedLanguage,
+                                      fromLanguage: "en",
+                                      builder: (translatedMessage) => Text(
+                                            translatedMessage.toString(),
+                                          )),
+                                )
+                              : Center(child: Text("Unable to load the data"))
+                        ]);
+                      } else {
+                        return Container();
+                      }
+                    }),
+              ),
+              BlocListener<HomeBloc, HomeState>(
+                bloc: _homeBloc,
+                listener: (context, state) async {
+                  if (state is BottomNavigationBarSuccess) {
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+                    Globals.homeObjet = state.obj;
+                    setState(() {});
+                  } else if (state is HomeErrorReceived) {
+                    Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Center(child: Text("Unable to load the data")),
+                    );
+                  }
+                },
+                child: Container(
+                  height: 0,
+                  width: 0,
+                ),
+              ),
+            ],
+          ),
+          onRefresh: refreshPage,
+        ),
       ),
     );
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _bloc.add(SDevent());
+
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

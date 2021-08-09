@@ -38,6 +38,8 @@ class _SearchPageState extends State<SearchPage> {
   final _controller = TextEditingController();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
 
+  final HomeBloc _homeBloc = new HomeBloc();
+
   FocusNode myFocusNode = new FocusNode();
   final _debouncer = Debouncer(milliseconds: 500);
   HomeBloc _searchBloc = new HomeBloc();
@@ -498,6 +500,27 @@ class _SearchPageState extends State<SearchPage> {
               issuggestionList == false
                   ? _buildRecentItemList()
                   : SizedBox(height: 0),
+
+              BlocListener<HomeBloc, HomeState>(
+                bloc: _homeBloc,
+                listener: (context, state) async {
+                  if (state is BottomNavigationBarSuccess) {
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+                    Globals.homeObjet = state.obj;
+                    setState(() {});
+                  } else if (state is HomeErrorReceived) {
+                    Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Center(child: Text("Unable to load the data")),
+                    );
+                  }
+                },
+                child: Container(
+                  height: 0,
+                  width: 0,
+                ),
+              ),
             ]),
           ),
           onRefresh: refreshPage,
@@ -507,5 +530,6 @@ class _SearchPageState extends State<SearchPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     setState(() {});
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staffmodal.dart';
@@ -29,6 +30,7 @@ class _StaffPageState extends State<StaffPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   StaffBloc _bloc = StaffBloc();
+  final HomeBloc _homeBloc = new HomeBloc();
   var obj;
 
   @override
@@ -131,7 +133,7 @@ class _StaffPageState extends State<StaffPage> {
           fontFamily: 'FontAwesomeSolid',
           fontPackage: 'font_awesome_flutter',
         ),
-        // color: AppTheme.kListIconColor3,
+        color: Theme.of(context).colorScheme.primary,
         size: Globals.deviceType == "phone" ? 18 : 26,
       );
     }
@@ -185,6 +187,7 @@ class _StaffPageState extends State<StaffPage> {
                 trailing: Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: Globals.deviceType == "phone" ? 12 : 20,
+                  color: Theme.of(context).colorScheme.primary,
                   // color: AppTheme.kButtonbackColor,
                 ),
               )
@@ -212,69 +215,98 @@ class _StaffPageState extends State<StaffPage> {
         ),
         body: RefreshIndicator(
           key: refreshKey,
-          child: BlocBuilder<StaffBloc, StaffState>(
-              bloc: _bloc,
-              builder: (BuildContext contxt, StaffState state) {
-                if (state is StaffInitial || state is StaffLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is StaffDataSucess) {
-                  return state.obj != null && state.obj!.length > 0
-                      ? Column(
-                          children: [
-                            Container(
-                              child: Expanded(
-                                child: ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: state.obj!.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return _buildList(state.obj![index], index);
-                                  },
+          child: Column(
+            children: [
+              Expanded(
+                child: BlocBuilder<StaffBloc, StaffState>(
+                    bloc: _bloc,
+                    builder: (BuildContext contxt, StaffState state) {
+                      if (state is StaffInitial || state is StaffLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (state is StaffDataSucess) {
+                        return state.obj != null && state.obj!.length > 0
+                            ? Column(
+                                children: [
+                                  Container(
+                                    child: Expanded(
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: state.obj!.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return _buildList(
+                                              state.obj![index], index);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : ListView(children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  child: Globals.selectedLanguage != null &&
+                                          Globals.selectedLanguage != "English"
+                                      ? TranslationWidget(
+                                          message: "No data found",
+                                          fromLanguage: "en",
+                                          toLanguage: Globals.selectedLanguage,
+                                          builder: (translatedMessage) => Text(
+                                            // obj.titleC.toString(),
+                                            translatedMessage.toString(),
+                                          ),
+                                        )
+                                      : Text("No data found"),
                                 ),
-                              ),
-                            ),
-                          ],
-                        )
-                      : ListView(children: [
+                              ]);
+                      } else if (state is ErrorInStaffLoading) {
+                        return ListView(children: [
                           Container(
                             alignment: Alignment.center,
                             height: MediaQuery.of(context).size.height * 0.8,
                             child: Globals.selectedLanguage != null &&
                                     Globals.selectedLanguage != "English"
                                 ? TranslationWidget(
-                                    message: "No data found",
+                                    message: "Unable to load the data",
                                     fromLanguage: "en",
                                     toLanguage: Globals.selectedLanguage,
                                     builder: (translatedMessage) => Text(
-                                      // obj.titleC.toString(),
                                       translatedMessage.toString(),
                                     ),
                                   )
-                                : Text("No data found"),
+                                : Center(
+                                    child: Text("Unable to load the data")),
                           ),
                         ]);
-                } else if (state is ErrorInStaffLoading) {
-                  return ListView(children: [
+                      } else {
+                        return Container();
+                      }
+                    }),
+              ),
+              BlocListener<HomeBloc, HomeState>(
+                bloc: _homeBloc,
+                listener: (context, state) async {
+                  if (state is BottomNavigationBarSuccess) {
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+                    Globals.homeObjet = state.obj;
+                    setState(() {});
+                  } else if (state is HomeErrorReceived) {
                     Container(
                       alignment: Alignment.center,
                       height: MediaQuery.of(context).size.height * 0.8,
-                      child: Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? TranslationWidget(
-                              message: "Unable to load the data",
-                              fromLanguage: "en",
-                              toLanguage: Globals.selectedLanguage,
-                              builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
-                              ),
-                            )
-                          : Center(child: Text("Unable to load the data")),
-                    ),
-                  ]);
-                } else {
-                  return Container();
-                }
-              }),
+                      child: Center(child: Text("Unable to load the data")),
+                    );
+                  }
+                },
+                child: Container(
+                  height: 0,
+                  width: 0,
+                ),
+              ),
+            ],
+          ),
           onRefresh: refreshPage,
         ));
   }
@@ -282,5 +314,7 @@ class _StaffPageState extends State<StaffPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     _bloc.add(StaffPageEvent());
+
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

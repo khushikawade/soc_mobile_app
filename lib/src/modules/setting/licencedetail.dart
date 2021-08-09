@@ -324,7 +324,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                   Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message:
-                      "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "").replaceAll("*", "").replaceAll("     ", "")}",
+                      "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "\n").replaceAll("*", "").replaceAll("     ", "").toLowerCase()}",
                   fromLanguage: "en",
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Text(
@@ -359,27 +359,30 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         sharedpopBodytext: '',
         language: Globals.selectedLanguage,
       ),
-      body: Container(
-          color: Theme.of(context).colorScheme.background,
-          child: list != null && list.length > 0
-              ? ListView(children: [
-                  SpacerWidget(_kLabelSpacing / 2),
-                  _buildname(list[index]),
-                  SpacerWidget(_kLabelSpacing / 2),
-                  _buildVersion(list[index]),
-                  SpacerWidget(_kLabelSpacing / 2),
-                  _buildlicenseInfoHeading(),
-                  _buildlicenseInfo(list[index]),
-                  SpacerWidget(_kLabelSpacing / 5),
-                  _buildhomepage(list[index]),
-                  SpacerWidget(_kLabelSpacing / 2),
-                  _buildauthorsHeading(),
-                  _buildauthors(list[index]),
-                  SpacerWidget(_kLabelSpacing / 2),
-                ])
-              : Container(
-                  height: 0,
-                )),
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: 25.0),
+        child: Container(
+            color: Theme.of(context).colorScheme.background,
+            child: list != null && list.length > 0
+                ? ListView(children: [
+                    SpacerWidget(_kLabelSpacing / 2),
+                    _buildname(list[index]),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    _buildVersion(list[index]),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    _buildlicenseInfoHeading(),
+                    _buildlicenseInfo(list[index]),
+                    SpacerWidget(_kLabelSpacing / 5),
+                    _buildhomepage(list[index]),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    _buildauthorsHeading(),
+                    _buildauthors(list[index]),
+                    SpacerWidget(_kLabelSpacing / 2),
+                  ])
+                : Container(
+                    height: 0,
+                  )),
+      ),
     );
   }
 }

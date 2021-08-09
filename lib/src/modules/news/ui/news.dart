@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -21,6 +22,7 @@ class _NewsPageState extends State<NewsPage> {
   NewsBloc bloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
 
+  final HomeBloc _homeBloc = new HomeBloc();
   var object;
   String newsTimeStamp = '';
 
@@ -257,6 +259,26 @@ class _NewsPageState extends State<NewsPage> {
                   },
                   child: Container(),
                 ),
+                BlocListener<HomeBloc, HomeState>(
+                  bloc: _homeBloc,
+                  listener: (context, state) async {
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.homeObjet = state.obj;
+                      setState(() {});
+                    } else if (state is HomeErrorReceived) {
+                      Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Center(child: Text("Unable to load the data")),
+                      );
+                    }
+                  },
+                  child: Container(
+                    height: 0,
+                    width: 0,
+                  ),
+                ),
               ],
             ),
             onRefresh: refreshPage,
@@ -266,6 +288,7 @@ class _NewsPageState extends State<NewsPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    setState(() {});
+    bloc.add(FetchNotificationList());
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

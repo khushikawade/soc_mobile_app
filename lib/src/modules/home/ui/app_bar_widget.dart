@@ -96,7 +96,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             ),
             onPressed: () {
               setState(() {});
-              LanguageSelector(context, null, (language) {
+              LanguageSelector(context, (language) {
                 if (language != null) {
                   setState(() {
                     Globals.selectedLanguage = language;
