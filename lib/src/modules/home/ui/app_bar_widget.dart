@@ -5,7 +5,6 @@ import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
-import 'package:Soc/src/translator/test.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
@@ -20,7 +19,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
   final ValueChanged? refresh;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   AppBarWidget({Key? key, required this.refresh}) : super(key: key);
 

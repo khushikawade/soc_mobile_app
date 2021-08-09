@@ -7,12 +7,12 @@ import 'package:Soc/src/translator/language_list.dart';
 import 'package:flutter/material.dart';
 
 class LanguageSelector {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   String? selectedLanguage;
 
-  LanguageSelector(context, item, onLanguageChanged) {
-    geLanguage(context, onLanguageChanged);
+  LanguageSelector(context, scaffold, onLanguageChanged) {
+    geLanguage(context, scaffold, onLanguageChanged);
   }
 
   static final List<String> languagesList = Translations.supportedLanguages;
@@ -30,17 +30,17 @@ class LanguageSelector {
     Navigator.pop(context);
   }
 
-  geLanguage(context, onLanguageChanged) async {
+  geLanguage(context, scaffold, onLanguageChanged) async {
     String _languageCode = await _sharedPref.getString('selected_language');
     selectedLanguage = _languageCode;
     if (selectedLanguage == null) {
       selectedLanguage = "English";
     }
-    _openSettingsBottomSheet(context, onLanguageChanged);
+    _openSettingsBottomSheet(context, scaffold, onLanguageChanged);
   }
 
-  Widget _listTile(
-          String language, context, onLanguageChanged, bool issuggestionList) =>
+  Widget _listTile(String language, context, scaffold, onLanguageChanged,
+          bool issuggestionList) =>
       Container(
         margin: EdgeInsets.only(
           top: 5,
@@ -59,19 +59,21 @@ class LanguageSelector {
             contentPadding: EdgeInsets.zero,
             value: selectedLanguage == language ? true : false,
             onChanged: (dynamic val) {
-              selectedLanguage == language
-                  ? print("already selected")
-                  // Utility.showSnackBar(
-                  //     _scaffoldKey, "It is already selected  ", context)
-                  : setLanguage(language, context, onLanguageChanged);
+              if (selectedLanguage == language) {
+                setLanguage(language, context, onLanguageChanged);
+              }
             },
             groupValue: true,
             title: selectedLanguage == language
                 ? InkWell(
                     onTap: () {
+                      final scaffoldKey = Scaffold.of(context);
                       if (issuggestionList) {
-                        Utility.showSnackBar(
-                            _scaffoldKey, "It already selected  ", context);
+                        scaffoldKey.showSnackBar(
+                          SnackBar(
+                            content: const Text('Language already selected'),
+                          ),
+                        );
                       }
                     },
                     child: Text(language,
@@ -86,7 +88,7 @@ class LanguageSelector {
         ),
       );
 
-  _openSettingsBottomSheet(context, onLanguageChanged) {
+  _openSettingsBottomSheet(context, scaffold, onLanguageChanged) {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
@@ -182,7 +184,8 @@ class LanguageSelector {
                         ),
                       ),
                       issuggestionList!
-                          ? _buildsuggestiontlist(context, onLanguageChanged)
+                          ? _buildsuggestiontlist(
+                              context, scaffold, onLanguageChanged)
                           : Container(
                               height: 0,
                             ),
@@ -192,7 +195,7 @@ class LanguageSelector {
                             )
                           : Expanded(
                               child: _buildLanguagesList(
-                                  context, onLanguageChanged),
+                                  context, scaffold, onLanguageChanged),
                             ),
                     ],
                   ),
@@ -217,26 +220,27 @@ class LanguageSelector {
     }
   }
 
-  _buildLanguagesList(context, onLanguageChanged) {
+  _buildLanguagesList(context, scaffold, onLanguageChanged) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 25),
       child: ListView(
         children: languagesList
-            .map<Widget>((i) => _listTile(i, context, onLanguageChanged, false))
+            .map<Widget>((i) =>
+                _listTile(i, context, scaffold, onLanguageChanged, false))
             .toList(),
       ),
     );
   }
 
-  Widget _buildsuggestiontlist(context, onLanguageChanged) {
+  Widget _buildsuggestiontlist(context, scaffold, onLanguageChanged) {
     return Expanded(
       child: Container(
           child: ListView(
               shrinkWrap: true,
               padding: EdgeInsets.all(12.0),
               children: newList
-                  .map<Widget>((data) =>
-                      _listTile(data, context, onLanguageChanged, true))
+                  .map<Widget>((data) => _listTile(
+                      data, context, scaffold, onLanguageChanged, true))
                   .toList())),
     );
   }
