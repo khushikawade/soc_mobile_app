@@ -1,5 +1,7 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/share_button.dart';
@@ -7,6 +9,7 @@ import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // ignore: must_be_immutable
@@ -34,6 +37,8 @@ class _InformationPageState extends State<InformationPage> {
   static const double _kLabelSpacing = 20.0;
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _bloc = new HomeBloc();
 
   Widget _buildContent1() {
     return Container(
@@ -102,24 +107,49 @@ class _InformationPageState extends State<InformationPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        isSearch: false,
-        isShare: false,
-        appBarTitle: widget.appbarTitle,
-        ishtmlpage: widget.ishtml,
-        sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
-        sharedpopUpheaderText: "Please checkout this ",
-        language: Globals.selectedLanguage,
-      ),
-      body: ListView(children: [
-        _buildContent1(),
-        SizedBox(
-          height: 100.0,
-          child: ShareButtonWidget(
-            language: Globals.selectedLanguage,
-          ),
-        )
-      ]),
-    );
+        appBar: CustomAppBarWidget(
+          isSearch: false,
+          isShare: false,
+          appBarTitle: widget.appbarTitle,
+          ishtmlpage: widget.ishtml,
+          sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
+          sharedpopUpheaderText: "Please checkout this ",
+          language: Globals.selectedLanguage,
+        ),
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: ListView(children: [
+            BlocListener<HomeBloc, HomeState>(
+              bloc: _bloc,
+              listener: (context, state) async {
+                if (state is BottomNavigationBarSuccess) {
+                  AppTheme.setDynamicTheme(Globals.appSetting, context);
+                  Globals.homeObjet = state.obj;
+                  setState(() {});
+                } else if (state is HomeErrorReceived) {
+                  Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: Center(child: Text("Unable to load the data")),
+                  );
+                }
+              },
+              child: Container(),
+            ),
+            _buildContent1(),
+            SizedBox(
+              height: 100.0,
+              child: ShareButtonWidget(
+                language: Globals.selectedLanguage,
+              ),
+            ),
+          ]),
+          onRefresh: refreshPage,
+        ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _bloc.add(FetchBottomNavigationBar());
   }
 }

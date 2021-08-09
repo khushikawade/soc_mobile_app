@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -8,6 +9,7 @@ import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,6 +28,9 @@ class _SettingPageState extends State<SettingPage> {
   bool _lights = true;
   bool? push;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
+
   @override
   void initState() {
     super.initState();
@@ -117,7 +122,8 @@ class _SettingPageState extends State<SettingPage> {
         Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English"
             ? Container(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 0, vertical: _kLabelSpacing / 2),
                 child: TranslationWidget(
                   message: "Enable Notification",
                   fromLanguage: "en",
@@ -178,30 +184,60 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        appBarTitle: 'Setting',
-        isSearch: false,
-        isShare: false,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-        language: Globals.selectedLanguage,
-      ),
-      body: Container(
-          child: ListView(
-        children: [
-          _buildHeading("Push Notifcation"),
-          _buildNotification(),
-          _buildHeading("Acknowledgements"),
-          _buildLicence(),
-          HorzitalSpacerWidget(_kLabelSpacing * 20),
-          SizedBox(
-              width: MediaQuery.of(context).size.width * 1,
-              height: 100.0,
-              child: ShareButtonWidget(
-                language: Globals.selectedLanguage,
-              )),
-        ],
-      )),
-    );
+        appBar: CustomAppBarWidget(
+          appBarTitle: 'Setting',
+          isSearch: false,
+          isShare: false,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+          language: Globals.selectedLanguage,
+        ),
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: Container(
+              child: ListView(
+            children: [
+              _buildHeading("Push Notifcation"),
+              _buildNotification(),
+              _buildHeading("Acknowledgements"),
+              _buildLicence(),
+              HorzitalSpacerWidget(_kLabelSpacing * 20),
+              SizedBox(
+                  width: MediaQuery.of(context).size.width * 1,
+                  height: 100.0,
+                  child: ShareButtonWidget(
+                    language: Globals.selectedLanguage,
+                  )),
+              BlocListener<HomeBloc, HomeState>(
+                bloc: _homeBloc,
+                listener: (context, state) async {
+                  if (state is BottomNavigationBarSuccess) {
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+                    Globals.homeObjet = state.obj;
+                    setState(() {});
+                  } else if (state is HomeErrorReceived) {
+                    Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Center(child: Text("Unable to load the data")),
+                    );
+                  }
+                },
+                child: Container(
+                  height: 0,
+                  width: 0,
+                ),
+              ),
+            ],
+          )),
+          onRefresh: refreshPage,
+        ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    setState(() {});
+
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

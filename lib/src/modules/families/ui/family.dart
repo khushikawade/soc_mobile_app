@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
@@ -30,6 +31,7 @@ class _FamilyPageState extends State<FamilyPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  HomeBloc _homeBloc = HomeBloc();
 
   @override
   void initState() {
@@ -165,7 +167,7 @@ class _FamilyPageState extends State<FamilyPage> {
           fontFamily: 'FontAwesomeSolid',
           fontPackage: 'font_awesome_flutter',
         ),
-        // color: AppTheme.kListIconColor3,
+        color: Theme.of(context).colorScheme.primary,
         size: Globals.deviceType == "phone" ? 18 : 26,
       );
     }
@@ -209,6 +211,7 @@ class _FamilyPageState extends State<FamilyPage> {
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
+          color: Theme.of(context).colorScheme.primary,
           // color: AppTheme.kButtonbackColor,
         ),
       ),
@@ -227,59 +230,91 @@ class _FamilyPageState extends State<FamilyPage> {
           ),
           body: RefreshIndicator(
             key: refreshKey,
-            child: BlocBuilder<FamilyBloc, FamilyState>(
-                bloc: _bloc,
-                builder: (BuildContext contxt, FamilyState state) {
-                  if (state is FamilyInitial || state is FamilyLoading) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (state is FamiliesDataSucess) {
-                    return state.obj != null && state.obj!.length > 0
-                        ? ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            itemCount: state.obj!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return _buildList(state.obj![index], index);
-                            },
-                          )
-                        : ListView(children: [
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: BlocBuilder<FamilyBloc, FamilyState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, FamilyState state) {
+                        if (state is FamilyInitial || state is FamilyLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (state is FamiliesDataSucess) {
+                          return state.obj != null && state.obj!.length > 0
+                              ? ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: state.obj!.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return _buildList(state.obj![index], index);
+                                  },
+                                )
+                              : ListView(children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.8,
+                                    child: Globals.selectedLanguage != null &&
+                                            Globals.selectedLanguage !=
+                                                "English"
+                                        ? TranslationWidget(
+                                            message: "No data found",
+                                            toLanguage:
+                                                Globals.selectedLanguage,
+                                            fromLanguage: "en",
+                                            builder: (translatedMessage) =>
+                                                Text(
+                                              translatedMessage.toString(),
+                                            ),
+                                          )
+                                        : Text("No data found"),
+                                  ),
+                                ]);
+                        } else if (state is ErrorLoading) {
+                          return ListView(children: [
                             Container(
                               alignment: Alignment.center,
                               height: MediaQuery.of(context).size.height * 0.8,
                               child: Globals.selectedLanguage != null &&
                                       Globals.selectedLanguage != "English"
                                   ? TranslationWidget(
-                                      message: "No data found",
+                                      message: "Unable to load the data",
                                       toLanguage: Globals.selectedLanguage,
                                       fromLanguage: "en",
                                       builder: (translatedMessage) => Text(
                                         translatedMessage.toString(),
                                       ),
                                     )
-                                  : Text("No data found"),
+                                  : Text("Unable to load the data"),
                             ),
                           ]);
-                  } else if (state is ErrorLoading) {
-                    return ListView(children: [
+                        } else {
+                          return Container();
+                        }
+                      }),
+                ),
+                BlocListener<HomeBloc, HomeState>(
+                  bloc: _homeBloc,
+                  listener: (context, state) async {
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.homeObjet = state.obj;
+                      setState(() {});
+                    } else if (state is HomeErrorReceived) {
                       Container(
                         alignment: Alignment.center,
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
-                            ? TranslationWidget(
-                                message: "Unable to load the data",
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                ),
-                              )
-                            : Text("Unable to load the data"),
-                      ),
-                    ]);
-                  } else {
-                    return Container();
-                  }
-                }),
+                        child: Center(child: Text("Unable to load the data")),
+                      );
+                    }
+                  },
+                  child: Container(
+                    height: 0,
+                    width: 0,
+                  ),
+                ),
+              ],
+            ),
             onRefresh: refreshPage,
           ),
         ));

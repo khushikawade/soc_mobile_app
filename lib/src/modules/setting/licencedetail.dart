@@ -324,7 +324,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                   Globals.selectedLanguage != "English"
               ? TranslationWidget(
                   message:
-                      "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "").replaceAll("*", "").replaceAll("     ", "")}",
+                      "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "").replaceAll("*", "").replaceAll("     ", "").toLowerCase()}",
                   fromLanguage: "en",
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Text(

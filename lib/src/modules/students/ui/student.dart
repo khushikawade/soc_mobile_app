@@ -1,8 +1,10 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -22,6 +24,7 @@ class _StudentPageState extends State<StudentPage> {
   static const double _kLableSpacing = 10.0;
   int? gridLength;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
 
   StudentBloc _bloc = StudentBloc();
 
@@ -156,6 +159,7 @@ class _StudentPageState extends State<StudentPage> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     _bloc.add(StudentPageEvent());
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 
   @override
@@ -168,55 +172,83 @@ class _StudentPageState extends State<StudentPage> {
         ),
         body: RefreshIndicator(
           key: refreshKey,
-          child: BlocBuilder<StudentBloc, StudentState>(
-              bloc: _bloc,
-              builder: (BuildContext contxt, StudentState state) {
-                if (state is StudentInitial || state is Loading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is StudentDataSucess) {
-                  return state.obj != null && state.obj!.length > 0
-                      ? _buildGrid(state.obj!, state.subFolder!)
-                      : Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English"
-                              ? TranslationWidget(
-                                  message: "No data found",
-                                  fromLanguage: "en",
-                                  toLanguage: Globals.selectedLanguage,
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                )
-                              : Center(child: Text("No data found")),
-                        );
-                } else if (state is StudentError) {
-                  return ListView(children: [
+          child: Column(
+            children: [
+              Expanded(
+                child: BlocBuilder<StudentBloc, StudentState>(
+                    bloc: _bloc,
+                    builder: (BuildContext contxt, StudentState state) {
+                      if (state is StudentInitial || state is Loading) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (state is StudentDataSucess) {
+                        return state.obj != null && state.obj!.length > 0
+                            ? _buildGrid(state.obj!, state.subFolder!)
+                            : Container(
+                                alignment: Alignment.center,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                child: Globals.selectedLanguage != null &&
+                                        Globals.selectedLanguage != "English"
+                                    ? TranslationWidget(
+                                        message: "No data found",
+                                        fromLanguage: "en",
+                                        toLanguage: Globals.selectedLanguage,
+                                        builder: (translatedMessage) => Text(
+                                          translatedMessage.toString(),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )
+                                    : Center(child: Text("No data found")),
+                              );
+                      } else if (state is StudentError) {
+                        return ListView(children: [
+                          Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English"
+                                ? Center(
+                                    child: TranslationWidget(
+                                      message: "Unable to load the data",
+                                      fromLanguage: "en",
+                                      toLanguage: Globals.selectedLanguage,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  )
+                                : Center(
+                                    child: Text("Unable to load the data")),
+                          ),
+                        ]);
+                      } else {
+                        return Container();
+                      }
+                    }),
+              ),
+              BlocListener<HomeBloc, HomeState>(
+                bloc: _homeBloc,
+                listener: (context, state) async {
+                  if (state is BottomNavigationBarSuccess) {
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+                    Globals.homeObjet = state.obj;
+                    setState(() {});
+                  } else if (state is HomeErrorReceived) {
                     Container(
                       alignment: Alignment.center,
                       height: MediaQuery.of(context).size.height * 0.8,
-                      child: Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? Center(
-                              child: TranslationWidget(
-                                message: "Unable to load the data",
-                                fromLanguage: "en",
-                                toLanguage: Globals.selectedLanguage,
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            )
-                          : Center(child: Text("Unable to load the data")),
-                    ),
-                  ]);
-                } else {
-                  return Container();
-                }
-              }),
+                      child: Center(child: Text("Unable to load the data")),
+                    );
+                  }
+                },
+                child: Container(
+                  height: 0,
+                  width: 0,
+                ),
+              ),
+            ],
+          ),
           onRefresh: refreshPage,
         ));
   }

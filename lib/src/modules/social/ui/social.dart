@@ -1,6 +1,8 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
@@ -23,6 +25,7 @@ class _SocialPageState extends State<SocialPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 48.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
 
   SocialBloc bloc = SocialBloc();
 
@@ -39,6 +42,7 @@ class _SocialPageState extends State<SocialPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     bloc.add(SocialPageEvent());
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 
   Widget _buildlist(obj, int index, mainObj) {
@@ -216,61 +220,92 @@ class _SocialPageState extends State<SocialPage> {
           ),
           body: RefreshIndicator(
             key: refreshKey,
-            child: BlocBuilder(
-                bloc: bloc,
-                builder: (BuildContext context, SocialState state) {
-                  if (state is SocialDataSucess) {
-                    return state.obj != null && state.obj!.length > 0
-                        ? Container(
-                            child: Column(
-                              children: [makeList(state.obj)],
-                            ),
-                          )
-                        : ListView(children: [
+            child: Column(
+              children: [
+                Expanded(
+                  child: BlocBuilder(
+                      bloc: bloc,
+                      builder: (BuildContext context, SocialState state) {
+                        if (state is SocialDataSucess) {
+                          return state.obj != null && state.obj!.length > 0
+                              ? Container(
+                                  child: Column(
+                                    children: [makeList(state.obj)],
+                                  ),
+                                )
+                              : ListView(children: [
+                                  Container(
+                                      alignment: Alignment.center,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
+                                      child: Globals.selectedLanguage != null &&
+                                              Globals.selectedLanguage !=
+                                                  "English"
+                                          ? TranslationWidget(
+                                              message: "No data found",
+                                              toLanguage:
+                                                  Globals.selectedLanguage,
+                                              fromLanguage: "en",
+                                              builder: (translatedMessage) =>
+                                                  Text(
+                                                translatedMessage.toString(),
+                                              ),
+                                            )
+                                          : Text("No data found"))
+                                ]);
+                        } else if (state is Loading) {
+                          return Container(
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                        if (state is SocialError) {
+                          return ListView(children: [
                             Container(
-                                alignment: Alignment.center,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
-                                child: Globals.selectedLanguage != null &&
-                                        Globals.selectedLanguage != "English"
-                                    ? TranslationWidget(
-                                        message: "No data found",
-                                        toLanguage: Globals.selectedLanguage,
-                                        fromLanguage: "en",
-                                        builder: (translatedMessage) => Text(
-                                          translatedMessage.toString(),
-                                        ),
-                                      )
-                                    : Text("No data found"))
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Globals.selectedLanguage != null &&
+                                      Globals.selectedLanguage != "English"
+                                  ? TranslationWidget(
+                                      message: "Unable to load the data",
+                                      toLanguage: Globals.selectedLanguage,
+                                      fromLanguage: "en",
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Text("Unable to load the data")),
+                            ),
                           ]);
-                  } else if (state is Loading) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  if (state is SocialError) {
-                    return ListView(children: [
+                        } else {
+                          return Container();
+                        }
+                      }),
+                ),
+                BlocListener<HomeBloc, HomeState>(
+                  bloc: _homeBloc,
+                  listener: (context, state) async {
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.homeObjet = state.obj;
+                      setState(() {});
+                    } else if (state is HomeErrorReceived) {
                       Container(
                         alignment: Alignment.center,
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
-                            ? TranslationWidget(
-                                message: "Unable to load the data",
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                ),
-                              )
-                            : Center(child: Text("Unable to load the data")),
-                      ),
-                    ]);
-                  } else {
-                    return Container();
-                  }
-                }),
+                        child: Center(child: Text("Unable to load the data")),
+                      );
+                    }
+                  },
+                  child: Container(
+                    height: 0,
+                    width: 0,
+                  ),
+                ),
+              ],
+            ),
             onRefresh: refreshPage,
           )),
     );

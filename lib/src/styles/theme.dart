@@ -362,6 +362,7 @@ class AppTheme {
                   height: 1.2,
                 ),
               ),
+
               //Text theme ends
             ));
   }

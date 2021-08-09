@@ -42,6 +42,14 @@ class _StartupPageState extends State<StartupPage> {
     //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
   }
 
+  @override
+  void dispose() {
+    _bloc.close();
+    _loginBloc.close();
+
+    super.dispose();
+  }
+
   getindicatorValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.getBool("enableIndicator") == null

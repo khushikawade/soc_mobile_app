@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -25,6 +26,8 @@ class EventPage extends StatefulWidget {
 class _EventPageState extends State<EventPage> {
   static const double _kLabelSpacing = 15.0;
   FamilyBloc _eventBloc = FamilyBloc();
+  HomeBloc _homeBloc = HomeBloc();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -205,71 +208,112 @@ class _EventPageState extends State<EventPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        appBarTitle: widget.appBarTitle!,
-        isSearch: true,
-        isShare: false,
-        sharedpopUpheaderText: "",
-        sharedpopBodytext: "",
-        language: Globals.selectedLanguage,
-      ),
-      body: SafeArea(
-          child: BlocBuilder<FamilyBloc, FamilyState>(
-              bloc: _eventBloc,
-              builder: (BuildContext contxt, FamilyState state) {
-                if (state is FamilyLoading) {
-                  return Container(
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator());
-                } else if (state is CalendarListSuccess) {
-                  return Column(children: [
-                    _buildHeading("Upcoming"),
-                    Container(
-                      child: Expanded(
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return state.obj!.length > 0
-                                ? _buildList(
-                                    state.obj![index], index, state.obj)
-                                : Globals.selectedLanguage != null &&
-                                        Globals.selectedLanguage != "English"
-                                    ? TranslationWidget(
-                                        message: "No data found",
-                                        toLanguage: Globals.selectedLanguage,
-                                        fromLanguage: "en",
-                                        builder: (translatedMessage) => Text(
-                                          translatedMessage.toString(),
-                                        ),
-                                      )
-                                    : Center(child: Text("No data found"));
-                          },
-                        ),
-                      ),
-                    ),
-                  ]);
-                } else if (state is ErrorLoading) {
-                  return Container(
-                    alignment: Alignment.center,
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    child: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? TranslationWidget(
-                            message: "Unable to load the data",
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
+        appBar: CustomAppBarWidget(
+          appBarTitle: widget.appBarTitle!,
+          isSearch: true,
+          isShare: false,
+          sharedpopUpheaderText: "",
+          sharedpopBodytext: "",
+          language: Globals.selectedLanguage,
+        ),
+        body: SafeArea(
+            child: RefreshIndicator(
+          key: refreshKey,
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: BlocBuilder<FamilyBloc, FamilyState>(
+                    bloc: _eventBloc,
+                    builder: (BuildContext contxt, FamilyState state) {
+                      if (state is FamilyLoading) {
+                        return Container(
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator());
+                      } else if (state is CalendarListSuccess) {
+                        return Column(children: [
+                          _buildHeading("Upcoming"),
+                          Container(
+                            child: Expanded(
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: state.obj!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return state.obj!.length > 0
+                                      ? _buildList(
+                                          state.obj![index], index, state.obj)
+                                      : Globals.selectedLanguage != null &&
+                                              Globals.selectedLanguage !=
+                                                  "English"
+                                          ? TranslationWidget(
+                                              message: "No data found",
+                                              toLanguage:
+                                                  Globals.selectedLanguage,
+                                              fromLanguage: "en",
+                                              builder: (translatedMessage) =>
+                                                  Text(
+                                                translatedMessage.toString(),
+                                              ),
+                                            )
+                                          : Center(
+                                              child: Text("No data found"));
+                                },
+                              ),
                             ),
-                          )
-                        : Text("Unable to load the data"),
-                  );
-                } else {
-                  return Container();
-                }
-              })),
-    );
+                          ),
+                        ]);
+                      } else if (state is ErrorLoading) {
+                        return Expanded(
+                          child: ListView(children: [
+                            Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Globals.selectedLanguage != null &&
+                                      Globals.selectedLanguage != "English"
+                                  ? TranslationWidget(
+                                      message: "Unable to load the data",
+                                      toLanguage: Globals.selectedLanguage,
+                                      fromLanguage: "en",
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                      ),
+                                    )
+                                  : Text("Unable to load the data"),
+                            ),
+                          ]),
+                        );
+                      } else {
+                        return Container();
+                      }
+                    }),
+              ),
+              BlocListener<HomeBloc, HomeState>(
+                bloc: _homeBloc,
+                listener: (context, state) async {
+                  if (state is BottomNavigationBarSuccess) {
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+                    Globals.homeObjet = state.obj;
+                    setState(() {});
+                  } else if (state is HomeErrorReceived) {
+                    Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: Center(child: Text("Unable to load the data")),
+                    );
+                  }
+                },
+                child: Container(),
+              ),
+            ],
+          ),
+          onRefresh: refreshPage,
+        )));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _eventBloc.add(CalendarListEvent());
+
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }
