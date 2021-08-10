@@ -78,59 +78,16 @@ class _HomePageState extends State<HomePage> {
     return _screens;
   }
 
-  _onBackPressed() {
-    return showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              backgroundColor: Theme.of(context).backgroundColor,
-              title: ValueListenableBuilder(
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  return Globals.languageChanged.value != "English" &&
-                          Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message: "Do you want to exit the app?",
-                          fromLanguage: "en",
-                          toLanguage: Globals.selectedLanguage,
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: Theme.of(context).textTheme.headline2,
-                          ),
-                        )
-                      : Text(
-                          "Do you want to exit the app?",
-                          style: Theme.of(context).textTheme.headline2,
-                        );
-                },
-                valueListenable: Globals.languageChanged,
-                child: Container(),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child: Text(
-                    "No",
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => exit(0),
-                  child: Text(
-                    "Yes",
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                ),
-              ],
-            ));
-  }
-
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return Globals.homeObjet["Bottom_Navigation__c"]
         .split(";")
         .map<PersistentBottomNavBarItem>(
       (item) {
+        if (item.split("_")[0].toString().toLowerCase().contains("news")) {
+          Globals.newsIndex = Globals.homeObjet["Bottom_Navigation__c"]
+              .split(";")
+              .indexOf(item);
+        }
         setState(() {});
         return PersistentBottomNavBarItem(
           icon: Row(
@@ -176,15 +133,16 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => _onBackPressed(),
+      onWillPop: () async => false,
       child: Scaffold(
           body: PersistentTabView(
         context,
         controller: _controller,
         screens: _buildScreens(),
+        // hideNavigationBar: true,
         onItemSelected: (int i) {
-          print('Changed...');
-          if (i == 1) {
+          // print('Changed...');
+          if (i == Globals.newsIndex) {
             setState(() {
               Globals.indicator.value = false;
             });
