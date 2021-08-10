@@ -52,14 +52,15 @@ class LanguageSelector {
             : Theme.of(context).colorScheme.secondary,
         child: Theme(
           data: ThemeData(
-            unselectedWidgetColor: AppTheme.kListIconColor3,
+            unselectedWidgetColor: Theme.of(context).colorScheme.onPrimary,
           ),
           child: RadioListTile(
             activeColor: Theme.of(context).colorScheme.primary,
             contentPadding: EdgeInsets.zero,
             value: selectedLanguage == language ? true : false,
             onChanged: (dynamic val) {
-              if (selectedLanguage == language) {
+              print(val);
+              if (selectedLanguage != language) {
                 setLanguage(language, context, onLanguageChanged);
               }
             },
@@ -68,13 +69,11 @@ class LanguageSelector {
                 ? InkWell(
                     onTap: () {
                       final scaffoldKey = Scaffold.of(context);
-                      if (issuggestionList) {
-                        scaffoldKey.showSnackBar(
-                          SnackBar(
-                            content: const Text('Language already selected'),
-                          ),
-                        );
-                      }
+                      scaffoldKey.showSnackBar(
+                        SnackBar(
+                          content: const Text('Language already selected'),
+                        ),
+                      );
                     },
                     child: Text(language,
                         style: Theme.of(context).textTheme.caption!.copyWith(
@@ -99,6 +98,8 @@ class LanguageSelector {
         clipBehavior: Clip.antiAliasWithSaveLayer,
         context: context,
         isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
         builder: (context) {
           {
             return StatefulBuilder(builder: (BuildContext context,
