@@ -7,10 +7,13 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/error_icon_widget.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
@@ -119,6 +122,7 @@ class _StartupPageState extends State<StartupPage> {
           Widget child,
         ) {
           final bool connected = connectivity != ConnectivityResult.none;
+          final call = connected ? _loginBloc.add(PerfomLogin()) : null;
           return new Stack(
             fit: StackFit.expand,
             children: [
@@ -132,36 +136,51 @@ class _StartupPageState extends State<StartupPage> {
                     if (state is ErrorReceived) {
                       // if (state.err == "NO_CONNECTION") {
                       isnetworkisuue = true;
-                      return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                      return Stack(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          // crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Center(
-                              child: SizedBox(
-                                height: 200,
-                                width: 200,
-                                child: Text(
-                                  "${connected ? 'Refresh the Page' : 'No Internet'}",
-                                  textAlign: TextAlign.center,
+                            Positioned(
+                              height: 20.0,
+                              left: 0.0,
+                              right: 0.0,
+                              top: 25,
+                              child: Container(
+                                color: connected
+                                    ? Color(0xFF00EE44)
+                                    : Color(0xFFEE4400),
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "${connected ? 'ONLINE' : 'OFFLINE'}",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      HorzitalSpacerWidget(16),
+                                      connected
+                                          ? Container(
+                                              height: 0,
+                                            )
+                                          : SizedBox(
+                                              height: 10,
+                                              width: 10,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                                strokeWidth: 2,
+                                              ))
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                            connected
-                                ? IconButton(
-                                    padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(),
-                                    onPressed: () {
-                                      _loginBloc.add(PerfomLogin());
-                                    },
-                                    icon: Icon(
-                                      IconData(0xe80f,
-                                          fontFamily: Overrides.kFontFam,
-                                          fontPackage: Overrides.kFontPkg),
-                                      size: Globals.deviceType == "phone"
-                                          ? 20
-                                          : 28,
-                                    ))
-                                : Container(height: 0)
+                            // Center(
+                            //   child: SizedBox(
+                            //     height: 200,
+                            //     width: 200,
+                            //     child: ErrorIconWidget(),
+                            //   ),
+                            // ),
                           ]);
                     }
                     return Container();
