@@ -71,7 +71,10 @@ class LanguageSelector {
                       final scaffoldKey = Scaffold.of(context);
                       scaffoldKey.showSnackBar(
                         SnackBar(
-                          content: const Text('Language already selected'),
+                          content: const Text(
+                            'Language already selected',
+                          ),
+                          backgroundColor: Colors.black.withOpacity(0.8),
                         ),
                       );
                     },
