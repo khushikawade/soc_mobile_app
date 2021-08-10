@@ -83,6 +83,11 @@ class _HomePageState extends State<HomePage> {
         .split(";")
         .map<PersistentBottomNavBarItem>(
       (item) {
+        if (item.split("_")[0].toString().toLowerCase().contains("news")) {
+          Globals.newsIndex = Globals.homeObjet["Bottom_Navigation__c"]
+              .split(";")
+              .indexOf(item);
+        }
         setState(() {});
         return PersistentBottomNavBarItem(
           icon: Row(
@@ -136,8 +141,8 @@ class _HomePageState extends State<HomePage> {
         screens: _buildScreens(),
         // hideNavigationBar: true,
         onItemSelected: (int i) {
-          print('Changed...');
-          if (i == 1) {
+          // print('Changed...');
+          if (i == Globals.newsIndex) {
             setState(() {
               Globals.indicator.value = false;
             });
