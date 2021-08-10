@@ -17,6 +17,7 @@ import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/no_data_icon_widget.dart';
 
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -221,28 +222,25 @@ class _SearchPageState extends State<SearchPage> {
                       },
                     ),
                   )
-                : ListView(children: [
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(25.0),
-                        child: Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
-                            ? TranslationWidget(
-                                message: 'No Recent Item Found',
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  textAlign: TextAlign.end,
-                                ),
-                              )
-                            : Text(
-                                'No Recent Item Found',
-                                textAlign: TextAlign.end,
-                              ),
+                : Expanded(
+                    child: ListView(children: [
+                      SizedBox(
+                        child: NoDataIconWidget(),
                       ),
-                    ),
-                  ]);
+                      SpacerWidget(12),
+                      Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English"
+                          ? TranslationWidget(
+                              message: "No  data found",
+                              toLanguage: Globals.selectedLanguage,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Text(
+                                translatedMessage.toString(),
+                              ),
+                            )
+                          : Text("No data found"),
+                    ]),
+                  );
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Expanded(
               child: Container(

@@ -3,14 +3,18 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/error_icon_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
+import 'package:Soc/src/widgets/no_data_icon_widget.dart';
+import 'package:Soc/src/widgets/no_internet_icon.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
 class ContactPage extends StatefulWidget {
@@ -33,6 +37,7 @@ class ContactPage extends StatefulWidget {
 class _ContactPageState extends State<ContactPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
+  bool issuccesstate = false;
 
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
@@ -45,6 +50,7 @@ class _ContactPageState extends State<ContactPage> {
   @override
   void initState() {
     super.initState();
+    _bloc.add(FetchBottomNavigationBar());
   }
 
   @override
@@ -370,39 +376,165 @@ class _ContactPageState extends State<ContactPage> {
           sharedpopUpheaderText: '',
           language: Globals.selectedLanguage,
         ),
-        body: RefreshIndicator(
-          key: refreshKey,
-          child: ListView(children: [
-            _buildIcon(),
-            SpacerWidget(_kLabelSpacing),
-            _buildTitleWidget(),
-            SpacerWidget(_kLabelSpacing / 1.5),
-            _buildMapWidget(),
-            _buildAddressWidget(),
-            SpacerWidget(_kLabelSpacing / 1.25),
-            _buildPhoneWidget(),
-            SpacerWidget(_kLabelSpacing / 1.25),
-            _buildEmailWidget(),
-            BlocListener<HomeBloc, HomeState>(
-              bloc: _bloc,
-              listener: (context, state) async {
-                if (state is BottomNavigationBarSuccess) {
-                  AppTheme.setDynamicTheme(Globals.appSetting, context);
-                  Globals.homeObjet = state.obj;
-                  setState(() {});
-                } else if (state is HomeErrorReceived) {
-                  Container(
-                    alignment: Alignment.center,
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    child: Center(child: Text("Unable to load the data")),
-                  );
-                }
-              },
-              child: Container(),
-            ),
-          ]),
-          onRefresh: refreshPage,
-        ));
+        body: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
+              // final call = connected
+              //     ? issuccesstate == false
+              //         ? _bloc.add(FetchBottomNavigationBar())
+              //         : null
+              //     : null;
+              return new Stack(fit: StackFit.expand, children: [
+                BlocBuilder<HomeBloc, HomeState>(
+                    bloc: _bloc,
+                    builder: (BuildContext contxt, HomeState state) {
+                      if (state is HomeLoading) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      } else if (state is BottomNavigationBarSuccess) {
+                        issuccesstate = true;
+                        return ListView(children: [
+                          _buildIcon(),
+                          SpacerWidget(_kLabelSpacing),
+                          _buildTitleWidget(),
+                          SpacerWidget(_kLabelSpacing / 1.5),
+                          _buildMapWidget(),
+                          _buildAddressWidget(),
+                          SpacerWidget(_kLabelSpacing / 1.25),
+                          _buildPhoneWidget(),
+                          SpacerWidget(_kLabelSpacing / 1.25),
+                          _buildEmailWidget(),
+                        ]);
+                      } else if (state is HomeErrorReceived) {
+                        if (state.err == "NO_CONNECTION") {
+                          return Positioned(
+                            height: 20.0,
+                            left: 0.0,
+                            right: 0.0,
+                            top: 25,
+                            child: Container(
+                              color: connected
+                                  ? Color(0xFF00EE44)
+                                  : Color(0xFFEE4400),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "${connected ? 'ONLINE' : 'OFFLINE'}",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    HorzitalSpacerWidget(16),
+                                    connected
+                                        ? Container(
+                                            height: 0,
+                                          )
+                                        : SizedBox(
+                                            height: 10,
+                                            width: 10,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2,
+                                            ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+
+                          // ListView(shrinkWrap: true, children: [
+                          //   SizedBox(
+                          //     child: NoInternetIconWidget(),
+                          //   ),
+                          //   SpacerWidget(12),
+                          //   Globals.selectedLanguage != null &&
+                          //           Globals.selectedLanguage != "English"
+                          //       ? TranslationWidget(
+                          //           message: "No internet connection",
+                          //           toLanguage: Globals.selectedLanguage,
+                          //           fromLanguage: "en",
+                          //           builder: (translatedMessage) => Text(
+                          //             translatedMessage.toString(),
+                          //           ),
+                          //         )
+                          //       : Text("No internet connection"),
+                          // ]);
+                        } else if (state.err == "Something went wrong") {
+                          return ListView(children: [
+                            SizedBox(
+                              child: NoDataIconWidget(),
+                            ),
+                            SpacerWidget(12),
+                            Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English"
+                                ? TranslationWidget(
+                                    message: "No  data found",
+                                    toLanguage: Globals.selectedLanguage,
+                                    fromLanguage: "en",
+                                    builder: (translatedMessage) => Text(
+                                      translatedMessage.toString(),
+                                    ),
+                                  )
+                                : Text("No data found"),
+                          ]);
+                        } else {
+                          return ListView(children: [
+                            SizedBox(child: ErrorIconWidget()),
+                            Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English"
+                                ? TranslationWidget(
+                                    message: "Error",
+                                    toLanguage: Globals.selectedLanguage,
+                                    fromLanguage: "en",
+                                    builder: (translatedMessage) => Text(
+                                      translatedMessage.toString(),
+                                    ),
+                                  )
+                                : Text("Error"),
+                          ]);
+                        }
+                      } else {
+                        return Container();
+                      }
+                    }),
+                // ),
+                BlocListener<HomeBloc, HomeState>(
+                  bloc: _bloc,
+                  listener: (context, state) async {
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.homeObjet = state.obj;
+                      setState(() {});
+                    } else if (state is HomeErrorReceived) {
+                      Container(
+                        alignment: Alignment.center,
+                        height: MediaQuery.of(context).size.height * 0.8,
+                        child: Center(child: Text("Unable to load the data")),
+                      );
+                    }
+                  },
+                  child: Container(),
+                ),
+              ]);
+              // onRefresh: refreshPage,
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Text(
+                  'There are no bottons to push :)',
+                ),
+                new Text(
+                  'Just turn off your internet.',
+                ),
+              ],
+            )));
   }
 
   Future refreshPage() async {
