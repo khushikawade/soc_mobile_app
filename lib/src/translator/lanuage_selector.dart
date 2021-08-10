@@ -1,18 +1,17 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/shared_preference.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class LanguageSelector {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   String? selectedLanguage;
 
-  LanguageSelector(context, item, onLanguageChanged) {
+  LanguageSelector(context, onLanguageChanged) {
     geLanguage(context, onLanguageChanged);
   }
 
@@ -60,19 +59,21 @@ class LanguageSelector {
             contentPadding: EdgeInsets.zero,
             value: selectedLanguage == language ? true : false,
             onChanged: (dynamic val) {
-              selectedLanguage == language
-                  ? print("already selected")
-                  // Utility.showSnackBar(
-                  //     _scaffoldKey, "It is already selected  ", context)
-                  : setLanguage(language, context, onLanguageChanged);
+              if (selectedLanguage == language) {
+                setLanguage(language, context, onLanguageChanged);
+              }
             },
             groupValue: true,
             title: selectedLanguage == language
                 ? InkWell(
                     onTap: () {
+                      final scaffoldKey = Scaffold.of(context);
                       if (issuggestionList) {
-                        Utility.showSnackBar(
-                            _scaffoldKey, "It already selected  ", context);
+                        scaffoldKey.showSnackBar(
+                          SnackBar(
+                            content: const Text('Language already selected'),
+                          ),
+                        );
                       }
                     },
                     child: Text(language,

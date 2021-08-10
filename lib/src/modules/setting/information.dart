@@ -41,13 +41,16 @@ class _InformationPageState extends State<InformationPage> {
   final HomeBloc _bloc = new HomeBloc();
 
   Widget _buildContent1() {
+    String? htmlData;
+    if (widget.htmlText.toString().contains("src=") == true) {
+      String img = Utility.getHTMLImgSrc(widget.htmlText);
+      htmlData = widget.htmlText.toString().replaceAll("$img", " ");
+    }
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Wrap(
         children: [
-          Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  widget.htmlText.toString().contains("src=") &&
+          widget.htmlText.toString().contains("src=") &&
                   widget.htmlText.toString().split('"')[1] != ""
               ? Container(
                   alignment: Alignment.center,
@@ -72,7 +75,7 @@ class _InformationPageState extends State<InformationPage> {
           Globals.selectedLanguage != null &&
                   Globals.selectedLanguage != "English"
               ? TranslationWidget(
-                  message: widget.htmlText,
+                  message: htmlData ?? widget.htmlText,
                   fromLanguage: "en",
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Html(
@@ -80,7 +83,7 @@ class _InformationPageState extends State<InformationPage> {
                   ),
                 )
               : Html(
-                  data: widget.htmlText,
+                  data: htmlData ?? widget.htmlText,
                   style: {
                     "table": Style(
                       backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),

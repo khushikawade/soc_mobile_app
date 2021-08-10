@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'modules/home/models/app_setting.dart';
 
@@ -24,6 +25,7 @@ class Globals {
   static ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
   static ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
+  static final scaffoldKey = GlobalKey<ScaffoldState>();
   // static GlobalKey<NavigatorState>? appNavigator;
   // static String? phone = 'phone';
   // final object;

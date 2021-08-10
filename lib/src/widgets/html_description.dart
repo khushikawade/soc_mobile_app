@@ -36,18 +36,17 @@ class _AboutusPageState extends State<AboutusPage> {
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
   Widget _buildContent1() {
-    // print(widget.htmlText.toString().contains("src=").toString().split('"')[0]);
-    // String img =
-    //     widget.htmlText.toString().contains("src=").toString().split('"')[0];
-    // print(img);
-    // print(widget.htmlText.toString().replaceAll("$img", "11"));
+    String? htmlData;
+    if (widget.htmlText.toString().contains("src=") == true) {
+      String img = Utility.getHTMLImgSrc(widget.htmlText);
+      htmlData = widget.htmlText.toString().replaceAll("$img", " ");
+    }
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Wrap(
         children: [
-          Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  widget.htmlText.toString().contains("src=") &&
+          widget.htmlText.toString().contains("src=") &&
                   widget.htmlText.toString().split('"')[1] != ""
               ? Container(
                   alignment: Alignment.center,
@@ -73,19 +72,14 @@ class _AboutusPageState extends State<AboutusPage> {
           Globals.selectedLanguage != null &&
                   Globals.selectedLanguage != "English"
               ? TranslationWidget(
-                  message: widget.htmlText, //.replaceAll(
-                  // "${widget.htmlText.toString().contains("src =").toString().split('"')[0]}",
-                  // " 11"),
+                  message: htmlData ?? widget.htmlText,
                   fromLanguage: "en",
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) =>
                       Html(data: translatedMessage.toString()),
                 )
               : Html(
-                  data: widget.htmlText,
-                  // .replaceAll(
-                  //     "${widget.htmlText.toString().contains("src =").toString().split('"')[0]}",
-                  //     ""),
+                  data: htmlData ?? widget.htmlText,
                   style: {
                     "table": Style(
                       backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),

@@ -20,7 +20,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
   final ValueChanged? refresh;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   AppBarWidget({Key? key, required this.refresh}) : super(key: key);
 
@@ -98,7 +97,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             ),
             onPressed: () {
               setState(() {});
-              LanguageSelector(context, null, (language) {
+              LanguageSelector(context, (language) {
                 if (language != null) {
                   setState(() {
                     Globals.selectedLanguage = language;
