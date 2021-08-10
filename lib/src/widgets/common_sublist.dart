@@ -56,12 +56,14 @@ class _SubListPageState extends State<SubListPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
                         title: obj.titleC!,
-                        url: obj.appUrlC!,
+                        url: obj.urlC!,
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML" || obj.typeC == "RTF/HTML") {
+    } else if (obj.typeC == "RFT_HTML" ||
+        obj.typeC == "RTF/HTML" ||
+        obj.typeC == "HTML/RTF") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,

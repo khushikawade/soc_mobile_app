@@ -120,18 +120,26 @@ class _StudentPageState extends State<StudentPage> {
                           Expanded(
                               child: Globals.selectedLanguage != null &&
                                       Globals.selectedLanguage != "English"
-                                  ? TranslationWidget(
-                                      message: "${list[index].titleC}",
-                                      fromLanguage: "en",
-                                      toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                        textAlign: TextAlign.center,
+                                  ? Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: _kLableSpacing / 2),
+                                      child: TranslationWidget(
+                                        message: "${list[index].titleC}",
+                                        fromLanguage: "en",
+                                        toLanguage: Globals.selectedLanguage,
+                                        builder: (translatedMessage) => Text(
+                                          translatedMessage.toString(),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     )
-                                  : Text(
-                                      "${list[index].titleC}",
-                                      textAlign: TextAlign.center,
+                                  : Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: _kLableSpacing / 2),
+                                      child: Text(
+                                        "${list[index].titleC}",
+                                        textAlign: TextAlign.center,
+                                      ),
                                     )),
                         ],
                       ));
@@ -182,7 +190,11 @@ class _StudentPageState extends State<StudentPage> {
                         return Center(child: CircularProgressIndicator());
                       } else if (state is StudentDataSucess) {
                         return state.obj != null && state.obj!.length > 0
-                            ? _buildGrid(state.obj!, state.subFolder!)
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: _kLableSpacing / 2),
+                                child: _buildGrid(state.obj!, state.subFolder!),
+                              )
                             : Container(
                                 alignment: Alignment.center,
                                 height:

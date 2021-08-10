@@ -3,7 +3,7 @@ import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class AppLogoWidget extends StatelessWidget {
+class ErrorIconWidget extends StatelessWidget {
   static const double _kIconSize = 45.0;
 
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class AppLogoWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 7.0),
                 child: ClipRRect(
                   child: CachedNetworkImage(
-                    imageUrl: Globals.homeObjet["App_Logo__c"],
+                    imageUrl: "http://via.placeholder.com/350x150",
                     placeholder: (context, url) => Container(
                         alignment: Alignment.center,
                         child: ShimmerLoading(

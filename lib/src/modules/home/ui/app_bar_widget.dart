@@ -9,6 +9,7 @@ import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final double _kIconSize = 35.0;
