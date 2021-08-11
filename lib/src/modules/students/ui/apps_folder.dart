@@ -122,29 +122,34 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                           ),
                                         )
                                       : Container(),
-                                  Globals.selectedLanguage != null &&
-                                          Globals.selectedLanguage != "English"
-                                      ? TranslationWidget(
-                                          message:
-                                              apps[index].appFolderc != null &&
-                                                      widget.folderName ==
-                                                          apps[index].appFolderc
-                                                  ? "${apps[index].titleC}"
-                                                  : '',
-                                          fromLanguage: "en",
-                                          toLanguage: Globals.selectedLanguage,
-                                          builder: (translatedMessage) => Text(
-                                            translatedMessage.toString(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2,
-                                          ),
-                                        )
-                                      : Text(apps[index].appFolderc != null &&
-                                              widget.folderName ==
-                                                  apps[index].appFolderc
-                                          ? "${apps[index].titleC}"
-                                          : ''),
+                                  Expanded(
+                                    child: Globals.selectedLanguage != null &&
+                                            Globals.selectedLanguage !=
+                                                "English"
+                                        ? TranslationWidget(
+                                            message: apps[index].appFolderc !=
+                                                        null &&
+                                                    widget.folderName ==
+                                                        apps[index].appFolderc
+                                                ? "${apps[index].titleC}"
+                                                : '',
+                                            fromLanguage: "en",
+                                            toLanguage:
+                                                Globals.selectedLanguage,
+                                            builder: (translatedMessage) =>
+                                                Text(
+                                              translatedMessage.toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2,
+                                            ),
+                                          )
+                                        : Text(apps[index].appFolderc != null &&
+                                                widget.folderName ==
+                                                    apps[index].appFolderc
+                                            ? "${apps[index].titleC}"
+                                            : ''),
+                                  ),
                                 ],
                               ));
                         },
