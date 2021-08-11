@@ -4,8 +4,10 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/no_data_icon_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -231,21 +233,25 @@ class _NewsPageState extends State<NewsPage> {
                           ),
                         );
                       } else if (state is NewsErrorReceived) {
-                        return ListView(children: [
-                          Container(
-                            alignment: Alignment.center,
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Globals.selectedLanguage != null &&
+                        return Expanded(
+                          child: ListView(children: [
+                            SizedBox(
+                              child: NoDataIconWidget(),
+                            ),
+                            SpacerWidget(12),
+                            Globals.selectedLanguage != null &&
                                     Globals.selectedLanguage != "English"
                                 ? TranslationWidget(
-                                    message: "Unable to load the data",
+                                    message: "No  data found",
                                     toLanguage: Globals.selectedLanguage,
                                     fromLanguage: "en",
-                                    builder: (translatedMessage) =>
-                                        Text(translatedMessage))
-                                : Text("Unable to load the data"),
-                          ),
-                        ]);
+                                    builder: (translatedMessage) => Text(
+                                      translatedMessage.toString(),
+                                    ),
+                                  )
+                                : Text("No data found"),
+                          ]),
+                        );
                       } else {
                         return Container();
                       }

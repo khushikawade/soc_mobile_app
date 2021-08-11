@@ -4,8 +4,12 @@ import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/error_icon_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/no_data_icon_widget.dart';
+import 'package:Soc/src/widgets/no_internet_icon.dart';
 import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -228,6 +232,66 @@ class _SettingPageState extends State<SettingPage> {
                   width: 0,
                 ),
               ),
+              BlocBuilder<HomeBloc, HomeState>(
+                  bloc: _homeBloc,
+                  builder: (BuildContext contxt, HomeState state) {
+                    if (state is HomeErrorReceived) {
+                      if (state.err == "NO_CONNECTION") {
+                        return ListView(children: [
+                          SizedBox(
+                            child: NoInternetIconWidget(),
+                          ),
+                          SpacerWidget(12),
+                          Globals.selectedLanguage != null &&
+                                  Globals.selectedLanguage != "English"
+                              ? TranslationWidget(
+                                  message: "No internet connection",
+                                  toLanguage: Globals.selectedLanguage,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                  ),
+                                )
+                              : Text("No internet connection"),
+                        ]);
+                      } else if (state.err == "Something went wrong") {
+                        return ListView(shrinkWrap: true, children: [
+                          SizedBox(
+                            child: NoDataIconWidget(),
+                          ),
+                          SpacerWidget(12),
+                          Globals.selectedLanguage != null &&
+                                  Globals.selectedLanguage != "English"
+                              ? TranslationWidget(
+                                  message: "No  data found",
+                                  toLanguage: Globals.selectedLanguage,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                  ),
+                                )
+                              : Text("No data found"),
+                        ]);
+                      } else {
+                        return ListView(shrinkWrap: true, children: [
+                          SizedBox(child: ErrorIconWidget()),
+                          Globals.selectedLanguage != null &&
+                                  Globals.selectedLanguage != "English"
+                              ? TranslationWidget(
+                                  message: "Error",
+                                  toLanguage: Globals.selectedLanguage,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                  ),
+                                )
+                              : Text("Error"),
+                        ]);
+                      }
+                    } else {
+                      return Container();
+                    }
+                  }),
             ],
           )),
           onRefresh: refreshPage,

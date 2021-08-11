@@ -9,6 +9,9 @@ import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/error_icon_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/no_data_icon_widget.dart';
+import 'package:Soc/src/widgets/no_internet_icon.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -134,54 +137,71 @@ class _StartupPageState extends State<StartupPage> {
                     }
 
                     if (state is ErrorReceived) {
-                      // if (state.err == "NO_CONNECTION") {
-                      isnetworkisuue = true;
-                      return Stack(
-                          // mainAxisAlignment: MainAxisAlignment.center,
-                          // crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Positioned(
-                              height: 20.0,
-                              left: 0.0,
-                              right: 0.0,
-                              top: 25,
-                              child: Container(
-                                color: connected
-                                    ? Color(0xFF00EE44)
-                                    : Color(0xFFEE4400),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "${connected ? 'ONLINE' : 'OFFLINE'}",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      HorzitalSpacerWidget(16),
-                                      connected
-                                          ? Container(
-                                              height: 0,
-                                            )
-                                          : SizedBox(
-                                              height: 10,
-                                              width: 10,
-                                              child: CircularProgressIndicator(
-                                                color: Colors.white,
-                                                strokeWidth: 2,
-                                              ))
-                                    ],
-                                  ),
+                      if (state.err == "NO_CONNECTION") {
+                        isnetworkisuue = true;
+                        return Stack(children: [
+                          Positioned(
+                            height: 20.0,
+                            left: 0.0,
+                            right: 0.0,
+                            top: 25,
+                            child: Container(
+                              color: connected
+                                  ? Color(0xFF00EE44)
+                                  : Color(0xFFEE4400),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "${connected ? 'ONLINE' : 'OFFLINE'}",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    HorzitalSpacerWidget(16),
+                                    connected
+                                        ? Container(
+                                            height: 0,
+                                          )
+                                        : SizedBox(
+                                            height: 10,
+                                            width: 10,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2,
+                                            ))
+                                  ],
                                 ),
                               ),
                             ),
-                            // Center(
-                            //   child: SizedBox(
-                            //     height: 200,
-                            //     width: 200,
-                            //     child: ErrorIconWidget(),
-                            //   ),
-                            // ),
-                          ]);
+                          ),
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  child: NoInternetIconWidget(),
+                                ),
+                                SpacerWidget(12),
+                                Text("No internet connection")
+                              ]),
+                        ]);
+                      } else if (state.err == "Something went wrong") {
+                        return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                child: NoDataIconWidget(),
+                              ),
+                              SpacerWidget(12),
+                              Text("No  data found")
+                            ]);
+                      } else {
+                        return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(child: ErrorIconWidget()),
+                              Text("Error")
+                            ]);
+                      }
                     }
                     return Container();
                   }),
