@@ -410,30 +410,41 @@ class _ContactPageState extends State<ContactPage> {
                 }
 
                 return new Stack(fit: StackFit.expand, children: [
-                  BlocBuilder<HomeBloc, HomeState>(
-                      bloc: _bloc,
-                      builder: (BuildContext contxt, HomeState state) {
-                        if (state is HomeLoading) {
-                          return Container(
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        } else if (state is BottomNavigationBarSuccess) {
-                          return connected
-                              ? _buildItem()
-                              : NoInternetErrorWidget(
-                                  connected: connected,
-                                );
-                        } else if (state is HomeErrorReceived) {
-                          return ListView(children: [
-                            ErrorMessageWidget(
-                              imgURL: 'assets/images/no_data_icon.png',
-                              msg: "No data found",
-                            ),
-                          ]);
-                        }
-                        return Container();
-                      }),
+                  connected
+                      ? BlocBuilder<HomeBloc, HomeState>(
+                          bloc: _bloc,
+                          builder: (BuildContext contxt, HomeState state) {
+                            if (state is HomeLoading) {
+                              return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              );
+                            } else if (state is BottomNavigationBarSuccess) {
+                              return state.obj != null && state.obj.length > 0
+                                  ? _buildItem()
+                                  : ListView(children: [
+                                      ErrorMessageWidget(
+                                        msg: "No Data Found",
+                                        isnetworkerror: false,
+                                        icondata: 0xe81d,
+                                      )
+                                    ]);
+                            } else if (state is HomeErrorReceived) {
+                              return ListView(children: [
+                                ErrorMessageWidget(
+                                  msg: "Error",
+                                  isnetworkerror: false,
+                                  icondata: 0xe81c,
+                                ),
+                              ]);
+                            }
+                            return Container();
+                          })
+                      : NoInternetErrorWidget(
+                          connected: connected, issplashscreen: false),
+
                   // ),
                   BlocListener<HomeBloc, HomeState>(
                     bloc: _bloc,

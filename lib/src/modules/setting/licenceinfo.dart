@@ -1,9 +1,12 @@
 import 'package:Soc/oss_licenses.dart';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/setting/licencedetail.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Licenceinfo extends StatefulWidget {
   Licenceinfo({
@@ -20,6 +23,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
   FocusNode myFocusNode = new FocusNode();
   OSSLicensesInfo obj = new OSSLicensesInfo();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
   var _list;
   @override
   void initState() {
@@ -134,6 +138,17 @@ class _LicenceinfoState extends State<Licenceinfo> {
                     },
                   ),
                 ),
+                BlocListener<HomeBloc, HomeState>(
+                  bloc: _homeBloc,
+                  listener: (context, state) async {
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.homeObjet = state.obj;
+                      setState(() {});
+                    }
+                  },
+                  child: Container(),
+                ),
               ]),
             ),
             onRefresh: refreshPage,
@@ -143,5 +158,6 @@ class _LicenceinfoState extends State<Licenceinfo> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

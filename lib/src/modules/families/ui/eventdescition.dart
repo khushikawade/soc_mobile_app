@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/calendar_list.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -28,7 +29,8 @@ class EventDescription extends StatefulWidget {
 class _EventDescriptionState extends State<EventDescription> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 95.0;
-
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
   // static const _kbuttonTextStyle = TextStyle(
   //     fontWeight: FontWeight.normal,
   //     fontFamily: "Roboto Regular",
@@ -222,7 +224,9 @@ class _EventDescriptionState extends State<EventDescription> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(children: [
+        body: RefreshIndicator(
+      key: refreshKey,
+      child: ListView(children: [
         Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -232,6 +236,12 @@ class _EventDescriptionState extends State<EventDescription> {
           ),
         ),
       ]),
-    );
+      onRefresh: refreshPage,
+    ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

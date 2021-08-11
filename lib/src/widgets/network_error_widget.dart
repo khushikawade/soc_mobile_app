@@ -2,13 +2,15 @@ import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class NoInternetErrorWidget extends StatelessWidget {
-  static const double _kIconSize = 45.0;
   var connected;
+  bool? issplashscreen = false;
 
   NoInternetErrorWidget({
     Key? key,
     @required this.connected,
+    @required this.issplashscreen,
   }) : super(key: key);
 
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class NoInternetErrorWidget extends StatelessWidget {
         height: 20.0,
         left: 0.0,
         right: 0.0,
-        top: 0,
+        top: issplashscreen == true ? 30 : 0,
         child: Container(
           color: connected ? Color(0xFF00EE44) : Color(0xFFEE4400),
           child: Center(
@@ -55,8 +57,9 @@ class NoInternetErrorWidget extends StatelessWidget {
       ),
       Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         ErrorMessageWidget(
-          imgURL: 'assets/images/no_internet_icon.png',
           msg: "No Internet",
+          isnetworkerror: true,
+          icondata: 0xe81c,
         ),
       ]),
     ]);
