@@ -9,7 +9,7 @@ import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/error_icon_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/no_data_icon_widget.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/no_internet_icon.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:device_info/device_info.dart';
@@ -188,11 +188,12 @@ class _StartupPageState extends State<StartupPage> {
                         return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                child: NoDataIconWidget(),
+                              ErrorMessageWidget(
+                                imgURL: 'assets/images/no_data_icon.png',
+                                msg: "No  data found",
                               ),
-                              SpacerWidget(12),
-                              Text("No  data found")
+                              // SpacerWidget(12),
+                              // Text("No  data found")
                             ]);
                       } else {
                         return Column(

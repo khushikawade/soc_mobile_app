@@ -5,10 +5,8 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_icon_widget.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/no_data_icon_widget.dart';
-import 'package:Soc/src/widgets/no_internet_icon.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -342,61 +340,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 ],
                               );
                             } else if (state is ErrorLoading) {
-                              if (state.err == "NO_CONNECTION") {
-                                return ListView(shrinkWrap: true, children: [
-                                  SizedBox(
-                                    child: NoInternetIconWidget(),
-                                  ),
-                                  SpacerWidget(12),
-                                  Globals.selectedLanguage != null &&
-                                          Globals.selectedLanguage != "English"
-                                      ? TranslationWidget(
-                                          message: "No internet connection",
-                                          toLanguage: Globals.selectedLanguage,
-                                          fromLanguage: "en",
-                                          builder: (translatedMessage) => Text(
-                                            translatedMessage.toString(),
-                                          ),
-                                        )
-                                      : Text("No internet connection"),
-                                ]);
-                              } else if (state.err == "Something went wrong") {
-                                return ListView(shrinkWrap: true, children: [
-                                  SizedBox(
-                                    child: NoDataIconWidget(),
-                                  ),
-                                  SpacerWidget(12),
-                                  Globals.selectedLanguage != null &&
-                                          Globals.selectedLanguage != "English"
-                                      ? TranslationWidget(
-                                          message: "No  data found",
-                                          toLanguage: Globals.selectedLanguage,
-                                          fromLanguage: "en",
-                                          builder: (translatedMessage) => Text(
-                                            translatedMessage.toString(),
-                                          ),
-                                        )
-                                      : Text("No data found"),
-                                ]);
-                              } else {
-                                return ListView(shrinkWrap: true, children: [
-                                  SizedBox(child: ErrorIconWidget()),
-                                  Globals.selectedLanguage != null &&
-                                          Globals.selectedLanguage != "English"
-                                      ? TranslationWidget(
-                                          message: "Error",
-                                          toLanguage: Globals.selectedLanguage,
-                                          fromLanguage: "en",
-                                          builder: (translatedMessage) => Text(
-                                            translatedMessage.toString(),
-                                          ),
-                                        )
-                                      : Text("Error"),
-                                ]);
-                              }
-                            } else {
-                              return Container();
+                              return ListView(children: [
+                                ErrorMessageWidget(
+                                  imgURL: 'assets/images/no_data_icon.png',
+                                  msg: "No data found",
+                                ),
+                              ]);
                             }
+                            return Container();
                           }),
                     ),
                     BlocListener<HomeBloc, HomeState>(

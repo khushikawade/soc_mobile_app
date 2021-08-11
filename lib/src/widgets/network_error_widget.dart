@@ -1,7 +1,5 @@
-import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/no_internet_icon.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class NoInternetErrorWidget extends StatelessWidget {
@@ -56,11 +54,10 @@ class NoInternetErrorWidget extends StatelessWidget {
         ),
       ),
       Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        SizedBox(
-          child: NoInternetIconWidget(),
+        ErrorMessageWidget(
+          imgURL: 'assets/images/no_internet_icon.png',
+          msg: "No Internet",
         ),
-        SpacerWidget(12),
-        Text("No internet connection")
       ]),
     ]);
   }

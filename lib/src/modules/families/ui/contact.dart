@@ -3,12 +3,10 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_icon_widget.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
-import 'package:Soc/src/widgets/no_data_icon_widget.dart';
-import 'package:Soc/src/widgets/no_internet_icon.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -392,78 +390,73 @@ class _ContactPageState extends State<ContactPage> {
           sharedpopUpheaderText: '',
           language: Globals.selectedLanguage,
         ),
-        body: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final bool connected = connectivity != ConnectivityResult.none;
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
 
-              if (connected) {
-                if (iserrorstate == true) {
-                  _bloc.add(FetchBottomNavigationBar());
-                  iserrorstate = false;
+                if (connected) {
+                  if (iserrorstate == true) {
+                    _bloc.add(FetchBottomNavigationBar());
+                    iserrorstate = false;
+                  }
+                } else if (!connected) {
+                  iserrorstate = true;
                 }
-              } else if (!connected) {
-                iserrorstate = true;
-              }
 
-              return new Stack(fit: StackFit.expand, children: [
-                BlocBuilder<HomeBloc, HomeState>(
+                return new Stack(fit: StackFit.expand, children: [
+                  BlocBuilder<HomeBloc, HomeState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, HomeState state) {
+                        if (state is HomeLoading) {
+                          return Container(
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        } else if (state is BottomNavigationBarSuccess) {
+                          return connected
+                              ? _buildItem()
+                              : NoInternetErrorWidget(
+                                  connected: connected,
+                                );
+                        } else if (state is HomeErrorReceived) {
+                          return ListView(children: [
+                            ErrorMessageWidget(
+                              imgURL: 'assets/images/no_data_icon.png',
+                              msg: "No data found",
+                            ),
+                          ]);
+                        }
+                        return Container();
+                      }),
+                  // ),
+                  BlocListener<HomeBloc, HomeState>(
                     bloc: _bloc,
-                    builder: (BuildContext contxt, HomeState state) {
-                      if (state is HomeLoading) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      } else if (state is BottomNavigationBarSuccess) {
-                        return connected
-                            ? _buildItem()
-                            : NoInternetErrorWidget(
-                                connected: connected,
-                              );
+                    listener: (context, state) async {
+                      if (state is BottomNavigationBarSuccess) {
+                        AppTheme.setDynamicTheme(Globals.appSetting, context);
+                        Globals.homeObjet = state.obj;
+                        setState(() {});
                       } else if (state is HomeErrorReceived) {
-                        return ListView(children: [
-                          SizedBox(child: ErrorIconWidget()),
-                          Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English"
-                              ? TranslationWidget(
-                                  message: "Error",
-                                  toLanguage: Globals.selectedLanguage,
-                                  fromLanguage: "en",
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                  ),
-                                )
-                              : Text("Error"),
-                        ]);
+                        Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Center(child: Text("Unable to load the data")),
+                        );
                       }
-                      return Container();
-                    }),
-                // ),
-                BlocListener<HomeBloc, HomeState>(
-                  bloc: _bloc,
-                  listener: (context, state) async {
-                    if (state is BottomNavigationBarSuccess) {
-                      AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      Globals.homeObjet = state.obj;
-                      setState(() {});
-                    } else if (state is HomeErrorReceived) {
-                      Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(child: Text("Unable to load the data")),
-                      );
-                    }
-                  },
-                  child: Container(),
-                ),
-              ]);
-              // onRefresh: refreshPage,
-            },
-            child: Container()));
+                    },
+                    child: Container(),
+                  ),
+                ]);
+              },
+              child: Container()),
+          onRefresh: refreshPage,
+        ));
   }
 
   Future refreshPage() async {
