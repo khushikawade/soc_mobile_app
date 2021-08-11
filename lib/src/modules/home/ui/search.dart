@@ -225,8 +225,9 @@ class _SearchPageState extends State<SearchPage> {
                 : Expanded(
                     child: ListView(children: [
                       ErrorMessageWidget(
-                        imgURL: 'assets/images/no_data_icon.png',
                         msg: "No data found",
+                        isnetworkerror: false,
+                        icondata: 0xe81d,
                       ),
                       // SpacerWidget(12),
                       // Globals.selectedLanguage != null &&
@@ -528,7 +529,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    setState(() {});
+
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }

@@ -1,5 +1,7 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
@@ -8,6 +10,7 @@ import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // ignore: must_be_immutable
@@ -19,6 +22,7 @@ class SocialDescription extends StatelessWidget {
   static const double _KButtonSize = 110.0;
   static const double _kIconSize = 45.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
 
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
@@ -85,6 +89,16 @@ class SocialDescription extends StatelessWidget {
                 SpacerWidget(_kPadding / 2),
                 _buildButton(context),
                 SpacerWidget(_kPadding * 3),
+                BlocListener<HomeBloc, HomeState>(
+                  bloc: _homeBloc,
+                  listener: (context, state) async {
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.homeObjet = state.obj;
+                    }
+                  },
+                  child: Container(),
+                ),
               ],
             ),
           ]),
@@ -162,6 +176,7 @@ class SocialDescription extends StatelessWidget {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 
   Widget _buildBottomSection(BuildContext context) {

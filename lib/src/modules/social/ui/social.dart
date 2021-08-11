@@ -4,9 +4,8 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/error_icon_widget.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
-import 'package:Soc/src/widgets/no_internet_icon.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -14,6 +13,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
@@ -30,6 +30,7 @@ class _SocialPageState extends State<SocialPage> {
   static const double _kIconSize = 48.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
+  bool? iserrorstate = false;
 
   SocialBloc bloc = SocialBloc();
 
@@ -202,14 +203,13 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget makeList(obj) {
-    return Expanded(
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: obj.length,
-        itemBuilder: (BuildContext context, int index) {
-          return _buildlist(obj[index], index, obj!);
-        },
-      ),
+    return ListView.builder(
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
+      itemCount: obj.length,
+      itemBuilder: (BuildContext context, int index) {
+        return _buildlist(obj[index], index, obj!);
+      },
     );
   }
 
@@ -224,124 +224,93 @@ class _SocialPageState extends State<SocialPage> {
           ),
           body: RefreshIndicator(
             key: refreshKey,
-            child: Column(
-              children: [
-                Expanded(
-                  child: BlocBuilder(
-                      bloc: bloc,
-                      builder: (BuildContext context, SocialState state) {
-                        if (state is SocialDataSucess) {
-                          return state.obj != null && state.obj!.length > 0
-                              ? Container(
-                                  child: Column(
-                                    children: [makeList(state.obj)],
-                                  ),
-                                )
-                              : ListView(shrinkWrap: true, children: [
-                                  Container(
-                                      alignment: Alignment.center,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.8,
-                                      child: Globals.selectedLanguage != null &&
-                                              Globals.selectedLanguage !=
-                                                  "English"
-                                          ? TranslationWidget(
-                                              message: "No data found",
-                                              toLanguage:
-                                                  Globals.selectedLanguage,
-                                              fromLanguage: "en",
-                                              builder: (translatedMessage) =>
-                                                  Text(
-                                                translatedMessage.toString(),
-                                              ),
-                                            )
-                                          : Text("No data found"))
-                                ]);
-                        } else if (state is Loading) {
-                          return Container(
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-                        if (state is SocialError) {
-                          if (state.err == "NO_CONNECTION") {
-                            return ListView(shrinkWrap: true, children: [
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: NoInternetIconWidget(),
-                              ),
-                              SpacerWidget(12),
-                              Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
-                                  ? TranslationWidget(
-                                      message: "No internet connection",
-                                      toLanguage: Globals.selectedLanguage,
-                                      fromLanguage: "en",
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                      ),
-                                    )
-                                  : Text("No internet connection"),
-                            ]);
-                          } else if (state.err == "Something went wrong") {
-                            return ListView(shrinkWrap: true, children: [
-                              ErrorMessageWidget(
-                                imgURL: 'assets/images/no_data_icon.png',
-                                msg: "No data found",
-                              ),
-                              // SpacerWidget(12),
-                              // Globals.selectedLanguage != null &&
-                              //         Globals.selectedLanguage != "English"
-                              //     ? TranslationWidget(
-                              //         message: "No  data found",
-                              //         toLanguage: Globals.selectedLanguage,
-                              //         fromLanguage: "en",
-                              //         builder: (translatedMessage) => Text(
-                              //           translatedMessage.toString(),
-                              //         ),
-                              //       )
-                              //     : Text("No data found"),
-                            ]);
-                          } else {
-                            return ListView(shrinkWrap: true, children: [
-                              Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: ErrorIconWidget()),
-                              Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
-                                  ? TranslationWidget(
-                                      message: "Error",
-                                      toLanguage: Globals.selectedLanguage,
-                                      fromLanguage: "en",
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                      ),
-                                    )
-                                  : Text("Error"),
-                            ]);
-                          }
-                        } else {
-                          return Container();
-                        }
-                      }),
-                ),
-                BlocListener<HomeBloc, HomeState>(
-                  bloc: _homeBloc,
-                  listener: (context, state) async {
-                    if (state is BottomNavigationBarSuccess) {
-                      AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      Globals.homeObjet = state.obj;
-                      setState(() {});
+            child: OfflineBuilder(
+                connectivityBuilder: (
+                  BuildContext context,
+                  ConnectivityResult connectivity,
+                  Widget child,
+                ) {
+                  final bool connected =
+                      connectivity != ConnectivityResult.none;
+
+                  if (connected) {
+                    if (iserrorstate == true) {
+                      iserrorstate = false;
                     }
-                  },
-                  child: Container(
-                    height: 0,
-                    width: 0,
-                  ),
-                ),
-              ],
-            ),
+                  } else if (!connected) {
+                    iserrorstate = true;
+                  }
+
+                  return new Stack(fit: StackFit.expand, children: [
+                    connected
+                        ? Column(
+                            children: [
+                              Expanded(
+                                child: BlocBuilder(
+                                    bloc: bloc,
+                                    builder: (BuildContext context,
+                                        SocialState state) {
+                                      if (state is SocialDataSucess) {
+                                        return state.obj != null &&
+                                                state.obj!.length > 0
+                                            ? makeList(state.obj)
+                                            : ListView(
+                                                shrinkWrap: true,
+                                                children: [
+                                                    ErrorMessageWidget(
+                                                      msg: "No Data Found",
+                                                      isnetworkerror: false,
+                                                      icondata: 0xe81d,
+                                                    )
+                                                  ]);
+                                      } else if (state is Loading) {
+                                        return Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.8,
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        );
+                                      }
+                                      if (state is SocialError) {
+                                        return ListView(
+                                            shrinkWrap: true,
+                                            children: [
+                                              ErrorMessageWidget(
+                                                msg: "Error",
+                                                isnetworkerror: false,
+                                                icondata: 0xe81c,
+                                              ),
+                                            ]);
+                                      }
+
+                                      return Container();
+                                    }),
+                              ),
+                              BlocListener<HomeBloc, HomeState>(
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  }
+                                },
+                                child: Container(
+                                  height: 0,
+                                  width: 0,
+                                ),
+                              ),
+                            ],
+                          )
+                        : NoInternetErrorWidget(
+                            connected: connected, issplashscreen: false),
+                  ]);
+                },
+                child: Container()),
             onRefresh: refreshPage,
           )),
     );

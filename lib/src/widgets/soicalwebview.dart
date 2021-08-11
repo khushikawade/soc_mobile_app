@@ -31,6 +31,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   static const double _kPadding = 16.0;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final flutterWebviewPlugin = new FlutterWebviewPlugin();
+  bool? iserrorstate = false;
   StreamSubscription<WebViewStateChanged>?
       _onchanged; // here we checked the url state if it loaded or start Load or abort Load
 

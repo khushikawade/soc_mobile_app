@@ -3,11 +3,10 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_icon_widget.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
-import 'package:Soc/src/widgets/no_internet_icon.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -366,6 +365,21 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
+  Widget _buildItem() {
+    return ListView(children: [
+      _buildIcon(),
+      SpacerWidget(_kLabelSpacing),
+      _buildTitleWidget(),
+      SpacerWidget(_kLabelSpacing / 1.5),
+      _buildMapWidget(),
+      _buildAddressWidget(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      _buildPhoneWidget(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      _buildEmailWidget(),
+    ]);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
@@ -377,183 +391,83 @@ class _ContactPageState extends State<ContactPage> {
           language: Globals.selectedLanguage,
         ),
         body: RefreshIndicator(
-            onRefresh: refreshPage,
-            key: refreshKey,
-            child: OfflineBuilder(
-                connectivityBuilder: (
-                  BuildContext context,
-                  ConnectivityResult connectivity,
-                  Widget child,
-                ) {
-                  final bool connected =
-                      connectivity != ConnectivityResult.none;
+          key: refreshKey,
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
 
-                  if (connected) {
-                    if (iserrorstate == true) {
-                      _bloc.add(FetchBottomNavigationBar());
-                      iserrorstate = false;
-                    }
-                  } else if (!connected) {
-                    iserrorstate = true;
+                if (connected) {
+                  if (iserrorstate == true) {
                     _bloc.add(FetchBottomNavigationBar());
+                    iserrorstate = false;
                   }
+                } else if (!connected) {
+                  iserrorstate = true;
+                }
 
-                  return new Stack(fit: StackFit.expand, children: [
-                    BlocBuilder<HomeBloc, HomeState>(
-                        bloc: _bloc,
-                        builder: (BuildContext contxt, HomeState state) {
-                          if (state is HomeLoading) {
-                            return Container(
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: Center(child: CircularProgressIndicator()),
-                            );
-                          } else if (state is BottomNavigationBarSuccess) {
-                            return ListView(children: [
-                              _buildIcon(),
-                              SpacerWidget(_kLabelSpacing),
-                              _buildTitleWidget(),
-                              SpacerWidget(_kLabelSpacing / 1.5),
-                              _buildMapWidget(),
-                              _buildAddressWidget(),
-                              SpacerWidget(_kLabelSpacing / 1.25),
-                              _buildPhoneWidget(),
-                              SpacerWidget(_kLabelSpacing / 1.25),
-                              _buildEmailWidget(),
-                            ]);
-                          } else if (state is HomeErrorReceived) {
-                            if (state.err == "NO_CONNECTION") {
-                              return Stack(children: [
-                                Positioned(
-                                  height: 20.0,
-                                  left: 0.0,
-                                  right: 0.0,
-                                  top: 25,
-                                  child: Container(
-                                    color: connected
-                                        ? Color(0xFF00EE44)
-                                        : Color(0xFFEE4400),
-                                    child: Center(
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "${connected ? 'ONLINE' : 'OFFLINE'}",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                              HorzitalSpacerWidget(16),
-                                              connected
-                                                  ? Container(
-                                                      height: 0,
-                                                    )
-                                                  : SizedBox(
-                                                      height: 10,
-                                                      width: 10,
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        color: Colors.white,
-                                                        strokeWidth: 2,
-                                                      ))
-                                            ],
-                                          ),
-                                          // SizedBox(
-                                          //   child: NoInternetIconWidget(),
-                                          // ),
-                                          // SpacerWidget(12),
-                                          // Globals.selectedLanguage != null &&
-                                          //         Globals.selectedLanguage !=
-                                          //             "English"
-                                          //     ? TranslationWidget(
-                                          //         message: "No internet connection",
-                                          //         toLanguage:
-                                          //             Globals.selectedLanguage,
-                                          //         fromLanguage: "en",
-                                          //         builder: (translatedMessage) =>
-                                          //             Text(
-                                          //           translatedMessage.toString(),
-                                          //         ),
-                                          //       )
-                                          //     : Text("No internet connection"),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        child: NoInternetIconWidget(),
-                                      ),
-                                      SpacerWidget(12),
-                                      Text("No internet connection")
-                                    ]),
-                              ]);
-                            } else if (state.err == "Something went wrong") {
+                return new Stack(fit: StackFit.expand, children: [
+                  connected
+                      ? BlocBuilder<HomeBloc, HomeState>(
+                          bloc: _bloc,
+                          builder: (BuildContext contxt, HomeState state) {
+                            if (state is HomeLoading) {
+                              return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              );
+                            } else if (state is BottomNavigationBarSuccess) {
+                              return state.obj != null && state.obj.length > 0
+                                  ? _buildItem()
+                                  : ListView(children: [
+                                      ErrorMessageWidget(
+                                        msg: "No Data Found",
+                                        isnetworkerror: false,
+                                        icondata: 0xe81d,
+                                      )
+                                    ]);
+                            } else if (state is HomeErrorReceived) {
                               return ListView(children: [
                                 ErrorMessageWidget(
-                                  imgURL: 'assets/images/no_data_icon.png',
-                                  msg: "No data found",
+                                  msg: "Error",
+                                  isnetworkerror: false,
+                                  icondata: 0xe81c,
                                 ),
-                                // SpacerWidget(12),
-                                // Globals.selectedLanguage != null &&
-                                //         Globals.selectedLanguage != "English"
-                                //     ? TranslationWidget(
-                                //         message: "No  data found",
-                                //         toLanguage: Globals.selectedLanguage,
-                                //         fromLanguage: "en",
-                                //         builder: (translatedMessage) => Text(
-                                //           translatedMessage.toString(),
-                                //         ),
-                                //       )
-                                //     : Text("No data found"),
-                              ]);
-                            } else {
-                              return ListView(children: [
-                                SizedBox(child: ErrorIconWidget()),
-                                Globals.selectedLanguage != null &&
-                                        Globals.selectedLanguage != "English"
-                                    ? TranslationWidget(
-                                        message: "Error",
-                                        toLanguage: Globals.selectedLanguage,
-                                        fromLanguage: "en",
-                                        builder: (translatedMessage) => Text(
-                                          translatedMessage.toString(),
-                                        ),
-                                      )
-                                    : Text("Error"),
                               ]);
                             }
-                          } else {
                             return Container();
-                          }
-                        }),
-                    // ),
-                    BlocListener<HomeBloc, HomeState>(
-                      bloc: _bloc,
-                      listener: (context, state) async {
-                        if (state is BottomNavigationBarSuccess) {
-                          AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObjet = state.obj;
-                          setState(() {});
-                        } else if (state is HomeErrorReceived) {
-                          Container(
-                            alignment: Alignment.center,
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child:
-                                Center(child: Text("Unable to load the data")),
-                          );
-                        }
-                      },
-                      child: Container(),
-                    ),
-                  ]);
-                  // onRefresh: refreshPage,);
-                },
-                child: Container())));
+                          })
+                      : NoInternetErrorWidget(
+                          connected: connected, issplashscreen: false),
+
+                  // ),
+                  BlocListener<HomeBloc, HomeState>(
+                    bloc: _bloc,
+                    listener: (context, state) async {
+                      if (state is BottomNavigationBarSuccess) {
+                        AppTheme.setDynamicTheme(Globals.appSetting, context);
+                        Globals.homeObjet = state.obj;
+                        setState(() {});
+                      } else if (state is HomeErrorReceived) {
+                        Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Center(child: Text("Unable to load the data")),
+                        );
+                      }
+                    },
+                    child: Container(),
+                  ),
+                ]);
+              },
+              child: Container()),
+          onRefresh: refreshPage,
+        ));
   }
 
   Future refreshPage() async {

@@ -5,16 +5,16 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_icon_widget.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
-import 'package:Soc/src/widgets/no_internet_icon.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
 class StaffDirectory extends StatefulWidget {
@@ -43,6 +43,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   UrlLauncherWidget objurl = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
+  bool? iserrorstate = false;
 
   @override
   void initState() {
@@ -283,135 +284,133 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        appBarTitle: widget.appBarTitle,
-        isSearch: true,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-        isShare: false,
-        isCenterIcon: true,
-        language: Globals.selectedLanguage,
-      ),
-      body: SafeArea(
-        child: RefreshIndicator(
+        appBar: CustomAppBarWidget(
+          appBarTitle: widget.appBarTitle,
+          isSearch: true,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+          isShare: false,
+          isCenterIcon: true,
+          language: Globals.selectedLanguage,
+        ),
+        body: RefreshIndicator(
           key: refreshKey,
-          child: Column(
-            children: [
-              Expanded(
-                child: BlocBuilder<FamilyBloc, FamilyState>(
-                    bloc: _bloc,
-                    builder: (BuildContext contxt, FamilyState state) {
-                      if (state is FamilyInitial || state is FamilyLoading) {
-                        return Container(
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            alignment: Alignment.center,
-                            child: CircularProgressIndicator());
-                      } else if (state is SDDataSucess) {
-                        return Column(
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
+
+                if (connected) {
+                  if (iserrorstate == true) {
+                    iserrorstate = false;
+                    _bloc.add(SDevent());
+                  }
+                } else if (!connected) {
+                  iserrorstate = true;
+                }
+
+                return new Stack(fit: StackFit.expand, children: [
+                  connected
+                      ? Column(
                           children: [
-                            _buildHeading("STAFF DIRECTORY"),
                             Expanded(
-                              child: ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                itemCount: state.obj!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return contactItem(state.obj![index], index);
-                                },
+                              child: BlocBuilder<FamilyBloc, FamilyState>(
+                                  bloc: _bloc,
+                                  builder:
+                                      (BuildContext contxt, FamilyState state) {
+                                    if (state is FamilyInitial ||
+                                        state is FamilyLoading) {
+                                      return Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.8,
+                                          alignment: Alignment.center,
+                                          child: CircularProgressIndicator());
+                                    } else if (state is SDDataSucess) {
+                                      return state.obj != null &&
+                                              state.obj!.length > 0
+                                          ? Column(
+                                              children: [
+                                                _buildHeading(
+                                                    "STAFF DIRECTORY"),
+                                                Expanded(
+                                                  child: ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    itemCount:
+                                                        state.obj!.length,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      return contactItem(
+                                                          state.obj![index],
+                                                          index);
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Expanded(
+                                              child: ListView(children: [
+                                              ErrorMessageWidget(
+                                                msg: "No Data Found",
+                                                isnetworkerror: false,
+                                                icondata: 0xe81d,
+                                              )
+                                            ]));
+                                    } else if (state is ErrorLoading) {
+                                      return ListView(children: [
+                                        ErrorMessageWidget(
+                                          msg: "Error",
+                                          isnetworkerror: false,
+                                          icondata: 0xe81c,
+                                        ),
+                                      ]);
+                                    }
+                                    return Container();
+                                  }),
+                            ),
+                            BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                } else if (state is HomeErrorReceived) {
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.8,
+                                    child: Center(
+                                        child: Text("Unable to load the data")),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                height: 0,
+                                width: 0,
                               ),
                             ),
                           ],
-                        );
-                      } else if (state is ErrorLoading) {
-                        if (state.err == "NO_CONNECTION") {
-                          return ListView(shrinkWrap: true, children: [
-                            SizedBox(
-                              child: NoInternetIconWidget(),
-                            ),
-                            SpacerWidget(12),
-                            Globals.selectedLanguage != null &&
-                                    Globals.selectedLanguage != "English"
-                                ? TranslationWidget(
-                                    message: "No internet connection",
-                                    toLanguage: Globals.selectedLanguage,
-                                    fromLanguage: "en",
-                                    builder: (translatedMessage) => Text(
-                                      translatedMessage.toString(),
-                                    ),
-                                  )
-                                : Text("No internet connection"),
-                          ]);
-                        } else if (state.err == "Something went wrong") {
-                          return ListView(shrinkWrap: true, children: [
-                            ErrorMessageWidget(
-                                imgURL: 'assets/images/no_data_icon.png',
-                                msg: "No data found"),
-                            // SpacerWidget(12),
-                            // SpacerWidget(12),
-                            // Globals.selectedLanguage != null &&
-                            //         Globals.selectedLanguage != "English"
-                            //     ? TranslationWidget(
-                            //         message: "No  data found",
-                            //         toLanguage: Globals.selectedLanguage,
-                            //         fromLanguage: "en",
-                            //         builder: (translatedMessage) => Text(
-                            //           translatedMessage.toString(),
-                            //         ),
-                            //       )
-                            //     : Text("No data found"),
-                          ]);
-                        } else {
-                          return ListView(shrinkWrap: true, children: [
-                            SizedBox(child: ErrorIconWidget()),
-                            Globals.selectedLanguage != null &&
-                                    Globals.selectedLanguage != "English"
-                                ? TranslationWidget(
-                                    message: "Error",
-                                    toLanguage: Globals.selectedLanguage,
-                                    fromLanguage: "en",
-                                    builder: (translatedMessage) => Text(
-                                      translatedMessage.toString(),
-                                    ),
-                                  )
-                                : Text("Error"),
-                          ]);
-                        }
-                      } else {
-                        return Container();
-                      }
-                    }),
-              ),
-              BlocListener<HomeBloc, HomeState>(
-                bloc: _homeBloc,
-                listener: (context, state) async {
-                  if (state is BottomNavigationBarSuccess) {
-                    AppTheme.setDynamicTheme(Globals.appSetting, context);
-                    Globals.homeObjet = state.obj;
-                    setState(() {});
-                  } else if (state is HomeErrorReceived) {
-                    Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      child: Center(child: Text("Unable to load the data")),
-                    );
-                  }
-                },
-                child: Container(
-                  height: 0,
-                  width: 0,
-                ),
-              ),
-            ],
-          ),
+                        )
+                      : NoInternetErrorWidget(
+                          connected: connected, issplashscreen: false),
+                ]);
+              },
+              child: Container()),
           onRefresh: refreshPage,
-        ),
-      ),
-    );
+        ));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     _bloc.add(SDevent());
-
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }
