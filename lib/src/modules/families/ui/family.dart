@@ -13,7 +13,7 @@ import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/no_data_icon_widget.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/no_internet_icon.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -295,21 +295,23 @@ class _FamilyPageState extends State<FamilyPage> {
                             ]);
                           } else if (state.err == "Something went wrong") {
                             return ListView(shrinkWrap: true, children: [
-                              SizedBox(
-                                child: NoDataIconWidget(),
+                              ErrorMessageWidget(
+                                imgURL: 'assets/images/no_data_icon.png',
+                                msg: "No data found",
                               ),
-                              SpacerWidget(12),
-                              Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
-                                  ? TranslationWidget(
-                                      message: "No  data found",
-                                      toLanguage: Globals.selectedLanguage,
-                                      fromLanguage: "en",
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                      ),
-                                    )
-                                  : Text("No data found"),
+                              // SpacerWidget(12),
+                              // SpacerWidget(12),
+                              // Globals.selectedLanguage != null &&
+                              //         Globals.selectedLanguage != "English"
+                              //     ? TranslationWidget(
+                              //         message: "No  data found",
+                              //         toLanguage: Globals.selectedLanguage,
+                              //         fromLanguage: "en",
+                              //         builder: (translatedMessage) => Text(
+                              //           translatedMessage.toString(),
+                              //         ),
+                              //       )
+                              //     : Text("No data found"),
                             ]);
                           } else {
                             return ListView(shrinkWrap: true, children: [

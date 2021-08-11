@@ -6,7 +6,7 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/error_icon_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
-import 'package:Soc/src/widgets/no_data_icon_widget.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/no_internet_icon.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -490,21 +490,22 @@ class _ContactPageState extends State<ContactPage> {
                           ]);
                         } else if (state.err == "Something went wrong") {
                           return ListView(children: [
-                            SizedBox(
-                              child: NoDataIconWidget(),
+                            ErrorMessageWidget(
+                              imgURL: 'assets/images/no_data_icon.png',
+                              msg: "No data found",
                             ),
-                            SpacerWidget(12),
-                            Globals.selectedLanguage != null &&
-                                    Globals.selectedLanguage != "English"
-                                ? TranslationWidget(
-                                    message: "No  data found",
-                                    toLanguage: Globals.selectedLanguage,
-                                    fromLanguage: "en",
-                                    builder: (translatedMessage) => Text(
-                                      translatedMessage.toString(),
-                                    ),
-                                  )
-                                : Text("No data found"),
+                            // SpacerWidget(12),
+                            // Globals.selectedLanguage != null &&
+                            //         Globals.selectedLanguage != "English"
+                            //     ? TranslationWidget(
+                            //         message: "No  data found",
+                            //         toLanguage: Globals.selectedLanguage,
+                            //         fromLanguage: "en",
+                            //         builder: (translatedMessage) => Text(
+                            //           translatedMessage.toString(),
+                            //         ),
+                            //       )
+                            //     : Text("No data found"),
                           ]);
                         } else {
                           return ListView(children: [
