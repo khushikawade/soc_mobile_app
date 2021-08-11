@@ -241,63 +241,62 @@ class _EventPageState extends State<EventPage> {
                   iserrorstate = true;
                 }
 
-                return new Stack(fit: StackFit.expand, children: [
+                return Stack(fit: StackFit.expand, children: [
                   connected
                       ? Column(
-                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                                child: BlocBuilder<FamilyBloc, FamilyState>(
-                                    bloc: _eventBloc,
-                                    builder: (BuildContext contxt,
-                                        FamilyState state) {
-                                      if (state is FamilyLoading) {
-                                        return Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
+                            BlocBuilder<FamilyBloc, FamilyState>(
+                                bloc: _eventBloc,
+                                builder:
+                                    (BuildContext contxt, FamilyState state) {
+                                  if (state is FamilyLoading) {
+                                    return Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
                                                 0.8,
-                                            alignment: Alignment.center,
-                                            child: CircularProgressIndicator());
-                                      } else if (state is CalendarListSuccess) {
-                                        return Column(children: [
-                                          _buildHeading("Upcoming"),
-                                          Container(
-                                            child: Expanded(
-                                              child: ListView.builder(
-                                                scrollDirection: Axis.vertical,
-                                                itemCount: state.obj!.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return state.obj!.length > 0
-                                                      ? _buildList(
-                                                          state.obj![index],
-                                                          index,
-                                                          state.obj)
-                                                      : ErrorMessageWidget(
-                                                          msg: "No Data Found",
-                                                          isnetworkerror: false,
-                                                          icondata: 0xe81d,
-                                                        );
-                                                },
-                                              ),
-                                            ),
+                                        alignment: Alignment.center,
+                                        child: CircularProgressIndicator());
+                                  } else if (state is CalendarListSuccess) {
+                                    return
+
+                                        // Column(children: [
+                                        //   _buildHeading("Upcoming"),
+                                        Expanded(
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: state.obj!.length,
+                                        shrinkWrap: true,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return state.obj!.length > 0
+                                              ? _buildList(state.obj![index],
+                                                  index, state.obj)
+                                              : ListView(children: [
+                                                  ErrorMessageWidget(
+                                                    msg: "No Data Found",
+                                                    isnetworkerror: false,
+                                                    icondata: 0xe81d,
+                                                  ),
+                                                ]);
+                                        },
+                                      ),
+                                    );
+                                    // ]);
+                                  } else if (state is ErrorLoading) {
+                                    return ListView(
+                                        shrinkWrap: true,
+                                        children: [
+                                          ErrorMessageWidget(
+                                            msg: "Error",
+                                            isnetworkerror: false,
+                                            icondata: 0xe81c,
                                           ),
                                         ]);
-                                      } else if (state is ErrorLoading) {
-                                        return ListView(
-                                            shrinkWrap: true,
-                                            children: [
-                                              ErrorMessageWidget(
-                                                msg: "Error",
-                                                isnetworkerror: false,
-                                                icondata: 0xe81c,
-                                              ),
-                                            ]);
-                                      }
-                                      return Container();
-                                    })),
+                                  }
+                                  return Container();
+                                }),
                             BlocListener<HomeBloc, HomeState>(
                               bloc: _homeBloc,
                               listener: (context, state) async {

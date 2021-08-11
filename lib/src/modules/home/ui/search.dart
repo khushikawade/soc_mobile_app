@@ -18,10 +18,12 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
@@ -38,6 +40,7 @@ class _SearchPageState extends State<SearchPage> {
   static const double _kLabelSpacing = 20.0;
   final _controller = TextEditingController();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  bool iserrorstate = false;
 
   final HomeBloc _homeBloc = new HomeBloc();
 
@@ -489,40 +492,69 @@ class _SearchPageState extends State<SearchPage> {
                 SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
         body: RefreshIndicator(
           key: refreshKey,
-          child: Container(
-            child: Column(mainAxisSize: MainAxisSize.max, children: [
-              // _buildHeading(),
-              // SpacerWidget(_kLabelSpacing / 2),
-              _buildSearchbar(),
-              issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
-              SpacerWidget(_kLabelSpacing / 2),
-              // issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
-              issuggestionList == false
-                  ? _buildRecentItemList()
-                  : SizedBox(height: 0),
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
 
-              BlocListener<HomeBloc, HomeState>(
-                bloc: _homeBloc,
-                listener: (context, state) async {
-                  if (state is BottomNavigationBarSuccess) {
-                    AppTheme.setDynamicTheme(Globals.appSetting, context);
-                    Globals.homeObjet = state.obj;
-                    setState(() {});
-                  } else if (state is HomeErrorReceived) {
-                    Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      child: Center(child: Text("Unable to load the data")),
-                    );
+                if (connected) {
+                  if (iserrorstate == true) {
+                    iserrorstate = false;
                   }
-                },
-                child: Container(
-                  height: 0,
-                  width: 0,
-                ),
-              ),
-            ]),
-          ),
+                } else if (!connected) {
+                  iserrorstate = true;
+                }
+
+                return new Stack(fit: StackFit.expand, children: [
+                  connected
+                      ? Container(
+                          child:
+                              Column(mainAxisSize: MainAxisSize.max, children: [
+                            // _buildHeading(),
+                            // SpacerWidget(_kLabelSpacing / 2),
+                            _buildSearchbar(),
+                            issuggestionList
+                                ? _buildissuggestionList()
+                                : SizedBox(height: 0),
+                            SpacerWidget(_kLabelSpacing / 2),
+                            // issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
+                            issuggestionList == false
+                                ? _buildRecentItemList()
+                                : SizedBox(height: 0),
+
+                            BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                } else if (state is HomeErrorReceived) {
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.8,
+                                    child: Center(
+                                        child: Text("Unable to load the data")),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                height: 0,
+                                width: 0,
+                              ),
+                            ),
+                          ]),
+                        )
+                      : NoInternetErrorWidget(
+                          connected: connected, issplashscreen: false),
+                ]);
+              },
+              child: Container()),
           onRefresh: refreshPage,
         ));
   }
