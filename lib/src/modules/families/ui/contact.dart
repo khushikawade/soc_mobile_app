@@ -6,6 +6,7 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/error_icon_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_icon_widget.dart';
 import 'package:Soc/src/widgets/no_internet_icon.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -366,6 +367,21 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
+  Widget _buildItem() {
+    return ListView(children: [
+      _buildIcon(),
+      SpacerWidget(_kLabelSpacing),
+      _buildTitleWidget(),
+      SpacerWidget(_kLabelSpacing / 1.5),
+      _buildMapWidget(),
+      _buildAddressWidget(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      _buildPhoneWidget(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      _buildEmailWidget(),
+    ]);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
@@ -391,7 +407,6 @@ class _ContactPageState extends State<ContactPage> {
                 }
               } else if (!connected) {
                 iserrorstate = true;
-                _bloc.add(FetchBottomNavigationBar());
               }
 
               return new Stack(fit: StackFit.expand, children: [
@@ -404,127 +419,28 @@ class _ContactPageState extends State<ContactPage> {
                           child: Center(child: CircularProgressIndicator()),
                         );
                       } else if (state is BottomNavigationBarSuccess) {
-                        return ListView(children: [
-                          _buildIcon(),
-                          SpacerWidget(_kLabelSpacing),
-                          _buildTitleWidget(),
-                          SpacerWidget(_kLabelSpacing / 1.5),
-                          _buildMapWidget(),
-                          _buildAddressWidget(),
-                          SpacerWidget(_kLabelSpacing / 1.25),
-                          _buildPhoneWidget(),
-                          SpacerWidget(_kLabelSpacing / 1.25),
-                          _buildEmailWidget(),
-                        ]);
+                        return connected
+                            ? _buildItem()
+                            : NoInternetErrorWidget(
+                                connected: connected,
+                              );
                       } else if (state is HomeErrorReceived) {
-                        if (state.err == "NO_CONNECTION") {
-                          return Stack(children: [
-                            Positioned(
-                              height: 20.0,
-                              left: 0.0,
-                              right: 0.0,
-                              top: 25,
-                              child: Container(
-                                color: connected
-                                    ? Color(0xFF00EE44)
-                                    : Color(0xFFEE4400),
-                                child: Center(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "${connected ? 'ONLINE' : 'OFFLINE'}",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                          HorzitalSpacerWidget(16),
-                                          connected
-                                              ? Container(
-                                                  height: 0,
-                                                )
-                                              : SizedBox(
-                                                  height: 10,
-                                                  width: 10,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: Colors.white,
-                                                    strokeWidth: 2,
-                                                  ))
-                                        ],
-                                      ),
-                                      // SizedBox(
-                                      //   child: NoInternetIconWidget(),
-                                      // ),
-                                      // SpacerWidget(12),
-                                      // Globals.selectedLanguage != null &&
-                                      //         Globals.selectedLanguage !=
-                                      //             "English"
-                                      //     ? TranslationWidget(
-                                      //         message: "No internet connection",
-                                      //         toLanguage:
-                                      //             Globals.selectedLanguage,
-                                      //         fromLanguage: "en",
-                                      //         builder: (translatedMessage) =>
-                                      //             Text(
-                                      //           translatedMessage.toString(),
-                                      //         ),
-                                      //       )
-                                      //     : Text("No internet connection"),
-                                    ],
+                        return ListView(children: [
+                          SizedBox(child: ErrorIconWidget()),
+                          Globals.selectedLanguage != null &&
+                                  Globals.selectedLanguage != "English"
+                              ? TranslationWidget(
+                                  message: "Error",
+                                  toLanguage: Globals.selectedLanguage,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
                                   ),
-                                ),
-                              ),
-                            ),
-                            Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    child: NoInternetIconWidget(),
-                                  ),
-                                  SpacerWidget(12),
-                                  Text("No internet connection")
-                                ]),
-                          ]);
-                        } else if (state.err == "Something went wrong") {
-                          return ListView(children: [
-                            SizedBox(
-                              child: NoDataIconWidget(),
-                            ),
-                            SpacerWidget(12),
-                            Globals.selectedLanguage != null &&
-                                    Globals.selectedLanguage != "English"
-                                ? TranslationWidget(
-                                    message: "No  data found",
-                                    toLanguage: Globals.selectedLanguage,
-                                    fromLanguage: "en",
-                                    builder: (translatedMessage) => Text(
-                                      translatedMessage.toString(),
-                                    ),
-                                  )
-                                : Text("No data found"),
-                          ]);
-                        } else {
-                          return ListView(children: [
-                            SizedBox(child: ErrorIconWidget()),
-                            Globals.selectedLanguage != null &&
-                                    Globals.selectedLanguage != "English"
-                                ? TranslationWidget(
-                                    message: "Error",
-                                    toLanguage: Globals.selectedLanguage,
-                                    fromLanguage: "en",
-                                    builder: (translatedMessage) => Text(
-                                      translatedMessage.toString(),
-                                    ),
-                                  )
-                                : Text("Error"),
-                          ]);
-                        }
-                      } else {
-                        return Container();
+                                )
+                              : Text("Error"),
+                        ]);
                       }
+                      return Container();
                     }),
                 // ),
                 BlocListener<HomeBloc, HomeState>(
