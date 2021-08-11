@@ -42,7 +42,7 @@ class _ContactPageState extends State<ContactPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc _bloc = new HomeBloc();
-
+  bool? iserrorstate = false;
   static const double _kboxborderwidth = 0.75;
   var longitude;
   var latitude;
@@ -383,11 +383,17 @@ class _ContactPageState extends State<ContactPage> {
               Widget child,
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
-              // final call = connected
-              //     ? issuccesstate == false
-              //         ? _bloc.add(FetchBottomNavigationBar())
-              //         : null
-              //     : null;
+
+              if (connected) {
+                if (iserrorstate == true) {
+                  _bloc.add(FetchBottomNavigationBar());
+                  iserrorstate = false;
+                }
+              } else if (!connected) {
+                iserrorstate = true;
+                _bloc.add(FetchBottomNavigationBar());
+              }
+
               return new Stack(fit: StackFit.expand, children: [
                 BlocBuilder<HomeBloc, HomeState>(
                     bloc: _bloc,
@@ -398,7 +404,6 @@ class _ContactPageState extends State<ContactPage> {
                           child: Center(child: CircularProgressIndicator()),
                         );
                       } else if (state is BottomNavigationBarSuccess) {
-                        issuccesstate = true;
                         return ListView(children: [
                           _buildIcon(),
                           SpacerWidget(_kLabelSpacing),
@@ -413,58 +418,76 @@ class _ContactPageState extends State<ContactPage> {
                         ]);
                       } else if (state is HomeErrorReceived) {
                         if (state.err == "NO_CONNECTION") {
-                          return Positioned(
-                            height: 20.0,
-                            left: 0.0,
-                            right: 0.0,
-                            top: 25,
-                            child: Container(
-                              color: connected
-                                  ? Color(0xFF00EE44)
-                                  : Color(0xFFEE4400),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "${connected ? 'ONLINE' : 'OFFLINE'}",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    HorzitalSpacerWidget(16),
-                                    connected
-                                        ? Container(
-                                            height: 0,
-                                          )
-                                        : SizedBox(
-                                            height: 10,
-                                            width: 10,
-                                            child: CircularProgressIndicator(
-                                              color: Colors.white,
-                                              strokeWidth: 2,
-                                            ))
-                                  ],
+                          return Stack(children: [
+                            Positioned(
+                              height: 20.0,
+                              left: 0.0,
+                              right: 0.0,
+                              top: 25,
+                              child: Container(
+                                color: connected
+                                    ? Color(0xFF00EE44)
+                                    : Color(0xFFEE4400),
+                                child: Center(
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "${connected ? 'ONLINE' : 'OFFLINE'}",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          HorzitalSpacerWidget(16),
+                                          connected
+                                              ? Container(
+                                                  height: 0,
+                                                )
+                                              : SizedBox(
+                                                  height: 10,
+                                                  width: 10,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                    strokeWidth: 2,
+                                                  ))
+                                        ],
+                                      ),
+                                      // SizedBox(
+                                      //   child: NoInternetIconWidget(),
+                                      // ),
+                                      // SpacerWidget(12),
+                                      // Globals.selectedLanguage != null &&
+                                      //         Globals.selectedLanguage !=
+                                      //             "English"
+                                      //     ? TranslationWidget(
+                                      //         message: "No internet connection",
+                                      //         toLanguage:
+                                      //             Globals.selectedLanguage,
+                                      //         fromLanguage: "en",
+                                      //         builder: (translatedMessage) =>
+                                      //             Text(
+                                      //           translatedMessage.toString(),
+                                      //         ),
+                                      //       )
+                                      //     : Text("No internet connection"),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          );
-
-                          // ListView(shrinkWrap: true, children: [
-                          //   SizedBox(
-                          //     child: NoInternetIconWidget(),
-                          //   ),
-                          //   SpacerWidget(12),
-                          //   Globals.selectedLanguage != null &&
-                          //           Globals.selectedLanguage != "English"
-                          //       ? TranslationWidget(
-                          //           message: "No internet connection",
-                          //           toLanguage: Globals.selectedLanguage,
-                          //           fromLanguage: "en",
-                          //           builder: (translatedMessage) => Text(
-                          //             translatedMessage.toString(),
-                          //           ),
-                          //         )
-                          //       : Text("No internet connection"),
-                          // ]);
+                            Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    child: NoInternetIconWidget(),
+                                  ),
+                                  SpacerWidget(12),
+                                  Text("No internet connection")
+                                ]),
+                          ]);
                         } else if (state.err == "Something went wrong") {
                           return ListView(children: [
                             SizedBox(
@@ -524,17 +547,7 @@ class _ContactPageState extends State<ContactPage> {
               ]);
               // onRefresh: refreshPage,
             },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Text(
-                  'There are no bottons to push :)',
-                ),
-                new Text(
-                  'Just turn off your internet.',
-                ),
-              ],
-            )));
+            child: Container()));
   }
 
   Future refreshPage() async {
