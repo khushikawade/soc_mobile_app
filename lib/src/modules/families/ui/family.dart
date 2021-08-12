@@ -69,7 +69,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         language: Globals.selectedLanguage ?? "English",
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.titleC == "Staff Directory") {
+    } else if (obj.typeC == "Form") {
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -79,7 +79,7 @@ class _FamilyPageState extends State<FamilyPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
-    } else if (obj.titleC == "Calendar/Events") {
+    } else if (obj.typeC == "Calendar/Events") {
       Navigator.push(
           context,
           MaterialPageRoute(
