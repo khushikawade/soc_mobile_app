@@ -289,9 +289,7 @@ class _EventPageState extends State<EventPage> {
 
                 return connected
                     ? Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: <Widget>[
                           Expanded(
                             child: BlocBuilder<FamilyBloc, FamilyState>(
                                 bloc: _eventBloc,
@@ -305,54 +303,62 @@ class _EventPageState extends State<EventPage> {
                                         alignment: Alignment.center,
                                         child: CircularProgressIndicator());
                                   } else if (state is CalendarListSuccess) {
-                                    return
-
-                                        // Column(children: [
-                                        //   _buildHeading("Upcoming"),
-                                        ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: state.obj!.length,
-                                      shrinkWrap: true,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return state.obj!.length > 0
-                                            ? _buildList(state.obj![index],
-                                                index, state.obj)
-                                            : ListView(children: [
-                                                ErrorMessageWidget(
-                                                  msg: "No Data Found",
-                                                  isnetworkerror: false,
-                                                  icondata: 0xe81d,
-                                                ),
-                                              ]);
-                                      },
-                                    );
+                                    return Stack(children: [
+                                      _buildHeading("Upcoming"),
+                                      Expanded(
+                                          child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: state.obj!.length,
+                                        shrinkWrap: true,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return state.obj!.length > 0
+                                              ? _buildList(state.obj![index],
+                                                  index, state.obj)
+                                              : ListView(children: [
+                                                  ErrorMessageWidget(
+                                                    msg: "No Data Found",
+                                                    isnetworkerror: false,
+                                                    imgPath:
+                                                        "assets/images/no_data_icon..svg",
+                                                  ),
+                                                ]);
+                                        },
+                                      ))
+                                    ]);
+                                    //   ),
                                     // ]);
                                   } else if (state is ErrorLoading) {
-                                    return ListView(
-                                        shrinkWrap: true,
-                                        children: [
-                                          ErrorMessageWidget(
-                                            msg: "Error",
-                                            isnetworkerror: false,
-                                            icondata: 0xe81c,
-                                          ),
-                                        ]);
+                                    return Expanded(
+                                      child:
+                                          ListView(shrinkWrap: true, children: [
+                                        ErrorMessageWidget(
+                                          msg: "Error",
+                                          isnetworkerror: false,
+                                          imgPath:
+                                              "assets/images/error_icon.svg",
+                                        ),
+                                      ]),
+                                    );
                                   }
                                   return Container();
                                 }),
                           ),
-                          BlocListener<HomeBloc, HomeState>(
-                            bloc: _homeBloc,
-                            listener: (context, state) async {
-                              if (state is BottomNavigationBarSuccess) {
-                                AppTheme.setDynamicTheme(
-                                    Globals.appSetting, context);
-                                Globals.homeObjet = state.obj;
-                                setState(() {});
-                              }
-                            },
-                            child: Container(),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
+                              child: Container(),
+                            ),
                           ),
                         ],
                       )
@@ -367,7 +373,6 @@ class _EventPageState extends State<EventPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     _eventBloc.add(CalendarListEvent());
-
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }

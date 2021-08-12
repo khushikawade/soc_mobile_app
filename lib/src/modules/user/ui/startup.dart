@@ -33,7 +33,7 @@ class _StartupPageState extends State<StartupPage> {
   UserBloc _loginBloc = new UserBloc();
   final NewsBloc _newsBloc = new NewsBloc();
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  AndroidDeviceInfo? andorid;
+  AndroidDeviceInfo? androidInfo;
   IosDeviceInfo? ios;
   bool? isnetworkisuue = false;
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
@@ -68,20 +68,20 @@ class _StartupPageState extends State<StartupPage> {
   Future<void> initPlatformState() async {
     try {
       if (Platform.isAndroid) {
-        andorid = await deviceInfoPlugin.androidInfo;
+        androidInfo = await deviceInfoPlugin.androidInfo;
         // final data =
         //     (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
 
         // Globals.phoneModel = andorid!.device;
-        Globals.baseOS = andorid!.version.baseOS;
+        Globals.baseOS = androidInfo!.version.baseOS;
         // Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
         Globals.androidInfo = await DeviceInfoPlugin().androidInfo;
 
-        // Globals.release = androidInfo.version.release;
-        // // var sdkInt = androidInfo.version.sdkInt;
-        // Globals.manufacturer = androidInfo.manufacturer;
-        // Globals.model = androidInfo.model;
-        // Globals.deviceToken = androidInfo.androidId;
+        Globals.release = androidInfo!.version.release;
+        // var sdkInt = androidInfo.version.sdkInt;
+        Globals.manufacturer = androidInfo!.manufacturer;
+        Globals.model = androidInfo!.model;
+        Globals.deviceToken = androidInfo!.androidId;
         Globals.myLocale = Localizations.localeOf(context);
         // Globals.countrycode = Localizations.localeOf(context).countryCode!;
       } else if (Platform.isIOS) {
@@ -89,10 +89,10 @@ class _StartupPageState extends State<StartupPage> {
         var iosInfo = await DeviceInfoPlugin().iosInfo;
         Globals.iosInfo = iosInfo;
 
-        // Globals.manufacturer = iosInfo.systemName;
-        // Globals.release = iosInfo.systemVersion;
-        // Globals.name = iosInfo.name;
-        // Globals.model = iosInfo.model;
+        Globals.manufacturer = iosInfo.systemName;
+        Globals.release = iosInfo.systemVersion;
+        Globals.name = iosInfo.name;
+        Globals.model = iosInfo.model;
       }
     } on PlatformException {
       // deviceData = <String, dynamic>{
@@ -141,7 +141,7 @@ class _StartupPageState extends State<StartupPage> {
                               ErrorMessageWidget(
                                 msg: "Error",
                                 isnetworkerror: false,
-                                icondata: 0xe81c,
+                                imgPath: "assets/images/error_icon.svg",
                               ),
                             ]);
                           }
@@ -151,79 +151,92 @@ class _StartupPageState extends State<StartupPage> {
                         connected: connected,
                         issplashscreen: true,
                       ),
-                BlocListener<UserBloc, UserState>(
-                  bloc: _loginBloc,
-                  listener: (context, state) async {
-                    if (state is LoginSuccess) {
-                      // SharedPreferences prefs = await SharedPreferences.getInstance();
-                      // setState(() {
-                      //   _status = prefs.getBool("enableIndicator")!;
-                      //   if (_status == true) {
-                      //     indicator.value = true;
-                      //   } else {
-                      //     indicator.value = false;
-                      //   }
-                      // });
-                      Globals.token != null && Globals.token != " "
-                          ? _bloc.add(FetchBottomNavigationBar())
-                          : Container(
-                              child: Center(
-                                  child:
-                                      Text("Please refresh your application")),
-                            );
-                    }
-                  },
-                  child: Container(),
-                ),
-                BlocListener<HomeBloc, HomeState>(
-                  bloc: _bloc,
-                  listener: (context, state) async {
-                    if (state is BottomNavigationBarSuccess) {
-                      AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      Globals.homeObjet = state.obj;
-                      state.obj != null
-                          ? Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomePage(
-                                  title: "SOC",
-                                  homeObj: state.obj,
-                                ),
-                              ))
-                          : ErrorMessageWidget(
-                              msg: "No data found",
-                              isnetworkerror: false,
-                              icondata: 0xe81d,
-                            );
-                    } else if (state is HomeErrorReceived) {
-                      Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(child: Text("Unable to load the data")),
-                      );
-                    }
-                  },
-                  child: Container(),
-                ),
-                BlocListener<NewsBloc, NewsState>(
-                  bloc: _newsBloc,
-                  listener: (context, state) async {
-                    if (state is NewsLoaded) {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      SharedPreferences intPrefs =
-                          await SharedPreferences.getInstance();
-                      intPrefs.getInt("totalCount") == null
-                          ? intPrefs.setInt("totalCount", Globals.notiCount!)
-                          : intPrefs.getInt("totalCount");
-                      print(intPrefs.getInt("totalCount"));
-                      if (Globals.notiCount! > intPrefs.getInt("totalCount")!) {
-                        intPrefs.setInt("totalCount", Globals.notiCount!);
-                        prefs.setBool("enableIndicator", true);
+                Container(
+                  height: 0,
+                  width: 0,
+                  child: BlocListener<UserBloc, UserState>(
+                    bloc: _loginBloc,
+                    listener: (context, state) async {
+                      if (state is LoginSuccess) {
+                        // SharedPreferences prefs = await SharedPreferences.getInstance();
+                        // setState(() {
+                        //   _status = prefs.getBool("enableIndicator")!;
+                        //   if (_status == true) {
+                        //     indicator.value = true;
+                        //   } else {
+                        //     indicator.value = false;
+                        //   }
+                        // });
+                        Globals.token != null && Globals.token != " "
+                            ? _bloc.add(FetchBottomNavigationBar())
+                            : Container(
+                                child: Center(
+                                    child: Text(
+                                        "Please refresh your application")),
+                              );
                       }
-                    }
-                  },
-                  child: Container(),
+                    },
+                    child: Container(),
+                  ),
+                ),
+                Container(
+                  height: 0,
+                  width: 0,
+                  child: BlocListener<HomeBloc, HomeState>(
+                    bloc: _bloc,
+                    listener: (context, state) async {
+                      if (state is BottomNavigationBarSuccess) {
+                        AppTheme.setDynamicTheme(Globals.appSetting, context);
+                        Globals.homeObjet = state.obj;
+                        state.obj != null
+                            ? Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomePage(
+                                    title: "SOC",
+                                    homeObj: state.obj,
+                                  ),
+                                ))
+                            : ErrorMessageWidget(
+                                msg: "No data found",
+                                isnetworkerror: false,
+                                imgPath: "assets/images/error_icon.svg",
+                              );
+                      } else if (state is HomeErrorReceived) {
+                        Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Center(child: Text("Unable to load the data")),
+                        );
+                      }
+                    },
+                    child: Container(),
+                  ),
+                ),
+                Container(
+                  height: 0,
+                  width: 0,
+                  child: BlocListener<NewsBloc, NewsState>(
+                    bloc: _newsBloc,
+                    listener: (context, state) async {
+                      if (state is NewsLoaded) {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        SharedPreferences intPrefs =
+                            await SharedPreferences.getInstance();
+                        intPrefs.getInt("totalCount") == null
+                            ? intPrefs.setInt("totalCount", Globals.notiCount!)
+                            : intPrefs.getInt("totalCount");
+                        print(intPrefs.getInt("totalCount"));
+                        if (Globals.notiCount! >
+                            intPrefs.getInt("totalCount")!) {
+                          intPrefs.setInt("totalCount", Globals.notiCount!);
+                          prefs.setBool("enableIndicator", true);
+                        }
+                      }
+                    },
+                    child: Container(),
+                  ),
                 ),
               ],
             );

@@ -9,7 +9,6 @@ import 'package:Soc/src/widgets/customList.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -51,6 +50,18 @@ class _SubListPageState extends State<SubListPage> {
 
   _route(obj, index) {
     if (obj.typeC == "URL") {
+      obj.urlC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                        title: obj.titleC!,
+                        url: obj.urlC!,
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+
       obj.appUrlC != null
           ? Navigator.push(
               context,
@@ -162,7 +173,7 @@ class _SubListPageState extends State<SubListPage> {
                       : ErrorMessageWidget(
                           msg: "No data found",
                           isnetworkerror: false,
-                          icondata: 0xe81d,
+                          imgPath: "assets/images/error_icon.svg",
                         );
                 } else {
                   return Container();
@@ -193,7 +204,7 @@ class _SubListPageState extends State<SubListPage> {
                           : ErrorMessageWidget(
                               msg: "No data found",
                               isnetworkerror: false,
-                              icondata: 0xe81d,
+                              imgPath: "assets/images/error_icon.svg",
                             );
                     } else {
                       return Container();

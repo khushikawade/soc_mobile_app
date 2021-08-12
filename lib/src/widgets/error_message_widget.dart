@@ -11,12 +11,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 class ErrorMessageWidget extends StatelessWidget {
   final String? msg;
   final bool? isnetworkerror;
-  int icondata = 0xe81c;
+  final String imgPath;
   ErrorMessageWidget({
     Key? key,
     required this.msg,
     required this.isnetworkerror,
-    required this.icondata,
+    required this.imgPath,
   }) : super(key: key);
 
   Widget build(BuildContext context) {

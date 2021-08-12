@@ -111,21 +111,25 @@ class _LicenceinfoState extends State<Licenceinfo> {
                           : ErrorMessageWidget(
                               msg: "No data found",
                               isnetworkerror: false,
-                              icondata: 0xe81d,
+                              imgPath: "assets/images/error_icon.svg",
                             );
                     },
                   ),
                 ),
-                BlocListener<HomeBloc, HomeState>(
-                  bloc: _homeBloc,
-                  listener: (context, state) async {
-                    if (state is BottomNavigationBarSuccess) {
-                      AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      Globals.homeObjet = state.obj;
-                      setState(() {});
-                    }
-                  },
-                  child: Container(),
+                Container(
+                  height: 0,
+                  width: 0,
+                  child: BlocListener<HomeBloc, HomeState>(
+                    bloc: _homeBloc,
+                    listener: (context, state) async {
+                      if (state is BottomNavigationBarSuccess) {
+                        AppTheme.setDynamicTheme(Globals.appSetting, context);
+                        Globals.homeObjet = state.obj;
+                        setState(() {});
+                      }
+                    },
+                    child: Container(),
+                  ),
                 ),
               ]),
             ),

@@ -20,7 +20,7 @@ class NoInternetErrorWidget extends StatelessWidget {
   Widget _buildNetworkerror(connected) {
     return Stack(children: [
       Positioned(
-        height: 30.0,
+        height: 22.0,
         left: 0.0,
         right: 0.0,
         top: issplashscreen == true ? 30 : 0,
@@ -31,10 +31,12 @@ class NoInternetErrorWidget extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       "${connected ? 'ONLINE' : 'OFFLINE'}",
                       style: TextStyle(color: Colors.white),
+                      textAlign: TextAlign.center,
                     ),
                     HorzitalSpacerWidget(16),
                     connected
@@ -59,7 +61,7 @@ class NoInternetErrorWidget extends StatelessWidget {
         ErrorMessageWidget(
           msg: "No Internet",
           isnetworkerror: true,
-          icondata: 0xe81c,
+          imgPath: "assets/images/no_internet_icon",
         ),
       ]),
     ]);

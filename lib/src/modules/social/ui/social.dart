@@ -273,62 +273,70 @@ class _SocialPageState extends State<SocialPage> {
 
                   return connected
                       ? Column(
-                          children: [
-                            Expanded(
-                              child: BlocBuilder(
-                                  bloc: bloc,
-                                  builder: (BuildContext context,
-                                      SocialState state) {
-                                    if (state is SocialDataSucess) {
-                                      return state.obj != null &&
-                                              state.obj!.length > 0
-                                          ? makeList(state.obj)
-                                          : ListView(
-                                              shrinkWrap: true,
-                                              children: [
+                          children: <Widget>[
+                            BlocBuilder(
+                                bloc: bloc,
+                                builder:
+                                    (BuildContext context, SocialState state) {
+                                  if (state is SocialDataSucess) {
+                                    return state.obj != null &&
+                                            state.obj!.length > 0
+                                        ? Expanded(child: makeList(state.obj))
+                                        : Expanded(
+                                            child: ListView(
+                                                shrinkWrap: true,
+                                                children: [
                                                   ErrorMessageWidget(
                                                     msg: "No Data Found",
                                                     isnetworkerror: false,
-                                                    icondata: 0xe81d,
+                                                    imgPath:
+                                                        "assets/images/no_data_icon.svg",
                                                   )
-                                                ]);
-                                    } else if (state is Loading) {
-                                      return Container(
+                                                ]),
+                                          );
+                                  } else if (state is Loading) {
+                                    return Expanded(
+                                      child: Container(
                                         height:
                                             MediaQuery.of(context).size.height *
                                                 0.8,
                                         child: Center(
                                             child: CircularProgressIndicator()),
-                                      );
-                                    }
-                                    if (state is SocialError) {
-                                      return ListView(
-                                          shrinkWrap: true,
-                                          children: [
-                                            ErrorMessageWidget(
-                                              msg: "Error",
-                                              isnetworkerror: false,
-                                              icondata: 0xe81c,
-                                            ),
-                                          ]);
-                                    }
+                                      ),
+                                    );
+                                  }
+                                  if (state is SocialError) {
+                                    return ListView(
+                                        shrinkWrap: true,
+                                        children: [
+                                          ErrorMessageWidget(
+                                            msg: "Error",
+                                            isnetworkerror: false,
+                                            imgPath:
+                                                "assets/images/error_icon.svg",
+                                          ),
+                                        ]);
+                                  }
 
-                                    return Container();
-                                  }),
-                            ),
-                            BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
-                                }
-                              },
-                              child: Container(
-                                height: 0,
-                                width: 0,
+                                  return Container();
+                                }),
+                            Container(
+                              height: 0,
+                              width: 0,
+                              child: BlocListener<HomeBloc, HomeState>(
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  }
+                                },
+                                child: Container(
+                                  height: 0,
+                                  width: 0,
+                                ),
                               ),
                             ),
                           ],

@@ -204,7 +204,7 @@ class _StaffPageState extends State<StaffPage> {
           : ErrorMessageWidget(
               msg: "No data found",
               isnetworkerror: false,
-              icondata: 0xe81d,
+              imgPath: "assets/images/error_icon.svg",
             ),
     );
   }
@@ -237,8 +237,8 @@ class _StaffPageState extends State<StaffPage> {
                 }
 
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 25.00),
-                  child: new Stack(fit: StackFit.expand, children: [
+                  padding: const EdgeInsets.only(bottom: 35.00),
+                  child: Column(children: [
                     connected
                         ? BlocBuilder<StaffBloc, StaffState>(
                             bloc: _bloc,
@@ -250,23 +250,16 @@ class _StaffPageState extends State<StaffPage> {
                               } else if (state is StaffDataSucess) {
                                 return state.obj != null &&
                                         state.obj!.length > 0
-                                    ? Column(
-                                        children: [
-                                          Container(
-                                            child: Expanded(
-                                              child: ListView.builder(
-                                                scrollDirection: Axis.vertical,
-                                                itemCount: state.obj!.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return _buildList(
-                                                      state.obj![index], index);
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                    ? Expanded(
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: state.obj!.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return _buildList(
+                                                state.obj![index], index);
+                                          },
+                                        ),
                                       )
                                     : Expanded(
                                         child: ListView(
@@ -275,7 +268,8 @@ class _StaffPageState extends State<StaffPage> {
                                               ErrorMessageWidget(
                                                 msg: "No Data Found",
                                                 isnetworkerror: false,
-                                                icondata: 0xe81d,
+                                                imgPath:
+                                                    "assets/images/no_data_icon.svg",
                                               )
                                             ]),
                                       );
@@ -286,7 +280,7 @@ class _StaffPageState extends State<StaffPage> {
                                     ErrorMessageWidget(
                                       msg: "Error",
                                       isnetworkerror: false,
-                                      icondata: 0xe81c,
+                                      imgPath: "assets/images/error_icon.svg",
                                     ),
                                   ]),
                                 );
@@ -296,18 +290,23 @@ class _StaffPageState extends State<StaffPage> {
                             })
                         : NoInternetErrorWidget(
                             connected: connected, issplashscreen: false),
-                    BlocListener<HomeBloc, HomeState>(
-                      bloc: _homeBloc,
-                      listener: (context, state) async {
-                        if (state is BottomNavigationBarSuccess) {
-                          AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObjet = state.obj;
-                          setState(() {});
-                        }
-                      },
-                      child: Container(
-                        height: 0,
-                        width: 0,
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.homeObjet = state.obj;
+                            setState(() {});
+                          }
+                        },
+                        child: Container(
+                          height: 0,
+                          width: 0,
+                        ),
                       ),
                     ),
                   ]),

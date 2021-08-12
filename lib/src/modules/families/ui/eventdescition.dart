@@ -40,7 +40,7 @@ class _EventDescriptionState extends State<EventDescription> {
   Widget _buildItem(CalendarList list) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _kPadding),
-      child: Column(
+      child: ListView(
         children: [
           SpacerWidget(_kPadding / 2),
           Globals.selectedLanguage != null &&
@@ -106,10 +106,7 @@ class _EventDescriptionState extends State<EventDescription> {
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
                             color: Theme.of(context).colorScheme.primaryVariant,
-                            fontSize: 16)
-
-                        // .copyWith(fontSize: 16),
-                        ),
+                            fontSize: 16)),
                   )
                 : Text(
                     list.description ?? "",
@@ -123,6 +120,7 @@ class _EventDescriptionState extends State<EventDescription> {
           SpacerWidget(_kPadding / 2),
           list.inviteLink != null ? _buildEventLink(list) : Container(),
           SpacerWidget(_kPadding / 2),
+          bottomButtonWidget(widget.obj),
         ],
       ),
     );
@@ -153,7 +151,7 @@ class _EventDescriptionState extends State<EventDescription> {
     );
   }
 
-  Widget buttomButtonsWidget(CalendarList list) {
+  Widget bottomButtonWidget(CalendarList list) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _kPadding / 2),
       child: Row(
@@ -201,18 +199,22 @@ class _EventDescriptionState extends State<EventDescription> {
               },
               child: Globals.selectedLanguage != null &&
                       Globals.selectedLanguage != "English"
-                  ? TranslationWidget(
-                      message: "Save event",
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        // style: _kbuttonTextStyle,
+                  ? Expanded(
+                      child: TranslationWidget(
+                        message: "Save event",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                          // style: _kbuttonTextStyle,
+                        ),
                       ),
                     )
-                  : Text(
-                      "Save event",
-                      // style: _kbuttonTextStyle
+                  : Expanded(
+                      child: Text(
+                        "Save event ",
+                        // style: _kbuttonTextStyle
+                      ),
                     ),
             ),
           ),
@@ -236,17 +238,9 @@ class _EventDescriptionState extends State<EventDescription> {
       key: refreshKey,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 25.0),
-        child: ListView(children: [
-          Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                _buildItem(widget.obj),
-                buttomButtonsWidget(widget.obj)
-              ],
-            ),
+        child: Column(children: <Widget>[
+          Expanded(
+            child: _buildItem(widget.obj),
           ),
         ]),
       ),

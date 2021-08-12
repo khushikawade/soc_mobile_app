@@ -232,7 +232,7 @@ class _SearchPageState extends State<SearchPage> {
                       ErrorMessageWidget(
                         msg: "No data found",
                         isnetworkerror: false,
-                        icondata: 0xe81d,
+                        imgPath: "assets/images/error_icon.svg",
                       ),
                       // SpacerWidget(12),
                       // Globals.selectedLanguage != null &&
@@ -542,27 +542,33 @@ class _SearchPageState extends State<SearchPage> {
                                 ? _buildRecentItemList()
                                 : SizedBox(height: 0),
 
-                            BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
-                                } else if (state is HomeErrorReceived) {
-                                  Container(
-                                    alignment: Alignment.center,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.8,
-                                    child: Center(
-                                        child: Text("Unable to load the data")),
-                                  );
-                                }
-                              },
-                              child: Container(
-                                height: 0,
-                                width: 0,
+                            Container(
+                              height: 0,
+                              width: 0,
+                              child: BlocListener<HomeBloc, HomeState>(
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  } else if (state is HomeErrorReceived) {
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
+                                      child: Center(
+                                          child:
+                                              Text("Unable to load the data")),
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  height: 0,
+                                  width: 0,
+                                ),
                               ),
                             ),
                           ]),

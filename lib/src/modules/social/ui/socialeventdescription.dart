@@ -91,15 +91,19 @@ class SocialDescription extends StatelessWidget {
                   SpacerWidget(_kPadding / 2),
                   _buildButton(context),
                   SpacerWidget(_kPadding * 3),
-                  BlocListener<HomeBloc, HomeState>(
-                    bloc: _homeBloc,
-                    listener: (context, state) async {
-                      if (state is BottomNavigationBarSuccess) {
-                        AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        Globals.homeObjet = state.obj;
-                      }
-                    },
-                    child: Container(),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                      bloc: _homeBloc,
+                      listener: (context, state) async {
+                        if (state is BottomNavigationBarSuccess) {
+                          AppTheme.setDynamicTheme(Globals.appSetting, context);
+                          Globals.homeObjet = state.obj;
+                        }
+                      },
+                      child: Container(),
+                    ),
                   ),
                 ],
               ),

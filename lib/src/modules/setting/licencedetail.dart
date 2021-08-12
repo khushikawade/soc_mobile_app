@@ -386,17 +386,21 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                           _buildauthorsHeading(),
                           _buildauthors(list[index]),
                           SpacerWidget(_kLabelSpacing / 2),
-                          BlocListener<HomeBloc, HomeState>(
-                            bloc: _homeBloc,
-                            listener: (context, state) async {
-                              if (state is BottomNavigationBarSuccess) {
-                                AppTheme.setDynamicTheme(
-                                    Globals.appSetting, context);
-                                Globals.homeObjet = state.obj;
-                                setState(() {});
-                              }
-                            },
-                            child: Container(),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
+                              child: Container(),
+                            ),
                           ),
                         ]),
                       )

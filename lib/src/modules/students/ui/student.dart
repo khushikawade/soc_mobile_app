@@ -237,7 +237,8 @@ class _StudentPageState extends State<StudentPage> {
                                       ErrorMessageWidget(
                                         msg: "No Data Found",
                                         isnetworkerror: false,
-                                        icondata: 0xe81d,
+                                        imgPath:
+                                            "assets/images/no_data_icon.svg",
                                       )
                                     ]);
                             } else if (state is StudentError) {
@@ -245,7 +246,7 @@ class _StudentPageState extends State<StudentPage> {
                                 ErrorMessageWidget(
                                   msg: "Error",
                                   isnetworkerror: false,
-                                  icondata: 0xe81c,
+                                  imgPath: "assets/images/error_icon.svg",
                                 ),
                               ]);
                             }
@@ -253,24 +254,29 @@ class _StudentPageState extends State<StudentPage> {
                           })
                       : NoInternetErrorWidget(
                           connected: connected, issplashscreen: false),
-                  BlocListener<HomeBloc, HomeState>(
-                    bloc: _homeBloc,
-                    listener: (context, state) async {
-                      if (state is BottomNavigationBarSuccess) {
-                        AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        Globals.homeObjet = state.obj;
-                        setState(() {});
-                      } else if (state is HomeErrorReceived) {
-                        Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(child: Text("Unable to load the data")),
-                        );
-                      }
-                    },
-                    child: Container(
-                      height: 0,
-                      width: 0,
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                      bloc: _homeBloc,
+                      listener: (context, state) async {
+                        if (state is BottomNavigationBarSuccess) {
+                          AppTheme.setDynamicTheme(Globals.appSetting, context);
+                          Globals.homeObjet = state.obj;
+                          setState(() {});
+                        } else if (state is HomeErrorReceived) {
+                          Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child:
+                                Center(child: Text("Unable to load the data")),
+                          );
+                        }
+                      },
+                      child: Container(
+                        height: 0,
+                        width: 0,
+                      ),
                     ),
                   ),
                 ]);

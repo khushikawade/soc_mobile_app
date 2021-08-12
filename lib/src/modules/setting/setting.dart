@@ -244,19 +244,23 @@ class _SettingPageState extends State<SettingPage> {
                       connected
                           ? Column(
                               children: [
-                                BlocListener<HomeBloc, HomeState>(
-                                  bloc: _homeBloc,
-                                  listener: (context, state) async {
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObjet = state.obj;
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 0,
-                                    width: 0,
+                                Container(
+                                  height: 0,
+                                  width: 0,
+                                  child: BlocListener<HomeBloc, HomeState>(
+                                    bloc: _homeBloc,
+                                    listener: (context, state) async {
+                                      if (state is BottomNavigationBarSuccess) {
+                                        AppTheme.setDynamicTheme(
+                                            Globals.appSetting, context);
+                                        Globals.homeObjet = state.obj;
+                                        setState(() {});
+                                      }
+                                    },
+                                    child: Container(
+                                      height: 0,
+                                      width: 0,
+                                    ),
                                   ),
                                 ),
                                 Expanded(
@@ -272,7 +276,8 @@ class _SettingPageState extends State<SettingPage> {
                                                 ErrorMessageWidget(
                                                   msg: "No Data Found",
                                                   isnetworkerror: false,
-                                                  icondata: 0xe81d,
+                                                  imgPath:
+                                                      "assets/images/no_data_icon.svg",
                                                 )
                                               ]);
                                       } else if (state is HomeLoading) {
@@ -294,7 +299,8 @@ class _SettingPageState extends State<SettingPage> {
                                               ErrorMessageWidget(
                                                 msg: "Error",
                                                 isnetworkerror: false,
-                                                icondata: 0xe81d,
+                                                imgPath:
+                                                    "assets/images/error_icon.svg",
                                               ),
                                             ]);
                                       }

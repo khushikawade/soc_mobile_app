@@ -173,17 +173,21 @@ class _InformationPageState extends State<InformationPage> {
                 return connected
                     ? Column(
                         children: [
-                          BlocListener<HomeBloc, HomeState>(
-                            bloc: _bloc,
-                            listener: (context, state) async {
-                              if (state is BottomNavigationBarSuccess) {
-                                AppTheme.setDynamicTheme(
-                                    Globals.appSetting, context);
-                                Globals.homeObjet = state.obj;
-                                setState(() {});
-                              }
-                            },
-                            child: Container(),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _bloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
+                              child: Container(),
+                            ),
                           ),
                           BlocBuilder<HomeBloc, HomeState>(
                               bloc: _bloc,
@@ -197,16 +201,20 @@ class _InformationPageState extends State<InformationPage> {
                                             ErrorMessageWidget(
                                               msg: "No Data Found",
                                               isnetworkerror: false,
-                                              icondata: 0xe81d,
+                                              imgPath:
+                                                  "assets/images/no_data_icon.svg",
                                             )
                                           ]),
                                         );
                                 } else if (state is HomeLoading) {
-                                  return Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.8,
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
+                                  return Expanded(
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
+                                      child: Center(
+                                          child: CircularProgressIndicator()),
+                                    ),
                                   );
                                 }
 
@@ -217,7 +225,7 @@ class _InformationPageState extends State<InformationPage> {
                                       ErrorMessageWidget(
                                         msg: "Error",
                                         isnetworkerror: false,
-                                        icondata: 0xe81c,
+                                        imgPath: "assets/images/error_icon.svg",
                                       ),
                                     ]),
                                   );
