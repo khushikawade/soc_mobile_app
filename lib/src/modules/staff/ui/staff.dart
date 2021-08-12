@@ -236,76 +236,82 @@ class _StaffPageState extends State<StaffPage> {
                   iserrorstate = true;
                 }
 
-                return new Stack(fit: StackFit.expand, children: [
-                  connected
-                      ? BlocBuilder<StaffBloc, StaffState>(
-                          bloc: _bloc,
-                          builder: (BuildContext contxt, StaffState state) {
-                            if (state is StaffInitial ||
-                                state is StaffLoading) {
-                              return Center(child: CircularProgressIndicator());
-                            } else if (state is StaffDataSucess) {
-                              return state.obj != null && state.obj!.length > 0
-                                  ? Column(
-                                      children: [
-                                        Container(
-                                          child: Expanded(
-                                            child: ListView.builder(
-                                              scrollDirection: Axis.vertical,
-                                              itemCount: state.obj!.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return _buildList(
-                                                    state.obj![index], index);
-                                              },
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 25.00),
+                  child: new Stack(fit: StackFit.expand, children: [
+                    connected
+                        ? BlocBuilder<StaffBloc, StaffState>(
+                            bloc: _bloc,
+                            builder: (BuildContext contxt, StaffState state) {
+                              if (state is StaffInitial ||
+                                  state is StaffLoading) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else if (state is StaffDataSucess) {
+                                return state.obj != null &&
+                                        state.obj!.length > 0
+                                    ? Column(
+                                        children: [
+                                          Container(
+                                            child: Expanded(
+                                              child: ListView.builder(
+                                                scrollDirection: Axis.vertical,
+                                                itemCount: state.obj!.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return _buildList(
+                                                      state.obj![index], index);
+                                                },
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    )
-                                  : Expanded(
-                                      child:
-                                          ListView(shrinkWrap: true, children: [
-                                        ErrorMessageWidget(
-                                          msg: "No Data Found",
-                                          isnetworkerror: false,
-                                          icondata: 0xe81d,
-                                        )
-                                      ]),
-                                    );
-                            } else if (state is ErrorInStaffLoading) {
-                            } else {
-                              return Expanded(
-                                child: ListView(shrinkWrap: true, children: [
-                                  ErrorMessageWidget(
-                                    msg: "Error",
-                                    isnetworkerror: false,
-                                    icondata: 0xe81c,
-                                  ),
-                                ]),
-                              );
-                            }
+                                        ],
+                                      )
+                                    : Expanded(
+                                        child: ListView(
+                                            shrinkWrap: true,
+                                            children: [
+                                              ErrorMessageWidget(
+                                                msg: "No Data Found",
+                                                isnetworkerror: false,
+                                                icondata: 0xe81d,
+                                              )
+                                            ]),
+                                      );
+                              } else if (state is ErrorInStaffLoading) {
+                              } else {
+                                return Expanded(
+                                  child: ListView(shrinkWrap: true, children: [
+                                    ErrorMessageWidget(
+                                      msg: "Error",
+                                      isnetworkerror: false,
+                                      icondata: 0xe81c,
+                                    ),
+                                  ]),
+                                );
+                              }
 
-                            return Container();
-                          })
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false),
-                  BlocListener<HomeBloc, HomeState>(
-                    bloc: _homeBloc,
-                    listener: (context, state) async {
-                      if (state is BottomNavigationBarSuccess) {
-                        AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        Globals.homeObjet = state.obj;
-                        setState(() {});
-                      }
-                    },
-                    child: Container(
-                      height: 0,
-                      width: 0,
+                              return Container();
+                            })
+                        : NoInternetErrorWidget(
+                            connected: connected, issplashscreen: false),
+                    BlocListener<HomeBloc, HomeState>(
+                      bloc: _homeBloc,
+                      listener: (context, state) async {
+                        if (state is BottomNavigationBarSuccess) {
+                          AppTheme.setDynamicTheme(Globals.appSetting, context);
+                          Globals.homeObjet = state.obj;
+                          setState(() {});
+                        }
+                      },
+                      child: Container(
+                        height: 0,
+                        width: 0,
+                      ),
                     ),
-                  ),
-                ]);
+                  ]),
+                );
               },
               child: Container()),
           onRefresh: refreshPage,

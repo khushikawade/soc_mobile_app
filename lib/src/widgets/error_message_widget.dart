@@ -3,6 +3,9 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'dart:ui';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 // ignore: must_be_immutable
 class ErrorMessageWidget extends StatelessWidget {
@@ -21,19 +24,13 @@ class ErrorMessageWidget extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.12,
-            ),
-            alignment: Alignment.center,
-            child: Icon(
-              IconData(icondata,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              size: Globals.deviceType == "phone" ? 20 : 28,
-              color: Colors.black,
-              // Theme.of(context).primaryColor,
-            ),
-          ),
+              margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.12,
+              ),
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                "assets/images/no_internet_icon.svg",
+              )),
           SpacerWidget(12),
           isnetworkerror!
               ? Text(msg!)

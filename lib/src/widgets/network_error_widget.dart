@@ -20,7 +20,7 @@ class NoInternetErrorWidget extends StatelessWidget {
   Widget _buildNetworkerror(connected) {
     return Stack(children: [
       Positioned(
-        height: 20.0,
+        height: 30.0,
         left: 0.0,
         right: 0.0,
         top: issplashscreen == true ? 30 : 0,

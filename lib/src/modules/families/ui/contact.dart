@@ -374,18 +374,21 @@ class _ContactPageState extends State<ContactPage> {
   }
 
   Widget _buildItem() {
-    return ListView(children: [
-      _buildIcon(),
-      SpacerWidget(_kLabelSpacing),
-      _buildTitleWidget(),
-      SpacerWidget(_kLabelSpacing / 1.5),
-      _buildMapWidget(),
-      _buildAddressWidget(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      _buildPhoneWidget(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      _buildEmailWidget(),
-    ]);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25.0),
+      child: ListView(children: [
+        _buildIcon(),
+        SpacerWidget(_kLabelSpacing),
+        _buildTitleWidget(),
+        SpacerWidget(_kLabelSpacing / 1.5),
+        _buildMapWidget(),
+        _buildAddressWidget(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        _buildPhoneWidget(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        _buildEmailWidget(),
+      ]),
+    );
   }
 
   Widget build(BuildContext context) {

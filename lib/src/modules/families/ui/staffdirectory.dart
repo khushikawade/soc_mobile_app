@@ -89,214 +89,213 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   }
 
   Widget contactItem(obj, index) {
-    return InkWell(
-        onTap: () {},
-        child: Container(
-          margin: EdgeInsets.symmetric(
-              horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
-          padding: EdgeInsets.symmetric(
-              horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
-          decoration: BoxDecoration(
-            border: (index % 2 == 0)
-                ? Border.all(
-                    color: Theme.of(context).colorScheme.background,
-                  )
-                : Border.all(color: Theme.of(context).colorScheme.secondary),
-            borderRadius: BorderRadius.circular(0.0),
-            color: (index % 2 == 0)
-                ? Theme.of(context).colorScheme.background
-                : Theme.of(context).colorScheme.secondary,
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.2),
-                spreadRadius: 0,
-                blurRadius: 1,
-                offset: Offset(0, 1),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    HorzitalSpacerWidget(_kLabelSpacing / 1.5),
-                    obj.imageUrlC != null && obj.imageUrlC.length > 0
-                        ? CachedNetworkImage(
-                            imageUrl: obj.imageUrlC,
-                            fit: BoxFit.fill,
-                            width: 90,
-                            height: 120,
-                            placeholder: (context, url) => Container(
-                                alignment: Alignment.center,
-                                child: ShimmerLoading(
-                                  isLoading: true,
-                                  child: Container(
-                                    width: _kIconSize * 1.4,
-                                    height: _kIconSize * 1.5,
-                                    color: Colors.white,
-                                  ),
-                                )),
-                          )
-                        : Container(
-                            child: ClipRRect(
-                              child: CachedNetworkImage(
-                                fit: BoxFit.fill,
-                                width: 90,
-                                height: 120,
-                                imageUrl: Globals.homeObjet["App_Logo__c"],
-                                placeholder: (context, url) => Container(
-                                    alignment: Alignment.center,
-                                    child: ShimmerLoading(
-                                      isLoading: true,
-                                      child: Container(
-                                        width: _kIconSize * 1.4,
-                                        height: _kIconSize * 1.5,
-                                        color: Colors.white,
-                                      ),
-                                    )),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0),
+      child: Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
+        padding: EdgeInsets.symmetric(
+            horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
+        decoration: BoxDecoration(
+          border: (index % 2 == 0)
+              ? Border.all(
+                  color: Theme.of(context).colorScheme.background,
+                )
+              : Border.all(color: Theme.of(context).colorScheme.secondary),
+          borderRadius: BorderRadius.circular(0.0),
+          color: (index % 2 == 0)
+              ? Theme.of(context).colorScheme.background
+              : Theme.of(context).colorScheme.secondary,
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.2),
+              spreadRadius: 0,
+              blurRadius: 1,
+              offset: Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  HorzitalSpacerWidget(_kLabelSpacing / 1.5),
+                  obj.imageUrlC != null && obj.imageUrlC.length > 0
+                      ? CachedNetworkImage(
+                          imageUrl: obj.imageUrlC,
+                          fit: BoxFit.fill,
+                          width: 90,
+                          height: 120,
+                          placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width: _kIconSize * 1.4,
+                                  height: _kIconSize * 1.5,
+                                  color: Colors.white,
+                                ),
+                              )),
+                        )
+                      : Container(
+                          child: ClipRRect(
+                            child: CachedNetworkImage(
+                              fit: BoxFit.fill,
+                              width: 90,
+                              height: 120,
+                              imageUrl: Globals.homeObjet["App_Logo__c"],
+                              placeholder: (context, url) => Container(
+                                  alignment: Alignment.center,
+                                  child: ShimmerLoading(
+                                    isLoading: true,
+                                    child: Container(
+                                      width: _kIconSize * 1.4,
+                                      height: _kIconSize * 1.5,
+                                      color: Colors.white,
+                                    ),
+                                  )),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
                             ),
                           ),
-                    HorzitalSpacerWidget(_kLabelSpacing),
-                    Expanded(
-                      child: Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SpacerWidget(_kLabelSpacing * 3),
-                                TranslationWidget(
-                                  message: obj.titleC ?? "-",
-                                  toLanguage: Globals.selectedLanguage,
-                                  fromLanguage: "en",
-                                  builder: (translatedMessage) => Text(
-                                      translatedMessage.toString(),
-                                      textAlign: TextAlign.start,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1!
-                                          .copyWith(
-                                            fontWeight: FontWeight.w400,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                          )),
-                                ),
-                              ],
-                            )
-                          : Text(obj.titleC ?? "-",
+                        ),
+                  HorzitalSpacerWidget(_kLabelSpacing),
+                  Expanded(
+                    child: Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English"
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SpacerWidget(_kLabelSpacing * 3),
+                              TranslationWidget(
+                                message: obj.titleC ?? "-",
+                                toLanguage: Globals.selectedLanguage,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                    textAlign: TextAlign.start,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                        )),
+                              ),
+                            ],
+                          )
+                        : Text(obj.titleC ?? "-",
+                            textAlign: TextAlign.start,
+                            style:
+                                Theme.of(context).textTheme.bodyText1!.copyWith(
+                                      fontWeight: FontWeight.w400,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    )),
+                  ),
+                ]),
+            SpacerWidget(_kLabelSpacing * 1.2),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  height: 45,
+                  width: 100,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (obj.phoneC != null) {
+                        objurl.callurlLaucher(context, "tel:" + obj.phoneC);
+                      }
+                    },
+                    child: Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English"
+                        ? Container(
+                            child: TranslationWidget(
+                              message: "Call",
+                              fromLanguage: "en",
+                              toLanguage: language,
+                              builder: (translatedMessage) => Text(
+                                translatedMessage.toString(),
+                              ),
+                            ),
+                          )
+                        : Text("Call"),
+                  ),
+                ),
+                SizedBox(
+                  width: _kLabelSpacing / 1.5,
+                ),
+                SizedBox(
+                  height: 45,
+                  width: 100,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (obj.emailC != null) {
+                        objurl.callurlLaucher(
+                            context, 'mailto:"${obj.emailC}"');
+                      }
+                    },
+                    child: Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English"
+                        ? Container(
+                            child: TranslationWidget(
+                              message: "Mail",
+                              fromLanguage: "en",
+                              toLanguage: language,
+                              builder: (translatedMessage) => Text(
+                                translatedMessage.toString(),
+                              ),
+                            ),
+                          )
+                        : Text("Mail"),
+                  ),
+                ),
+              ],
+            ),
+            SpacerWidget(_kLabelSpacing / 1.2),
+            Row(
+              children: [
+                Expanded(
+                  child: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: obj.descriptionC ?? "-",
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
                               textAlign: TextAlign.start,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText1!
                                   .copyWith(
-                                    fontWeight: FontWeight.w400,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
-                                  )),
-                    ),
-                  ]),
-              SpacerWidget(_kLabelSpacing * 1.2),
-              Row(
-                children: <Widget>[
-                  SizedBox(
-                    height: 45,
-                    width: 100,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (obj.phoneC != null) {
-                          objurl.callurlLaucher(context, "tel:" + obj.phoneC);
-                        }
-                      },
-                      child: Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? Container(
-                              child: TranslationWidget(
-                                message: "Call",
-                                fromLanguage: "en",
-                                toLanguage: language,
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                ),
-                              ),
-                            )
-                          : Text("Call"),
-                    ),
-                  ),
-                  SizedBox(
-                    width: _kLabelSpacing / 1.5,
-                  ),
-                  SizedBox(
-                    height: 45,
-                    width: 100,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (obj.emailC != null) {
-                          objurl.callurlLaucher(
-                              context, 'mailto:"${obj.emailC}"');
-                        }
-                      },
-                      child: Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? Container(
-                              child: TranslationWidget(
-                                message: "Mail",
-                                fromLanguage: "en",
-                                toLanguage: language,
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                ),
-                              ),
-                            )
-                          : Text("Mail"),
-                    ),
-                  ),
-                ],
-              ),
-              SpacerWidget(_kLabelSpacing / 1.2),
-              Row(
-                children: [
-                  Expanded(
-                    child: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? TranslationWidget(
-                            message: obj.descriptionC ?? "-",
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
-                                textAlign: TextAlign.start,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1!
-                                    .copyWith(
-                                        fontWeight: FontWeight.w400,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant)))
-                        : Text(obj.descriptionC ?? "-",
-                            textAlign: TextAlign.start,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(
-                                    fontWeight: FontWeight.w400,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant)),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ));
+                                      fontWeight: FontWeight.w400,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant)))
+                      : Text(obj.descriptionC ?? "-",
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant)),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget build(BuildContext context) {

@@ -234,16 +234,22 @@ class _EventDescriptionState extends State<EventDescription> {
     return Scaffold(
         body: RefreshIndicator(
       key: refreshKey,
-      child: ListView(children: [
-        Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [_buildItem(widget.obj), buttomButtonsWidget(widget.obj)],
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 25.0),
+        child: ListView(children: [
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                _buildItem(widget.obj),
+                buttomButtonsWidget(widget.obj)
+              ],
+            ),
           ),
-        ),
-      ]),
+        ]),
+      ),
       onRefresh: refreshPage,
     ));
   }

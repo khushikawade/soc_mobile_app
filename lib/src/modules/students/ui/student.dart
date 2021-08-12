@@ -148,7 +148,7 @@ class _StudentPageState extends State<StudentPage> {
                                         textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .subtitle1!
+                                            .subtitle2!
                                             .copyWith(
                                               color: Theme.of(context)
                                                   .colorScheme

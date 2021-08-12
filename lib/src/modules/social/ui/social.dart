@@ -229,13 +229,16 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget makeList(obj) {
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: obj.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _buildlist(obj[index], index, obj!);
-      },
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25.0),
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: obj.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildlist(obj[index], index, obj!);
+        },
+      ),
     );
   }
 
