@@ -79,11 +79,12 @@ class _SettingPageState extends State<SettingPage> {
                     builder: (translatedMessage) => Text(
                         translatedMessage.toString(),
                         style: Theme.of(context).textTheme.headline2!.copyWith(
-                            color: Theme.of(context).colorScheme.primary)),
+                            color:
+                                Theme.of(context).colorScheme.primaryVariant)),
                   )
                 : Text(tittle,
                     style: Theme.of(context).textTheme.headline2!.copyWith(
-                        color: Theme.of(context).colorScheme.primary)),
+                        color: Theme.of(context).colorScheme.primaryVariant)),
           ),
         ),
       ],
@@ -140,7 +141,8 @@ class _SettingPageState extends State<SettingPage> {
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline2!.copyWith(
                             fontWeight: FontWeight.normal,
-                            color: Theme.of(context).colorScheme.primary)),
+                            color:
+                                Theme.of(context).colorScheme.primaryVariant)),
                   ),
                 ),
               )
@@ -149,7 +151,7 @@ class _SettingPageState extends State<SettingPage> {
                 child: Text("Enable Notification",
                     style: Theme.of(context).textTheme.headline2!.copyWith(
                         fontWeight: FontWeight.normal,
-                        color: Theme.of(context).colorScheme.primary)),
+                        color: Theme.of(context).colorScheme.primaryVariant)),
               ),
         _buildSwitch(),
       ],
@@ -178,12 +180,12 @@ class _SettingPageState extends State<SettingPage> {
                     translatedMessage.toString(),
                     style: Theme.of(context).textTheme.headline2!.copyWith(
                         fontWeight: FontWeight.normal,
-                        color: Theme.of(context).colorScheme.primary)),
+                        color: Theme.of(context).colorScheme.primaryVariant)),
               )
             : Text("Open Source licences",
                 style: Theme.of(context).textTheme.headline2!.copyWith(
                     fontWeight: FontWeight.normal,
-                    color: Theme.of(context).colorScheme.primary)),
+                    color: Theme.of(context).colorScheme.primaryVariant)),
       ),
     );
   }

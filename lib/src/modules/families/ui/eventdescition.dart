@@ -52,13 +52,17 @@ class _EventDescriptionState extends State<EventDescription> {
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline2,
+                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        ),
                   ),
                 )
               : Text(
                   list.titleC ?? '-',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                      ),
                 ),
           SpacerWidget(_kPadding / 4),
           divider(),
@@ -75,14 +79,17 @@ class _EventDescriptionState extends State<EventDescription> {
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                          ),
                     ),
                   )
                 : Text(
                     Utility.convertDateFormat(list.startDate!) +
                         " - " +
                         Utility.convertDateFormat(list.endDate!),
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
                   ),
           ),
           SpacerWidget(_kPadding / 2),
@@ -95,21 +102,22 @@ class _EventDescriptionState extends State<EventDescription> {
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1!
-                          .copyWith(fontSize: 16),
-                    ),
+                        translatedMessage.toString(),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                            fontSize: 16)
+
+                        // .copyWith(fontSize: 16),
+                        ),
                   )
                 : Text(
                     list.description ?? "",
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(fontSize: 16),
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        ),
                   ),
           ),
           SpacerWidget(_kPadding / 2),
@@ -128,10 +136,10 @@ class _EventDescriptionState extends State<EventDescription> {
       },
       child: Text(
         list.inviteLink ?? '-',
-        style: Theme.of(context)
-            .textTheme
-            .headline4!
-            .copyWith(decoration: TextDecoration.underline),
+        style: Theme.of(context).textTheme.headline4!.copyWith(
+              decoration: TextDecoration.underline,
+              color: Theme.of(context).colorScheme.primaryVariant,
+            ),
       ),
     );
   }

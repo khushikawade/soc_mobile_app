@@ -190,7 +190,11 @@ class _StartupPageState extends State<StartupPage> {
                                   homeObj: state.obj,
                                 ),
                               ))
-                          : Center(child: Text("No data found"));
+                          : ErrorMessageWidget(
+                              msg: "No data found",
+                              isnetworkerror: false,
+                              icondata: 0xe81d,
+                            );
                     } else if (state is HomeErrorReceived) {
                       Container(
                         alignment: Alignment.center,

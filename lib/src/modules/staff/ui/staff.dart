@@ -146,68 +146,67 @@ class _StaffPageState extends State<StaffPage> {
 
   Widget _buildList(StaffList obj, int index) {
     return Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AppTheme.kDividerColor2,
-            width: 0.65,
-          ),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: AppTheme.kDividerColor2,
+          width: 0.65,
         ),
-        child: obj.titleC != null && obj.titleC!.length > 0
-            ? ListTile(
-                onTap: () {
-                  _route(obj, index);
-                },
-                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-                contentPadding: EdgeInsets.only(
-                    left: _kLabelSpacing, right: _kLabelSpacing / 2),
-                leading: _buildLeading(obj),
-                // leading: Icon(
-                //   IconData(
-                //     int.parse('0x${obj.appIconC!}'),
-                //     fontFamily: 'FontAwesomeSolid',
-                //     fontPackage: 'font_awesome_flutter',
-                //   ),
-                //   // color: AppTheme.kListIconColor3,
-                //   size: Globals.deviceType == "phone" ? 18 : 26,
-                // ),
-                title: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
-                    ? TranslationWidget(
-                        message: obj.titleC.toString(),
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                      )
-                    : Text(
-                        obj.titleC.toString(),
-                        style: Theme.of(context).textTheme.bodyText2,
+        borderRadius: BorderRadius.circular(0.0),
+        color: (index % 2 == 0)
+            ? Theme.of(context).colorScheme.background
+            : Theme.of(context).colorScheme.secondary,
+      ),
+      child: obj.titleC != null && obj.titleC!.length > 0
+          ? ListTile(
+              onTap: () {
+                _route(obj, index);
+              },
+              visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+              contentPadding: EdgeInsets.only(
+                  left: _kLabelSpacing, right: _kLabelSpacing / 2),
+              leading: _buildLeading(obj),
+              // leading: Icon(
+              //   IconData(
+              //     int.parse('0x${obj.appIconC!}'),
+              //     fontFamily: 'FontAwesomeSolid',
+              //     fontPackage: 'font_awesome_flutter',
+              //   ),
+              //   // color: AppTheme.kListIconColor3,
+              //   size: Globals.deviceType == "phone" ? 18 : 26,
+              // ),
+              title: Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English"
+                  ? TranslationWidget(
+                      message: obj.titleC.toString(),
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                              color:
+                                  Theme.of(context).colorScheme.primaryVariant,
+                            ),
                       ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: Globals.deviceType == "phone" ? 12 : 20,
-                  color: Theme.of(context).colorScheme.primary,
-                  // color: AppTheme.kButtonbackColor,
-                ),
-              )
-            : Center(
-                child: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
-                    ? TranslationWidget(
-                        message: "No data found",
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                        ),
-                      )
-                    : Center(child: Text("No data found"))));
+                    )
+                  : Text(
+                      obj.titleC.toString(),
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                          ),
+                    ),
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: Globals.deviceType == "phone" ? 12 : 20,
+                color: Theme.of(context).colorScheme.primary,
+                // color: AppTheme.kButtonbackColor,
+              ),
+            )
+          : ErrorMessageWidget(
+              msg: "No data found",
+              isnetworkerror: false,
+              icondata: 0xe81d,
+            ),
+    );
   }
 
   Widget build(BuildContext context) {

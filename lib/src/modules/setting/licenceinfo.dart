@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/setting/licencedetail.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -66,34 +67,20 @@ class _LicenceinfoState extends State<Licenceinfo> {
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Text(
                     translatedMessage,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(color: Theme.of(context).colorScheme.primary),
+                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
                     textAlign: TextAlign.start,
                   ),
                 )
               : Text(
                   list[index]["name"] ?? '-',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(color: Theme.of(context).colorScheme.primary),
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
         )),
       ),
     );
   }
-
-  // Widget _buildHeading() {
-  //   return InkWell(
-  //     onTap: () {},
-  //     child: Text(
-  //       "Open Source Licence",
-  //       style: Theme.of(context).textTheme.headline2,
-  //     ),
-  //   );
-  // }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,20 +108,11 @@ class _LicenceinfoState extends State<Licenceinfo> {
                               _list,
                               index,
                             )
-                          : Container(
-                              alignment: Alignment.center,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
-                                  ? TranslationWidget(
-                                      message: "No data found",
-                                      toLanguage: Globals.selectedLanguage,
-                                      fromLanguage: "en",
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                      ),
-                                    )
-                                  : Center(child: Text("No data found")));
+                          : ErrorMessageWidget(
+                              msg: "No data found",
+                              isnetworkerror: false,
+                              icondata: 0xe81d,
+                            );
                     },
                   ),
                 ),

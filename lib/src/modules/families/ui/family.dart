@@ -208,12 +208,14 @@ class _FamilyPageState extends State<FamilyPage> {
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )
             : Text(
                 obj.titleC.toString(),
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    color: Theme.of(context).colorScheme.primaryVariant),
               ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
@@ -314,16 +316,6 @@ class _FamilyPageState extends State<FamilyPage> {
                                         Globals.appSetting, context);
                                     Globals.homeObjet = state.obj;
                                     setState(() {});
-                                  } else if (state is HomeErrorReceived) {
-                                    Container(
-                                      alignment: Alignment.center,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.8,
-                                      child: Center(
-                                          child:
-                                              Text("Unable to load the data")),
-                                    );
                                   }
                                 },
                                 child: Container(

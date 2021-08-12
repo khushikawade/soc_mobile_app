@@ -62,8 +62,9 @@ class Utility {
       content: Text("$msg",
           textAlign: TextAlign.left,
           style: TextStyle(
-              color: Theme.of(context).backgroundColor,
-              fontWeight: FontWeight.w600)),
+            color: Theme.of(context).backgroundColor,
+            fontWeight: FontWeight.w600,
+          )),
       backgroundColor: Colors.black.withOpacity(0.8),
       padding: EdgeInsets.only(
         left: 16,

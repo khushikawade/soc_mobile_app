@@ -174,6 +174,8 @@ class _SearchPageState extends State<SearchPage> {
               vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
           color: AppTheme.kFieldbackgroundColor,
           child: TextFormField(
+            style:
+                TextStyle(color: Theme.of(context).colorScheme.primaryVariant),
             focusNode: myFocusNode,
             controller: _controller,
             cursorColor: Colors.black,
@@ -302,6 +304,13 @@ class _SearchPageState extends State<SearchPage> {
                                 fromLanguage: "en",
                                 builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant),
                                 ),
                               )
                             : Text(
@@ -309,6 +318,13 @@ class _SearchPageState extends State<SearchPage> {
                                         items[index].titleC.isNotEmpty
                                     ? '${items[index].titleC} '
                                     : '',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant),
                               ),
                       ]),
                 )
@@ -359,7 +375,7 @@ class _SearchPageState extends State<SearchPage> {
                                               .copyWith(
                                                   color: Theme.of(context)
                                                       .colorScheme
-                                                      .primary),
+                                                      .primaryVariant),
                                         ),
                                       )
                                     : Text(
@@ -370,7 +386,7 @@ class _SearchPageState extends State<SearchPage> {
                                             .copyWith(
                                                 color: Theme.of(context)
                                                     .colorScheme
-                                                    .primary),
+                                                    .primaryVariant),
                                       ),
                                 onTap: () async {
                                   _route(data);
@@ -469,7 +485,8 @@ class _SearchPageState extends State<SearchPage> {
             : Text(
                 "Recent Search",
                 style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                    fontSize: 18, color: Theme.of(context).colorScheme.primary),
+                    fontSize: 18,
+                    color: Theme.of(context).colorScheme.primaryVariant),
                 textAlign: TextAlign.left,
               ),
       ],

@@ -149,15 +149,28 @@ class _SocialPageState extends State<SocialPage> {
                                         maxLines: 2,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline2,
+                                            .headline2!
+                                            .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                              fontWeight: FontWeight.normal,
+                                            ),
                                       ),
                                     )
                                   : Text(
                                       "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
-                                      style:
-                                          Theme.of(context).textTheme.headline2,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline2!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                            fontWeight: FontWeight.normal,
+                                          ),
                                     ),
                             )
                           : Container()
@@ -183,14 +196,27 @@ class _SocialPageState extends State<SocialPage> {
                                         translatedMessage.toString(),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .subtitle1,
+                                            .subtitle1!
+                                            .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                              fontWeight: FontWeight.normal,
+                                            ),
                                       ),
                                     )
                                   : Text(
                                       Utility.convertDate(obj.pubDate)
                                           .toString(),
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                            fontWeight: FontWeight.normal,
+                                          ),
                                     ))
                           : Container()
                     ],

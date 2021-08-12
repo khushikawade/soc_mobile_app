@@ -73,14 +73,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     style: Theme.of(context).textTheme.headline6!.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.primaryVariant,
                         ),
                   ),
                 )
               : Text(
                   tittle,
                   style: Theme.of(context).textTheme.headline6!.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.primaryVariant,
                       ),
                 ),
         ],
@@ -182,7 +182,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                           .textTheme
                                           .bodyText1!
                                           .copyWith(
-                                              fontWeight: FontWeight.w400)),
+                                            fontWeight: FontWeight.w400,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                          )),
                                 ),
                               ],
                             )
@@ -191,7 +195,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText1!
-                                  .copyWith(fontWeight: FontWeight.w400)),
+                                  .copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                  )),
                     ),
                   ]),
               SpacerWidget(_kLabelSpacing * 1.2),
@@ -267,13 +276,21 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText1!
-                                    .copyWith(fontWeight: FontWeight.w400)))
+                                    .copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant)))
                         : Text(obj.descriptionC ?? "-",
                             textAlign: TextAlign.start,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1!
-                                .copyWith(fontWeight: FontWeight.w400)),
+                                .copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant)),
                   ),
                 ],
               ),
