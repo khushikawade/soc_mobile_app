@@ -71,10 +71,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                     horizontal: _kLabelSpacing / 4, vertical: 0),
                 child: Text(
                   item.text,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: Color(0xff474D55)),
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )))
           .toList(),

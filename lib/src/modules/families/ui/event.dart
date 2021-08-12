@@ -88,15 +88,28 @@ class _EventPageState extends State<EventPage> {
                                 toLanguage: Globals.selectedLanguage,
                                 fromLanguage: "en",
                                 builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  style: Theme.of(context).textTheme.headline5,
-                                ),
+                                    translatedMessage.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                        )),
                               )
                             : Text(
                                 Utility.convertDateFormat(list.startDate!)
                                     .toString()
                                     .substring(0, 2),
-                                style: Theme.of(context).textTheme.headline5,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    ),
                               ),
                         Globals.selectedLanguage != null &&
                                 Globals.selectedLanguage != "English"
@@ -113,8 +126,12 @@ class _EventPageState extends State<EventPage> {
                                       .textTheme
                                       .headline2!
                                       .copyWith(
-                                          fontWeight: FontWeight.normal,
-                                          height: 1.5),
+                                        fontWeight: FontWeight.normal,
+                                        height: 1.5,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant,
+                                      ),
                                 ),
                               )
                             : Expanded(
@@ -126,8 +143,12 @@ class _EventPageState extends State<EventPage> {
                                       .textTheme
                                       .headline2!
                                       .copyWith(
-                                          fontWeight: FontWeight.normal,
-                                          height: 1.5),
+                                        fontWeight: FontWeight.normal,
+                                        height: 1.5,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant,
+                                      ),
                                 ),
                               )
                       ],
@@ -141,12 +162,22 @@ class _EventPageState extends State<EventPage> {
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
-                            style: Theme.of(context).textTheme.headline5,
+                            style:
+                                Theme.of(context).textTheme.headline5!.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    ),
                           ),
                         )
                       : Text(
                           list.titleC ?? '-',
-                          style: Theme.of(context).textTheme.headline5,
+                          style:
+                              Theme.of(context).textTheme.headline5!.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                  ),
                         ),
                   subtitle: Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
@@ -158,22 +189,28 @@ class _EventPageState extends State<EventPage> {
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(
-                                    fontWeight: FontWeight.normal, height: 1.5),
+                            style:
+                                Theme.of(context).textTheme.headline2!.copyWith(
+                                      fontWeight: FontWeight.normal,
+                                      height: 1.5,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    ),
                           ),
                         )
                       : Text(
                           Utility.convertDateFormat(list.startDate!) +
                               " - " +
                               Utility.convertDateFormat(list.endDate!),
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline2!
-                              .copyWith(
-                                  fontWeight: FontWeight.normal, height: 1.5),
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    fontWeight: FontWeight.normal,
+                                    height: 1.5,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                  ),
                         ),
                 )),
           )),
@@ -241,13 +278,13 @@ class _EventPageState extends State<EventPage> {
                   iserrorstate = true;
                 }
 
-                return Stack(fit: StackFit.expand, children: [
-                  connected
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            BlocBuilder<FamilyBloc, FamilyState>(
+                return connected
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: BlocBuilder<FamilyBloc, FamilyState>(
                                 bloc: _eventBloc,
                                 builder:
                                     (BuildContext contxt, FamilyState state) {
@@ -263,25 +300,23 @@ class _EventPageState extends State<EventPage> {
 
                                         // Column(children: [
                                         //   _buildHeading("Upcoming"),
-                                        Expanded(
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        itemCount: state.obj!.length,
-                                        shrinkWrap: true,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return state.obj!.length > 0
-                                              ? _buildList(state.obj![index],
-                                                  index, state.obj)
-                                              : ListView(children: [
-                                                  ErrorMessageWidget(
-                                                    msg: "No Data Found",
-                                                    isnetworkerror: false,
-                                                    icondata: 0xe81d,
-                                                  ),
-                                                ]);
-                                        },
-                                      ),
+                                        ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: state.obj!.length,
+                                      shrinkWrap: true,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return state.obj!.length > 0
+                                            ? _buildList(state.obj![index],
+                                                index, state.obj)
+                                            : ListView(children: [
+                                                ErrorMessageWidget(
+                                                  msg: "No Data Found",
+                                                  isnetworkerror: false,
+                                                  icondata: 0xe81d,
+                                                ),
+                                              ]);
+                                      },
                                     );
                                     // ]);
                                   } else if (state is ErrorLoading) {
@@ -297,31 +332,23 @@ class _EventPageState extends State<EventPage> {
                                   }
                                   return Container();
                                 }),
-                            BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
-                                } else if (state is HomeErrorReceived) {
-                                  Container(
-                                    alignment: Alignment.center,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.8,
-                                    child: Center(
-                                        child: Text("Unable to load the data")),
-                                  );
-                                }
-                              },
-                              child: Container(),
-                            ),
-                          ],
-                        )
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false),
-                ]);
+                          ),
+                          BlocListener<HomeBloc, HomeState>(
+                            bloc: _homeBloc,
+                            listener: (context, state) async {
+                              if (state is BottomNavigationBarSuccess) {
+                                AppTheme.setDynamicTheme(
+                                    Globals.appSetting, context);
+                                Globals.homeObjet = state.obj;
+                                setState(() {});
+                              }
+                            },
+                            child: Container(),
+                          ),
+                        ],
+                      )
+                    : NoInternetErrorWidget(
+                        connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

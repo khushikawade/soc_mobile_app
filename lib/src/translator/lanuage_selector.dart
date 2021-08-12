@@ -80,12 +80,12 @@ class LanguageSelector {
                     },
                     child: Text(language,
                         style: Theme.of(context).textTheme.caption!.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
+                            color: Theme.of(context).colorScheme.primaryVariant,
                             fontWeight: FontWeight.bold)),
                   )
                 : Text(language,
                     style: Theme.of(context).textTheme.caption!.copyWith(
-                        color: Theme.of(context).colorScheme.primary)),
+                        color: Theme.of(context).colorScheme.primaryVariant)),
           ),
         ),
       );
@@ -127,7 +127,10 @@ class LanguageSelector {
                                 .textTheme
                                 .headline6!
                                 .copyWith(
-                                    fontSize: AppTheme.kBottomSheetTitleSize),
+                                    fontSize: AppTheme.kBottomSheetTitleSize,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant),
                           ),
                           trailing: InkWell(
                             onTap: () {

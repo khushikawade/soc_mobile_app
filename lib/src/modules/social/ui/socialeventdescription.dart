@@ -265,6 +265,8 @@ class SocialDescription extends StatelessWidget {
                       .replaceAll("n.", ".")
                       .replaceAll("\nn", "\n")
                       .replaceAll("\\ n ", ""),
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )
             : Center(
@@ -277,6 +279,15 @@ class SocialDescription extends StatelessWidget {
                   },
                   data:
                       "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")}",
+                  style: {
+                    "body": Style(
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                      fontSize: Globals.deviceType == "phone"
+                          ? FontSize(13.0)
+                          : FontSize(21.0),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  },
                 ),
               )
       ],
@@ -296,11 +307,15 @@ class SocialDescription extends StatelessWidget {
                 toLanguage: language,
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )
             : Text(
                 "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
                 textAlign: TextAlign.left,
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    color: Theme.of(context).colorScheme.primaryVariant),
               ),
       ),
       SpacerWidget(_kPadding),
@@ -317,12 +332,14 @@ class SocialDescription extends StatelessWidget {
                     toLanguage: language,
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: Theme.of(context).colorScheme.primaryVariant),
                     ),
                   )
                 : Text(
                     Utility.convertDate(object.pubDate).toString(),
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
                   )
             : Container());
   }

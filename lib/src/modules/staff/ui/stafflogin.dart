@@ -27,7 +27,10 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
   Widget _buildHeading() {
     return Text(
       "This content has beeen locked.",
-      style: Theme.of(context).textTheme.headline2,
+      style: Theme.of(context)
+          .textTheme
+          .headline2!
+          .copyWith(color: Theme.of(context).colorScheme.primaryVariant),
     );
   }
 
@@ -38,15 +41,24 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
       children: [
         Text(
           "Please unlock this content to continue.",
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1!
+              .copyWith(color: Theme.of(context).colorScheme.primaryVariant),
         ),
         Text(
           "If you need support accessing this page, please reach ",
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1!
+              .copyWith(color: Theme.of(context).colorScheme.primaryVariant),
         ),
         Text(
           "out to Mr. Edwards.",
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1!
+              .copyWith(color: Theme.of(context).colorScheme.primaryVariant),
         ),
       ],
     );

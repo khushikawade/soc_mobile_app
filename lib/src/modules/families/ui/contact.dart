@@ -113,12 +113,14 @@ class _ContactPageState extends State<ContactPage> {
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )
             : Text(
                 Globals.homeObjet["Contact_Name__c"] ?? "-",
-                style: Theme.of(context).textTheme.headline2,
+                style: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context).colorScheme.primaryVariant),
               ));
   }
 
@@ -218,16 +220,15 @@ class _ContactPageState extends State<ContactPage> {
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText1,
-                    // .copyWith(color: Color(0xff171717)),
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
                     textAlign: TextAlign.center,
                   ),
                 )
               : Text(
                   "Address : ",
-                  style: Theme.of(context).textTheme.bodyText1!,
-                  // .copyWith(color: Color(0xff171717)
-                  // ),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                   textAlign: TextAlign.center,
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
@@ -240,13 +241,15 @@ class _ContactPageState extends State<ContactPage> {
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          color: Theme.of(context).colorScheme.primaryVariant),
                       textAlign: TextAlign.start,
                     ),
                   )
                 : Text(
                     Globals.homeObjet["Contact_Address__c"] ?? '-',
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
                     textAlign: TextAlign.start,
                   ),
           )
@@ -269,14 +272,14 @@ class _ContactPageState extends State<ContactPage> {
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText1!,
-                    // .copyWith(color: Color(0xff171717)),
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
                   ),
                 )
               : Text(
                   "Phone : ",
-                  style: Theme.of(context).textTheme.bodyText1!,
-                  // .copyWith(color: Color(0xff171717)),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           InkWell(
@@ -294,12 +297,14 @@ class _ContactPageState extends State<ContactPage> {
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          color: Theme.of(context).colorScheme.primaryVariant),
                     ),
                   )
                 : Text(
                     Globals.homeObjet["Contact_Phone__c"] ?? '-',
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
                   ),
           )
         ],
@@ -338,13 +343,15 @@ class _ContactPageState extends State<ContactPage> {
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText1!,
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
                     // .copyWith(color: Color(0xff171717)),
                   ),
                 )
               : Text(
                   "Email : ",
-                  style: Theme.of(context).textTheme.bodyText1!,
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                   // .copyWith(color: Color(0xff171717)),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
@@ -357,7 +364,8 @@ class _ContactPageState extends State<ContactPage> {
             },
             child: Text(
               Globals.homeObjet["Contact_Email__c"] ?? '-',
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  color: Theme.of(context).colorScheme.primaryVariant),
             ),
           )
         ],
@@ -453,12 +461,6 @@ class _ContactPageState extends State<ContactPage> {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
                         Globals.homeObjet = state.obj;
                         setState(() {});
-                      } else if (state is HomeErrorReceived) {
-                        Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(child: Text("Unable to load the data")),
-                        );
                       }
                     },
                     child: Container(),

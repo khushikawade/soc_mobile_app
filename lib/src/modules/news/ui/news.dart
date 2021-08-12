@@ -155,17 +155,16 @@ class _NewsPageState extends State<NewsPage> {
                 builder: (translatedMessage) => Text(
                   // obj.titleC.toString(),
                   translatedMessage.toString(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2!
-                      .copyWith(color: Theme.of(context).colorScheme.primary),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )
             : Text(
                 obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headline4!.copyWith(
+                    color: Theme.of(context).colorScheme.primaryVariant),
               ));
   }
 

@@ -165,61 +165,65 @@ class _InformationPageState extends State<InformationPage> {
                   iserrorstate = true;
                 }
 
-                return new Stack(fit: StackFit.expand, children: [
-                  connected
-                      ? Column(
-                          children: [
-                            BlocListener<HomeBloc, HomeState>(
+                return connected
+                    ? Column(
+                        children: [
+                          BlocListener<HomeBloc, HomeState>(
+                            bloc: _bloc,
+                            listener: (context, state) async {
+                              if (state is BottomNavigationBarSuccess) {
+                                AppTheme.setDynamicTheme(
+                                    Globals.appSetting, context);
+                                Globals.homeObjet = state.obj;
+                                setState(() {});
+                              }
+                            },
+                            child: Container(),
+                          ),
+                          BlocBuilder<HomeBloc, HomeState>(
                               bloc: _bloc,
-                              listener: (context, state) async {
+                              builder: (BuildContext contxt, HomeState state) {
                                 if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
+                                  return state.obj != null &&
+                                          state.obj.length > 0
+                                      ? _buildContent1()
+                                      : Expanded(
+                                          child: ListView(children: [
+                                            ErrorMessageWidget(
+                                              msg: "No Data Found",
+                                              isnetworkerror: false,
+                                              icondata: 0xe81d,
+                                            )
+                                          ]),
+                                        );
+                                } else if (state is HomeLoading) {
+                                  return Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.8,
+                                    child: Center(
+                                        child: CircularProgressIndicator()),
+                                  );
                                 }
-                              },
-                              child: Container(),
-                            ),
-                            BlocBuilder<HomeBloc, HomeState>(
-                                bloc: _bloc,
-                                builder:
-                                    (BuildContext contxt, HomeState state) {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    return state.obj != null &&
-                                            state.obj.length > 0
-                                        ? _buildContent1()
-                                        : Expanded(
-                                            child: ListView(children: [
-                                              ErrorMessageWidget(
-                                                msg: "No Data Found",
-                                                isnetworkerror: false,
-                                                icondata: 0xe81d,
-                                              )
-                                            ]),
-                                          );
-                                  }
 
-                                  if (state is HomeErrorReceived) {
-                                    return Expanded(
-                                      child:
-                                          ListView(shrinkWrap: true, children: [
-                                        ErrorMessageWidget(
-                                          msg: "Error",
-                                          isnetworkerror: false,
-                                          icondata: 0xe81c,
-                                        ),
-                                      ]),
-                                    );
-                                  } else {
-                                    return Container();
-                                  }
-                                }),
-                          ],
-                        )
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false),
-                ]);
+                                if (state is HomeErrorReceived) {
+                                  return Expanded(
+                                    child:
+                                        ListView(shrinkWrap: true, children: [
+                                      ErrorMessageWidget(
+                                        msg: "Error",
+                                        isnetworkerror: false,
+                                        icondata: 0xe81c,
+                                      ),
+                                    ]),
+                                  );
+                                } else {
+                                  return Container();
+                                }
+                              }),
+                        ],
+                      )
+                    : NoInternetErrorWidget(
+                        connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

@@ -47,10 +47,25 @@ class ErrorMessageWidget extends StatelessWidget {
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
-                            style: TextStyle(fontSize: 18),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1!
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant),
                           ),
                         )
-                      : Text(msg!),
+                      : Text(
+                          msg!,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant),
+                        ),
                 ),
         ],
       ),
