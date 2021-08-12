@@ -235,80 +235,77 @@ class _SocialPageState extends State<SocialPage> {
 
                   if (connected) {
                     if (iserrorstate == true) {
+                      bloc.add(SocialPageEvent());
                       iserrorstate = false;
                     }
                   } else if (!connected) {
                     iserrorstate = true;
                   }
 
-                  return new Stack(fit: StackFit.expand, children: [
-                    connected
-                        ? Column(
-                            children: [
-                              Expanded(
-                                child: BlocBuilder(
-                                    bloc: bloc,
-                                    builder: (BuildContext context,
-                                        SocialState state) {
-                                      if (state is SocialDataSucess) {
-                                        return state.obj != null &&
-                                                state.obj!.length > 0
-                                            ? makeList(state.obj)
-                                            : ListView(
-                                                shrinkWrap: true,
-                                                children: [
-                                                    ErrorMessageWidget(
-                                                      msg: "No Data Found",
-                                                      isnetworkerror: false,
-                                                      icondata: 0xe81d,
-                                                    )
-                                                  ]);
-                                      } else if (state is Loading) {
-                                        return Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.8,
-                                          child: Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                        );
-                                      }
-                                      if (state is SocialError) {
-                                        return ListView(
-                                            shrinkWrap: true,
-                                            children: [
-                                              ErrorMessageWidget(
-                                                msg: "Error",
-                                                isnetworkerror: false,
-                                                icondata: 0xe81c,
-                                              ),
-                                            ]);
-                                      }
+                  return connected
+                      ? Column(
+                          children: [
+                            Expanded(
+                              child: BlocBuilder(
+                                  bloc: bloc,
+                                  builder: (BuildContext context,
+                                      SocialState state) {
+                                    if (state is SocialDataSucess) {
+                                      return state.obj != null &&
+                                              state.obj!.length > 0
+                                          ? makeList(state.obj)
+                                          : ListView(
+                                              shrinkWrap: true,
+                                              children: [
+                                                  ErrorMessageWidget(
+                                                    msg: "No Data Found",
+                                                    isnetworkerror: false,
+                                                    icondata: 0xe81d,
+                                                  )
+                                                ]);
+                                    } else if (state is Loading) {
+                                      return Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.8,
+                                        child: Center(
+                                            child: CircularProgressIndicator()),
+                                      );
+                                    }
+                                    if (state is SocialError) {
+                                      return ListView(
+                                          shrinkWrap: true,
+                                          children: [
+                                            ErrorMessageWidget(
+                                              msg: "Error",
+                                              isnetworkerror: false,
+                                              icondata: 0xe81c,
+                                            ),
+                                          ]);
+                                    }
 
-                                      return Container();
-                                    }),
+                                    return Container();
+                                  }),
+                            ),
+                            BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
+                              child: Container(
+                                height: 0,
+                                width: 0,
                               ),
-                              BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    Globals.homeObjet = state.obj;
-                                    setState(() {});
-                                  }
-                                },
-                                child: Container(
-                                  height: 0,
-                                  width: 0,
-                                ),
-                              ),
-                            ],
-                          )
-                        : NoInternetErrorWidget(
-                            connected: connected, issplashscreen: false),
-                  ]);
+                            ),
+                          ],
+                        )
+                      : NoInternetErrorWidget(
+                          connected: connected, issplashscreen: false);
                 },
                 child: Container()),
             onRefresh: refreshPage,

@@ -270,6 +270,16 @@ class _SettingPageState extends State<SettingPage> {
                                                   icondata: 0xe81d,
                                                 )
                                               ]);
+                                      } else if (state is HomeLoading) {
+                                        return Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.8,
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        );
                                       }
 
                                       if (state is HomeErrorReceived) {
