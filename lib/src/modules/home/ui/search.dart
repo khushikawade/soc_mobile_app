@@ -227,26 +227,28 @@ class _SearchPageState extends State<SearchPage> {
                       },
                     ),
                   )
-                : Expanded(
-                    child: ListView(children: [
-                      ErrorMessageWidget(
-                        msg: "No data found",
-                        isnetworkerror: false,
-                        imgPath: "assets/images/error_icon.svg",
-                      ),
-                      // SpacerWidget(12),
-                      // Globals.selectedLanguage != null &&
-                      //         Globals.selectedLanguage != "English"
-                      //     ? TranslationWidget(
-                      //         message: "No  data found",
-                      //         toLanguage: Globals.selectedLanguage,
-                      //         fromLanguage: "en",
-                      //         builder: (translatedMessage) => Text(
-                      //           translatedMessage.toString(),
-                      //         ),
-                      //       )
-                      //     : Text("No data found"),
-                    ]),
+                : Container(
+                    height: 0, width: 0,
+
+                    // Expanded(
+                    //     child: ListView(children: [
+                    //       ErrorMessageWidget(
+                    //         msg: "No data found",
+                    //         isnetworkerror: false,
+                    //         imgPath: "assets/images/error_icon.svg",
+                    //       ),
+                    // SpacerWidget(12),
+                    // Globals.selectedLanguage != null &&
+                    //         Globals.selectedLanguage != "English"
+                    //     ? TranslationWidget(
+                    //         message: "No  data found",
+                    //         toLanguage: Globals.selectedLanguage,
+                    //         fromLanguage: "en",
+                    //         builder: (translatedMessage) => Text(
+                    //           translatedMessage.toString(),
+                    //         ),
+                    //       )
+                    //     : Text("No data found"),
                   );
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Expanded(

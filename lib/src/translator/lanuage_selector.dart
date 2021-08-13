@@ -157,6 +157,10 @@ class LanguageSelector {
                                     focusNode: myFocusNode,
                                     controller: _controller,
                                     cursorColor: Colors.black,
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant),
                                     decoration: InputDecoration(
                                       isDense: true,
                                       hintText: 'Search',
