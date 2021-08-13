@@ -67,7 +67,8 @@ class _InformationPageState extends State<InformationPage> {
               child: Wrap(
                 children: [
                   widget.htmlText.toString().contains("src=") &&
-                          widget.htmlText.toString().split('"')[1] != ""
+                          widget.htmlText.toString().split('"')[1] != "" &&
+                          Globals.selectedLanguage != "English"
                       ? Container(
                           alignment: Alignment.center,
                           child: ClipRRect(
@@ -94,7 +95,11 @@ class _InformationPageState extends State<InformationPage> {
                   Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
                       ? TranslationWidget(
-                          message: htmlData ?? widget.htmlText,
+                          message: widget.htmlText.toString().contains("src=")
+                              ? widget.htmlText.toString().replaceAll(
+                                  "${widget.htmlText.toString().split('"')[1]}",
+                                  " ")
+                              : widget.htmlText,
                           fromLanguage: "en",
                           toLanguage: Globals.selectedLanguage,
                           builder: (translatedMessage) => Html(
@@ -102,7 +107,7 @@ class _InformationPageState extends State<InformationPage> {
                           ),
                         )
                       : Html(
-                          data: htmlData ?? widget.htmlText,
+                          data: widget.htmlText,
                           style: {
                             "table": Style(
                               backgroundColor:
