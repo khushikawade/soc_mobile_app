@@ -68,8 +68,25 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         yield FamilyLoading();
         List<CalendarList> list = await getCalendarEventList();
+        List<CalendarList>? futureListobj = [];
+        List<CalendarList>? pastListobj = [];
+        DateTime now = new DateTime.now();
+        int date = now.day;
 
-        yield CalendarListSuccess(obj: list);
+        for (int i = 0; i < list.length; i++) {
+          if (int.parse(list[i]
+                  .startDate
+                  .toString()
+                  .substring(list[i].startDate!.length - 2)) >
+              date) {
+            futureListobj.add(list[i]);
+          } else {
+            pastListobj.add(list[i]);
+          }
+        }
+
+        yield CalendarListSuccess(
+            futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {
         yield ErrorLoading(err: e);
       }

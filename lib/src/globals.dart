@@ -26,15 +26,14 @@ class Globals {
   static ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
   static final scaffoldKey = GlobalKey<ScaffoldState>();
-  static String? release;
-  static String? manufacturer;
-  static String? model;
-  static String? deviceToken;
-  static String? name;
-
-  // static GlobalKey<NavigatorState>? appNavigator;
-  // static String? phone = 'phone';
-  // final object;
-  // static bool? isOpenByLink;
-  // static final loggedInUser;
+  static String? release = "";
+  static String? manufacturer = "";
+  static String? model = "";
+  static String? deviceToken = "";
+  static String? name = "";
+  static String? systemName = "";
+  static String? systemVersion = "";
+  static String? versionRelease = "";
+  static String? androidId = "";
+  static String? countrycode = "";
 }

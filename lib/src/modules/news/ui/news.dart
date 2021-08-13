@@ -156,7 +156,8 @@ class _NewsPageState extends State<NewsPage> {
                   // obj.titleC.toString(),
                   translatedMessage.toString(),
                   style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant),
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                      fontWeight: FontWeight.w500),
                 ),
               )
             : Text(
