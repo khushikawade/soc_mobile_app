@@ -8,7 +8,6 @@ import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -156,8 +155,8 @@ class _NewsPageState extends State<NewsPage> {
                   // obj.titleC.toString(),
                   translatedMessage.toString(),
                   style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                      fontWeight: FontWeight.w500),
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                      ),
                 ),
               )
             : Text(

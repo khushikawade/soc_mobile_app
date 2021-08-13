@@ -131,7 +131,6 @@ class _EventPageState extends State<EventPage> {
                                       .textTheme
                                       .headline2!
                                       .copyWith(
-                                        fontWeight: FontWeight.normal,
                                         height: 1.5,
                                         color: Theme.of(context)
                                             .colorScheme
@@ -148,7 +147,6 @@ class _EventPageState extends State<EventPage> {
                                       .textTheme
                                       .headline2!
                                       .copyWith(
-                                        fontWeight: FontWeight.normal,
                                         height: 1.5,
                                         color: Theme.of(context)
                                             .colorScheme
@@ -198,7 +196,6 @@ class _EventPageState extends State<EventPage> {
                             translatedMessage.toString(),
                             style:
                                 Theme.of(context).textTheme.headline2!.copyWith(
-                                      fontWeight: FontWeight.normal,
                                       height: 1.5,
                                       color: Theme.of(context)
                                           .colorScheme
@@ -212,7 +209,6 @@ class _EventPageState extends State<EventPage> {
                               Utility.convertDateFormat(list.endDate!),
                           style:
                               Theme.of(context).textTheme.headline2!.copyWith(
-                                    fontWeight: FontWeight.normal,
                                     height: 1.5,
                                     color: Theme.of(context)
                                         .colorScheme

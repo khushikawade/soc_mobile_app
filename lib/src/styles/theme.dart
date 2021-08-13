@@ -89,7 +89,7 @@ class AppTheme {
               ? kHeadline1TextFontSize
               : kHeadline1TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.normal,
           color: kAccentColor,
         ),
         headline2: TextStyle(
@@ -97,7 +97,7 @@ class AppTheme {
               ? kHeadline2TextFontSize
               : kHeadline2TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.normal,
           color: kAccentColor,
         ),
         headline3: TextStyle(
@@ -112,7 +112,7 @@ class AppTheme {
               ? kHeadline4TextFontSize
               : kHeadline4TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.normal,
           color: kAccentColor,
         ),
         headline5: TextStyle(
@@ -120,7 +120,7 @@ class AppTheme {
               ? kHeadline1TextFontSize
               : kHeadline1TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.normal,
           color: kAccentColor,
         ),
         headline6: TextStyle(
@@ -165,7 +165,7 @@ class AppTheme {
               : kBodyText1FontSize + _kSize,
           color: kAccentColor,
           fontFamily: 'Roboto Regular',
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.normal,
           height: 1.2,
         ),
       ),
@@ -285,7 +285,7 @@ class AppTheme {
                       ? kHeadline1TextFontSize
                       : kHeadline1TextFontSize + _kSize,
                   fontFamily: 'Roboto Bold',
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.normal,
                   color: _primaryColor,
                 ),
                 headline2: TextStyle(
@@ -308,7 +308,7 @@ class AppTheme {
                       ? kHeadline4TextFontSize
                       : kHeadline4TextFontSize + _kSize,
                   fontFamily: 'Roboto Bold',
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.normal,
                   color: _primaryColor,
                 ),
                 headline5: TextStyle(
@@ -316,7 +316,7 @@ class AppTheme {
                       ? kHeadline1TextFontSize
                       : kHeadline1TextFontSize + _kSize,
                   fontFamily: 'Roboto Bold',
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.normal,
                   color: _primaryColor,
                 ),
                 headline6: TextStyle(
@@ -361,7 +361,7 @@ class AppTheme {
                       : kBodyText1FontSize + _kSize,
                   color: _primaryColor,
                   fontFamily: 'Roboto Regular',
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.normal,
                   height: 1.2,
                 ),
               ),

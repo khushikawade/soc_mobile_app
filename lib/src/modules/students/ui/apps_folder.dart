@@ -143,11 +143,10 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                   .textTheme
                                                   .bodyText2!
                                                   .copyWith(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primaryVariant,
-                                                      fontWeight:
-                                                          FontWeight.normal),
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primaryVariant,
+                                                  ),
                                             ),
                                           )
                                         : Text(
@@ -160,11 +159,10 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                 .textTheme
                                                 .bodyText2!
                                                 .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primaryVariant,
-                                                    fontWeight:
-                                                        FontWeight.normal),
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primaryVariant,
+                                                ),
                                           ),
                                   ),
                                 ],

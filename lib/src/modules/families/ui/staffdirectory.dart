@@ -182,7 +182,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                         .textTheme
                                         .bodyText1!
                                         .copyWith(
-                                          fontWeight: FontWeight.w400,
                                           color: Theme.of(context)
                                               .colorScheme
                                               .primaryVariant,
@@ -194,7 +193,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             textAlign: TextAlign.start,
                             style:
                                 Theme.of(context).textTheme.bodyText1!.copyWith(
-                                      fontWeight: FontWeight.w400,
                                       color: Theme.of(context)
                                           .colorScheme
                                           .primaryVariant,
@@ -275,7 +273,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   .textTheme
                                   .bodyText1!
                                   .copyWith(
-                                      fontWeight: FontWeight.w400,
                                       color: Theme.of(context)
                                           .colorScheme
                                           .primaryVariant)))
@@ -285,7 +282,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               .textTheme
                               .bodyText1!
                               .copyWith(
-                                  fontWeight: FontWeight.w400,
                                   color: Theme.of(context)
                                       .colorScheme
                                       .primaryVariant)),

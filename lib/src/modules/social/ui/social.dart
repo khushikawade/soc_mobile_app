@@ -154,7 +154,6 @@ class _SocialPageState extends State<SocialPage> {
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .primaryVariant,
-                                              fontWeight: FontWeight.normal,
                                             ),
                                       ),
                                     )
@@ -169,7 +168,6 @@ class _SocialPageState extends State<SocialPage> {
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .primaryVariant,
-                                            fontWeight: FontWeight.normal,
                                           ),
                                     ),
                             )
@@ -201,7 +199,6 @@ class _SocialPageState extends State<SocialPage> {
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .primaryVariant,
-                                              fontWeight: FontWeight.normal,
                                             ),
                                       ),
                                     )
@@ -215,7 +212,6 @@ class _SocialPageState extends State<SocialPage> {
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .primaryVariant,
-                                            fontWeight: FontWeight.normal,
                                           ),
                                     ))
                           : Container()

@@ -139,7 +139,6 @@ class _SettingPageState extends State<SettingPage> {
                     child: Text(translatedMessage.toString(),
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline2!.copyWith(
-                            fontWeight: FontWeight.normal,
                             color:
                                 Theme.of(context).colorScheme.primaryVariant)),
                   ),
@@ -149,7 +148,6 @@ class _SettingPageState extends State<SettingPage> {
                 padding: const EdgeInsets.only(left: _kLabelSpacing),
                 child: Text("Enable Notification",
                     style: Theme.of(context).textTheme.headline2!.copyWith(
-                        fontWeight: FontWeight.normal,
                         color: Theme.of(context).colorScheme.primaryVariant)),
               ),
         _buildSwitch(),
@@ -178,12 +176,10 @@ class _SettingPageState extends State<SettingPage> {
                 builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     style: Theme.of(context).textTheme.headline2!.copyWith(
-                        fontWeight: FontWeight.normal,
                         color: Theme.of(context).colorScheme.primaryVariant)),
               )
             : Text("Open Source licences",
                 style: Theme.of(context).textTheme.headline2!.copyWith(
-                    fontWeight: FontWeight.normal,
                     color: Theme.of(context).colorScheme.primaryVariant)),
       ),
     );

@@ -292,7 +292,6 @@ class SocialDescription extends StatelessWidget {
                       fontSize: Globals.deviceType == "phone"
                           ? FontSize(13.0)
                           : FontSize(21.0),
-                      fontWeight: FontWeight.normal,
                     ),
                   },
                 ),
