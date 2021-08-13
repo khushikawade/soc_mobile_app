@@ -44,7 +44,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 MaterialPageRoute(
                     builder: (context) => InformationPage(
                           appbarTitle: 'Information',
-                          htmlText: Globals.appSetting.appInformationC!,
                           isbuttomsheet: true,
                           ishtml: true,
                         )));

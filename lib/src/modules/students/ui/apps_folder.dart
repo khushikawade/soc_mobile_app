@@ -141,14 +141,31 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                               translatedMessage.toString(),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2,
+                                                  .bodyText2!
+                                                  .copyWith(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primaryVariant,
+                                                      fontWeight:
+                                                          FontWeight.normal),
                                             ),
                                           )
-                                        : Text(apps[index].appFolderc != null &&
-                                                widget.folderName ==
-                                                    apps[index].appFolderc
-                                            ? "${apps[index].titleC}"
-                                            : ''),
+                                        : Text(
+                                            apps[index].appFolderc != null &&
+                                                    widget.folderName ==
+                                                        apps[index].appFolderc
+                                                ? "${apps[index].titleC}"
+                                                : '',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2!
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primaryVariant,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                          ),
                                   ),
                                 ],
                               ));

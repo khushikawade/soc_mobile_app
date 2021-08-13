@@ -125,7 +125,8 @@ class _NewdescriptionState extends State<Newdescription> {
                                   .copyWith(
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .primaryVariant),
+                                          .primaryVariant,
+                                      fontWeight: FontWeight.w500),
                             ),
                           )
                         : Text(
@@ -147,7 +148,8 @@ class _NewdescriptionState extends State<Newdescription> {
                                 .copyWith(
                                     color: Theme.of(context)
                                         .colorScheme
-                                        .primaryVariant),
+                                        .primaryVariant,
+                                    fontWeight: FontWeight.w500),
                           ),
                   ),
                   Globals.selectedLanguage != null &&
