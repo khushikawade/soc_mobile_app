@@ -304,7 +304,7 @@ class _EventPageState extends State<EventPage> {
                                   child: ListView.builder(
                                       scrollDirection: Axis.vertical,
                                       itemCount: state.futureListobj!.length,
-                                      shrinkWrap: true,
+                                      // shrinkWrap: true,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return state.futureListobj!.length > 0
@@ -327,7 +327,7 @@ class _EventPageState extends State<EventPage> {
                                   child: ListView.builder(
                                       scrollDirection: Axis.vertical,
                                       itemCount: state.pastListobj!.length,
-                                      shrinkWrap: true,
+                                      // shrinkWrap: true,
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return state.pastListobj!.length > 0

@@ -245,8 +245,10 @@ class _StaffPageState extends State<StaffPage> {
                             builder: (BuildContext contxt, StaffState state) {
                               if (state is StaffInitial ||
                                   state is StaffLoading) {
-                                return Center(
-                                    child: CircularProgressIndicator());
+                                return Expanded(
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                );
                               } else if (state is StaffDataSucess) {
                                 return state.obj != null &&
                                         state.obj!.length > 0
