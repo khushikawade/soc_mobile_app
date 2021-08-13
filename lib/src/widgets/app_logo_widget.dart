@@ -34,19 +34,7 @@ class AppLogoWidget extends StatelessWidget {
                         )),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
-                )
-
-                //  Image.asset(
-                //   'assets/images/bear.png',
-                //   fit: BoxFit.fill,
-                //   height: Globals.deviceType == "phone"
-                //       ? _kIconSize * 1.2
-                //       : _kIconSize * 1.4,
-                //   width: Globals.deviceType == "phone"
-                //       ? _kIconSize * 2
-                //       : _kIconSize * 2.2,
-                // ),
-                )),
+                ))),
       ],
     );
   }

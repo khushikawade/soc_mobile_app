@@ -21,6 +21,7 @@ class AppSetting {
   String? primaryColorC;
   String? backgroundColorC;
   String? secondaryColorC;
+  String? fontColorC;
   dynamic appLogoC;
   dynamic fullLogoC;
   String? bottomNavigationC;
@@ -53,6 +54,7 @@ class AppSetting {
     this.primaryColorC,
     this.backgroundColorC,
     this.secondaryColorC,
+    this.fontColorC,
     this.appLogoC,
     this.fullLogoC,
     this.bottomNavigationC,
@@ -88,6 +90,7 @@ class AppSetting {
         primaryColorC: json['Primary_Color__c'] as String?,
         backgroundColorC: json['Background_Color__c'] as String?,
         secondaryColorC: json['Secondary_Color__c'] as String?,
+        fontColorC: json['Font_Color__c'] as String?,
         appLogoC: json['App_Logo__c'],
         fullLogoC: json['Full_Logo__c'],
         bottomNavigationC: json['Bottom_Navigation__c'] as String?,
@@ -123,6 +126,7 @@ class AppSetting {
         'Primary_Color__c': primaryColorC,
         'Background_Color__c': backgroundColorC,
         'Secondary_Color__c': secondaryColorC,
+        'Font_Color__c': fontColorC,
         'App_Logo__c': appLogoC,
         'Full_Logo__c': fullLogoC,
         'Bottom_Navigation__c': bottomNavigationC,
@@ -157,6 +161,7 @@ class AppSetting {
     String? primaryColorC,
     String? backgroundColorC,
     String? secondaryColorC,
+    String? fontColorC,
     dynamic appLogoC,
     dynamic fullLogoC,
     String? bottomNavigationC,
@@ -189,6 +194,7 @@ class AppSetting {
       primaryColorC: primaryColorC ?? this.primaryColorC,
       backgroundColorC: backgroundColorC ?? this.backgroundColorC,
       secondaryColorC: secondaryColorC ?? this.secondaryColorC,
+      fontColorC: fontColorC ?? this.fontColorC,
       appLogoC: appLogoC ?? this.appLogoC,
       fullLogoC: fullLogoC ?? this.fullLogoC,
       bottomNavigationC: bottomNavigationC ?? this.bottomNavigationC,

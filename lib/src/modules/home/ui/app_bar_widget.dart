@@ -5,11 +5,11 @@ import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
-import 'package:Soc/src/translator/test.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final double _kIconSize = 35.0;
@@ -20,7 +20,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
   final ValueChanged? refresh;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   AppBarWidget({Key? key, required this.refresh}) : super(key: key);
 
@@ -72,10 +71,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                     horizontal: _kLabelSpacing / 4, vertical: 0),
                 child: Text(
                   item.text,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: Color(0xff474D55)),
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )))
           .toList(),
@@ -98,7 +95,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             ),
             onPressed: () {
               setState(() {});
-              LanguageSelector(context, null, (language) {
+              LanguageSelector(context, (language) {
                 if (language != null) {
                   setState(() {
                     Globals.selectedLanguage = language;

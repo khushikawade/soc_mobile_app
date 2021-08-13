@@ -1,13 +1,18 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NewsPage extends StatefulWidget {
@@ -19,6 +24,10 @@ class _NewsPageState extends State<NewsPage> {
   static const double _kIconSize = 48.0;
   static const double _kLabelSpacing = 20.0;
   NewsBloc bloc = new NewsBloc();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  bool iserrorstate = false;
+
+  final HomeBloc _homeBloc = new HomeBloc();
   var object;
   String newsTimeStamp = '';
 
@@ -48,7 +57,7 @@ class _NewsPageState extends State<NewsPage> {
         vertical: _kLabelSpacing / 2,
       ),
       color: (index % 2 == 0)
-          ? Theme.of(context).backgroundColor
+          ? Theme.of(context).colorScheme.background
           : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () {
@@ -75,10 +84,7 @@ class _NewsPageState extends State<NewsPage> {
                   ? ClipRRect(
                       child: CachedNetworkImage(
                         imageUrl: obj.image!,
-
-                        // height: _kIconSize * 1.5,
                         fit: BoxFit.fill,
-                        // width: _kIconSize * 1.4,
                         placeholder: (context, url) => Container(
                             alignment: Alignment.center,
                             child: ShimmerLoading(
@@ -129,9 +135,6 @@ class _NewsPageState extends State<NewsPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         _buildnewsHeading(obj),
-                        // SizedBox(height: _kLabelSpacing / 3),
-                        // Container(child: _buildTimeStamp(obj)),
-                        // SizedBox(height: _kLabelSpacing / 4),
                       ])),
             ),
           ],
@@ -152,14 +155,16 @@ class _NewsPageState extends State<NewsPage> {
                 builder: (translatedMessage) => Text(
                   // obj.titleC.toString(),
                   translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )
             : Text(
                 obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headline4!.copyWith(
+                    color: Theme.of(context).colorScheme.primaryVariant),
               ));
   }
 
@@ -177,8 +182,6 @@ class _NewsPageState extends State<NewsPage> {
     return Expanded(
       child: ListView.builder(
         scrollDirection: Axis.vertical,
-        // shrinkWrap: true,
-        // physics: NeverScrollableScrollPhysics(),
         itemCount: obj.length,
         itemBuilder: (BuildContext context, int index) {
           return _buildListItems(obj[index], index);
@@ -188,70 +191,142 @@ class _NewsPageState extends State<NewsPage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarWidget(
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BlocBuilder(
-                bloc: bloc,
-                builder: (BuildContext context, NewsState state) {
-                  if (state is NewsLoaded) {
-                    return state.obj != null && state.obj!.length > 0
-                        ? _buildList(state.obj)
-                        : Container(
-                            alignment: Alignment.center,
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child: Globals.selectedLanguage != null &&
-                                    Globals.selectedLanguage != "English"
-                                ? TranslationWidget(
-                                    message: "No news found",
-                                    toLanguage: Globals.selectedLanguage,
-                                    fromLanguage: "en",
-                                    builder: (translatedMessage) =>
-                                        Text(translatedMessage))
-                                : Text("No news found"),
-                          );
-                  } else if (state is NewsLoading) {
-                    return Expanded(
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                    );
-                  } else if (state is NewsErrorReceived) {
-                    return Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.8,
-                      child: Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? TranslationWidget(
-                              message: "Unable to load the data",
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) =>
-                                  Text(translatedMessage))
-                          : Text("Unable to load the data"),
-                    );
-                  } else {
-                    return Container();
+    return Padding(
+        padding: const EdgeInsets.only(bottom: 25.0),
+        child: Scaffold(
+          appBar: AppBarWidget(
+            refresh: (v) {
+              setState(() {});
+            },
+          ),
+          body: RefreshIndicator(
+            key: refreshKey,
+            child: OfflineBuilder(
+                connectivityBuilder: (
+                  BuildContext context,
+                  ConnectivityResult connectivity,
+                  Widget child,
+                ) {
+                  final bool connected =
+                      connectivity != ConnectivityResult.none;
+
+                  if (connected) {
+                    if (iserrorstate == true) {
+                      bloc.add(FetchNotificationList());
+                      iserrorstate = false;
+                    }
+                  } else if (!connected) {
+                    iserrorstate = true;
                   }
-                }),
-            BlocListener<NewsBloc, NewsState>(
-              bloc: bloc,
-              listener: (context, state) async {
-                if (state is NewsLoaded) {
-                  object = state.obj;
-                }
-              },
-              child: Container(),
-            ),
-          ],
+
+                  return new Stack(fit: StackFit.expand, children: [
+                    connected
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              BlocBuilder(
+                                  bloc: bloc,
+                                  builder:
+                                      (BuildContext context, NewsState state) {
+                                    if (state is NewsLoaded) {
+                                      return state.obj != null &&
+                                              state.obj!.length > 0
+                                          ? _buildList(state.obj)
+                                          : Expanded(
+                                              child: ListView(children: [
+                                                ErrorMessageWidget(
+                                                  msg: "No Data Found",
+                                                  isnetworkerror: false,
+                                                  imgPath:
+                                                      "assets/images/no_data_icon.svg",
+                                                )
+                                              ]),
+                                            );
+                                    } else if (state is NewsLoading) {
+                                      return Expanded(
+                                        child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.8,
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        ),
+                                      );
+                                    } else if (state is NewsErrorReceived) {
+                                      return Expanded(
+                                        child: ListView(children: [
+                                          ErrorMessageWidget(
+                                            msg: "Error",
+                                            isnetworkerror: false,
+                                            imgPath:
+                                                "assets/images/error_icon.svg",
+                                          ),
+                                        ]),
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
+                                  }),
+                              Container(
+                                height: 0,
+                                width: 0,
+                                child: BlocListener<NewsBloc, NewsState>(
+                                  bloc: bloc,
+                                  listener: (context, state) async {
+                                    if (state is NewsLoaded) {
+                                      object = state.obj;
+                                    }
+                                  },
+                                  child: Container(),
+                                ),
+                              ),
+                              Container(
+                                height: 0,
+                                width: 0,
+                                child: BlocListener<HomeBloc, HomeState>(
+                                  bloc: _homeBloc,
+                                  listener: (context, state) async {
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      Globals.homeObjet = state.obj;
+                                      setState(() {});
+                                    } else if (state is HomeErrorReceived) {
+                                      Container(
+                                        alignment: Alignment.center,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.8,
+                                        child: Center(
+                                            child: Text(
+                                                "Unable to load the data")),
+                                      );
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 0,
+                                    width: 0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : NoInternetErrorWidget(
+                            connected: connected, issplashscreen: false),
+                  ]);
+                },
+                child: Container()),
+            onRefresh: refreshPage,
+          ),
         ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    bloc.add(FetchNotificationList());
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

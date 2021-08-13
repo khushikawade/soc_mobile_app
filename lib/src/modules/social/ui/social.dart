@@ -1,13 +1,19 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
@@ -22,6 +28,9 @@ class SocialPage extends StatefulWidget {
 class _SocialPageState extends State<SocialPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 48.0;
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
+  bool? iserrorstate = false;
 
   SocialBloc bloc = SocialBloc();
 
@@ -33,6 +42,12 @@ class _SocialPageState extends State<SocialPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    bloc.add(SocialPageEvent());
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 
   Widget _buildlist(obj, int index, mainObj) {
@@ -134,15 +149,28 @@ class _SocialPageState extends State<SocialPage> {
                                         maxLines: 2,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline2,
+                                            .headline2!
+                                            .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                              fontWeight: FontWeight.normal,
+                                            ),
                                       ),
                                     )
                                   : Text(
                                       "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
-                                      style:
-                                          Theme.of(context).textTheme.headline2,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline2!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                            fontWeight: FontWeight.normal,
+                                          ),
                                     ),
                             )
                           : Container()
@@ -168,14 +196,27 @@ class _SocialPageState extends State<SocialPage> {
                                         translatedMessage.toString(),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .subtitle1,
+                                            .subtitle1!
+                                            .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                              fontWeight: FontWeight.normal,
+                                            ),
                                       ),
                                     )
                                   : Text(
                                       Utility.convertDate(obj.pubDate)
                                           .toString(),
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                            fontWeight: FontWeight.normal,
+                                          ),
                                     ))
                           : Container()
                     ],
@@ -188,8 +229,10 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget makeList(obj) {
-    return Expanded(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25.0),
       child: ListView.builder(
+        shrinkWrap: true,
         scrollDirection: Axis.vertical,
         itemCount: obj.length,
         itemBuilder: (BuildContext context, int index) {
@@ -200,63 +243,110 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWidget(
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: BlocBuilder(
-          bloc: bloc,
-          builder: (BuildContext context, SocialState state) {
-            if (state is SocialDataSucess) {
-              return state.obj != null && state.obj!.length > 0
-                  ? Container(
-                      child: Column(
-                        children: [makeList(state.obj)],
-                      ),
-                    )
-                  : Expanded(
-                      child: Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English"
-                              ? TranslationWidget(
-                                  message: "No data found",
-                                  toLanguage: Globals.selectedLanguage,
-                                  fromLanguage: "en",
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                  ),
-                                )
-                              : Text("No data found")));
-            } else if (state is Loading) {
-              return Container(
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-            if (state is SocialError) {
-              return Container(
-                alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
-                    ? TranslationWidget(
-                        message: "Unable to load the data",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                        ),
-                      )
-                    : Text("Unable to load the data"),
-              );
-            } else {
-              return Container();
-            }
-          }),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25.0),
+      child: Scaffold(
+          appBar: AppBarWidget(
+            refresh: (v) {
+              setState(() {});
+            },
+          ),
+          body: RefreshIndicator(
+            key: refreshKey,
+            child: OfflineBuilder(
+                connectivityBuilder: (
+                  BuildContext context,
+                  ConnectivityResult connectivity,
+                  Widget child,
+                ) {
+                  final bool connected =
+                      connectivity != ConnectivityResult.none;
+
+                  if (connected) {
+                    if (iserrorstate == true) {
+                      bloc.add(SocialPageEvent());
+                      iserrorstate = false;
+                    }
+                  } else if (!connected) {
+                    iserrorstate = true;
+                  }
+
+                  return connected
+                      ? Column(
+                          children: <Widget>[
+                            BlocBuilder(
+                                bloc: bloc,
+                                builder:
+                                    (BuildContext context, SocialState state) {
+                                  if (state is SocialDataSucess) {
+                                    return state.obj != null &&
+                                            state.obj!.length > 0
+                                        ? Expanded(child: makeList(state.obj))
+                                        : Expanded(
+                                            child: ListView(
+                                                shrinkWrap: true,
+                                                children: [
+                                                  ErrorMessageWidget(
+                                                    msg: "No Data Found",
+                                                    isnetworkerror: false,
+                                                    imgPath:
+                                                        "assets/images/no_data_icon.svg",
+                                                  )
+                                                ]),
+                                          );
+                                  } else if (state is Loading) {
+                                    return Expanded(
+                                      child: Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.8,
+                                        child: Center(
+                                            child: CircularProgressIndicator()),
+                                      ),
+                                    );
+                                  }
+                                  if (state is SocialError) {
+                                    return ListView(
+                                        shrinkWrap: true,
+                                        children: [
+                                          ErrorMessageWidget(
+                                            msg: "Error",
+                                            isnetworkerror: false,
+                                            imgPath:
+                                                "assets/images/error_icon.svg",
+                                          ),
+                                        ]);
+                                  }
+
+                                  return Container();
+                                }),
+                            Container(
+                              height: 0,
+                              width: 0,
+                              child: BlocListener<HomeBloc, HomeState>(
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  }
+                                },
+                                child: Container(
+                                  height: 0,
+                                  width: 0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : NoInternetErrorWidget(
+                          connected: connected, issplashscreen: false);
+                },
+                child: Container()),
+            onRefresh: refreshPage,
+          )),
     );
   }
 }

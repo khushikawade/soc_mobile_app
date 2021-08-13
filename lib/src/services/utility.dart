@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/translator/translator_api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -63,9 +60,19 @@ class Utility {
   static void showSnackBar(_scaffoldKey, msg, context) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text("$msg",
+          textAlign: TextAlign.left,
           style: TextStyle(
-              color: Theme.of(context).backgroundColor,
-              fontWeight: FontWeight.w600)),
+            color: Theme.of(context).backgroundColor,
+            fontWeight: FontWeight.w600,
+          )),
+      backgroundColor: Colors.black.withOpacity(0.8),
+      padding: EdgeInsets.only(
+        left: 16,
+      ),
+      margin: EdgeInsets.only(left: 16, right: 16, bottom: 30.0),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      behavior: SnackBarBehavior.floating,
       duration: Duration(seconds: 3),
     ));
   }

@@ -82,17 +82,15 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      // setState(() {
-      _status = prefs.getBool("enableIndicator")!;
-      if (_status == true) {
-        Globals.indicator.value = true;
-      } else {
-        Globals.indicator.value = false;
-      }
+      // _status = prefs.getBool("enableIndicator")!;
+      // if (_status == true) {
+      Globals.indicator.value = true;
+      // } else {
+      //   Globals.indicator.value = false;
       // }
+
       print(
           "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool("enableIndicator", true);
     });
 
@@ -100,9 +98,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
       print(
           "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-
-      // Globals.appNavigator!.currentState!
-      //     .push(MaterialPageRoute(builder: (context) => NewsPage()));
     });
 
     OneSignal.shared

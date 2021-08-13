@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/calendar_list.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -28,7 +29,8 @@ class EventDescription extends StatefulWidget {
 class _EventDescriptionState extends State<EventDescription> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 95.0;
-
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
   // static const _kbuttonTextStyle = TextStyle(
   //     fontWeight: FontWeight.normal,
   //     fontFamily: "Roboto Regular",
@@ -38,7 +40,7 @@ class _EventDescriptionState extends State<EventDescription> {
   Widget _buildItem(CalendarList list) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _kPadding),
-      child: Column(
+      child: ListView(
         children: [
           SpacerWidget(_kPadding / 2),
           Globals.selectedLanguage != null &&
@@ -50,13 +52,17 @@ class _EventDescriptionState extends State<EventDescription> {
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline2,
+                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        ),
                   ),
                 )
               : Text(
                   list.titleC ?? '-',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                      ),
                 ),
           SpacerWidget(_kPadding / 4),
           divider(),
@@ -73,14 +79,17 @@ class _EventDescriptionState extends State<EventDescription> {
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                          ),
                     ),
                   )
                 : Text(
                     Utility.convertDateFormat(list.startDate!) +
                         " - " +
                         Utility.convertDateFormat(list.endDate!),
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
                   ),
           ),
           SpacerWidget(_kPadding / 2),
@@ -93,26 +102,25 @@ class _EventDescriptionState extends State<EventDescription> {
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1!
-                          .copyWith(fontSize: 16),
-                    ),
+                        translatedMessage.toString(),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                            fontSize: 16)),
                   )
                 : Text(
                     list.description ?? "",
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(fontSize: 16),
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        ),
                   ),
           ),
           SpacerWidget(_kPadding / 2),
           list.inviteLink != null ? _buildEventLink(list) : Container(),
           SpacerWidget(_kPadding / 2),
+          bottomButtonWidget(widget.obj),
         ],
       ),
     );
@@ -126,10 +134,10 @@ class _EventDescriptionState extends State<EventDescription> {
       },
       child: Text(
         list.inviteLink ?? '-',
-        style: Theme.of(context)
-            .textTheme
-            .headline4!
-            .copyWith(decoration: TextDecoration.underline),
+        style: Theme.of(context).textTheme.headline4!.copyWith(
+              decoration: TextDecoration.underline,
+              color: Theme.of(context).colorScheme.primaryVariant,
+            ),
       ),
     );
   }
@@ -143,7 +151,7 @@ class _EventDescriptionState extends State<EventDescription> {
     );
   }
 
-  Widget buttomButtonsWidget(CalendarList list) {
+  Widget bottomButtonWidget(CalendarList list) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _kPadding / 2),
       child: Row(
@@ -191,18 +199,22 @@ class _EventDescriptionState extends State<EventDescription> {
               },
               child: Globals.selectedLanguage != null &&
                       Globals.selectedLanguage != "English"
-                  ? TranslationWidget(
-                      message: "Save event",
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        // style: _kbuttonTextStyle,
+                  ? Expanded(
+                      child: TranslationWidget(
+                        message: "Save event",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                          // style: _kbuttonTextStyle,
+                        ),
                       ),
                     )
-                  : Text(
-                      "Save event",
-                      // style: _kbuttonTextStyle
+                  : Expanded(
+                      child: Text(
+                        "Save event ",
+                        // style: _kbuttonTextStyle
+                      ),
                     ),
             ),
           ),
@@ -222,17 +234,22 @@ class _EventDescriptionState extends State<EventDescription> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(children: [
-        Container(
-          color: AppTheme.kListBackgroundColor2,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [_buildItem(widget.obj), buttomButtonsWidget(widget.obj)],
+        body: RefreshIndicator(
+      key: refreshKey,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 25.0),
+        child: Column(children: <Widget>[
+          Expanded(
+            child: _buildItem(widget.obj),
           ),
-        ),
-      ]),
-    );
+        ]),
+      ),
+      onRefresh: refreshPage,
+    ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

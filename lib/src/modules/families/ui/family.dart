@@ -1,20 +1,26 @@
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 class FamilyPage extends StatefulWidget {
   var obj;
@@ -29,6 +35,9 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  HomeBloc _homeBloc = HomeBloc();
+  bool? iserrorstate = false;
 
   @override
   void initState() {
@@ -39,6 +48,12 @@ class _FamilyPageState extends State<FamilyPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _bloc.add(FamiliesEvent());
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 
   _route(FamiliesList obj, index) {
@@ -54,7 +69,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         language: Globals.selectedLanguage ?? "English",
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.titleC == "Staff Directory") {
+    } else if (obj.typeC == "Form") {
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -64,7 +79,7 @@ class _FamilyPageState extends State<FamilyPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
-    } else if (obj.titleC == "Calendar/Events") {
+    } else if (obj.typeC == "Calendar/Events") {
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -159,7 +174,7 @@ class _FamilyPageState extends State<FamilyPage> {
           fontFamily: 'FontAwesomeSolid',
           fontPackage: 'font_awesome_flutter',
         ),
-        // color: AppTheme.kListIconColor3,
+        color: Theme.of(context).colorScheme.primary,
         size: Globals.deviceType == "phone" ? 18 : 26,
       );
     }
@@ -174,7 +189,7 @@ class _FamilyPageState extends State<FamilyPage> {
         ),
         borderRadius: BorderRadius.circular(0.0),
         color: (index % 2 == 0)
-            ? Theme.of(context).backgroundColor
+            ? Theme.of(context).colorScheme.background
             : Theme.of(context).colorScheme.secondary,
       ),
       child: ListTile(
@@ -193,16 +208,19 @@ class _FamilyPageState extends State<FamilyPage> {
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )
             : Text(
                 obj.titleC.toString(),
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    color: Theme.of(context).colorScheme.primaryVariant),
               ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
+          color: Theme.of(context).colorScheme.primary,
           // color: AppTheme.kButtonbackColor,
         ),
       ),
@@ -210,61 +228,116 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBarWidget(
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
-        body: BlocBuilder<FamilyBloc, FamilyState>(
-            bloc: _bloc,
-            builder: (BuildContext contxt, FamilyState state) {
-              if (state is FamilyInitial || state is FamilyLoading) {
-                return Center(child: CircularProgressIndicator());
-              } else if (state is FamiliesDataSucess) {
-                return state.obj != null && state.obj!.length > 0
-                    ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: state.obj!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buildList(state.obj![index], index);
-                        },
-                      )
-                    : Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
-                            ? TranslationWidget(
-                                message: "No data found",
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
+    return Padding(
+        padding: const EdgeInsets.only(bottom: 30.0),
+        child: Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBarWidget(
+            refresh: (v) {
+              setState(() {});
+            },
+          ),
+          body: RefreshIndicator(
+            key: refreshKey,
+            child: OfflineBuilder(
+                connectivityBuilder: (
+                  BuildContext context,
+                  ConnectivityResult connectivity,
+                  Widget child,
+                ) {
+                  final bool connected =
+                      connectivity != ConnectivityResult.none;
+
+                  if (connected) {
+                    if (iserrorstate == true) {
+                      _bloc.add(FamiliesEvent());
+                      iserrorstate = false;
+                    }
+                  } else if (!connected) {
+                    iserrorstate = true;
+                  }
+
+                  return new Stack(fit: StackFit.expand, children: [
+                    connected
+                        ? Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Expanded(
+                                child: BlocBuilder<FamilyBloc, FamilyState>(
+                                    bloc: _bloc,
+                                    builder: (BuildContext contxt,
+                                        FamilyState state) {
+                                      if (state is FamilyInitial ||
+                                          state is FamilyLoading) {
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      } else if (state is FamiliesDataSucess) {
+                                        return state.obj != null &&
+                                                state.obj!.length > 0
+                                            ? ListView.builder(
+                                                scrollDirection: Axis.vertical,
+                                                itemCount: state.obj!.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return _buildList(
+                                                      state.obj![index], index);
+                                                },
+                                              )
+                                            : ListView(
+                                                shrinkWrap: true,
+                                                children: [
+                                                    ErrorMessageWidget(
+                                                      msg: "No Data Found",
+                                                      isnetworkerror: false,
+                                                      imgPath:
+                                                          "assets/images/no_data_icon.svg",
+                                                    ),
+                                                  ]);
+                                      } else if (state is ErrorLoading) {
+                                        return ListView(
+                                            shrinkWrap: true,
+                                            children: [
+                                              ErrorMessageWidget(
+                                                msg: "Error",
+                                                isnetworkerror: false,
+                                                imgPath:
+                                                    "assets/images/error_icon.svg",
+                                              ),
+                                            ]);
+                                      } else {
+                                        return Container();
+                                      }
+                                    }),
+                              ),
+                              Container(
+                                height: 0,
+                                width: 0,
+                                child: BlocListener<HomeBloc, HomeState>(
+                                  bloc: _homeBloc,
+                                  listener: (context, state) async {
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      Globals.homeObjet = state.obj;
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 0,
+                                    width: 0,
+                                  ),
                                 ),
-                              )
-                            : Text("No data found"),
-                      );
-              } else if (state is ErrorLoading) {
-                return Container(
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message: "Unable to load the data",
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                          ),
-                        )
-                      : Text("Unable to load the data"),
-                );
-              } else {
-                return Container();
-              }
-            }));
+                              ),
+                            ],
+                          )
+                        : NoInternetErrorWidget(
+                            connected: connected, issplashscreen: false),
+                  ]);
+                },
+                child: Container()),
+            onRefresh: refreshPage,
+          ),
+        ));
   }
 }

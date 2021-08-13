@@ -31,6 +31,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   static const double _kPadding = 16.0;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final flutterWebviewPlugin = new FlutterWebviewPlugin();
+  bool? iserrorstate = false;
   StreamSubscription<WebViewStateChanged>?
       _onchanged; // here we checked the url state if it loaded or start Load or abort Load
 
@@ -48,76 +49,79 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
 
   @override
   Widget build(BuildContext context) {
-    return WebviewScaffold(
-      url: url != null ? url : "www.google.com",
-      // withJavascript: true,
-      // withZoom: false,
-      // hidden: true,
-      appBar: AppBar(
-        elevation: 0.0,
-        leading: BackButtonWidget(),
-        title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
-        actions: [
-          widget.isSocialpage
-              ? IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                  onPressed: () {
-                    flutterWebviewPlugin.reload();
-                  },
-                  icon: Icon(
-                    IconData(0xe80f,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    // color: AppTheme.kBlackColor,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  ))
-              : Container(
-                  height: 0,
-                ),
-          HorzitalSpacerWidget(_kPadding / 1.2),
-          widget.isSocialpage
-              ? IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                  onPressed: () {
-                    final String body =
-                        "Hey, check out this site! " + url.toString();
-                    SharePopUp obj = new SharePopUp();
-                    obj.callFunction(context, body, "");
-                  },
-                  icon: Icon(
-                    Icons.share,
-                    // color: AppTheme.kIconColor3,
-                    size: Globals.deviceType == "phone" ? 18 : 26,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25.0),
+      child: WebviewScaffold(
+        url: url != null ? url : "www.google.com",
+        // withJavascript: true,
+        // withZoom: false,
+        // hidden: true,
+        appBar: AppBar(
+          elevation: 0.0,
+          leading: BackButtonWidget(),
+          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          actions: [
+            widget.isSocialpage
+                ? IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    onPressed: () {
+                      flutterWebviewPlugin.reload();
+                    },
+                    icon: Icon(
+                      IconData(0xe80f,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      // color: AppTheme.kBlackColor,
+                      size: Globals.deviceType == "phone" ? 20 : 28,
+                    ))
+                : Container(
+                    height: 0,
                   ),
-                )
-              : Container(
-                  height: 0,
-                ),
-          HorzitalSpacerWidget(_kPadding / 1.2),
-          widget.isSocialpage
-              ? IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                  onPressed: () {
-                    urlobj.callurlLaucher(context, url);
-                  },
-                  icon: Icon(
-                    IconData(0xe80e,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    // color: AppTheme.kBlackColor,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  ))
-              : Container(height: 0),
-          HorzitalSpacerWidget(_kPadding / 1.5),
-        ],
-      ),
-      initialChild: Container(
-        child: const Center(
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
+            HorzitalSpacerWidget(_kPadding / 1.2),
+            widget.isSocialpage
+                ? IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    onPressed: () {
+                      final String body =
+                          "Hey, check out this site! " + url.toString();
+                      SharePopUp obj = new SharePopUp();
+                      obj.callFunction(context, body, "");
+                    },
+                    icon: Icon(
+                      Icons.share,
+                      // color: AppTheme.kIconColor3,
+                      size: Globals.deviceType == "phone" ? 18 : 26,
+                    ),
+                  )
+                : Container(
+                    height: 0,
+                  ),
+            HorzitalSpacerWidget(_kPadding / 1.2),
+            widget.isSocialpage
+                ? IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    onPressed: () {
+                      urlobj.callurlLaucher(context, url);
+                    },
+                    icon: Icon(
+                      IconData(0xe80e,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      // color: AppTheme.kBlackColor,
+                      size: Globals.deviceType == "phone" ? 20 : 28,
+                    ))
+                : Container(height: 0),
+            HorzitalSpacerWidget(_kPadding / 1.5),
+          ],
+        ),
+        initialChild: Container(
+          child: const Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
           ),
         ),
       ),

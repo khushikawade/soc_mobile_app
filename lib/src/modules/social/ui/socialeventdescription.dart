@@ -1,5 +1,7 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
@@ -8,6 +10,7 @@ import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // ignore: must_be_immutable
@@ -18,6 +21,8 @@ class SocialDescription extends StatelessWidget {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
   static const double _kIconSize = 45.0;
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
 
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
@@ -70,22 +75,42 @@ class SocialDescription extends StatelessWidget {
 
   Widget _buildItem(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(_kPadding),
-      child: ListView(children: [
-        Column(
-          children: [
-            // _buildnews(context),
-            // SpacerWidget(_kPadding / 2),
-            // _buildnewTimeStamp(context),
-            // SpacerWidget(_kPadding / 5),
-            _buildBottomSection(context),
-            // SpacerWidget(_kPadding / 2),
-            // _buildButton(context),
-            // SpacerWidget(_kPadding * 3),
-          ],
-        ),
-      ]),
-    );
+        padding: const EdgeInsets.all(_kPadding),
+        child: RefreshIndicator(
+          key: refreshKey,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 25.0),
+            child: ListView(children: [
+              Column(
+                children: [
+                  _buildnews(context),
+                  SpacerWidget(_kPadding / 2),
+                  _buildnewTimeStamp(context),
+                  SpacerWidget(_kPadding / 5),
+                  _buildBottomSection(context),
+                  SpacerWidget(_kPadding / 2),
+                  _buildButton(context),
+                  SpacerWidget(_kPadding * 3),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                      bloc: _homeBloc,
+                      listener: (context, state) async {
+                        if (state is BottomNavigationBarSuccess) {
+                          AppTheme.setDynamicTheme(Globals.appSetting, context);
+                          Globals.homeObjet = state.obj;
+                        }
+                      },
+                      child: Container(),
+                    ),
+                  ),
+                ],
+              ),
+            ]),
+          ),
+          onRefresh: refreshPage,
+        ));
   }
 
   Widget _buildButton(BuildContext context) {
@@ -156,6 +181,11 @@ class SocialDescription extends StatelessWidget {
     );
   }
 
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _homeBloc.add(FetchBottomNavigationBar());
+  }
+
   Widget _buildBottomSection(BuildContext context) {
     String data = object.description["__cdata"].toString().contains("\\n")
         ? object.description["__cdata"]
@@ -170,12 +200,12 @@ class SocialDescription extends StatelessWidget {
             .split("</div>")[0]
         : "";
 
-    String _socialDescription = object.description["__cdata"]
-        .toString()
-        .replaceAll(new RegExp(r'[\\]+'), '\n')
-        .replaceAll("n.", ".")
-        .replaceAll("\nn", "\n")
-        .replaceAll("n ", "");
+    // String _socialDescription = object.description["__cdata"]
+    //     .toString()
+    //     .replaceAll(new RegExp(r'[\\]+'), '\n')
+    //     .replaceAll("n.", ".")
+    //     .replaceAll("\nn", "\n")
+    //     .replaceAll("n ", "");
 
     return Column(
       children: [
@@ -242,6 +272,8 @@ class SocialDescription extends StatelessWidget {
                       .replaceAll("n.", ".")
                       .replaceAll("\nn", "\n")
                       .replaceAll("\\ n ", ""),
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )
             : Center(
@@ -254,6 +286,15 @@ class SocialDescription extends StatelessWidget {
                   },
                   data:
                       "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")}",
+                  style: {
+                    "body": Style(
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                      fontSize: Globals.deviceType == "phone"
+                          ? FontSize(13.0)
+                          : FontSize(21.0),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  },
                 ),
               )
       ],
@@ -273,11 +314,15 @@ class SocialDescription extends StatelessWidget {
                 toLanguage: language,
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant),
                 ),
               )
             : Text(
                 "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
                 textAlign: TextAlign.left,
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    color: Theme.of(context).colorScheme.primaryVariant),
               ),
       ),
       SpacerWidget(_kPadding),
@@ -294,12 +339,14 @@ class SocialDescription extends StatelessWidget {
                     toLanguage: language,
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: Theme.of(context).colorScheme.primaryVariant),
                     ),
                   )
                 : Text(
                     Utility.convertDate(object.pubDate).toString(),
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
                   )
             : Container());
   }

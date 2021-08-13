@@ -34,7 +34,7 @@ class _AppState extends State<App> {
   // }
   // Adaptive Theme starts
 
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return AdaptiveTheme(
       light: AppTheme.lightTheme,
       initial: AdaptiveThemeMode.light,

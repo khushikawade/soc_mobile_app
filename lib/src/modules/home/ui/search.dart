@@ -17,15 +17,18 @@ import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
-  bool isbuttomsheet;
-  String? language;
+  final bool isbuttomsheet;
+  final String? language;
   SearchPage({Key? key, required this.isbuttomsheet, required this.language})
       : super(key: key);
   @override
@@ -36,6 +39,10 @@ class _SearchPageState extends State<SearchPage> {
   bool issuggestionList = false;
   static const double _kLabelSpacing = 20.0;
   final _controller = TextEditingController();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  bool iserrorstate = false;
+
+  final HomeBloc _homeBloc = new HomeBloc();
 
   FocusNode myFocusNode = new FocusNode();
   final _debouncer = Debouncer(milliseconds: 500);
@@ -167,6 +174,8 @@ class _SearchPageState extends State<SearchPage> {
               vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
           color: AppTheme.kFieldbackgroundColor,
           child: TextFormField(
+            style:
+                TextStyle(color: Theme.of(context).colorScheme.primaryVariant),
             focusNode: myFocusNode,
             controller: _controller,
             cursorColor: Colors.black,
@@ -174,7 +183,7 @@ class _SearchPageState extends State<SearchPage> {
               isDense: true,
               hintText: 'Search',
               filled: true,
-              fillColor: Theme.of(context).backgroundColor,
+              fillColor: Theme.of(context).colorScheme.background,
               prefixIcon: Icon(
                 const IconData(0xe805,
                     fontFamily: Overrides.kFontFam,
@@ -214,29 +223,30 @@ class _SearchPageState extends State<SearchPage> {
                       itemCount:
                           snapshot.data.length < 5 ? snapshot.data.length : 5,
                       itemBuilder: (BuildContext context, int index) {
-                        return _buildIListtem(index, snapshot.data);
+                        return _buildItem(index, snapshot.data);
                       },
                     ),
                   )
-                : Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(25.0),
-                      child: Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? TranslationWidget(
-                              message: 'No Recent Item Found',
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
-                                textAlign: TextAlign.end,
-                              ),
-                            )
-                          : Text(
-                              'No Recent Item Found',
-                              textAlign: TextAlign.end,
-                            ),
-                    ),
+                : Expanded(
+                    child: ListView(children: [
+                      ErrorMessageWidget(
+                        msg: "No data found",
+                        isnetworkerror: false,
+                        imgPath: "assets/images/error_icon.svg",
+                      ),
+                      // SpacerWidget(12),
+                      // Globals.selectedLanguage != null &&
+                      //         Globals.selectedLanguage != "English"
+                      //     ? TranslationWidget(
+                      //         message: "No  data found",
+                      //         toLanguage: Globals.selectedLanguage,
+                      //         fromLanguage: "en",
+                      //         builder: (translatedMessage) => Text(
+                      //           translatedMessage.toString(),
+                      //         ),
+                      //       )
+                      //     : Text("No data found"),
+                    ]),
                   );
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Expanded(
@@ -250,7 +260,7 @@ class _SearchPageState extends State<SearchPage> {
         });
   }
 
-  Widget _buildIListtem(int index, items) {
+  Widget _buildItem(int index, items) {
     return InkWell(
       onTap: () async {
         await _route(items[index]);
@@ -260,7 +270,7 @@ class _SearchPageState extends State<SearchPage> {
           padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
           decoration: BoxDecoration(
             color: (index % 2 == 0)
-                ? Theme.of(context).backgroundColor
+                ? Theme.of(context).colorScheme.background
                 : Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(4),
             boxShadow: [
@@ -294,6 +304,13 @@ class _SearchPageState extends State<SearchPage> {
                                 fromLanguage: "en",
                                 builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant),
                                 ),
                               )
                             : Text(
@@ -301,6 +318,13 @@ class _SearchPageState extends State<SearchPage> {
                                         items[index].titleC.isNotEmpty
                                     ? '${items[index].titleC} '
                                     : '',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant),
                               ),
                       ]),
                 )
@@ -316,11 +340,6 @@ class _SearchPageState extends State<SearchPage> {
             return Expanded(
                 child: state.obj.map != null && state.obj.length > 0
                     ? Container(
-                        // margin: EdgeInsets.only(
-                        //     left: _kLabelSpacing / 2,
-                        //     right: _kLabelSpacing / 2,
-                        //     bottom: _kLabelSpacing),
-                        // decoration: BoxDecoration(),
                         child: ListView(
                         scrollDirection: Axis.vertical,
                         padding: EdgeInsets.all(_kLabelSpacing / 2),
@@ -329,14 +348,16 @@ class _SearchPageState extends State<SearchPage> {
                             decoration: BoxDecoration(
                               border: (state.obj.indexOf(data) % 2 == 0)
                                   ? Border.all(
-                                      color: Theme.of(context).backgroundColor)
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .background)
                                   : Border.all(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .secondary),
                               borderRadius: BorderRadius.circular(0.0),
                               color: (state.obj.indexOf(data) % 2 == 0)
-                                  ? Theme.of(context).backgroundColor
+                                  ? Theme.of(context).colorScheme.background
                                   : Theme.of(context).colorScheme.secondary,
                             ),
                             child: ListTile(
@@ -350,14 +371,22 @@ class _SearchPageState extends State<SearchPage> {
                                           translatedMessage.toString(),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1,
+                                              .bodyText1!
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primaryVariant),
                                         ),
                                       )
                                     : Text(
                                         data.titleC ?? '-',
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1,
+                                            .bodyText1!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryVariant),
                                       ),
                                 onTap: () async {
                                   _route(data);
@@ -415,13 +444,19 @@ class _SearchPageState extends State<SearchPage> {
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
-                  style: Theme.of(context).appBarTheme.titleTextStyle,
+                  style: Theme.of(context)
+                      .appBarTheme
+                      .titleTextStyle!
+                      .copyWith(color: Theme.of(context).colorScheme.primary),
                   textAlign: TextAlign.left,
                 ),
               )
             : Text(
                 "Search",
-                style: Theme.of(context).appBarTheme.titleTextStyle,
+                style: Theme.of(context)
+                    .appBarTheme
+                    .titleTextStyle!
+                    .copyWith(color: Theme.of(context).colorScheme.primary),
                 textAlign: TextAlign.left,
               ),
       ],
@@ -442,16 +477,16 @@ class _SearchPageState extends State<SearchPage> {
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
                   style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                        fontSize: 18,
-                      ),
+                      fontSize: 18,
+                      color: Theme.of(context).colorScheme.primary),
                   textAlign: TextAlign.left,
                 ),
               )
             : Text(
                 "Recent Search",
                 style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                      fontSize: 18,
-                    ),
+                    fontSize: 18,
+                    color: Theme.of(context).colorScheme.primaryVariant),
                 textAlign: TextAlign.left,
               ),
       ],
@@ -472,18 +507,84 @@ class _SearchPageState extends State<SearchPage> {
             leading: BackButtonWidget(),
             title:
                 SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
-        body: Container(
-          child: Column(mainAxisSize: MainAxisSize.max, children: [
-            _buildHeading(),
-            SpacerWidget(_kLabelSpacing / 2),
-            _buildSearchbar(),
-            issuggestionList ? _buildissuggestionList() : SizedBox(height: 0),
-            SpacerWidget(_kLabelSpacing),
-            issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
-            issuggestionList == false
-                ? _buildRecentItemList()
-                : SizedBox(height: 0),
-          ]),
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
+
+                if (connected) {
+                  if (iserrorstate == true) {
+                    iserrorstate = false;
+                  }
+                } else if (!connected) {
+                  iserrorstate = true;
+                }
+
+                return new Stack(fit: StackFit.expand, children: [
+                  connected
+                      ? Container(
+                          child:
+                              Column(mainAxisSize: MainAxisSize.max, children: [
+                            // _buildHeading(),
+                            // SpacerWidget(_kLabelSpacing / 2),
+                            _buildSearchbar(),
+                            issuggestionList
+                                ? _buildissuggestionList()
+                                : SizedBox(height: 0),
+                            SpacerWidget(_kLabelSpacing / 2),
+                            // issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
+                            issuggestionList == false
+                                ? _buildRecentItemList()
+                                : SizedBox(height: 0),
+
+                            Container(
+                              height: 0,
+                              width: 0,
+                              child: BlocListener<HomeBloc, HomeState>(
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  } else if (state is HomeErrorReceived) {
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
+                                      child: Center(
+                                          child:
+                                              Text("Unable to load the data")),
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  height: 0,
+                                  width: 0,
+                                ),
+                              ),
+                            ),
+                          ]),
+                        )
+                      : NoInternetErrorWidget(
+                          connected: connected, issplashscreen: false),
+                ]);
+              },
+              child: Container()),
+          onRefresh: refreshPage,
         ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

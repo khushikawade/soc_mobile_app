@@ -6,9 +6,9 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,18 +50,32 @@ class _SubListPageState extends State<SubListPage> {
 
   _route(obj, index) {
     if (obj.typeC == "URL") {
+      obj.urlC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                        title: obj.titleC!,
+                        url: obj.urlC!,
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+
       obj.appUrlC != null
           ? Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
                         title: obj.titleC!,
-                        url: obj.appUrlC!,
+                        url: obj.urlC!,
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML" || obj.typeC == "RTF/HTML") {
+    } else if (obj.typeC == "RFT_HTML" ||
+        obj.typeC == "RTF/HTML" ||
+        obj.typeC == "HTML/RTF") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
@@ -109,12 +123,16 @@ class _SubListPageState extends State<SubListPage> {
               toLanguage: Globals.selectedLanguage,
               builder: (translatedMessage) => Text(
                 translatedMessage.toString(),
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                    ),
               ),
             )
           : Text(
               obj.titleC.toString(),
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    color: Theme.of(context).colorScheme.primaryVariant,
+                  ),
             ),
     );
   }
@@ -152,20 +170,10 @@ class _SubListPageState extends State<SubListPage> {
                             },
                           ),
                         )
-                      : Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English"
-                              ? TranslationWidget(
-                                  message: "No data found",
-                                  fromLanguage: "en",
-                                  toLanguage: Globals.selectedLanguage,
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                  ),
-                                )
-                              : Text("No data found"),
+                      : ErrorMessageWidget(
+                          msg: "No data found",
+                          isnetworkerror: false,
+                          imgPath: "assets/images/error_icon.svg",
                         );
                 } else {
                   return Container();
@@ -193,20 +201,10 @@ class _SubListPageState extends State<SubListPage> {
                                 },
                               ),
                             )
-                          : Container(
-                              alignment: Alignment.center,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
-                                  ? TranslationWidget(
-                                      message: "No data found",
-                                      fromLanguage: "en",
-                                      toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                      ),
-                                    )
-                                  : Text("No data found"),
+                          : ErrorMessageWidget(
+                              msg: "No data found",
+                              isnetworkerror: false,
+                              imgPath: "assets/images/error_icon.svg",
                             );
                     } else {
                       return Container();

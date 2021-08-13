@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +116,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future fetchBottomNavigationBar() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-        Uri.encodeFull('sobjects/School_App__c/a1T3J000000RHEKUA4'),
+        Uri.encodeFull('sobjects/School_App__c/${Overrides.schoolID}'),
       );
 
       if (response.statusCode == 200) {
