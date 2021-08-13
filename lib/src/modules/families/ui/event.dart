@@ -286,78 +286,110 @@ class _EventPageState extends State<EventPage> {
                 }
 
                 return connected
-                    ? BlocBuilder<FamilyBloc, FamilyState>(
-                        bloc: _eventBloc,
-                        builder: (BuildContext contxt, FamilyState state) {
-                          if (state is FamilyLoading) {
-                            return Expanded(
+                    ? Column(
+                        children: [
+                          BlocBuilder<FamilyBloc, FamilyState>(
+                              bloc: _eventBloc,
+                              builder:
+                                  (BuildContext contxt, FamilyState state) {
+                                if (state is FamilyLoading) {
+                                  return Expanded(
+                                    child: Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.8,
+                                        alignment: Alignment.center,
+                                        child: CircularProgressIndicator()),
+                                  );
+                                } else if (state is CalendarListSuccess) {
+                                  return Column(children: [
+                                    _buildHeading("Upcoming"),
+                                    Expanded(
+                                        child: ListView.builder(
+                                            scrollDirection: Axis.vertical,
+                                            itemCount:
+                                                state.futureListobj!.length,
+                                            shrinkWrap: true,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return state.futureListobj!
+                                                          .length >
+                                                      0
+                                                  ? _buildList(
+                                                      state.futureListobj![
+                                                          index],
+                                                      index,
+                                                      state.futureListobj)
+                                                  : ListView(children: [
+                                                      ErrorMessageWidget(
+                                                        msg: "No Data Found",
+                                                        isnetworkerror: false,
+                                                        imgPath:
+                                                            "assets/images/no_data_icon.svg",
+                                                      ),
+                                                    ]);
+                                            })),
+                                    SpacerWidget(20),
+                                    _buildHeading("Past"),
+                                    Expanded(
+                                        child: ListView.builder(
+                                            scrollDirection: Axis.vertical,
+                                            itemCount:
+                                                state.pastListobj!.length,
+                                            shrinkWrap: true,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return state.pastListobj!.length >
+                                                      0
+                                                  ? _buildList(
+                                                      state.pastListobj![index],
+                                                      index,
+                                                      state.pastListobj)
+                                                  : ListView(children: [
+                                                      ErrorMessageWidget(
+                                                        msg: "No Data Found",
+                                                        isnetworkerror: false,
+                                                        imgPath:
+                                                            "assets/images/no_data_icon..svg",
+                                                      ),
+                                                    ]);
+                                            }))
+                                  ]);
+                                } else if (state is ErrorLoading) {
+                                  return Expanded(
+                                    child:
+                                        ListView(shrinkWrap: true, children: [
+                                      ErrorMessageWidget(
+                                        msg: "Error",
+                                        isnetworkerror: false,
+                                        imgPath: "assets/images/error_icon.svg",
+                                      ),
+                                    ]),
+                                  );
+                                }
+                                return Container();
+                              }),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
                               child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.8,
-                                  alignment: Alignment.center,
-                                  child: CircularProgressIndicator()),
-                            );
-                          } else if (state is CalendarListSuccess) {
-                            return Column(children: [
-                              _buildHeading("Upcoming"),
-                              Expanded(
-                                  child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: state.futureListobj!.length,
-                                      // shrinkWrap: true,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return state.futureListobj!.length > 0
-                                            ? _buildList(
-                                                state.futureListobj![index],
-                                                index,
-                                                state.futureListobj)
-                                            : ListView(children: [
-                                                ErrorMessageWidget(
-                                                  msg: "No Data Found",
-                                                  isnetworkerror: false,
-                                                  imgPath:
-                                                      "assets/images/no_data_icon.svg",
-                                                ),
-                                              ]);
-                                      })),
-                              SpacerWidget(20),
-                              _buildHeading("Past"),
-                              Expanded(
-                                  child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: state.pastListobj!.length,
-                                      // shrinkWrap: true,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return state.pastListobj!.length > 0
-                                            ? _buildList(
-                                                state.pastListobj![index],
-                                                index,
-                                                state.pastListobj)
-                                            : ListView(children: [
-                                                ErrorMessageWidget(
-                                                  msg: "No Data Found",
-                                                  isnetworkerror: false,
-                                                  imgPath:
-                                                      "assets/images/no_data_icon..svg",
-                                                ),
-                                              ]);
-                                      }))
-                            ]);
-                          } else if (state is ErrorLoading) {
-                            return Expanded(
-                              child: ListView(shrinkWrap: true, children: [
-                                ErrorMessageWidget(
-                                  msg: "Error",
-                                  isnetworkerror: false,
-                                  imgPath: "assets/images/error_icon.svg",
-                                ),
-                              ]),
-                            );
-                          }
-                          return Container();
-                        })
+                                height: 0,
+                                width: 0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
                     : NoInternetErrorWidget(
                         connected: connected, issplashscreen: false);
               },
