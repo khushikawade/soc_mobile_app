@@ -50,10 +50,13 @@ class ShareButtonWidget extends StatelessWidget {
             flex: 1,
             child: ElevatedButton(
               onPressed: () {
-                final String body =
-                    'Description of the problem: [Please describe the issue you are encountering here...] \nApp: Bronx Bears 1.10.0.0(1.2021.521.1630) \nDevice :${Globals.iosInfo.systemName}??${Globals.androidInfo.manufacturer} ${Globals.iosInfo.systemVersion}??${Globals.androidInfo.version.release} ${Globals.iosInfo.name}?? '
-                    ' ${Globals.iosInfo.model ?? Globals.androidInfo.model} \nuser/release-keys OS : ${Globals.baseOS} \nLocale :${Globals.myLocale}${Globals.myLocale!.countryCode!} != "" ? "_" "  ${Globals.myLocale!.countryCode!}" : ""}  \nDeployment time : - \nDeployment: - \nUserToken : ${Globals.deviceID}  \nDeviceToken : ${Globals.androidInfo.androidId} \nDrawingNo. : -';
+                // final String body =
+                //   'Description of the problem: [Please describe the issue you are encountering here...] \nApp: Bronx Bears 1.10.0.0(1.2021.521.1630) \nDevice :${Globals.iosInfo.systemName}??${Globals.androidInfo.manufacturer} ${Globals.iosInfo.systemVersion}??${Globals.androidInfo.version.release} ${Globals.iosInfo.name}?? '
+                //   ' ${Globals.iosInfo.model}??${Globals.androidInfo.model} \nuser/release-keys OS : ${Globals.baseOS} \nLocale :${Globals.myLocale}${Globals.myLocale!.countryCode!} != "" ? "_" "  ${Globals.myLocale!.countryCode!}" : ""}  \nDeployment time : - \nDeployment: - \nUserToken : ${Globals.deviceID}  \nDeviceToken : ${Globals.androidInfo.androidId} \nDrawingNo. : -';
 
+                final String body =
+                    'Description of the problem: [Please describe the issue you are encountering here...] \nApp: Bronx Bears 1.10.0.0(1.2021.521.1630) \nDevice :${Globals.manufacturer} ${Globals.systemVersion}${Globals.versionRelease} ${Globals.name} '
+                    ' ${Globals.model} \nuser/release-keys OS : ${Globals.baseOS} \nLocale : ${Globals.myLocale!}" ""   ${Globals.myLocale!.countryCode!} : ""}  \nDeployment time : - \nDeployment: - \nUserToken : ${Globals.deviceID}  \nDeviceToken : ${Globals.deviceToken} \nDrawingNo. : -';
                 final subject = "Problem with the PS 456 Bronx Bears-app";
                 obj.callFunction(context, body, subject);
               },

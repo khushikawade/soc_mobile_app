@@ -29,7 +29,7 @@ class ErrorMessageWidget extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: SvgPicture.asset(
-                "assets/images/no_internet_icon.svg",
+                imgPath,
               )),
           SpacerWidget(12),
           isnetworkerror!

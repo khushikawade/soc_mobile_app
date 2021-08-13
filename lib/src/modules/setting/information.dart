@@ -19,7 +19,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 // ignore: must_be_immutable
 
 class InformationPage extends StatefulWidget {
-  String htmlText;
+  // String htmlText;
 
   bool isbuttomsheet;
   bool ishtml;
@@ -28,7 +28,7 @@ class InformationPage extends StatefulWidget {
   @override
   InformationPage({
     Key? key,
-    required this.htmlText,
+    // required this.htmlText,
     required this.isbuttomsheet,
     required this.ishtml,
     required this.appbarTitle,
@@ -53,9 +53,11 @@ class _InformationPageState extends State<InformationPage> {
 
   Widget _buildContent1() {
     String? htmlData;
-    if (widget.htmlText.toString().contains("src=") == true) {
-      String img = Utility.getHTMLImgSrc(widget.htmlText);
-      htmlData = widget.htmlText.toString().replaceAll("$img", " ");
+    if (Globals.appSetting.appInformationC.toString().contains("src=") ==
+        true) {
+      String img = Utility.getHTMLImgSrc(Globals.appSetting.appInformationC);
+      htmlData =
+          Globals.appSetting.appInformationC.toString().replaceAll("$img", " ");
     }
     return Expanded(
       child: Padding(
@@ -66,14 +68,19 @@ class _InformationPageState extends State<InformationPage> {
               margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
               child: Wrap(
                 children: [
-                  widget.htmlText.toString().contains("src=") &&
-                          widget.htmlText.toString().split('"')[1] != "" &&
-                          Globals.selectedLanguage != "English"
+                  Globals.appSetting.appInformationC
+                              .toString()
+                              .contains("src=") &&
+                          Globals.appSetting.appInformationC
+                                  .toString()
+                                  .split('"')[1] !=
+                              ""
                       ? Container(
                           alignment: Alignment.center,
                           child: ClipRRect(
                             child: CachedNetworkImage(
-                              imageUrl: Utility.getHTMLImgSrc(widget.htmlText),
+                              imageUrl: Utility.getHTMLImgSrc(
+                                  Globals.appSetting.appInformationC),
                               placeholder: (context, url) => Container(
                                   alignment: Alignment.center,
                                   child: ShimmerLoading(
@@ -95,11 +102,8 @@ class _InformationPageState extends State<InformationPage> {
                   Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
                       ? TranslationWidget(
-                          message: widget.htmlText.toString().contains("src=")
-                              ? widget.htmlText.toString().replaceAll(
-                                  "${widget.htmlText.toString().split('"')[1]}",
-                                  " ")
-                              : widget.htmlText,
+                          message:
+                              htmlData ?? Globals.appSetting.appInformationC,
                           fromLanguage: "en",
                           toLanguage: Globals.selectedLanguage,
                           builder: (translatedMessage) => Html(
@@ -107,7 +111,7 @@ class _InformationPageState extends State<InformationPage> {
                           ),
                         )
                       : Html(
-                          data: widget.htmlText,
+                          data: htmlData ?? Globals.appSetting.appInformationC,
                           style: {
                             "table": Style(
                               backgroundColor:
@@ -152,7 +156,9 @@ class _InformationPageState extends State<InformationPage> {
           isShare: false,
           appBarTitle: widget.appbarTitle,
           ishtmlpage: widget.ishtml,
-          sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
+          sharedpopBodytext: Globals.appSetting.appInformationC!
+              .replaceAll(exp, '')
+              .toString(),
           sharedpopUpheaderText: "Please checkout this ",
           language: Globals.selectedLanguage,
         ),
@@ -178,6 +184,7 @@ class _InformationPageState extends State<InformationPage> {
                 return connected
                     ? Column(
                         children: [
+                          _buildContent1(),
                           Container(
                             height: 0,
                             width: 0,
@@ -194,50 +201,50 @@ class _InformationPageState extends State<InformationPage> {
                               child: Container(),
                             ),
                           ),
-                          BlocBuilder<HomeBloc, HomeState>(
-                              bloc: _bloc,
-                              builder: (BuildContext contxt, HomeState state) {
-                                if (state is BottomNavigationBarSuccess) {
-                                  return state.obj != null &&
-                                          state.obj.length > 0
-                                      ? _buildContent1()
-                                      : Expanded(
-                                          child: ListView(children: [
-                                            ErrorMessageWidget(
-                                              msg: "No Data Found",
-                                              isnetworkerror: false,
-                                              imgPath:
-                                                  "assets/images/no_data_icon.svg",
-                                            )
-                                          ]),
-                                        );
-                                } else if (state is HomeLoading) {
-                                  return Expanded(
-                                    child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.8,
-                                      child: Center(
-                                          child: CircularProgressIndicator()),
-                                    ),
-                                  );
-                                }
+                          // BlocBuilder<HomeBloc, HomeState>(
+                          //     bloc: _bloc,
+                          //     builder: (BuildContext contxt, HomeState state) {
+                          //       if (state is BottomNavigationBarSuccess) {
+                          //         return state.obj != null &&
+                          //                 state.obj.length > 0
+                          //             ? _buildContent1()
+                          //             : Expanded(
+                          //                 child: ListView(children: [
+                          //                   ErrorMessageWidget(
+                          //                     msg: "No Data Found",
+                          //                     isnetworkerror: false,
+                          //                     imgPath:
+                          //                         "assets/images/no_data_icon.svg",
+                          //                   )
+                          //                 ]),
+                          //               );
+                          //       } else if (state is HomeLoading) {
+                          //         return Expanded(
+                          //           child: Container(
+                          //             height:
+                          //                 MediaQuery.of(context).size.height *
+                          //                     0.8,
+                          //             child: Center(
+                          //                 child: CircularProgressIndicator()),
+                          //           ),
+                          //         );
+                          //       }
 
-                                if (state is HomeErrorReceived) {
-                                  return Expanded(
-                                    child:
-                                        ListView(shrinkWrap: true, children: [
-                                      ErrorMessageWidget(
-                                        msg: "Error",
-                                        isnetworkerror: false,
-                                        imgPath: "assets/images/error_icon.svg",
-                                      ),
-                                    ]),
-                                  );
-                                } else {
-                                  return Container();
-                                }
-                              }),
+                          //       if (state is HomeErrorReceived) {
+                          //         return Expanded(
+                          //           child:
+                          //               ListView(shrinkWrap: true, children: [
+                          //             ErrorMessageWidget(
+                          //               msg: "Error",
+                          //               isnetworkerror: false,
+                          //               imgPath: "assets/images/error_icon.svg",
+                          //             ),
+                          //           ]),
+                          //         );
+                          //       } else {
+                          //         return Container();
+                          //       }
+                          //     }),
                         ],
                       )
                     : NoInternetErrorWidget(

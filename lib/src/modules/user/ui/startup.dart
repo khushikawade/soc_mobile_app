@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -41,9 +42,10 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     getindicatorValue();
-    initPlatformState();
+    initPlatformState(context);
     _loginBloc.add(PerfomLogin());
     _newsBloc.add(FetchNotificationList());
+
     // timer =
     //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
   }
@@ -63,44 +65,6 @@ class _StartupPageState extends State<StartupPage> {
         : prefs.setBool("enableIndicator", prefs.getBool("enableIndicator")!);
 
     Globals.selectedLanguage = await _sharedPref.getString('selected_language');
-  }
-
-  Future<void> initPlatformState() async {
-    try {
-      if (Platform.isAndroid) {
-        androidInfo = await deviceInfoPlugin.androidInfo;
-        // final data =
-        //     (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
-
-        // Globals.phoneModel = andorid!.device;
-        Globals.baseOS = androidInfo!.version.baseOS;
-        // Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-        Globals.androidInfo = await DeviceInfoPlugin().androidInfo;
-
-        Globals.release = androidInfo!.version.release;
-        // var sdkInt = androidInfo.version.sdkInt;
-        Globals.manufacturer = androidInfo!.manufacturer;
-        Globals.model = androidInfo!.model;
-        Globals.deviceToken = androidInfo!.androidId;
-        Globals.myLocale = Localizations.localeOf(context);
-        // Globals.countrycode = Localizations.localeOf(context).countryCode!;
-      } else if (Platform.isIOS) {
-        ios = await deviceInfoPlugin.iosInfo;
-        var iosInfo = await DeviceInfoPlugin().iosInfo;
-        Globals.iosInfo = iosInfo;
-
-        Globals.manufacturer = iosInfo.systemName;
-        Globals.release = iosInfo.systemVersion;
-        Globals.name = iosInfo.name;
-        Globals.model = iosInfo.model;
-      }
-    } on PlatformException {
-      // deviceData = <String, dynamic>{
-      //   'Error:': 'Failed to get platform version.'
-      // };
-    }
-
-    if (!mounted) return;
   }
 
   Widget _buildSplashScreen() {

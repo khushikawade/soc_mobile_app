@@ -110,7 +110,7 @@ class _SubListPageState extends State<SubListPage> {
         onTap: () {
           _route(obj, index);
         },
-        child: ListWidget(index, _buildFormName(index, obj)));
+        child: ListWidget(index, _buildFormName(index, obj), obj));
   }
 
   Widget _buildFormName(int index, obj) {
@@ -125,6 +125,7 @@ class _SubListPageState extends State<SubListPage> {
                 translatedMessage.toString(),
                 style: Theme.of(context).textTheme.bodyText1!.copyWith(
                       color: Theme.of(context).colorScheme.primaryVariant,
+                      fontWeight: FontWeight.w400,
                     ),
               ),
             )
@@ -132,6 +133,7 @@ class _SubListPageState extends State<SubListPage> {
               obj.titleC.toString(),
               style: Theme.of(context).textTheme.bodyText1!.copyWith(
                     color: Theme.of(context).colorScheme.primaryVariant,
+                    fontWeight: FontWeight.w400,
                   ),
             ),
     );

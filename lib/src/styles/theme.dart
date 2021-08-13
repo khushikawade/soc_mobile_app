@@ -89,7 +89,7 @@ class AppTheme {
               ? kHeadline1TextFontSize
               : kHeadline1TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
           color: kAccentColor,
         ),
         headline2: TextStyle(
@@ -97,7 +97,7 @@ class AppTheme {
               ? kHeadline2TextFontSize
               : kHeadline2TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
           color: kAccentColor,
         ),
         headline3: TextStyle(
@@ -120,7 +120,7 @@ class AppTheme {
               ? kHeadline1TextFontSize
               : kHeadline1TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
           color: kAccentColor,
         ),
         headline6: TextStyle(
@@ -293,7 +293,7 @@ class AppTheme {
                       ? kHeadline2TextFontSize
                       : kHeadline2TextFontSize + _kSize,
                   fontFamily: 'Roboto Bold',
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.normal,
                   color: _primaryColor,
                 ),
                 headline3: TextStyle(

@@ -11,6 +11,7 @@ import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
@@ -34,183 +35,167 @@ class _EventPageState extends State<EventPage> {
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
+  DateTime now = new DateTime.now();
+  int date = 0;
 
   @override
   void initState() {
     super.initState();
     _eventBloc.add(CalendarListEvent());
+    date = now.day;
   }
 
   Widget _buildList(list, int index, mainObj) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 25.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SliderWidget(
-                        obj: mainObj,
-                        issocialpage: false,
-                        iseventpage: true,
-                        currentIndex: index,
-                        date: '',
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )));
-        },
-        child: Container(
-            decoration: BoxDecoration(
-              border: (index % 2 == 0)
-                  ? Border.all(color: Theme.of(context).colorScheme.background)
-                  : Border.all(color: Theme.of(context).colorScheme.secondary),
-              borderRadius: BorderRadius.circular(0.0),
-              color: (index % 2 == 0)
-                  ? Theme.of(context).colorScheme.background
-                  : Theme.of(context).colorScheme.secondary,
-            ),
-            child: Container(
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: _kLabelSpacing * 1,
-                      vertical: _kLabelSpacing / 2),
-                  child: ListTile(
-                    leading: Container(
-                      alignment: Alignment.center,
-                      width: 30,
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        children: <Widget>[
-                          widget.language != null &&
-                                  widget.language != "English"
-                              ? TranslationWidget(
-                                  message:
-                                      Utility.convertDateFormat(list.startDate!)
-                                          .toString()
-                                          .substring(0, 2),
-                                  toLanguage: Globals.selectedLanguage,
-                                  fromLanguage: "en",
-                                  builder: (translatedMessage) => Text(
-                                      translatedMessage.toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                          )),
-                                )
-                              : Text(
-                                  Utility.convertDateFormat(list.startDate!)
-                                      .toString()
-                                      .substring(0, 2),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SliderWidget(
+                      obj: mainObj,
+                      issocialpage: false,
+                      iseventpage: true,
+                      currentIndex: index,
+                      date: '',
+                      isbuttomsheet: true,
+                      language: Globals.selectedLanguage,
+                    )));
+      },
+      child: Container(
+          decoration: BoxDecoration(
+            border: (index % 2 == 0)
+                ? Border.all(color: Theme.of(context).colorScheme.background)
+                : Border.all(color: Theme.of(context).colorScheme.secondary),
+            borderRadius: BorderRadius.circular(0.0),
+            color: (index % 2 == 0)
+                ? Theme.of(context).colorScheme.background
+                : Theme.of(context).colorScheme.secondary,
+          ),
+          child: Container(
+            child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: _kLabelSpacing * 1,
+                    vertical: _kLabelSpacing / 2),
+                child: ListTile(
+                  leading: Container(
+                    alignment: Alignment.center,
+                    width: 30,
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      children: <Widget>[
+                        widget.language != null && widget.language != "English"
+                            ? TranslationWidget(
+                                message:
+                                    Utility.convertDateFormat(list.startDate!)
+                                        .toString()
+                                        .substring(0, 2),
+                                toLanguage: Globals.selectedLanguage,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline5!
                                       .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                          fontWeight: FontWeight.w500),
+                                ),
+                              )
+                            : Text(
+                                Utility.convertDateFormat(list.startDate!)
+                                    .toString()
+                                    .substring(0, 2),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant,
+                                        fontWeight: FontWeight.w500),
+                              ),
+                        Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
+                            ? TranslationWidget(
+                                message:
+                                    Utility.getMonthFromDate(list.startDate!)
+                                        .toString()
+                                        .split("/")[1],
+                                toLanguage: Globals.selectedLanguage,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline2!
+                                      .copyWith(
+                                        fontWeight: FontWeight.normal,
+                                        height: 1.5,
                                         color: Theme.of(context)
                                             .colorScheme
                                             .primaryVariant,
                                       ),
                                 ),
-                          Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English"
-                              ? TranslationWidget(
-                                  message:
-                                      Utility.getMonthFromDate(list.startDate!)
-                                          .toString()
-                                          .split("/")[1],
-                                  toLanguage: Globals.selectedLanguage,
-                                  fromLanguage: "en",
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline2!
-                                        .copyWith(
-                                          fontWeight: FontWeight.normal,
-                                          height: 1.5,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant,
-                                        ),
-                                  ),
-                                )
-                              : Expanded(
-                                  child: Text(
-                                    Utility.getMonthFromDate(list.startDate!)
-                                        .toString()
-                                        .split("/")[1],
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline2!
-                                        .copyWith(
-                                          fontWeight: FontWeight.normal,
-                                          height: 1.5,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant,
-                                        ),
-                                  ),
-                                )
-                        ],
-                      ),
+                              )
+                            : Expanded(
+                                child: Text(
+                                  Utility.getMonthFromDate(list.startDate!)
+                                      .toString()
+                                      .split("/")[1],
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline2!
+                                      .copyWith(
+                                        fontWeight: FontWeight.normal,
+                                        height: 1.5,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant,
+                                      ),
+                                ),
+                              )
+                      ],
                     ),
-                    title: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? TranslationWidget(
-                            message: list.titleC!,
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5!
-                                  .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
-                                  ),
-                            ),
-                          )
-                        : Text(
-                            list.titleC ?? '-',
+                  ),
+                  title: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: list.titleC!,
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
                             style:
                                 Theme.of(context).textTheme.headline5!.copyWith(
+                                      fontWeight: FontWeight.w500,
                                       color: Theme.of(context)
                                           .colorScheme
                                           .primaryVariant,
                                     ),
                           ),
-                    subtitle: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? TranslationWidget(
-                            message:
-                                Utility.convertDateFormat(list.startDate!) +
-                                    " - " +
-                                    Utility.convertDateFormat(list.endDate!),
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(
-                                    fontWeight: FontWeight.normal,
-                                    height: 1.5,
+                        )
+                      : Text(
+                          list.titleC ?? '-',
+                          style:
+                              Theme.of(context).textTheme.headline5!.copyWith(
+                                    fontWeight: FontWeight.w500,
                                     color: Theme.of(context)
                                         .colorScheme
                                         .primaryVariant,
                                   ),
-                            ),
-                          )
-                        : Text(
-                            Utility.convertDateFormat(list.startDate!) +
-                                " - " +
-                                Utility.convertDateFormat(list.endDate!),
+                        ),
+                  subtitle: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: Utility.convertDateFormat(list.startDate!) +
+                              " - " +
+                              Utility.convertDateFormat(list.endDate!),
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
                             style:
                                 Theme.of(context).textTheme.headline2!.copyWith(
                                       fontWeight: FontWeight.normal,
@@ -220,9 +205,22 @@ class _EventPageState extends State<EventPage> {
                                           .primaryVariant,
                                     ),
                           ),
-                  )),
-            )),
-      ),
+                        )
+                      : Text(
+                          Utility.convertDateFormat(list.startDate!) +
+                              " - " +
+                              Utility.convertDateFormat(list.endDate!),
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    fontWeight: FontWeight.normal,
+                                    height: 1.5,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                  ),
+                        ),
+                )),
+          )),
     );
   }
 
@@ -247,13 +245,13 @@ class _EventPageState extends State<EventPage> {
                 builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     style: Theme.of(context).textTheme.headline3!.copyWith(
-                        color: Theme.of(context).colorScheme.primary)),
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w500)),
               )
             : Text(tittle,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline3!
-                    .copyWith(color: Theme.of(context).colorScheme.primary)),
+                style: Theme.of(context).textTheme.headline3!.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.w500)),
       ),
     );
   }
@@ -288,80 +286,78 @@ class _EventPageState extends State<EventPage> {
                 }
 
                 return connected
-                    ? Column(
-                        children: <Widget>[
-                          Expanded(
-                            child: BlocBuilder<FamilyBloc, FamilyState>(
-                                bloc: _eventBloc,
-                                builder:
-                                    (BuildContext contxt, FamilyState state) {
-                                  if (state is FamilyLoading) {
-                                    return Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.8,
-                                        alignment: Alignment.center,
-                                        child: CircularProgressIndicator());
-                                  } else if (state is CalendarListSuccess) {
-                                    return Stack(children: [
-                                      _buildHeading("Upcoming"),
-                                      Expanded(
-                                          child: ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        itemCount: state.obj!.length,
-                                        shrinkWrap: true,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return state.obj!.length > 0
-                                              ? _buildList(state.obj![index],
-                                                  index, state.obj)
-                                              : ListView(children: [
-                                                  ErrorMessageWidget(
-                                                    msg: "No Data Found",
-                                                    isnetworkerror: false,
-                                                    imgPath:
-                                                        "assets/images/no_data_icon..svg",
-                                                  ),
-                                                ]);
-                                        },
-                                      ))
-                                    ]);
-                                    //   ),
-                                    // ]);
-                                  } else if (state is ErrorLoading) {
-                                    return Expanded(
-                                      child:
-                                          ListView(shrinkWrap: true, children: [
-                                        ErrorMessageWidget(
-                                          msg: "Error",
-                                          isnetworkerror: false,
-                                          imgPath:
-                                              "assets/images/error_icon.svg",
-                                        ),
-                                      ]),
-                                    );
-                                  }
-                                  return Container();
-                                }),
-                          ),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
-                                }
-                              },
-                              child: Container(),
-                            ),
-                          ),
-                        ],
-                      )
+                    ? BlocBuilder<FamilyBloc, FamilyState>(
+                        bloc: _eventBloc,
+                        builder: (BuildContext contxt, FamilyState state) {
+                          if (state is FamilyLoading) {
+                            return Expanded(
+                              child: Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  alignment: Alignment.center,
+                                  child: CircularProgressIndicator()),
+                            );
+                          } else if (state is CalendarListSuccess) {
+                            return Column(children: [
+                              _buildHeading("Upcoming"),
+                              Expanded(
+                                  child: ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: state.futureListobj!.length,
+                                      shrinkWrap: true,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return state.futureListobj!.length > 0
+                                            ? _buildList(
+                                                state.futureListobj![index],
+                                                index,
+                                                state.futureListobj)
+                                            : ListView(children: [
+                                                ErrorMessageWidget(
+                                                  msg: "No Data Found",
+                                                  isnetworkerror: false,
+                                                  imgPath:
+                                                      "assets/images/no_data_icon.svg",
+                                                ),
+                                              ]);
+                                      })),
+                              SpacerWidget(20),
+                              _buildHeading("Past"),
+                              Expanded(
+                                  child: ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: state.pastListobj!.length,
+                                      shrinkWrap: true,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return state.pastListobj!.length > 0
+                                            ? _buildList(
+                                                state.pastListobj![index],
+                                                index,
+                                                state.pastListobj)
+                                            : ListView(children: [
+                                                ErrorMessageWidget(
+                                                  msg: "No Data Found",
+                                                  isnetworkerror: false,
+                                                  imgPath:
+                                                      "assets/images/no_data_icon..svg",
+                                                ),
+                                              ]);
+                                      }))
+                            ]);
+                          } else if (state is ErrorLoading) {
+                            return Expanded(
+                              child: ListView(shrinkWrap: true, children: [
+                                ErrorMessageWidget(
+                                  msg: "Error",
+                                  isnetworkerror: false,
+                                  imgPath: "assets/images/error_icon.svg",
+                                ),
+                              ]),
+                            );
+                          }
+                          return Container();
+                        })
                     : NoInternetErrorWidget(
                         connected: connected, issplashscreen: false);
               },

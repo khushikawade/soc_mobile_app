@@ -8,7 +8,6 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -244,6 +243,7 @@ class _SettingPageState extends State<SettingPage> {
                       connected
                           ? Column(
                               children: [
+                                Expanded(child: _buildItem()),
                                 Container(
                                   height: 0,
                                   width: 0,
@@ -263,51 +263,51 @@ class _SettingPageState extends State<SettingPage> {
                                     ),
                                   ),
                                 ),
-                                Expanded(
-                                  child: BlocBuilder<HomeBloc, HomeState>(
-                                    bloc: _homeBloc,
-                                    builder:
-                                        (BuildContext contxt, HomeState state) {
-                                      if (state is BottomNavigationBarSuccess) {
-                                        return state.obj != null &&
-                                                state.obj.length > 0
-                                            ? _buildItem()
-                                            : ListView(children: [
-                                                ErrorMessageWidget(
-                                                  msg: "No Data Found",
-                                                  isnetworkerror: false,
-                                                  imgPath:
-                                                      "assets/images/no_data_icon.svg",
-                                                )
-                                              ]);
-                                      } else if (state is HomeLoading) {
-                                        return Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.8,
-                                          child: Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                        );
-                                      }
+                                // Expanded(
+                                //   child: BlocBuilder<HomeBloc, HomeState>(
+                                //     bloc: _homeBloc,
+                                //     builder:
+                                //         (BuildContext contxt, HomeState state) {
+                                //       if (state is BottomNavigationBarSuccess) {
+                                //         return state.obj != null &&
+                                //                 state.obj.length > 0
+                                //             ? _buildItem()
+                                //             : ListView(children: [
+                                //                 ErrorMessageWidget(
+                                //                   msg: "No Data Found",
+                                //                   isnetworkerror: false,
+                                //                   imgPath:
+                                //                       "assets/images/no_data_icon.svg",
+                                //                 )
+                                //               ]);
+                                //       } else if (state is HomeLoading) {
+                                //         return Container(
+                                //           height: MediaQuery.of(context)
+                                //                   .size
+                                //                   .height *
+                                //               0.8,
+                                //           child: Center(
+                                //               child:
+                                //                   CircularProgressIndicator()),
+                                //         );
+                                //       }
 
-                                      if (state is HomeErrorReceived) {
-                                        return ListView(
-                                            shrinkWrap: true,
-                                            children: [
-                                              ErrorMessageWidget(
-                                                msg: "Error",
-                                                isnetworkerror: false,
-                                                imgPath:
-                                                    "assets/images/error_icon.svg",
-                                              ),
-                                            ]);
-                                      }
-                                      return Container();
-                                    },
-                                  ),
-                                )
+                                //       if (state is HomeErrorReceived) {
+                                //         return ListView(
+                                //             shrinkWrap: true,
+                                //             children: [
+                                //               ErrorMessageWidget(
+                                //                 msg: "Error",
+                                //                 isnetworkerror: false,
+                                //                 imgPath:
+                                //                     "assets/images/error_icon.svg",
+                                //               ),
+                                //             ]);
+                                //       }
+                                //       return Container();
+                                //     },
+                                //   ),
+                                // )
                               ],
                             )
                           : NoInternetErrorWidget(
