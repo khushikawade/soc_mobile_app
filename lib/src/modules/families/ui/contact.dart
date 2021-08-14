@@ -375,7 +375,7 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget _buildItem() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 25.0),
+      padding: const EdgeInsets.only(bottom: 35.0),
       child: ListView(children: [
         _buildIcon(),
         SpacerWidget(_kLabelSpacing),

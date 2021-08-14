@@ -123,28 +123,37 @@ class _StudentPageState extends State<StudentPage> {
                           Expanded(
                               child: Globals.selectedLanguage != null &&
                                       Globals.selectedLanguage != "English"
-                                  ? Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: _kLableSpacing / 2),
-                                      child: TranslationWidget(
-                                        message: "${list[index].titleC}",
-                                        fromLanguage: "en",
-                                        toLanguage: Globals.selectedLanguage,
-                                        builder: (translatedMessage) => Text(
-                                          translatedMessage.toString(),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant),
-                                        ),
+                                  ? TranslationWidget(
+                                      message: "${list[index].titleC}",
+                                      fromLanguage: "en",
+                                      toLanguage: Globals.selectedLanguage,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant),
                                       ),
                                     )
-                                  : Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: _kLableSpacing / 2),
+
+                                  // TranslationWidget(
+                                  //     message: "${list[index].titleC}",
+                                  //     fromLanguage: "en",
+                                  //     toLanguage: Globals.selectedLanguage,
+                                  //     builder: (translatedMessage) => Text(
+                                  //       translatedMessage.toString(),
+                                  //       textAlign: TextAlign.center,
+                                  //       style: TextStyle(
+                                  //           color: Theme.of(context)
+                                  //               .colorScheme
+                                  //               .primaryVariant),
+                                  //     ),
+                                  //   )
+                                  : Expanded(
                                       child: Text(
-                                        "${list[index].titleC}",
+                                        "hello lorem hello lorem hello lorem",
+                                        // "${list[index].titleC}",
                                         textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme
@@ -280,7 +289,6 @@ class _StudentPageState extends State<StudentPage> {
                     ),
                   ),
                 ]);
-                // onRefresh: refreshPage,
               },
               child: Container()),
           onRefresh: refreshPage,

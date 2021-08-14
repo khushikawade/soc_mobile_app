@@ -126,7 +126,8 @@ class _NewdescriptionState extends State<Newdescription> {
                                       color: Theme.of(context)
                                           .colorScheme
                                           .primaryVariant,
-                                      fontWeight: FontWeight.w500),
+                                      fontWeight: FontWeight.w500
+                                      ),
                             ),
                           )
                         : Text(
