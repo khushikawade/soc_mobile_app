@@ -5,7 +5,9 @@ import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -144,18 +146,12 @@ class _SocialPageState extends State<SocialPage> {
                                       fromLanguage: "en",
                                       toLanguage: Globals.selectedLanguage,
                                       builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline2!
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant,
-                                            ),
-                                      ),
+                                          translatedMessage.toString(),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline2!),
                                     )
                                   : Text(
                                       "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
@@ -191,16 +187,10 @@ class _SocialPageState extends State<SocialPage> {
                                       fromLanguage: "en",
                                       toLanguage: Globals.selectedLanguage,
                                       builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1!
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant,
-                                            ),
-                                      ),
+                                          translatedMessage.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle1!),
                                     )
                                   : Text(
                                       Utility.convertDate(obj.pubDate)
@@ -282,12 +272,7 @@ class _SocialPageState extends State<SocialPage> {
                                             child: ListView(
                                                 shrinkWrap: true,
                                                 children: [
-                                                  ErrorMessageWidget(
-                                                    msg: "No Data Found",
-                                                    isnetworkerror: false,
-                                                    imgPath:
-                                                        "assets/images/no_data_icon.svg",
-                                                  )
+                                                  NoDataFoundErrorWidget()
                                                 ]),
                                           );
                                   } else if (state is Loading) {
@@ -304,14 +289,7 @@ class _SocialPageState extends State<SocialPage> {
                                   if (state is SocialError) {
                                     return ListView(
                                         shrinkWrap: true,
-                                        children: [
-                                          ErrorMessageWidget(
-                                            msg: "Error",
-                                            isnetworkerror: false,
-                                            imgPath:
-                                                "assets/images/error_icon.svg",
-                                          ),
-                                        ]);
+                                        children: [ErrorMsgWidget()]);
                                   }
 
                                   return Container();

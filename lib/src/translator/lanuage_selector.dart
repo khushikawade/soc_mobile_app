@@ -79,13 +79,12 @@ class LanguageSelector {
                       );
                     },
                     child: Text(language,
-                        style: Theme.of(context).textTheme.caption!.copyWith(
-                            color: Theme.of(context).colorScheme.primaryVariant,
-                            fontWeight: FontWeight.bold)),
+                        style: Theme.of(context)
+                            .textTheme
+                            .caption!
+                            .copyWith(fontWeight: FontWeight.bold)),
                   )
-                : Text(language,
-                    style: Theme.of(context).textTheme.caption!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant)),
+                : Text(language, style: Theme.of(context).textTheme.caption!),
           ),
         ),
       );
@@ -123,14 +122,10 @@ class LanguageSelector {
                         ListTile(
                           title: Text(
                             "Select language",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(
-                                    fontSize: AppTheme.kBottomSheetTitleSize,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant),
+                            style:
+                                Theme.of(context).textTheme.headline6!.copyWith(
+                                      fontSize: AppTheme.kBottomSheetTitleSize,
+                                    ),
                           ),
                           trailing: InkWell(
                             onTap: () {

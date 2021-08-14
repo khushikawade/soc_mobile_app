@@ -5,8 +5,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -35,14 +34,11 @@ class _EventPageState extends State<EventPage> {
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
-  DateTime now = new DateTime.now();
-  int date = 0;
 
   @override
   void initState() {
     super.initState();
     _eventBloc.add(CalendarListEvent());
-    date = now.day;
   }
 
   Widget _buildList(list, int index, mainObj) {
@@ -96,11 +92,7 @@ class _EventPageState extends State<EventPage> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline5!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant,
-                                          fontWeight: FontWeight.w500),
+                                      .copyWith(fontWeight: FontWeight.w500),
                                 ),
                               )
                             : Text(
@@ -110,11 +102,7 @@ class _EventPageState extends State<EventPage> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline5!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant,
-                                        fontWeight: FontWeight.w500),
+                                    .copyWith(fontWeight: FontWeight.w500),
                               ),
                         Globals.selectedLanguage != null &&
                                 Globals.selectedLanguage != "English"
@@ -132,27 +120,19 @@ class _EventPageState extends State<EventPage> {
                                       .headline2!
                                       .copyWith(
                                         height: 1.5,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant,
                                       ),
                                 ),
                               )
-                            : Expanded(
-                                child: Text(
-                                  Utility.getMonthFromDate(list.startDate!)
-                                      .toString()
-                                      .split("/")[1],
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline2!
-                                      .copyWith(
-                                        height: 1.5,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant,
-                                      ),
-                                ),
+                            : Text(
+                                Utility.getMonthFromDate(list.startDate!)
+                                    .toString()
+                                    .split("/")[1],
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                      height: 1.5,
+                                    ),
                               )
                       ],
                     ),
@@ -168,9 +148,6 @@ class _EventPageState extends State<EventPage> {
                             style:
                                 Theme.of(context).textTheme.headline5!.copyWith(
                                       fontWeight: FontWeight.w500,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
                                     ),
                           ),
                         )
@@ -179,9 +156,6 @@ class _EventPageState extends State<EventPage> {
                           style:
                               Theme.of(context).textTheme.headline5!.copyWith(
                                     fontWeight: FontWeight.w500,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
                                   ),
                         ),
                   subtitle: Globals.selectedLanguage != null &&
@@ -197,9 +171,6 @@ class _EventPageState extends State<EventPage> {
                             style:
                                 Theme.of(context).textTheme.headline2!.copyWith(
                                       height: 1.5,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
                                     ),
                           ),
                         )
@@ -210,9 +181,6 @@ class _EventPageState extends State<EventPage> {
                           style:
                               Theme.of(context).textTheme.headline2!.copyWith(
                                     height: 1.5,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
                                   ),
                         ),
                 )),
@@ -279,112 +247,109 @@ class _EventPageState extends State<EventPage> {
                   }
                 } else if (!connected) {
                   iserrorstate = true;
+                  WidgetsBinding.instance!
+                      .addPostFrameCallback((_) => setState(() {}));
                 }
 
                 return connected
-                    ? Column(
-                        children: [
-                          BlocBuilder<FamilyBloc, FamilyState>(
-                              bloc: _eventBloc,
-                              builder:
-                                  (BuildContext contxt, FamilyState state) {
-                                if (state is FamilyLoading) {
-                                  return Expanded(
-                                    child: Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.8,
-                                        alignment: Alignment.center,
-                                        child: CircularProgressIndicator()),
-                                  );
-                                } else if (state is CalendarListSuccess) {
-                                  return Column(children: [
-                                    _buildHeading("Upcoming"),
-                                    Expanded(
-                                        child: ListView.builder(
-                                            scrollDirection: Axis.vertical,
-                                            itemCount:
-                                                state.futureListobj!.length,
-                                            shrinkWrap: true,
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return state.futureListobj!
-                                                          .length >
-                                                      0
-                                                  ? _buildList(
-                                                      state.futureListobj![
-                                                          index],
-                                                      index,
-                                                      state.futureListobj)
-                                                  : ListView(children: [
-                                                      ErrorMessageWidget(
-                                                        msg: "No Data Found",
-                                                        isnetworkerror: false,
-                                                        imgPath:
-                                                            "assets/images/no_data_icon.svg",
-                                                      ),
-                                                    ]);
-                                            })),
-                                    SpacerWidget(20),
-                                    _buildHeading("Past"),
-                                    Expanded(
-                                        child: ListView.builder(
-                                            scrollDirection: Axis.vertical,
-                                            itemCount:
-                                                state.pastListobj!.length,
-                                            shrinkWrap: true,
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return state.pastListobj!.length >
-                                                      0
-                                                  ? _buildList(
-                                                      state.pastListobj![index],
-                                                      index,
-                                                      state.pastListobj)
-                                                  : ListView(children: [
-                                                      ErrorMessageWidget(
-                                                        msg: "No Data Found",
-                                                        isnetworkerror: false,
-                                                        imgPath:
-                                                            "assets/images/no_data_icon..svg",
-                                                      ),
-                                                    ]);
-                                            }))
-                                  ]);
-                                } else if (state is ErrorLoading) {
-                                  return Expanded(
-                                    child:
-                                        ListView(shrinkWrap: true, children: [
-                                      ErrorMessageWidget(
-                                        msg: "Error",
-                                        isnetworkerror: false,
-                                        imgPath: "assets/images/error_icon.svg",
-                                      ),
-                                    ]),
-                                  );
-                                }
-                                return Container();
-                              }),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
-                                }
-                              },
-                              child: Container(
-                                height: 0,
-                                width: 0,
+                    ? Padding(
+                        padding: const EdgeInsets.only(bottom: 40.0),
+                        child: Column(
+                          children: [
+                            BlocBuilder<FamilyBloc, FamilyState>(
+                                bloc: _eventBloc,
+                                builder:
+                                    (BuildContext contxt, FamilyState state) {
+                                  if (state is FamilyLoading) {
+                                    return Expanded(
+                                      child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.8,
+                                          alignment: Alignment.center,
+                                          child: CircularProgressIndicator()),
+                                    );
+                                  } else if (state is CalendarListSuccess) {
+                                    return Expanded(
+                                      child: Column(children: [
+                                        _buildHeading("Upcoming"),
+                                        state.futureListobj!.length > 0
+                                            ? Expanded(
+                                                child: ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    itemCount: state
+                                                        .futureListobj!.length,
+                                                    shrinkWrap: true,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      return _buildList(
+                                                          state.futureListobj![
+                                                              index],
+                                                          index,
+                                                          state.futureListobj);
+                                                    }))
+                                            : Container(
+                                                height: 0,
+                                                width: 0,
+                                              ),
+                                        SpacerWidget(20),
+                                        _buildHeading("Past"),
+                                        state.pastListobj!.length > 0
+                                            ? Expanded(
+                                                child: ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    itemCount: state
+                                                        .pastListobj!.length,
+                                                    shrinkWrap: true,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      return _buildList(
+                                                          state.pastListobj![
+                                                              index],
+                                                          index,
+                                                          state.pastListobj);
+                                                    }))
+                                            : Container(
+                                                height: 0,
+                                                width: 0,
+                                              ),
+                                      ]),
+                                    );
+                                  } else if (state is ErrorLoading) {
+                                    return Expanded(
+                                      child: ListView(
+                                          shrinkWrap: true,
+                                          children: [ErrorMsgWidget()]),
+                                    );
+                                  }
+                                  return Container();
+                                }),
+                            Container(
+                              height: 0,
+                              width: 0,
+                              child: BlocListener<HomeBloc, HomeState>(
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  }
+                                },
+                                child: Container(
+                                  height: 0,
+                                  width: 0,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       )
                     : NoInternetErrorWidget(
                         connected: connected, issplashscreen: false);

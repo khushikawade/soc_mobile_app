@@ -3,10 +3,11 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -37,14 +38,11 @@ class _ContactPageState extends State<ContactPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
   bool issuccesstate = false;
-
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc _bloc = new HomeBloc();
   bool? iserrorstate = false;
   static const double _kboxborderwidth = 0.75;
-  var longitude;
-  var latitude;
 
   @override
   void initState() {
@@ -87,8 +85,6 @@ class _ContactPageState extends State<ContactPage> {
                         isLoading: true,
                         child: Container(
                           height: 200,
-                          // width: MediaQuery.of(context).size.width,
-                          // height: _kIconSize * 1.5,
                           color: Colors.white,
                         ),
                       )),
@@ -114,13 +110,15 @@ class _ContactPageState extends State<ContactPage> {
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
                   style: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant),
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
               )
             : Text(
                 Globals.homeObjet["Contact_Name__c"] ?? "-",
                 style: Theme.of(context).textTheme.headline2!.copyWith(
-                    color: Theme.of(context).colorScheme.primaryVariant),
+                      fontWeight: FontWeight.w500,
+                    ),
               ));
   }
 
@@ -161,7 +159,6 @@ class _ContactPageState extends State<ContactPage> {
                     Globals.homeObjet["Contact_Office_Location__Latitude__s"],
                 longitude:
                     Globals.homeObjet["Contact_Office_Location__Longitude__s"],
-                // locationName: 'soc client',
               ),
             )
           : Container(
@@ -221,14 +218,16 @@ class _ContactPageState extends State<ContactPage> {
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant),
+                          fontWeight: FontWeight.w500,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                 )
               : Text(
                   "Address : ",
                   style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant),
+                        fontWeight: FontWeight.w500,
+                      ),
                   textAlign: TextAlign.center,
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
@@ -241,15 +240,13 @@ class _ContactPageState extends State<ContactPage> {
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Theme.of(context).colorScheme.primaryVariant),
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(),
                       textAlign: TextAlign.start,
                     ),
                   )
                 : Text(
                     Globals.homeObjet["Contact_Address__c"] ?? '-',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant),
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(),
                     textAlign: TextAlign.start,
                   ),
           )
@@ -273,13 +270,15 @@ class _ContactPageState extends State<ContactPage> {
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant),
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                 )
               : Text(
                   "Phone : ",
                   style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant),
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           InkWell(
@@ -296,16 +295,11 @@ class _ContactPageState extends State<ContactPage> {
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Theme.of(context).colorScheme.primaryVariant),
-                    ),
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.bodyText1!),
                   )
-                : Text(
-                    Globals.homeObjet["Contact_Phone__c"] ?? '-',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant),
-                  ),
+                : Text(Globals.homeObjet["Contact_Phone__c"] ?? '-',
+                    style: Theme.of(context).textTheme.bodyText1!),
           )
         ],
       ),
@@ -344,15 +338,15 @@ class _ContactPageState extends State<ContactPage> {
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant),
-                    // .copyWith(color: Color(0xff171717)),
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                 )
               : Text(
                   "Email : ",
                   style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant),
-                  // .copyWith(color: Color(0xff171717)),
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           InkWell(
@@ -362,11 +356,8 @@ class _ContactPageState extends State<ContactPage> {
                       'mailto:"${Globals.homeObjet["Contact_Email__c"]}"')
                   : print("null value");
             },
-            child: Text(
-              Globals.homeObjet["Contact_Email__c"] ?? '-',
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                  color: Theme.of(context).colorScheme.primaryVariant),
-            ),
+            child: Text(Globals.homeObjet["Contact_Email__c"] ?? '-',
+                style: Theme.of(context).textTheme.bodyText1!),
           )
         ],
       ),
@@ -436,28 +427,15 @@ class _ContactPageState extends State<ContactPage> {
                               return state.obj != null && state.obj.length > 0
                                   ? _buildItem()
                                   : ListView(children: [
-                                      ErrorMessageWidget(
-                                        msg: "No Data Found",
-                                        isnetworkerror: false,
-                                        imgPath:
-                                            "assets/images/no_data_icon..svg",
-                                      )
+                                      NoDataFoundErrorWidget(),
                                     ]);
                             } else if (state is HomeErrorReceived) {
-                              return ListView(children: [
-                                ErrorMessageWidget(
-                                  msg: "Error",
-                                  isnetworkerror: false,
-                                  imgPath: "assets/images/error_icon.svg",
-                                ),
-                              ]);
+                              return ListView(children: [ErrorMsgWidget()]);
                             }
                             return Container();
                           })
                       : NoInternetErrorWidget(
                           connected: connected, issplashscreen: false),
-
-                  // ),
                   Container(
                     height: 0,
                     width: 0,

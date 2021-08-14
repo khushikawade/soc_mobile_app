@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
@@ -154,17 +155,14 @@ class _NewsPageState extends State<NewsPage> {
                 builder: (translatedMessage) => Text(
                   // obj.titleC.toString(),
                   translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant,
-                      ),
+                  style: Theme.of(context).textTheme.bodyText2!,
                 ),
               )
             : Text(
                 obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
-                style: Theme.of(context).textTheme.headline4!.copyWith(
-                    color: Theme.of(context).colorScheme.primaryVariant),
+                style: Theme.of(context).textTheme.headline4!,
               ));
   }
 
@@ -258,12 +256,7 @@ class _NewsPageState extends State<NewsPage> {
                                     } else if (state is NewsErrorReceived) {
                                       return Expanded(
                                         child: ListView(children: [
-                                          ErrorMessageWidget(
-                                            msg: "Error",
-                                            isnetworkerror: false,
-                                            imgPath:
-                                                "assets/images/error_icon.svg",
-                                          ),
+                                          ErrorMsgWidget(),
                                         ]),
                                       );
                                     } else {
@@ -295,15 +288,7 @@ class _NewsPageState extends State<NewsPage> {
                                       Globals.homeObjet = state.obj;
                                       setState(() {});
                                     } else if (state is HomeErrorReceived) {
-                                      Container(
-                                        alignment: Alignment.center,
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.8,
-                                        child: Center(
-                                            child: Text(
-                                                "Unable to load the data")),
-                                      );
+                                      ErrorMsgWidget();
                                     }
                                   },
                                   child: Container(

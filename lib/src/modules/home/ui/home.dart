@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
@@ -141,7 +140,6 @@ class _HomePageState extends State<HomePage> {
         screens: _buildScreens(),
         // hideNavigationBar: true,
         onItemSelected: (int i) {
-          // print('Changed...');
           if (i == Globals.newsIndex) {
             setState(() {
               Globals.indicator.value = false;
@@ -152,9 +150,8 @@ class _HomePageState extends State<HomePage> {
         },
         items: _navBarsItems(),
         confineInSafeArea: true,
-        backgroundColor:
-            Theme.of(context).backgroundColor, // Default is Colors.white.
-        handleAndroidBackButtonPress: true, // Default is true.
+        backgroundColor: Theme.of(context).backgroundColor,
+        handleAndroidBackButtonPress: true,
         resizeToAvoidBottomInset:
             true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
         stateManagement: true, // Default is true.
@@ -171,18 +168,15 @@ class _HomePageState extends State<HomePage> {
         popAllScreensOnTapOfSelectedTab: true,
         popActionScreens: PopActionScreensType.all,
         itemAnimationProperties: ItemAnimationProperties(
-          // Navigation Bar's items animation properties.
           duration: Duration(milliseconds: 200),
           curve: Curves.ease,
         ),
         screenTransitionAnimation: ScreenTransitionAnimation(
-          // Screen transition animation on change of selected tab.
           animateTabTransition: true,
           curve: Curves.ease,
           duration: Duration(milliseconds: 200),
         ),
-        navBarStyle:
-            NavBarStyle.style6, // Choose the nav bar style with this property.
+        navBarStyle: NavBarStyle.style6,
       )),
     );
   }

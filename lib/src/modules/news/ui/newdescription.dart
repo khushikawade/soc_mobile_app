@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
@@ -122,12 +121,7 @@ class _NewdescriptionState extends State<Newdescription> {
                               style: Theme.of(context)
                                   .textTheme
                                   .headline2!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
-                                      fontWeight: FontWeight.w500
-                                      ),
+                                  .copyWith(fontWeight: FontWeight.w500),
                             ),
                           )
                         : Text(
@@ -146,11 +140,7 @@ class _NewdescriptionState extends State<Newdescription> {
                             style: Theme.of(context)
                                 .textTheme
                                 .headline2!
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
-                                    fontWeight: FontWeight.w500),
+                                .copyWith(fontWeight: FontWeight.w500),
                           ),
                   ),
                   Globals.selectedLanguage != null &&
@@ -161,25 +151,13 @@ class _NewdescriptionState extends State<Newdescription> {
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant),
+                            style: Theme.of(context).textTheme.subtitle1!,
                             textAlign: TextAlign.justify,
                           ),
                         )
                       : Text(
                           widget.date,
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant),
+                          style: Theme.of(context).textTheme.subtitle1!,
                           textAlign: TextAlign.justify,
                         ),
                 ],
@@ -195,25 +173,13 @@ class _NewdescriptionState extends State<Newdescription> {
                             fromLanguage: "en",
                             builder: (translatedMessage) => Text(
                               translatedMessage.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant),
+                              style: Theme.of(context).textTheme.bodyText1!,
                               textAlign: TextAlign.left,
                             ),
                           )
                         : Text(
                             widget.obj.contents["en"].toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant),
+                            style: Theme.of(context).textTheme.bodyText1!,
                             textAlign: TextAlign.left,
                           ),
                   ],
@@ -253,10 +219,8 @@ class _NewdescriptionState extends State<Newdescription> {
                                       .textTheme
                                       .bodyText1
                                       ?.copyWith(
-                                          decoration: TextDecoration.underline,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant),
+                                        decoration: TextDecoration.underline,
+                                      ),
                                   textAlign: TextAlign.justify,
                                 ),
                         ],
@@ -271,8 +235,8 @@ class _NewdescriptionState extends State<Newdescription> {
                 Text(
                   widget.obj.contents["en"].toString(),
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      decoration: TextDecoration.underline,
-                      color: Theme.of(context).colorScheme.primaryVariant),
+                        decoration: TextDecoration.underline,
+                      ),
                   textAlign: TextAlign.left,
                 ),
               ],
@@ -289,9 +253,8 @@ class _NewdescriptionState extends State<Newdescription> {
                       Text(
                         widget.obj.url.toString(),
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                            decoration: TextDecoration.underline,
-                            color:
-                                Theme.of(context).colorScheme.primaryVariant),
+                              decoration: TextDecoration.underline,
+                            ),
                         textAlign: TextAlign.justify,
                       ),
                     ],

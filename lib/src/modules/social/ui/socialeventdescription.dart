@@ -266,15 +266,13 @@ class SocialDescription extends StatelessWidget {
                 fromLanguage: "en",
                 toLanguage: language,
                 builder: (translatedMessage) => Text(
-                  translatedMessage
-                      .toString()
-                      .replaceAll(new RegExp(r'[\\]+'), '\n')
-                      .replaceAll("n.", ".")
-                      .replaceAll("\nn", "\n")
-                      .replaceAll("\\ n ", ""),
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant),
-                ),
+                    translatedMessage
+                        .toString()
+                        .replaceAll(new RegExp(r'[\\]+'), '\n')
+                        .replaceAll("n.", ".")
+                        .replaceAll("\nn", "\n")
+                        .replaceAll("\\ n ", ""),
+                    style: Theme.of(context).textTheme.subtitle1!),
               )
             : Center(
                 child: Html(
@@ -288,7 +286,6 @@ class SocialDescription extends StatelessWidget {
                       "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")}",
                   style: {
                     "body": Style(
-                      color: Theme.of(context).colorScheme.primaryVariant,
                       fontSize: Globals.deviceType == "phone"
                           ? FontSize(13.0)
                           : FontSize(21.0),
@@ -312,16 +309,13 @@ class SocialDescription extends StatelessWidget {
                 fromLanguage: "en",
                 toLanguage: language,
                 builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant),
-                ),
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.subtitle1!),
               )
             : Text(
                 "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
                 textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    color: Theme.of(context).colorScheme.primaryVariant),
+                style: Theme.of(context).textTheme.subtitle1!,
               ),
       ),
       SpacerWidget(_kPadding),
@@ -337,15 +331,12 @@ class SocialDescription extends StatelessWidget {
                     message: Utility.convertDate(object.pubDate).toString(),
                     toLanguage: language,
                     builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: Theme.of(context).colorScheme.primaryVariant),
-                    ),
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.subtitle1!),
                   )
                 : Text(
                     Utility.convertDate(object.pubDate).toString(),
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant),
+                    style: Theme.of(context).textTheme.subtitle1!,
                   )
             : Container());
   }

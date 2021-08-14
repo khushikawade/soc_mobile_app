@@ -138,16 +138,11 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                 Globals.selectedLanguage,
                                             builder: (translatedMessage) =>
                                                 Text(
-                                              translatedMessage.toString(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText2!
-                                                  .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primaryVariant,
-                                                  ),
-                                            ),
+                                                    translatedMessage
+                                                        .toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2!),
                                           )
                                         : Text(
                                             apps[index].appFolderc != null &&

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 part 'family_event.dart';
 part 'family_state.dart';
 
@@ -71,20 +72,20 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         List<CalendarList>? futureListobj = [];
         List<CalendarList>? pastListobj = [];
         DateTime now = new DateTime.now();
-        int date = now.day;
+        final DateFormat formatter = DateFormat('yyyy-MM-dd');
+        final DateTime currentDate =
+            DateTime.parse(formatter.format(now).toString());
 
         for (int i = 0; i < list.length; i++) {
-          if (int.parse(list[i]
-                  .startDate
-                  .toString()
-                  .substring(list[i].startDate!.length - 2)) >
-              date) {
-            futureListobj.add(list[i]);
-          } else {
+          DateTime temp = DateTime.parse(
+              formatter.format(DateTime.parse(list[i].startDate!)).toString());
+
+          if (temp.isBefore(currentDate)) {
             pastListobj.add(list[i]);
+          } else {
+            futureListobj.add(list[i]);
           }
         }
-
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {

@@ -5,7 +5,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -76,14 +75,10 @@ class _SettingPageState extends State<SettingPage> {
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.headline2!.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.primaryVariant)),
-                  )
-                : Text(tittle,
-                    style: Theme.of(context).textTheme.headline2!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant)),
+                          translatedMessage.toString(),
+                          style: Theme.of(context).textTheme.headline2!,
+                        ))
+                : Text(tittle, style: Theme.of(context).textTheme.headline2!),
           ),
         ),
       ],
@@ -138,17 +133,14 @@ class _SettingPageState extends State<SettingPage> {
                     padding: const EdgeInsets.only(left: _kLabelSpacing),
                     child: Text(translatedMessage.toString(),
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline2!.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.primaryVariant)),
+                        style: Theme.of(context).textTheme.headline2!),
                   ),
                 ),
               )
             : Padding(
                 padding: const EdgeInsets.only(left: _kLabelSpacing),
                 child: Text("Enable Notification",
-                    style: Theme.of(context).textTheme.headline2!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant)),
+                    style: Theme.of(context).textTheme.headline2!),
               ),
         _buildSwitch(),
       ],
@@ -166,22 +158,21 @@ class _SettingPageState extends State<SettingPage> {
         // urlobj.callurlLaucher(context, "https://www.google.com/");
       },
       child: Container(
-        padding: EdgeInsets.all(16),
-        child: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
-            ? TranslationWidget(
-                message: "Open Source licences",
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline2!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant)),
-              )
-            : Text("Open Source licences",
-                style: Theme.of(context).textTheme.headline2!.copyWith(
-                    color: Theme.of(context).colorScheme.primaryVariant)),
-      ),
+          padding: EdgeInsets.all(16),
+          child: Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English"
+              ? TranslationWidget(
+                  message: "Open Source licences",
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline2!,
+                      ))
+              : Text(
+                  "Open Source licences",
+                  style: Theme.of(context).textTheme.headline2!,
+                )),
     );
   }
 
