@@ -75,10 +75,10 @@ class _EventPageState extends State<EventPage> {
                 child: ListTile(
                   leading: Container(
                     alignment: Alignment.center,
-                    width: 30,
+                    width: Globals.deviceType == "phone" ? 40 : 70,
                     child: Wrap(
                       alignment: WrapAlignment.center,
-                      children: <Widget>[
+                      children: [
                         widget.language != null && widget.language != "English"
                             ? TranslationWidget(
                                 message:
@@ -93,6 +93,7 @@ class _EventPageState extends State<EventPage> {
                                       .textTheme
                                       .headline5!
                                       .copyWith(fontWeight: FontWeight.w500),
+                                  textAlign: TextAlign.center,
                                 ),
                               )
                             : Text(

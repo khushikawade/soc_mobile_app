@@ -134,12 +134,20 @@ class _EventDescriptionState extends State<EventDescription> {
       padding: EdgeInsets.symmetric(horizontal: _kPadding / 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.max,
+        // mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           list.inviteLink != null
               ? Container(
-                  width: _KButtonSize,
-                  height: _KButtonSize / 2.5,
+                  child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: 30.0,
+                    maxWidth: 100.0,
+                    minHeight: 30.0,
+                    maxHeight: 100.0,
+                  ),
+
+                  // width: _KButtonSize,
+                  // height: _KButtonSize / 2.5,
                   child: ElevatedButton(
                     onPressed: () {
                       SharePopUp obj = new SharePopUp();
@@ -148,7 +156,7 @@ class _EventDescriptionState extends State<EventDescription> {
                     child: Globals.selectedLanguage != null &&
                             Globals.selectedLanguage != "English"
                         ? TranslationWidget(
-                            message: "Share",
+                            message: "Share ",
                             toLanguage: Globals.selectedLanguage,
                             fromLanguage: "en",
                             builder: (translatedMessage) => Text(
@@ -161,7 +169,7 @@ class _EventDescriptionState extends State<EventDescription> {
                             // style: _kbuttonTextStyle,
                           ),
                   ),
-                )
+                ))
               : Container(
                   height: 0,
                   width: 0,
@@ -170,8 +178,14 @@ class _EventDescriptionState extends State<EventDescription> {
             width: _kPadding / 2,
           ),
           Container(
-            width: _KButtonSize,
-            height: _KButtonSize / 2.5,
+            constraints: BoxConstraints(
+              minWidth: 30.0,
+              maxWidth: 100.0,
+              minHeight: 30.0,
+              maxHeight: 100.0,
+            ),
+            // width: _KButtonSize,
+            // height: _KButtonSize / 2.5,
             child: ElevatedButton(
               onPressed: () {
                 Add2Calendar.addEvent2Cal(
@@ -180,21 +194,17 @@ class _EventDescriptionState extends State<EventDescription> {
               },
               child: Globals.selectedLanguage != null &&
                       Globals.selectedLanguage != "English"
-                  ? Wrap(children: [
-                      TranslationWidget(
-                        message: "Save event ",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                        ),
+                  ? TranslationWidget(
+                      message: "Save event",
+                      toLanguage: Globals.selectedLanguage,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
                       ),
-                    ])
-                  : Wrap(children: [
-                      Text(
-                        "Save event ",
-                      ),
-                    ]),
+                    )
+                  : Text(
+                      "Save event ",
+                    ),
             ),
           ),
         ],
