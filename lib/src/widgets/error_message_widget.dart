@@ -30,6 +30,7 @@ class ErrorMessageWidget extends StatelessWidget {
               alignment: Alignment.center,
               child: SvgPicture.asset(
                 imgPath,
+                fit: BoxFit.cover,
               )),
           SpacerWidget(12),
           isnetworkerror!
@@ -43,26 +44,11 @@ class ErrorMessageWidget extends StatelessWidget {
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant),
-                          ),
+                              translatedMessage.toString(),
+                              style: Theme.of(context).textTheme.bodyText1!),
                         )
-                      : Text(
-                          msg!,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1!
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant),
-                        ),
+                      : Text(msg!,
+                          style: Theme.of(context).textTheme.bodyText1!),
                 ),
         ],
       ),

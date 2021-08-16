@@ -5,9 +5,10 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -37,7 +38,6 @@ class StaffDirectory extends StatefulWidget {
 class _StaffDirectoryState extends State<StaffDirectory> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 45.0;
-  final _controller = TextEditingController();
   String? language = Globals.selectedLanguage;
   FamilyBloc _bloc = FamilyBloc();
   UrlLauncherWidget objurl = new UrlLauncherWidget();
@@ -72,17 +72,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline6!.copyWith(
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                        ),
+                    style: Theme.of(context).textTheme.headline6!,
                   ),
                 )
-              : Text(
-                  tittle,
-                  style: Theme.of(context).textTheme.headline6!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant,
-                      ),
-                ),
+              : Text(tittle, style: Theme.of(context).textTheme.headline6!),
         ],
       ),
     );
@@ -178,27 +171,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 builder: (translatedMessage) => Text(
                                     translatedMessage.toString(),
                                     textAlign: TextAlign.start,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant,
-                                        )),
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1!),
                               ),
                             ],
                           )
                         : Text(obj.titleC ?? "-",
                             textAlign: TextAlign.start,
-                            style:
-                                Theme.of(context).textTheme.bodyText1!.copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
-                                    )),
+                            style: Theme.of(context).textTheme.bodyText1!),
                   ),
                 ]),
             SpacerWidget(_kLabelSpacing * 1.2),
@@ -271,24 +251,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           builder: (translatedMessage) => Text(
                               translatedMessage.toString(),
                               textAlign: TextAlign.start,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant)))
+                              style: Theme.of(context).textTheme.bodyText1!))
                       : Text(obj.descriptionC ?? "-",
                           textAlign: TextAlign.start,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1!
-                              .copyWith(
-                                  fontWeight: FontWeight.w400,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant)),
+                          style: Theme.of(context).textTheme.bodyText1!),
                 ),
               ],
             ),
@@ -372,22 +338,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                             )
                                           : Expanded(
                                               child: ListView(children: [
-                                              ErrorMessageWidget(
-                                                msg: "No Data Found",
-                                                isnetworkerror: false,
-                                                imgPath:
-                                                    "assets/images/no_data_icon.svg",
-                                              )
+                                              NoDataFoundErrorWidget()
                                             ]));
                                     } else if (state is ErrorLoading) {
-                                      return ListView(children: [
-                                        ErrorMessageWidget(
-                                          msg: "Error",
-                                          isnetworkerror: false,
-                                          imgPath:
-                                              "assets/images/error_icon.svg",
-                                        ),
-                                      ]);
+                                      return ListView(
+                                          children: [ErrorMsgWidget()]);
                                     }
                                     return Container();
                                   }),
@@ -404,15 +359,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                     Globals.homeObjet = state.obj;
                                     setState(() {});
                                   } else if (state is HomeErrorReceived) {
-                                    Container(
-                                      alignment: Alignment.center,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.8,
-                                      child: Center(
-                                          child:
-                                              Text("Unable to load the data")),
-                                    );
+                                    ErrorMsgWidget();
                                   }
                                 },
                                 child: Container(

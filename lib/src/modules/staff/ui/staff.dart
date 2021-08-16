@@ -8,10 +8,12 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -146,67 +148,59 @@ class _StaffPageState extends State<StaffPage> {
 
   Widget _buildList(StaffList obj, int index) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: AppTheme.kDividerColor2,
-          width: 0.65,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppTheme.kDividerColor2,
+            width: 0.65,
+          ),
+          borderRadius: BorderRadius.circular(0.0),
+          color: (index % 2 == 0)
+              ? Theme.of(context).colorScheme.background
+              : Theme.of(context).colorScheme.secondary,
         ),
-        borderRadius: BorderRadius.circular(0.0),
-        color: (index % 2 == 0)
-            ? Theme.of(context).colorScheme.background
-            : Theme.of(context).colorScheme.secondary,
-      ),
-      child: obj.titleC != null && obj.titleC!.length > 0
-          ? ListTile(
-              onTap: () {
-                _route(obj, index);
-              },
-              visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-              contentPadding: EdgeInsets.only(
-                  left: _kLabelSpacing, right: _kLabelSpacing / 2),
-              leading: _buildLeading(obj),
-              // leading: Icon(
-              //   IconData(
-              //     int.parse('0x${obj.appIconC!}'),
-              //     fontFamily: 'FontAwesomeSolid',
-              //     fontPackage: 'font_awesome_flutter',
-              //   ),
-              //   // color: AppTheme.kListIconColor3,
-              //   size: Globals.deviceType == "phone" ? 18 : 26,
-              // ),
-              title: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English"
-                  ? TranslationWidget(
-                      message: obj.titleC.toString(),
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              color:
-                                  Theme.of(context).colorScheme.primaryVariant,
-                            ),
+        child: obj.titleC != null && obj.titleC!.length > 0
+            ? ListTile(
+                onTap: () {
+                  _route(obj, index);
+                },
+                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                contentPadding: EdgeInsets.only(
+                    left: _kLabelSpacing, right: _kLabelSpacing / 2),
+                leading: _buildLeading(obj),
+                // leading: Icon(
+                //   IconData(
+                //     int.parse('0x${obj.appIconC!}'),
+                //     fontFamily: 'FontAwesomeSolid',
+                //     fontPackage: 'font_awesome_flutter',
+                //   ),
+                //   // color: AppTheme.kListIconColor3,
+                //   size: Globals.deviceType == "phone" ? 18 : 26,
+                // ),
+                title: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
+                    ? TranslationWidget(
+                        message: obj.titleC.toString(),
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                          style:
+                              Theme.of(context).textTheme.bodyText2!.copyWith(),
+                        ),
+                      )
+                    : Text(
+                        obj.titleC.toString(),
+                        style:
+                            Theme.of(context).textTheme.bodyText2!.copyWith(),
                       ),
-                    )
-                  : Text(
-                      obj.titleC.toString(),
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                            color: Theme.of(context).colorScheme.primaryVariant,
-                          ),
-                    ),
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: Globals.deviceType == "phone" ? 12 : 20,
-                color: Theme.of(context).colorScheme.primary,
-                // color: AppTheme.kButtonbackColor,
-              ),
-            )
-          : ErrorMessageWidget(
-              msg: "No data found",
-              isnetworkerror: false,
-              imgPath: "assets/images/error_icon.svg",
-            ),
-    );
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: Globals.deviceType == "phone" ? 12 : 20,
+                  color: Theme.of(context).colorScheme.primary,
+                  // color: AppTheme.kButtonbackColor,
+                ),
+              )
+            : NoDataFoundErrorWidget());
   }
 
   Widget build(BuildContext context) {
@@ -267,24 +261,15 @@ class _StaffPageState extends State<StaffPage> {
                                         child: ListView(
                                             shrinkWrap: true,
                                             children: [
-                                              ErrorMessageWidget(
-                                                msg: "No Data Found",
-                                                isnetworkerror: false,
-                                                imgPath:
-                                                    "assets/images/no_data_icon.svg",
-                                              )
+                                              NoDataFoundErrorWidget()
                                             ]),
                                       );
                               } else if (state is ErrorInStaffLoading) {
                               } else {
                                 return Expanded(
-                                  child: ListView(shrinkWrap: true, children: [
-                                    ErrorMessageWidget(
-                                      msg: "Error",
-                                      isnetworkerror: false,
-                                      imgPath: "assets/images/error_icon.svg",
-                                    ),
-                                  ]),
+                                  child: ListView(
+                                      shrinkWrap: true,
+                                      children: [ErrorMsgWidget()]),
                                 );
                               }
 

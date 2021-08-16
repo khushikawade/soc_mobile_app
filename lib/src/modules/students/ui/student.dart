@@ -6,9 +6,11 @@ import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -123,39 +125,35 @@ class _StudentPageState extends State<StudentPage> {
                           Expanded(
                               child: Globals.selectedLanguage != null &&
                                       Globals.selectedLanguage != "English"
-                                  ? Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: _kLableSpacing / 2),
-                                      child: TranslationWidget(
-                                        message: "${list[index].titleC}",
-                                        fromLanguage: "en",
-                                        toLanguage: Globals.selectedLanguage,
-                                        builder: (translatedMessage) => Text(
-                                          translatedMessage.toString(),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant),
-                                        ),
+                                  ? TranslationWidget(
+                                      message: "${list[index].titleC}",
+                                      fromLanguage: "en",
+                                      toLanguage: Globals.selectedLanguage,
+                                      builder: (translatedMessage) => Text(
+                                        translatedMessage.toString(),
+                                        textAlign: TextAlign.center,
                                       ),
                                     )
-                                  : Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: _kLableSpacing / 2),
-                                      child: Text(
-                                        "${list[index].titleC}",
-                                        textAlign: TextAlign.center,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle2!
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                      ),
+
+                                  // TranslationWidget(
+                                  //     message: "${list[index].titleC}",
+                                  //     fromLanguage: "en",
+                                  //     toLanguage: Globals.selectedLanguage,
+                                  //     builder: (translatedMessage) => Text(
+                                  //       translatedMessage.toString(),
+                                  //       textAlign: TextAlign.center,
+                                  //       style: TextStyle(
+                                  //           color: Theme.of(context)
+                                  //               .colorScheme
+                                  //               .primaryVariant),
+                                  //     ),
+                                  //   )
+                                  : Expanded(
+                                      child: Text("${list[index].titleC}",
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2!),
                                     )),
                         ],
                       ));
@@ -176,11 +174,8 @@ class _StudentPageState extends State<StudentPage> {
                     ),
                   )
                 : Center(
-                    child: Text(
-                    "No apps available here",
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant),
-                  )),
+                    child: Text("No apps available here",
+                        style: Theme.of(context).textTheme.bodyText1!)),
           );
   }
 
@@ -233,22 +228,10 @@ class _StudentPageState extends State<StudentPage> {
                                       child: _buildGrid(
                                           state.obj!, state.subFolder!),
                                     )
-                                  : ListView(children: [
-                                      ErrorMessageWidget(
-                                        msg: "No Data Found",
-                                        isnetworkerror: false,
-                                        imgPath:
-                                            "assets/images/no_data_icon.svg",
-                                      )
-                                    ]);
+                                  : ListView(
+                                      children: [NoDataFoundErrorWidget()]);
                             } else if (state is StudentError) {
-                              return ListView(children: [
-                                ErrorMessageWidget(
-                                  msg: "Error",
-                                  isnetworkerror: false,
-                                  imgPath: "assets/images/error_icon.svg",
-                                ),
-                              ]);
+                              return ListView(children: [ErrorMsgWidget()]);
                             }
                             return Container();
                           })
@@ -280,7 +263,6 @@ class _StudentPageState extends State<StudentPage> {
                     ),
                   ),
                 ]);
-                // onRefresh: refreshPage,
               },
               child: Container()),
           onRefresh: refreshPage,

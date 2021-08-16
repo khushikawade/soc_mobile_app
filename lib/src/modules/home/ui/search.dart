@@ -305,15 +305,9 @@ class _SearchPageState extends State<SearchPage> {
                                 toLanguage: Globals.selectedLanguage,
                                 fromLanguage: "en",
                                 builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant),
-                                ),
+                                    translatedMessage.toString(),
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1),
                               )
                             : Text(
                                 items[index].titleC != null &&
@@ -373,11 +367,7 @@ class _SearchPageState extends State<SearchPage> {
                                           translatedMessage.toString(),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1!
-                                              .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primaryVariant),
+                                              .bodyText1!,
                                         ),
                                       )
                                     : Text(

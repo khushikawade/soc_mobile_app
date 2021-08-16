@@ -7,15 +7,14 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +22,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 class FamilyPage extends StatefulWidget {
-  var obj;
+  final obj;
   final searchObj;
   FamilyPage({Key? key, this.obj, this.searchObj}) : super(key: key);
 
@@ -69,6 +68,18 @@ class _FamilyPageState extends State<FamilyPage> {
                         language: Globals.selectedLanguage ?? "English",
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    } else if (obj.typeC == "URL" || obj.titleC == "Afterschool Consent 2") {
+      obj.appUrlC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                        title: obj.titleC!,
+                        url: obj.appUrlC ?? '',
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
           context,
@@ -88,18 +99,6 @@ class _FamilyPageState extends State<FamilyPage> {
                     appBarTitle: obj.titleC,
                     language: Globals.selectedLanguage,
                   )));
-    } else if (obj.typeC == "URL") {
-      obj.appUrlC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => InAppUrlLauncer(
-                        title: obj.titleC!,
-                        url: obj.appUrlC ?? '',
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML") {
       obj.rtfHTMLC != null
           ? Navigator.push(
@@ -107,7 +106,6 @@ class _FamilyPageState extends State<FamilyPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        // url: obj.appUrlC ?? '',
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
@@ -156,8 +154,6 @@ class _FamilyPageState extends State<FamilyPage> {
               width: 20,
               placeholder: (context, url) => Container(
                 alignment: Alignment.center,
-                // width: _kIconSize * 1.4,
-                // height: _kIconSize * 1.5,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                 ),
@@ -207,21 +203,15 @@ class _FamilyPageState extends State<FamilyPage> {
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant),
-                ),
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.bodyText2!),
               )
-            : Text(
-                obj.titleC.toString(),
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                    color: Theme.of(context).colorScheme.primaryVariant),
-              ),
+            : Text(obj.titleC.toString(),
+                style: Theme.of(context).textTheme.bodyText1!),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
           color: Theme.of(context).colorScheme.primary,
-          // color: AppTheme.kButtonbackColor,
         ),
       ),
     );
@@ -287,24 +277,12 @@ class _FamilyPageState extends State<FamilyPage> {
                                             : ListView(
                                                 shrinkWrap: true,
                                                 children: [
-                                                    ErrorMessageWidget(
-                                                      msg: "No Data Found",
-                                                      isnetworkerror: false,
-                                                      imgPath:
-                                                          "assets/images/no_data_icon.svg",
-                                                    ),
+                                                    NoDataFoundErrorWidget()
                                                   ]);
                                       } else if (state is ErrorLoading) {
                                         return ListView(
                                             shrinkWrap: true,
-                                            children: [
-                                              ErrorMessageWidget(
-                                                msg: "Error",
-                                                isnetworkerror: false,
-                                                imgPath:
-                                                    "assets/images/error_icon.svg",
-                                              ),
-                                            ]);
+                                            children: [ErrorMsgWidget()]);
                                       } else {
                                         return Container();
                                       }

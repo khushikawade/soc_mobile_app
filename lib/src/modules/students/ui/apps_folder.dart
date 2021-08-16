@@ -138,17 +138,11 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                 Globals.selectedLanguage,
                                             builder: (translatedMessage) =>
                                                 Text(
-                                              translatedMessage.toString(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText2!
-                                                  .copyWith(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primaryVariant,
-                                                      fontWeight:
-                                                          FontWeight.normal),
-                                            ),
+                                                    translatedMessage
+                                                        .toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2!),
                                           )
                                         : Text(
                                             apps[index].appFolderc != null &&
@@ -160,11 +154,10 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                 .textTheme
                                                 .bodyText2!
                                                 .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primaryVariant,
-                                                    fontWeight:
-                                                        FontWeight.normal),
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primaryVariant,
+                                                ),
                                           ),
                                   ),
                                 ],
