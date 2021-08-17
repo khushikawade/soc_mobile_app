@@ -59,13 +59,17 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline2,
+                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w500),
                     textAlign: TextAlign.center,
                   ),
                 )
               : Text(
                   widget.appBarTitle,
-                  style: Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w500),
                   textAlign: TextAlign.center,
                 ),
       actions: [

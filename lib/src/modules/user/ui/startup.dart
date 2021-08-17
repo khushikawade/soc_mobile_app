@@ -8,9 +8,11 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/device_info_widget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -102,11 +104,7 @@ class _StartupPageState extends State<StartupPage> {
 
                           if (state is ErrorReceived) {
                             return ListView(children: [
-                              ErrorMessageWidget(
-                                msg: "Error",
-                                isnetworkerror: false,
-                                imgPath: "assets/images/error_icon.svg",
-                              ),
+                              ErrorMsgWidget(),
                             ]);
                           }
                           return Container();
@@ -161,17 +159,9 @@ class _StartupPageState extends State<StartupPage> {
                                     homeObj: state.obj,
                                   ),
                                 ))
-                            : ErrorMessageWidget(
-                                msg: "No data found",
-                                isnetworkerror: false,
-                                imgPath: "assets/images/error_icon.svg",
-                              );
+                            : NoDataFoundErrorWidget();
                       } else if (state is HomeErrorReceived) {
-                        Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(child: Text("Unable to load the data")),
-                        );
+                        ErrorMsgWidget();
                       }
                     },
                     child: Container(),

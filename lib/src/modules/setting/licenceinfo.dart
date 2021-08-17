@@ -6,6 +6,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -67,15 +68,13 @@ class _LicenceinfoState extends State<Licenceinfo> {
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Text(
                     translatedMessage,
-                    style: Theme.of(context).textTheme.headline2!.copyWith(
-                        color: Theme.of(context).colorScheme.primaryVariant),
+                    style: Theme.of(context).textTheme.headline2!,
                     textAlign: TextAlign.start,
                   ),
                 )
               : Text(
                   list[index]["name"] ?? '-',
-                  style: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant),
+                  style: Theme.of(context).textTheme.headline2!,
                 ),
         )),
       ),
@@ -108,11 +107,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
                               _list,
                               index,
                             )
-                          : ErrorMessageWidget(
-                              msg: "No data found",
-                              isnetworkerror: false,
-                              imgPath: "assets/images/error_icon.svg",
-                            );
+                          : NoDataFoundErrorWidget();
                     },
                   ),
                 ),

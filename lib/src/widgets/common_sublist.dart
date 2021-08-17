@@ -9,6 +9,7 @@ import 'package:Soc/src/widgets/customList.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -124,7 +125,6 @@ class _SubListPageState extends State<SubListPage> {
               builder: (translatedMessage) => Text(
                 translatedMessage.toString(),
                 style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant,
                       fontWeight: FontWeight.w400,
                     ),
               ),
@@ -132,7 +132,6 @@ class _SubListPageState extends State<SubListPage> {
           : Text(
               obj.titleC.toString(),
               style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                    color: Theme.of(context).colorScheme.primaryVariant,
                     fontWeight: FontWeight.w400,
                   ),
             ),
@@ -192,8 +191,8 @@ class _SubListPageState extends State<SubListPage> {
                           ? SafeArea(
                               child: ListView.builder(
                                 scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                // shrinkWrap: true,
+                                // physics: NeverScrollableScrollPhysics(),
                                 itemCount: state.obj!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return _buildList(
@@ -203,11 +202,7 @@ class _SubListPageState extends State<SubListPage> {
                                 },
                               ),
                             )
-                          : ErrorMessageWidget(
-                              msg: "No data found",
-                              isnetworkerror: false,
-                              imgPath: "assets/images/error_icon.svg",
-                            );
+                          : NoDataFoundErrorWidget();
                     } else {
                       return Container();
                     }
