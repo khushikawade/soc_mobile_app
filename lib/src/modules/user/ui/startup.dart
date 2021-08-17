@@ -20,6 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
 import '../bloc/user_bloc.dart';
@@ -186,6 +187,7 @@ class _StartupPageState extends State<StartupPage> {
                             intPrefs.getInt("totalCount")!) {
                           intPrefs.setInt("totalCount", Globals.notiCount!);
                           prefs.setBool("enableIndicator", true);
+                          Globals.indicator.value = true;
                         }
                       }
                     },
