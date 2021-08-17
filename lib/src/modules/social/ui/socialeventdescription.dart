@@ -79,7 +79,7 @@ class SocialDescription extends StatelessWidget {
         child: RefreshIndicator(
           key: refreshKey,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 25.0),
+            padding: const EdgeInsets.only(bottom: 35.0),
             child: ListView(children: [
               Column(
                 children: [
@@ -120,9 +120,13 @@ class SocialDescription extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            SizedBox(
-              width: _KButtonSize,
-              height: _KButtonSize / 2,
+            Container(
+              constraints: BoxConstraints(
+                minWidth: _KButtonSize,
+                maxWidth: 130.0,
+                minHeight: _KButtonSize / 2,
+                maxHeight: 80.0,
+              ),
               child: ElevatedButton(
                 onPressed: () async {
                   _buildlink();
@@ -149,9 +153,13 @@ class SocialDescription extends StatelessWidget {
               ),
             ),
             HorzitalSpacerWidget(_kPadding / 2),
-            SizedBox(
-              width: _KButtonSize,
-              height: _KButtonSize / 2,
+            Container(
+              constraints: BoxConstraints(
+                minWidth: _KButtonSize,
+                maxWidth: 130.0,
+                minHeight: _KButtonSize / 2,
+                maxHeight: 80.0,
+              ),
               child: ElevatedButton(
                 onPressed: () async {
                   SharePopUp obj = new SharePopUp();

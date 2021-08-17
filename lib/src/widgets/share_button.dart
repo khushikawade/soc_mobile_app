@@ -62,7 +62,7 @@ class ShareButtonWidget extends StatelessWidget {
                       Globals.selectedLanguage != "English"
                   ? Container(
                       child: TranslationWidget(
-                        message: "I need support",
+                        message: "I need support ",
                         fromLanguage: "en",
                         toLanguage: language,
                         builder: (translatedMessage) => Text(
