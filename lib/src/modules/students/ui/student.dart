@@ -12,6 +12,7 @@ import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -98,15 +99,16 @@ class _StudentPageState extends State<StudentPage> {
               children: List.generate(
                 list.length,
                 (index) {
-                  return InkWell(
+                  return GestureDetector(
                       onTap: () => _launchURL(list[index], subList),
                       child: Column(
-                        children: [
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
                           list[index].appIconC != null &&
                                   list[index].appIconC != ''
-                              ? SizedBox(
-                                  height: 100,
-                                  width: 100,
+                              ? Container(
+                                  height: 85,
+                                  width: 85,
                                   child: CachedNetworkImage(
                                     imageUrl: list[index].appIconC ?? '',
                                     placeholder: (context, url) => Container(
@@ -121,9 +123,14 @@ class _StudentPageState extends State<StudentPage> {
                                         Icon(Icons.error),
                                   ),
                                 )
-                              : Container(),
-                          Expanded(
-                              child: Globals.selectedLanguage != null &&
+                              : Container(
+                                  height: 0,
+                                  width: 0,
+                                ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Globals.selectedLanguage != null &&
                                       Globals.selectedLanguage != "English"
                                   ? TranslationWidget(
                                       message: "${list[index].titleC}",
@@ -148,13 +155,13 @@ class _StudentPageState extends State<StudentPage> {
                                   //               .primaryVariant),
                                   //     ),
                                   //   )
-                                  : Expanded(
-                                      child: Text("${list[index].titleC}",
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle2!),
-                                    )),
+                                  : Text("${list[index].titleC}",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2!),
+                            ],
+                          ),
                         ],
                       ));
                 },
@@ -224,7 +231,7 @@ class _StudentPageState extends State<StudentPage> {
                               return state.obj != null && state.obj!.length > 0
                                   ? Padding(
                                       padding: const EdgeInsets.only(
-                                          bottom: _kLableSpacing / 2),
+                                          bottom: _kLableSpacing * 4),
                                       child: _buildGrid(
                                           state.obj!, state.subFolder!),
                                     )

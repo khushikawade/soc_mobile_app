@@ -154,8 +154,6 @@ class _SettingPageState extends State<SettingPage> {
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => Licenceinfo()));
-
-        // urlobj.callurlLaucher(context, "https://www.google.com/");
       },
       child: Container(
           padding: EdgeInsets.all(16),

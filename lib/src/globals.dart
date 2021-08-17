@@ -36,4 +36,5 @@ class Globals {
   static String? versionRelease = "";
   static String? androidId = "";
   static String? countrycode = "";
+  static int? homeIndex;
 }

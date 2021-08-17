@@ -223,8 +223,9 @@ class AppTheme {
         Utility.getColorFromHex(appSetting.secondaryColorC!);
     Color _backgroundColor =
         Utility.getColorFromHex(appSetting.backgroundColorC!);
-    Color _fontColor = Utility.getColorFromHex(
-        appSetting.fontColorC ?? appSetting.primaryColorC!);
+    Color _fontColor = appSetting.fontColorC != null
+        ? Utility.getColorFromHex(appSetting.fontColorC!)
+        : kBlackColor;
 
     AdaptiveTheme.of(context).setTheme(
         light: AdaptiveTheme.of(context).lightTheme.copyWith(
