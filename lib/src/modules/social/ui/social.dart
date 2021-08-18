@@ -4,13 +4,11 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +31,6 @@ class _SocialPageState extends State<SocialPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
-
   SocialBloc bloc = SocialBloc();
 
   void initState() {
@@ -221,6 +218,7 @@ class _SocialPageState extends State<SocialPage> {
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       itemCount: obj.length,
+      padding: EdgeInsets.only(bottom: 30),
       itemBuilder: (BuildContext context, int index) {
         return _buildlist(obj[index], index, obj!);
       },
@@ -244,12 +242,12 @@ class _SocialPageState extends State<SocialPage> {
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
 
-                if (connected) {
+                if (connectivity != ConnectivityResult.none) {
                   if (iserrorstate == true) {
                     bloc.add(SocialPageEvent());
                     iserrorstate = false;
                   }
-                } else if (!connected) {
+                } else if (connectivity == ConnectivityResult.none) {
                   iserrorstate = true;
                 }
 

@@ -161,6 +161,7 @@ class _SubListPageState extends State<SubListPage> {
                           child: ListView.builder(
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
+                            padding: EdgeInsets.only(bottom: 20),
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: state.obj!.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -191,6 +192,7 @@ class _SubListPageState extends State<SubListPage> {
                           ? SafeArea(
                               child: ListView.builder(
                                 scrollDirection: Axis.vertical,
+                                padding: EdgeInsets.only(bottom: 20),
                                 // shrinkWrap: true,
                                 // physics: NeverScrollableScrollPhysics(),
                                 itemCount: state.obj!.length,

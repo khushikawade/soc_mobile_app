@@ -313,6 +313,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                                     _kLabelSpacing / 4),
                                                 Expanded(
                                                   child: ListView.builder(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: 25.0),
                                                     scrollDirection:
                                                         Axis.vertical,
                                                     itemCount:

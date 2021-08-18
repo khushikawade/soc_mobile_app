@@ -177,22 +177,19 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _buildItem() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 25.0),
-      child: ListView(children: [
-        _buildHeading("Push Notifcation"),
-        _buildNotification(),
-        _buildHeading("Acknowledgements"),
-        _buildLicence(),
-        HorzitalSpacerWidget(_kLabelSpacing * 20),
-        SizedBox(
-            width: MediaQuery.of(context).size.width * 1,
-            height: 100.0,
-            child: ShareButtonWidget(
-              language: Globals.selectedLanguage,
-            ))
-      ]),
-    );
+    return ListView(padding: const EdgeInsets.only(bottom: 25.0), children: [
+      _buildHeading("Push Notifcation"),
+      _buildNotification(),
+      _buildHeading("Acknowledgements"),
+      _buildLicence(),
+      HorzitalSpacerWidget(_kLabelSpacing * 20),
+      SizedBox(
+          width: MediaQuery.of(context).size.width * 1,
+          height: 100.0,
+          child: ShareButtonWidget(
+            language: Globals.selectedLanguage,
+          ))
+    ]);
   }
 
   Widget build(BuildContext context) {

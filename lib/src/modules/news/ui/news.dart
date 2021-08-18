@@ -179,6 +179,7 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildList(obj) {
     return Expanded(
       child: ListView.builder(
+        padding: EdgeInsets.only(bottom: 40),
         scrollDirection: Axis.vertical,
         itemCount: obj.length,
         itemBuilder: (BuildContext context, int index) {
@@ -189,124 +190,118 @@ class _NewsPageState extends State<NewsPage> {
   }
 
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(bottom: 35.0),
-        child: Scaffold(
-          appBar: AppBarWidget(
-            refresh: (v) {
-              setState(() {});
-            },
-          ),
-          body: RefreshIndicator(
-            key: refreshKey,
-            child: OfflineBuilder(
-                connectivityBuilder: (
-                  BuildContext context,
-                  ConnectivityResult connectivity,
-                  Widget child,
-                ) {
-                  final bool connected =
-                      connectivity != ConnectivityResult.none;
+    return Scaffold(
+      appBar: AppBarWidget(
+        refresh: (v) {
+          setState(() {});
+        },
+      ),
+      body: RefreshIndicator(
+        key: refreshKey,
+        child: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
 
-                  if (connected) {
-                    if (iserrorstate == true) {
-                      bloc.add(FetchNotificationList());
-                      iserrorstate = false;
-                    }
-                  } else if (!connected) {
-                    iserrorstate = true;
-                  }
+              if (connected) {
+                if (iserrorstate == true) {
+                  bloc.add(FetchNotificationList());
+                  iserrorstate = false;
+                }
+              } else if (!connected) {
+                iserrorstate = true;
+              }
 
-                  return new Stack(fit: StackFit.expand, children: [
-                    connected
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              BlocBuilder(
-                                  bloc: bloc,
-                                  builder:
-                                      (BuildContext context, NewsState state) {
-                                    if (state is NewsLoaded) {
-                                      return state.obj != null &&
-                                              state.obj!.length > 0
-                                          ? _buildList(state.obj)
-                                          : Expanded(
-                                              child: ListView(children: [
-                                                ErrorMessageWidget(
-                                                  msg: "No Data Found",
-                                                  isnetworkerror: false,
-                                                  imgPath:
-                                                      "assets/images/no_data_icon.svg",
-                                                )
-                                              ]),
-                                            );
-                                    } else if (state is NewsLoading) {
-                                      return Expanded(
-                                        child: Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
+              return new Stack(fit: StackFit.expand, children: [
+                connected
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          BlocBuilder(
+                              bloc: bloc,
+                              builder: (BuildContext context, NewsState state) {
+                                if (state is NewsLoaded) {
+                                  return state.obj != null &&
+                                          state.obj!.length > 0
+                                      ? _buildList(state.obj)
+                                      : Expanded(
+                                          child: ListView(children: [
+                                            ErrorMessageWidget(
+                                              msg: "No Data Found",
+                                              isnetworkerror: false,
+                                              imgPath:
+                                                  "assets/images/no_data_icon.svg",
+                                            )
+                                          ]),
+                                        );
+                                } else if (state is NewsLoading) {
+                                  return Expanded(
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
                                               0.8,
-                                          child: Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                        ),
-                                      );
-                                    } else if (state is NewsErrorReceived) {
-                                      return Expanded(
-                                        child: ListView(children: [
-                                          ErrorMsgWidget(),
-                                        ]),
-                                      );
-                                    } else {
-                                      return Container();
-                                    }
-                                  }),
-                              Container(
+                                      child: Center(
+                                          child: CircularProgressIndicator()),
+                                    ),
+                                  );
+                                } else if (state is NewsErrorReceived) {
+                                  return Expanded(
+                                    child: ListView(children: [
+                                      ErrorMsgWidget(),
+                                    ]),
+                                  );
+                                } else {
+                                  return Container();
+                                }
+                              }),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<NewsBloc, NewsState>(
+                              bloc: bloc,
+                              listener: (context, state) async {
+                                if (state is NewsLoaded) {
+                                  object = state.obj;
+                                }
+                              },
+                              child: Container(),
+                            ),
+                          ),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                } else if (state is HomeErrorReceived) {
+                                  ErrorMsgWidget();
+                                }
+                              },
+                              child: Container(
                                 height: 0,
                                 width: 0,
-                                child: BlocListener<NewsBloc, NewsState>(
-                                  bloc: bloc,
-                                  listener: (context, state) async {
-                                    if (state is NewsLoaded) {
-                                      object = state.obj;
-                                    }
-                                  },
-                                  child: Container(),
-                                ),
                               ),
-                              Container(
-                                height: 0,
-                                width: 0,
-                                child: BlocListener<HomeBloc, HomeState>(
-                                  bloc: _homeBloc,
-                                  listener: (context, state) async {
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObjet = state.obj;
-                                      setState(() {});
-                                    } else if (state is HomeErrorReceived) {
-                                      ErrorMsgWidget();
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 0,
-                                    width: 0,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : NoInternetErrorWidget(
-                            connected: connected, issplashscreen: false),
-                  ]);
-                },
-                child: Container()),
-            onRefresh: refreshPage,
-          ),
-        ));
+                            ),
+                          ),
+                        ],
+                      )
+                    : NoInternetErrorWidget(
+                        connected: connected, issplashscreen: false),
+              ]);
+            },
+            child: Container()),
+        onRefresh: refreshPage,
+      ),
+    );
   }
 
   Future refreshPage() async {

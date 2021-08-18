@@ -263,6 +263,8 @@ class _FamilyPageState extends State<FamilyPage> {
                                     return state.obj != null &&
                                             state.obj!.length > 0
                                         ? ListView.builder(
+                                            padding:
+                                                EdgeInsets.only(bottom: 20),
                                             scrollDirection: Axis.vertical,
                                             itemCount: state.obj!.length,
                                             itemBuilder: (BuildContext context,

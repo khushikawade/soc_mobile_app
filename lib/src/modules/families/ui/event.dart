@@ -167,6 +167,7 @@ class _EventPageState extends State<EventPage> {
                                     ),
                             overflow: TextOverflow.ellipsis,
                           )),
+                  SpacerWidget(_kLabelSpacing),
                   Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
                       ? TranslationWidget(
@@ -357,6 +358,100 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
+  Widget _buildTabs(state) {
+    return Container(
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
+                Widget>[
+      SizedBox(height: 20.0),
+      DefaultTabController(
+          length: 2, // length of tabs
+          initialIndex: 0,
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.label,
+                    labelColor: Theme.of(context).colorScheme.primaryVariant,
+                    indicatorColor: Theme.of(context).colorScheme.primary,
+                    unselectedLabelColor: Colors.black,
+                    unselectedLabelStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                    ),
+                    labelStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                    ),
+                    tabs: [
+                      Tab(text: 'Upcoming'),
+                      Tab(text: 'Past'),
+                    ],
+                  ),
+                ),
+                Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(color: Colors.grey, width: 0.5))),
+                    child: TabBarView(children: <Widget>[
+                      Container(
+                        child: state.futureListobj!.length > 0
+                            ? Column(
+                                children: [
+                                  Expanded(
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        padding: EdgeInsets.only(bottom: 20),
+                                        itemCount: state.futureListobj!.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return _buildList(
+                                              state.futureListobj![index],
+                                              index,
+                                              state.futureListobj);
+                                        }),
+                                  )
+                                ],
+                              )
+                            : Container(
+                                height: 0,
+                                width: 0,
+                              ),
+                      ),
+                      Container(
+                        child: state.pastListobj!.length > 0
+                            ? Column(
+                                children: [
+                                  Expanded(
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        padding: EdgeInsets.only(bottom: 25.0),
+                                        itemCount: state.pastListobj!.length,
+                                        shrinkWrap: true,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return _buildList(
+                                              state.pastListobj![index],
+                                              index,
+                                              state.pastListobj);
+                                        }),
+                                  )
+                                ],
+                              )
+                            : Container(
+                                height: 0,
+                                width: 0,
+                              ),
+                      ),
+                    ]))
+              ])),
+    ]));
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
@@ -387,99 +482,95 @@ class _EventPageState extends State<EventPage> {
                 }
 
                 return connected
-                    ? Padding(
-                        padding: const EdgeInsets.only(bottom: 40.0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              BlocBuilder<FamilyBloc, FamilyState>(
-                                  bloc: _eventBloc,
-                                  builder:
-                                      (BuildContext contxt, FamilyState state) {
-                                    if (state is FamilyLoading) {
-                                      return Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
+                    ? Column(
+                        children: [
+                          BlocBuilder<FamilyBloc, FamilyState>(
+                              bloc: _eventBloc,
+                              builder:
+                                  (BuildContext contxt, FamilyState state) {
+                                if (state is FamilyLoading) {
+                                  return Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
                                               0.8,
-                                          alignment: Alignment.center,
-                                          child: CircularProgressIndicator());
-                                    } else if (state is CalendarListSuccess) {
-                                      return Column(children: [
-                                        _buildHeading("Upcoming"),
-                                        state.futureListobj!.length > 0
-                                            ? ListView.builder(
-                                                scrollDirection: Axis.vertical,
-                                                physics:
-                                                    NeverScrollableScrollPhysics(),
-                                                itemCount:
-                                                    state.futureListobj!.length,
-                                                shrinkWrap: true,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return _buildList(
-                                                      state.futureListobj![
-                                                          index],
-                                                      index,
-                                                      state.futureListobj);
-                                                })
-                                            : Container(
-                                                height: 0,
-                                                width: 0,
-                                              ),
-                                        SpacerWidget(20),
-                                        _buildHeading("Past"),
-                                        state.pastListobj!.length > 0
-                                            ? ListView.builder(
-                                                scrollDirection: Axis.vertical,
-                                                itemCount:
-                                                    state.pastListobj!.length,
-                                                shrinkWrap: true,
-                                                physics:
-                                                    NeverScrollableScrollPhysics(),
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return _buildList(
-                                                      state.pastListobj![index],
-                                                      index,
-                                                      state.pastListobj);
-                                                })
-                                            : Container(
-                                                height: 0,
-                                                width: 0,
-                                              ),
-                                      ]);
-                                    } else if (state is ErrorLoading) {
-                                      return ListView(
-                                          shrinkWrap: true,
-                                          children: [ErrorMsgWidget()]);
-                                    }
-                                    return Container();
-                                  }),
-                              Container(
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator());
+                                } else if (state is CalendarListSuccess) {
+                                  return _buildTabs(state);
+
+                                  // Column(children: [
+                                  //   _buildHeading("Upcoming"),
+                                  //   state.futureListobj!.length > 0
+                                  //       ? ListView.builder(
+                                  //           scrollDirection: Axis.vertical,
+                                  //           physics:
+                                  //               NeverScrollableScrollPhysics(),
+                                  //           itemCount:
+                                  //               state.futureListobj!.length,
+                                  //           shrinkWrap: true,
+                                  //           itemBuilder:
+                                  //               (BuildContext context,
+                                  //                   int index) {
+                                  //             return _buildList(
+                                  //                 state.futureListobj![
+                                  //                     index],
+                                  //                 index,
+                                  //                 state.futureListobj);
+                                  //           })
+                                  //       : Container(
+                                  //           height: 0,
+                                  //           width: 0,
+                                  //         ),
+                                  //   SpacerWidget(20),
+                                  //   _buildHeading("Past"),
+                                  //   state.pastListobj!.length > 0
+                                  //       ? ListView.builder(
+                                  //           scrollDirection: Axis.vertical,
+                                  //           itemCount:
+                                  //               state.pastListobj!.length,
+                                  //           shrinkWrap: true,
+                                  //           physics:
+                                  //               NeverScrollableScrollPhysics(),
+                                  //           itemBuilder:
+                                  //               (BuildContext context,
+                                  //                   int index) {
+                                  //             return _buildList(
+                                  //                 state.pastListobj![index],
+                                  //                 index,
+                                  //                 state.pastListobj);
+                                  //           })
+                                  //       : Container(
+                                  //           height: 0,
+                                  //           width: 0,
+                                  //         ),
+                                  // ]);
+                                } else if (state is ErrorLoading) {
+                                  return ListView(
+                                      shrinkWrap: true,
+                                      children: [ErrorMsgWidget()]);
+                                }
+                                return Container();
+                              }),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
+                              child: Container(
                                 height: 0,
                                 width: 0,
-                                child: BlocListener<HomeBloc, HomeState>(
-                                  bloc: _homeBloc,
-                                  listener: (context, state) async {
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObjet = state.obj;
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 0,
-                                    width: 0,
-                                  ),
-                                ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       )
                     : NoInternetErrorWidget(
                         connected: connected, issplashscreen: false);

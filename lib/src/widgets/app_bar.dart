@@ -9,17 +9,17 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-  CustomAppBarWidget(
-      {Key? key,
-      required this.isSearch,
-      required this.isShare,
-      required this.appBarTitle,
-      required this.sharedpopUpheaderText,
-      required this.sharedpopBodytext,
-      this.isCenterIcon,
-      this.ishtmlpage,
-      required this.language})
-      : preferredSize = Size.fromHeight(60.0),
+  CustomAppBarWidget({
+    Key? key,
+    required this.isSearch,
+    required this.isShare,
+    required this.appBarTitle,
+    required this.sharedpopUpheaderText,
+    required this.sharedpopBodytext,
+    this.isCenterIcon,
+    this.ishtmlpage,
+    required this.language,
+  })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? islinearProgress = false;
   String appBarTitle;

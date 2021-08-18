@@ -35,6 +35,7 @@ class _EventDescriptionState extends State<EventDescription> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _kPadding),
       child: ListView(
+        padding: const EdgeInsets.only(bottom: 30.0),
         children: [
           SpacerWidget(_kPadding / 2),
           Globals.selectedLanguage != null &&
@@ -225,14 +226,11 @@ class _EventDescriptionState extends State<EventDescription> {
     return Scaffold(
         body: RefreshIndicator(
       key: refreshKey,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 35.0),
-        child: Column(children: <Widget>[
-          Expanded(
-            child: _buildItem(widget.obj),
-          ),
-        ]),
-      ),
+      child: Column(children: <Widget>[
+        Expanded(
+          child: _buildItem(widget.obj),
+        ),
+      ]),
       onRefresh: refreshPage,
     ));
   }

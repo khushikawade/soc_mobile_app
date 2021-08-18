@@ -368,40 +368,39 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           child: Container(
               color: Theme.of(context).colorScheme.background,
               child: list != null && list.length > 0
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: 35.0),
-                      child: ListView(children: [
-                        SpacerWidget(_kLabelSpacing / 2),
-                        _buildname(list[index]),
-                        SpacerWidget(_kLabelSpacing / 2),
-                        _buildVersion(list[index]),
-                        SpacerWidget(_kLabelSpacing / 2),
-                        _buildlicenseInfoHeading(),
-                        _buildlicenseInfo(list[index]),
-                        SpacerWidget(_kLabelSpacing / 5),
-                        _buildhomepage(list[index]),
-                        SpacerWidget(_kLabelSpacing / 2),
-                        _buildauthorsHeading(),
-                        _buildauthors(list[index]),
-                        SpacerWidget(_kLabelSpacing / 2),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<HomeBloc, HomeState>(
-                            bloc: _homeBloc,
-                            listener: (context, state) async {
-                              if (state is BottomNavigationBarSuccess) {
-                                AppTheme.setDynamicTheme(
-                                    Globals.appSetting, context);
-                                Globals.homeObjet = state.obj;
-                                setState(() {});
-                              }
-                            },
-                            child: Container(),
+                  ? ListView(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      children: [
+                          SpacerWidget(_kLabelSpacing / 2),
+                          _buildname(list[index]),
+                          SpacerWidget(_kLabelSpacing / 2),
+                          _buildVersion(list[index]),
+                          SpacerWidget(_kLabelSpacing / 2),
+                          _buildlicenseInfoHeading(),
+                          _buildlicenseInfo(list[index]),
+                          SpacerWidget(_kLabelSpacing / 5),
+                          _buildhomepage(list[index]),
+                          SpacerWidget(_kLabelSpacing / 2),
+                          _buildauthorsHeading(),
+                          _buildauthors(list[index]),
+                          SpacerWidget(_kLabelSpacing / 2),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
+                              child: Container(),
+                            ),
                           ),
-                        ),
-                      ]),
-                    )
+                        ])
                   : Container(
                       height: 0,
                     )),

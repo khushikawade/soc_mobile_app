@@ -94,40 +94,38 @@ class _LicenceinfoState extends State<Licenceinfo> {
         body: SafeArea(
           child: RefreshIndicator(
             key: refreshKey,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 25),
-              child: Column(children: [
-                Expanded(
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: _list.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _list.length > 0
-                          ? _buildList(
-                              _list,
-                              index,
-                            )
-                          : NoDataFoundErrorWidget();
-                    },
-                  ),
+            child: Column(children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.only(bottom: 20),
+                  scrollDirection: Axis.vertical,
+                  itemCount: _list.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _list.length > 0
+                        ? _buildList(
+                            _list,
+                            index,
+                          )
+                        : NoDataFoundErrorWidget();
+                  },
                 ),
-                Container(
-                  height: 0,
-                  width: 0,
-                  child: BlocListener<HomeBloc, HomeState>(
-                    bloc: _homeBloc,
-                    listener: (context, state) async {
-                      if (state is BottomNavigationBarSuccess) {
-                        AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        Globals.homeObjet = state.obj;
-                        setState(() {});
-                      }
-                    },
-                    child: Container(),
-                  ),
+              ),
+              Container(
+                height: 0,
+                width: 0,
+                child: BlocListener<HomeBloc, HomeState>(
+                  bloc: _homeBloc,
+                  listener: (context, state) async {
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.homeObjet = state.obj;
+                      setState(() {});
+                    }
+                  },
+                  child: Container(),
                 ),
-              ]),
-            ),
+              ),
+            ]),
             onRefresh: refreshPage,
           ),
         ));

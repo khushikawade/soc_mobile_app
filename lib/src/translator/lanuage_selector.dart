@@ -158,6 +158,15 @@ class LanguageSelector {
                                   hintText: 'Search',
                                   filled: true,
                                   fillColor: Theme.of(context).backgroundColor,
+                           
+                                 
+                                  focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary, width: 2),
+                ),
+      
+                                 
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(30.0)),

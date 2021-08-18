@@ -17,7 +17,6 @@ import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -179,6 +178,11 @@ class _SearchPageState extends State<SearchPage> {
             controller: _controller,
             cursorColor: Colors.black,
             decoration: InputDecoration(
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary, width: 2),
+              ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(30.0)),
                 borderSide: BorderSide(
@@ -221,6 +225,7 @@ class _SearchPageState extends State<SearchPage> {
             return snapshot.data != null && snapshot.data.length > 0
                 ? Expanded(
                     child: ListView.builder(
+                      padding: EdgeInsets.only(bottom: 20),
                       scrollDirection: Axis.vertical,
                       itemCount:
                           snapshot.data.length < 5 ? snapshot.data.length : 5,
@@ -433,7 +438,7 @@ class _SearchPageState extends State<SearchPage> {
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
                   style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.primaryVariant,
                       fontWeight: FontWeight.w500),
                   textAlign: TextAlign.left,
                 ),
@@ -441,7 +446,7 @@ class _SearchPageState extends State<SearchPage> {
             : Text(
                 "Search",
                 style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.primaryVariant,
                     fontWeight: FontWeight.w500),
                 textAlign: TextAlign.left,
               ),
@@ -464,7 +469,7 @@ class _SearchPageState extends State<SearchPage> {
                   translatedMessage.toString(),
                   style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
                       fontSize: 18,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.primaryVariant,
                       fontWeight: FontWeight.w500),
                   textAlign: TextAlign.left,
                 ),
