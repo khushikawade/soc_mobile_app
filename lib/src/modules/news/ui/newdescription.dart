@@ -44,7 +44,7 @@ class _NewdescriptionState extends State<Newdescription> {
 
   Widget _buildNewsDescription() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 25.0),
+      padding: const EdgeInsets.only(bottom: 35.0),
       child: ListView(
         children: [
           Column(

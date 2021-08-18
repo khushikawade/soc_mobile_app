@@ -63,14 +63,15 @@ class _ContactPageState extends State<ContactPage> {
               imageUrl: Globals.homeObjet["Contact_Image__c"],
               fit: BoxFit.fill,
               placeholder: (context, url) => Container(
-                  alignment: Alignment.center,
-                  child: ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      height: 200,
-                      color: Colors.white,
-                    ),
-                  )),
+                alignment: Alignment.center,
+                child: ShimmerLoading(
+                  isLoading: true,
+                  child: Container(
+                    height: 200,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
               errorWidget: (context, url, error) => Icon(
                 Icons.error,
               ),

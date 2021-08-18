@@ -190,7 +190,7 @@ class _NewsPageState extends State<NewsPage> {
 
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(bottom: 25.0),
+        padding: const EdgeInsets.only(bottom: 35.0),
         child: Scaffold(
           appBar: AppBarWidget(
             refresh: (v) {

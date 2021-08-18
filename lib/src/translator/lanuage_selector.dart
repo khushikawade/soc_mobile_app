@@ -55,6 +55,7 @@ class LanguageSelector {
             unselectedWidgetColor: Theme.of(context).colorScheme.onPrimary,
           ),
           child: RadioListTile(
+            controlAffinity: ListTileControlAffinity.trailing,
             activeColor: Theme.of(context).colorScheme.primary,
             contentPadding: EdgeInsets.zero,
             value: selectedLanguage == language ? true : false,
@@ -78,19 +79,26 @@ class LanguageSelector {
                         ),
                       );
                     },
-                    child: Text(language,
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption!
-                            .copyWith(fontWeight: FontWeight.bold)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(language,
+                          style: Theme.of(context)
+                              .textTheme
+                              .caption!
+                              .copyWith(fontWeight: FontWeight.bold)),
+                    ),
                   )
-                : Text(language, style: Theme.of(context).textTheme.caption!),
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(language,
+                        style: Theme.of(context).textTheme.caption!),
+                  ),
           ),
         ),
       );
 
   _openSettingsBottomSheet(context, onLanguageChanged) {
-    showModalBottomSheet(
+    Future<void> future = showModalBottomSheet<void>(
         // isScrollControlled: true,
         shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.only(
@@ -143,59 +151,59 @@ class LanguageSelector {
                               horizontal: _kLabelSpacing / 1.5),
                           child: SizedBox(
                             height: 51,
-                            child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: _kLabelSpacing / 3,
-                                    horizontal: _kLabelSpacing / 2),
-                                color: AppTheme.kFieldbackgroundColor,
-                                child: TextFormField(
-                                    focusNode: myFocusNode,
-                                    controller: _controller,
-                                    cursorColor: Colors.black,
-                                    style: TextStyle(
+                            child: TextFormField(
+                                focusNode: myFocusNode,
+                                controller: _controller,
+                                decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  filled: true,
+                                  fillColor: Theme.of(context).backgroundColor,
+                           
+                                 
+                                  focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary, width: 2),
+                ),
+      
+                                 
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30.0)),
+                                    borderSide: BorderSide(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .primaryVariant),
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      hintText: 'Search',
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15.0),
-                                          borderSide: BorderSide.none),
-                                      filled: true,
-                                      fillColor:
-                                          Theme.of(context).backgroundColor,
-                                      prefixIcon: Icon(
-                                        const IconData(0xe805,
-                                            fontFamily: Overrides.kFontFam,
-                                            fontPackage: Overrides.kFontPkg),
-                                        size: Globals.deviceType == "phone"
-                                            ? 20
-                                            : 28,
-                                      ),
-                                      suffixIcon: _controller.text.isEmpty
-                                          ? null
-                                          : InkWell(
-                                              onTap: () {
-                                                _controller.clear();
-                                                issuggestionList = false;
-                                                FocusScope.of(context)
-                                                    .requestFocus(FocusNode());
-                                                setState(() {});
-                                              },
-                                              child: Icon(
-                                                Icons.clear,
-                                                size: Globals.deviceType ==
-                                                        "phone"
-                                                    ? 20
-                                                    : 28,
-                                              ),
-                                            ),
-                                    ),
-                                    onChanged: (value) {
-                                      onItemChanged(value, setState);
-                                    })),
+                                            .secondary,
+                                        width: 2),
+                                  ),
+                                  prefixIcon: Icon(
+                                    const IconData(0xe805,
+                                        fontFamily: Overrides.kFontFam,
+                                        fontPackage: Overrides.kFontPkg),
+                                    size:
+                                        Globals.deviceType == "phone" ? 20 : 28,
+                                  ),
+                                  suffixIcon: _controller.text.isEmpty
+                                      ? null
+                                      : InkWell(
+                                          onTap: () {
+                                            _controller.clear();
+                                            issuggestionList = false;
+                                            FocusScope.of(context)
+                                                .requestFocus(FocusNode());
+                                            setState(() {});
+                                          },
+                                          child: Icon(
+                                            Icons.clear,
+                                            size: Globals.deviceType == "phone"
+                                                ? 20
+                                                : 28,
+                                          ),
+                                        ),
+                                ),
+                                onChanged: (value) {
+                                  onItemChanged(value, setState);
+                                }),
                           ),
                         ),
                         issuggestionList!
@@ -219,6 +227,12 @@ class LanguageSelector {
             });
           }
         });
+    future.then((void value) => _closeModal(value));
+  }
+
+  void _closeModal(void value) {
+    print("modal close call ");
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 
   onItemChanged(String value, StateSetter setState) {

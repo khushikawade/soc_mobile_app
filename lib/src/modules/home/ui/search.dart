@@ -61,7 +61,6 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    deleteItem();
   }
 
   deleteItem() async {
@@ -168,11 +167,11 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildSearchbar() {
     return SizedBox(
-      height: 51,
+      height: 55,
       child: Container(
+          width: 420,
           padding: EdgeInsets.symmetric(
               vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
-          color: AppTheme.kFieldbackgroundColor,
           child: TextFormField(
             style:
                 TextStyle(color: Theme.of(context).colorScheme.primaryVariant),
@@ -180,9 +179,19 @@ class _SearchPageState extends State<SearchPage> {
             controller: _controller,
             cursorColor: Colors.black,
             decoration: InputDecoration(
-              isDense: true,
+               focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary, width: 2),
+                ),
+              
+              
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.secondary, width: 2),
+              ),
               hintText: 'Search',
-              filled: true,
               fillColor: Theme.of(context).colorScheme.background,
               prefixIcon: Icon(
                 const IconData(0xe805,
@@ -285,45 +294,39 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
           child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
-                            ? TranslationWidget(
-                                message: items[index].titleC != null &&
-                                        items[index].titleC.isNotEmpty
-                                    ? '${items[index].titleC} '
-                                    : '',
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1),
-                              )
-                            : Text(
-                                items[index].titleC != null &&
-                                        items[index].titleC.isNotEmpty
-                                    ? '${items[index].titleC} '
-                                    : '',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant),
-                              ),
-                      ]),
-                )
+                Icon(
+                  const IconData(0xe805,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  size: Globals.deviceType == "phone" ? 14 : 22,
+                ),
+                HorzitalSpacerWidget(_kLabelSpacing),
+                Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
+                    ? TranslationWidget(
+                        message: items[index].titleC != null &&
+                                items[index].titleC.isNotEmpty
+                            ? '${items[index].titleC} '
+                            : '',
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.bodyText1),
+                      )
+                    : Text(
+                        items[index].titleC != null &&
+                                items[index].titleC.isNotEmpty
+                            ? '${items[index].titleC} '
+                            : '',
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.primaryVariant),
+                      )
               ])),
     );
   }
@@ -436,19 +439,17 @@ class _SearchPageState extends State<SearchPage> {
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
-                  style: Theme.of(context)
-                      .appBarTheme
-                      .titleTextStyle!
-                      .copyWith(color: Theme.of(context).colorScheme.primary),
+                  style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                      fontWeight: FontWeight.w500),
                   textAlign: TextAlign.left,
                 ),
               )
             : Text(
                 "Search",
-                style: Theme.of(context)
-                    .appBarTheme
-                    .titleTextStyle!
-                    .copyWith(color: Theme.of(context).colorScheme.primary),
+                style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
+                    color: Theme.of(context).colorScheme.primaryVariant,
+                    fontWeight: FontWeight.w500),
                 textAlign: TextAlign.left,
               ),
       ],
@@ -470,7 +471,8 @@ class _SearchPageState extends State<SearchPage> {
                   translatedMessage.toString(),
                   style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
                       fontSize: 18,
-                      color: Theme.of(context).colorScheme.primary),
+                       color: Theme.of(context).colorScheme.primaryVariant,
+                      fontWeight: FontWeight.w500),
                   textAlign: TextAlign.left,
                 ),
               )
@@ -478,7 +480,8 @@ class _SearchPageState extends State<SearchPage> {
                 "Recent Search",
                 style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
                     fontSize: 18,
-                    color: Theme.of(context).colorScheme.primaryVariant),
+                     color: Theme.of(context).colorScheme.primaryVariant,
+                    fontWeight: FontWeight.w500),
                 textAlign: TextAlign.left,
               ),
       ],
@@ -522,18 +525,19 @@ class _SearchPageState extends State<SearchPage> {
                       ? Container(
                           child:
                               Column(mainAxisSize: MainAxisSize.max, children: [
-                            // _buildHeading(),
-                            // SpacerWidget(_kLabelSpacing / 2),
+                            _buildHeading(),
+                            SpacerWidget(_kLabelSpacing / 2),
                             _buildSearchbar(),
                             issuggestionList
                                 ? _buildissuggestionList()
                                 : SizedBox(height: 0),
                             SpacerWidget(_kLabelSpacing / 2),
-                            // issuggestionList == false ? _buildHeading2() : SizedBox(height: 0),
+                            issuggestionList == false
+                                ? _buildHeading2()
+                                : SizedBox(height: 0),
                             issuggestionList == false
                                 ? _buildRecentItemList()
                                 : SizedBox(height: 0),
-
                             Container(
                               height: 0,
                               width: 0,

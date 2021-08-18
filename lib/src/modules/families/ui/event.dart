@@ -6,6 +6,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
+import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -58,108 +59,115 @@ class _EventPageState extends State<EventPage> {
                     )));
       },
       child: Container(
-          decoration: BoxDecoration(
-            border: (index % 2 == 0)
-                ? Border.all(color: Theme.of(context).colorScheme.background)
-                : Border.all(color: Theme.of(context).colorScheme.secondary),
-            borderRadius: BorderRadius.circular(0.0),
-            color: (index % 2 == 0)
-                ? Theme.of(context).colorScheme.background
-                : Theme.of(context).colorScheme.secondary,
-          ),
-          child: Container(
+        decoration: BoxDecoration(
+          border: (index % 2 == 0)
+              ? Border.all(color: Theme.of(context).colorScheme.background)
+              : Border.all(color: Theme.of(context).colorScheme.secondary),
+          borderRadius: BorderRadius.circular(0.0),
+          color: (index % 2 == 0)
+              ? Theme.of(context).colorScheme.background
+              : Theme.of(context).colorScheme.secondary,
+        ),
+        child: Container(
             child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: _kLabelSpacing * 1,
-                    vertical: _kLabelSpacing / 2),
-                child: ListTile(
-                  leading: Container(
-                    alignment: Alignment.center,
-                    width: Globals.deviceType == "phone" ? 40 : 70,
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      children: [
-                        widget.language != null && widget.language != "English"
-                            ? TranslationWidget(
-                                message:
-                                    Utility.convertDateFormat(list.startDate!)
-                                        .toString()
-                                        .substring(0, 2),
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5!
-                                      .copyWith(fontWeight: FontWeight.w500),
-                                  textAlign: TextAlign.center,
-                                ),
-                              )
-                            : Text(
-                                Utility.convertDateFormat(list.startDate!)
-                                    .toString()
-                                    .substring(0, 2),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5!
-                                    .copyWith(fontWeight: FontWeight.w500),
-                              ),
-                        Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
-                            ? TranslationWidget(
-                                message:
-                                    Utility.getMonthFromDate(list.startDate!)
-                                        .toString()
-                                        .split("/")[1],
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline2!
-                                      .copyWith(
-                                        height: 1.5,
-                                      ),
-                                ),
-                              )
-                            : Text(
-                                Utility.getMonthFromDate(list.startDate!)
-                                    .toString()
-                                    .split("/")[1],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                      height: 1.5,
-                                    ),
-                              )
-                      ],
-                    ),
-                  ),
-                  title: Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
+          padding: const EdgeInsets.symmetric(
+              horizontal: _kLabelSpacing * 1, vertical: _kLabelSpacing / 2),
+          child: Row(
+            children: <Widget>[
+              HorzitalSpacerWidget(_kLabelSpacing / 2),
+              Container(
+                alignment: Alignment.center,
+                width: Globals.deviceType == "phone" ? 40 : 70,
+                child: Wrap(alignment: WrapAlignment.center, children: [
+                  widget.language != null && widget.language != "English"
                       ? TranslationWidget(
-                          message: list.titleC!,
+                          message: Utility.convertDateFormat(list.startDate!)
+                              .toString()
+                              .substring(0, 2),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
-                            style:
-                                Theme.of(context).textTheme.headline5!.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5!
+                                .copyWith(fontWeight: FontWeight.w500),
+                            textAlign: TextAlign.center,
                           ),
                         )
                       : Text(
-                          list.titleC ?? '-',
+                          Utility.convertDateFormat(list.startDate!)
+                              .toString()
+                              .substring(0, 2),
                           style:
                               Theme.of(context).textTheme.headline5!.copyWith(
                                     fontWeight: FontWeight.w500,
                                   ),
                         ),
-                  subtitle: Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: Utility.getMonthFromDate(list.startDate!)
+                              .toString()
+                              .split("/")[1],
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(
+                                    height: 1.5,
+                                  ),
+                              textAlign: TextAlign.center),
+                        )
+                      : Text(
+                          Utility.getMonthFromDate(list.startDate!)
+                              .toString()
+                              .split("/")[1],
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    height: 1.5,
+                                  ),
+                        ),
+                ]),
+              ),
+              HorzitalSpacerWidget(_kLabelSpacing),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: list.titleC!,
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Container(
+                                width: MediaQuery.of(context).size.width * 0.50,
+                                child: Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ))
+                      : Container(
+                          width: MediaQuery.of(context).size.width * 0.50,
+                          child: Text(
+                            list.titleC ?? '-',
+                            style:
+                                Theme.of(context).textTheme.headline5!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                  Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
                       ? TranslationWidget(
                           message: Utility.convertDateFormat(list.startDate!) +
@@ -183,9 +191,135 @@ class _EventPageState extends State<EventPage> {
                               Theme.of(context).textTheme.headline2!.copyWith(
                                     height: 1.5,
                                   ),
-                        ),
-                )),
-          )),
+                        )
+                ],
+              ),
+            ],
+          ),
+          // Padding(
+          //     padding: const EdgeInsets.symmetric(
+          //         horizontal: _kLabelSpacing * 1,
+          //         vertical: _kLabelSpacing / 2),
+          //     child: ListTile(
+          //       visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+          //       dense: true,
+          //       contentPadding: EdgeInsets.all(0.0),
+          //       leading: Container(
+          //         alignment: Alignment.center,
+          //         width: Globals.deviceType == "phone" ? 40 : 70,
+          //         child: Wrap(
+          //           alignment: WrapAlignment.center,
+          //           children: [
+          //             widget.language != null && widget.language != "English"
+          //                 ? TranslationWidget(
+          //                     message:
+          //                         Utility.convertDateFormat(list.startDate!)
+          //                             .toString()
+          //                             .substring(0, 2),
+          //                     toLanguage: Globals.selectedLanguage,
+          //                     fromLanguage: "en",
+          //                     builder: (translatedMessage) => Text(
+          //                       translatedMessage.toString(),
+          //                       style: Theme.of(context)
+          //                           .textTheme
+          //                           .headline5!
+          //                           .copyWith(fontWeight: FontWeight.w500),
+          //                       textAlign: TextAlign.center,
+          //                     ),
+          //                   )
+          //                 : Text(
+          //                     Utility.convertDateFormat(list.startDate!)
+          //                         .toString()
+          //                         .substring(0, 2),
+          //                     style: Theme.of(context)
+          //                         .textTheme
+          //                         .headline5!
+          //                         .copyWith(
+          //                           fontWeight: FontWeight.w500,
+          //                         ),
+          //                   ),
+          //             Globals.selectedLanguage != null &&
+          //                     Globals.selectedLanguage != "English"
+          //                 ? TranslationWidget(
+          //                     message:
+          //                         Utility.getMonthFromDate(list.startDate!)
+          //                             .toString()
+          //                             .split("/")[1],
+          //                     toLanguage: Globals.selectedLanguage,
+          //                     fromLanguage: "en",
+          //                     builder: (translatedMessage) => Text(
+          //                         translatedMessage.toString(),
+          //                         style: Theme.of(context)
+          //                             .textTheme
+          //                             .headline2!
+          //                             .copyWith(
+          //                               height: 1.5,
+          //                             ),
+          //                         textAlign: TextAlign.center),
+          //                   )
+          //                 : Text(
+          //                     Utility.getMonthFromDate(list.startDate!)
+          //                         .toString()
+          //                         .split("/")[1],
+          //                     style: Theme.of(context)
+          //                         .textTheme
+          //                         .headline2!
+          //                         .copyWith(
+          //                           height: 1.5,
+          //                         ),
+          //                   ),
+          //           ],
+          //         ),
+          //       ),
+          //       title: Globals.selectedLanguage != null &&
+          //               Globals.selectedLanguage != "English"
+          //           ? TranslationWidget(
+          //               message: list.titleC!,
+          //               toLanguage: Globals.selectedLanguage,
+          //               fromLanguage: "en",
+          //               builder: (translatedMessage) => Text(
+          //                 translatedMessage.toString(),
+          //                 style:
+          //                     Theme.of(context).textTheme.headline5!.copyWith(
+          //                           fontWeight: FontWeight.w500,
+          //                         ),
+          //               ),
+          //             )
+          //           : Text(
+          //               list.titleC ?? '-',
+          //               style:
+          //                   Theme.of(context).textTheme.headline5!.copyWith(
+          //                         fontWeight: FontWeight.w500,
+          //                       ),
+          //             ),
+          //       subtitle: Globals.selectedLanguage != null &&
+          //               Globals.selectedLanguage != "English"
+          //           ? TranslationWidget(
+          //               message: Utility.convertDateFormat(list.startDate!) +
+          //                   " - " +
+          //                   Utility.convertDateFormat(list.endDate!),
+          //               toLanguage: Globals.selectedLanguage,
+          //               fromLanguage: "en",
+          //               builder: (translatedMessage) => Text(
+          //                 translatedMessage.toString(),
+          //                 style:
+          //                     Theme.of(context).textTheme.headline2!.copyWith(
+          //                           height: 1.5,
+          //                         ),
+          //               ),
+          //             )
+          //           : Text(
+          //               Utility.convertDateFormat(list.startDate!) +
+          //                   " - " +
+          //                   Utility.convertDateFormat(list.endDate!),
+          //               style:
+          //                   Theme.of(context).textTheme.headline2!.copyWith(
+          //                         height: 1.5,
+          //                       ),
+          //             ),
+          //     )),
+        )),
+      ),
     );
   }
 
@@ -198,7 +332,7 @@ class _EventPageState extends State<EventPage> {
           border: Border.all(
             width: 0,
           ),
-          color: Theme.of(context).colorScheme.secondary),
+          color: Theme.of(context).colorScheme.primary),
       child: Padding(
         padding: const EdgeInsets.only(left: _kLabelSpacing),
         child: Globals.selectedLanguage != null &&
@@ -209,14 +343,16 @@ class _EventPageState extends State<EventPage> {
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline3!.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.w500)),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline3!
+                        .copyWith(fontWeight: FontWeight.w500)),
               )
             : Text(tittle,
-                style: Theme.of(context).textTheme.headline3!.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w500)),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline3!
+                    .copyWith(fontWeight: FontWeight.w500)),
       ),
     );
   }
@@ -248,50 +384,46 @@ class _EventPageState extends State<EventPage> {
                   }
                 } else if (!connected) {
                   iserrorstate = true;
-                  WidgetsBinding.instance!
-                      .addPostFrameCallback((_) => setState(() {}));
                 }
 
                 return connected
                     ? Padding(
                         padding: const EdgeInsets.only(bottom: 40.0),
-                        child: Column(
-                          children: [
-                            BlocBuilder<FamilyBloc, FamilyState>(
-                                bloc: _eventBloc,
-                                builder:
-                                    (BuildContext contxt, FamilyState state) {
-                                  if (state is FamilyLoading) {
-                                    return Expanded(
-                                      child: Container(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              BlocBuilder<FamilyBloc, FamilyState>(
+                                  bloc: _eventBloc,
+                                  builder:
+                                      (BuildContext contxt, FamilyState state) {
+                                    if (state is FamilyLoading) {
+                                      return Container(
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height *
                                               0.8,
                                           alignment: Alignment.center,
-                                          child: CircularProgressIndicator()),
-                                    );
-                                  } else if (state is CalendarListSuccess) {
-                                    return Expanded(
-                                      child: Column(children: [
+                                          child: CircularProgressIndicator());
+                                    } else if (state is CalendarListSuccess) {
+                                      return Column(children: [
                                         _buildHeading("Upcoming"),
                                         state.futureListobj!.length > 0
-                                            ? Expanded(
-                                                child: ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    itemCount: state
-                                                        .futureListobj!.length,
-                                                    shrinkWrap: true,
-                                                    itemBuilder:
-                                                        (BuildContext context,
-                                                            int index) {
-                                                      return _buildList(
-                                                          state.futureListobj![
-                                                              index],
-                                                          index,
-                                                          state.futureListobj);
-                                                    }))
+                                            ? ListView.builder(
+                                                scrollDirection: Axis.vertical,
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                itemCount:
+                                                    state.futureListobj!.length,
+                                                shrinkWrap: true,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return _buildList(
+                                                      state.futureListobj![
+                                                          index],
+                                                      index,
+                                                      state.futureListobj);
+                                                })
                                             : Container(
                                                 height: 0,
                                                 width: 0,
@@ -299,57 +431,54 @@ class _EventPageState extends State<EventPage> {
                                         SpacerWidget(20),
                                         _buildHeading("Past"),
                                         state.pastListobj!.length > 0
-                                            ? Expanded(
-                                                child: ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    itemCount: state
-                                                        .pastListobj!.length,
-                                                    shrinkWrap: true,
-                                                    itemBuilder:
-                                                        (BuildContext context,
-                                                            int index) {
-                                                      return _buildList(
-                                                          state.pastListobj![
-                                                              index],
-                                                          index,
-                                                          state.pastListobj);
-                                                    }))
+                                            ? ListView.builder(
+                                                scrollDirection: Axis.vertical,
+                                                itemCount:
+                                                    state.pastListobj!.length,
+                                                shrinkWrap: true,
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return _buildList(
+                                                      state.pastListobj![index],
+                                                      index,
+                                                      state.pastListobj);
+                                                })
                                             : Container(
                                                 height: 0,
                                                 width: 0,
                                               ),
-                                      ]),
-                                    );
-                                  } else if (state is ErrorLoading) {
-                                    return Expanded(
-                                      child: ListView(
+                                      ]);
+                                    } else if (state is ErrorLoading) {
+                                      return ListView(
                                           shrinkWrap: true,
-                                          children: [ErrorMsgWidget()]),
-                                    );
-                                  }
-                                  return Container();
-                                }),
-                            Container(
-                              height: 0,
-                              width: 0,
-                              child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    Globals.homeObjet = state.obj;
-                                    setState(() {});
-                                  }
-                                },
-                                child: Container(
-                                  height: 0,
-                                  width: 0,
+                                          children: [ErrorMsgWidget()]);
+                                    }
+                                    return Container();
+                                  }),
+                              Container(
+                                height: 0,
+                                width: 0,
+                                child: BlocListener<HomeBloc, HomeState>(
+                                  bloc: _homeBloc,
+                                  listener: (context, state) async {
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      Globals.homeObjet = state.obj;
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 0,
+                                    width: 0,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       )
                     : NoInternetErrorWidget(

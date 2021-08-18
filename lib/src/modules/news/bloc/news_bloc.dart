@@ -80,7 +80,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
 
       // _status = prefs.getBool("enableIndicator")!;
       // if (_status == true) {
@@ -91,13 +91,14 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
       print(
           "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-      prefs.setBool("enableIndicator", true);
+      // prefs.setBool("enableIndicator", true);
     });
 
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
       print(
           "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
+      Globals.homeIndex = 1;
     });
 
     OneSignal.shared

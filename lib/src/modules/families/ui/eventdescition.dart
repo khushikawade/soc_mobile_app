@@ -140,10 +140,10 @@ class _EventDescriptionState extends State<EventDescription> {
               ? Container(
                   child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    minWidth: 30.0,
-                    maxWidth: 100.0,
-                    minHeight: 30.0,
-                    maxHeight: 100.0,
+                    minWidth: _KButtonSize,
+                    maxWidth: 125.0,
+                    minHeight: _KButtonSize / 2.5,
+                    maxHeight: 125.0,
                   ),
 
                   // width: _KButtonSize,
@@ -179,10 +179,10 @@ class _EventDescriptionState extends State<EventDescription> {
           ),
           Container(
             constraints: BoxConstraints(
-              minWidth: 30.0,
-              maxWidth: 100.0,
-              minHeight: 30.0,
-              maxHeight: 100.0,
+              minWidth: _KButtonSize,
+              maxWidth: 120.0,
+              minHeight: _KButtonSize / 2.5,
+              maxHeight: 120.0,
             ),
             // width: _KButtonSize,
             // height: _KButtonSize / 2.5,
@@ -226,7 +226,7 @@ class _EventDescriptionState extends State<EventDescription> {
         body: RefreshIndicator(
       key: refreshKey,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 25.0),
+        padding: const EdgeInsets.only(bottom: 35.0),
         child: Column(children: <Widget>[
           Expanded(
             child: _buildItem(widget.obj),
