@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:Soc/src/modules/families/modal/calendar_event/calendar_event_list.dart';
+import 'package:dio/dio.dart';
+import 'package:http/http.dart' as httpClient;
 import 'package:Soc/src/modules/families/modal/calendar_list.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
@@ -68,17 +71,16 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     if (event is CalendarListEvent) {
       try {
         yield FamilyLoading();
-        List<CalendarList> list = await getCalendarEventList();
-        List<CalendarList>? futureListobj = [];
-        List<CalendarList>? pastListobj = [];
+        List<CalendarEventList> list = await getCalendarEventList();
+        List<CalendarEventList>? futureListobj = [];
+        List<CalendarEventList>? pastListobj = [];
         DateTime now = new DateTime.now();
         final DateFormat formatter = DateFormat('yyyy-MM-dd');
         final DateTime currentDate =
             DateTime.parse(formatter.format(now).toString());
 
         for (int i = 0; i < list.length; i++) {
-          DateTime temp = DateTime.parse(
-              formatter.format(DateTime.parse(list[i].startDate!)).toString());
+          DateTime temp = list[i].start!.dateTime!;
 
           if (temp.isBefore(currentDate)) {
             pastListobj.add(list[i]);
@@ -146,15 +148,23 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  Future<List<CalendarList>> getCalendarEventList() async {
+  Future<List<CalendarEventList>> getCalendarEventList() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Start_Date__c,End_Date__c, Invite_Link__c, Description__c FROM Calendar_Events_App__c where School_App__c = '${Overrides.schoolID}'")}");
+      // final ResponseModel response = await _dbServices.getapi(
+      //     "query/?q=${Uri.encodeComponent("SELECT Title__c,Start_Date__c,End_Date__c, Invite_Link__c, Description__c FROM Calendar_Events_App__c where School_App__c = '${Overrides.schoolID}'")}");
+
+      // final apiresponse = await httpClient.get(
+      //   Uri.parse('${Overrides.calendar_API}'),
+      // );
+      final ResponseModel response = await _dbServices.getCalendarApi();
 
       if (response.statusCode == 200) {
-        dataArray = response.data["records"];
-        return response.data["records"]
-            .map<CalendarList>((i) => CalendarList.fromJson(i))
+        print(response.data["items"]);
+
+        dataArray = response.data["items"];
+        print(dataArray);
+        return dataArray
+            .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');

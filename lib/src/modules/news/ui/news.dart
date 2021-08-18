@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/Strings.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -36,6 +37,11 @@ class _NewsPageState extends State<NewsPage> {
     super.initState();
     bloc.add(FetchNotificationList());
     hideIndicator();
+  }
+
+  setindexvalue() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setInt(Strings.bottomNavigation, 0);
   }
 
   hideIndicator() async {

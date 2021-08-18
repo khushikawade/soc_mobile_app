@@ -39,62 +39,77 @@ class LanguageSelector {
     _openSettingsBottomSheet(context, onLanguageChanged);
   }
 
+  Widget divider() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: _kLabelSpacing * 1.8),
+      height: 0.5,
+      decoration: BoxDecoration(
+        color: Color(0xff6c75a4),
+      ),
+    );
+  }
+
   Widget _listTile(
           String language, context, onLanguageChanged, bool issuggestionList) =>
-      Container(
-        margin: EdgeInsets.only(
-          top: 5,
-          left: 30,
-          right: 30,
-        ),
-        color: (languagesList.indexOf(language) % 2 == 0)
-            ? Theme.of(context).colorScheme.background
-            : Theme.of(context).colorScheme.secondary,
-        child: Theme(
-          data: ThemeData(
-            unselectedWidgetColor: Theme.of(context).colorScheme.onPrimary,
-          ),
-          child: RadioListTile(
-            controlAffinity: ListTileControlAffinity.trailing,
-            activeColor: Theme.of(context).colorScheme.primary,
-            contentPadding: EdgeInsets.zero,
-            value: selectedLanguage == language ? true : false,
-            onChanged: (dynamic val) {
-              print(val);
-              if (selectedLanguage != language) {
-                setLanguage(language, context, onLanguageChanged);
-              }
-            },
-            groupValue: true,
-            title: selectedLanguage == language
-                ? InkWell(
-                    onTap: () {
-                      final scaffoldKey = Scaffold.of(context);
-                      scaffoldKey.showSnackBar(
-                        SnackBar(
-                          content: const Text(
-                            'Language already selected',
-                          ),
-                          backgroundColor: Colors.black.withOpacity(0.8),
+      Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(
+              // top: 5,
+              left: 30,
+              right: 30,
+            ),
+            color: (languagesList.indexOf(language) % 2 == 0)
+                ? Theme.of(context).colorScheme.background
+                : Theme.of(context).colorScheme.secondary,
+            child: Theme(
+              data: ThemeData(
+                unselectedWidgetColor: Theme.of(context).colorScheme.onPrimary,
+              ),
+              child: RadioListTile(
+                controlAffinity: ListTileControlAffinity.trailing,
+                activeColor: Theme.of(context).colorScheme.primary,
+                contentPadding: EdgeInsets.zero,
+                value: selectedLanguage == language ? true : false,
+                onChanged: (dynamic val) {
+                  print(val);
+                  if (selectedLanguage != language) {
+                    setLanguage(language, context, onLanguageChanged);
+                  }
+                },
+                groupValue: true,
+                title: selectedLanguage == language
+                    ? InkWell(
+                        onTap: () {
+                          final scaffoldKey = Scaffold.of(context);
+                          scaffoldKey.showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                'Language already selected',
+                              ),
+                              backgroundColor: Colors.black.withOpacity(0.8),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(language,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .caption!
+                                  .copyWith(fontWeight: FontWeight.bold)),
                         ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(language,
-                          style: Theme.of(context)
-                              .textTheme
-                              .caption!
-                              .copyWith(fontWeight: FontWeight.bold)),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(language,
-                        style: Theme.of(context).textTheme.caption!),
-                  ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(language,
+                            style: Theme.of(context).textTheme.caption!),
+                      ),
+              ),
+            ),
           ),
-        ),
+          divider(),
+        ],
       );
 
   _openSettingsBottomSheet(context, onLanguageChanged) {
@@ -158,15 +173,15 @@ class LanguageSelector {
                                   hintText: 'Search',
                                   filled: true,
                                   fillColor: Theme.of(context).backgroundColor,
-                           
-                                 
                                   focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary, width: 2),
-                ),
-      
-                                 
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30.0)),
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        width: 2),
+                                  ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(30.0)),

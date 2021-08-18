@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/shared_preference.dart';
+import 'package:Soc/src/widgets/Strings.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,6 +77,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Future<void> initPushState(context) async {
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
+    SharedPreferences pref = await SharedPreferences.getInstance();
 
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) async {
@@ -99,6 +102,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       print(
           "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
       Globals.homeIndex = 1;
+      pref.setInt(Strings.bottomNavigation, 1);
     });
 
     OneSignal.shared

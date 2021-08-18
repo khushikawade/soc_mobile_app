@@ -81,7 +81,7 @@ class _EventPageState extends State<EventPage> {
                 child: Wrap(alignment: WrapAlignment.center, children: [
                   widget.language != null && widget.language != "English"
                       ? TranslationWidget(
-                          message: Utility.convertDateFormat(list.startDate!)
+                          message: Utility.convertDateFormat(list.start!.date)
                               .toString()
                               .substring(0, 2),
                           toLanguage: Globals.selectedLanguage,
@@ -96,7 +96,7 @@ class _EventPageState extends State<EventPage> {
                           ),
                         )
                       : Text(
-                          Utility.convertDateFormat(list.startDate!)
+                          Utility.convertDateFormat(list.start!.date)
                               .toString()
                               .substring(0, 2),
                           style:
@@ -107,7 +107,7 @@ class _EventPageState extends State<EventPage> {
                   Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
                       ? TranslationWidget(
-                          message: Utility.getMonthFromDate(list.startDate!)
+                          message: Utility.getMonthFromDate(list.start!.date)
                               .toString()
                               .split("/")[1],
                           toLanguage: Globals.selectedLanguage,
@@ -123,7 +123,7 @@ class _EventPageState extends State<EventPage> {
                               textAlign: TextAlign.center),
                         )
                       : Text(
-                          Utility.getMonthFromDate(list.startDate!)
+                          Utility.getMonthFromDate(list.start!.date)
                               .toString()
                               .split("/")[1],
                           style:
@@ -141,7 +141,7 @@ class _EventPageState extends State<EventPage> {
                   Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
                       ? TranslationWidget(
-                          message: list.titleC!,
+                          message: list.summary!,
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Container(
@@ -160,7 +160,7 @@ class _EventPageState extends State<EventPage> {
                       : Container(
                           width: MediaQuery.of(context).size.width * 0.50,
                           child: Text(
-                            list.titleC ?? '-',
+                            list.summary ?? '-',
                             style:
                                 Theme.of(context).textTheme.headline5!.copyWith(
                                       fontWeight: FontWeight.w500,
@@ -171,9 +171,9 @@ class _EventPageState extends State<EventPage> {
                   Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
                       ? TranslationWidget(
-                          message: Utility.convertDateFormat(list.startDate!) +
+                          message: Utility.convertDateFormat(list.start!.date) +
                               " - " +
-                              Utility.convertDateFormat(list.endDate!),
+                              Utility.convertDateFormat(list.endDate!.date),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
@@ -185,9 +185,9 @@ class _EventPageState extends State<EventPage> {
                           ),
                         )
                       : Text(
-                          Utility.convertDateFormat(list.startDate!) +
+                          Utility.convertDateFormat(list.start!.date) +
                               " - " +
-                              Utility.convertDateFormat(list.endDate!),
+                              Utility.convertDateFormat(list.endDate!.date),
                           style:
                               Theme.of(context).textTheme.headline2!.copyWith(
                                     height: 1.5,

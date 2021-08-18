@@ -38,6 +38,33 @@ class DbServices {
     }
   }
 
+  getCalendarApi() async {
+    try {
+      final response =
+          await httpClient.get(Uri.parse('${Overrides.calendar_API}'));
+      // headers: headers != null
+      //     ? headers
+      //     : {
+      //         'Content-Type': 'application/json',
+      //         'Accept-Language': 'Accept-Language',
+      //         'authorization': 'Bearer ${Globals.token}'
+      //       });
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      } else {
+        return ResponseModel(statusCode: response.statusCode, data: null);
+      }
+    } catch (e) {
+      if (e.toString().contains('Failed host lookup')) {
+        throw ('NO_CONNECTION');
+      } else {
+        throw (e);
+      }
+    }
+  }
+
   postapi(api, {body, headers}) async {
     try {
       final response = await httpClient.post(
