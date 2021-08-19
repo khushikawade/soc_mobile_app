@@ -39,5 +39,5 @@ class CalendarListEvent extends FamilyEvent {
   List<Object> get props => [];
 
   @override
-  String toString() => 'SocialButtonPressed';
+  String toString() => 'Calendar';
 }

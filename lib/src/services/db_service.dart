@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:hive/hive.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as httpClient;
