@@ -162,7 +162,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         print(response.data["items"]);
 
         dataArray = response.data["items"];
-        print(dataArray);
+
         return dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
