@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:Soc/src/modules/families/modal/calendar_event/calendar_event_list.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/families/modal/stafflist.dart';
@@ -11,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:intl/intl.dart';
 part 'family_event.dart';
 part 'family_state.dart';
 
@@ -70,12 +70,12 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         yield FamilyLoading();
         List<CalendarEventList> list = await getCalendarEventList();
-        List<CalendarEventList>? futureListobj = [];
-        List<CalendarEventList>? pastListobj = [];
-        DateTime now = new DateTime.now();
-        final DateFormat formatter = DateFormat('yyyy-MM-dd');
-        final DateTime currentDate =
-            DateTime.parse(formatter.format(now).toString());
+        // List<CalendarEventList>? futureListobj = [];
+        // List<CalendarEventList>? pastListobj = [];
+        // DateTime now = new DateTime.now();
+        // final DateFormat formatter = DateFormat('yyyy-MM-dd');
+        // final DateTime currentDate =
+        //     DateTime.parse(formatter.format(now).toString());
 
         // for (int i = 0; i < list.length; i++) {
         //   DateTime temp = list[i].start!.dateTime!;
@@ -147,19 +147,24 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<CalendarEventList>> getCalendarEventList() async {
     try {
-      // final ResponseModel response = await _dbServices.getapi(
-      //     "query/?q=${Uri.encodeComponent("SELECT Title__c,Start_Date__c,End_Date__c, Invite_Link__c, Description__c FROM Calendar_Events_App__c where School_App__c = '${Overrides.schoolID}'")}");
-
-      // final apiresponse = await httpClient.get(
-      //   Uri.parse('${Overrides.calendar_API}'),
+      // var dio = Dio();
+      // Response response = await dio.get(
+      //   'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_API}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M',
+      //   options: Options(
+      //     headers: {},
+      //   ),
       // );
-      final ResponseModel response = await _dbServices.getCalendarApi();
 
+      final response = await http.get(
+        Uri.parse(
+            'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_API}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
+        headers: {},
+      );
+
+      print(response.body);
       if (response.statusCode == 200) {
-        // print(response.data["items"]);
-
-        dataArray = response.data["items"];
-        // print(dataArray);
+        final data = json.decode(response.body);
+        dataArray = data["items"];
         return dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();

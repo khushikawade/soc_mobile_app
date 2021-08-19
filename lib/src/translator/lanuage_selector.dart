@@ -143,13 +143,6 @@ class LanguageSelector {
                     child: Column(
                       children: [
                         ListTile(
-                          title: Text(
-                            "Select language",
-                            style:
-                                Theme.of(context).textTheme.headline6!.copyWith(
-                                      fontSize: AppTheme.kBottomSheetTitleSize,
-                                    ),
-                          ),
                           trailing: InkWell(
                             onTap: () {
                               Navigator.pop(context);
@@ -157,7 +150,21 @@ class LanguageSelector {
                             },
                             child: Icon(
                               Icons.clear,
-                              size: Globals.deviceType == "phone" ? 20 : 28,
+                              size: Globals.deviceType == "phone" ? 28 : 36,
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.all(0),
+                          title: Center(
+                            child: Text(
+                              "Select language",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(
+                                    fontSize: AppTheme.kBottomSheetTitleSize,
+                                  ),
                             ),
                           ),
                         ),

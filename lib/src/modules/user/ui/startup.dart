@@ -75,8 +75,8 @@ class _StartupPageState extends State<StartupPage> {
       child: SizedBox(
         height: 200,
         width: 200,
-        child:
-            Image.asset('assets/images/splash_bear_icon.png', fit: BoxFit.fill),
+        child: Image.asset('assets/images/splash_screen_icon.png',
+            fit: BoxFit.fill),
       ),
     );
   }
