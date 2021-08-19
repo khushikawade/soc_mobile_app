@@ -140,15 +140,10 @@ class Utility {
 
   static convertDateFormat(date) {
     try {
-      // String dateNew =
-      //     // date.substring(0, 11) + 'T';
-      //     date.toString().split(" ")[0];
-      // print(date);
-      // print(new DateFormat("yyyy-MM-dd").format(dateNew));
-
-      final dateNew = date.toString();
-      final formatter = DateFormat('dd-mm-yyyy');
-      final dateTime = formatter.parse(dateNew);
+      String dateNew = date;
+      final string = dateNew.toString();
+      final formatter = DateFormat('yyyy-MM-dd');
+      final dateTime = formatter.parse(string);
       final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
       final String formatted = formatNew.format(dateTime);
       // return DateTime.parse((dateNew));
@@ -159,9 +154,31 @@ class Utility {
     }
   }
 
+  static getDate(date) {
+    try {
+      DateTime parseDate =
+          new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
+      var inputDate = DateTime.parse(parseDate.toString());
+      var outputFormat = DateFormat('MM/dd/yyyy hh:mm a');
+      // var outputDate = outputFormat.format(inputDate);
+      // print(outputDate);
+      // String dateNew = date;
+      // final string = dateNew.toString();
+      // final formatter = DateFormat('yyyy-MM-dd');
+      // final dateTime = formatter.parse(string);
+      // final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
+      // final String formatted = dateTime.day.toString();
+      // return DateTime.parse((dateNew));
+
+      // print(formatted);
+      return outputFormat;
+    } catch (e) {
+      print(e);
+    }
+  }
+
   static getMonthFromDate(date) {
     String dateNew = date;
-
     final string = dateNew.toString();
     final formatter = DateFormat('yyyy-MM-dd');
     final dateTime = formatter.parse(string);

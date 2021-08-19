@@ -82,7 +82,11 @@ class _EventPageState extends State<EventPage> {
                   widget.language != null && widget.language != "English"
                       ? TranslationWidget(
                           message: Utility.getMonthFromDate(
-                              list.start!.dateTime.toString().substring(0, 10)),
+                              list.start!.dateTime.length > 10
+                                  ? list.start!.dateTime
+                                      .toString()
+                                      .substring(0, 10)
+                                  : list.start!.dateTime.toString()),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
@@ -95,8 +99,18 @@ class _EventPageState extends State<EventPage> {
                           ),
                         )
                       : Text(
-                          Utility.getMonthFromDate(
-                              list.start!.dateTime.toString().substring(0, 10)),
+                          Utility.getMonthFromDate(list.start!.dateTime.length >
+                                  10
+                              ? list.start!.dateTime.toString().substring(0, 10)
+                              : list.start!.dateTime.toString()),
+                          // Utility.getMonthFromDate(
+                          //     list.start!.dateTime.toString().substring(0, 10)),
+                          // list.start!.dateTime.day.toString(),
+                          // Utility.getMonthFromDate(list.start!.dateTime
+                          //         .toString()
+                          //         .substring(0, 10))
+                          //     .toString()
+                          //     .substring(0, 2),
                           style:
                               Theme.of(context).textTheme.headline5!.copyWith(
                                     fontWeight: FontWeight.w500,

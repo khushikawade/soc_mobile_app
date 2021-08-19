@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
+import 'package:Soc/src/services/hive_db_services.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -63,9 +64,9 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   deleteItem() async {
-    int itemcount = await DbServices().getListLength(Strings.hiveLogName);
+    int itemcount = await HiveDbServices().getListLength(Strings.hiveLogName);
     if (itemcount > 5) {
-      await DbServices().deleteData(Strings.hiveLogName, 0);
+      await HiveDbServices().deleteData(Strings.hiveLogName, 0);
     }
   }
 
@@ -219,7 +220,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildRecentItemList() {
     return FutureBuilder(
-        future: DbServices().getListData(Strings.hiveLogName),
+        future: HiveDbServices().getListData(Strings.hiveLogName),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return snapshot.data != null && snapshot.data.length > 0
@@ -487,7 +488,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void addtoDataBase(Recent log) async {
-    bool isSuccess = await DbServices().addData(log, Strings.hiveLogName);
+    bool isSuccess = await HiveDbServices().addData(log, Strings.hiveLogName);
   }
 
   @override
