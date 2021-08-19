@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/Strings.dart';
 import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -20,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
 import '../bloc/user_bloc.dart';
@@ -47,9 +49,17 @@ class _StartupPageState extends State<StartupPage> {
     initPlatformState(context);
     _loginBloc.add(PerfomLogin());
     _newsBloc.add(FetchNotificationList());
+    getindexvalue();
 
     // timer =
     //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
+  }
+
+  getindexvalue() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    print(pref.getInt(Strings.bottomNavigation));
+    Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
+    print(Globals.homeIndex);
   }
 
   @override
@@ -74,8 +84,8 @@ class _StartupPageState extends State<StartupPage> {
       child: SizedBox(
         height: 200,
         width: 200,
-        child:
-            Image.asset('assets/images/splash_bear_icon.png', fit: BoxFit.fill),
+        child: Image.asset('assets/images/splash_screen_icon.png',
+            fit: BoxFit.fill),
       ),
     );
   }
@@ -186,6 +196,7 @@ class _StartupPageState extends State<StartupPage> {
                             intPrefs.getInt("totalCount")!) {
                           intPrefs.setInt("totalCount", Globals.notiCount!);
                           prefs.setBool("enableIndicator", true);
+                          Globals.indicator.value = true;
                         }
                       }
                     },

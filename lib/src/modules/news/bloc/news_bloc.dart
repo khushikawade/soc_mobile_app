@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/shared_preference.dart';
+import 'package:Soc/src/widgets/Strings.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,12 +77,13 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Future<void> initPushState(context) async {
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
+    SharedPreferences pref = await SharedPreferences.getInstance();
 
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
 
       // _status = prefs.getBool("enableIndicator")!;
       // if (_status == true) {
@@ -91,13 +94,15 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
       print(
           "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-      prefs.setBool("enableIndicator", true);
+      // prefs.setBool("enableIndicator", true);
     });
 
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      print(
-          "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
+      // print(
+      //     "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
+
+      pref.setInt(Strings.bottomNavigation, 1);
     });
 
     OneSignal.shared

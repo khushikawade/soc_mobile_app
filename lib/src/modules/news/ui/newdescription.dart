@@ -43,240 +43,236 @@ class _NewdescriptionState extends State<Newdescription> {
   }
 
   Widget _buildNewsDescription() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 25.0),
-      child: ListView(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                alignment: Alignment.center,
-                height: MediaQuery.of(context).size.width * 0.5,
-                child: ClipRRect(
-                  child: widget.obj.image != null && widget.obj.image != ""
-                      ? CachedNetworkImage(
-                          imageUrl: widget.obj.image,
-                          fit: BoxFit.fill,
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: ShimmerLoading(
-                                isLoading: true,
-                                child: Container(
-                                  width: _kIconSize * 1.4,
-                                  height: _kIconSize * 1.5,
-                                  color: Colors.white,
-                                ),
-                              )),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        )
-                      : Container(
-                          alignment: Alignment.center,
-                          child: ClipRRect(
-                            child: CachedNetworkImage(
-                              imageUrl: Globals.homeObjet["App_Logo__c"],
-                              placeholder: (context, url) => Container(
-                                  alignment: Alignment.center,
-                                  child: ShimmerLoading(
-                                    isLoading: true,
-                                    child: Container(
-                                      width: _kIconSize * 1.4,
-                                      height: _kIconSize * 1.5,
-                                      color: Colors.white,
-                                    ),
-                                  )),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 30.0),
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              height: MediaQuery.of(context).size.width * 0.5,
+              child: ClipRRect(
+                child: widget.obj.image != null && widget.obj.image != ""
+                    ? CachedNetworkImage(
+                        imageUrl: widget.obj.image,
+                        fit: BoxFit.fill,
+                        placeholder: (context, url) => Container(
+                            alignment: Alignment.center,
+                            child: ShimmerLoading(
+                              isLoading: true,
+                              child: Container(
+                                width: _kIconSize * 1.4,
+                                height: _kIconSize * 1.5,
+                                color: Colors.white,
+                              ),
+                            )),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      )
+                    : Container(
+                        alignment: Alignment.center,
+                        child: ClipRRect(
+                          child: CachedNetworkImage(
+                            imageUrl: Globals.homeObjet["App_Logo__c"],
+                            placeholder: (context, url) => Container(
+                                alignment: Alignment.center,
+                                child: ShimmerLoading(
+                                  isLoading: true,
+                                  child: Container(
+                                    width: _kIconSize * 1.4,
+                                    height: _kIconSize * 1.5,
+                                    color: Colors.white,
+                                  ),
+                                )),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
                         ),
-                ),
+                      ),
               ),
-              SpacerWidget(_kLabelSpacing),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    child: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? TranslationWidget(
-                            message: widget.obj.headings != "" &&
-                                    widget.obj.headings != null &&
-                                    widget.obj.headings.length > 0
-                                ? widget.obj.headings["en"].toString()
-                                : widget.obj.contents["en"]
-                                        .toString()
-                                        .split(" ")[0] +
-                                    " " +
-                                    widget.obj.contents["en"]
-                                        .toString()
-                                        .split(" ")[1] +
-                                    "...",
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(fontWeight: FontWeight.w500),
-                            ),
-                          )
-                        : Text(
-                            widget.obj.headings != "" &&
-                                    widget.obj.headings != null &&
-                                    widget.obj.headings.length > 0
-                                ? widget.obj.headings["en"].toString()
-                                : widget.obj.contents["en"]
-                                        .toString()
-                                        .split(" ")[0] +
-                                    " " +
-                                    widget.obj.contents["en"]
-                                        .toString()
-                                        .split(" ")[1] +
-                                    "...",
+            ),
+            SpacerWidget(_kLabelSpacing),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: widget.obj.headings != "" &&
+                                  widget.obj.headings != null &&
+                                  widget.obj.headings.length > 0
+                              ? widget.obj.headings["en"].toString()
+                              : widget.obj.contents["en"]
+                                      .toString()
+                                      .split(" ")[0] +
+                                  " " +
+                                  widget.obj.contents["en"]
+                                      .toString()
+                                      .split(" ")[1] +
+                                  "...",
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
                             style: Theme.of(context)
                                 .textTheme
                                 .headline2!
                                 .copyWith(fontWeight: FontWeight.w500),
                           ),
-                  ),
+                        )
+                      : Text(
+                          widget.obj.headings != "" &&
+                                  widget.obj.headings != null &&
+                                  widget.obj.headings.length > 0
+                              ? widget.obj.headings["en"].toString()
+                              : widget.obj.contents["en"]
+                                      .toString()
+                                      .split(" ")[0] +
+                                  " " +
+                                  widget.obj.contents["en"]
+                                      .toString()
+                                      .split(" ")[1] +
+                                  "...",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(fontWeight: FontWeight.w500),
+                        ),
+                ),
+                Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
+                    ? TranslationWidget(
+                        message: widget.date,
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                          style: Theme.of(context).textTheme.subtitle1!,
+                          textAlign: TextAlign.justify,
+                        ),
+                      )
+                    : Text(
+                        widget.date,
+                        style: Theme.of(context).textTheme.subtitle1!,
+                        textAlign: TextAlign.justify,
+                      ),
+              ],
+            ),
+            Container(
+              child: Wrap(
+                children: [
                   Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
                       ? TranslationWidget(
-                          message: widget.date,
+                          message: widget.obj.contents["en"].toString(),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
-                            style: Theme.of(context).textTheme.subtitle1!,
-                            textAlign: TextAlign.justify,
-                          ),
-                        )
-                      : Text(
-                          widget.date,
-                          style: Theme.of(context).textTheme.subtitle1!,
-                          textAlign: TextAlign.justify,
-                        ),
-                ],
-              ),
-              Container(
-                child: Wrap(
-                  children: [
-                    Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? TranslationWidget(
-                            message: widget.obj.contents["en"].toString(),
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              style: Theme.of(context).textTheme.bodyText1!,
-                              textAlign: TextAlign.left,
-                            ),
-                          )
-                        : Text(
-                            widget.obj.contents["en"].toString(),
                             style: Theme.of(context).textTheme.bodyText1!,
                             textAlign: TextAlign.left,
                           ),
-                  ],
-                ),
+                        )
+                      : Text(
+                          widget.obj.contents["en"].toString(),
+                          style: Theme.of(context).textTheme.bodyText1!,
+                          textAlign: TextAlign.left,
+                        ),
+                ],
               ),
-              SpacerWidget(_kLabelSpacing),
-              GestureDetector(
-                onTap: () {
-                  _launchURL(widget.obj.url);
-                },
-                child: widget.obj.url != null
-                    ? Wrap(
-                        children: [
-                          Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English"
-                              ? TranslationWidget(
-                                  message: widget.obj.url.toString(),
-                                  toLanguage: Globals.selectedLanguage,
-                                  fromLanguage: "en",
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        ?.copyWith(
-                                            decoration:
-                                                TextDecoration.underline,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant),
-                                    textAlign: TextAlign.justify,
-                                  ),
-                                )
-                              : Text(
-                                  widget.obj.url.toString(),
+            ),
+            SpacerWidget(_kLabelSpacing),
+            GestureDetector(
+              onTap: () {
+                _launchURL(widget.obj.url);
+              },
+              child: widget.obj.url != null
+                  ? Wrap(
+                      children: [
+                        Globals.selectedLanguage != null &&
+                                Globals.selectedLanguage != "English"
+                            ? TranslationWidget(
+                                message: widget.obj.url.toString(),
+                                toLanguage: Globals.selectedLanguage,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1
                                       ?.copyWith(
-                                        decoration: TextDecoration.underline,
-                                      ),
+                                          decoration: TextDecoration.underline,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant),
                                   textAlign: TextAlign.justify,
                                 ),
-                        ],
-                      )
-                    : Container(),
+                              )
+                            : Text(
+                                widget.obj.url.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                textAlign: TextAlign.justify,
+                              ),
+                      ],
+                    )
+                  : Container(),
+            ),
+          ],
+        ),
+        Container(
+          child: Wrap(
+            children: [
+              Text(
+                widget.obj.contents["en"].toString(),
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      decoration: TextDecoration.underline,
+                    ),
+                textAlign: TextAlign.left,
               ),
             ],
           ),
-          Container(
-            child: Wrap(
-              children: [
-                Text(
-                  widget.obj.contents["en"].toString(),
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        decoration: TextDecoration.underline,
-                      ),
-                  textAlign: TextAlign.left,
-                ),
-              ],
-            ),
-          ),
-          SpacerWidget(_kLabelSpacing),
-          GestureDetector(
-            onTap: () {
-              _launchURL(widget.obj.url);
+        ),
+        SpacerWidget(_kLabelSpacing),
+        GestureDetector(
+          onTap: () {
+            _launchURL(widget.obj.url);
+          },
+          child: widget.obj.url != null
+              ? Wrap(
+                  children: [
+                    Text(
+                      widget.obj.url.toString(),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            decoration: TextDecoration.underline,
+                          ),
+                      textAlign: TextAlign.justify,
+                    ),
+                  ],
+                )
+              : Container(),
+        ),
+        Container(
+          height: 0,
+          width: 0,
+          child: BlocListener<HomeBloc, HomeState>(
+            bloc: _homeBloc,
+            listener: (context, state) async {
+              if (state is BottomNavigationBarSuccess) {
+                AppTheme.setDynamicTheme(Globals.appSetting, context);
+                Globals.homeObjet = state.obj;
+              }
             },
-            child: widget.obj.url != null
-                ? Wrap(
-                    children: [
-                      Text(
-                        widget.obj.url.toString(),
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                              decoration: TextDecoration.underline,
-                            ),
-                        textAlign: TextAlign.justify,
-                      ),
-                    ],
-                  )
-                : Container(),
+            child: Container(),
           ),
-          Container(
-            height: 0,
-            width: 0,
-            child: BlocListener<HomeBloc, HomeState>(
-              bloc: _homeBloc,
-              listener: (context, state) async {
-                if (state is BottomNavigationBarSuccess) {
-                  AppTheme.setDynamicTheme(Globals.appSetting, context);
-                  Globals.homeObjet = state.obj;
-                }
-              },
-              child: Container(),
-            ),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 

@@ -74,43 +74,38 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildItem(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(_kPadding),
-        child: RefreshIndicator(
-          key: refreshKey,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 25.0),
-            child: ListView(children: [
-              Column(
-                children: [
-                  _buildnews(context),
-                  SpacerWidget(_kPadding / 2),
-                  _buildnewTimeStamp(context),
-                  SpacerWidget(_kPadding / 5),
-                  _buildBottomSection(context),
-                  SpacerWidget(_kPadding / 2),
-                  _buildButton(context),
-                  SpacerWidget(_kPadding * 3),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                      bloc: _homeBloc,
-                      listener: (context, state) async {
-                        if (state is BottomNavigationBarSuccess) {
-                          AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObjet = state.obj;
-                        }
-                      },
-                      child: Container(),
-                    ),
-                  ),
-                ],
+    return RefreshIndicator(
+      key: refreshKey,
+      child: ListView(padding: const EdgeInsets.all(_kPadding), children: [
+        Column(
+          children: [
+            _buildnews(context),
+            SpacerWidget(_kPadding / 2),
+            _buildnewTimeStamp(context),
+            SpacerWidget(_kPadding / 5),
+            _buildBottomSection(context),
+            SpacerWidget(_kPadding / 2),
+            _buildButton(context),
+            SpacerWidget(_kPadding * 3),
+            Container(
+              height: 0,
+              width: 0,
+              child: BlocListener<HomeBloc, HomeState>(
+                bloc: _homeBloc,
+                listener: (context, state) async {
+                  if (state is BottomNavigationBarSuccess) {
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+                    Globals.homeObjet = state.obj;
+                  }
+                },
+                child: Container(),
               ),
-            ]),
-          ),
-          onRefresh: refreshPage,
-        ));
+            ),
+          ],
+        ),
+      ]),
+      onRefresh: refreshPage,
+    );
   }
 
   Widget _buildButton(BuildContext context) {
@@ -120,9 +115,13 @@ class SocialDescription extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            SizedBox(
-              width: _KButtonSize,
-              height: _KButtonSize / 2,
+            Container(
+              constraints: BoxConstraints(
+                minWidth: _KButtonSize,
+                maxWidth: 130.0,
+                minHeight: _KButtonSize / 2,
+                maxHeight: 80.0,
+              ),
               child: ElevatedButton(
                 onPressed: () async {
                   _buildlink();
@@ -149,9 +148,13 @@ class SocialDescription extends StatelessWidget {
               ),
             ),
             HorzitalSpacerWidget(_kPadding / 2),
-            SizedBox(
-              width: _KButtonSize,
-              height: _KButtonSize / 2,
+            Container(
+              constraints: BoxConstraints(
+                minWidth: _KButtonSize,
+                maxWidth: 130.0,
+                minHeight: _KButtonSize / 2,
+                maxHeight: 80.0,
+              ),
               child: ElevatedButton(
                 onPressed: () async {
                   SharePopUp obj = new SharePopUp();

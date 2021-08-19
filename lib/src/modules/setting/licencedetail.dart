@@ -363,16 +363,14 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           sharedpopBodytext: '',
           language: Globals.selectedLanguage,
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(bottom: 25.0),
-          child: RefreshIndicator(
-            key: refreshKey,
-            child: Container(
-                color: Theme.of(context).colorScheme.background,
-                child: list != null && list.length > 0
-                    ? Padding(
-                        padding: const EdgeInsets.only(bottom: 25.0),
-                        child: ListView(children: [
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: Container(
+              color: Theme.of(context).colorScheme.background,
+              child: list != null && list.length > 0
+                  ? ListView(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      children: [
                           SpacerWidget(_kLabelSpacing / 2),
                           _buildname(list[index]),
                           SpacerWidget(_kLabelSpacing / 2),
@@ -402,13 +400,11 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                               child: Container(),
                             ),
                           ),
-                        ]),
-                      )
-                    : Container(
-                        height: 0,
-                      )),
-            onRefresh: refreshPage,
-          ),
+                        ])
+                  : Container(
+                      height: 0,
+                    )),
+          onRefresh: refreshPage,
         ));
   }
 

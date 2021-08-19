@@ -35,6 +35,7 @@ class _EventDescriptionState extends State<EventDescription> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _kPadding),
       child: ListView(
+        padding: const EdgeInsets.only(bottom: 30.0),
         children: [
           SpacerWidget(_kPadding / 2),
           Globals.selectedLanguage != null &&
@@ -134,12 +135,20 @@ class _EventDescriptionState extends State<EventDescription> {
       padding: EdgeInsets.symmetric(horizontal: _kPadding / 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.max,
+        // mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           list.inviteLink != null
               ? Container(
-                  width: _KButtonSize,
-                  height: _KButtonSize / 2.5,
+                  child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: _KButtonSize,
+                    maxWidth: 125.0,
+                    minHeight: _KButtonSize / 2.5,
+                    maxHeight: 125.0,
+                  ),
+
+                  // width: _KButtonSize,
+                  // height: _KButtonSize / 2.5,
                   child: ElevatedButton(
                     onPressed: () {
                       SharePopUp obj = new SharePopUp();
@@ -148,7 +157,7 @@ class _EventDescriptionState extends State<EventDescription> {
                     child: Globals.selectedLanguage != null &&
                             Globals.selectedLanguage != "English"
                         ? TranslationWidget(
-                            message: "Share",
+                            message: "Share ",
                             toLanguage: Globals.selectedLanguage,
                             fromLanguage: "en",
                             builder: (translatedMessage) => Text(
@@ -161,7 +170,7 @@ class _EventDescriptionState extends State<EventDescription> {
                             // style: _kbuttonTextStyle,
                           ),
                   ),
-                )
+                ))
               : Container(
                   height: 0,
                   width: 0,
@@ -170,8 +179,14 @@ class _EventDescriptionState extends State<EventDescription> {
             width: _kPadding / 2,
           ),
           Container(
-            width: _KButtonSize,
-            height: _KButtonSize / 2.5,
+            constraints: BoxConstraints(
+              minWidth: _KButtonSize,
+              maxWidth: 120.0,
+              minHeight: _KButtonSize / 2.5,
+              maxHeight: 120.0,
+            ),
+            // width: _KButtonSize,
+            // height: _KButtonSize / 2.5,
             child: ElevatedButton(
               onPressed: () {
                 Add2Calendar.addEvent2Cal(
@@ -180,21 +195,17 @@ class _EventDescriptionState extends State<EventDescription> {
               },
               child: Globals.selectedLanguage != null &&
                       Globals.selectedLanguage != "English"
-                  ? Wrap(children: [
-                      TranslationWidget(
-                        message: "Save event ",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                        ),
+                  ? TranslationWidget(
+                      message: "Save event",
+                      toLanguage: Globals.selectedLanguage,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
                       ),
-                    ])
-                  : Wrap(children: [
-                      Text(
-                        "Save event ",
-                      ),
-                    ]),
+                    )
+                  : Text(
+                      "Save event ",
+                    ),
             ),
           ),
         ],
@@ -215,14 +226,11 @@ class _EventDescriptionState extends State<EventDescription> {
     return Scaffold(
         body: RefreshIndicator(
       key: refreshKey,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 25.0),
-        child: Column(children: <Widget>[
-          Expanded(
-            child: _buildItem(widget.obj),
-          ),
-        ]),
-      ),
+      child: Column(children: <Widget>[
+        Expanded(
+          child: _buildItem(widget.obj),
+        ),
+      ]),
       onRefresh: refreshPage,
     ));
   }

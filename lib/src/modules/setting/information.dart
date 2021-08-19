@@ -60,91 +60,86 @@ class _InformationPageState extends State<InformationPage> {
           Globals.appSetting.appInformationC.toString().replaceAll("$img", " ");
     }
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 25.0),
-        child: ListView(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
-              child: Wrap(
-                children: [
-                  Globals.appSetting.appInformationC
-                              .toString()
-                              .contains("src=") &&
-                          Globals.appSetting.appInformationC
-                                  .toString()
-                                  .split('"')[1] !=
-                              ""
-                      ? Container(
-                          alignment: Alignment.center,
-                          child: ClipRRect(
-                            child: CachedNetworkImage(
-                              imageUrl: Utility.getHTMLImgSrc(
-                                  Globals.appSetting.appInformationC),
-                              placeholder: (context, url) => Container(
-                                  alignment: Alignment.center,
-                                  child: ShimmerLoading(
-                                    isLoading: true,
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.8,
-                                      height:
-                                          MediaQuery.of(context).size.width *
-                                              0.8,
-                                      color: Colors.white,
-                                    ),
-                                  )),
-                              errorWidget: (context, url, error) => Container(),
-                            ),
+      child: ListView(
+        padding: const EdgeInsets.only(bottom: 20.0),
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
+            child: Wrap(
+              children: [
+                Globals.appSetting.appInformationC
+                            .toString()
+                            .contains("src=") &&
+                        Globals.appSetting.appInformationC
+                                .toString()
+                                .split('"')[1] !=
+                            ""
+                    ? Container(
+                        alignment: Alignment.center,
+                        child: ClipRRect(
+                          child: CachedNetworkImage(
+                            imageUrl: Utility.getHTMLImgSrc(
+                                Globals.appSetting.appInformationC),
+                            placeholder: (context, url) => Container(
+                                alignment: Alignment.center,
+                                child: ShimmerLoading(
+                                  isLoading: true,
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    height:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    color: Colors.white,
+                                  ),
+                                )),
+                            errorWidget: (context, url, error) => Container(),
                           ),
-                        )
-                      : Container(),
-                  Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message:
-                              htmlData ?? Globals.appSetting.appInformationC,
-                          fromLanguage: "en",
-                          toLanguage: Globals.selectedLanguage,
-                          builder: (translatedMessage) => Html(
-                            data: translatedMessage.toString(),
-                          ),
-                        )
-                      : Html(
-                          data: htmlData ?? Globals.appSetting.appInformationC,
-                          style: {
-                            "table": Style(
-                              backgroundColor:
-                                  Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                            ),
-                            "tr": Style(
-                              border: Border(
-                                  bottom: BorderSide(color: Colors.grey)),
-                            ),
-                            "th": Style(
-                              padding: EdgeInsets.all(6),
-                              backgroundColor: Colors.grey,
-                            ),
-                            "td": Style(
-                              padding: EdgeInsets.all(6),
-                              alignment: Alignment.topLeft,
-                            ),
-                            'h5': Style(
-                                maxLines: 2,
-                                textOverflow: TextOverflow.ellipsis),
-                          },
                         ),
-                ],
-              ),
+                      )
+                    : Container(),
+                Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
+                    ? TranslationWidget(
+                        message: htmlData ?? Globals.appSetting.appInformationC,
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) => Html(
+                          data: translatedMessage.toString(),
+                        ),
+                      )
+                    : Html(
+                        data: htmlData ?? Globals.appSetting.appInformationC,
+                        style: {
+                          "table": Style(
+                            backgroundColor:
+                                Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                          ),
+                          "tr": Style(
+                            border:
+                                Border(bottom: BorderSide(color: Colors.grey)),
+                          ),
+                          "th": Style(
+                            padding: EdgeInsets.all(6),
+                            backgroundColor: Colors.grey,
+                          ),
+                          "td": Style(
+                            padding: EdgeInsets.all(6),
+                            alignment: Alignment.topLeft,
+                          ),
+                          'h5': Style(
+                              maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                        },
+                      ),
+              ],
             ),
-            SizedBox(
-              height: 100.0,
-              child: ShareButtonWidget(
-                language: Globals.selectedLanguage,
-              ),
+          ),
+          SizedBox(
+            height: 100.0,
+            child: ShareButtonWidget(
+              language: Globals.selectedLanguage,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

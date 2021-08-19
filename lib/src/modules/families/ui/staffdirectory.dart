@@ -38,6 +38,7 @@ class StaffDirectory extends StatefulWidget {
 class _StaffDirectoryState extends State<StaffDirectory> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 45.0;
+  static const double _KButtonMinSize = 25.0;
   String? language = Globals.selectedLanguage;
   FamilyBloc _bloc = FamilyBloc();
   UrlLauncherWidget objurl = new UrlLauncherWidget();
@@ -59,7 +60,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
         border: Border.all(
           width: 0,
         ),
-        color: Theme.of(context).colorScheme.secondary,
+        color: Theme.of(context).colorScheme.primary,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -82,184 +83,173 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   }
 
   Widget contactItem(obj, index) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 30.0),
-      child: Container(
-        margin: EdgeInsets.symmetric(
-            horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
-        padding: EdgeInsets.symmetric(
-            horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
-        decoration: BoxDecoration(
-          border: (index % 2 == 0)
-              ? Border.all(
-                  color: Theme.of(context).colorScheme.background,
-                )
-              : Border.all(color: Theme.of(context).colorScheme.secondary),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromRGBO(0, 0, 0, 0.2),
-              spreadRadius: 0,
-              blurRadius: 1,
-              offset: Offset(0, 1),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  HorzitalSpacerWidget(_kLabelSpacing / 1.5),
-                  obj.imageUrlC != null && obj.imageUrlC.length > 0
-                      ? CachedNetworkImage(
-                          imageUrl: obj.imageUrlC,
-                          fit: BoxFit.fill,
-                          width: 90,
-                          height: 120,
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: ShimmerLoading(
-                                isLoading: true,
-                                child: Container(
-                                  width: _kIconSize * 1.4,
-                                  height: _kIconSize * 1.5,
-                                  color: Colors.white,
-                                ),
-                              )),
-                        )
-                      : Container(
-                          child: ClipRRect(
-                            child: CachedNetworkImage(
-                              fit: BoxFit.fill,
-                              width: 90,
-                              height: 120,
-                              imageUrl: Globals.homeObjet["App_Logo__c"],
-                              placeholder: (context, url) => Container(
-                                  alignment: Alignment.center,
-                                  child: ShimmerLoading(
-                                    isLoading: true,
-                                    child: Container(
-                                      width: _kIconSize * 1.4,
-                                      height: _kIconSize * 1.5,
-                                      color: Colors.white,
-                                    ),
-                                  )),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
+    return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
+      padding: EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing / 2, vertical: _kLabelSpacing / 1.5),
+      decoration: BoxDecoration(
+        border: (index % 2 == 0)
+            ? Border.all(
+                color: Theme.of(context).colorScheme.background,
+              )
+            : Border.all(color: Theme.of(context).colorScheme.secondary),
+        borderRadius: BorderRadius.circular(0.0),
+        color: (index % 2 == 0)
+            ? Theme.of(context).colorScheme.background
+            : Theme.of(context).colorScheme.secondary,
+        boxShadow: [
+          BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, 0.2),
+            spreadRadius: 0,
+            blurRadius: 1,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                HorzitalSpacerWidget(_kLabelSpacing / 1.5),
+                obj.imageUrlC != null && obj.imageUrlC.length > 0
+                    ? CachedNetworkImage(
+                        imageUrl: obj.imageUrlC,
+                        fit: BoxFit.fill,
+                        width: 60,
+                        height: 60,
+                        placeholder: (context, url) => Container(
+                            alignment: Alignment.center,
+                            child: ShimmerLoading(
+                              isLoading: true,
+                              child: Container(
+                                width: _kIconSize * 1.4,
+                                height: _kIconSize * 1.5,
+                                color: Colors.white,
+                              ),
+                            )),
+                      )
+                    : Container(
+                        child: ClipRRect(
+                          child: CachedNetworkImage(
+                            fit: BoxFit.fill,
+                            width: 60,
+                            height: 60,
+                            imageUrl: Globals.homeObjet["App_Logo__c"],
+                            placeholder: (context, url) => Container(
+                                alignment: Alignment.center,
+                                child: ShimmerLoading(
+                                  isLoading: true,
+                                  child: Container(
+                                    width: _kIconSize * 1.4,
+                                    height: _kIconSize * 1.5,
+                                    color: Colors.white,
+                                  ),
+                                )),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
                         ),
-                  HorzitalSpacerWidget(_kLabelSpacing),
-                  Expanded(
-                    child: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SpacerWidget(_kLabelSpacing * 3),
-                              TranslationWidget(
-                                message: obj.titleC ?? "-",
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                    textAlign: TextAlign.start,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1!),
-                              ),
-                            ],
-                          )
-                        : Text(obj.titleC ?? "-",
-                            textAlign: TextAlign.start,
-                            style: Theme.of(context).textTheme.bodyText1!),
-                  ),
-                ]),
-            SpacerWidget(_kLabelSpacing * 1.2),
-            Row(
-              children: <Widget>[
-                SizedBox(
-                  height: 45,
-                  width: 100,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (obj.phoneC != null) {
-                        objurl.callurlLaucher(context, "tel:" + obj.phoneC);
-                      }
-                    },
-                    child: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? Container(
-                            child: TranslationWidget(
-                              message: "Call",
-                              fromLanguage: "en",
-                              toLanguage: language,
-                              builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
-                              ),
-                            ),
-                          )
-                        : Text("Call"),
-                  ),
-                ),
-                SizedBox(
-                  width: _kLabelSpacing / 1.5,
-                ),
-                SizedBox(
-                  height: 45,
-                  width: 100,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (obj.emailC != null) {
-                        objurl.callurlLaucher(
-                            context, 'mailto:"${obj.emailC}"');
-                      }
-                    },
-                    child: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? Container(
-                            child: TranslationWidget(
-                              message: "Mail",
-                              fromLanguage: "en",
-                              toLanguage: language,
-                              builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
-                              ),
-                            ),
-                          )
-                        : Text("Mail"),
-                  ),
-                ),
-              ],
-            ),
-            SpacerWidget(_kLabelSpacing / 1.2),
-            Row(
-              children: [
+                      ),
+                HorzitalSpacerWidget(_kLabelSpacing),
                 Expanded(
                   child: Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
                       ? TranslationWidget(
-                          message: obj.descriptionC ?? "-",
+                          message: obj.titleC ?? "-",
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                               translatedMessage.toString(),
                               textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.bodyText1!))
-                      : Text(obj.descriptionC ?? "-",
+                              style: Theme.of(context).textTheme.headline2!),
+                        )
+                      : Text(obj.titleC ?? "-",
                           textAlign: TextAlign.start,
-                          style: Theme.of(context).textTheme.bodyText1!),
+                          style: Theme.of(context).textTheme.headline2!),
                 ),
-              ],
-            ),
-          ],
-        ),
+                obj.phoneC.toString().isNotEmpty && obj.phoneC.length > 1
+                    ? Container(
+                        constraints: BoxConstraints(
+                          minWidth: _KButtonMinSize,
+                          maxWidth: _KButtonMinSize * 2,
+                          minHeight: _KButtonMinSize,
+                          maxHeight: _KButtonMinSize * 1.5,
+                        ),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: CircleBorder(),
+                            padding: EdgeInsets.all(6),
+                          ),
+                          onPressed: () {
+                            if (obj.phoneC != null) {
+                              objurl.callurlLaucher(
+                                  context, "tel:" + obj.phoneC);
+                            }
+                          },
+                          child: Icon(
+                            Icons.local_phone_outlined,
+                            color: Theme.of(context).colorScheme.background,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        height: 0,
+                        width: 0,
+                      ),
+                obj.emailC.toString().isNotEmpty && obj.emailC.length > 1
+                    ? Container(
+                        constraints: BoxConstraints(
+                          minWidth: _KButtonMinSize,
+                          maxWidth: _KButtonMinSize * 2,
+                          minHeight: _KButtonMinSize,
+                          maxHeight: _KButtonMinSize * 1.5,
+                        ),
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: CircleBorder(),
+                              padding: EdgeInsets.all(6),
+                            ),
+                            onPressed: () {
+                              if (obj.emailC != null) {
+                                objurl.callurlLaucher(
+                                    context, 'mailto:"${obj.emailC}"');
+                              }
+                            },
+                            child: Icon(
+                              Icons.email_outlined,
+                              color: Theme.of(context).colorScheme.background,
+                            )),
+                      )
+                    : Container(
+                        height: 0,
+                        width: 0,
+                      )
+              ]),
+          SpacerWidget(_kLabelSpacing / 1.2),
+          Row(
+            children: [
+              Expanded(
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English"
+                    ? TranslationWidget(
+                        message: obj.descriptionC ?? "-",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            textAlign: TextAlign.start,
+                            style: Theme.of(context).textTheme.bodyText1!))
+                    : Text(obj.descriptionC ?? "-",
+                        textAlign: TextAlign.start,
+                        style: Theme.of(context).textTheme.bodyText1!),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -319,8 +309,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                               children: [
                                                 _buildHeading(
                                                     "STAFF DIRECTORY"),
+                                                SpacerWidget(
+                                                    _kLabelSpacing / 4),
                                                 Expanded(
                                                   child: ListView.builder(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: 25.0),
                                                     scrollDirection:
                                                         Axis.vertical,
                                                     itemCount:
@@ -368,6 +362,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 ),
                               ),
                             ),
+                            SpacerWidget(_kLabelSpacing * 2),
                           ],
                         )
                       : NoInternetErrorWidget(

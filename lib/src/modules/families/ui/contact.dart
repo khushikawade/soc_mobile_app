@@ -63,14 +63,15 @@ class _ContactPageState extends State<ContactPage> {
               imageUrl: Globals.homeObjet["Contact_Image__c"],
               fit: BoxFit.fill,
               placeholder: (context, url) => Container(
-                  alignment: Alignment.center,
-                  child: ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      height: 200,
-                      color: Colors.white,
-                    ),
-                  )),
+                alignment: Alignment.center,
+                child: ShimmerLoading(
+                  isLoading: true,
+                  child: Container(
+                    height: 200,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
               errorWidget: (context, url, error) => Icon(
                 Icons.error,
               ),
@@ -365,21 +366,18 @@ class _ContactPageState extends State<ContactPage> {
   }
 
   Widget _buildItem() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 35.0),
-      child: ListView(children: [
-        _buildIcon(),
-        SpacerWidget(_kLabelSpacing),
-        _buildTitleWidget(),
-        SpacerWidget(_kLabelSpacing / 1.5),
-        _buildMapWidget(),
-        _buildAddressWidget(),
-        SpacerWidget(_kLabelSpacing / 1.25),
-        _buildPhoneWidget(),
-        SpacerWidget(_kLabelSpacing / 1.25),
-        _buildEmailWidget(),
-      ]),
-    );
+    return ListView(padding: const EdgeInsets.only(bottom: 35.0), children: [
+      _buildIcon(),
+      SpacerWidget(_kLabelSpacing),
+      _buildTitleWidget(),
+      SpacerWidget(_kLabelSpacing / 1.5),
+      _buildMapWidget(),
+      _buildAddressWidget(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      _buildPhoneWidget(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      _buildEmailWidget(),
+    ]);
   }
 
   Widget build(BuildContext context) {

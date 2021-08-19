@@ -12,7 +12,8 @@ class UrlLauncherWidget extends StatefulWidget {
 class UrlLauncherState extends State<UrlLauncherWidget> {
   static _launchURL(url) async {
     if (await canLaunch(url)) {
-      await launch(url);
+      String str = url.replaceAll("+", " ");
+      await launch(str);
     } else {
       throw 'Could not launch $url';
     }

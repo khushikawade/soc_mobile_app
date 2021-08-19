@@ -1,5 +1,7 @@
 import 'dart:async';
-import 'package:Soc/src/modules/families/modal/calendar_list.dart';
+import 'package:Soc/src/modules/families/modal/calendar_event/calendar_event_list.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/families/modal/stafflist.dart';
@@ -10,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:intl/intl.dart';
 part 'family_event.dart';
 part 'family_state.dart';
 
@@ -68,26 +69,24 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     if (event is CalendarListEvent) {
       try {
         yield FamilyLoading();
-        List<CalendarList> list = await getCalendarEventList();
-        List<CalendarList>? futureListobj = [];
-        List<CalendarList>? pastListobj = [];
-        DateTime now = new DateTime.now();
-        final DateFormat formatter = DateFormat('yyyy-MM-dd');
-        final DateTime currentDate =
-            DateTime.parse(formatter.format(now).toString());
+        List<CalendarEventList> list = await getCalendarEventList();
+        // List<CalendarEventList>? futureListobj = [];
+        // List<CalendarEventList>? pastListobj = [];
+        // DateTime now = new DateTime.now();
+        // final DateFormat formatter = DateFormat('yyyy-MM-dd');
+        // final DateTime currentDate =
+        //     DateTime.parse(formatter.format(now).toString());
 
-        for (int i = 0; i < list.length; i++) {
-          DateTime temp = DateTime.parse(
-              formatter.format(DateTime.parse(list[i].startDate!)).toString());
+        // for (int i = 0; i < list.length; i++) {
+        //   DateTime temp = list[i].start!.dateTime!;
 
-          if (temp.isBefore(currentDate)) {
-            pastListobj.add(list[i]);
-          } else {
-            futureListobj.add(list[i]);
-          }
-        }
-        yield CalendarListSuccess(
-            futureListobj: futureListobj, pastListobj: pastListobj);
+        //   if (temp.isBefore(currentDate)) {
+        //     pastListobj.add(list[i]);
+        //   } else {
+        //     futureListobj.add(list[i]);
+        //   }
+        // }
+        yield CalendarListSuccess(futureListobj: list, pastListobj: list);
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -146,15 +145,28 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  Future<List<CalendarList>> getCalendarEventList() async {
+  Future<List<CalendarEventList>> getCalendarEventList() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Start_Date__c,End_Date__c, Invite_Link__c, Description__c FROM Calendar_Events_App__c where School_App__c = '${Overrides.schoolID}'")}");
+      // var dio = Dio();
+      // Response response = await dio.get(
+      //   'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_API}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M',
+      //   options: Options(
+      //     headers: {},
+      //   ),
+      // );
 
+      final response = await http.get(
+        Uri.parse(
+            'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
+        headers: {},
+      );
+
+      print(response.body);
       if (response.statusCode == 200) {
-        dataArray = response.data["records"];
-        return response.data["records"]
-            .map<CalendarList>((i) => CalendarList.fromJson(i))
+        final data = json.decode(response.body);
+        dataArray = data["items"];
+        return dataArray
+            .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');

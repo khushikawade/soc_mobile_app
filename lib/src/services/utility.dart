@@ -139,24 +139,52 @@ class Utility {
   }
 
   static convertDateFormat(date) {
-    String dateNew = date;
+    try {
+      String dateNew = date;
+      final string = dateNew.toString();
+      final formatter = DateFormat('yyyy-MM-dd');
+      final dateTime = formatter.parse(string);
+      final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
+      final String formatted = formatNew.format(dateTime);
+      // return DateTime.parse((dateNew));
+      print(formatted);
+      return formatted;
+    } catch (e) {
+      print(e);
+    }
+  }
 
-    final string = dateNew.toString();
-    final formatter = DateFormat('yyyy-MM-dd');
-    final dateTime = formatter.parse(string);
-    final DateFormat formatNew = DateFormat('dd/MM/yyyy');
-    final String formatted = formatNew.format(dateTime);
-    return formatted;
+  static getDate(date) {
+    try {
+      DateTime parseDate =
+          new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
+      var inputDate = DateTime.parse(parseDate.toString());
+      var outputFormat = DateFormat('MM/dd/yyyy hh:mm a');
+      // var outputDate = outputFormat.format(inputDate);
+      // print(outputDate);
+      // String dateNew = date;
+      // final string = dateNew.toString();
+      // final formatter = DateFormat('yyyy-MM-dd');
+      // final dateTime = formatter.parse(string);
+      // final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
+      // final String formatted = dateTime.day.toString();
+      // return DateTime.parse((dateNew));
+
+      // print(formatted);
+      return outputFormat;
+    } catch (e) {
+      print(e);
+    }
   }
 
   static getMonthFromDate(date) {
     String dateNew = date;
-
     final string = dateNew.toString();
     final formatter = DateFormat('yyyy-MM-dd');
     final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
     final String formatted = formatNew.format(dateTime);
+    print(formatted);
     return formatted;
   }
 

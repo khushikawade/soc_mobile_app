@@ -223,8 +223,9 @@ class AppTheme {
         Utility.getColorFromHex(appSetting.secondaryColorC!);
     Color _backgroundColor =
         Utility.getColorFromHex(appSetting.backgroundColorC!);
-    Color _fontColor = Utility.getColorFromHex(
-        appSetting.fontColorC ?? appSetting.primaryColorC!);
+    Color _fontColor = appSetting.fontColorC != null
+        ? Utility.getColorFromHex(appSetting.fontColorC!)
+        : kBlackColor;
 
     AdaptiveTheme.of(context).setTheme(
         light: AdaptiveTheme.of(context).lightTheme.copyWith(
@@ -255,6 +256,31 @@ class AppTheme {
               ),
               iconTheme: IconThemeData(
                 color: _primaryColor,
+              ),
+
+              inputDecorationTheme: InputDecorationTheme(
+                labelStyle: TextStyle(color: _fontColor),
+                fillColor: Theme.of(context).colorScheme.background,
+                isDense: true,
+                filled: true,
+                contentPadding:
+                    new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                hintStyle: TextStyle(
+                    color: _fontColor,
+                    height: 1.2,
+                    fontSize: Globals.deviceType == "phone"
+                        ? kSubtitleFontSize
+                        : kSubtitleFontSize + _kSize),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.secondary, width: 2),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary, width: 2),
+                ),
               ),
 
               elevatedButtonTheme: ElevatedButtonThemeData(

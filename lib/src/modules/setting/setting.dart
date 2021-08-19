@@ -7,6 +7,7 @@ import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class _SettingPageState extends State<SettingPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
+  bool? isloadingstate = false;
 
   @override
   void initState() {
@@ -154,8 +156,6 @@ class _SettingPageState extends State<SettingPage> {
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => Licenceinfo()));
-
-        // urlobj.callurlLaucher(context, "https://www.google.com/");
       },
       child: Container(
           padding: EdgeInsets.all(16),
@@ -177,22 +177,19 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _buildItem() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 25.0),
-      child: ListView(children: [
-        _buildHeading("Push Notifcation"),
-        _buildNotification(),
-        _buildHeading("Acknowledgements"),
-        _buildLicence(),
-        HorzitalSpacerWidget(_kLabelSpacing * 20),
-        SizedBox(
-            width: MediaQuery.of(context).size.width * 1,
-            height: 100.0,
-            child: ShareButtonWidget(
-              language: Globals.selectedLanguage,
-            ))
-      ]),
-    );
+    return ListView(padding: const EdgeInsets.only(bottom: 25.0), children: [
+      _buildHeading("Push Notifcation"),
+      _buildNotification(),
+      _buildHeading("Acknowledgements"),
+      _buildLicence(),
+      HorzitalSpacerWidget(_kLabelSpacing * 20),
+      SizedBox(
+          width: MediaQuery.of(context).size.width * 1,
+          height: 100.0,
+          child: ShareButtonWidget(
+            language: Globals.selectedLanguage,
+          ))
+    ]);
   }
 
   Widget build(BuildContext context) {
@@ -230,17 +227,27 @@ class _SettingPageState extends State<SettingPage> {
                       connected
                           ? Column(
                               children: [
-                                Expanded(child: _buildItem()),
+                                Expanded(
+                                    child: isloadingstate!
+                                        ? ShimmerLoading(
+                                            isLoading: true,
+                                            child: _buildItem())
+                                        : _buildItem()),
                                 Container(
                                   height: 0,
                                   width: 0,
                                   child: BlocListener<HomeBloc, HomeState>(
                                     bloc: _homeBloc,
                                     listener: (context, state) async {
+                                      if (state is HomeLoading) {
+                                        isloadingstate = true;
+                                      }
+
                                       if (state is BottomNavigationBarSuccess) {
                                         AppTheme.setDynamicTheme(
                                             Globals.appSetting, context);
                                         Globals.homeObjet = state.obj;
+                                        isloadingstate = false;
                                         setState(() {});
                                       }
                                     },
@@ -250,51 +257,6 @@ class _SettingPageState extends State<SettingPage> {
                                     ),
                                   ),
                                 ),
-                                // Expanded(
-                                //   child: BlocBuilder<HomeBloc, HomeState>(
-                                //     bloc: _homeBloc,
-                                //     builder:
-                                //         (BuildContext contxt, HomeState state) {
-                                //       if (state is BottomNavigationBarSuccess) {
-                                //         return state.obj != null &&
-                                //                 state.obj.length > 0
-                                //             ? _buildItem()
-                                //             : ListView(children: [
-                                //                 ErrorMessageWidget(
-                                //                   msg: "No Data Found",
-                                //                   isnetworkerror: false,
-                                //                   imgPath:
-                                //                       "assets/images/no_data_icon.svg",
-                                //                 )
-                                //               ]);
-                                //       } else if (state is HomeLoading) {
-                                //         return Container(
-                                //           height: MediaQuery.of(context)
-                                //                   .size
-                                //                   .height *
-                                //               0.8,
-                                //           child: Center(
-                                //               child:
-                                //                   CircularProgressIndicator()),
-                                //         );
-                                //       }
-
-                                //       if (state is HomeErrorReceived) {
-                                //         return ListView(
-                                //             shrinkWrap: true,
-                                //             children: [
-                                //               ErrorMessageWidget(
-                                //                 msg: "Error",
-                                //                 isnetworkerror: false,
-                                //                 imgPath:
-                                //                     "assets/images/error_icon.svg",
-                                //               ),
-                                //             ]);
-                                //       }
-                                //       return Container();
-                                //     },
-                                //   ),
-                                // )
                               ],
                             )
                           : NoInternetErrorWidget(
@@ -310,7 +272,7 @@ class _SettingPageState extends State<SettingPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    setState(() {});
+    print("call refresh");
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }
