@@ -81,10 +81,8 @@ class _EventPageState extends State<EventPage> {
                 child: Wrap(alignment: WrapAlignment.center, children: [
                   widget.language != null && widget.language != "English"
                       ? TranslationWidget(
-                          message: Utility.convertDateFormat(
-                                  list.start!.dateTime.toString())
-                              .toString()
-                              .substring(0, 2),
+                          message: Utility.getMonthFromDate(
+                              list.start!.dateTime.toString().substring(0, 10)),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
