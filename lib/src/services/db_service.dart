@@ -49,7 +49,7 @@ class DbServices {
       //         'Accept-Language': 'Accept-Language',
       //         'authorization': 'Bearer ${Globals.token}'
       //       });
-
+      print(response.body);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return ResponseModel(statusCode: response.statusCode, data: data);
