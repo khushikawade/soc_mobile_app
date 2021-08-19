@@ -99,9 +99,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      print(
-          "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-      Globals.homeIndex = 1;
+      // print(
+      //     "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
+
       pref.setInt(Strings.bottomNavigation, 1);
     });
 

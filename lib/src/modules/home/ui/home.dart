@@ -42,16 +42,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    getindicatorValue();
     _bloc.initPushState(context);
-    getindexvalue();
-    print(Globals.homeIndex);
+    // print(Globals.homeIndex);
     _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
-  }
-
-  getindexvalue() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
   }
 
   getindicatorValue() async {
