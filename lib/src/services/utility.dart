@@ -139,14 +139,22 @@ class Utility {
   }
 
   static convertDateFormat(date) {
-    String dateNew = date;
+    try {
+      DateTime dateNew =
+          // date.substring(0, 11) + 'T';
+          DateTime.parse(date.toString().split(" ")[0]);
+      print(dateNew);
+      print(new DateFormat("yyyy-MM-dd").format(dateNew));
 
-    final string = dateNew.toString();
-    final formatter = DateFormat('yyyy-MM-dd');
-    final dateTime = formatter.parse(string);
-    final DateFormat formatNew = DateFormat('dd/MM/yyyy');
-    final String formatted = formatNew.format(dateTime);
-    return formatted;
+      // final string = dateNew.toString();
+      // final formatter = DateFormat('dd-mm-yyyy');
+      // final dateTime = formatter.parse(string);
+      // final DateFormat formatNew = DateFormat('dd/MM/yyyy');
+      // final String formatted = formatNew.format(dateTime);
+      return (dateNew);
+    } catch (e) {
+      print(e);
+    }
   }
 
   static getMonthFromDate(date) {

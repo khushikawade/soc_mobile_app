@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:Soc/src/modules/families/modal/calendar_event/calendar_event_list.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as httpClient;
 import 'package:Soc/src/modules/families/modal/calendar_list.dart';
@@ -79,17 +80,16 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         final DateTime currentDate =
             DateTime.parse(formatter.format(now).toString());
 
-        for (int i = 0; i < list.length; i++) {
-          DateTime temp = list[i].start!.dateTime!;
+        // for (int i = 0; i < list.length; i++) {
+        //   DateTime temp = list[i].start!.dateTime!;
 
-          if (temp.isBefore(currentDate)) {
-            pastListobj.add(list[i]);
-          } else {
-            futureListobj.add(list[i]);
-          }
-        }
-        yield CalendarListSuccess(
-            futureListobj: futureListobj, pastListobj: pastListobj);
+        //   if (temp.isBefore(currentDate)) {
+        //     pastListobj.add(list[i]);
+        //   } else {
+        //     futureListobj.add(list[i]);
+        //   }
+        // }
+        yield CalendarListSuccess(futureListobj: list, pastListobj: list);
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -159,10 +159,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       final ResponseModel response = await _dbServices.getCalendarApi();
 
       if (response.statusCode == 200) {
-        print(response.data["items"]);
+        // print(response.data["items"]);
 
         dataArray = response.data["items"];
-
+        // print(dataArray);
         return dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
