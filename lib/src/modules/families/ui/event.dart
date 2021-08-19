@@ -81,7 +81,8 @@ class _EventPageState extends State<EventPage> {
                 child: Wrap(alignment: WrapAlignment.center, children: [
                   widget.language != null && widget.language != "English"
                       ? TranslationWidget(
-                          message: Utility.convertDateFormat(list.start!.date)
+                          message: Utility.convertDateFormat(
+                                  list.start!.dateTime.toString())
                               .toString()
                               .substring(0, 2),
                           toLanguage: Globals.selectedLanguage,
@@ -96,7 +97,8 @@ class _EventPageState extends State<EventPage> {
                           ),
                         )
                       : Text(
-                          Utility.convertDateFormat(list.start!.date)
+                          Utility.convertDateFormat(
+                                  list.start!.dateTime.toString())
                               .toString()
                               .substring(0, 2),
                           style:
@@ -104,97 +106,100 @@ class _EventPageState extends State<EventPage> {
                                     fontWeight: FontWeight.w500,
                                   ),
                         ),
-                  Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message: Utility.getMonthFromDate(list.start!.date)
-                              .toString()
-                              .split("/")[1],
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(
-                                    height: 1.5,
-                                  ),
-                              textAlign: TextAlign.center),
-                        )
-                      : Text(
-                          Utility.getMonthFromDate(list.start!.date)
-                              .toString()
-                              .split("/")[1],
-                          style:
-                              Theme.of(context).textTheme.headline2!.copyWith(
-                                    height: 1.5,
-                                  ),
-                        ),
+                  // Globals.selectedLanguage != null &&
+                  //         Globals.selectedLanguage != "English"
+                  //     ? TranslationWidget(
+                  //         message: Utility.getMonthFromDate(
+                  //                 list.start!.dateTime.toString())
+                  //             .toString()
+                  //             .split("/")[1],
+                  //         toLanguage: Globals.selectedLanguage,
+                  //         fromLanguage: "en",
+                  //         builder: (translatedMessage) => Text(
+                  //             translatedMessage.toString(),
+                  //             style: Theme.of(context)
+                  //                 .textTheme
+                  //                 .headline2!
+                  //                 .copyWith(
+                  //                   height: 1.5,
+                  //                 ),
+                  //             textAlign: TextAlign.center),
+                  //       )
+                  //     : Text(
+                  //         Utility.getMonthFromDate(
+                  //                 list.start!.dateTime.toString())
+                  //             .toString()
+                  //             .split("/")[1],
+                  //         style:
+                  //             Theme.of(context).textTheme.headline2!.copyWith(
+                  //                   height: 1.5,
+                  //                 ),
+                  //       ),
                 ]),
               ),
               HorzitalSpacerWidget(_kLabelSpacing),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message: list.summary!,
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Container(
-                                width: MediaQuery.of(context).size.width * 0.50,
-                                child: Text(
-                                  translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5!
-                                      .copyWith(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ))
-                      : Container(
-                          width: MediaQuery.of(context).size.width * 0.50,
-                          child: Text(
-                            list.summary ?? '-',
-                            style:
-                                Theme.of(context).textTheme.headline5!.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                            overflow: TextOverflow.ellipsis,
-                          )),
-                  SpacerWidget(_kLabelSpacing),
-                  Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message: Utility.convertDateFormat(list.start!.date) +
-                              " - " +
-                              Utility.convertDateFormat(list.endDate!.date),
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            style:
-                                Theme.of(context).textTheme.headline2!.copyWith(
-                                      height: 1.5,
-                                    ),
-                          ),
-                        )
-                      : Text(
-                          Utility.convertDateFormat(list.start!.date) +
-                              " - " +
-                              Utility.convertDateFormat(list.endDate!.date),
-                          style:
-                              Theme.of(context).textTheme.headline2!.copyWith(
-                                    height: 1.5,
-                                  ),
-                        )
-                ],
-              ),
+              // Column(
+              //   mainAxisAlignment: MainAxisAlignment.start,
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Globals.selectedLanguage != null &&
+              //             Globals.selectedLanguage != "English"
+              //         ? TranslationWidget(
+              //             message: list.summary!,
+              //             toLanguage: Globals.selectedLanguage,
+              //             fromLanguage: "en",
+              //             builder: (translatedMessage) => Container(
+              //                   width: MediaQuery.of(context).size.width * 0.50,
+              //                   child: Text(
+              //                     translatedMessage.toString(),
+              //                     style: Theme.of(context)
+              //                         .textTheme
+              //                         .headline5!
+              //                         .copyWith(
+              //                           fontWeight: FontWeight.w500,
+              //                         ),
+              //                     overflow: TextOverflow.ellipsis,
+              //                   ),
+              //                 ))
+              //         : Container(
+              //             width: MediaQuery.of(context).size.width * 0.50,
+              //             child: Text(
+              //               list.summary ?? '-',
+              //               style:
+              //                   Theme.of(context).textTheme.headline5!.copyWith(
+              //                         fontWeight: FontWeight.w500,
+              //                       ),
+              //               overflow: TextOverflow.ellipsis,
+              //             )),
+              //     SpacerWidget(_kLabelSpacing),
+              //     Globals.selectedLanguage != null &&
+              //             Globals.selectedLanguage != "English"
+              //         ? TranslationWidget(
+              //             message: Utility.convertDateFormat(
+              //                     list.start!.dateTime) +
+              //                 " - " +
+              //                 Utility.convertDateFormat(list.endDate!.dateTime),
+              //             toLanguage: Globals.selectedLanguage,
+              //             fromLanguage: "en",
+              //             builder: (translatedMessage) => Text(
+              //               translatedMessage.toString(),
+              //               style:
+              //                   Theme.of(context).textTheme.headline2!.copyWith(
+              //                         height: 1.5,
+              //                       ),
+              //             ),
+              //           )
+              //         : Text(
+              //             Utility.convertDateFormat(list.start!.dateTime) +
+              //                 " - " +
+              //                 Utility.convertDateFormat(list.endDate!.dateTime),
+              //             style:
+              //                 Theme.of(context).textTheme.headline2!.copyWith(
+              //                       height: 1.5,
+              //                     ),
+              //           )
+              //   ],
+              // ),
             ],
           ),
           // Padding(
