@@ -97,10 +97,8 @@ class _EventPageState extends State<EventPage> {
                           ),
                         )
                       : Text(
-                          Utility.convertDateFormat(
-                                  list.start!.dateTime.toString())
-                              .toString()
-                              .substring(0, 2),
+                          Utility.getMonthFromDate(
+                              list.start!.dateTime.toString().substring(0, 10)),
                           style:
                               Theme.of(context).textTheme.headline5!.copyWith(
                                     fontWeight: FontWeight.w500,

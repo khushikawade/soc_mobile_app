@@ -140,18 +140,20 @@ class Utility {
 
   static convertDateFormat(date) {
     try {
-      String dateNew =
-          // date.substring(0, 11) + 'T';
-          date.toString().split(" ")[0];
-      print(dateNew);
-      print(new DateFormat("yyyy-MM-dd").format(dateNew));
+      // String dateNew =
+      //     // date.substring(0, 11) + 'T';
+      //     date.toString().split(" ")[0];
+      print(date);
+      // print(new DateFormat("yyyy-MM-dd").format(dateNew));
 
-      // final string = dateNew.toString();
-      // final formatter = DateFormat('dd-mm-yyyy');
-      // final dateTime = formatter.parse(string);
-      // final DateFormat formatNew = DateFormat('dd/MM/yyyy');
-      // final String formatted = formatNew.format(dateTime);
-      return DateTime.parse((dateNew));
+      final dateNew = date.toString();
+      final formatter = DateFormat('dd-mm-yyyy');
+      final dateTime = formatter.parse(dateNew);
+      final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
+      final String formatted = formatNew.format(dateTime);
+      // return DateTime.parse((dateNew));
+      print(formatted);
+      return formatted;
     } catch (e) {
       print(e);
     }
@@ -165,6 +167,7 @@ class Utility {
     final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
     final String formatted = formatNew.format(dateTime);
+    print(formatted);
     return formatted;
   }
 
