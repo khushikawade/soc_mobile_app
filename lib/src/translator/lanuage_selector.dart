@@ -3,6 +3,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -141,33 +142,29 @@ class LanguageSelector {
                         ? MediaQuery.of(context).size.width * 0.965
                         : MediaQuery.of(context).size.height * 0.60,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ListTile(
-                          trailing: InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                              FocusScope.of(context).requestFocus(FocusNode());
-                            },
-                            child: Icon(
-                              Icons.clear,
-                              size: Globals.deviceType == "phone" ? 28 : 36,
-                            ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          },
+                          icon: Icon(
+                            Icons.clear,
+                            size: Globals.deviceType == "phone" ? 28 : 36,
                           ),
                         ),
-                        ListTile(
-                          contentPadding: EdgeInsets.all(0),
-                          title: Center(
-                            child: Text(
-                              "Select language",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6!
-                                  .copyWith(
-                                    fontSize: AppTheme.kBottomSheetTitleSize,
-                                  ),
-                            ),
+                        Center(
+                          child: Text(
+                            "Select language",
+                            style:
+                                Theme.of(context).textTheme.headline6!.copyWith(
+                                      fontSize: AppTheme.kBottomSheetTitleSize,
+                                    ),
                           ),
                         ),
+                        SpacerWidget(_kLabelSpacing * 1.5),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: _kLabelSpacing / 1.5),

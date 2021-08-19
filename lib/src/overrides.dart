@@ -17,5 +17,5 @@ class Overrides {
       'a1T3J000000RHEKUA4'; //a1T3J000000RcpLUAS    a1T3J000000RHEKUA4
 
   static const String calendar_API =
-      'https://www.googleapis.com/calendar/v3/calendars/appdevelopersdp7@gmail.com/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M';
+      "https://www.googleapis.com/calendar/v3/calendars/appdevelopersdp7@gmail.com/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M";
 }
