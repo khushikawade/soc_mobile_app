@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/Strings.dart';
 import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -48,9 +49,17 @@ class _StartupPageState extends State<StartupPage> {
     initPlatformState(context);
     _loginBloc.add(PerfomLogin());
     _newsBloc.add(FetchNotificationList());
+    getindexvalue();
 
     // timer =
     //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
+  }
+
+  getindexvalue() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    print(pref.getInt(Strings.bottomNavigation));
+    Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
+    print(Globals.homeIndex);
   }
 
   @override
