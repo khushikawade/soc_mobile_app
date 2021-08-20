@@ -26,6 +26,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
   OSSLicensesInfo obj = new OSSLicensesInfo();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   var _list;
   @override
   void initState() {
@@ -97,7 +98,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
             child: Column(children: [
               Expanded(
                 child: ListView.builder(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.only(bottom: 35),
                   scrollDirection: Axis.vertical,
                   itemCount: _list.length,
                   itemBuilder: (BuildContext context, int index) {

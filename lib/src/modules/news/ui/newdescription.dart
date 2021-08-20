@@ -29,6 +29,7 @@ class _NewdescriptionState extends State<Newdescription> {
   static const double _kIconSize = 45.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _launchURL(obj) async {
     Navigator.push(

@@ -170,59 +170,65 @@ class LanguageSelector {
                               horizontal: _kLabelSpacing / 1.5),
                           child: SizedBox(
                             height: 51,
-                            child: TextFormField(
-                                focusNode: myFocusNode,
-                                controller: _controller,
-                                decoration: InputDecoration(
-                                  hintText: 'Search',
-                                  filled: true,
-                                  fillColor: Theme.of(context).backgroundColor,
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(30.0)),
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        width: 2),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(30.0)),
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        width: 2),
-                                  ),
-                                  prefixIcon: Icon(
-                                    const IconData(0xe805,
-                                        fontFamily: Overrides.kFontFam,
-                                        fontPackage: Overrides.kFontPkg),
-                                    size:
-                                        Globals.deviceType == "phone" ? 20 : 28,
-                                  ),
-                                  suffixIcon: _controller.text.isEmpty
-                                      ? null
-                                      : InkWell(
-                                          onTap: () {
-                                            _controller.clear();
-                                            issuggestionList = false;
-                                            FocusScope.of(context)
-                                                .requestFocus(FocusNode());
-                                            setState(() {});
-                                          },
-                                          child: Icon(
-                                            Icons.clear,
-                                            size: Globals.deviceType == "phone"
-                                                ? 20
-                                                : 28,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: TextFormField(
+                                  focusNode: myFocusNode,
+                                  controller: _controller,
+                                  decoration: InputDecoration(
+                                    hintText: 'Search',
+                                    filled: true,
+                                    fillColor:
+                                        Theme.of(context).colorScheme.secondary,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(30.0)),
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          width: 2),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(30.0)),
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          width: 2),
+                                    ),
+                                    prefixIcon: Icon(
+                                      const IconData(0xe805,
+                                          fontFamily: Overrides.kFontFam,
+                                          fontPackage: Overrides.kFontPkg),
+                                      size: Globals.deviceType == "phone"
+                                          ? 20
+                                          : 28,
+                                    ),
+                                    suffixIcon: _controller.text.isEmpty
+                                        ? null
+                                        : InkWell(
+                                            onTap: () {
+                                              _controller.clear();
+                                              issuggestionList = false;
+                                              FocusScope.of(context)
+                                                  .requestFocus(FocusNode());
+                                              setState(() {});
+                                            },
+                                            child: Icon(
+                                              Icons.clear,
+                                              size:
+                                                  Globals.deviceType == "phone"
+                                                      ? 20
+                                                      : 28,
+                                            ),
                                           ),
-                                        ),
-                                ),
-                                onChanged: (value) {
-                                  onItemChanged(value, setState);
-                                }),
+                                  ),
+                                  onChanged: (value) {
+                                    onItemChanged(value, setState);
+                                  }),
+                            ),
                           ),
                         ),
                         issuggestionList!
@@ -250,7 +256,7 @@ class LanguageSelector {
   }
 
   void _closeModal(void value) {
-    print("modal close call ");
+    // print("modal close call ");
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 

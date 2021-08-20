@@ -35,6 +35,7 @@ class _EventPageState extends State<EventPage> {
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -151,7 +152,7 @@ class _EventPageState extends State<EventPage> {
               //   children: [
               //     Globals.selectedLanguage != null &&
               //             Globals.selectedLanguage != "English"
-              //         ? TranslationWidget(
+              //         ?   TranslationWidget(   scaffoldKey: _scaffoldKey,
               //             message: list.summary!,
               //             toLanguage: Globals.selectedLanguage,
               //             fromLanguage: "en",
@@ -181,7 +182,7 @@ class _EventPageState extends State<EventPage> {
               //     SpacerWidget(_kLabelSpacing),
               //     Globals.selectedLanguage != null &&
               //             Globals.selectedLanguage != "English"
-              //         ? TranslationWidget(
+              //         ?   TranslationWidget(   scaffoldKey: _scaffoldKey,
               //             message:
               //                 Utility.convertDateFormat(list.start!.dateTime) +
               //                     " - " +
@@ -224,7 +225,7 @@ class _EventPageState extends State<EventPage> {
           //           alignment: WrapAlignment.center,
           //           children: [
           //             widget.language != null && widget.language != "English"
-          //                 ? TranslationWidget(
+          //                 ?   TranslationWidget(   scaffoldKey: _scaffoldKey,
           //                     message:
           //                         Utility.convertDateFormat(list.startDate!)
           //                             .toString()
@@ -253,7 +254,7 @@ class _EventPageState extends State<EventPage> {
           //                   ),
           //             Globals.selectedLanguage != null &&
           //                     Globals.selectedLanguage != "English"
-          //                 ? TranslationWidget(
+          //                 ?   TranslationWidget(   scaffoldKey: _scaffoldKey,
           //                     message:
           //                         Utility.getMonthFromDate(list.startDate!)
           //                             .toString()
@@ -286,7 +287,7 @@ class _EventPageState extends State<EventPage> {
           //       ),
           //       title: Globals.selectedLanguage != null &&
           //               Globals.selectedLanguage != "English"
-          //           ? TranslationWidget(
+          //           ?   TranslationWidget(   scaffoldKey: _scaffoldKey,
           //               message: list.titleC!,
           //               toLanguage: Globals.selectedLanguage,
           //               fromLanguage: "en",
@@ -307,7 +308,7 @@ class _EventPageState extends State<EventPage> {
           //             ),
           //       subtitle: Globals.selectedLanguage != null &&
           //               Globals.selectedLanguage != "English"
-          //           ? TranslationWidget(
+          //           ?   TranslationWidget(   scaffoldKey: _scaffoldKey,
           //               message: Utility.convertDateFormat(list.startDate!) +
           //                   " - " +
           //                   Utility.convertDateFormat(list.endDate!),

@@ -43,7 +43,7 @@ class _ContactPageState extends State<ContactPage> {
   final HomeBloc _bloc = new HomeBloc();
   bool? iserrorstate = false;
   static const double _kboxborderwidth = 0.75;
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();

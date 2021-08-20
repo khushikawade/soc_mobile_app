@@ -1,3 +1,5 @@
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -36,9 +38,14 @@ class _TranslationWidgetState extends State<TranslationWidget> {
             return buildWaiting();
           default:
             if (snapshot.hasError) {
-              translation = 'Network Error';
+              translation = widget.message;
+              Globals.isNetworkError = true;
+              if (Globals.isNetworkError! && Globals.callsnackbar!) {
+                Globals.callsnackbar = false;
+              }
             } else {
               translation = snapshot.data;
+              Globals.isNetworkError = false;
             }
             return widget.builder!(translation!);
         }

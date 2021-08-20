@@ -32,6 +32,7 @@ class _StudentPageState extends State<StudentPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   StudentBloc _bloc = StudentBloc();
 
@@ -132,34 +133,24 @@ class _StudentPageState extends State<StudentPage> {
                             children: [
                               Globals.selectedLanguage != null &&
                                       Globals.selectedLanguage != "English"
-                                  ? TranslationWidget(
-                                      message: "${list[index].titleC}",
-                                      fromLanguage: "en",
-                                      toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                        textAlign: TextAlign.center,
+                                  ? Expanded(
+                                      child: TranslationWidget(
+                                        message: "${list[index].titleC}",
+                                        fromLanguage: "en",
+                                        toLanguage: Globals.selectedLanguage,
+                                        builder: (translatedMessage) => Text(
+                                          translatedMessage.toString(),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     )
-
-                                  // TranslationWidget(
-                                  //     message: "${list[index].titleC}",
-                                  //     fromLanguage: "en",
-                                  //     toLanguage: Globals.selectedLanguage,
-                                  //     builder: (translatedMessage) => Text(
-                                  //       translatedMessage.toString(),
-                                  //       textAlign: TextAlign.center,
-                                  //       style: TextStyle(
-                                  //           color: Theme.of(context)
-                                  //               .colorScheme
-                                  //               .primaryVariant),
-                                  //     ),
-                                  //   )
-                                  : Text("${list[index].titleC}",
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle2!),
+                                  : Expanded(
+                                      child: Text("${list[index].titleC}",
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2!),
+                                    ),
                             ],
                           ),
                         ],

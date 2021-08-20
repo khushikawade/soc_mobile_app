@@ -11,6 +11,7 @@ class ShareButtonWidget extends StatelessWidget {
   static const double _kLabelSpacing = 17.0;
   SharePopUp obj = new SharePopUp();
   UrlLauncherWidget objurl = new UrlLauncherWidget();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
