@@ -160,8 +160,8 @@ class _EventDescriptionState extends State<EventDescription> {
                   child: ConstrainedBox(
                   constraints: BoxConstraints(
                     minWidth: _KButtonSize,
-                    maxWidth: 125.0,
-                    minHeight: _KButtonSize / 2.5,
+                    maxWidth: 150.0,
+                    minHeight: 126.0,
                     maxHeight: 125.0,
                   ),
 
@@ -199,9 +199,9 @@ class _EventDescriptionState extends State<EventDescription> {
           Container(
             constraints: BoxConstraints(
               minWidth: _KButtonSize,
-              maxWidth: 120.0,
+              maxWidth: _KButtonSize / 2.5,
               minHeight: _KButtonSize / 2.5,
-              maxHeight: 120.0,
+              maxHeight: 150.0,
             ),
             // width: _KButtonSize,
             // height: _KButtonSize / 2.5,

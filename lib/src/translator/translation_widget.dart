@@ -25,6 +25,8 @@ class TranslationWidget extends StatefulWidget {
 
 class _TranslationWidgetState extends State<TranslationWidget> {
   String? translation;
+  // final scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final toLanguageCode =
@@ -41,6 +43,13 @@ class _TranslationWidgetState extends State<TranslationWidget> {
               translation = widget.message;
               Globals.isNetworkError = true;
               if (Globals.isNetworkError! && Globals.callsnackbar!) {
+                // final scaffoldKey = Scaffold.of(context);
+                // scaffoldKey.showSnackBar(SnackBar(
+                //   content: const Text(
+                //     'Please check internet',
+                //   ),
+                //   backgroundColor: Colors.black.withOpacity(0.8),
+                // ));
                 Globals.callsnackbar = false;
               }
             } else {

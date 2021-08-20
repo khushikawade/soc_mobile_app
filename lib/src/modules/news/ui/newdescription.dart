@@ -58,7 +58,7 @@ class _NewdescriptionState extends State<Newdescription> {
                 child: widget.obj.image != null && widget.obj.image != ""
                     ? CachedNetworkImage(
                         imageUrl: widget.obj.image,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
                             alignment: Alignment.center,
                             child: ShimmerLoading(
@@ -75,6 +75,9 @@ class _NewdescriptionState extends State<Newdescription> {
                         alignment: Alignment.center,
                         child: ClipRRect(
                           child: CachedNetworkImage(
+                            height: MediaQuery.of(context).size.height * 0.15,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            fit: BoxFit.fill,
                             imageUrl: Globals.homeObjet["App_Logo__c"],
                             placeholder: (context, url) => Container(
                                 alignment: Alignment.center,

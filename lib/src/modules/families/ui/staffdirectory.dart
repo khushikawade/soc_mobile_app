@@ -176,9 +176,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     ? Container(
                         constraints: BoxConstraints(
                           minWidth: _KButtonMinSize,
-                          maxWidth: _KButtonMinSize * 2,
+                          maxWidth: _KButtonMinSize * 2.5,
                           minHeight: _KButtonMinSize,
-                          maxHeight: _KButtonMinSize * 1.5,
+                          maxHeight: _KButtonMinSize,
                         ),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -205,9 +205,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     ? Container(
                         constraints: BoxConstraints(
                           minWidth: _KButtonMinSize,
-                          maxWidth: _KButtonMinSize * 2,
+                          maxWidth: _KButtonMinSize * 2.5,
                           minHeight: _KButtonMinSize,
-                          maxHeight: _KButtonMinSize * 1.5,
+                          maxHeight: _KButtonMinSize,
                         ),
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
