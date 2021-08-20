@@ -145,68 +145,68 @@ class _EventPageState extends State<EventPage> {
                 ]),
               ),
               HorzitalSpacerWidget(_kLabelSpacing),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message: list.summary!,
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Container(
-                                width: MediaQuery.of(context).size.width * 0.50,
-                                child: Text(
-                                  translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5!
-                                      .copyWith(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ))
-                      : Container(
-                          width: MediaQuery.of(context).size.width * 0.50,
-                          child: Text(
-                            list.summary ?? '-',
-                            style:
-                                Theme.of(context).textTheme.headline5!.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                            overflow: TextOverflow.ellipsis,
-                          )),
-                  SpacerWidget(_kLabelSpacing),
-                  Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message:
-                              Utility.convertDateFormat(list.start!.dateTime) +
-                                  " - " +
-                                  Utility.convertDateFormat(list.end!.dateTime),
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            style:
-                                Theme.of(context).textTheme.headline2!.copyWith(
-                                      height: 1.5,
-                                    ),
-                          ),
-                        )
-                      : Text(
-                          Utility.convertDateFormat(list.start!.dateTime) +
-                              " - " +
-                              Utility.convertDateFormat(list.end!.dateTime),
-                          style:
-                              Theme.of(context).textTheme.headline2!.copyWith(
-                                    height: 1.5,
-                                  ),
-                        )
-                ],
-              ),
+              // Column(
+              //   mainAxisAlignment: MainAxisAlignment.start,
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Globals.selectedLanguage != null &&
+              //             Globals.selectedLanguage != "English"
+              //         ? TranslationWidget(
+              //             message: list.summary!,
+              //             toLanguage: Globals.selectedLanguage,
+              //             fromLanguage: "en",
+              //             builder: (translatedMessage) => Container(
+              //                   width: MediaQuery.of(context).size.width * 0.50,
+              //                   child: Text(
+              //                     translatedMessage.toString(),
+              //                     style: Theme.of(context)
+              //                         .textTheme
+              //                         .headline5!
+              //                         .copyWith(
+              //                           fontWeight: FontWeight.w500,
+              //                         ),
+              //                     overflow: TextOverflow.ellipsis,
+              //                   ),
+              //                 ))
+              //         : Container(
+              //             width: MediaQuery.of(context).size.width * 0.50,
+              //             child: Text(
+              //               list.summary ?? '-',
+              //               style:
+              //                   Theme.of(context).textTheme.headline5!.copyWith(
+              //                         fontWeight: FontWeight.w500,
+              //                       ),
+              //               overflow: TextOverflow.ellipsis,
+              //             )),
+              //     SpacerWidget(_kLabelSpacing),
+              //     Globals.selectedLanguage != null &&
+              //             Globals.selectedLanguage != "English"
+              //         ? TranslationWidget(
+              //             message:
+              //                 Utility.convertDateFormat(list.start!.dateTime) +
+              //                     " - " +
+              //                     Utility.convertDateFormat(list.end!.dateTime),
+              //             toLanguage: Globals.selectedLanguage,
+              //             fromLanguage: "en",
+              //             builder: (translatedMessage) => Text(
+              //               translatedMessage.toString(),
+              //               style:
+              //                   Theme.of(context).textTheme.headline2!.copyWith(
+              //                         height: 1.5,
+              //                       ),
+              //             ),
+              //           )
+              //         : Text(
+              //             Utility.convertDateFormat(list.start!.dateTime) +
+              //                 " - " +
+              //                 Utility.convertDateFormat(list.end!.dateTime),
+              //             style:
+              //                 Theme.of(context).textTheme.headline2!.copyWith(
+              //                       height: 1.5,
+              //                     ),
+              //           )
+              //   ],
+              // ),
             ],
           ),
           // Padding(
