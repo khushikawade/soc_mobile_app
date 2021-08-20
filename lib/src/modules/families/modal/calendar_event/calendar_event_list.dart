@@ -12,10 +12,10 @@ class CalendarEventList {
   String? created;
   String? updated;
   String? summary;
-  final creator;
-  final organizer;
-  final start;
-  final end;
+  Creator? creator;
+  Organizer? organizer;
+  Start? start;
+  End? end;
   String? iCalUid;
   int? sequence;
   String? eventType;
@@ -45,26 +45,21 @@ class CalendarEventList {
         id: json['id'] as String?,
         status: json['status'] as String?,
         htmlLink: json['htmlLink'] as String?,
-        created: json['created'] as String?,
-        updated: json['updated'] as String?,
+        // created: json['created'] as String?,
+        // updated: json['updated'] as String?,
         summary: json['summary'] as String?,
-
-        creator: json['creator'] as String,
-        organizer: json['organizer'] as String,
-        start: json['start'] as String,
-        end: json['end'] as String,
-        // creator: json['creator'] == null
-        //     ? null
-        //     : Creator.fromJson(json['creator'] as Map<String, dynamic>),
-        // organizer: json['organizer'] == null
-        //     ? null
-        //     : Organizer.fromJson(json['organizer'] as Map<String, dynamic>),
-        // start: json['start'] == null
-        //     ? null
-        //     : Start.fromJson(json['start'] as Map<String, dynamic>),
-        // end: json['end'] == null
-        //     ? null
-        //     : End.fromJson(json['end'] as Map<String, dynamic>),
+        creator: json['creator'] == null
+            ? null
+            : Creator.fromJson(json['creator'] as Map<String, dynamic>),
+        organizer: json['organizer'] == null
+            ? null
+            : Organizer.fromJson(json['organizer'] as Map<String, dynamic>),
+        start: json['start'] == null
+            ? null
+            : Start.fromJson(json['start'] as Map<String, dynamic>),
+        end: json['end'] == null
+            ? null
+            : End.fromJson(json['end'] as Map<String, dynamic>),
         iCalUid: json['iCalUID'] as String?,
         sequence: json['sequence'] as int?,
         eventType: json['eventType'] as String?,
@@ -79,14 +74,14 @@ class CalendarEventList {
         'created': created,
         'updated': updated,
         'summary': summary,
-        'creator': creator,
-        'organizer': organizer,
-        'start': start,
-        'end': end,
-        // 'creator': creator?.toJson(),
-        // 'organizer': organizer?.toJson(),
-        // 'start': start?.toJson(),
-        // 'end': end?.toJson(),
+        // 'creator': creator,
+        // 'organizer': organizer,
+        // 'start': start,
+        // 'end': end,
+        'creator': creator?.toJson(),
+        'organizer': organizer?.toJson(),
+        'start': start?.toJson(),
+        'end': end?.toJson(),
         'iCalUID': iCalUid,
         'sequence': sequence,
         'eventType': eventType,

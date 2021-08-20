@@ -147,6 +147,132 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<CalendarEventList>> getCalendarEventList() async {
     try {
+//       {
+//         const String data = '''
+// {
+//     "kind": "calendar#events",
+//     "etag": "\"p32ga1oufputf40g\"",
+//     "summary": "appdevelopersdp7@gmail.com",
+//     "updated": "2021-08-18T12:57:27.636Z",
+//     "timeZone": "Asia/Kolkata",
+//     "accessRole": "reader",
+//     "defaultReminders": [],
+//     "nextSyncToken": "CKCg48_PuvICEAAYASC72oe6AQ==",
+//     "items": [
+//         {
+//             "kind": "calendar#event",
+//             "etag": "\"3258582318644000\"",
+//             "id": "7mco6hbb9m7r2g227if6q7gc0f",
+//             "status": "confirmed",
+//             "htmlLink": "https://www.google.com/calendar/event?eid=N21jbzZoYmI5bTdyMmcyMjdpZjZxN2djMGYgYXBwZGV2ZWxvcGVyc2RwN0Bt",
+//             "created": "2021-08-18T12:52:39.000Z",
+//             "updated": "2021-08-18T12:52:39.322Z",
+//             "summary": "SOC Event",
+//             "creator": {
+//                 "email": "appdevelopersdp7@gmail.com",
+//                 "self": true
+//             },
+//             "organizer": {
+//                 "email": "appdevelopersdp7@gmail.com",
+//                 "self": true
+//             },
+//             "start": {
+//                 "dateTime": "2021-08-18T18:30:00+05:30"
+//             },
+//             "end": {
+//                 "dateTime": "2021-08-18T19:30:00+05:30"
+//             },
+//             "iCalUID": "7mco6hbb9m7r2g227if6q7gc0f@google.com",
+//             "sequence": 0,
+//             "eventType": "default"
+//         },
+//         {
+//             "kind": "calendar#event",
+//             "etag": "\"3258582413458000\"",
+//             "id": "36cbdc4ug2d6qtpalrnl4q00lk",
+//             "status": "confirmed",
+//             "htmlLink": "https://www.google.com/calendar/event?eid=MzZjYmRjNHVnMmQ2cXRwYWxybmw0cTAwbGsgYXBwZGV2ZWxvcGVyc2RwN0Bt",
+//             "created": "2021-08-18T12:53:26.000Z",
+//             "updated": "2021-08-18T12:53:26.729Z",
+//             "summary": "School Opening Day",
+//             "creator": {
+//                 "email": "appdevelopersdp7@gmail.com",
+//                 "self": true
+//             },
+//             "organizer": {
+//                 "email": "appdevelopersdp7@gmail.com",
+//                 "self": true
+//             },
+//             "start": {
+//                 "date": "2021-08-20"
+//             },
+//             "end": {
+//                 "date": "2021-08-21"
+//             },
+//             "transparency": "transparent",
+//             "iCalUID": "36cbdc4ug2d6qtpalrnl4q00lk@google.com",
+//             "sequence": 0,
+//             "eventType": "default"
+//         },
+//         {
+//             "kind": "calendar#event",
+//             "etag": "\"3258582510148000\"",
+//             "id": "1003p6bdnlpdokiacf3nv0iip7",
+//             "status": "confirmed",
+//             "htmlLink": "https://www.google.com/calendar/event?eid=MTAwM3A2YmRubHBkb2tpYWNmM252MGlpcDcgYXBwZGV2ZWxvcGVyc2RwN0Bt",
+//             "created": "2021-08-18T12:54:15.000Z",
+//             "updated": "2021-08-18T12:54:15.074Z",
+//             "summary": "School holiday",
+//             "description": "School holiday , All day",
+//             "creator": {
+//                 "email": "appdevelopersdp7@gmail.com",
+//                 "self": true
+//             },
+//             "organizer": {
+//                 "email": "appdevelopersdp7@gmail.com",
+//                 "self": true
+//             },
+//             "start": {
+//                 "dateTime": "2021-08-15T14:30:00+05:30"
+//             },
+//             "end": {
+//                 "dateTime": "2021-08-15T15:30:00+05:30"
+//             },
+//             "iCalUID": "1003p6bdnlpdokiacf3nv0iip7@google.com",
+//             "sequence": 0,
+//             "eventType": "default"
+//         },
+//         {
+//             "kind": "calendar#event",
+//             "etag": "\"3258582895272000\"",
+//             "id": "625kmupqj476snog5mj94c6kkt",
+//             "status": "confirmed",
+//             "htmlLink": "https://www.google.com/calendar/event?eid=NjI1a211cHFqNDc2c25vZzVtajk0YzZra3QgYXBwZGV2ZWxvcGVyc2RwN0Bt",
+//             "created": "2021-08-18T12:57:27.000Z",
+//             "updated": "2021-08-18T12:57:27.636Z",
+//             "summary": "Holiday Announcement",
+//             "description": "Holiday Announcement",
+//             "creator": {
+//                 "email": "appdevelopersdp7@gmail.com",
+//                 "self": true
+//             },
+//             "organizer": {
+//                 "email": "appdevelopersdp7@gmail.com",
+//                 "self": true
+//             },
+//             "start": {
+//                 "dateTime": "2021-08-08T01:30:00+05:30"
+//             },
+//             "end": {
+//                 "dateTime": "2021-08-08T02:30:00+05:30"
+//             },
+//             "iCalUID": "625kmupqj476snog5mj94c6kkt@google.com",
+//             "sequence": 0,
+//             "eventType": "default"
+//         }
+//         ''';
+//       }
+
       // var dio = Dio();
       // Response response = await dio.get(
       //   'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_API}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M',
@@ -158,9 +284,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       final response = await http.get(
         Uri.parse(
             'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
-        headers: {},
       );
-
+      // final response = json.decode(data);
       print(response.body);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

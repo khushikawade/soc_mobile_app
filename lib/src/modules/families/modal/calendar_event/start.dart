@@ -3,7 +3,11 @@ class Start {
   Start({this.dateTime});
 
   factory Start.fromJson(Map<String, dynamic> json) => Start(
-      dateTime: json['dateTime'] == null ? null : json['dateTime'] as String);
+      dateTime: json['dateTime'] == null
+          ? json['date'] == null
+              ? null
+              : json['date']
+          : json['dateTime'] as String);
 
   Map<String, dynamic> toJson() => {
         'dateTime': dateTime,
