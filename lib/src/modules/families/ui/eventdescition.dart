@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/families/modal/calendar_event/calendar_event_list.dart';
-import 'package:Soc/src/modules/families/modal/calendar_list.dart';
+import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';

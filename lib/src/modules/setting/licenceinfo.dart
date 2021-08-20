@@ -5,7 +5,6 @@ import 'package:Soc/src/modules/setting/licencedetail.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

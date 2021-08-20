@@ -6,9 +6,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// ignore: must_be_immutable
 class AppsFolderPage extends StatefulWidget {
   List obj = [];
-  String folderName;
+  final String folderName;
   @override
   AppsFolderPage({
     Key? key,

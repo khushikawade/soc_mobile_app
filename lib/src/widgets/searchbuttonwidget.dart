@@ -4,8 +4,8 @@ import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 
 class SearchButtonWidget extends StatelessWidget {
-  static const double _kIconSize = 45.0;
-  String? language;
+  // static const double _kIconSize = 45.0;
+  final String? language;
   SearchButtonWidget({
     Key? key,
     required this.language,

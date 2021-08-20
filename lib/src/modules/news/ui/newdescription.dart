@@ -13,7 +13,7 @@ class Newdescription extends StatefulWidget {
   final obj;
   final String date;
   final bool isbuttomsheet;
-  String? language;
+  final String? language;
   Newdescription(
       {Key? key,
       required this.obj,

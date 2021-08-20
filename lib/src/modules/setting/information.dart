@@ -196,50 +196,6 @@ class _InformationPageState extends State<InformationPage> {
                               child: Container(),
                             ),
                           ),
-                          // BlocBuilder<HomeBloc, HomeState>(
-                          //     bloc: _bloc,
-                          //     builder: (BuildContext contxt, HomeState state) {
-                          //       if (state is BottomNavigationBarSuccess) {
-                          //         return state.obj != null &&
-                          //                 state.obj.length > 0
-                          //             ? _buildContent1()
-                          //             : Expanded(
-                          //                 child: ListView(children: [
-                          //                   ErrorMessageWidget(
-                          //                     msg: "No Data Found",
-                          //                     isnetworkerror: false,
-                          //                     imgPath:
-                          //                         "assets/images/no_data_icon.svg",
-                          //                   )
-                          //                 ]),
-                          //               );
-                          //       } else if (state is HomeLoading) {
-                          //         return Expanded(
-                          //           child: Container(
-                          //             height:
-                          //                 MediaQuery.of(context).size.height *
-                          //                     0.8,
-                          //             child: Center(
-                          //                 child: CircularProgressIndicator()),
-                          //           ),
-                          //         );
-                          //       }
-
-                          //       if (state is HomeErrorReceived) {
-                          //         return Expanded(
-                          //           child:
-                          //               ListView(shrinkWrap: true, children: [
-                          //             ErrorMessageWidget(
-                          //               msg: "Error",
-                          //               isnetworkerror: false,
-                          //               imgPath: "assets/images/error_icon.svg",
-                          //             ),
-                          //           ]),
-                          //         );
-                          //       } else {
-                          //         return Container();
-                          //       }
-                          //     }),
                         ],
                       )
                     : NoInternetErrorWidget(
