@@ -9,7 +9,6 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,6 +42,7 @@ class _EventPageState extends State<EventPage> {
   }
 
   Widget _buildList(list, int index, mainObj) {
+    // print(list.start[0]);
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -79,44 +79,29 @@ class _EventPageState extends State<EventPage> {
                 alignment: Alignment.center,
                 width: Globals.deviceType == "phone" ? 40 : 70,
                 child: Wrap(alignment: WrapAlignment.center, children: [
-                  widget.language != null && widget.language != "English"
-                      ? TranslationWidget(
-                          message: Utility.getMonthFromDate(list.start!.dateTime
-                                  .toString()
-                                  .substring(0, 10))
-                              .toString()
-                              .substring(0, 2),
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5!
-                                .copyWith(fontWeight: FontWeight.w500),
-                            textAlign: TextAlign.center,
-                          ),
-                        )
-                      : Text(
-                          Utility.getMonthFromDate(
-                              list.start!.dateTime.toString().substring(0, 10)),
-
-                          // Utility.getMonthFromDate(list.start!.dateTime
-                          //         .toString()
-                          //         .substring(0, 10))
-                          //     .toString()
-                          //     .substring(0, 2),
-                          style:
-                              Theme.of(context).textTheme.headline5!.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                  Text(
+                    Utility.getMonthFromDate(list.start
+                                .toString()
+                                .contains('dateTime')
+                            ? list.start['dateTime'].toString().substring(0, 10)
+                            : list.start['date'].toString().substring(0, 10))
+                        .toString()
+                        .split("/")[0],
+                    style: Theme.of(context).textTheme.headline5!.copyWith(
+                          fontWeight: FontWeight.w500,
                         ),
+                  ),
                   Globals.selectedLanguage != null &&
                           Globals.selectedLanguage != "English"
                       ? TranslationWidget(
-                          message: Utility.getMonthFromDate(list.start!.dateTime
-                                  .toString()
-                                  .substring(0, 10))
+                          message: Utility.getMonthFromDate(
+                                  list.start.toString().contains('dateTime')
+                                      ? list.start['dateTime']
+                                          .toString()
+                                          .substring(0, 10)
+                                      : list.start['date']
+                                          .toString()
+                                          .substring(0, 10))
                               .toString()
                               .split("/")[1],
                           toLanguage: Globals.selectedLanguage,
@@ -132,9 +117,14 @@ class _EventPageState extends State<EventPage> {
                               textAlign: TextAlign.center),
                         )
                       : Text(
-                          Utility.getMonthFromDate(list.start!.dateTime
-                                  .toString()
-                                  .substring(0, 10))
+                          Utility.getMonthFromDate(
+                                  list.start.toString().contains('dateTime')
+                                      ? list.start['dateTime']
+                                          .toString()
+                                          .substring(0, 10)
+                                      : list.start['date']
+                                          .toString()
+                                          .substring(0, 10))
                               .toString()
                               .split("/")[1],
                           style:
@@ -145,68 +135,68 @@ class _EventPageState extends State<EventPage> {
                 ]),
               ),
               HorzitalSpacerWidget(_kLabelSpacing),
-              // Column(
-              //   mainAxisAlignment: MainAxisAlignment.start,
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     Globals.selectedLanguage != null &&
-              //             Globals.selectedLanguage != "English"
-              //         ? TranslationWidget(
-              //             message: list.summary!,
-              //             toLanguage: Globals.selectedLanguage,
-              //             fromLanguage: "en",
-              //             builder: (translatedMessage) => Container(
-              //                   width: MediaQuery.of(context).size.width * 0.50,
-              //                   child: Text(
-              //                     translatedMessage.toString(),
-              //                     style: Theme.of(context)
-              //                         .textTheme
-              //                         .headline5!
-              //                         .copyWith(
-              //                           fontWeight: FontWeight.w500,
-              //                         ),
-              //                     overflow: TextOverflow.ellipsis,
-              //                   ),
-              //                 ))
-              //         : Container(
-              //             width: MediaQuery.of(context).size.width * 0.50,
-              //             child: Text(
-              //               list.summary ?? '-',
-              //               style:
-              //                   Theme.of(context).textTheme.headline5!.copyWith(
-              //                         fontWeight: FontWeight.w500,
-              //                       ),
-              //               overflow: TextOverflow.ellipsis,
-              //             )),
-              //     SpacerWidget(_kLabelSpacing),
-              //     Globals.selectedLanguage != null &&
-              //             Globals.selectedLanguage != "English"
-              //         ? TranslationWidget(
-              //             message:
-              //                 Utility.convertDateFormat(list.start!.dateTime) +
-              //                     " - " +
-              //                     Utility.convertDateFormat(list.end!.dateTime),
-              //             toLanguage: Globals.selectedLanguage,
-              //             fromLanguage: "en",
-              //             builder: (translatedMessage) => Text(
-              //               translatedMessage.toString(),
-              //               style:
-              //                   Theme.of(context).textTheme.headline2!.copyWith(
-              //                         height: 1.5,
-              //                       ),
-              //             ),
-              //           )
-              //         : Text(
-              //             Utility.convertDateFormat(list.start!.dateTime) +
-              //                 " - " +
-              //                 Utility.convertDateFormat(list.end!.dateTime),
-              //             style:
-              //                 Theme.of(context).textTheme.headline2!.copyWith(
-              //                       height: 1.5,
-              //                     ),
-              //           )
-              //   ],
-              // ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: list.summary!,
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Container(
+                                width: MediaQuery.of(context).size.width * 0.50,
+                                child: Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ))
+                      : Container(
+                          width: MediaQuery.of(context).size.width * 0.50,
+                          child: Text(
+                            list.summary ?? '-',
+                            style:
+                                Theme.of(context).textTheme.headline5!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                  // SpacerWidget(_kLabelSpacing),
+                  // Globals.selectedLanguage != null &&
+                  //         Globals.selectedLanguage != "English"
+                  //     ? TranslationWidget(
+                  //         message:
+                  //             Utility.convertDateFormat(list.start!.dateTime) +
+                  //                 " - " +
+                  //                 Utility.convertDateFormat(list.end!.dateTime),
+                  //         toLanguage: Globals.selectedLanguage,
+                  //         fromLanguage: "en",
+                  //         builder: (translatedMessage) => Text(
+                  //           translatedMessage.toString(),
+                  //           style:
+                  //               Theme.of(context).textTheme.headline2!.copyWith(
+                  //                     height: 1.5,
+                  //                   ),
+                  //         ),
+                  //       )
+                  //     : Text(
+                  //         Utility.convertDateFormat(list.start!.dateTime) +
+                  //             " - " +
+                  //             Utility.convertDateFormat(list.end!.dateTime),
+                  //         style:
+                  //             Theme.of(context).textTheme.headline2!.copyWith(
+                  //                   height: 1.5,
+                  //                 ),
+                  //       )
+                ],
+              ),
             ],
           ),
           // Padding(
@@ -407,7 +397,7 @@ class _EventPageState extends State<EventPage> {
                       ),
                     ),
                     Container(
-                        height: MediaQuery.of(context).size.height * 0.7,
+                        height: MediaQuery.of(context).size.height * 0.8,
                         decoration: BoxDecoration(
                             border: Border(
                                 top: BorderSide(
@@ -430,7 +420,7 @@ class _EventPageState extends State<EventPage> {
                             child: new ListView.builder(
                                 scrollDirection: Axis.vertical,
                                 // padding: EdgeInsets.only(bottom: 25.0),
-                                itemCount: state.bpastListobj!.length,
+                                itemCount: state.pastListobj!.length,
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
                                   return _buildList(state.pastListobj![index],

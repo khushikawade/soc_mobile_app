@@ -3,13 +3,9 @@ import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-
-import 'package:Soc/src/widgets/sharepopmenu.dart';
-import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
@@ -165,16 +161,16 @@ class _SliderWidgetState extends State<SliderWidget> {
     );
   }
 
-  Future<String> _buildlink() async {
-    link = widget.obj[widget.currentIndex].link.toString();
-    RegExp exp =
-        new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
-    Iterable<RegExpMatch> matches = exp.allMatches(link);
-    matches.forEach((match) {
-      link2 = link.substring(match.start, match.end);
-    });
-    return link2;
-  }
+  // Future<String> _buildlink() async {
+  //   link = widget.obj[widget.currentIndex].link.toString();
+  //   RegExp exp =
+  //       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
+  //   Iterable<RegExpMatch> matches = exp.allMatches(link);
+  //   matches.forEach((match) {
+  //     link2 = link.substring(match.start, match.end);
+  //   });
+  //   return link2;
+  // }
 
   void htmlparser() {
     final doc = parse(object[0].description["__cdata"]);

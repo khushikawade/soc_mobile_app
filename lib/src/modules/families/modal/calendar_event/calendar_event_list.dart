@@ -1,7 +1,7 @@
 import 'creator.dart';
 import 'end.dart';
 import 'organizer.dart';
-import 'start.dart';
+// import 'start.dart';
 
 class CalendarEventList {
   String? kind;
@@ -14,8 +14,11 @@ class CalendarEventList {
   String? summary;
   Creator? creator;
   Organizer? organizer;
-  Start? start;
-  End? end;
+  String? description;
+  // Start? start;
+  final start;
+  // End? end;
+  final end;
   String? iCalUid;
   int? sequence;
   String? eventType;
@@ -31,6 +34,7 @@ class CalendarEventList {
     this.summary,
     this.creator,
     this.organizer,
+    this.description,
     this.start,
     this.end,
     this.iCalUid,
@@ -54,12 +58,15 @@ class CalendarEventList {
         organizer: json['organizer'] == null
             ? null
             : Organizer.fromJson(json['organizer'] as Map<String, dynamic>),
-        start: json['start'] == null
-            ? null
-            : Start.fromJson(json['start'] as Map<String, dynamic>),
-        end: json['end'] == null
-            ? null
-            : End.fromJson(json['end'] as Map<String, dynamic>),
+        description: json['description'] as String?,
+        start: json['start'],
+        //  json['start'] == null
+        //     ? null
+        //     : Start.fromJson(json['start'] as Map<String, dynamic>),
+        end: json['end'],
+        // == null
+        //     ? null
+        //     : End.fromJson(json['end'] as Map<String, dynamic>),
         iCalUid: json['iCalUID'] as String?,
         sequence: json['sequence'] as int?,
         eventType: json['eventType'] as String?,
@@ -80,8 +87,9 @@ class CalendarEventList {
         // 'end': end,
         'creator': creator?.toJson(),
         'organizer': organizer?.toJson(),
-        'start': start?.toJson(),
-        'end': end?.toJson(),
+        'description': description,
+        'start': start, //?.toJson(),
+        'end': end, //?.toJson(),
         'iCalUID': iCalUid,
         'sequence': sequence,
         'eventType': eventType,
