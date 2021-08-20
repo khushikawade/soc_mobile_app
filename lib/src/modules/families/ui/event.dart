@@ -407,7 +407,7 @@ class _EventPageState extends State<EventPage> {
                   ),
                 ),
                 Container(
-                    height: 200,
+                    height: MediaQuery.of(context).size.height * 0.7,
                     decoration: BoxDecoration(
                         border: Border(
                             top: BorderSide(color: Colors.grey, width: 0.5))),
