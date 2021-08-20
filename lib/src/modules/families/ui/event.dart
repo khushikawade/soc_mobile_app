@@ -34,6 +34,7 @@ class _EventPageState extends State<EventPage> {
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {

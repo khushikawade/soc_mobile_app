@@ -24,6 +24,7 @@ class InformationPage extends StatefulWidget {
   bool isbuttomsheet;
   bool ishtml;
   String appbarTitle;
+  bool? isloadingstate = false;
 
   @override
   InformationPage({
@@ -44,6 +45,7 @@ class _InformationPageState extends State<InformationPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _bloc = new HomeBloc();
   bool? iserrorstate = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {

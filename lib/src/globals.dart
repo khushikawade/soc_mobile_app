@@ -37,4 +37,6 @@ class Globals {
   static String? androidId = "";
   static String? countrycode = "";
   static int? homeIndex;
+  static bool? isNetworkError = false;
+  static bool? callsnackbar = true;
 }

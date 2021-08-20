@@ -35,6 +35,7 @@ class _SettingPageState extends State<SettingPage> {
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
   bool? isloadingstate = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {

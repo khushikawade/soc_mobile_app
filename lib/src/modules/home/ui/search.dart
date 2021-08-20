@@ -169,7 +169,7 @@ class _SearchPageState extends State<SearchPage> {
     return SizedBox(
       height: 55,
       child: Container(
-          width: 420,
+          width: MediaQuery.of(context).size.width * 1,
           padding: EdgeInsets.symmetric(
               vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
           child: TextFormField(
@@ -190,7 +190,7 @@ class _SearchPageState extends State<SearchPage> {
                     color: Theme.of(context).colorScheme.secondary, width: 2),
               ),
               hintText: 'Search',
-              fillColor: Theme.of(context).colorScheme.background,
+              fillColor: Theme.of(context).colorScheme.secondary,
               prefixIcon: Icon(
                 const IconData(0xe805,
                     fontFamily: Overrides.kFontFam,
@@ -248,7 +248,7 @@ class _SearchPageState extends State<SearchPage> {
                     // SpacerWidget(12),
                     // Globals.selectedLanguage != null &&
                     //         Globals.selectedLanguage != "English"
-                    //     ? TranslationWidget(
+                    //     ?   TranslationWidget(   scaffoldKey: _scaffoldKey,
                     //         message: "No  data found",
                     //         toLanguage: Globals.selectedLanguage,
                     //         fromLanguage: "en",
