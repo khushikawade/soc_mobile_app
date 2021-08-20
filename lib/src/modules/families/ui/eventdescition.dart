@@ -31,7 +31,6 @@ class _EventDescriptionState extends State<EventDescription> {
   static const double _KButtonSize = 95.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget _buildItem(CalendarEventList list) {
     return Container(

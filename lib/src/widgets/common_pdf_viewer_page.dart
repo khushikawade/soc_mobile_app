@@ -29,7 +29,7 @@ class CommonPdfViewerPage extends StatefulWidget {
 
 class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   bool _isLoading = true;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   String? pdfPath;
   PDFDocument? document;
 

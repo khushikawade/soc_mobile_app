@@ -45,7 +45,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {

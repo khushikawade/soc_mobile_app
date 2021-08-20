@@ -32,7 +32,6 @@ class _SocialPageState extends State<SocialPage> {
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
   SocialBloc bloc = SocialBloc();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void initState() {
     super.initState();

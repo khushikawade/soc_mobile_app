@@ -23,7 +23,6 @@ class SocialDescription extends StatelessWidget {
   static const double _kIconSize = 45.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');

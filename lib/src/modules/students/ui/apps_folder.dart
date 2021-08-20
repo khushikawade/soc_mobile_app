@@ -24,7 +24,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
   AnimationController? controller;
   Animation<double>? scaleAnimation;
   static const double _kLableSpacing = 10.0;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   List apps = [];
   @override
   void initState() {

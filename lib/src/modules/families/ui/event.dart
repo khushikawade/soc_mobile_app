@@ -34,7 +34,6 @@ class _EventPageState extends State<EventPage> {
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -408,7 +407,7 @@ class _EventPageState extends State<EventPage> {
                               child: new RefreshIndicator(
                             child: new ListView.builder(
                                 scrollDirection: Axis.vertical,
-                                padding: EdgeInsets.only(bottom: 20),
+                                padding: EdgeInsets.only(bottom: 35),
                                 itemCount: state.futureListobj!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return _buildList(state.futureListobj![index],

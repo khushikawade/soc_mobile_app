@@ -32,7 +32,6 @@ class _StudentPageState extends State<StudentPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   StudentBloc _bloc = StudentBloc();
 
