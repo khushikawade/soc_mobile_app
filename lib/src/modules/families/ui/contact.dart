@@ -40,14 +40,14 @@ class _ContactPageState extends State<ContactPage> {
   bool issuccesstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
-  final HomeBloc _bloc = new HomeBloc();
+  final HomeBloc homebloc = new HomeBloc();
   bool? iserrorstate = false;
   static const double _kboxborderwidth = 0.75;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool? isloadingstate = false;
   @override
   void initState() {
     super.initState();
-    _bloc.add(FetchBottomNavigationBar());
+    homebloc.add(FetchBottomNavigationBar());
   }
 
   @override
@@ -402,7 +402,7 @@ class _ContactPageState extends State<ContactPage> {
 
                 if (connected) {
                   if (iserrorstate == true) {
-                    _bloc.add(FetchBottomNavigationBar());
+                    homebloc.add(FetchBottomNavigationBar());
                     iserrorstate = false;
                   }
                 } else if (!connected) {
@@ -411,34 +411,47 @@ class _ContactPageState extends State<ContactPage> {
 
                 return new Stack(fit: StackFit.expand, children: [
                   connected
-                      ? BlocBuilder<HomeBloc, HomeState>(
-                          bloc: _bloc,
-                          builder: (BuildContext contxt, HomeState state) {
-                            if (state is HomeLoading) {
-                              return Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              );
-                            } else if (state is BottomNavigationBarSuccess) {
-                              return state.obj != null && state.obj.length > 0
-                                  ? _buildItem()
-                                  : ListView(children: [
-                                      NoDataFoundErrorWidget(),
-                                    ]);
-                            } else if (state is HomeErrorReceived) {
-                              return ListView(children: [ErrorMsgWidget()]);
-                            }
-                            return Container();
-                          })
+                      ? Column(
+                          children: [
+                            Expanded(
+                                child: isloadingstate!
+                                    ? ShimmerLoading(
+                                        isLoading: true, child: _buildItem())
+                                    : _buildItem()),
+                            Container(
+                              height: 0,
+                              width: 0,
+                              child: BlocListener<HomeBloc, HomeState>(
+                                bloc: homebloc,
+                                listener: (context, state) async {
+                                  if (state is HomeLoading) {
+                                    isloadingstate = true;
+                                    // print("inloading state");
+                                  }
+
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    isloadingstate = false;
+                                    setState(() {});
+                                  }
+                                },
+                                child: Container(
+                                  height: 0,
+                                  width: 0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                       : NoInternetErrorWidget(
                           connected: connected, issplashscreen: false),
                   Container(
                     height: 0,
                     width: 0,
                     child: BlocListener<HomeBloc, HomeState>(
-                      bloc: _bloc,
+                      bloc: homebloc,
                       listener: (context, state) async {
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
@@ -458,6 +471,6 @@ class _ContactPageState extends State<ContactPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _bloc.add(FetchBottomNavigationBar());
+    homebloc.add(FetchBottomNavigationBar());
   }
 }

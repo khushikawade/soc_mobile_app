@@ -32,7 +32,6 @@ class _SocialPageState extends State<SocialPage> {
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
   SocialBloc bloc = SocialBloc();
-  // final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void initState() {
     super.initState();
@@ -65,8 +64,8 @@ class _SocialPageState extends State<SocialPage> {
           : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () {
-          print(index);
-          print(mainObj.length);
+          // print(index);
+          // print(mainObj.length);
           Navigator.push(
               context,
               MaterialPageRoute(

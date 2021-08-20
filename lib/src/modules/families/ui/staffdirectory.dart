@@ -45,7 +45,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -176,9 +175,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     ? Container(
                         constraints: BoxConstraints(
                           minWidth: _KButtonMinSize,
-                          maxWidth: _KButtonMinSize * 2,
+                          maxWidth: _KButtonMinSize * 2.5,
                           minHeight: _KButtonMinSize,
-                          maxHeight: _KButtonMinSize * 1.5,
+                          maxHeight: _KButtonMinSize,
                         ),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -205,9 +204,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     ? Container(
                         constraints: BoxConstraints(
                           minWidth: _KButtonMinSize,
-                          maxWidth: _KButtonMinSize * 2,
+                          maxWidth: _KButtonMinSize * 2.5,
                           minHeight: _KButtonMinSize,
-                          maxHeight: _KButtonMinSize * 1.5,
+                          maxHeight: _KButtonMinSize,
                         ),
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(

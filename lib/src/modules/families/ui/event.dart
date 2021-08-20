@@ -12,6 +12,7 @@ import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
@@ -34,7 +35,6 @@ class _EventPageState extends State<EventPage> {
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
-  // final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _EventPageState extends State<EventPage> {
 
   Widget _buildList(list, int index, mainObj) {
     // print(list.start[0]);
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         Navigator.push(
             context,
@@ -60,129 +60,124 @@ class _EventPageState extends State<EventPage> {
                     )));
       },
       child: Container(
-        child: Container(
-            decoration: BoxDecoration(
-              border: (index % 2 == 0)
-                  ? Border.all(color: Theme.of(context).colorScheme.background)
-                  : Border.all(color: Theme.of(context).colorScheme.secondary),
-              borderRadius: BorderRadius.circular(0.0),
-              color: (index % 2 == 0)
-                  ? Theme.of(context).colorScheme.background
-                  : Theme.of(context).colorScheme.secondary,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: _kLabelSpacing * 1, vertical: _kLabelSpacing / 2),
-              child: Row(
-                children: <Widget>[
-                  HorzitalSpacerWidget(_kLabelSpacing / 2),
-                  Container(
-                    alignment: Alignment.center,
-                    width: Globals.deviceType == "phone" ? 40 : 70,
-                    child: Wrap(alignment: WrapAlignment.center, children: [
-                      Text(
-                        Utility.getMonthFromDate(
-                                list.start.toString().contains('dateTime')
-                                    ? list.start['dateTime']
-                                        .toString()
-                                        .substring(0, 10)
-                                    : list.start['date']
-                                        .toString()
-                                        .substring(0, 10))
-                            .toString()
-                            .split("/")[0],
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
-                      ),
-                      Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? TranslationWidget(
-                              message: Utility.getMonthFromDate(
-                                      list.start.toString().contains('dateTime')
-                                          ? list.start['dateTime']
-                                              .toString()
-                                              .substring(0, 10)
-                                          : list.start['date']
-                                              .toString()
-                                              .substring(0, 10))
+          decoration: BoxDecoration(
+            border: (index % 2 == 0)
+                ? Border.all(color: Theme.of(context).colorScheme.background)
+                : Border.all(color: Theme.of(context).colorScheme.secondary),
+            borderRadius: BorderRadius.circular(0.0),
+            color: (index % 2 == 0)
+                ? Theme.of(context).colorScheme.background
+                : Theme.of(context).colorScheme.secondary,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: _kLabelSpacing * 1, vertical: _kLabelSpacing / 2),
+            child: Row(
+              children: <Widget>[
+                HorzitalSpacerWidget(_kLabelSpacing / 2),
+                Container(
+                  alignment: Alignment.center,
+                  width: Globals.deviceType == "phone" ? 40 : 70,
+                  child: Wrap(alignment: WrapAlignment.center, children: [
+                    Text(
+                      Utility.getMonthFromDate(list.start
                                   .toString()
-                                  .split("/")[1],
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline2!
-                                      .copyWith(
-                                        height: 1.5,
-                                      ),
-                                  textAlign: TextAlign.center),
-                            )
-                          : Text(
-                              Utility.getMonthFromDate(
-                                      list.start.toString().contains('dateTime')
-                                          ? list.start['dateTime']
-                                              .toString()
-                                              .substring(0, 10)
-                                          : list.start['date']
-                                              .toString()
-                                              .substring(0, 10))
+                                  .contains('dateTime')
+                              ? list.start['dateTime']
                                   .toString()
-                                  .split("/")[1],
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(
-                                    height: 1.5,
-                                  ),
-                            ),
-                    ]),
-                  ),
-                  HorzitalSpacerWidget(_kLabelSpacing),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? TranslationWidget(
-                              message: list.summary!,
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.50,
-                                    child: Text(
-                                      translatedMessage.toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5!
-                                          .copyWith(
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ))
-                          : Container(
-                              width: MediaQuery.of(context).size.width * 0.50,
-                              child: Text(
-                                list.summary ?? '-',
+                                  .substring(0, 10)
+                              : list.start['date'].toString().substring(0, 10))
+                          .toString()
+                          .split("/")[0],
+                      style: Theme.of(context).textTheme.headline5!.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                    ),
+                    Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English"
+                        ? TranslationWidget(
+                            message: Utility.getMonthFromDate(
+                                    list.start.toString().contains('dateTime')
+                                        ? list.start['dateTime']
+                                            .toString()
+                                            .substring(0, 10)
+                                        : list.start['date']
+                                            .toString()
+                                            .substring(0, 10))
+                                .toString()
+                                .split("/")[1],
+                            toLanguage: Globals.selectedLanguage,
+                            fromLanguage: "en",
+                            builder: (translatedMessage) => Text(
+                                translatedMessage.toString(),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline5!
+                                    .headline2!
                                     .copyWith(
-                                      fontWeight: FontWeight.w500,
+                                      height: 1.5,
                                     ),
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                    ],
-                  ),
-                ],
-              ),
-            )),
-      ),
+                                textAlign: TextAlign.center),
+                          )
+                        : Text(
+                            Utility.getMonthFromDate(
+                                    list.start.toString().contains('dateTime')
+                                        ? list.start['dateTime']
+                                            .toString()
+                                            .substring(0, 10)
+                                        : list.start['date']
+                                            .toString()
+                                            .substring(0, 10))
+                                .toString()
+                                .split("/")[1],
+                            style:
+                                Theme.of(context).textTheme.headline2!.copyWith(
+                                      height: 1.5,
+                                    ),
+                          ),
+                  ]),
+                ),
+                HorzitalSpacerWidget(_kLabelSpacing),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English"
+                        ? TranslationWidget(
+                            message: list.summary!,
+                            toLanguage: Globals.selectedLanguage,
+                            fromLanguage: "en",
+                            builder: (translatedMessage) => Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.50,
+                                  child: Text(
+                                    translatedMessage.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5!
+                                        .copyWith(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ))
+                        : Container(
+                            width: MediaQuery.of(context).size.width * 0.50,
+                            child: Text(
+                              list.summary ?? '-',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                  ],
+                ),
+              ],
+            ),
+          )),
     );
   }
 
@@ -224,7 +219,7 @@ class _EventPageState extends State<EventPage> {
                     ),
                     Container(
                         height: Globals.deviceType == "phone"
-                            ? MediaQuery.of(context).size.height * 0.6
+                            ? MediaQuery.of(context).size.height * 0.798
                             : MediaQuery.of(context).size.height * 0.8,
                         decoration: BoxDecoration(
                             border: Border(
@@ -249,7 +244,7 @@ class _EventPageState extends State<EventPage> {
                                 scrollDirection: Axis.vertical,
                                 padding: EdgeInsets.only(bottom: 20),
                                 itemCount: state.pastListobj!.length,
-                                shrinkWrap: true,
+                                // shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
                                   return _buildList(state.pastListobj![index],
                                       index, state.pastListobj);
@@ -393,6 +388,6 @@ class _EventPageState extends State<EventPage> {
     refreshKey.currentState?.show(atTop: false);
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());
-    print("refresh call");
+    // print("refresh call");
   }
 }

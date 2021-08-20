@@ -23,7 +23,6 @@ class SocialDescription extends StatelessWidget {
   static const double _kIconSize = 45.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
@@ -121,7 +120,7 @@ class SocialDescription extends StatelessWidget {
                 minWidth: _KButtonSize,
                 maxWidth: 130.0,
                 minHeight: _KButtonSize / 2,
-                maxHeight: 80.0,
+                maxHeight: _KButtonSize / 2,
               ),
               child: ElevatedButton(
                 onPressed: () async {
@@ -154,7 +153,7 @@ class SocialDescription extends StatelessWidget {
                 minWidth: _KButtonSize,
                 maxWidth: 130.0,
                 minHeight: _KButtonSize / 2,
-                maxHeight: 80.0,
+                maxHeight: _KButtonSize / 2,
               ),
               child: ElevatedButton(
                 onPressed: () async {

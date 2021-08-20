@@ -11,7 +11,7 @@ class ErrorMsgWidget extends StatelessWidget {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Center(
         child: ErrorMessageWidget(
-          msg: "Error",
+          msg: "Something went wrong",
           isnetworkerror: true,
           imgPath: "assets/images/error_icon.svg",
         ),

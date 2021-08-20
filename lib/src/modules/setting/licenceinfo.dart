@@ -25,7 +25,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
   OSSLicensesInfo obj = new OSSLicensesInfo();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   var _list;
   @override
   void initState() {

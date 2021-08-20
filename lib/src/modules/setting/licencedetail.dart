@@ -27,7 +27,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc _homeBloc = new HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   int? index;
   var list;
   @override

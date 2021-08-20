@@ -25,7 +25,6 @@ class AppsFolderPageState extends State<AppsFolderPage>
   AnimationController? controller;
   Animation<double>? scaleAnimation;
   static const double _kLableSpacing = 10.0;
-  // final _scaffoldKey = GlobalKey<ScaffoldState>();
   List apps = [];
   @override
   void initState() {
@@ -103,9 +102,9 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                 children: [
                                   apps[index].appIconC != null &&
                                           apps[index].appIconC != ''
-                                      ? SizedBox(
-                                          height: 80,
-                                          width: 80,
+                                      ? Container(
+                                          height: 75,
+                                          width: 75,
                                           child: CachedNetworkImage(
                                             imageUrl:
                                                 apps[index].appIconC ?? '',

@@ -34,7 +34,6 @@ class _AboutusPageState extends State<AboutusPage> {
   // static const double _kIconSize = 45.0;
   static const double _kLabelSpacing = 20.0;
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget _buildContent1() {
     String? htmlData;

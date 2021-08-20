@@ -27,7 +27,6 @@ class _NewsPageState extends State<NewsPage> {
   NewsBloc bloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final HomeBloc _homeBloc = new HomeBloc();
   var object;
