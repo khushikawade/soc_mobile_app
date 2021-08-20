@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 // ignore: must_be_immutable
 class ErrorMessageWidget extends StatelessWidget {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
   final String? msg;
   final bool? isnetworkerror;
   final String imgPath;

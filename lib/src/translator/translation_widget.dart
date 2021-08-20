@@ -1,5 +1,4 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -59,6 +58,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
           child: Container(
             height: 20,
             width: 40,
+            // child: Text(widget.message!),
             color: Colors.white,
           ),
         )

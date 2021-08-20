@@ -25,7 +25,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
   AnimationController? controller;
   Animation<double>? scaleAnimation;
   static const double _kLableSpacing = 10.0;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
   List apps = [];
   @override
   void initState() {
@@ -124,29 +124,28 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                           ),
                                         )
                                       : Container(),
-                                  Expanded(
-                                    child: Globals.selectedLanguage != null &&
-                                            Globals.selectedLanguage !=
-                                                "English"
-                                        ? TranslationWidget(
-                                            message: apps[index].appFolderc !=
-                                                        null &&
-                                                    widget.folderName ==
-                                                        apps[index].appFolderc
-                                                ? "${apps[index].titleC}"
-                                                : '',
-                                            fromLanguage: "en",
-                                            toLanguage:
-                                                Globals.selectedLanguage,
-                                            builder: (translatedMessage) =>
-                                                Text(
-                                                    translatedMessage
-                                                        .toString(),
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText2!),
-                                          )
-                                        : Text(
+                                  Globals.selectedLanguage != null &&
+                                          Globals.selectedLanguage != "English"
+                                      ? TranslationWidget(
+                                          message:
+                                              apps[index].appFolderc != null &&
+                                                      widget.folderName ==
+                                                          apps[index].appFolderc
+                                                  ? "${apps[index].titleC}"
+                                                  : '',
+                                          fromLanguage: "en",
+                                          toLanguage: Globals.selectedLanguage,
+                                          builder: (translatedMessage) =>
+                                              Expanded(
+                                            child: Text(
+                                                translatedMessage.toString(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2!),
+                                          ),
+                                        )
+                                      : Expanded(
+                                          child: Text(
                                             apps[index].appFolderc != null &&
                                                     widget.folderName ==
                                                         apps[index].appFolderc
@@ -161,7 +160,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                       .primaryVariant,
                                                 ),
                                           ),
-                                  ),
+                                        ),
                                 ],
                               ));
                         },
