@@ -42,23 +42,21 @@ class _EventPageState extends State<EventPage> {
     _eventBloc.add(CalendarListEvent());
   }
 
-  Widget _buildList(index)
-  // _buildList(list, int index, mainObj)
-  {
+  Widget _buildList(list, int index, mainObj) {
     return InkWell(
       onTap: () {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => SliderWidget(
-        //               obj: mainObj,
-        //               issocialpage: false,
-        //               iseventpage: true,
-        //               currentIndex: index,
-        //               date: '',
-        //               isbuttomsheet: true,
-        //               language: Globals.selectedLanguage,
-        //             )));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SliderWidget(
+                      obj: mainObj,
+                      issocialpage: false,
+                      iseventpage: true,
+                      currentIndex: index,
+                      date: '',
+                      isbuttomsheet: true,
+                      language: Globals.selectedLanguage,
+                    )));
       },
       child: Container(
         decoration: BoxDecoration(
@@ -81,130 +79,134 @@ class _EventPageState extends State<EventPage> {
                 alignment: Alignment.center,
                 width: Globals.deviceType == "phone" ? 40 : 70,
                 child: Wrap(alignment: WrapAlignment.center, children: [
-                  Text("hello")
-                  // widget.language != null && widget.language != "English"
-                  // ? TranslationWidget(
-                  //     message: Utility.getMonthFromDate(
-                  //         list.start!.dateTime.toString().substring(0, 9)),
-                  //     toLanguage: Globals.selectedLanguage,
-                  //     fromLanguage: "en",
-                  //     builder: (translatedMessage) => Text(
-                  //       translatedMessage.toString(),
-                  //       style: Theme.of(context)
-                  //           .textTheme
-                  //           .headline5!
-                  //           .copyWith(fontWeight: FontWeight.w500),
-                  //       textAlign: TextAlign.center,
-                  //     ),
-                  //   )
-                  // : Text(
-                  //     Utility.getMonthFromDate(
-                  //         list.start!.dateTime.toString().substring(0, 9)),
-                  // list.start!.dateTime.day.toString(),
-                  // Utility.getMonthFromDate(list.start!.dateTime
-                  //         .toString()
-                  //         .substring(0, 10))
-                  //     .toString()
-                  //     .substring(0, 2),
-                  //   style:
-                  //       Theme.of(context).textTheme.headline5!.copyWith(
-                  //             fontWeight: FontWeight.w500,
-                  //           ),
-                  // ),
-                  // Globals.selectedLanguage != null &&
-                  //         Globals.selectedLanguage != "English"
-                  //     ? TranslationWidget(
-                  //         message: Utility.getMonthFromDate(
-                  //                 list.start!.dateTime.toString())
-                  //             .toString()
-                  //             .split("/")[1],
-                  //         toLanguage: Globals.selectedLanguage,
-                  //         fromLanguage: "en",
-                  //         builder: (translatedMessage) => Text(
-                  //             translatedMessage.toString(),
-                  //             style: Theme.of(context)
-                  //                 .textTheme
-                  //                 .headline2!
-                  //                 .copyWith(
-                  //                   height: 1.5,
-                  //                 ),
-                  //             textAlign: TextAlign.center),
-                  //       )
-                  //     : Text(
-                  //         Utility.getMonthFromDate(
-                  //                 list.start!.dateTime.toString())
-                  //             .toString()
-                  //             .split("/")[1],
-                  //         style:
-                  //             Theme.of(context).textTheme.headline2!.copyWith(
-                  //                   height: 1.5,
-                  //                 ),
-                  //       ),
+                  widget.language != null && widget.language != "English"
+                      ? TranslationWidget(
+                          message: Utility.getMonthFromDate(list.start!.dateTime
+                                  .toString()
+                                  .substring(0, 10))
+                              .toString()
+                              .substring(0, 2),
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5!
+                                .copyWith(fontWeight: FontWeight.w500),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : Text(
+                          Utility.getMonthFromDate(
+                              list.start!.dateTime.toString().substring(0, 10)),
+
+                          // Utility.getMonthFromDate(list.start!.dateTime
+                          //         .toString()
+                          //         .substring(0, 10))
+                          //     .toString()
+                          //     .substring(0, 2),
+                          style:
+                              Theme.of(context).textTheme.headline5!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                        ),
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: Utility.getMonthFromDate(list.start!.dateTime
+                                  .toString()
+                                  .substring(0, 10))
+                              .toString()
+                              .split("/")[1],
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(
+                                    height: 1.5,
+                                  ),
+                              textAlign: TextAlign.center),
+                        )
+                      : Text(
+                          Utility.getMonthFromDate(list.start!.dateTime
+                                  .toString()
+                                  .substring(0, 10))
+                              .toString()
+                              .split("/")[1],
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    height: 1.5,
+                                  ),
+                        ),
                 ]),
               ),
               HorzitalSpacerWidget(_kLabelSpacing),
-              // Column(
-              //   mainAxisAlignment: MainAxisAlignment.start,
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     Globals.selectedLanguage != null &&
-              //             Globals.selectedLanguage != "English"
-              //         ? TranslationWidget(
-              //             message: list.summary!,
-              //             toLanguage: Globals.selectedLanguage,
-              //             fromLanguage: "en",
-              //             builder: (translatedMessage) => Container(
-              //                   width: MediaQuery.of(context).size.width * 0.50,
-              //                   child: Text(
-              //                     translatedMessage.toString(),
-              //                     style: Theme.of(context)
-              //                         .textTheme
-              //                         .headline5!
-              //                         .copyWith(
-              //                           fontWeight: FontWeight.w500,
-              //                         ),
-              //                     overflow: TextOverflow.ellipsis,
-              //                   ),
-              //                 ))
-              //         : Container(
-              //             width: MediaQuery.of(context).size.width * 0.50,
-              //             child: Text(
-              //               list.summary ?? '-',
-              //               style:
-              //                   Theme.of(context).textTheme.headline5!.copyWith(
-              //                         fontWeight: FontWeight.w500,
-              //                       ),
-              //               overflow: TextOverflow.ellipsis,
-              //             )),
-              //     SpacerWidget(_kLabelSpacing),
-              //     Globals.selectedLanguage != null &&
-              //             Globals.selectedLanguage != "English"
-              //         ? TranslationWidget(
-              //             message: Utility.convertDateFormat(
-              //                     list.start!.dateTime) +
-              //                 " - " +
-              //                 Utility.convertDateFormat(list.endDate!.dateTime),
-              //             toLanguage: Globals.selectedLanguage,
-              //             fromLanguage: "en",
-              //             builder: (translatedMessage) => Text(
-              //               translatedMessage.toString(),
-              //               style:
-              //                   Theme.of(context).textTheme.headline2!.copyWith(
-              //                         height: 1.5,
-              //                       ),
-              //             ),
-              //           )
-              //         : Text(
-              //             Utility.convertDateFormat(list.start!.dateTime) +
-              //                 " - " +
-              //                 Utility.convertDateFormat(list.endDate!.dateTime),
-              //             style:
-              //                 Theme.of(context).textTheme.headline2!.copyWith(
-              //                       height: 1.5,
-              //                     ),
-              //           )
-              //   ],
-              // ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: list.summary!,
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Container(
+                                width: MediaQuery.of(context).size.width * 0.50,
+                                child: Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ))
+                      : Container(
+                          width: MediaQuery.of(context).size.width * 0.50,
+                          child: Text(
+                            list.summary ?? '-',
+                            style:
+                                Theme.of(context).textTheme.headline5!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                  SpacerWidget(_kLabelSpacing),
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message:
+                              Utility.convertDateFormat(list.start!.dateTime) +
+                                  " - " +
+                                  Utility.convertDateFormat(list.end!.dateTime),
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style:
+                                Theme.of(context).textTheme.headline2!.copyWith(
+                                      height: 1.5,
+                                    ),
+                          ),
+                        )
+                      : Text(
+                          Utility.convertDateFormat(list.start!.dateTime) +
+                              " - " +
+                              Utility.convertDateFormat(list.end!.dateTime),
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    height: 1.5,
+                                  ),
+                        )
+                ],
+              ),
             ],
           ),
           // Padding(
@@ -368,9 +370,7 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  Widget
-      //  _buildTabs(state)
-      _buildTabs() {
+  Widget _buildTabs(state) {
     return Container(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -418,15 +418,10 @@ class _EventPageState extends State<EventPage> {
                             child: new ListView.builder(
                                 scrollDirection: Axis.vertical,
                                 padding: EdgeInsets.only(bottom: 20),
-                                itemCount: 10,
-                                // state.futureListobj!.length,
+                                itemCount: state.futureListobj!.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return _buildList(index);
-
-                                  // _buildList(
-                                  //     state.futureListobj![index],
-                                  //     index,
-                                  //     state.futureListobj);
+                                  return _buildList(state.futureListobj![index],
+                                      index, state.futureListobj);
                                 }),
                             onRefresh: refreshPage,
                           )),
@@ -435,17 +430,11 @@ class _EventPageState extends State<EventPage> {
                             child: new ListView.builder(
                                 scrollDirection: Axis.vertical,
                                 // padding: EdgeInsets.only(bottom: 25.0),
-                                itemCount: 10,
-
-                                // state.pastListobj!.length,
+                                itemCount: state.bpastListobj!.length,
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return _buildList(index);
-
-                                  //  _buildList(
-                                  //     state.pastListobj![index],
-                                  //     index,
-                                  //     state.pastListobj);
+                                  return _buildList(state.pastListobj![index],
+                                      index, state.pastListobj);
                                 }),
                             onRefresh: refreshPage,
                           ))
@@ -491,17 +480,14 @@ class _EventPageState extends State<EventPage> {
                               builder:
                                   (BuildContext contxt, FamilyState state) {
                                 if (state is FamilyLoading) {
-                                  return _buildTabs();
-
-                                  // Container(
-                                  //     height:
-                                  //         MediaQuery.of(context).size.height *
-                                  //             0.8,
-                                  //     alignment: Alignment.center,
-                                  //     child: CircularProgressIndicator());
+                                  return Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator());
                                 } else if (state is CalendarListSuccess) {
-                                  return _buildTabs();
-                                  // _buildTabs(state);
+                                  return _buildTabs(state);
 
                                   // Column(children: [
                                   //   _buildHeading("Upcoming"),
@@ -550,11 +536,9 @@ class _EventPageState extends State<EventPage> {
                                   //         ),
                                   // ]);
                                 } else if (state is ErrorLoading) {
-                                  return _buildTabs();
-
-                                  //  ListView(
-                                  //     shrinkWrap: true,
-                                  //     children: [ErrorMsgWidget()]);
+                                  return ListView(
+                                      shrinkWrap: true,
+                                      children: [ErrorMsgWidget()]);
                                 }
                                 return Container();
                               }),
