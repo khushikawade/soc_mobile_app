@@ -147,18 +147,13 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<CalendarEventList>> getCalendarEventList() async {
     try {
-      // var dio = Dio();
-      // Response response = await dio.get(
-      //   'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_API}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M',
-      //   options: Options(
-      //     headers: {},
-      //   ),
-      // );
+      print(Uri.parse(
+          'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'));
 
       final response = await http.get(
-        Uri.parse(
-            'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
-      );
+          Uri.parse(
+              'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
+          headers: {"Content-Type": "application/x-www-form-urlencoded"});
       // final response = json.decode(data);
       print(response.body);
       if (response.statusCode == 200) {
