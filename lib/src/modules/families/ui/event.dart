@@ -81,14 +81,11 @@ class _EventPageState extends State<EventPage> {
                 child: Wrap(alignment: WrapAlignment.center, children: [
                   widget.language != null && widget.language != "English"
                       ? TranslationWidget(
-                          message: 'Text',
-
-                          // Utility.getMonthFromDate(
-                          //     list.start!.dateTime.length > 10
-                          //         ? list.start!.dateTime
-                          //             .toString()
-                          //             .substring(0, 10)
-                          //         : list.start!.dateTime.toString()),
+                          message: Utility.getMonthFromDate(list.start!.dateTime
+                                  .toString()
+                                  .substring(0, 10))
+                              .toString()
+                              .substring(0, 2),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
@@ -101,10 +98,9 @@ class _EventPageState extends State<EventPage> {
                           ),
                         )
                       : Text(
-                          'TEXT',
-                          // Utility.getMonthFromDate(
-                          //     list.start!.dateTime.toString().substring(0, 10)),
-                          // list.start!.dateTime.day.toString(),
+                          Utility.getMonthFromDate(
+                              list.start!.dateTime.toString().substring(0, 10)),
+
                           // Utility.getMonthFromDate(list.start!.dateTime
                           //         .toString()
                           //         .substring(0, 10))
@@ -115,100 +111,102 @@ class _EventPageState extends State<EventPage> {
                                     fontWeight: FontWeight.w500,
                                   ),
                         ),
-                  // Globals.selectedLanguage != null &&
-                  //         Globals.selectedLanguage != "English"
-                  //     ? TranslationWidget(
-                  //         message: Utility.getMonthFromDate(
-                  //                 list.start!.dateTime.toString())
-                  //             .toString()
-                  //             .split("/")[1],
-                  //         toLanguage: Globals.selectedLanguage,
-                  //         fromLanguage: "en",
-                  //         builder: (translatedMessage) => Text(
-                  //             translatedMessage.toString(),
-                  //             style: Theme.of(context)
-                  //                 .textTheme
-                  //                 .headline2!
-                  //                 .copyWith(
-                  //                   height: 1.5,
-                  //                 ),
-                  //             textAlign: TextAlign.center),
-                  //       )
-                  //     : Text(
-                  //         Utility.getMonthFromDate(
-                  //                 list.start!.dateTime.toString())
-                  //             .toString()
-                  //             .split("/")[1],
-                  //         style:
-                  //             Theme.of(context).textTheme.headline2!.copyWith(
-                  //                   height: 1.5,
-                  //                 ),
-                  //       ),
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: Utility.getMonthFromDate(list.start!.dateTime
+                                  .toString()
+                                  .substring(0, 10))
+                              .toString()
+                              .split("/")[1],
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(
+                                    height: 1.5,
+                                  ),
+                              textAlign: TextAlign.center),
+                        )
+                      : Text(
+                          Utility.getMonthFromDate(list.start!.dateTime
+                                  .toString()
+                                  .substring(0, 10))
+                              .toString()
+                              .split("/")[1],
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    height: 1.5,
+                                  ),
+                        ),
                 ]),
               ),
               HorzitalSpacerWidget(_kLabelSpacing),
-              // Column(
-              //   mainAxisAlignment: MainAxisAlignment.start,
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     Globals.selectedLanguage != null &&
-              //             Globals.selectedLanguage != "English"
-              //         ? TranslationWidget(
-              //             message: list.summary!,
-              //             toLanguage: Globals.selectedLanguage,
-              //             fromLanguage: "en",
-              //             builder: (translatedMessage) => Container(
-              //                   width: MediaQuery.of(context).size.width * 0.50,
-              //                   child: Text(
-              //                     translatedMessage.toString(),
-              //                     style: Theme.of(context)
-              //                         .textTheme
-              //                         .headline5!
-              //                         .copyWith(
-              //                           fontWeight: FontWeight.w500,
-              //                         ),
-              //                     overflow: TextOverflow.ellipsis,
-              //                   ),
-              //                 ))
-              //         : Container(
-              //             width: MediaQuery.of(context).size.width * 0.50,
-              //             child: Text(
-              //               list.summary ?? '-',
-              //               style:
-              //                   Theme.of(context).textTheme.headline5!.copyWith(
-              //                         fontWeight: FontWeight.w500,
-              //                       ),
-              //               overflow: TextOverflow.ellipsis,
-              //             )),
-              //     SpacerWidget(_kLabelSpacing),
-              //     Globals.selectedLanguage != null &&
-              //             Globals.selectedLanguage != "English"
-              //         ? TranslationWidget(
-              //             message: Utility.convertDateFormat(
-              //                     list.start!.dateTime) +
-              //                 " - " +
-              //                 Utility.convertDateFormat(list.endDate!.dateTime),
-              //             toLanguage: Globals.selectedLanguage,
-              //             fromLanguage: "en",
-              //             builder: (translatedMessage) => Text(
-              //               translatedMessage.toString(),
-              //               style:
-              //                   Theme.of(context).textTheme.headline2!.copyWith(
-              //                         height: 1.5,
-              //                       ),
-              //             ),
-              //           )
-              //         : Text(
-              //             Utility.convertDateFormat(list.start!.dateTime) +
-              //                 " - " +
-              //                 Utility.convertDateFormat(list.endDate!.dateTime),
-              //             style:
-              //                 Theme.of(context).textTheme.headline2!.copyWith(
-              //                       height: 1.5,
-              //                     ),
-              //           )
-              //   ],
-              // ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message: list.summary!,
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Container(
+                                width: MediaQuery.of(context).size.width * 0.50,
+                                child: Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ))
+                      : Container(
+                          width: MediaQuery.of(context).size.width * 0.50,
+                          child: Text(
+                            list.summary ?? '-',
+                            style:
+                                Theme.of(context).textTheme.headline5!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                  SpacerWidget(_kLabelSpacing),
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English"
+                      ? TranslationWidget(
+                          message:
+                              Utility.convertDateFormat(list.start!.dateTime) +
+                                  " - " +
+                                  Utility.convertDateFormat(list.end!.dateTime),
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style:
+                                Theme.of(context).textTheme.headline2!.copyWith(
+                                      height: 1.5,
+                                    ),
+                          ),
+                        )
+                      : Text(
+                          Utility.convertDateFormat(list.start!.dateTime) +
+                              " - " +
+                              Utility.convertDateFormat(list.end!.dateTime),
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    height: 1.5,
+                                  ),
+                        )
+                ],
+              ),
             ],
           ),
           // Padding(
@@ -374,96 +372,75 @@ class _EventPageState extends State<EventPage> {
 
   Widget _buildTabs(state) {
     return Container(
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
-                Widget>[
-      SizedBox(height: 20.0),
-      DefaultTabController(
-          length: 2, // length of tabs
-          initialIndex: 0,
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  child: TabBar(
-                    indicatorSize: TabBarIndicatorSize.label,
-                    labelColor: Theme.of(context).colorScheme.primaryVariant,
-                    indicatorColor: Theme.of(context).colorScheme.primary,
-                    unselectedLabelColor: Colors.black,
-                    unselectedLabelStyle: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.normal,
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                    ),
-                    tabs: [
-                      Tab(text: 'Upcoming'),
-                      Tab(text: 'Past'),
-                    ],
-                  ),
-                ),
-                Container(
-                    height: MediaQuery.of(context).size.height * 0.7,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(color: Colors.grey, width: 0.5))),
-                    child: TabBarView(children: <Widget>[
-                      Container(
-                        child: state.futureListobj!.length > 0
-                            ? Column(
-                                children: [
-                                  Expanded(
-                                    child: ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        padding: EdgeInsets.only(bottom: 20),
-                                        itemCount: state.futureListobj!.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return _buildList(
-                                              state.futureListobj![index],
-                                              index,
-                                              state.futureListobj);
-                                        }),
-                                  )
-                                ],
-                              )
-                            : Container(
-                                height: 0,
-                                width: 0,
-                              ),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+          // SizedBox(height: 20.0),
+          DefaultTabController(
+              length: 2, // length of tabs
+              initialIndex: 0,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      child: TabBar(
+                        isScrollable: true,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        labelColor:
+                            Theme.of(context).colorScheme.primaryVariant,
+                        indicatorColor: Theme.of(context).colorScheme.primary,
+                        unselectedLabelColor: Colors.black,
+                        unselectedLabelStyle: TextStyle(
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.normal,
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        ),
+                        labelStyle: TextStyle(
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        ),
+                        tabs: [
+                          Tab(text: 'Upcoming'),
+                          Tab(text: 'Past'),
+                        ],
                       ),
-                      Container(
-                        child: state.pastListobj!.length > 0
-                            ? Column(
-                                children: [
-                                  Expanded(
-                                    child: ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        padding: EdgeInsets.only(bottom: 25.0),
-                                        itemCount: state.pastListobj!.length,
-                                        shrinkWrap: true,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return _buildList(
-                                              state.pastListobj![index],
-                                              index,
-                                              state.pastListobj);
-                                        }),
-                                  )
-                                ],
-                              )
-                            : Container(
-                                height: 0,
-                                width: 0,
-                              ),
-                      ),
-                    ]))
-              ])),
-    ]));
+                    ),
+                    Container(
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        decoration: BoxDecoration(
+                            border: Border(
+                                top: BorderSide(
+                                    color: Colors.grey, width: 0.5))),
+                        child: TabBarView(children: <Widget>[
+                          Tab(
+                              child: new RefreshIndicator(
+                            child: new ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                padding: EdgeInsets.only(bottom: 20),
+                                itemCount: state.futureListobj!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return _buildList(state.futureListobj![index],
+                                      index, state.futureListobj);
+                                }),
+                            onRefresh: refreshPage,
+                          )),
+                          Tab(
+                              child: new RefreshIndicator(
+                            child: new ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                // padding: EdgeInsets.only(bottom: 25.0),
+                                itemCount: state.bpastListobj!.length,
+                                shrinkWrap: true,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return _buildList(state.pastListobj![index],
+                                      index, state.pastListobj);
+                                }),
+                            onRefresh: refreshPage,
+                          ))
+                        ])),
+                  ]))
+        ]));
   }
 
   Widget build(BuildContext context) {
@@ -598,5 +575,6 @@ class _EventPageState extends State<EventPage> {
     refreshKey.currentState?.show(atTop: false);
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());
+    print("refresh call");
   }
 }
