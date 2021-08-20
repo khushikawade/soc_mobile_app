@@ -272,7 +272,7 @@ class _SettingPageState extends State<SettingPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    print("call refresh");
+    // print("call refresh");
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }

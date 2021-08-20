@@ -426,7 +426,7 @@ class _ContactPageState extends State<ContactPage> {
                                 listener: (context, state) async {
                                   if (state is HomeLoading) {
                                     isloadingstate = true;
-                                    print("inloading state");
+                                    // print("inloading state");
                                   }
 
                                   if (state is BottomNavigationBarSuccess) {

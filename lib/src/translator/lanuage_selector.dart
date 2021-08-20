@@ -27,7 +27,7 @@ class LanguageSelector {
     selectedLanguage = language;
     await _sharedPref.setString('selected_language', language);
     onLanguageChanged(language);
-    print(language);
+    // print(language);
     Navigator.pop(context);
   }
 
@@ -73,7 +73,7 @@ class LanguageSelector {
                 contentPadding: EdgeInsets.zero,
                 value: selectedLanguage == language ? true : false,
                 onChanged: (dynamic val) {
-                  print(val);
+                  // print(val);
                   if (selectedLanguage != language) {
                     setLanguage(language, context, onLanguageChanged);
                   }

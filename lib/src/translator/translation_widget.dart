@@ -1,5 +1,4 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -40,18 +39,19 @@ class _TranslationWidgetState extends State<TranslationWidget> {
             return buildWaiting();
           default:
             if (snapshot.hasError) {
-              translation = widget.message;
-              Globals.isNetworkError = true;
-              if (Globals.isNetworkError! && Globals.callsnackbar!) {
-                // final scaffoldKey = Scaffold.of(context);
-                // scaffoldKey.showSnackBar(SnackBar(
-                //   content: const Text(
-                //     'Please check internet',
-                //   ),
-                //   backgroundColor: Colors.black.withOpacity(0.8),
-                // ));
-                Globals.callsnackbar = false;
-              }
+              translation = "Network error";
+              // translation = widget.message;
+              // Globals.isNetworkError = true;
+              // if (Globals.isNetworkError! && Globals.callsnackbar!) {
+              //   // final scaffoldKey = Scaffold.of(context);
+              //   // scaffoldKey.showSnackBar(SnackBar(
+              //   //   content: const Text(
+              //   //     'Please check internet',
+              //   //   ),
+              //   //   backgroundColor: Colors.black.withOpacity(0.8),
+              //   // ));
+              //   Globals.callsnackbar = false;
+              // }
             } else {
               translation = snapshot.data;
               Globals.isNetworkError = false;
@@ -68,6 +68,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
           child: Container(
             height: 20,
             width: 40,
+            // child: Text(widget.message!),
             color: Colors.white,
           ),
         )

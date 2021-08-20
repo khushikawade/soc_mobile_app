@@ -64,8 +64,8 @@ class _SocialPageState extends State<SocialPage> {
           : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () {
-          print(index);
-          print(mainObj.length);
+          // print(index);
+          // print(mainObj.length);
           Navigator.push(
               context,
               MaterialPageRoute(

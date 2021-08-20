@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:Soc/src/modules/families/modal/calendar_event/calendar_event_list.dart';
+import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/families/modal/family_list.dart';
@@ -78,11 +78,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         final DateTime currentDate =
             DateTime.parse(formatter.format(now).toString());
         for (int i = 0; i < list.length; i++) {
-          var temp =
-              // list[i].start!.dateTime!;
-              list[i].start.toString().contains('dateTime')
-                  ? list[i].start['dateTime'].toString().substring(0, 10)
-                  : list[i].start['date'].toString().substring(0, 10);
+          var temp = list[i].start.toString().contains('dateTime')
+              ? list[i].start['dateTime'].toString().substring(0, 10)
+              : list[i].start['date'].toString().substring(0, 10);
           if (DateTime.parse(temp).isBefore(currentDate)) {
             pastListobj.add(list[i]);
           } else {
@@ -151,15 +149,12 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<CalendarEventList>> getCalendarEventList() async {
     try {
-      // print(Uri.parse(
-      //     'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'));
-
       final response = await http.get(
         Uri.parse(
             'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
       );
 
-      print(response.body);
+      // print(response.body);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         dataArray = data["items"];

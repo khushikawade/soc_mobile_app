@@ -57,9 +57,9 @@ class _StartupPageState extends State<StartupPage> {
 
   getindexvalue() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    print(pref.getInt(Strings.bottomNavigation));
+    // print(pref.getInt(Strings.bottomNavigation));
     Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
-    print(Globals.homeIndex);
+    // print(Globals.homeIndex);
   }
 
   @override
@@ -191,7 +191,7 @@ class _StartupPageState extends State<StartupPage> {
                         intPrefs.getInt("totalCount") == null
                             ? intPrefs.setInt("totalCount", Globals.notiCount!)
                             : intPrefs.getInt("totalCount");
-                        print(intPrefs.getInt("totalCount"));
+                        // print(intPrefs.getInt("totalCount"));
                         if (Globals.notiCount! >
                             intPrefs.getInt("totalCount")!) {
                           intPrefs.setInt("totalCount", Globals.notiCount!);

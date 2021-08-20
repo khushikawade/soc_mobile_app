@@ -4,11 +4,9 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -183,16 +181,7 @@ class _InformationPageState extends State<InformationPage> {
                                 ? ShimmerLoading(
                                     isLoading: true,
                                     // child:
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.8,
-                                      height:
-                                          MediaQuery.of(context).size.width *
-                                              0.8,
-                                      color: Colors.white,
-                                    ),
-
-                                    // _buildContent1(),
+                                    child: _buildContent1(),
                                   )
                                 : _buildContent1(),
                           ),
@@ -204,7 +193,7 @@ class _InformationPageState extends State<InformationPage> {
                               listener: (context, state) async {
                                 if (state is HomeLoading) {
                                   isloadingstate = true;
-                                  print('inloading state ');
+                                  // print('inloading state :${isloadingstate!}');
                                 }
 
                                 if (state is BottomNavigationBarSuccess) {

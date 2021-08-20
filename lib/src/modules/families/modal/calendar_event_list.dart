@@ -1,9 +1,4 @@
-import 'creator.dart';
-import 'end.dart';
-import 'organizer.dart';
-import 'start.dart';
-
-class Eventlist {
+class CalendarEventList {
   String? kind;
   String? etag;
   String? id;
@@ -12,8 +7,9 @@ class Eventlist {
   String? created;
   String? updated;
   String? summary;
-  Creator? creator;
-  Organizer? organizer;
+  // Creator? creator;
+  // Organizer? organizer;
+  String? description;
   // Start? start;
   final start;
   // End? end;
@@ -22,7 +18,7 @@ class Eventlist {
   int? sequence;
   String? eventType;
 
-  Eventlist({
+  CalendarEventList({
     this.kind,
     this.etag,
     this.id,
@@ -31,8 +27,9 @@ class Eventlist {
     this.created,
     this.updated,
     this.summary,
-    this.creator,
-    this.organizer,
+    // this.creator,
+    // this.organizer,
+    this.description,
     this.start,
     this.end,
     this.iCalUid,
@@ -40,21 +37,23 @@ class Eventlist {
     this.eventType,
   });
 
-  factory Eventlist.fromJson(Map<String, dynamic> json) => Eventlist(
+  factory CalendarEventList.fromJson(Map<String, dynamic> json) =>
+      CalendarEventList(
         kind: json['kind'] as String?,
         etag: json['etag'] as String?,
         id: json['id'] as String?,
         status: json['status'] as String?,
         htmlLink: json['htmlLink'] as String?,
-        created: json['created'] as String?,
-        updated: json['updated'] as String?,
+        // created: json['created'] as String?,
+        // updated: json['updated'] as String?,
         summary: json['summary'] as String?,
-        creator: json['creator'] == null
-            ? null
-            : Creator.fromJson(json['creator'] as Map<String, dynamic>),
-        organizer: json['organizer'] == null
-            ? null
-            : Organizer.fromJson(json['organizer'] as Map<String, dynamic>),
+        // creator: json['creator'] == null
+        //     ? null
+        //     : Creator.fromJson(json['creator'] as Map<String, dynamic>),
+        // organizer: json['organizer'] == null
+        //     ? null
+        //     : Organizer.fromJson(json['organizer'] as Map<String, dynamic>),
+        description: json['description'] as String?,
         start: json['start'],
         //  json['start'] == null
         //     ? null
@@ -77,8 +76,13 @@ class Eventlist {
         'created': created,
         'updated': updated,
         'summary': summary,
-        'creator': creator?.toJson(),
-        'organizer': organizer?.toJson(),
+        // 'creator': creator,
+        // 'organizer': organizer,
+        // 'start': start,
+        // 'end': end,
+        // 'creator': creator?.toJson(),
+        // 'organizer': organizer?.toJson(),
+        'description': description,
         'start': start, //?.toJson(),
         'end': end, //?.toJson(),
         'iCalUID': iCalUid,
