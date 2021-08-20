@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LicenceDetailPage extends StatefulWidget {
-  int index;
+  final int index;
   LicenceDetailPage({Key? key, this.title, required this.index})
       : super(key: key);
   final String? title;
@@ -27,6 +27,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc _homeBloc = new HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+
   int? index;
   var list;
   @override

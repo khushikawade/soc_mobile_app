@@ -6,9 +6,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// ignore: must_be_immutable
 class AppsFolderPage extends StatefulWidget {
   List obj = [];
-  String folderName;
+  final String folderName;
   @override
   AppsFolderPage({
     Key? key,
@@ -101,9 +102,9 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                 children: [
                                   apps[index].appIconC != null &&
                                           apps[index].appIconC != ''
-                                      ? SizedBox(
-                                          height: 80,
-                                          width: 80,
+                                      ? Container(
+                                          height: 75,
+                                          width: 75,
                                           child: CachedNetworkImage(
                                             imageUrl:
                                                 apps[index].appIconC ?? '',
@@ -122,29 +123,28 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                           ),
                                         )
                                       : Container(),
-                                  Expanded(
-                                    child: Globals.selectedLanguage != null &&
-                                            Globals.selectedLanguage !=
-                                                "English"
-                                        ? TranslationWidget(
-                                            message: apps[index].appFolderc !=
-                                                        null &&
-                                                    widget.folderName ==
-                                                        apps[index].appFolderc
-                                                ? "${apps[index].titleC}"
-                                                : '',
-                                            fromLanguage: "en",
-                                            toLanguage:
-                                                Globals.selectedLanguage,
-                                            builder: (translatedMessage) =>
-                                                Text(
-                                                    translatedMessage
-                                                        .toString(),
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText2!),
-                                          )
-                                        : Text(
+                                  Globals.selectedLanguage != null &&
+                                          Globals.selectedLanguage != "English"
+                                      ? TranslationWidget(
+                                          message:
+                                              apps[index].appFolderc != null &&
+                                                      widget.folderName ==
+                                                          apps[index].appFolderc
+                                                  ? "${apps[index].titleC}"
+                                                  : '',
+                                          fromLanguage: "en",
+                                          toLanguage: Globals.selectedLanguage,
+                                          builder: (translatedMessage) =>
+                                              Expanded(
+                                            child: Text(
+                                                translatedMessage.toString(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2!),
+                                          ),
+                                        )
+                                      : Expanded(
+                                          child: Text(
                                             apps[index].appFolderc != null &&
                                                     widget.folderName ==
                                                         apps[index].appFolderc
@@ -159,7 +159,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                       .primaryVariant,
                                                 ),
                                           ),
-                                  ),
+                                        ),
                                 ],
                               ));
                         },

@@ -8,11 +8,9 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -136,30 +134,20 @@ class _StudentPageState extends State<StudentPage> {
                                       message: "${list[index].titleC}",
                                       fromLanguage: "en",
                                       toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                        textAlign: TextAlign.center,
+                                      builder: (translatedMessage) => Expanded(
+                                        child: Text(
+                                          translatedMessage.toString(),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     )
-
-                                  // TranslationWidget(
-                                  //     message: "${list[index].titleC}",
-                                  //     fromLanguage: "en",
-                                  //     toLanguage: Globals.selectedLanguage,
-                                  //     builder: (translatedMessage) => Text(
-                                  //       translatedMessage.toString(),
-                                  //       textAlign: TextAlign.center,
-                                  //       style: TextStyle(
-                                  //           color: Theme.of(context)
-                                  //               .colorScheme
-                                  //               .primaryVariant),
-                                  //     ),
-                                  //   )
-                                  : Text("${list[index].titleC}",
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle2!),
+                                  : Expanded(
+                                      child: Text("${list[index].titleC}",
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2!),
+                                    ),
                             ],
                           ),
                         ],

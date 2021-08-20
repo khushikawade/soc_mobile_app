@@ -29,6 +29,7 @@ class CommonPdfViewerPage extends StatefulWidget {
 
 class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   bool _isLoading = true;
+
   String? pdfPath;
   PDFDocument? document;
 

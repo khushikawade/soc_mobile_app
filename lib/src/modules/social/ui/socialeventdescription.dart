@@ -120,7 +120,7 @@ class SocialDescription extends StatelessWidget {
                 minWidth: _KButtonSize,
                 maxWidth: 130.0,
                 minHeight: _KButtonSize / 2,
-                maxHeight: 80.0,
+                maxHeight: _KButtonSize / 2,
               ),
               child: ElevatedButton(
                 onPressed: () async {
@@ -153,7 +153,7 @@ class SocialDescription extends StatelessWidget {
                 minWidth: _KButtonSize,
                 maxWidth: 130.0,
                 minHeight: _KButtonSize / 2,
-                maxHeight: 80.0,
+                maxHeight: _KButtonSize / 2,
               ),
               child: ElevatedButton(
                 onPressed: () async {

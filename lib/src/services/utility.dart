@@ -147,7 +147,7 @@ class Utility {
       final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
       final String formatted = formatNew.format(dateTime);
       // return DateTime.parse((dateNew));
-      print(formatted);
+      // print(formatted);
       return formatted;
     } catch (e) {
       print(e);
@@ -184,7 +184,7 @@ class Utility {
     final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
     final String formatted = formatNew.format(dateTime);
-    print(formatted);
+    // print(formatted);
     return formatted;
   }
 

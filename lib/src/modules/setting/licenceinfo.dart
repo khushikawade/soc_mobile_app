@@ -5,7 +5,6 @@ import 'package:Soc/src/modules/setting/licencedetail.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +25,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
   OSSLicensesInfo obj = new OSSLicensesInfo();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
+
   var _list;
   @override
   void initState() {
@@ -97,7 +97,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
             child: Column(children: [
               Expanded(
                 child: ListView.builder(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.only(bottom: 35),
                   scrollDirection: Axis.vertical,
                   itemCount: _list.length,
                   itemBuilder: (BuildContext context, int index) {

@@ -4,11 +4,9 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +22,7 @@ class InformationPage extends StatefulWidget {
   bool isbuttomsheet;
   bool ishtml;
   String appbarTitle;
+  bool? isloadingstate = false;
 
   @override
   InformationPage({
@@ -45,6 +44,8 @@ class _InformationPageState extends State<InformationPage> {
   final HomeBloc _bloc = new HomeBloc();
   bool? iserrorstate = false;
 
+  bool? isloadingstate = false;
+
   @override
   void initState() {
     super.initState();
@@ -59,88 +60,84 @@ class _InformationPageState extends State<InformationPage> {
       htmlData =
           Globals.appSetting.appInformationC.toString().replaceAll("$img", " ");
     }
-    return Expanded(
-      child: ListView(
-        padding: const EdgeInsets.only(bottom: 20.0),
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
-            child: Wrap(
-              children: [
-                Globals.appSetting.appInformationC
-                            .toString()
-                            .contains("src=") &&
-                        Globals.appSetting.appInformationC
-                                .toString()
-                                .split('"')[1] !=
-                            ""
-                    ? Container(
-                        alignment: Alignment.center,
-                        child: ClipRRect(
-                          child: CachedNetworkImage(
-                            imageUrl: Utility.getHTMLImgSrc(
-                                Globals.appSetting.appInformationC),
-                            placeholder: (context, url) => Container(
-                                alignment: Alignment.center,
-                                child: ShimmerLoading(
-                                  isLoading: true,
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.8,
-                                    height:
-                                        MediaQuery.of(context).size.width * 0.8,
-                                    color: Colors.white,
-                                  ),
-                                )),
-                            errorWidget: (context, url, error) => Container(),
-                          ),
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
+          child: Wrap(
+            children: [
+              Globals.appSetting.appInformationC.toString().contains("src=") &&
+                      Globals.appSetting.appInformationC
+                              .toString()
+                              .split('"')[1] !=
+                          ""
+                  ? Container(
+                      alignment: Alignment.center,
+                      child: ClipRRect(
+                        child: CachedNetworkImage(
+                          imageUrl: Utility.getHTMLImgSrc(
+                              Globals.appSetting.appInformationC),
+                          placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          errorWidget: (context, url, error) => Container(),
                         ),
-                      )
-                    : Container(),
-                Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
-                    ? TranslationWidget(
-                        message: htmlData ?? Globals.appSetting.appInformationC,
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) => Html(
-                          data: translatedMessage.toString(),
-                        ),
-                      )
-                    : Html(
-                        data: htmlData ?? Globals.appSetting.appInformationC,
-                        style: {
-                          "table": Style(
-                            backgroundColor:
-                                Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                          ),
-                          "tr": Style(
-                            border:
-                                Border(bottom: BorderSide(color: Colors.grey)),
-                          ),
-                          "th": Style(
-                            padding: EdgeInsets.all(6),
-                            backgroundColor: Colors.grey,
-                          ),
-                          "td": Style(
-                            padding: EdgeInsets.all(6),
-                            alignment: Alignment.topLeft,
-                          ),
-                          'h5': Style(
-                              maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                        },
                       ),
-              ],
-            ),
+                    )
+                  : Container(),
+              Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English"
+                  ? TranslationWidget(
+                      message: htmlData ?? Globals.appSetting.appInformationC,
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) => Html(
+                        data: translatedMessage.toString(),
+                      ),
+                    )
+                  : Html(
+                      data: htmlData ?? Globals.appSetting.appInformationC,
+                      style: {
+                        "table": Style(
+                          backgroundColor:
+                              Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                        ),
+                        "tr": Style(
+                          border:
+                              Border(bottom: BorderSide(color: Colors.grey)),
+                        ),
+                        "th": Style(
+                          padding: EdgeInsets.all(6),
+                          backgroundColor: Colors.grey,
+                        ),
+                        "td": Style(
+                          padding: EdgeInsets.all(6),
+                          alignment: Alignment.topLeft,
+                        ),
+                        'h5': Style(
+                            maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                      },
+                    ),
+            ],
           ),
-          SizedBox(
-            height: 100.0,
-            child: ShareButtonWidget(
-              language: Globals.selectedLanguage,
-            ),
+        ),
+        SizedBox(
+          height: 100.0,
+          child: ShareButtonWidget(
+            language: Globals.selectedLanguage,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -179,67 +176,37 @@ class _InformationPageState extends State<InformationPage> {
                 return connected
                     ? Column(
                         children: [
-                          _buildContent1(),
+                          Expanded(
+                            child: isloadingstate!
+                                ? ShimmerLoading(
+                                    isLoading: true,
+                                    // child:
+                                    child: _buildContent1(),
+                                  )
+                                : _buildContent1(),
+                          ),
                           Container(
                             height: 0,
                             width: 0,
                             child: BlocListener<HomeBloc, HomeState>(
                               bloc: _bloc,
                               listener: (context, state) async {
+                                if (state is HomeLoading) {
+                                  isloadingstate = true;
+                                  // print('inloading state :${isloadingstate!}');
+                                }
+
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
                                   Globals.homeObjet = state.obj;
                                   setState(() {});
+                                  isloadingstate = false;
                                 }
                               },
                               child: Container(),
                             ),
                           ),
-                          // BlocBuilder<HomeBloc, HomeState>(
-                          //     bloc: _bloc,
-                          //     builder: (BuildContext contxt, HomeState state) {
-                          //       if (state is BottomNavigationBarSuccess) {
-                          //         return state.obj != null &&
-                          //                 state.obj.length > 0
-                          //             ? _buildContent1()
-                          //             : Expanded(
-                          //                 child: ListView(children: [
-                          //                   ErrorMessageWidget(
-                          //                     msg: "No Data Found",
-                          //                     isnetworkerror: false,
-                          //                     imgPath:
-                          //                         "assets/images/no_data_icon.svg",
-                          //                   )
-                          //                 ]),
-                          //               );
-                          //       } else if (state is HomeLoading) {
-                          //         return Expanded(
-                          //           child: Container(
-                          //             height:
-                          //                 MediaQuery.of(context).size.height *
-                          //                     0.8,
-                          //             child: Center(
-                          //                 child: CircularProgressIndicator()),
-                          //           ),
-                          //         );
-                          //       }
-
-                          //       if (state is HomeErrorReceived) {
-                          //         return Expanded(
-                          //           child:
-                          //               ListView(shrinkWrap: true, children: [
-                          //             ErrorMessageWidget(
-                          //               msg: "Error",
-                          //               isnetworkerror: false,
-                          //               imgPath: "assets/images/error_icon.svg",
-                          //             ),
-                          //           ]),
-                          //         );
-                          //       } else {
-                          //         return Container();
-                          //       }
-                          //     }),
                         ],
                       )
                     : NoInternetErrorWidget(

@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/families/modal/calendar_list.dart';
+import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -31,7 +31,7 @@ class _EventDescriptionState extends State<EventDescription> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
 
-  Widget _buildItem(CalendarList list) {
+  Widget _buildItem(CalendarEventList list) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _kPadding),
       child: ListView(
@@ -41,7 +41,7 @@ class _EventDescriptionState extends State<EventDescription> {
           Globals.selectedLanguage != null &&
                   Globals.selectedLanguage != "English"
               ? TranslationWidget(
-                  message: list.titleC!,
+                  message: list.summary!, // titleC!,
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
@@ -49,7 +49,7 @@ class _EventDescriptionState extends State<EventDescription> {
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headline2!),
                 )
-              : Text(list.titleC ?? '-',
+              : Text(list.summary ?? '-',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headline2!),
           SpacerWidget(_kPadding / 4),
@@ -60,9 +60,17 @@ class _EventDescriptionState extends State<EventDescription> {
             child: Globals.selectedLanguage != null &&
                     Globals.selectedLanguage != "English"
                 ? TranslationWidget(
-                    message: Utility.convertDateFormat(list.startDate!) +
+                    message: Utility.convertDateFormat(list.start
+                                .toString()
+                                .contains('dateTime')
+                            ? list.start['dateTime'].toString().substring(0, 10)
+                            : list.start['date'].toString().substring(0, 10)) +
                         " - " +
-                        Utility.convertDateFormat(list.endDate!),
+                        Utility.convertDateFormat(list.end
+                                .toString()
+                                .contains('dateTime')
+                            ? list.start['dateTime'].toString().substring(0, 10)
+                            : list.start['date'].toString().substring(0, 10)),
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
@@ -71,9 +79,17 @@ class _EventDescriptionState extends State<EventDescription> {
                     ),
                   )
                 : Text(
-                    Utility.convertDateFormat(list.startDate!) +
+                    Utility.convertDateFormat(list.start
+                                .toString()
+                                .contains('dateTime')
+                            ? list.start['dateTime'].toString().substring(0, 10)
+                            : list.start['date'].toString().substring(0, 10)) +
                         " - " +
-                        Utility.convertDateFormat(list.endDate!),
+                        Utility.convertDateFormat(list.end
+                                .toString()
+                                .contains('dateTime')
+                            ? list.start['dateTime'].toString().substring(0, 10)
+                            : list.start['date'].toString().substring(0, 10)),
                     style: Theme.of(context).textTheme.subtitle1!,
                   ),
           ),
@@ -98,7 +114,7 @@ class _EventDescriptionState extends State<EventDescription> {
                   ),
           ),
           SpacerWidget(_kPadding / 2),
-          list.inviteLink != null ? _buildEventLink(list) : Container(),
+          list.htmlLink != null ? _buildEventLink(list) : Container(),
           SpacerWidget(_kPadding / 2),
           bottomButtonWidget(widget.obj),
         ],
@@ -106,14 +122,14 @@ class _EventDescriptionState extends State<EventDescription> {
     );
   }
 
-  Widget _buildEventLink(CalendarList list) {
+  Widget _buildEventLink(/*CalendarEventList*/ list) {
     return InkWell(
       onTap: () {
         UrlLauncherWidget obj = new UrlLauncherWidget();
-        obj.callurlLaucher(context, list.inviteLink);
+        obj.callurlLaucher(context, list.htmlLink);
       },
       child: Text(
-        list.inviteLink ?? '-',
+        list.htmlLink ?? '-',
         style: Theme.of(context).textTheme.headline4!.copyWith(
               decoration: TextDecoration.underline,
             ),
@@ -130,20 +146,20 @@ class _EventDescriptionState extends State<EventDescription> {
     );
   }
 
-  Widget bottomButtonWidget(CalendarList list) {
+  Widget bottomButtonWidget(/*CalendarEventList*/ list) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _kPadding / 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         // mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          list.inviteLink != null
+          list.htmlLink != null
               ? Container(
                   child: ConstrainedBox(
                   constraints: BoxConstraints(
                     minWidth: _KButtonSize,
-                    maxWidth: 125.0,
-                    minHeight: _KButtonSize / 2.5,
+                    maxWidth: 150.0,
+                    minHeight: 126.0,
                     maxHeight: 125.0,
                   ),
 
@@ -152,7 +168,7 @@ class _EventDescriptionState extends State<EventDescription> {
                   child: ElevatedButton(
                     onPressed: () {
                       SharePopUp obj = new SharePopUp();
-                      obj.callFunction(context, list.inviteLink!, list.titleC!);
+                      obj.callFunction(context, list.htmlLink!, list.titleC!);
                     },
                     child: Globals.selectedLanguage != null &&
                             Globals.selectedLanguage != "English"
@@ -181,9 +197,9 @@ class _EventDescriptionState extends State<EventDescription> {
           Container(
             constraints: BoxConstraints(
               minWidth: _KButtonSize,
-              maxWidth: 120.0,
+              maxWidth: _KButtonSize / 2.5,
               minHeight: _KButtonSize / 2.5,
-              maxHeight: 120.0,
+              maxHeight: 150.0,
             ),
             // width: _KButtonSize,
             // height: _KButtonSize / 2.5,
@@ -213,7 +229,7 @@ class _EventDescriptionState extends State<EventDescription> {
     );
   }
 
-  Event buildEvent(CalendarList list) {
+  Event buildEvent(/*CalendarEventList*/ list) {
     return Event(
       title: list.titleC!,
       description: list.description ?? "",
