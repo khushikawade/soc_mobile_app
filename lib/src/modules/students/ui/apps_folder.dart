@@ -102,9 +102,9 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                 children: [
                                   apps[index].appIconC != null &&
                                           apps[index].appIconC != ''
-                                      ? SizedBox(
-                                          height: 80,
-                                          width: 80,
+                                      ? Container(
+                                          height: 75,
+                                          width: 75,
                                           child: CachedNetworkImage(
                                             imageUrl:
                                                 apps[index].appIconC ?? '',
