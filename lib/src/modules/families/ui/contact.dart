@@ -11,6 +11,7 @@ import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -47,6 +48,7 @@ class _ContactPageState extends State<ContactPage> {
   void initState() {
     super.initState();
     homebloc.add(FetchBottomNavigationBar());
+    Globals.callsnackbar = true;
   }
 
   @override
@@ -293,11 +295,16 @@ class _ContactPageState extends State<ContactPage> {
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.bodyText1!),
+                      translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.bodyText1!,
+                      textAlign: TextAlign.center,
+                    ),
                   )
-                : Text(Globals.homeObjet["Contact_Phone__c"] ?? '-',
-                    style: Theme.of(context).textTheme.bodyText1!),
+                : Text(
+                    Globals.homeObjet["Contact_Phone__c"] ?? '-',
+                    style: Theme.of(context).textTheme.bodyText1!,
+                    textAlign: TextAlign.center,
+                  ),
           )
         ],
       ),
@@ -326,6 +333,8 @@ class _ContactPageState extends State<ContactPage> {
       padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Globals.selectedLanguage != null &&
                   Globals.selectedLanguage != "English"
@@ -354,8 +363,10 @@ class _ContactPageState extends State<ContactPage> {
                       'mailto:"${Globals.homeObjet["Contact_Email__c"]}"')
                   : print("null value");
             },
-            child: Text(Globals.homeObjet["Contact_Email__c"] ?? '-',
-                style: Theme.of(context).textTheme.bodyText1!),
+            child: Text(
+              Globals.homeObjet["Contact_Email__c"] ?? '-',
+              style: Theme.of(context).textTheme.bodyText1!,
+            ),
           )
         ],
       ),

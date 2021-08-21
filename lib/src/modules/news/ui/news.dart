@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/Strings.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -277,22 +278,18 @@ class _NewsPageState extends State<NewsPage> {
                             height: 0,
                             width: 0,
                             child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
-                                } else if (state is HomeErrorReceived) {
-                                  ErrorMsgWidget();
-                                }
-                              },
-                              child: Container(
-                                height: 0,
-                                width: 0,
-                              ),
-                            ),
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  } else if (state is HomeErrorReceived) {
+                                    ErrorMsgWidget();
+                                  }
+                                },
+                                child: EmptyContainer()),
                           ),
                         ],
                       )

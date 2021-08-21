@@ -50,6 +50,7 @@ class _InformationPageState extends State<InformationPage> {
   void initState() {
     super.initState();
     _bloc.add(FetchBottomNavigationBar());
+    Globals.callsnackbar = true;
   }
 
   Widget _buildContent1() {

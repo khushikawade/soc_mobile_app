@@ -59,7 +59,6 @@ class _StartupPageState extends State<StartupPage> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     // print(pref.getInt(Strings.bottomNavigation));
     Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
-    // print(Globals.homeIndex);
   }
 
   @override

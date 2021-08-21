@@ -30,6 +30,12 @@ class _NewdescriptionState extends State<Newdescription> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
 
+  @override
+  void initState() {
+    super.initState();
+    Globals.callsnackbar = true;
+  }
+
   _launchURL(obj) async {
     Navigator.push(
         context,

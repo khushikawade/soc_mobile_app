@@ -140,6 +140,7 @@ class _HomePageState extends State<HomePage> {
           if (i == Globals.newsIndex) {
             setState(() {
               Globals.indicator.value = false;
+              Globals.callsnackbar=true;
             });
           } else {
             setState(() {});

@@ -51,6 +51,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   void initState() {
     super.initState();
     _bloc.add(SDevent());
+    Globals.callsnackbar = true;
   }
 
   Widget _buildHeading(String tittle) {

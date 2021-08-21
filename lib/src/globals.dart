@@ -36,4 +36,6 @@ class Globals {
   static int? homeIndex;
   static bool? isNetworkError = false;
   static bool? callsnackbar = true;
+  static final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
 }

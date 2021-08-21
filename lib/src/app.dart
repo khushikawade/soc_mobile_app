@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/user/ui/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,9 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
   @override
   void initState() {
     super.initState();
@@ -28,6 +32,7 @@ class _AppState extends State<App> {
       initial: AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => MaterialApp(
         debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
         title: 'Adaptive Theme Demo',
         theme: theme,
         darkTheme: darkTheme,

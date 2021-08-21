@@ -58,6 +58,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    Globals.callsnackbar = true;
   }
 
   deleteItem() async {
@@ -403,6 +404,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildHeading() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
         Globals.selectedLanguage != null &&
@@ -499,6 +501,7 @@ class _SearchPageState extends State<SearchPage> {
                       ? Container(
                           child:
                               Column(mainAxisSize: MainAxisSize.max, children: [
+                            SpacerWidget(_kLabelSpacing / 4),
                             _buildHeading(),
                             SpacerWidget(_kLabelSpacing / 2),
                             _buildSearchbar(),

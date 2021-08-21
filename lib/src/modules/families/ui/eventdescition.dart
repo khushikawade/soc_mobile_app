@@ -32,6 +32,12 @@ class _EventDescriptionState extends State<EventDescription> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
 
+  @override
+  void initState() {
+    super.initState();
+    Globals.callsnackbar = true;
+  }
+
   Widget _buildItem(CalendarEventList list) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: _kPadding),
@@ -152,7 +158,6 @@ class _EventDescriptionState extends State<EventDescription> {
       padding: EdgeInsets.symmetric(horizontal: _kPadding / 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        // mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           list.htmlLink != null
               ? Container(
@@ -160,8 +165,8 @@ class _EventDescriptionState extends State<EventDescription> {
                   constraints: BoxConstraints(
                     minWidth: _KButtonSize,
                     maxWidth: 150.0,
-                    minHeight: 126.0,
-                    maxHeight: 125.0,
+                    minHeight: _KButtonSize / 2.5,
+                    maxHeight: _KButtonSize / 2.5,
                   ),
                   child: ElevatedButton(
                     onPressed: () {
@@ -190,9 +195,9 @@ class _EventDescriptionState extends State<EventDescription> {
           Container(
             constraints: BoxConstraints(
               minWidth: _KButtonSize,
-              maxWidth: _KButtonSize / 2.5,
+              maxWidth: 150.0,
               minHeight: _KButtonSize / 2.5,
-              maxHeight: 150.0,
+              maxHeight: _KButtonSize / 2.5,
             ),
             child: ElevatedButton(
               onPressed: () {
