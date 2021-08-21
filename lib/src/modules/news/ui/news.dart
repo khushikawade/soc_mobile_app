@@ -8,6 +8,7 @@ import 'package:Soc/src/widgets/Strings.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -236,12 +237,7 @@ class _NewsPageState extends State<NewsPage> {
                                       ? _buildList(state.obj)
                                       : Expanded(
                                           child: ListView(children: [
-                                            ErrorMessageWidget(
-                                              msg: "No Data Found",
-                                              isnetworkerror: false,
-                                              imgPath:
-                                                  "assets/images/no_data_icon.svg",
-                                            )
+                                            NoDataFoundErrorWidget()
                                           ]),
                                         );
                                 } else if (state is NewsLoading) {

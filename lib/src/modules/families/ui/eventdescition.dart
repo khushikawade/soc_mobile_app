@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -162,9 +163,6 @@ class _EventDescriptionState extends State<EventDescription> {
                     minHeight: 126.0,
                     maxHeight: 125.0,
                   ),
-
-                  // width: _KButtonSize,
-                  // height: _KButtonSize / 2.5,
                   child: ElevatedButton(
                     onPressed: () {
                       SharePopUp obj = new SharePopUp();
@@ -178,19 +176,14 @@ class _EventDescriptionState extends State<EventDescription> {
                             fromLanguage: "en",
                             builder: (translatedMessage) => Text(
                               translatedMessage.toString(),
-                              // style: _kbuttonTextStyle,
                             ),
                           )
                         : Text(
                             "Share",
-                            // style: _kbuttonTextStyle,
                           ),
                   ),
                 ))
-              : Container(
-                  height: 0,
-                  width: 0,
-                ),
+              : EmptyContainer(),
           SizedBox(
             width: _kPadding / 2,
           ),
@@ -201,8 +194,6 @@ class _EventDescriptionState extends State<EventDescription> {
               minHeight: _KButtonSize / 2.5,
               maxHeight: 150.0,
             ),
-            // width: _KButtonSize,
-            // height: _KButtonSize / 2.5,
             child: ElevatedButton(
               onPressed: () {
                 Add2Calendar.addEvent2Cal(

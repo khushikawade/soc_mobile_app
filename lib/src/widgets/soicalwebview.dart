@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -73,7 +72,6 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                         IconData(0xe80f,
                             fontFamily: Overrides.kFontFam,
                             fontPackage: Overrides.kFontPkg),
-                        // color: AppTheme.kBlackColor,
                         size: Globals.deviceType == "phone" ? 20 : 28,
                       ))
                   : Container(
@@ -110,7 +108,6 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                         IconData(0xe80e,
                             fontFamily: Overrides.kFontFam,
                             fontPackage: Overrides.kFontPkg),
-                        // color: AppTheme.kBlackColor,
                         size: Globals.deviceType == "phone" ? 20 : 28,
                       ))
                   : Container(height: 0),
@@ -164,7 +161,6 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                       IconData(0xe80f,
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
-                      // color: AppTheme.kBlackColor,
                       size: Globals.deviceType == "phone" ? 20 : 28,
                     )),
               ],

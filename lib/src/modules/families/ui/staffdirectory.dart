@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -196,10 +197,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           ),
                         ),
                       )
-                    : Container(
-                        height: 0,
-                        width: 0,
-                      ),
+                    : EmptyContainer(),
                 obj.emailC.toString().isNotEmpty && obj.emailC.length > 1
                     ? Container(
                         constraints: BoxConstraints(
@@ -224,10 +222,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               color: Theme.of(context).colorScheme.background,
                             )),
                       )
-                    : Container(
-                        height: 0,
-                        width: 0,
-                      )
+                    : EmptyContainer()
               ]),
           SpacerWidget(_kLabelSpacing / 1.2),
           Row(
@@ -345,22 +340,18 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               height: 0,
                               width: 0,
                               child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    Globals.homeObjet = state.obj;
-                                    setState(() {});
-                                  } else if (state is HomeErrorReceived) {
-                                    ErrorMsgWidget();
-                                  }
-                                },
-                                child: Container(
-                                  height: 0,
-                                  width: 0,
-                                ),
-                              ),
+                                  bloc: _homeBloc,
+                                  listener: (context, state) async {
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      Globals.homeObjet = state.obj;
+                                      setState(() {});
+                                    } else if (state is HomeErrorReceived) {
+                                      ErrorMsgWidget();
+                                    }
+                                  },
+                                  child: EmptyContainer()),
                             ),
                             SpacerWidget(_kLabelSpacing * 2),
                           ],

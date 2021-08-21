@@ -5,6 +5,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -12,7 +13,6 @@ import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
@@ -43,7 +43,6 @@ class _EventPageState extends State<EventPage> {
   }
 
   Widget _buildList(list, int index, mainObj) {
-    // print(list.start[0]);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -186,9 +185,8 @@ class _EventPageState extends State<EventPage> {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-          // SizedBox(height: 20.0),
           DefaultTabController(
-              length: 2, // length of tabs
+              length: 2,
               initialIndex: 0,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -244,7 +242,6 @@ class _EventPageState extends State<EventPage> {
                                 scrollDirection: Axis.vertical,
                                 padding: EdgeInsets.only(bottom: 20),
                                 itemCount: state.pastListobj!.length,
-                                // shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
                                   return _buildList(state.pastListobj![index],
                                       index, state.pastListobj);
@@ -301,53 +298,6 @@ class _EventPageState extends State<EventPage> {
                                       child: CircularProgressIndicator());
                                 } else if (state is CalendarListSuccess) {
                                   return _buildTabs(state);
-
-                                  // Column(children: [
-                                  //   _buildHeading("Upcoming"),
-                                  //   state.futureListobj!.length > 0
-                                  //       ? ListView.builder(
-                                  //           scrollDirection: Axis.vertical,
-                                  //           physics:
-                                  //               NeverScrollableScrollPhysics(),
-                                  //           itemCount:
-                                  //               state.futureListobj!.length,
-                                  //           shrinkWrap: true,
-                                  //           itemBuilder:
-                                  //               (BuildContext context,
-                                  //                   int index) {
-                                  //             return _buildList(
-                                  //                 state.futureListobj![
-                                  //                     index],
-                                  //                 index,
-                                  //                 state.futureListobj);
-                                  //           })
-                                  //       : Container(
-                                  //           height: 0,
-                                  //           width: 0,
-                                  //         ),
-                                  //   SpacerWidget(20),
-                                  //   _buildHeading("Past"),
-                                  //   state.pastListobj!.length > 0
-                                  //       ? ListView.builder(
-                                  //           scrollDirection: Axis.vertical,
-                                  //           itemCount:
-                                  //               state.pastListobj!.length,
-                                  //           shrinkWrap: true,
-                                  //           physics:
-                                  //               NeverScrollableScrollPhysics(),
-                                  //           itemBuilder:
-                                  //               (BuildContext context,
-                                  //                   int index) {
-                                  //             return _buildList(
-                                  //                 state.pastListobj![index],
-                                  //                 index,
-                                  //                 state.pastListobj);
-                                  //           })
-                                  //       : Container(
-                                  //           height: 0,
-                                  //           width: 0,
-                                  //         ),
-                                  // ]);
                                 } else if (state is ErrorLoading) {
                                   return ListView(
                                       shrinkWrap: true,
@@ -359,20 +309,16 @@ class _EventPageState extends State<EventPage> {
                             height: 0,
                             width: 0,
                             child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
-                                }
-                              },
-                              child: Container(
-                                height: 0,
-                                width: 0,
-                              ),
-                            ),
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  }
+                                },
+                                child: EmptyContainer()),
                           ),
                         ],
                       )
@@ -388,6 +334,5 @@ class _EventPageState extends State<EventPage> {
     refreshKey.currentState?.show(atTop: false);
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());
-    // print("refresh call");
   }
 }

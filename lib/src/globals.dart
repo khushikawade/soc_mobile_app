@@ -1,17 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'modules/home/models/app_setting.dart';
 
 class Globals {
   static var iosInfo;
   static var androidInfo;
   static String? token = '';
-
   static String? baseOS;
   static String? deviceType;
   static String? deviceID;
-
   static int? outerBottombarIndex;
   static int? internalBottombarIndex;
   static var homeObjet;

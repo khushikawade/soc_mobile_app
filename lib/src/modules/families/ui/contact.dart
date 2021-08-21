@@ -3,11 +3,10 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_widget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
-import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -142,30 +141,28 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget _buildmap() {
     return Container(
-      margin: EdgeInsets.only(
-          top: _kLabelSpacing / 3,
-          bottom: _kLabelSpacing / 1.5,
-          right: _kLabelSpacing / 3,
-          left: _kLabelSpacing / 3),
-      decoration: BoxDecoration(
-          color: AppTheme.kmapBackgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(4.0))),
-      child: Globals.homeObjet["Contact_Office_Location__Latitude__s"] !=
-                  null &&
-              Globals.homeObjet["Contact_Office_Location__Longitude__s"] != null
-          ? SizedBox(
-              height: _kboxheight * 2,
-              child: GoogleMaps(
-                latitude:
-                    Globals.homeObjet["Contact_Office_Location__Latitude__s"],
-                longitude:
-                    Globals.homeObjet["Contact_Office_Location__Longitude__s"],
-              ),
-            )
-          : Container(
-              height: 0,
-            ),
-    );
+        margin: EdgeInsets.only(
+            top: _kLabelSpacing / 3,
+            bottom: _kLabelSpacing / 1.5,
+            right: _kLabelSpacing / 3,
+            left: _kLabelSpacing / 3),
+        decoration: BoxDecoration(
+            color: AppTheme.kmapBackgroundColor,
+            borderRadius: BorderRadius.all(Radius.circular(4.0))),
+        child: Globals.homeObjet["Contact_Office_Location__Latitude__s"] !=
+                    null &&
+                Globals.homeObjet["Contact_Office_Location__Longitude__s"] !=
+                    null
+            ? SizedBox(
+                height: _kboxheight * 2,
+                child: GoogleMaps(
+                  latitude:
+                      Globals.homeObjet["Contact_Office_Location__Latitude__s"],
+                  longitude: Globals
+                      .homeObjet["Contact_Office_Location__Longitude__s"],
+                ),
+              )
+            : EmptyContainer());
   }
 
   Widget _buildPhoneWidget() {
@@ -422,26 +419,20 @@ class _ContactPageState extends State<ContactPage> {
                               height: 0,
                               width: 0,
                               child: BlocListener<HomeBloc, HomeState>(
-                                bloc: homebloc,
-                                listener: (context, state) async {
-                                  if (state is HomeLoading) {
-                                    isloadingstate = true;
-                                    // print("inloading state");
-                                  }
-
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    Globals.homeObjet = state.obj;
-                                    isloadingstate = false;
-                                    setState(() {});
-                                  }
-                                },
-                                child: Container(
-                                  height: 0,
-                                  width: 0,
-                                ),
-                              ),
+                                  bloc: homebloc,
+                                  listener: (context, state) async {
+                                    if (state is HomeLoading) {
+                                      isloadingstate = true;
+                                    }
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      Globals.homeObjet = state.obj;
+                                      isloadingstate = false;
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: EmptyContainer()),
                             ),
                           ],
                         )
@@ -459,12 +450,12 @@ class _ContactPageState extends State<ContactPage> {
                           setState(() {});
                         }
                       },
-                      child: Container(),
+                      child: EmptyContainer(),
                     ),
                   ),
                 ]);
               },
-              child: Container()),
+              child: EmptyContainer()),
           onRefresh: refreshPage,
         ));
   }

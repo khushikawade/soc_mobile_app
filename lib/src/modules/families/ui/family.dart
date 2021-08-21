@@ -7,6 +7,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
@@ -56,7 +57,7 @@ class _FamilyPageState extends State<FamilyPage> {
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
-  _route(FamiliesList obj, index) {
+  _familiyPageRoute(FamiliesList obj, index) {
     if (obj.titleC == "Contact") {
       obj.titleC != null
           ? Navigator.push(
@@ -191,7 +192,7 @@ class _FamilyPageState extends State<FamilyPage> {
       ),
       child: ListTile(
         onTap: () {
-          _route(obj, index);
+          _familiyPageRoute(obj, index);
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         contentPadding:
@@ -289,20 +290,16 @@ class _FamilyPageState extends State<FamilyPage> {
                             height: 0,
                             width: 0,
                             child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
-                                }
-                              },
-                              child: Container(
-                                height: 0,
-                                width: 0,
-                              ),
-                            ),
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  }
+                                },
+                                child: EmptyContainer()),
                           ),
                           SpacerWidget(35)
                         ],

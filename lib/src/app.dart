@@ -22,18 +22,6 @@ class _AppState extends State<App> {
     super.initState();
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     title: 'Solved',
-  //     debugShowCheckedModeBanner: false,
-  //     theme: AppTheme.lightTheme,
-  //     darkTheme: AppTheme.lightTheme,
-  //     home: StartupPage(),
-  //   );
-  // }
-  // Adaptive Theme starts
-
   Widget build(BuildContext context) {
     return AdaptiveTheme(
       light: AppTheme.lightTheme,
