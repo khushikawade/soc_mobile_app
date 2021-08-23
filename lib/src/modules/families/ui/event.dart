@@ -150,7 +150,7 @@ class _EventPageState extends State<EventPage> {
                             fromLanguage: "en",
                             builder: (translatedMessage) => Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.80,
+                                      MediaQuery.of(context).size.width * 0.70,
                                   child: Text(
                                     translatedMessage.toString(),
                                     style:
@@ -163,7 +163,7 @@ class _EventPageState extends State<EventPage> {
                                   ),
                                 ))
                         : Container(
-                            width: MediaQuery.of(context).size.width * 0.50,
+                            width: MediaQuery.of(context).size.width * 0.70,
                             child: Text(
                               list.summary ?? '-',
                               style: Theme.of(context).textTheme.headline5!
