@@ -43,6 +43,7 @@ class _SettingPageState extends State<SettingPage> {
         .getDeviceState()
         .then((value) => {pushState(value!.pushDisabled)});
     _homeBloc.add(FetchBottomNavigationBar());
+    Globals.callsnackbar = true;
   }
 
   pushState(data) async {

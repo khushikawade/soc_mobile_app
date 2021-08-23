@@ -8,11 +8,9 @@ import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/translator/language_list.dart';
-import 'package:Soc/src/widgets/Strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
@@ -43,7 +41,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _bloc.initPushState(context);
-    // print(Globals.homeIndex);
     _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
   }
 
@@ -118,7 +115,6 @@ class _HomePageState extends State<HomePage> {
                 IconData(int.parse(item.split("_")[1]),
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
-                // size: Globals.deviceType == "phone" ? 24 : 32,
               ),
             ],
           ),
@@ -144,6 +140,7 @@ class _HomePageState extends State<HomePage> {
           if (i == Globals.newsIndex) {
             setState(() {
               Globals.indicator.value = false;
+              Globals.callsnackbar=true;
             });
           } else {
             setState(() {});

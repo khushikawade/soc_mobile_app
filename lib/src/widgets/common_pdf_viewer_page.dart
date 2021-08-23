@@ -1,12 +1,10 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 // ignore: must_be_immutable
@@ -28,7 +26,7 @@ class CommonPdfViewerPage extends StatefulWidget {
 }
 
 class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
-  bool _isLoading = true;
+  bool isLoading = true;
 
   String? pdfPath;
   PDFDocument? document;
@@ -38,7 +36,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
       widget.url!,
     );
     if (document != null) {
-      setState(() => _isLoading = false);
+      setState(() => isLoading = false);
     }
   }
 
@@ -105,21 +103,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                   zoomSteps: 2,
                   scrollDirection: Axis.vertical,
                 )
-          : Container(
-              alignment: Alignment.center,
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English"
-                  ? TranslationWidget(
-                      message: "No Document Found",
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                      ),
-                    )
-                  : Text("No Document Found"),
-            ),
+          : NoDataFoundErrorWidget(isResultNotFoundMsg: false),
     );
   }
 }

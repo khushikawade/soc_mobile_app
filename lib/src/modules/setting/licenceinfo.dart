@@ -31,6 +31,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
   void initState() {
     super.initState();
     _list = obj.ossLicenses.values.toList();
+    Globals.callsnackbar = true;
   }
 
   Widget _buildList(
@@ -106,7 +107,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
                             _list,
                             index,
                           )
-                        : NoDataFoundErrorWidget();
+                        : NoDataFoundErrorWidget(isResultNotFoundMsg: false);
                   },
                 ),
               ),

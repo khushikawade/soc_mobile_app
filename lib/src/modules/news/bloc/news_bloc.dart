@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/widgets/Strings.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
@@ -16,8 +15,6 @@ part 'news_event.dart';
 part 'news_state.dart';
 
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
-  // final data;
-  bool _status = false;
   NewsBloc() : super(NewsInitial());
   NewsState get initialState => NewsInitial();
 
@@ -99,9 +96,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      // print(
-      //     "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-
       pref.setInt(Strings.bottomNavigation, 1);
     });
 

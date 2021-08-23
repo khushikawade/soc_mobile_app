@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -30,6 +31,12 @@ class _EventDescriptionState extends State<EventDescription> {
   static const double _KButtonSize = 95.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    Globals.callsnackbar = true;
+  }
 
   Widget _buildItem(CalendarEventList list) {
     return Container(
@@ -151,7 +158,6 @@ class _EventDescriptionState extends State<EventDescription> {
       padding: EdgeInsets.symmetric(horizontal: _kPadding / 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        // mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           list.htmlLink != null
               ? Container(
@@ -159,12 +165,9 @@ class _EventDescriptionState extends State<EventDescription> {
                   constraints: BoxConstraints(
                     minWidth: _KButtonSize,
                     maxWidth: 150.0,
-                    minHeight: 126.0,
-                    maxHeight: 125.0,
+                    minHeight: _KButtonSize / 2.5,
+                    maxHeight: _KButtonSize / 2.5,
                   ),
-
-                  // width: _KButtonSize,
-                  // height: _KButtonSize / 2.5,
                   child: ElevatedButton(
                     onPressed: () {
                       SharePopUp obj = new SharePopUp();
@@ -178,31 +181,24 @@ class _EventDescriptionState extends State<EventDescription> {
                             fromLanguage: "en",
                             builder: (translatedMessage) => Text(
                               translatedMessage.toString(),
-                              // style: _kbuttonTextStyle,
                             ),
                           )
                         : Text(
                             "Share",
-                            // style: _kbuttonTextStyle,
                           ),
                   ),
                 ))
-              : Container(
-                  height: 0,
-                  width: 0,
-                ),
+              : EmptyContainer(),
           SizedBox(
             width: _kPadding / 2,
           ),
           Container(
             constraints: BoxConstraints(
               minWidth: _KButtonSize,
-              maxWidth: _KButtonSize / 2.5,
+              maxWidth: 150.0,
               minHeight: _KButtonSize / 2.5,
-              maxHeight: 150.0,
+              maxHeight: _KButtonSize / 2.5,
             ),
-            // width: _KButtonSize,
-            // height: _KButtonSize / 2.5,
             child: ElevatedButton(
               onPressed: () {
                 Add2Calendar.addEvent2Cal(

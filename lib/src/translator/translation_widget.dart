@@ -3,6 +3,7 @@ import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 class TranslationWidget extends StatefulWidget {
   final String? message;
@@ -30,6 +31,18 @@ class _TranslationWidgetState extends State<TranslationWidget> {
   Widget build(BuildContext context) {
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
+    ConnectivityResult? connectivity;
+
+    void callsnackbar() {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        Globals.rootScaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
+          content: const Text(
+            'Unable to translate please check internet connection',
+          ),
+          backgroundColor: Colors.black.withOpacity(0.8),
+        ));
+      });
+    }
 
     return FutureBuilder(
       future: TranslationAPI.translate(widget.message!, toLanguageCode),
@@ -39,19 +52,14 @@ class _TranslationWidgetState extends State<TranslationWidget> {
             return buildWaiting();
           default:
             if (snapshot.hasError) {
-              translation = "Network error";
-              // translation = widget.message;
-              // Globals.isNetworkError = true;
-              // if (Globals.isNetworkError! && Globals.callsnackbar!) {
-              //   // final scaffoldKey = Scaffold.of(context);
-              //   // scaffoldKey.showSnackBar(SnackBar(
-              //   //   content: const Text(
-              //   //     'Please check internet',
-              //   //   ),
-              //   //   backgroundColor: Colors.black.withOpacity(0.8),
-              //   // ));
-              //   Globals.callsnackbar = false;
-              // }
+              if (Globals.isNetworkError == false) {
+                final bool connected = connectivity != ConnectivityResult.none;
+                translation = "Network error";
+                Globals.isNetworkError = true;
+              } else {
+                translation = widget.toLanguage!;
+              }
+              // callsnackbar();
             } else {
               translation = snapshot.data;
               Globals.isNetworkError = false;

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 class AppLogoWidget extends StatelessWidget {
   static const double _kIconSize = 45.0;
-
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
