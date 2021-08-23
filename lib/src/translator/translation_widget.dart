@@ -24,8 +24,16 @@ class TranslationWidget extends StatefulWidget {
 }
 
 class _TranslationWidgetState extends State<TranslationWidget> {
+  ConnectivityResult? connectivity;
   String? translation;
   // final scaffoldKey = GlobalKey<ScaffoldState>();
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   final bool connected = connectivity != ConnectivityResult.none;
+  //   Globals.isNetworkError = !connected;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +60,14 @@ class _TranslationWidgetState extends State<TranslationWidget> {
             return buildWaiting();
           default:
             if (snapshot.hasError) {
-              final bool connected = connectivity != ConnectivityResult.none;
-              translation = "Network error";
               Globals.isNetworkError = true;
-              // callsnackbar();
+              if (Globals.isNetworkError == true) {
+                final bool connected = connectivity != ConnectivityResult.none;
+                connected ? callsnackbar() : null;
+                Globals.isNetworkError = false;
+              } else {
+                translation = widget.message!;
+              }
             } else {
               translation = snapshot.data;
               Globals.isNetworkError = false;

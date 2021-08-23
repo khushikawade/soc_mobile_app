@@ -67,13 +67,13 @@ class _EventDescriptionState extends State<EventDescription> {
             child: Globals.selectedLanguage != null &&
                     Globals.selectedLanguage != "English"
                 ? TranslationWidget(
-                    message: Utility.convertDateFormat(list.start
+                    message: Utility.convertDateFormat2(list.start
                                 .toString()
                                 .contains('dateTime')
                             ? list.start['dateTime'].toString().substring(0, 10)
                             : list.start['date'].toString().substring(0, 10)) +
                         " - " +
-                        Utility.convertDateFormat(list.end
+                        Utility.convertDateFormat2(list.end
                                 .toString()
                                 .contains('dateTime')
                             ? list.start['dateTime'].toString().substring(0, 10)
@@ -86,13 +86,13 @@ class _EventDescriptionState extends State<EventDescription> {
                     ),
                   )
                 : Text(
-                    Utility.convertDateFormat(list.start
+                    Utility.convertDateFormat2(list.start
                                 .toString()
                                 .contains('dateTime')
                             ? list.start['dateTime'].toString().substring(0, 10)
                             : list.start['date'].toString().substring(0, 10)) +
                         " - " +
-                        Utility.convertDateFormat(list.end
+                        Utility.convertDateFormat2(list.end
                                 .toString()
                                 .contains('dateTime')
                             ? list.start['dateTime'].toString().substring(0, 10)

@@ -154,6 +154,22 @@ class Utility {
     }
   }
 
+  static convertDateFormat2(date) {
+    try {
+      String dateNew = date;
+      final string = dateNew.toString();
+      final formatter = DateFormat('yyyy-mm-dd');
+      final dateTime = formatter.parse(string);
+      final DateFormat formatNew = DateFormat('dd/mm/yyyy');
+      final String formatted = formatNew.format(dateTime);
+      // return DateTime.parse((dateNew));
+      // print(formatted);
+      return formatted;
+    } catch (e) {
+      print(e);
+    }
+  }
+
   static getDate(date) {
     try {
       DateTime parseDate =
