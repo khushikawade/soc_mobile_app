@@ -19,6 +19,7 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,6 +47,7 @@ class _SearchPageState extends State<SearchPage> {
   HomeBloc _searchBloc = new HomeBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   static const double _kIconSize = 38.0;
+  bool? isDBListEmpty = true;
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -59,6 +61,14 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     Globals.callsnackbar = true;
+    getListLength();
+  }
+
+  getListLength() async {
+    int length = await HiveDbServices().getListLength(Strings.hiveLogName);
+    length < 1 ? isDBListEmpty = true : isDBListEmpty = false;
+    print(" ************");
+    print(isDBListEmpty);
   }
 
   deleteItem() async {
@@ -380,8 +390,8 @@ class _SearchPageState extends State<SearchPage> {
                           );
                         }).toList(),
                       ))
-                    : Container(
-                        height: 0,
+                    : NoDataFoundErrorWidget(
+                        isResultNotFoundMsg: true,
                       ));
           } else if (state is SearchLoading) {
             return Expanded(
@@ -466,6 +476,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void addtoDataBase(Recent log) async {
     bool isSuccess = await HiveDbServices().addData(log, Strings.hiveLogName);
+    isDBListEmpty = false;
   }
 
   @override

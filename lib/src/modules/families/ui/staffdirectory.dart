@@ -39,7 +39,7 @@ class StaffDirectory extends StatefulWidget {
 class _StaffDirectoryState extends State<StaffDirectory> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 45.0;
-  static const double _KButtonMinSize = 25.0;
+  static const double _KButtonMinSize = 45.0;
   String? language = Globals.selectedLanguage;
   FamilyBloc _bloc = FamilyBloc();
   UrlLauncherWidget objurl = new UrlLauncherWidget();
@@ -175,16 +175,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 ),
                 obj.phoneC.toString().isNotEmpty && obj.phoneC.length > 1
                     ? Container(
-                        constraints: BoxConstraints(
-                          minWidth: _KButtonMinSize,
-                          maxWidth: _KButtonMinSize * 2.5,
-                          minHeight: _KButtonMinSize,
-                          maxHeight: _KButtonMinSize,
-                        ),
+                        height: _KButtonMinSize,
+                        width: _KButtonMinSize,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             shape: CircleBorder(),
-                            padding: EdgeInsets.all(6),
+                            padding: EdgeInsets.all(8),
                           ),
                           onPressed: () {
                             if (obj.phoneC != null) {
@@ -199,14 +195,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         ),
                       )
                     : EmptyContainer(),
+                HorzitalSpacerWidget(_kLabelSpacing / 2),
                 obj.emailC.toString().isNotEmpty && obj.emailC.length > 1
                     ? Container(
-                        constraints: BoxConstraints(
-                          minWidth: _KButtonMinSize,
-                          maxWidth: _KButtonMinSize * 2.5,
-                          minHeight: _KButtonMinSize,
-                          maxHeight: _KButtonMinSize,
-                        ),
+                        height: _KButtonMinSize,
+                        width: _KButtonMinSize,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               shape: CircleBorder(),
@@ -328,7 +321,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                             )
                                           : Expanded(
                                               child: ListView(children: [
-                                              NoDataFoundErrorWidget()
+                                              NoDataFoundErrorWidget(
+                                                  isResultNotFoundMsg: false)
                                             ]));
                                     } else if (state is ErrorLoading) {
                                       return ListView(

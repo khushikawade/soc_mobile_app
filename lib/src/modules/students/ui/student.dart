@@ -223,8 +223,10 @@ class _StudentPageState extends State<StudentPage> {
                                       child: _buildGrid(
                                           state.obj!, state.subFolder!),
                                     )
-                                  : ListView(
-                                      children: [NoDataFoundErrorWidget()]);
+                                  : ListView(children: [
+                                      NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: false)
+                                    ]);
                             } else if (state is StudentError) {
                               return ListView(children: [ErrorMsgWidget()]);
                             }

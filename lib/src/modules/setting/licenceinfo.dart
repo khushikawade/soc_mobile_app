@@ -107,7 +107,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
                             _list,
                             index,
                           )
-                        : NoDataFoundErrorWidget();
+                        : NoDataFoundErrorWidget(isResultNotFoundMsg: false);
                   },
                 ),
               ),

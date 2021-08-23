@@ -46,6 +46,7 @@ class GoogleMapsState extends State<GoogleMaps> {
     return new Scaffold(
       body: widget.latitude != null && widget.longitude != null
           ? GoogleMap(
+              zoomGesturesEnabled: true,
               mapType: MapType.normal,
               initialCameraPosition: _kGooglePlex!,
               onMapCreated: (GoogleMapController controller) {

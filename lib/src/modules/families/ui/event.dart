@@ -79,19 +79,21 @@ class _EventPageState extends State<EventPage> {
                   width: Globals.deviceType == "phone" ? 40 : 70,
                   child: Wrap(alignment: WrapAlignment.center, children: [
                     Text(
-                      Utility.getMonthFromDate(list.start
-                                  .toString()
-                                  .contains('dateTime')
-                              ? list.start['dateTime']
-                                  .toString()
-                                  .substring(0, 10)
-                              : list.start['date'].toString().substring(0, 10))
-                          .toString()
-                          .split("/")[0],
-                      style: Theme.of(context).textTheme.headline5!.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                    ),
+                        Utility.getMonthFromDate(
+                                list.start.toString().contains('dateTime')
+                                    ? list.start['dateTime']
+                                        .toString()
+                                        .substring(0, 10)
+                                    : list.start['date']
+                                        .toString()
+                                        .substring(0, 10))
+                            .toString()
+                            .split("/")[0],
+                        style: Theme.of(context).textTheme.headline5!
+                        // .copyWith(
+                        // fontWeight: FontWeight.w500,
+                        // ),
+                        ),
                     Globals.selectedLanguage != null &&
                             Globals.selectedLanguage != "English"
                         ? TranslationWidget(
@@ -148,15 +150,15 @@ class _EventPageState extends State<EventPage> {
                             fromLanguage: "en",
                             builder: (translatedMessage) => Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.50,
+                                      MediaQuery.of(context).size.width * 0.80,
                                   child: Text(
                                     translatedMessage.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5!
-                                        .copyWith(
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                    style:
+                                        Theme.of(context).textTheme.headline2!
+                                    // .copyWith(
+                                    //   fontWeight: FontWeight.w500,
+                                    // )
+                                    ,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ))
@@ -164,12 +166,11 @@ class _EventPageState extends State<EventPage> {
                             width: MediaQuery.of(context).size.width * 0.50,
                             child: Text(
                               list.summary ?? '-',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5!
-                                  .copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              style: Theme.of(context).textTheme.headline5!
+                              // .copyWith(
+                              //   fontWeight: FontWeight.w500,
+                              // )
+                              ,
                               overflow: TextOverflow.ellipsis,
                             )),
                   ],

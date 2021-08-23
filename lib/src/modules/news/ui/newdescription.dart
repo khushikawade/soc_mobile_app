@@ -80,8 +80,6 @@ class _NewdescriptionState extends State<Newdescription> {
                         alignment: Alignment.center,
                         child: ClipRRect(
                           child: CachedNetworkImage(
-                            height: MediaQuery.of(context).size.height * 0.15,
-                            width: MediaQuery.of(context).size.width * 0.5,
                             fit: BoxFit.fill,
                             imageUrl: Globals.homeObjet["App_Logo__c"],
                             placeholder: (context, url) => Container(

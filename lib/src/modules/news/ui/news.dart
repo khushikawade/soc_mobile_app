@@ -238,7 +238,8 @@ class _NewsPageState extends State<NewsPage> {
                                       ? _buildList(state.obj)
                                       : Expanded(
                                           child: ListView(children: [
-                                            NoDataFoundErrorWidget()
+                                            NoDataFoundErrorWidget(
+                                                isResultNotFoundMsg: false)
                                           ]),
                                         );
                                 } else if (state is NewsLoading) {

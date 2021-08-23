@@ -170,7 +170,7 @@ class _SubListPageState extends State<SubListPage> {
                             },
                           ),
                         )
-                      : NoDataFoundErrorWidget();
+                      : NoDataFoundErrorWidget(isResultNotFoundMsg: false);
                 } else {
                   return Container();
                 }
@@ -196,7 +196,7 @@ class _SubListPageState extends State<SubListPage> {
                                 },
                               ),
                             )
-                          : NoDataFoundErrorWidget();
+                          : NoDataFoundErrorWidget(isResultNotFoundMsg: false);
                     } else {
                       return Container();
                     }

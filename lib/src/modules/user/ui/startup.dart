@@ -168,7 +168,8 @@ class _StartupPageState extends State<StartupPage> {
                                     homeObj: state.obj,
                                   ),
                                 ))
-                            : NoDataFoundErrorWidget();
+                            : NoDataFoundErrorWidget(
+                                isResultNotFoundMsg: false);
                       } else if (state is HomeErrorReceived) {
                         ErrorMsgWidget();
                       }

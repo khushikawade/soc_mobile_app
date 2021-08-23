@@ -275,7 +275,9 @@ class _FamilyPageState extends State<FamilyPage> {
                                             },
                                           )
                                         : ListView(shrinkWrap: true, children: [
-                                            NoDataFoundErrorWidget()
+                                            NoDataFoundErrorWidget(
+                                              isResultNotFoundMsg: false,
+                                            )
                                           ]);
                                   } else if (state is ErrorLoading) {
                                     return ListView(
