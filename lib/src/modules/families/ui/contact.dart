@@ -407,6 +407,7 @@ class _ContactPageState extends State<ContactPage> {
                 Widget child,
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
+                Globals.isNetworkError = !connected;
 
                 if (connected) {
                   if (iserrorstate == true) {

@@ -89,11 +89,7 @@ class _EventPageState extends State<EventPage> {
                                         .substring(0, 10))
                             .toString()
                             .split("/")[0],
-                        style: Theme.of(context).textTheme.headline5!
-                        // .copyWith(
-                        // fontWeight: FontWeight.w500,
-                        // ),
-                        ),
+                        style: Theme.of(context).textTheme.headline5!),
                     Globals.selectedLanguage != null &&
                             Globals.selectedLanguage != "English"
                         ? TranslationWidget(
@@ -173,6 +169,34 @@ class _EventPageState extends State<EventPage> {
                               ,
                               overflow: TextOverflow.ellipsis,
                             )),
+                    Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English"
+                        ? TranslationWidget(
+                            message: Utility.convertDateFormat(list.start!) +
+                                " - " +
+                                Utility.convertDateFormat(list.end!),
+                            toLanguage: Globals.selectedLanguage,
+                            fromLanguage: "en",
+                            builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(
+                                      fontWeight: FontWeight.normal,
+                                      height: 1.5),
+                            ),
+                          )
+                        : Text(
+                            Utility.convertDateFormat(list.startDate!) +
+                                " - " +
+                                Utility.convertDateFormat(list.endDate!),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(
+                                    fontWeight: FontWeight.normal, height: 1.5),
+                          ),
                   ],
                 ),
               ],
@@ -274,6 +298,7 @@ class _EventPageState extends State<EventPage> {
                 Widget child,
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
+                Globals.isNetworkError = !connected;
 
                 if (connected) {
                   if (iserrorstate == true) {
