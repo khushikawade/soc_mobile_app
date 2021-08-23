@@ -158,9 +158,9 @@ class Utility {
     try {
       String dateNew = date;
       final string = dateNew.toString();
-      final formatter = DateFormat('yyyy-mm-dd');
+      final formatter = DateFormat('yyyy-MM-dd');
       final dateTime = formatter.parse(string);
-      final DateFormat formatNew = DateFormat('dd/mm/yyyy');
+      final DateFormat formatNew = DateFormat('dd/MM/yyyy');
       final String formatted = formatNew.format(dateTime);
       // return DateTime.parse((dateNew));
       // print(formatted);
