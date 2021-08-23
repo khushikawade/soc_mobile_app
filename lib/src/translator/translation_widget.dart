@@ -21,6 +21,7 @@ class TranslationWidget extends StatefulWidget {
 
   @override
   _TranslationWidgetState createState() => _TranslationWidgetState();
+
 }
 
 class _TranslationWidgetState extends State<TranslationWidget> {
@@ -29,20 +30,23 @@ class _TranslationWidgetState extends State<TranslationWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldKey = Scaffold.of(context);
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
     ConnectivityResult? connectivity;
 
-    void callsnackbar() {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        Globals.rootScaffoldMessengerKey.currentState!.showSnackBar(SnackBar(
-          content: const Text(
-            'Unable to translate please check internet connection',
-          ),
-          backgroundColor: Colors.black.withOpacity(0.8),
-        ));
-      });
-    }
+    // void callsnackbar() {
+    //   WidgetsBinding.instance!.addPostFrameCallback((_) {
+    //     // Globals.rootScaffoldMessengerKey.currentState!
+    //   final scaffoldKey = Scaffold.of(context);
+    //      scaffoldKey.showSnackBar(SnackBar(
+    //       content: const Text(
+    //         'Unable to translate please check internet connection',
+    //       ),
+    //       backgroundColor: Colors.black.withOpacity(0.8),
+    //     ));
+    //   });
+    // }
 
     return FutureBuilder(
       future: TranslationAPI.translate(widget.message!, toLanguageCode),
@@ -53,13 +57,36 @@ class _TranslationWidgetState extends State<TranslationWidget> {
           default:
             if (snapshot.hasError) {
               if (Globals.isNetworkError == false) {
-                final bool connected = connectivity != ConnectivityResult.none;
-                translation = "Network error";
-                Globals.isNetworkError = true;
+              Globals.isNetworkError = true;
+              Future.delayed(const Duration(seconds: 3), () {
+
+  scaffoldKey.showSnackBar(SnackBar(
+          content: const Text(
+            'Unable to translate please check internet connection\n\n',
+          ),
+          backgroundColor: Colors.black.withOpacity(0.8),
+      //    padding: EdgeInsets.only(
+      //   left: 16,
+      // ),
+      // margin: EdgeInsets.only(left: 16, right: 16, bottom: 30.0),
+        )); 
+});
+
+                
+           
+                // final bool connected = connectivity != ConnectivityResult.none;
+                // translation = "Network error";
+                // setState(() {
+                  
+                // });               
+                    //  callsnackbar();
+                  
+       
+      
               } else {
-                translation = widget.toLanguage!;
+                translation = widget.message!;
               }
-              // callsnackbar();
+         
             } else {
               translation = snapshot.data;
               Globals.isNetworkError = false;

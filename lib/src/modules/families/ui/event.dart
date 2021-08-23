@@ -201,17 +201,18 @@ class _EventPageState extends State<EventPage> {
                         indicatorColor: Theme.of(context).colorScheme.primary,
                         unselectedLabelColor: Colors.black,
                         unselectedLabelStyle: TextStyle(
-                          fontSize: 22.0,
+                          fontSize: 18.0,
                           fontWeight: FontWeight.normal,
                           color: Theme.of(context).colorScheme.primaryVariant,
                         ),
                         labelStyle: TextStyle(
-                          fontSize: 22.0,
+                          fontSize: 18.0,
                           fontWeight: FontWeight.w500,
                           color: Theme.of(context).colorScheme.primaryVariant,
                         ),
+                        automaticIndicatorColorAdjustment: true,
                         tabs: [
-                          Tab(text: 'Upcoming'),
+                          Tab(text: 'Upcoming', ),
                           Tab(text: 'Past'),
                         ],
                       ),
@@ -284,7 +285,7 @@ class _EventPageState extends State<EventPage> {
                 }
 
                 return connected
-                    ? Column(
+                    ? ListView(
                         children: [
                           BlocBuilder<FamilyBloc, FamilyState>(
                               bloc: _eventBloc,
