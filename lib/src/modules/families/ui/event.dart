@@ -172,9 +172,17 @@ class _EventPageState extends State<EventPage> {
                     Globals.selectedLanguage != null &&
                             Globals.selectedLanguage != "English"
                         ? TranslationWidget(
-                            message: Utility.convertDateFormat(list.start!) +
-                                " - " +
-                                Utility.convertDateFormat(list.end!),
+                            message: Utility.convertDateFormat2(list.start
+                                .toString()
+                                .contains('dateTime')
+                            ? list.start['dateTime'].toString().substring(0, 10)
+                            : list.start['date'].toString().substring(0, 10)) +
+                        " - " +
+                        Utility.convertDateFormat2(list.end
+                                .toString()
+                                .contains('dateTime')
+                            ? list.end['dateTime'].toString().substring(0, 10)
+                            : list.end['date'].toString().substring(0, 10)),
                             toLanguage: Globals.selectedLanguage,
                             fromLanguage: "en",
                             builder: (translatedMessage) => Text(
@@ -188,9 +196,17 @@ class _EventPageState extends State<EventPage> {
                             ),
                           )
                         : Text(
-                            Utility.convertDateFormat(list.startDate!) +
-                                " - " +
-                                Utility.convertDateFormat(list.endDate!),
+                           Utility.convertDateFormat2(list.start
+                                .toString()
+                                .contains('dateTime')
+                            ? list.start['dateTime'].toString().substring(0, 10)
+                            : list.start['date'].toString().substring(0, 10)) +
+                        " - " +
+                        Utility.convertDateFormat2(list.end
+                                .toString()
+                                .contains('dateTime')
+                            ? list.end['dateTime'].toString().substring(0, 10)
+                            : list.end['date'].toString().substring(0, 10)),
                             style: Theme.of(context)
                                 .textTheme
                                 .headline2!
@@ -206,76 +222,88 @@ class _EventPageState extends State<EventPage> {
   }
 
   Widget _buildTabs(state) {
-    return Container(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-          DefaultTabController(
-              length: 2,
-              initialIndex: 0,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(
-                      child: TabBar(
-                        isScrollable: true,
-                        indicatorSize: TabBarIndicatorSize.label,
-                        labelColor:
-                            Theme.of(context).colorScheme.primaryVariant,
-                        indicatorColor: Theme.of(context).colorScheme.primary,
-                        unselectedLabelColor: Colors.black,
-                        unselectedLabelStyle: TextStyle(
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.normal,
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                        ),
-                        labelStyle: TextStyle(
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.w500,
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                        ),
-                        tabs: [
-                          Tab(text: 'Upcoming'),
-                          Tab(text: 'Past'),
-                        ],
-                      ),
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+      DefaultTabController(
+          length: 2,
+          initialIndex: 0,
+          child:Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  child: TabBar(
+                    isScrollable: true,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    labelColor:
+                        Theme.of(context).colorScheme.primaryVariant,
+                    indicatorColor: Theme.of(context).colorScheme.primary,
+                    unselectedLabelColor: Colors.black,
+                    unselectedLabelStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.primaryVariant,
                     ),
-                    Container(
-                        height: Globals.deviceType == "phone"
-                            ? MediaQuery.of(context).size.height * 0.798
-                            : MediaQuery.of(context).size.height * 0.8,
-                        decoration: BoxDecoration(
-                            border: Border(
-                                top: BorderSide(
-                                    color: Colors.grey, width: 0.5))),
-                        child: TabBarView(children: <Widget>[
-                          Tab(
-                              child: new RefreshIndicator(
-                            child: new ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                padding: EdgeInsets.only(bottom: 35),
-                                itemCount: state.futureListobj!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return _buildList(state.futureListobj![index],
-                                      index, state.futureListobj);
-                                }),
-                            onRefresh: refreshPage,
-                          )),
-                          Tab(
-                              child: new RefreshIndicator(
-                            child: new ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                padding: EdgeInsets.only(bottom: 35),
-                                itemCount: state.pastListobj!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return _buildList(state.pastListobj![index],
-                                      index, state.pastListobj);
-                                }),
-                            onRefresh: refreshPage,
-                          ))
-                        ])),
-                  ]))
-        ]));
+                    labelStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                    ),
+                    tabs: [
+                       Padding(
+                         padding: const EdgeInsets.symmetric( horizontal: 50),
+                         child: Align(alignment: Alignment.centerLeft,child: 
+                           Tab(text: 'Upcoming'),
+                              ),
+                       ),
+                       
+                       Padding(
+                        padding: const EdgeInsets.symmetric( horizontal: 50),
+                         child: Tab(text: 'Past'),
+                       ),
+                    
+                    ],
+                  ),
+                ),
+                Container(
+                    height: Globals.deviceType == "phone"
+                        ? MediaQuery.of(context).size.height * 0.70
+                        : MediaQuery.of(context).size.height * 0.8,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(
+                                color: Colors.grey, width: 0.5))),
+                    child: TabBarView(children: <Widget>[
+                      Tab(
+                          child: new RefreshIndicator(
+                        child:
+                         new ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            padding: EdgeInsets.only(bottom: 35),
+                            itemCount: state.futureListobj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildList(state.futureListobj![index],
+                                  index, state.futureListobj);
+                            }),
+                        onRefresh: refreshPage,
+                      )),
+                      Tab(
+                          child: new RefreshIndicator(
+                        child: 
+                        new 
+                        ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            padding: EdgeInsets.only(bottom: 35),
+                            itemCount: state.pastListobj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildList(state.pastListobj![index],
+                                  index, state.pastListobj);
+                            }),
+                        onRefresh: refreshPage,
+                      ))
+                    ])),
+              ]))
+    ]);
   }
 
   Widget build(BuildContext context) {
@@ -309,7 +337,7 @@ class _EventPageState extends State<EventPage> {
                 }
 
                 return connected
-                    ? Column(
+                    ? ListView(
                         children: [
                           BlocBuilder<FamilyBloc, FamilyState>(
                               bloc: _eventBloc,
