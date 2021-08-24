@@ -101,9 +101,7 @@ class _SubListPageState extends State<SubListPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-    } else {
-      // print("");
-    }
+    } else {}
   }
 
   Widget _buildList(int index, Widget listItem, obj) {
@@ -172,11 +170,7 @@ class _SubListPageState extends State<SubListPage> {
                             },
                           ),
                         )
-                      : ErrorMessageWidget(
-                          msg: "No data found",
-                          isnetworkerror: false,
-                          imgPath: "assets/images/error_icon.svg",
-                        );
+                      : NoDataFoundErrorWidget(isResultNotFoundMsg: false);
                 } else {
                   return Container();
                 }
@@ -193,8 +187,6 @@ class _SubListPageState extends State<SubListPage> {
                               child: ListView.builder(
                                 scrollDirection: Axis.vertical,
                                 padding: EdgeInsets.only(bottom: 20),
-                                // shrinkWrap: true,
-                                // physics: NeverScrollableScrollPhysics(),
                                 itemCount: state.obj!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return _buildList(
@@ -204,7 +196,7 @@ class _SubListPageState extends State<SubListPage> {
                                 },
                               ),
                             )
-                          : NoDataFoundErrorWidget();
+                          : NoDataFoundErrorWidget(isResultNotFoundMsg: false);
                     } else {
                       return Container();
                     }

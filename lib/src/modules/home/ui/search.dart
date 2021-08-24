@@ -4,7 +4,6 @@ import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/hive_db_services.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -15,11 +14,12 @@ import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
-
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,14 +41,13 @@ class _SearchPageState extends State<SearchPage> {
   final _controller = TextEditingController();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
-
   final HomeBloc _homeBloc = new HomeBloc();
-
   FocusNode myFocusNode = new FocusNode();
   final _debouncer = Debouncer(milliseconds: 500);
   HomeBloc _searchBloc = new HomeBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   static const double _kIconSize = 38.0;
+  bool? isDBListEmpty = true;
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -61,6 +60,15 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    Globals.callsnackbar = true;
+    getListLength();
+  }
+
+  getListLength() async {
+    int length = await HiveDbServices().getListLength(Strings.hiveLogName);
+    length < 1 ? isDBListEmpty = true : isDBListEmpty = false;
+    print(" ************");
+    print(isDBListEmpty);
   }
 
   deleteItem() async {
@@ -235,29 +243,7 @@ class _SearchPageState extends State<SearchPage> {
                       },
                     ),
                   )
-                : Container(
-                    height: 0, width: 0,
-
-                    // Expanded(
-                    //     child: ListView(children: [
-                    //       ErrorMessageWidget(
-                    //         msg: "No data found",
-                    //         isnetworkerror: false,
-                    //         imgPath: "assets/images/error_icon.svg",
-                    //       ),
-                    // SpacerWidget(12),
-                    // Globals.selectedLanguage != null &&
-                    //         Globals.selectedLanguage != "English"
-                    //     ?   TranslationWidget(   scaffoldKey: _scaffoldKey,
-                    //         message: "No  data found",
-                    //         toLanguage: Globals.selectedLanguage,
-                    //         fromLanguage: "en",
-                    //         builder: (translatedMessage) => Text(
-                    //           translatedMessage.toString(),
-                    //         ),
-                    //       )
-                    //     : Text("No data found"),
-                  );
+                : EmptyContainer();
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Expanded(
               child: Container(
@@ -404,8 +390,8 @@ class _SearchPageState extends State<SearchPage> {
                           );
                         }).toList(),
                       ))
-                    : Container(
-                        height: 0,
+                    : NoDataFoundErrorWidget(
+                        isResultNotFoundMsg: true,
                       ));
           } else if (state is SearchLoading) {
             return Expanded(
@@ -428,6 +414,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildHeading() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
         Globals.selectedLanguage != null &&
@@ -489,6 +476,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void addtoDataBase(Recent log) async {
     bool isSuccess = await HiveDbServices().addData(log, Strings.hiveLogName);
+    isDBListEmpty = false;
   }
 
   @override
@@ -524,6 +512,7 @@ class _SearchPageState extends State<SearchPage> {
                       ? Container(
                           child:
                               Column(mainAxisSize: MainAxisSize.max, children: [
+                            SpacerWidget(_kLabelSpacing / 4),
                             _buildHeading(),
                             SpacerWidget(_kLabelSpacing / 2),
                             _buildSearchbar(),
@@ -541,30 +530,16 @@ class _SearchPageState extends State<SearchPage> {
                               height: 0,
                               width: 0,
                               child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    Globals.homeObjet = state.obj;
-                                    setState(() {});
-                                  } else if (state is HomeErrorReceived) {
-                                    Container(
-                                      alignment: Alignment.center,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.8,
-                                      child: Center(
-                                          child:
-                                              Text("Unable to load the data")),
-                                    );
-                                  }
-                                },
-                                child: Container(
-                                  height: 0,
-                                  width: 0,
-                                ),
-                              ),
+                                  bloc: _homeBloc,
+                                  listener: (context, state) async {
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      Globals.homeObjet = state.obj;
+                                      setState(() {});
+                                    } else if (state is HomeErrorReceived) {}
+                                  },
+                                  child: EmptyContainer()),
                             ),
                           ]),
                         )
@@ -579,7 +554,6 @@ class _SearchPageState extends State<SearchPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }

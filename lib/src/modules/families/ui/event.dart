@@ -5,6 +5,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -12,7 +13,6 @@ import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
@@ -29,21 +29,24 @@ class EventPage extends StatefulWidget {
   _EventPageState createState() => _EventPageState();
 }
 
-class _EventPageState extends State<EventPage> {
+class _EventPageState extends State<EventPage>
+    with AutomaticKeepAliveClientMixin<EventPage> {
   static const double _kLabelSpacing = 15.0;
   FamilyBloc _eventBloc = FamilyBloc();
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
-
+  double? _ktabmargin = 50;
+  @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();
     _eventBloc.add(CalendarListEvent());
+    // _ktabmargin = MediaQuery.of(context).size.height * 0.25;
   }
 
   Widget _buildList(list, int index, mainObj) {
-    // print(list.start[0]);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -80,19 +83,17 @@ class _EventPageState extends State<EventPage> {
                   width: Globals.deviceType == "phone" ? 40 : 70,
                   child: Wrap(alignment: WrapAlignment.center, children: [
                     Text(
-                      Utility.getMonthFromDate(list.start
-                                  .toString()
-                                  .contains('dateTime')
-                              ? list.start['dateTime']
-                                  .toString()
-                                  .substring(0, 10)
-                              : list.start['date'].toString().substring(0, 10))
-                          .toString()
-                          .split("/")[0],
-                      style: Theme.of(context).textTheme.headline5!.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                    ),
+                        Utility.getMonthFromDate(
+                                list.start.toString().contains('dateTime')
+                                    ? list.start['dateTime']
+                                        .toString()
+                                        .substring(0, 10)
+                                    : list.start['date']
+                                        .toString()
+                                        .substring(0, 10))
+                            .toString()
+                            .split("/")[0],
+                        style: Theme.of(context).textTheme.headline5!),
                     Globals.selectedLanguage != null &&
                             Globals.selectedLanguage != "English"
                         ? TranslationWidget(
@@ -149,30 +150,85 @@ class _EventPageState extends State<EventPage> {
                             fromLanguage: "en",
                             builder: (translatedMessage) => Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.50,
+                                      MediaQuery.of(context).size.width * 0.70,
                                   child: Text(
                                     translatedMessage.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5!
-                                        .copyWith(
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                    style:
+                                        Theme.of(context).textTheme.headline2!
+                                    // .copyWith(
+                                    //   fontWeight: FontWeight.w500,
+                                    // )
+                                    ,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ))
                         : Container(
-                            width: MediaQuery.of(context).size.width * 0.50,
+                            width: MediaQuery.of(context).size.width * 0.70,
                             child: Text(
                               list.summary ?? '-',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5!
-                                  .copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              style: Theme.of(context).textTheme.headline5!
+                              // .copyWith(
+                              //   fontWeight: FontWeight.w500,
+                              // )
+                              ,
                               overflow: TextOverflow.ellipsis,
                             )),
+                    Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English"
+                        ? TranslationWidget(
+                            message: Utility.convertDateFormat2(
+                                    list.start.toString().contains('dateTime')
+                                        ? list.start['dateTime']
+                                            .toString()
+                                            .substring(0, 10)
+                                        : list.start['date']
+                                            .toString()
+                                            .substring(0, 10)) +
+                                " - " +
+                                Utility.convertDateFormat2(
+                                    list.end.toString().contains('dateTime')
+                                        ? list.end['dateTime']
+                                            .toString()
+                                            .substring(0, 10)
+                                        : list.end['date']
+                                            .toString()
+                                            .substring(0, 10)),
+                            toLanguage: Globals.selectedLanguage,
+                            fromLanguage: "en",
+                            builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(
+                                      fontWeight: FontWeight.normal,
+                                      height: 1.5),
+                            ),
+                          )
+                        : Text(
+                            Utility.convertDateFormat2(
+                                    list.start.toString().contains('dateTime')
+                                        ? list.start['dateTime']
+                                            .toString()
+                                            .substring(0, 10)
+                                        : list.start['date']
+                                            .toString()
+                                            .substring(0, 10)) +
+                                " - " +
+                                Utility.convertDateFormat2(
+                                    list.end.toString().contains('dateTime')
+                                        ? list.end['dateTime']
+                                            .toString()
+                                            .substring(0, 10)
+                                        : list.end['date']
+                                            .toString()
+                                            .substring(0, 10)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(
+                                    fontWeight: FontWeight.normal, height: 1.5),
+                          ),
                   ],
                 ),
               ],
@@ -182,78 +238,71 @@ class _EventPageState extends State<EventPage> {
   }
 
   Widget _buildTabs(state) {
-    return Container(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-          // SizedBox(height: 20.0),
-          DefaultTabController(
-              length: 2, // length of tabs
-              initialIndex: 0,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(
-                      child: TabBar(
-                        isScrollable: true,
-                        indicatorSize: TabBarIndicatorSize.label,
-                        labelColor:
-                            Theme.of(context).colorScheme.primaryVariant,
-                        indicatorColor: Theme.of(context).colorScheme.primary,
-                        unselectedLabelColor: Colors.black,
-                        unselectedLabelStyle: TextStyle(
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.normal,
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                        ),
-                        labelStyle: TextStyle(
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.w500,
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                        ),
-                        tabs: [
-                          Tab(text: 'Upcoming'),
-                          Tab(text: 'Past'),
-                        ],
-                      ),
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
+        Widget>[
+      DefaultTabController(
+          length: 2,
+          initialIndex: 0,
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.label,
+                    labelColor: Theme.of(context).colorScheme.primaryVariant,
+                    indicatorColor: Theme.of(context).colorScheme.primary,
+                    unselectedLabelColor: Colors.black,
+                    unselectedLabelStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.primaryVariant,
                     ),
-                    Container(
-                        height: Globals.deviceType == "phone"
-                            ? MediaQuery.of(context).size.height * 0.798
-                            : MediaQuery.of(context).size.height * 0.8,
-                        decoration: BoxDecoration(
-                            border: Border(
-                                top: BorderSide(
-                                    color: Colors.grey, width: 0.5))),
-                        child: TabBarView(children: <Widget>[
-                          Tab(
-                              child: new RefreshIndicator(
-                            child: new ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                padding: EdgeInsets.only(bottom: 20),
-                                itemCount: state.futureListobj!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return _buildList(state.futureListobj![index],
-                                      index, state.futureListobj);
-                                }),
-                            onRefresh: refreshPage,
-                          )),
-                          Tab(
-                              child: new RefreshIndicator(
-                            child: new ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                padding: EdgeInsets.only(bottom: 20),
-                                itemCount: state.pastListobj!.length,
-                                // shrinkWrap: true,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return _buildList(state.pastListobj![index],
-                                      index, state.pastListobj);
-                                }),
-                            onRefresh: refreshPage,
-                          ))
-                        ])),
-                  ]))
-        ]));
+                    labelStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                    ),
+                    tabs: [
+                      Tab(text: 'Upcoming'),
+                      Tab(text: 'Past'),
+                    ],
+                  ),
+                ),
+                Container(
+                    height: Globals.deviceType == "phone"
+                        ? MediaQuery.of(context).size.height * 0.85
+                        : MediaQuery.of(context).size.height * 0.85,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(color: Colors.grey, width: 0.5))),
+                    child: TabBarView(children: <Widget>[
+                      Tab(
+                          child: new RefreshIndicator(
+                        child: new ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            padding: EdgeInsets.only(bottom: 35),
+                            itemCount: state.futureListobj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildList(state.futureListobj![index],
+                                  index, state.futureListobj);
+                            }),
+                        onRefresh: refreshPage,
+                      )),
+                      Tab(
+                          child: new RefreshIndicator(
+                        child: new ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            padding: EdgeInsets.only(bottom: 35),
+                            itemCount: state.pastListobj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildList(state.pastListobj![index],
+                                  index, state.pastListobj);
+                            }),
+                        onRefresh: refreshPage,
+                      ))
+                    ])),
+              ]))
+    ]);
   }
 
   Widget build(BuildContext context) {
@@ -275,6 +324,7 @@ class _EventPageState extends State<EventPage> {
                 Widget child,
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
+                Globals.isNetworkError = !connected;
 
                 if (connected) {
                   if (iserrorstate == true) {
@@ -286,7 +336,7 @@ class _EventPageState extends State<EventPage> {
                 }
 
                 return connected
-                    ? Column(
+                    ? ListView(
                         children: [
                           BlocBuilder<FamilyBloc, FamilyState>(
                               bloc: _eventBloc,
@@ -301,53 +351,6 @@ class _EventPageState extends State<EventPage> {
                                       child: CircularProgressIndicator());
                                 } else if (state is CalendarListSuccess) {
                                   return _buildTabs(state);
-
-                                  // Column(children: [
-                                  //   _buildHeading("Upcoming"),
-                                  //   state.futureListobj!.length > 0
-                                  //       ? ListView.builder(
-                                  //           scrollDirection: Axis.vertical,
-                                  //           physics:
-                                  //               NeverScrollableScrollPhysics(),
-                                  //           itemCount:
-                                  //               state.futureListobj!.length,
-                                  //           shrinkWrap: true,
-                                  //           itemBuilder:
-                                  //               (BuildContext context,
-                                  //                   int index) {
-                                  //             return _buildList(
-                                  //                 state.futureListobj![
-                                  //                     index],
-                                  //                 index,
-                                  //                 state.futureListobj);
-                                  //           })
-                                  //       : Container(
-                                  //           height: 0,
-                                  //           width: 0,
-                                  //         ),
-                                  //   SpacerWidget(20),
-                                  //   _buildHeading("Past"),
-                                  //   state.pastListobj!.length > 0
-                                  //       ? ListView.builder(
-                                  //           scrollDirection: Axis.vertical,
-                                  //           itemCount:
-                                  //               state.pastListobj!.length,
-                                  //           shrinkWrap: true,
-                                  //           physics:
-                                  //               NeverScrollableScrollPhysics(),
-                                  //           itemBuilder:
-                                  //               (BuildContext context,
-                                  //                   int index) {
-                                  //             return _buildList(
-                                  //                 state.pastListobj![index],
-                                  //                 index,
-                                  //                 state.pastListobj);
-                                  //           })
-                                  //       : Container(
-                                  //           height: 0,
-                                  //           width: 0,
-                                  //         ),
-                                  // ]);
                                 } else if (state is ErrorLoading) {
                                   return ListView(
                                       shrinkWrap: true,
@@ -359,20 +362,16 @@ class _EventPageState extends State<EventPage> {
                             height: 0,
                             width: 0,
                             child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
-                                }
-                              },
-                              child: Container(
-                                height: 0,
-                                width: 0,
-                              ),
-                            ),
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  }
+                                },
+                                child: EmptyContainer()),
                           ),
                         ],
                       )
@@ -388,6 +387,5 @@ class _EventPageState extends State<EventPage> {
     refreshKey.currentState?.show(atTop: false);
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());
-    // print("refresh call");
   }
 }

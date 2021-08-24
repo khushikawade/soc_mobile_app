@@ -266,7 +266,8 @@ class _SocialPageState extends State<SocialPage> {
                                           child: ListView(
                                               shrinkWrap: true,
                                               children: [
-                                                NoDataFoundErrorWidget()
+                                                NoDataFoundErrorWidget(
+                                                    isResultNotFoundMsg: false)
                                               ]),
                                         );
                                 } else if (state is Loading) {

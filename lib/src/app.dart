@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/user/ui/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,9 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
   @override
   void initState() {
     super.initState();
@@ -22,24 +26,13 @@ class _AppState extends State<App> {
     super.initState();
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     title: 'Solved',
-  //     debugShowCheckedModeBanner: false,
-  //     theme: AppTheme.lightTheme,
-  //     darkTheme: AppTheme.lightTheme,
-  //     home: StartupPage(),
-  //   );
-  // }
-  // Adaptive Theme starts
-
   Widget build(BuildContext context) {
     return AdaptiveTheme(
       light: AppTheme.lightTheme,
       initial: AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => MaterialApp(
         debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
         title: 'Adaptive Theme Demo',
         theme: theme,
         darkTheme: darkTheme,

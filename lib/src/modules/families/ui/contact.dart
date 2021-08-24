@@ -3,15 +3,15 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/error_widget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/mapwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
-import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -48,6 +48,7 @@ class _ContactPageState extends State<ContactPage> {
   void initState() {
     super.initState();
     homebloc.add(FetchBottomNavigationBar());
+    Globals.callsnackbar = true;
   }
 
   @override
@@ -127,7 +128,7 @@ class _ContactPageState extends State<ContactPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Container(
-        height: _kboxheight * 2.5,
+        height: MediaQuery.of(context).size.height * 0.20,
         width: MediaQuery.of(context).size.width * 1,
         decoration: BoxDecoration(
             border: Border.all(
@@ -142,30 +143,28 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget _buildmap() {
     return Container(
-      margin: EdgeInsets.only(
-          top: _kLabelSpacing / 3,
-          bottom: _kLabelSpacing / 1.5,
-          right: _kLabelSpacing / 3,
-          left: _kLabelSpacing / 3),
-      decoration: BoxDecoration(
-          color: AppTheme.kmapBackgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(4.0))),
-      child: Globals.homeObjet["Contact_Office_Location__Latitude__s"] !=
-                  null &&
-              Globals.homeObjet["Contact_Office_Location__Longitude__s"] != null
-          ? SizedBox(
-              height: _kboxheight * 2,
-              child: GoogleMaps(
-                latitude:
-                    Globals.homeObjet["Contact_Office_Location__Latitude__s"],
-                longitude:
-                    Globals.homeObjet["Contact_Office_Location__Longitude__s"],
-              ),
-            )
-          : Container(
-              height: 0,
-            ),
-    );
+        margin: EdgeInsets.only(
+            top: _kLabelSpacing / 3,
+            bottom: _kLabelSpacing / 1.5,
+            right: _kLabelSpacing / 3,
+            left: _kLabelSpacing / 3),
+        decoration: BoxDecoration(
+            color: AppTheme.kmapBackgroundColor,
+            borderRadius: BorderRadius.all(Radius.circular(4.0))),
+        child: Globals.homeObjet["Contact_Office_Location__Latitude__s"] !=
+                    null &&
+                Globals.homeObjet["Contact_Office_Location__Longitude__s"] !=
+                    null
+            ? SizedBox(
+                height: _kboxheight * 2,
+                child: GoogleMaps(
+                  latitude:
+                      Globals.homeObjet["Contact_Office_Location__Latitude__s"],
+                  longitude: Globals
+                      .homeObjet["Contact_Office_Location__Longitude__s"],
+                ),
+              )
+            : EmptyContainer());
   }
 
   Widget _buildPhoneWidget() {
@@ -282,25 +281,33 @@ class _ContactPageState extends State<ContactPage> {
                       ),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
-          InkWell(
-            onTap: () {
-              if (Globals.homeObjet["Contact_Phone__c"] != null) {
-                urlobj.callurlLaucher(
-                    context, "tel:" + Globals.homeObjet["Contact_Phone__c"]);
-              }
-            },
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
-                ? TranslationWidget(
-                    message: Globals.homeObjet["Contact_Phone__c"] ?? '-',
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: InkWell(
+              onTap: () {
+                if (Globals.homeObjet["Contact_Phone__c"] != null) {
+                  urlobj.callurlLaucher(
+                      context, "tel:" + Globals.homeObjet["Contact_Phone__c"]);
+                }
+              },
+              child: Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English"
+                  ? TranslationWidget(
+                      message: Globals.homeObjet["Contact_Phone__c"] ?? '-',
+                      toLanguage: Globals.selectedLanguage,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
                         translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.bodyText1!),
-                  )
-                : Text(Globals.homeObjet["Contact_Phone__c"] ?? '-',
-                    style: Theme.of(context).textTheme.bodyText1!),
+                        style: Theme.of(context).textTheme.bodyText1!,
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  : Text(
+                      Globals.homeObjet["Contact_Phone__c"] ?? '-',
+                      style: Theme.of(context).textTheme.bodyText1!,
+                      textAlign: TextAlign.center,
+                    ),
+            ),
           )
         ],
       ),
@@ -329,6 +336,8 @@ class _ContactPageState extends State<ContactPage> {
       padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Globals.selectedLanguage != null &&
                   Globals.selectedLanguage != "English"
@@ -350,15 +359,20 @@ class _ContactPageState extends State<ContactPage> {
                       ),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
-          InkWell(
-            onTap: () {
-              Globals.homeObjet["Contact_Email__c"] != null
-                  ? urlobj.callurlLaucher(context,
-                      'mailto:"${Globals.homeObjet["Contact_Email__c"]}"')
-                  : print("null value");
-            },
-            child: Text(Globals.homeObjet["Contact_Email__c"] ?? '-',
-                style: Theme.of(context).textTheme.bodyText1!),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: InkWell(
+              onTap: () {
+                Globals.homeObjet["Contact_Email__c"] != null
+                    ? urlobj.callurlLaucher(context,
+                        'mailto:"${Globals.homeObjet["Contact_Email__c"]}"')
+                    : print("null value");
+              },
+              child: Text(
+                Globals.homeObjet["Contact_Email__c"] ?? '-',
+                style: Theme.of(context).textTheme.bodyText1!,
+              ),
+            ),
           )
         ],
       ),
@@ -399,6 +413,7 @@ class _ContactPageState extends State<ContactPage> {
                 Widget child,
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
+                Globals.isNetworkError = !connected;
 
                 if (connected) {
                   if (iserrorstate == true) {
@@ -422,26 +437,20 @@ class _ContactPageState extends State<ContactPage> {
                               height: 0,
                               width: 0,
                               child: BlocListener<HomeBloc, HomeState>(
-                                bloc: homebloc,
-                                listener: (context, state) async {
-                                  if (state is HomeLoading) {
-                                    isloadingstate = true;
-                                    // print("inloading state");
-                                  }
-
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    Globals.homeObjet = state.obj;
-                                    isloadingstate = false;
-                                    setState(() {});
-                                  }
-                                },
-                                child: Container(
-                                  height: 0,
-                                  width: 0,
-                                ),
-                              ),
+                                  bloc: homebloc,
+                                  listener: (context, state) async {
+                                    if (state is HomeLoading) {
+                                      isloadingstate = true;
+                                    }
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      Globals.homeObjet = state.obj;
+                                      isloadingstate = false;
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: EmptyContainer()),
                             ),
                           ],
                         )
@@ -459,12 +468,12 @@ class _ContactPageState extends State<ContactPage> {
                           setState(() {});
                         }
                       },
-                      child: Container(),
+                      child: EmptyContainer(),
                     ),
                   ),
                 ]);
               },
-              child: Container()),
+              child: EmptyContainer()),
           onRefresh: refreshPage,
         ));
   }

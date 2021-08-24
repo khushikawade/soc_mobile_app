@@ -59,7 +59,6 @@ class _StartupPageState extends State<StartupPage> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     // print(pref.getInt(Strings.bottomNavigation));
     Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
-    // print(Globals.homeIndex);
   }
 
   @override
@@ -169,7 +168,8 @@ class _StartupPageState extends State<StartupPage> {
                                     homeObj: state.obj,
                                   ),
                                 ))
-                            : NoDataFoundErrorWidget();
+                            : NoDataFoundErrorWidget(
+                                isResultNotFoundMsg: false);
                       } else if (state is HomeErrorReceived) {
                         ErrorMsgWidget();
                       }

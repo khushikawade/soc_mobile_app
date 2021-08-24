@@ -87,7 +87,11 @@ class LanguageSelector {
                             SnackBar(
                               content: const Text(
                                 'Language already selected',
-                              ),
+                              ), behavior: SnackBarBehavior.floating,
+                                      margin: EdgeInsets.only(left: 16, right: 16, bottom: MediaQuery.of(context).size.height*0.08), padding: EdgeInsets.only(
+        left: 16,
+      ),
+
                               backgroundColor: Colors.black.withOpacity(0.8),
                             ),
                           );

@@ -1,7 +1,9 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/Strings.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 // ignore: must_be_immutable
 class NoInternetErrorWidget extends StatelessWidget {
@@ -15,10 +17,10 @@ class NoInternetErrorWidget extends StatelessWidget {
   }) : super(key: key);
 
   Widget build(BuildContext context) {
-    return _buildNetworkerror(connected);
+    return _buildNetworkerror(connected, context);
   }
 
-  Widget _buildNetworkerror(connected) {
+  Widget _buildNetworkerror(connected, BuildContext context) {
     return Stack(children: [
       Positioned(
         height: Globals.deviceType == "phone" ? 22.0 : 35,
@@ -48,8 +50,8 @@ class NoInternetErrorWidget extends StatelessWidget {
                             height: 0,
                           )
                         : SizedBox(
-                            height: 10,
-                            width: 10,
+                            height: Globals.deviceType == "phone" ? 12.0 : 20.0,
+                            width: Globals.deviceType == "phone" ? 12.0 : 20.0,
                             child: CircularProgressIndicator(
                               color: Colors.white,
                               strokeWidth: 2,
@@ -61,13 +63,19 @@ class NoInternetErrorWidget extends StatelessWidget {
           ),
         ),
       ),
-      Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        ErrorMessageWidget(
-          msg: "No Internet",
-          isnetworkerror: true,
-          imgPath: "assets/images/no_internet_icon.svg",
-        ),
-      ]),
+      Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+                alignment: Alignment.center,
+                child: SvgPicture.asset(
+                  Strings.noIntenetIconPath,
+                  fit: BoxFit.cover,
+                )),
+            SpacerWidget(12),
+            Text("No Internet", style: Theme.of(context).textTheme.bodyText1!),
+          ]),
     ]);
   }
 }

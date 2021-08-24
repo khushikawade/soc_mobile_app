@@ -1,11 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 class BackButtonWidget extends StatelessWidget {
-  static const double _kIconSize = 45.0;
-
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
+import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/families/modal/family_list.dart';
@@ -91,6 +92,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {
         yield ErrorLoading(err: e);
+        // yield CalendarListSuccess();
       }
     }
   }
@@ -149,12 +151,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<CalendarEventList>> getCalendarEventList() async {
     try {
-      final response = await http.get(
+          final response = await http.get(
         Uri.parse(
             'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
       );
-
-      // print(response.body);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         dataArray = data["items"];
