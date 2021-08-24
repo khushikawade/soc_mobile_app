@@ -265,7 +265,7 @@ class _FamilyPageState extends State<FamilyPage> {
                                             state.obj!.length > 0
                                         ? ListView.builder(
                                             padding:
-                                                EdgeInsets.only(bottom: 20),
+                                                EdgeInsets.only(bottom: 35),
                                             scrollDirection: Axis.vertical,
                                             itemCount: state.obj!.length,
                                             itemBuilder: (BuildContext context,
@@ -303,7 +303,6 @@ class _FamilyPageState extends State<FamilyPage> {
                                 },
                                 child: EmptyContainer()),
                           ),
-                          SpacerWidget(35)
                         ],
                       )
                     : NoInternetErrorWidget(
