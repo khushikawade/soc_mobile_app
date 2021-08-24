@@ -29,14 +29,16 @@ class EventPage extends StatefulWidget {
   _EventPageState createState() => _EventPageState();
 }
 
-class _EventPageState extends State<EventPage> {
+class _EventPageState extends State<EventPage>
+    with AutomaticKeepAliveClientMixin<EventPage> {
   static const double _kLabelSpacing = 15.0;
   FamilyBloc _eventBloc = FamilyBloc();
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
   double? _ktabmargin = 50;
-
+  @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();

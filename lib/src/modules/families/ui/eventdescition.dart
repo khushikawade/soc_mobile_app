@@ -26,14 +26,12 @@ class EventDescription extends StatefulWidget {
   _EventDescriptionState createState() => _EventDescriptionState();
 }
 
-class _EventDescriptionState extends State<EventDescription>
-    with AutomaticKeepAliveClientMixin<EventDescription> {
+class _EventDescriptionState extends State<EventDescription> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 95.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-  @override
-  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
