@@ -41,20 +41,6 @@ class _TranslationWidgetState extends State<TranslationWidget> {
     final scaffoldKey = Scaffold.of(context);
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
-    ConnectivityResult? connectivity;
-
-    // void callsnackbar() {
-    //   WidgetsBinding.instance!.addPostFrameCallback((_) {
-    //     // Globals.rootScaffoldMessengerKey.currentState!
-    //   final scaffoldKey = Scaffold.of(context);
-    //      scaffoldKey.showSnackBar(SnackBar(
-    //       content: const Text(
-    //         'Unable to translate please check internet connection',
-    //       ),
-    //       backgroundColor: Colors.black.withOpacity(0.8),
-    //     ));
-    //   });
-    // }
 
     return FutureBuilder(
       future: TranslationAPI.translate(widget.message!, toLanguageCode),
@@ -75,9 +61,9 @@ class _TranslationWidgetState extends State<TranslationWidget> {
                   padding: EdgeInsets.only(left: 16,right: 16),
               )); 
             });      
-              } else {
+              } 
                 translation = widget.message!;
-              }
+     
          
             } else {
               translation = snapshot.data;
