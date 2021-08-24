@@ -26,7 +26,7 @@ class TranslationWidget extends StatefulWidget {
 class _TranslationWidgetState extends State<TranslationWidget> {
   ConnectivityResult? connectivity;
   String? translation;
-  // final scaffoldKey = GlobalKey<ScaffoldState>();
+
   // @override
   // void initState() {
   //   // TODO: implement initState
@@ -40,20 +40,6 @@ class _TranslationWidgetState extends State<TranslationWidget> {
     final scaffoldKey = Scaffold.of(context);
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
-    ConnectivityResult? connectivity;
-
-    // void callsnackbar() {
-    //   WidgetsBinding.instance!.addPostFrameCallback((_) {
-    //     // Globals.rootScaffoldMessengerKey.currentState!
-    //   final scaffoldKey = Scaffold.of(context);
-    //      scaffoldKey.showSnackBar(SnackBar(
-    //       content: const Text(
-    //         'Unable to translate please check internet connection',
-    //       ),
-    //       backgroundColor: Colors.black.withOpacity(0.8),
-    //     ));
-    //   });
-    // }
 
     return FutureBuilder(
       future: TranslationAPI.translate(widget.message!, toLanguageCode),
@@ -64,30 +50,20 @@ class _TranslationWidgetState extends State<TranslationWidget> {
           default:
             if (snapshot.hasError) {
               if (Globals.isNetworkError == false) {
-                // Globals.isNetworkError = true;
-                // Future.delayed(const Duration(seconds: 3), () {
-                //   scaffoldKey.showSnackBar(SnackBar(
-                //     content: const Text(
-                //       'Unable to translate please check internet connection\n\n',
-                //     ),
-                //     backgroundColor: Colors.black.withOpacity(0.8),
-                //     //    padding: EdgeInsets.only(
-                //     //   left: 16,
-                //     // ),
-                //     // margin: EdgeInsets.only(left: 16, right: 16, bottom: 30.0),
-                //   ));
-                // });
-
-                // final bool connected = connectivity != ConnectivityResult.none;
-                // translation = "Network error";
-                // setState(() {
-
-                // });
-                //  callsnackbar();
-                translation = widget.message!;
-              } else {
-                translation = widget.message!;
+                Globals.isNetworkError = true;
+                Future.delayed(const Duration(seconds: 3), () {
+                  scaffoldKey.showSnackBar(SnackBar(
+                    content: const Text(
+                      'Unable to translate please check internet connection',
+                    ),
+                    backgroundColor: Colors.black.withOpacity(0.8),
+                    behavior: SnackBarBehavior.floating,
+                    margin: EdgeInsets.only(left: 16, right: 16, bottom: 30),
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                  ));
+                });
               }
+              translation = widget.message!;
             } else {
               translation = snapshot.data;
               Globals.isNetworkError = false;
