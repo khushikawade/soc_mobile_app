@@ -92,6 +92,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {
         yield ErrorLoading(err: e);
+        // yield CalendarListSuccess();
       }
     }
   }

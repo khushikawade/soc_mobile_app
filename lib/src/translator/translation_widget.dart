@@ -21,7 +21,6 @@ class TranslationWidget extends StatefulWidget {
 
   @override
   _TranslationWidgetState createState() => _TranslationWidgetState();
-
 }
 
 class _TranslationWidgetState extends State<TranslationWidget> {
@@ -65,36 +64,30 @@ class _TranslationWidgetState extends State<TranslationWidget> {
           default:
             if (snapshot.hasError) {
               if (Globals.isNetworkError == false) {
-              Globals.isNetworkError = true;
-              Future.delayed(const Duration(seconds: 3), () {
+                // Globals.isNetworkError = true;
+                // Future.delayed(const Duration(seconds: 3), () {
+                //   scaffoldKey.showSnackBar(SnackBar(
+                //     content: const Text(
+                //       'Unable to translate please check internet connection\n\n',
+                //     ),
+                //     backgroundColor: Colors.black.withOpacity(0.8),
+                //     //    padding: EdgeInsets.only(
+                //     //   left: 16,
+                //     // ),
+                //     // margin: EdgeInsets.only(left: 16, right: 16, bottom: 30.0),
+                //   ));
+                // });
 
-  scaffoldKey.showSnackBar(SnackBar(
-          content: const Text(
-            'Unable to translate please check internet connection\n\n',
-          ),
-          backgroundColor: Colors.black.withOpacity(0.8),
-      //    padding: EdgeInsets.only(
-      //   left: 16,
-      // ),
-      // margin: EdgeInsets.only(left: 16, right: 16, bottom: 30.0),
-        )); 
-});
-
-                
-           
                 // final bool connected = connectivity != ConnectivityResult.none;
                 // translation = "Network error";
                 // setState(() {
-                  
-                // });               
-                    //  callsnackbar();
-                  
-       
-      
+
+                // });
+                //  callsnackbar();
+                translation = widget.message!;
               } else {
                 translation = widget.message!;
               }
-         
             } else {
               translation = snapshot.data;
               Globals.isNetworkError = false;

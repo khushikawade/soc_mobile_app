@@ -26,12 +26,14 @@ class EventDescription extends StatefulWidget {
   _EventDescriptionState createState() => _EventDescriptionState();
 }
 
-class _EventDescriptionState extends State<EventDescription> {
+class _EventDescriptionState extends State<EventDescription>
+    with AutomaticKeepAliveClientMixin<EventDescription> {
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 95.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-
+  @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();
@@ -164,29 +166,20 @@ class _EventDescriptionState extends State<EventDescription> {
                   child: ConstrainedBox(
                   constraints: BoxConstraints(
                     minWidth: _KButtonSize,
-                    maxWidth: 150.0,
+                    maxWidth: _KButtonSize,
                     minHeight: _KButtonSize / 2.5,
                     maxHeight: _KButtonSize / 2.5,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
-                      SharePopUp obj = new SharePopUp();
-                      obj.callFunction(context, list.htmlLink!, list.titleC!);
-                    },
-                    child: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
-                        ? TranslationWidget(
-                            message: "Share ",
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                            ),
-                          )
-                        : Text(
-                            "Share",
-                          ),
-                  ),
+                      onPressed: () {
+                        SharePopUp obj = new SharePopUp();
+                        obj.callFunction(context, list.htmlLink.toString(),
+                            list.summary.toString());
+                      },
+                      child: Icon(
+                        Icons.share,
+                        color: Theme.of(context).colorScheme.background,
+                      )),
                 ))
               : EmptyContainer(),
           SizedBox(
@@ -195,30 +188,20 @@ class _EventDescriptionState extends State<EventDescription> {
           Container(
             constraints: BoxConstraints(
               minWidth: _KButtonSize,
-              maxWidth: 150.0,
+              maxWidth: _KButtonSize,
               minHeight: _KButtonSize / 2.5,
               maxHeight: _KButtonSize / 2.5,
             ),
             child: ElevatedButton(
-              onPressed: () {
-                Add2Calendar.addEvent2Cal(
-                  buildEvent(list),
-                );
-              },
-              child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English"
-                  ? TranslationWidget(
-                      message: "Save event",
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                      ),
-                    )
-                  : Text(
-                      "Save event ",
-                    ),
-            ),
+                onPressed: () {
+                  Add2Calendar.addEvent2Cal(
+                    buildEvent(list),
+                  );
+                },
+                child: Icon(
+                  Icons.calendar_today_outlined,
+                  color: Theme.of(context).colorScheme.background,
+                )),
           ),
         ],
       ),
@@ -227,10 +210,16 @@ class _EventDescriptionState extends State<EventDescription> {
 
   Event buildEvent(/*CalendarEventList*/ list) {
     return Event(
-      title: list.titleC!,
+      title: list.summary!,
       description: list.description ?? "",
-      startDate: DateTime.parse(list.startDate!),
-      endDate: DateTime.parse(list.endDate!),
+      startDate: DateTime.parse(list.start.toString().contains('dateTime')
+              ? list.start['dateTime'].toString()
+              : list.start['date'].toString().substring(0, 10))
+          .toLocal(),
+      endDate: DateTime.parse(list.end.toString().contains('dateTime')
+              ? list.end['dateTime'].toString()
+              : list.end['date'].toString().substring(0, 10))
+          .toLocal(),
     );
   }
 

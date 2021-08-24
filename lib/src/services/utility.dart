@@ -173,7 +173,7 @@ class Utility {
   static getDate(date) {
     try {
       DateTime parseDate =
-          new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
+          new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(date).toLocal();
       var inputDate = DateTime.parse(parseDate.toString());
       var outputFormat = DateFormat('MM/dd/yyyy hh:mm a');
       // var outputDate = outputFormat.format(inputDate);

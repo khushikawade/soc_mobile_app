@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
@@ -53,25 +54,27 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
           ? SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())
           : Globals.selectedLanguage != null &&
                   Globals.selectedLanguage != "English"
-              ? TranslationWidget(
-                  message: widget.appBarTitle,
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline2!.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.w500),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              : Text(
-                  widget.appBarTitle,
-                  style: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.w500),
-                  textAlign: TextAlign.center,
-                ),
+              ? widget.appBarTitle.isNotEmpty
+                  ? TranslationWidget(
+                      message: widget.appBarTitle,
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline2!.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w500),
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  : Text(
+                      widget.appBarTitle,
+                      style: Theme.of(context).textTheme.headline2!.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w500),
+                      textAlign: TextAlign.center,
+                    )
+              : EmptyContainer(),
       actions: [
         widget.isSearch == true
             ? SearchButtonWidget(
