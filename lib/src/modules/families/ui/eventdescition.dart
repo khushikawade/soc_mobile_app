@@ -76,8 +76,8 @@ class _EventDescriptionState extends State<EventDescription> {
                         Utility.convertDateFormat2(list.end
                                 .toString()
                                 .contains('dateTime')
-                            ? list.start['dateTime'].toString().substring(0, 10)
-                            : list.start['date'].toString().substring(0, 10)),
+                            ? list.end['dateTime'].toString().substring(0, 10)
+                            : list.end['date'].toString().substring(0, 10)),
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(

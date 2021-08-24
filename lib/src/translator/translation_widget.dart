@@ -27,7 +27,7 @@ class TranslationWidget extends StatefulWidget {
 class _TranslationWidgetState extends State<TranslationWidget> {
   ConnectivityResult? connectivity;
   String? translation;
-  // final scaffoldKey = GlobalKey<ScaffoldState>();
+  
   // @override
   // void initState() {
   //   // TODO: implement initState
@@ -67,30 +67,14 @@ class _TranslationWidgetState extends State<TranslationWidget> {
               if (Globals.isNetworkError == false) {
               Globals.isNetworkError = true;
               Future.delayed(const Duration(seconds: 3), () {
-
-  scaffoldKey.showSnackBar(SnackBar(
-          content: const Text(
-            'Unable to translate please check internet connection\n\n',
-          ),
-          backgroundColor: Colors.black.withOpacity(0.8),
-      //    padding: EdgeInsets.only(
-      //   left: 16,
-      // ),
-      // margin: EdgeInsets.only(left: 16, right: 16, bottom: 30.0),
-        )); 
-});
-
-                
-           
-                // final bool connected = connectivity != ConnectivityResult.none;
-                // translation = "Network error";
-                // setState(() {
-                  
-                // });               
-                    //  callsnackbar();
-                  
-       
-      
+               scaffoldKey.showSnackBar(SnackBar(
+                  content: const Text('Unable to translate please check internet connection',),
+                  backgroundColor: Colors.black.withOpacity(0.8),
+                  behavior: SnackBarBehavior.floating,
+                  margin: EdgeInsets.only(left: 16, right: 16, bottom: 30), 
+                  padding: EdgeInsets.only(left: 16,right: 16),
+              )); 
+            });      
               } else {
                 translation = widget.message!;
               }
@@ -102,7 +86,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
             return widget.builder!(translation!);
         }
       },
-    );
+    );    
   }
 
   Widget buildWaiting() => translation == null
