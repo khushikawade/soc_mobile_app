@@ -280,7 +280,7 @@ class _EventPageState extends State<EventPage>
                           child: new RefreshIndicator(
                         child: new ListView.builder(
                             scrollDirection: Axis.vertical,
-                            padding: EdgeInsets.only(bottom: 35),
+                            padding: EdgeInsets.only(bottom: 120),
                             itemCount: state.futureListobj!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return _buildList(state.futureListobj![index],
@@ -292,7 +292,7 @@ class _EventPageState extends State<EventPage>
                           child: new RefreshIndicator(
                         child: new ListView.builder(
                             scrollDirection: Axis.vertical,
-                            padding: EdgeInsets.only(bottom: 35),
+                            padding: EdgeInsets.only(bottom: 120),
                             itemCount: state.pastListobj!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return _buildList(state.pastListobj![index],
