@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'dart:convert';
@@ -102,7 +103,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   getCalendarId(list) {
     for (int i = 0; i < list.length; i++) {
       if (list[i].calendarId != null && list[i].calendarId != "") {
-        Overrides.calendar_Id = list[i].calendarId;
+        Globals.calendar_Id = list[i].calendarId;
         break;
       }
     }
@@ -164,7 +165,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
+            'https://www.googleapis.com/calendar/v3/calendars/${Globals.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
