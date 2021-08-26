@@ -46,7 +46,8 @@ class _EventDescriptionState extends State<EventDescription> {
         children: [
           SpacerWidget(_kPadding / 2),
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: list.summary!, // titleC!,
                   toLanguage: Globals.selectedLanguage,
@@ -65,7 +66,8 @@ class _EventDescriptionState extends State<EventDescription> {
           Container(
             alignment: Alignment.centerLeft,
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: Utility.convertDateFormat2(list.start
                                 .toString()
@@ -104,7 +106,8 @@ class _EventDescriptionState extends State<EventDescription> {
           Container(
             alignment: Alignment.centerLeft,
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: list.description ?? "",
                     toLanguage: Globals.selectedLanguage,

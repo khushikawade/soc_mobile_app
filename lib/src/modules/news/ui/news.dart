@@ -155,7 +155,8 @@ class _NewsPageState extends State<NewsPage> {
     return Container(
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: obj.contents["en"] ?? '-',
                 fromLanguage: "en",

@@ -104,7 +104,8 @@ class _ContactPageState extends State<ContactPage> {
         ),
         child: Globals.homeObjet["Contact_Name__c"] != null &&
                 Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: Globals.homeObjet["Contact_Name__c"] ?? "-",
                 toLanguage: Globals.selectedLanguage,
@@ -210,7 +211,8 @@ class _ContactPageState extends State<ContactPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Address:",
                   toLanguage: Globals.selectedLanguage,
@@ -233,7 +235,8 @@ class _ContactPageState extends State<ContactPage> {
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: Globals.homeObjet["Contact_Address__c"] ?? '-',
                     toLanguage: Globals.selectedLanguage,
@@ -262,7 +265,8 @@ class _ContactPageState extends State<ContactPage> {
       child: Row(
         children: [
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Phone :",
                   toLanguage: Globals.selectedLanguage,
@@ -291,7 +295,8 @@ class _ContactPageState extends State<ContactPage> {
                 }
               },
               child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English"
+                      Globals.selectedLanguage != "English" &&
+                      Globals.selectedLanguage != ""
                   ? TranslationWidget(
                       message: Globals.homeObjet["Contact_Phone__c"] ?? '-',
                       toLanguage: Globals.selectedLanguage,
@@ -340,7 +345,8 @@ class _ContactPageState extends State<ContactPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Email :",
                   toLanguage: Globals.selectedLanguage,

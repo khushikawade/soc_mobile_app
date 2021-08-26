@@ -53,7 +53,8 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       title: widget.isCenterIcon != null && widget.isCenterIcon == true
           ? SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())
           : Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? widget.appBarTitle.isNotEmpty
                   ? TranslationWidget(
                       message: widget.appBarTitle,

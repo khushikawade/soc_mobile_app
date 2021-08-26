@@ -73,7 +73,8 @@ class _SettingPageState extends State<SettingPage> {
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: tittle,
                     fromLanguage: "en",
@@ -125,7 +126,8 @@ class _SettingPageState extends State<SettingPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? Container(
                 padding: EdgeInsets.symmetric(
                     horizontal: 0, vertical: _kLabelSpacing / 2),
@@ -162,7 +164,8 @@ class _SettingPageState extends State<SettingPage> {
       child: Container(
           padding: EdgeInsets.all(16),
           child: Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Open Source licences",
                   fromLanguage: "en",

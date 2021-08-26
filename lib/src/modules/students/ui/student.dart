@@ -129,7 +129,8 @@ class _StudentPageState extends State<StudentPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
+                                      Globals.selectedLanguage != "English" &&
+                                      Globals.selectedLanguage != ""
                                   ? TranslationWidget(
                                       message: "${list[index].titleC}",
                                       fromLanguage: "en",
@@ -160,7 +161,8 @@ class _StudentPageState extends State<StudentPage> {
           })
         : Center(
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: "No apps available here",
                     fromLanguage: "en",

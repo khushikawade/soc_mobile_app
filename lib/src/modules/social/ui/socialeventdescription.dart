@@ -135,7 +135,8 @@ class SocialDescription extends StatelessWidget {
                               )));
                 },
                 child: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
+                        Globals.selectedLanguage != "English" &&
+                        Globals.selectedLanguage != ""
                     ? TranslationWidget(
                         message: "More",
                         toLanguage: language,
@@ -166,7 +167,8 @@ class SocialDescription extends StatelessWidget {
                   obj.callFunction(context, body, "");
                 },
                 child: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
+                        Globals.selectedLanguage != "English" &&
+                        Globals.selectedLanguage != ""
                     ? TranslationWidget(
                         message: "Share".toString(),
                         toLanguage: language,
@@ -263,7 +265,8 @@ class SocialDescription extends StatelessWidget {
                 ),
               ),
         Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: "${data + "#" + data2}",
                 fromLanguage: "en",
@@ -305,7 +308,8 @@ class SocialDescription extends StatelessWidget {
       Container(
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message:
                     "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
@@ -329,7 +333,8 @@ class SocialDescription extends StatelessWidget {
     return Container(
         child: object != null && object.pubDate.length > 1
             ? Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: Utility.convertDate(object.pubDate).toString(),
                     toLanguage: language,

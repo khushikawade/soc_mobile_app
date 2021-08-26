@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -93,14 +94,17 @@ class _FamilyPageState extends State<FamilyPage> {
                     language: Globals.selectedLanguage,
                   )));
     } else if (obj.typeC == "Calendar/Events") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => EventPage(
-                    isbuttomsheet: true,
-                    appBarTitle: obj.titleC,
-                    language: Globals.selectedLanguage,
-                  )));
+      Overrides.calendar_Id != ""
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => EventPage(
+                        isbuttomsheet: true,
+                        appBarTitle: obj.titleC,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(
+              _scaffoldKey, "No calendar/events available", context);
     } else if (obj.typeC == "RFT_HTML") {
       obj.rtfHTMLC != null
           ? Navigator.push(
@@ -199,7 +203,8 @@ class _FamilyPageState extends State<FamilyPage> {
             EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: _buildLeading(obj),
         title: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: obj.titleC,
                 fromLanguage: "en",
@@ -246,68 +251,63 @@ class _FamilyPageState extends State<FamilyPage> {
                 iserrorstate = true;
               }
 
-              return new Stack(fit: StackFit.expand, children: [
-                connected
-                    ? Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(
-                            child: BlocBuilder<FamilyBloc, FamilyState>(
-                                bloc: _bloc,
-                                builder:
-                                    (BuildContext contxt, FamilyState state) {
-                                  if (state is FamilyInitial ||
-                                      state is FamilyLoading) {
-                                    return Center(
-                                        child: CircularProgressIndicator());
-                                  } else if (state is FamiliesDataSucess) {
-                                    return state.obj != null &&
-                                            state.obj!.length > 0
-                                        ? ListView.builder(
-                                            padding:
-                                                EdgeInsets.only(bottom: 35),
-                                            scrollDirection: Axis.vertical,
-                                            itemCount: state.obj!.length,
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return _buildList(
-                                                  state.obj![index], index);
-                                            },
+              return connected
+                  ? Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: BlocBuilder<FamilyBloc, FamilyState>(
+                              bloc: _bloc,
+                              builder:
+                                  (BuildContext contxt, FamilyState state) {
+                                if (state is FamilyInitial ||
+                                    state is FamilyLoading) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else if (state is FamiliesDataSucess) {
+                                  return state.obj != null &&
+                                          state.obj!.length > 0
+                                      ? ListView.builder(
+                                          padding: EdgeInsets.only(bottom: 35),
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: state.obj!.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return _buildList(
+                                                state.obj![index], index);
+                                          },
+                                        )
+                                      : ListView(children: [
+                                          NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
                                           )
-                                        : ListView(shrinkWrap: true, children: [
-                                            NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false,
-                                            )
-                                          ]);
-                                  } else if (state is ErrorLoading) {
-                                    return ListView(
-                                        shrinkWrap: true,
-                                        children: [ErrorMsgWidget()]);
-                                  } else {
-                                    return Container();
-                                  }
-                                }),
-                          ),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    Globals.homeObjet = state.obj;
-                                    setState(() {});
-                                  }
-                                },
-                                child: EmptyContainer()),
-                          ),
-                        ],
-                      )
-                    : NoInternetErrorWidget(
-                        connected: connected, issplashscreen: false),
-              ]);
+                                        ]);
+                                } else if (state is ErrorLoading) {
+                                  return ListView(children: [ErrorMsgWidget()]);
+                                } else {
+                                  return Container();
+                                }
+                              }),
+                        ),
+                        Container(
+                          height: 0,
+                          width: 0,
+                          child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
+                              child: EmptyContainer()),
+                        ),
+                      ],
+                    )
+                  : NoInternetErrorWidget(
+                      connected: connected, issplashscreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,

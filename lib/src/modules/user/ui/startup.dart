@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -83,23 +81,26 @@ class _StartupPageState extends State<StartupPage> {
 
   Widget _buildSplashScreen() {
     return Center(
-        child: Globals.splashImageUrl!.isNotEmpty &&
-                Globals.splashImageUrl!.length > 1
-            ? SizedBox(
-                height: 200,
-                width: 200,
-                child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl!,
-                  fit: BoxFit.fill,
-                  errorWidget: (context, url, error) => Icon(
-                    Icons.error,
-                  ),
-                ),
+        child: Globals.splashImageUrl != null && Globals.splashImageUrl != " "
+            ?
+            //   SizedBox(
+            // height: 200,
+            // width: 200,
+            // child: Image.asset('assets/images/splash_screen_icon.png',
+            //     fit: BoxFit.fill),
 
-                // Image.asset('assets/images/splash_screen_icon.png',
-                //     fit: BoxFit.fill),
+            CachedNetworkImage(
+                imageUrl: Globals.splashImageUrl!,
+                fit: BoxFit.fill,
+                errorWidget: (context, url, error) => Icon(
+                  Icons.error,
+                ),
               )
-            : EmptyContainer());
+            : Text("Loading ...")
+
+        // Image.asset('assets/images/splash_screen_icon.png',
+        //     fit: BoxFit.fill),
+        );
   }
 
   @override
@@ -174,7 +175,8 @@ class _StartupPageState extends State<StartupPage> {
                         Globals.homeObjet = state.obj;
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
-                        // prefs.setString(Strings.SplashUrl, value)
+                        prefs.setString(
+                            Strings.SplashUrl, state.obj["Splash_Screen__c"]);
                         state.obj != null
                             ? Navigator.pushReplacement(
                                 context,

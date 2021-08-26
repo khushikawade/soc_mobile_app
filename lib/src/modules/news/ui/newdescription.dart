@@ -105,7 +105,8 @@ class _NewdescriptionState extends State<Newdescription> {
               children: <Widget>[
                 Expanded(
                   child: Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
+                          Globals.selectedLanguage != "English" &&
+                          Globals.selectedLanguage != ""
                       ? TranslationWidget(
                           message: widget.obj.headings != "" &&
                                   widget.obj.headings != null &&
@@ -149,7 +150,8 @@ class _NewdescriptionState extends State<Newdescription> {
                         ),
                 ),
                 Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
+                        Globals.selectedLanguage != "English" &&
+                        Globals.selectedLanguage != ""
                     ? TranslationWidget(
                         message: widget.date,
                         toLanguage: Globals.selectedLanguage,
@@ -171,7 +173,8 @@ class _NewdescriptionState extends State<Newdescription> {
               child: Wrap(
                 children: [
                   Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
+                          Globals.selectedLanguage != "English" &&
+                          Globals.selectedLanguage != ""
                       ? TranslationWidget(
                           message: widget.obj.contents["en"].toString(),
                           toLanguage: Globals.selectedLanguage,
@@ -199,7 +202,8 @@ class _NewdescriptionState extends State<Newdescription> {
                   ? Wrap(
                       children: [
                         Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
+                                Globals.selectedLanguage != "English" &&
+                                Globals.selectedLanguage != ""
                             ? TranslationWidget(
                                 message: widget.obj.url.toString(),
                                 toLanguage: Globals.selectedLanguage,

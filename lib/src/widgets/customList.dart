@@ -32,9 +32,14 @@ class ListWidget extends StatelessWidget {
                     color: Theme.of(context).colorScheme.primary,
                     size: Globals.deviceType == "phone" ? 18 : 26,
                   )
-                : Container(
-                    height: 0,
-                    width: 0,
+                : Icon(
+                    IconData(
+                      0xf550,
+                      fontFamily: 'FontAwesomeSolid',
+                      fontPackage: 'font_awesome_flutter',
+                    ),
+                    color: Theme.of(context).colorScheme.primary,
+                    size: Globals.deviceType == "phone" ? 14 : 22,
                   ),
             title: listItem!,
           ),

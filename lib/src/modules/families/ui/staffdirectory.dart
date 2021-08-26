@@ -68,7 +68,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: tittle,
                   toLanguage: Globals.selectedLanguage,
@@ -159,7 +160,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 HorzitalSpacerWidget(_kLabelSpacing),
                 Expanded(
                   child: Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
+                          Globals.selectedLanguage != "English" &&
+                          Globals.selectedLanguage != ""
                       ? TranslationWidget(
                           message: obj.titleC ?? "-",
                           toLanguage: Globals.selectedLanguage,
@@ -223,7 +225,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
             children: [
               Expanded(
                 child: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
+                        Globals.selectedLanguage != "English" &&
+                        Globals.selectedLanguage != ""
                     ? TranslationWidget(
                         message: obj.descriptionC ?? "-",
                         toLanguage: Globals.selectedLanguage,

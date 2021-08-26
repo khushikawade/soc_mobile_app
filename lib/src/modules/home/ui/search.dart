@@ -291,7 +291,8 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 HorzitalSpacerWidget(_kLabelSpacing),
                 Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
+                        Globals.selectedLanguage != "English" &&
+                        Globals.selectedLanguage != ""
                     ? TranslationWidget(
                         message: items[index].titleC != null &&
                                 items[index].titleC.isNotEmpty
@@ -346,7 +347,8 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                             child: ListTile(
                                 title: Globals.selectedLanguage != null &&
-                                        Globals.selectedLanguage != "English"
+                                        Globals.selectedLanguage != "English" &&
+                                        Globals.selectedLanguage != ""
                                     ? TranslationWidget(
                                         message: data.titleC,
                                         toLanguage: Globals.selectedLanguage,
@@ -418,7 +420,8 @@ class _SearchPageState extends State<SearchPage> {
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
         Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: "Search",
                 toLanguage: Globals.selectedLanguage,
@@ -448,7 +451,8 @@ class _SearchPageState extends State<SearchPage> {
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
         Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: "Recent Search",
                 toLanguage: Globals.selectedLanguage,

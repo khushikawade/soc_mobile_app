@@ -70,7 +70,8 @@ class _AboutusPageState extends State<AboutusPage> {
                 )
               : Container(),
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: htmlData ?? widget.htmlText,
                   fromLanguage: "en",

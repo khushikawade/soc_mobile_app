@@ -49,7 +49,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         children: [
           Expanded(
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: list["description"].toString(),
                     fromLanguage: "en",
@@ -88,7 +89,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         children: <Widget>[
           Expanded(
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: list["name"].toString(),
                     fromLanguage: "en",
@@ -129,7 +131,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                 urlobj.callurlLaucher(context, "${list["homepage"]}");
               },
               child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English"
+                      Globals.selectedLanguage != "English" &&
+                      Globals.selectedLanguage != ""
                   ? TranslationWidget(
                       message: list["homepage"].toString(),
                       fromLanguage: "en",
@@ -166,7 +169,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Version:",
                   fromLanguage: "en",
@@ -190,7 +194,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: list["version"].toString(),
                     fromLanguage: "en",
@@ -223,7 +228,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         horizontal: _kLabelSpacing,
       ),
       child: Globals.selectedLanguage != null &&
-              Globals.selectedLanguage != "English"
+              Globals.selectedLanguage != "English" &&
+              Globals.selectedLanguage != ""
           ? TranslationWidget(
               message: "Authors:",
               fromLanguage: "en",
@@ -259,7 +265,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         children: <Widget>[
           Expanded(
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message:
                         "${list["authors"].toString().replaceAll('[', '').replaceAll(']', '')}",
@@ -294,7 +301,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           horizontal: _kLabelSpacing,
         ),
         child: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: "License:",
                 fromLanguage: "en",
@@ -327,7 +335,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
             horizontal: _kLabelSpacing,
           ),
           child: Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message:
                       "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "\n").replaceAll("*", "").replaceAll("     ", "").toLowerCase()}",

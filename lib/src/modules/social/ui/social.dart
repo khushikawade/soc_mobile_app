@@ -138,7 +138,8 @@ class _SocialPageState extends State<SocialPage> {
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.69,
                               child: Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
+                                      Globals.selectedLanguage != "English" &&
+                                      Globals.selectedLanguage != ""
                                   ? TranslationWidget(
                                       message:
                                           "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
@@ -179,7 +180,8 @@ class _SocialPageState extends State<SocialPage> {
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.40,
                               child: Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
+                                      Globals.selectedLanguage != "English" &&
+                                      Globals.selectedLanguage != ""
                                   ? TranslationWidget(
                                       message: Utility.convertDate(obj.pubDate)
                                           .toString(),
@@ -263,12 +265,10 @@ class _SocialPageState extends State<SocialPage> {
                                           state.obj!.length > 0
                                       ? Expanded(child: makeList(state.obj))
                                       : Expanded(
-                                          child: ListView(
-                                              shrinkWrap: true,
-                                              children: [
-                                                NoDataFoundErrorWidget(
-                                                    isResultNotFoundMsg: false)
-                                              ]),
+                                          child: ListView(children: [
+                                            NoDataFoundErrorWidget(
+                                                isResultNotFoundMsg: false)
+                                          ]),
                                         );
                                 } else if (state is Loading) {
                                   return Expanded(
