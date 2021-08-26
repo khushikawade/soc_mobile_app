@@ -94,7 +94,7 @@ class _FamilyPageState extends State<FamilyPage> {
                     language: Globals.selectedLanguage,
                   )));
     } else if (obj.typeC == "Calendar/Events") {
-      Overrides.calendar_Id != ""
+      obj.calendarId != null && obj.calendarId != ""
           ? Navigator.push(
               context,
               MaterialPageRoute(
@@ -102,6 +102,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
+                        // calendarId: obj.calendarId.toString(),
                       )))
           : Utility.showSnackBar(
               _scaffoldKey, "No calendar/events available", context);

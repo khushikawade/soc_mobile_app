@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -53,6 +55,15 @@ class GoogleMapsState extends State<GoogleMaps> {
                 _controller.complete(controller);
               },
               markers: _markers,
+              // gestureRecognizers: Set()
+              //   ..add(
+              //       Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
+              //   ..add(Factory<ScaleGestureRecognizer>(
+              //       () => ScaleGestureRecognizer()))
+              //   ..add(
+              //       Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
+              //   ..add(Factory<VerticalDragGestureRecognizer>(
+              //       () => VerticalDragGestureRecognizer())),
             )
           : Container(),
     );

@@ -17,13 +17,16 @@ import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
 class EventPage extends StatefulWidget {
-  EventPage(
-      {required this.isbuttomsheet,
-      required this.appBarTitle,
-      required this.language});
+  EventPage({
+    required this.isbuttomsheet,
+    required this.appBarTitle,
+    required this.language,
+    // required this.calendarId,
+  });
   String? language;
   bool? isbuttomsheet;
   String? appBarTitle;
+  // String calendarId;
 
   @override
   _EventPageState createState() => _EventPageState();
@@ -42,7 +45,9 @@ class _EventPageState extends State<EventPage>
   @override
   void initState() {
     super.initState();
+    // Globals.calendar_Id = widget.calendarId;
     _eventBloc.add(CalendarListEvent());
+
     // _ktabmargin = MediaQuery.of(context).size.height * 0.25;
   }
 

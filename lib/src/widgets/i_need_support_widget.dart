@@ -15,15 +15,5 @@ void iNeedSupport(BuildContext context) {
       path: Globals.appSetting.contactEmailC,
       queryParameters: {'subject': subject, 'body': body});
 
-  _launchURL(params.toString());
-  // objurl.callurlLaucher(context, Uri.decodeFull(params.toString()));
-}
-
-Future<void> _launchURL(url) async {
-  if (await canLaunch(url)) {
-    String str = url.replaceAll("+", " ");
-    await launch(str);
-  } else {
-    throw 'Could not launch $url';
-  }
+  objurl.callurlLaucher(context, Uri.decodeFull(params.toString()));
 }
