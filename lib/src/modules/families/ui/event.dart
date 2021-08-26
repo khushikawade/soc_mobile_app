@@ -335,9 +335,10 @@ class _EventPageState extends State<EventPage>
         appBar: CustomAppBarWidget(
           appBarTitle: widget.appBarTitle!,
           isSearch: true,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
           isShare: false,
-          sharedpopUpheaderText: "",
-          sharedpopBodytext: "",
+          isCenterIcon: true,
           language: Globals.selectedLanguage,
         ),
         body: RefreshIndicator(
