@@ -11,6 +11,7 @@ class FamiliesList {
   String? name;
   String? rtfHTMLC;
   String? typeC;
+  String? calendarId;
   final sortOredr;
 
   FamiliesList(
@@ -24,6 +25,7 @@ class FamiliesList {
       this.rtfHTMLC,
       this.appIconUrlC,
       this.typeC,
+      this.calendarId,
       this.sortOredr});
 
   factory FamiliesList.fromJson(Map<String, dynamic> json) => FamiliesList(
@@ -39,6 +41,7 @@ class FamiliesList {
       name: json['Name'] as String?,
       rtfHTMLC: json['RTF_HTML__c'] as String?,
       typeC: json['Type__c'] as String?,
+      calendarId: json['Calendar_Id__c'] as String?,
       sortOredr: json['Sort_Order__c']);
 
   Map<String, dynamic> toJson() => {
@@ -51,6 +54,7 @@ class FamiliesList {
         'Name': name,
         'RTF_HTML__c': rtfHTMLC,
         'Type__c': typeC,
+        'Calendar_Id__c': calendarId,
         'Sort_Order__c': sortOredr
       };
 }

@@ -177,7 +177,8 @@ class _StaffPageState extends State<StaffPage> {
                 //   size: Globals.deviceType == "phone" ? 18 : 26,
                 // ),
                 title: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
+                        Globals.selectedLanguage != "English" &&
+                        Globals.selectedLanguage != ""
                     ? TranslationWidget(
                         message: obj.titleC.toString(),
                         fromLanguage: "en",
@@ -230,71 +231,69 @@ class _StaffPageState extends State<StaffPage> {
                   iserrorstate = true;
                 }
 
-                return Column(children: [
-                  connected
-                      ? BlocBuilder<StaffBloc, StaffState>(
-                          bloc: _bloc,
-                          builder: (BuildContext contxt, StaffState state) {
-                            if (state is StaffInitial ||
-                                state is StaffLoading) {
-                              return Expanded(
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              );
-                            } else if (state is StaffDataSucess) {
-                              return state.obj != null && state.obj!.length > 0
-                                  ? Expanded(
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        itemCount: state.obj!.length,
-                                        padding: EdgeInsets.only(bottom: 20),
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return _buildList(
-                                              state.obj![index], index);
-                                        },
-                                      ),
-                                    )
-                                  : Expanded(
-                                      child: ListView(
-                                          shrinkWrap: true,
-                                          children: [
-                                            NoDataFoundErrorWidget(
-                                                isResultNotFoundMsg: false)
-                                          ]),
-                                    );
-                            } else if (state is ErrorInStaffLoading) {
-                            } else {
-                              return Expanded(
-                                child: ListView(
-                                    shrinkWrap: true,
-                                    children: [ErrorMsgWidget()]),
-                              );
-                            }
+                return connected
+                    ? Column(mainAxisSize: MainAxisSize.max, children: [
+                        BlocBuilder<StaffBloc, StaffState>(
+                            bloc: _bloc,
+                            builder: (BuildContext contxt, StaffState state) {
+                              if (state is StaffInitial ||
+                                  state is StaffLoading) {
+                                return Expanded(
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                );
+                              } else if (state is StaffDataSucess) {
+                                return state.obj != null &&
+                                        state.obj!.length > 0
+                                    ? Expanded(
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: state.obj!.length,
+                                          padding: EdgeInsets.only(bottom: 20),
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return _buildList(
+                                                state.obj![index], index);
+                                          },
+                                        ),
+                                      )
+                                    : Expanded(
+                                        child: ListView(children: [
+                                          NoDataFoundErrorWidget(
+                                              isResultNotFoundMsg: false)
+                                        ]),
+                                      );
+                              } else if (state is ErrorInStaffLoading) {
+                              } else {
+                                return Expanded(
+                                  child: ListView(children: [ErrorMsgWidget()]),
+                                );
+                              }
 
-                            return Container();
-                          })
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                      bloc: _homeBloc,
-                      listener: (context, state) async {
-                        if (state is BottomNavigationBarSuccess) {
-                          AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObjet = state.obj;
-                          setState(() {});
-                        }
-                      },
-                      child: Container(
-                        height: 0,
-                        width: 0,
-                      ),
-                    ),
-                  ),
-                ]);
+                              return Container();
+                            }),
+                        Container(
+                          height: 0,
+                          width: 0,
+                          child: BlocListener<HomeBloc, HomeState>(
+                            bloc: _homeBloc,
+                            listener: (context, state) async {
+                              if (state is BottomNavigationBarSuccess) {
+                                AppTheme.setDynamicTheme(
+                                    Globals.appSetting, context);
+                                Globals.homeObjet = state.obj;
+                                setState(() {});
+                              }
+                            },
+                            child: Container(
+                              height: 0,
+                              width: 0,
+                            ),
+                          ),
+                        ),
+                      ])
+                    : NoInternetErrorWidget(
+                        connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

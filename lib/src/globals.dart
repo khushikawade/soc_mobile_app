@@ -33,6 +33,7 @@ class Globals {
   static String? versionRelease = "";
   static String? androidId = "";
   static String? countrycode = "";
+  static String? splashImageUrl = "";
   static int? homeIndex;
   static bool? isNetworkError = false;
   static bool? callsnackbar = true;

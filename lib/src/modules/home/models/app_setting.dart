@@ -30,6 +30,7 @@ class AppSetting {
   String? contactEmailC;
   String? contactPhoneC;
   String? contactAddressC;
+  String? socialapiurlc;
   double? contactOfficeLocationLatitudeS;
   double? contactOfficeLocationLongitudeS;
 
@@ -63,6 +64,7 @@ class AppSetting {
     this.contactEmailC,
     this.contactPhoneC,
     this.contactAddressC,
+    this.socialapiurlc,
     this.contactOfficeLocationLatitudeS,
     this.contactOfficeLocationLongitudeS,
   });
@@ -99,6 +101,7 @@ class AppSetting {
         contactEmailC: json['Contact_Email__c'] as String?,
         contactPhoneC: json['Contact_Phone__c'] as String?,
         contactAddressC: json['Contact_Address__c'] as String?,
+        socialapiurlc: json['Social_API_URL__c'] as String?,
         contactOfficeLocationLatitudeS:
             json['Contact_Office_Location__Latitude__s'] as double?,
         contactOfficeLocationLongitudeS:
@@ -135,6 +138,7 @@ class AppSetting {
         'Contact_Email__c': contactEmailC,
         'Contact_Phone__c': contactPhoneC,
         'Contact_Address__c': contactAddressC,
+        'Social_API_URL__c': socialapiurlc,
         'Contact_Office_Location__Latitude__s': contactOfficeLocationLatitudeS,
         'Contact_Office_Location__Longitude__s':
             contactOfficeLocationLongitudeS,
@@ -170,6 +174,7 @@ class AppSetting {
     String? contactEmailC,
     String? contactPhoneC,
     String? contactAddressC,
+    String? socialapiurlc,
     double? contactOfficeLocationLatitudeS,
     double? contactOfficeLocationLongitudeS,
   }) {
@@ -202,6 +207,7 @@ class AppSetting {
       appInformationC: appInformationC ?? this.appInformationC,
       contactEmailC: contactEmailC ?? this.contactEmailC,
       contactPhoneC: contactPhoneC ?? this.contactPhoneC,
+      socialapiurlc: socialapiurlc ?? this.socialapiurlc,
       contactAddressC: contactAddressC ?? this.contactAddressC,
       contactOfficeLocationLatitudeS:
           contactOfficeLocationLatitudeS ?? this.contactOfficeLocationLatitudeS,

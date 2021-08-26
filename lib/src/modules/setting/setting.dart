@@ -73,7 +73,8 @@ class _SettingPageState extends State<SettingPage> {
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: tittle,
                     fromLanguage: "en",
@@ -125,7 +126,8 @@ class _SettingPageState extends State<SettingPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? Container(
                 padding: EdgeInsets.symmetric(
                     horizontal: 0, vertical: _kLabelSpacing / 2),
@@ -162,7 +164,8 @@ class _SettingPageState extends State<SettingPage> {
       child: Container(
           padding: EdgeInsets.all(16),
           child: Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Open Source licences",
                   fromLanguage: "en",
@@ -225,44 +228,38 @@ class _SettingPageState extends State<SettingPage> {
                       iserrorstate = true;
                     }
 
-                    return new Stack(fit: StackFit.expand, children: [
-                      connected
-                          ? Column(
-                              children: [
-                                Expanded(
-                                    child: isloadingstate!
-                                        ? ShimmerLoading(
-                                            isLoading: true,
-                                            child: _buildItem())
-                                        : _buildItem()),
-                                Container(
-                                  height: 0,
-                                  width: 0,
-                                  child: BlocListener<HomeBloc, HomeState>(
-                                      bloc: _homeBloc,
-                                      listener: (context, state) async {
-                                        if (state is HomeLoading) {
-                                          isloadingstate = true;
-                                        }
+                    return connected
+                        ? Column(
+                            children: [
+                              Expanded(
+                                  child: isloadingstate!
+                                      ? ShimmerLoading(
+                                          isLoading: true, child: _buildItem())
+                                      : _buildItem()),
+                              Container(
+                                height: 0,
+                                width: 0,
+                                child: BlocListener<HomeBloc, HomeState>(
+                                    bloc: _homeBloc,
+                                    listener: (context, state) async {
+                                      if (state is HomeLoading) {
+                                        isloadingstate = true;
+                                      }
 
-                                        if (state
-                                            is BottomNavigationBarSuccess) {
-                                          AppTheme.setDynamicTheme(
-                                              Globals.appSetting, context);
-                                          Globals.homeObjet = state.obj;
-                                          isloadingstate = false;
-                                          setState(() {});
-                                        }
-                                      },
-                                      child: EmptyContainer()),
-                                ),
-                              ],
-                            )
-                          : NoInternetErrorWidget(
-                              connected: connected, issplashscreen: false),
-                    ]);
-
-                    // onRefresh: refreshPage,
+                                      if (state is BottomNavigationBarSuccess) {
+                                        AppTheme.setDynamicTheme(
+                                            Globals.appSetting, context);
+                                        Globals.homeObjet = state.obj;
+                                        isloadingstate = false;
+                                        setState(() {});
+                                      }
+                                    },
+                                    child: EmptyContainer()),
+                              ),
+                            ],
+                          )
+                        : NoInternetErrorWidget(
+                            connected: connected, issplashscreen: false);
                   },
                   child: Container())),
           onRefresh: refreshPage,

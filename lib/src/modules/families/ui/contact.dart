@@ -104,7 +104,8 @@ class _ContactPageState extends State<ContactPage> {
         ),
         child: Globals.homeObjet["Contact_Name__c"] != null &&
                 Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: Globals.homeObjet["Contact_Name__c"] ?? "-",
                 toLanguage: Globals.selectedLanguage,
@@ -128,7 +129,7 @@ class _ContactPageState extends State<ContactPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Container(
-        height: _kboxheight * 2.5,
+        height: MediaQuery.of(context).size.height * 0.20,
         width: MediaQuery.of(context).size.width * 1,
         decoration: BoxDecoration(
             border: Border.all(
@@ -210,7 +211,8 @@ class _ContactPageState extends State<ContactPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Address:",
                   toLanguage: Globals.selectedLanguage,
@@ -233,7 +235,8 @@ class _ContactPageState extends State<ContactPage> {
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: Globals.homeObjet["Contact_Address__c"] ?? '-',
                     toLanguage: Globals.selectedLanguage,
@@ -262,7 +265,8 @@ class _ContactPageState extends State<ContactPage> {
       child: Row(
         children: [
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Phone :",
                   toLanguage: Globals.selectedLanguage,
@@ -281,30 +285,34 @@ class _ContactPageState extends State<ContactPage> {
                       ),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
-          InkWell(
-            onTap: () {
-              if (Globals.homeObjet["Contact_Phone__c"] != null) {
-                urlobj.callurlLaucher(
-                    context, "tel:" + Globals.homeObjet["Contact_Phone__c"]);
-              }
-            },
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
-                ? TranslationWidget(
-                    message: Globals.homeObjet["Contact_Phone__c"] ?? '-',
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: InkWell(
+              onTap: () {
+                if (Globals.homeObjet["Contact_Phone__c"] != null) {
+                  urlobj.callurlLaucher(
+                      context, "tel:" + Globals.homeObjet["Contact_Phone__c"]);
+                }
+              },
+              child: Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English" &&
+                      Globals.selectedLanguage != ""
+                  ? TranslationWidget(
+                      message: Globals.homeObjet["Contact_Phone__c"] ?? '-',
+                      toLanguage: Globals.selectedLanguage,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.bodyText1!,
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  : Text(
+                      Globals.homeObjet["Contact_Phone__c"] ?? '-',
                       style: Theme.of(context).textTheme.bodyText1!,
                       textAlign: TextAlign.center,
                     ),
-                  )
-                : Text(
-                    Globals.homeObjet["Contact_Phone__c"] ?? '-',
-                    style: Theme.of(context).textTheme.bodyText1!,
-                    textAlign: TextAlign.center,
-                  ),
+            ),
           )
         ],
       ),
@@ -337,7 +345,8 @@ class _ContactPageState extends State<ContactPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Email :",
                   toLanguage: Globals.selectedLanguage,
@@ -356,16 +365,19 @@ class _ContactPageState extends State<ContactPage> {
                       ),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
-          InkWell(
-            onTap: () {
-              Globals.homeObjet["Contact_Email__c"] != null
-                  ? urlobj.callurlLaucher(context,
-                      'mailto:"${Globals.homeObjet["Contact_Email__c"]}"')
-                  : print("null value");
-            },
-            child: Text(
-              Globals.homeObjet["Contact_Email__c"] ?? '-',
-              style: Theme.of(context).textTheme.bodyText1!,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: InkWell(
+              onTap: () {
+                Globals.homeObjet["Contact_Email__c"] != null
+                    ? urlobj.callurlLaucher(context,
+                        'mailto:"${Globals.homeObjet["Contact_Email__c"]}"')
+                    : print("null value");
+              },
+              child: Text(
+                Globals.homeObjet["Contact_Email__c"] ?? '-',
+                style: Theme.of(context).textTheme.bodyText1!,
+              ),
             ),
           )
         ],

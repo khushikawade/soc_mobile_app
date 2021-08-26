@@ -129,16 +129,19 @@ class _StudentPageState extends State<StudentPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
+                                      Globals.selectedLanguage != "English" &&
+                                      Globals.selectedLanguage != ""
                                   ? TranslationWidget(
                                       message: "${list[index].titleC}",
                                       fromLanguage: "en",
                                       toLanguage: Globals.selectedLanguage,
                                       builder: (translatedMessage) => Expanded(
                                         child: Text(
-                                          translatedMessage.toString(),
-                                          textAlign: TextAlign.center,
-                                        ),
+                                            translatedMessage.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2!),
                                       ),
                                     )
                                   : Expanded(
@@ -158,15 +161,16 @@ class _StudentPageState extends State<StudentPage> {
           })
         : Center(
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: "No apps available here",
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      textAlign: TextAlign.center,
-                    ),
+                        translatedMessage.toString(),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.subtitle2!),
                   )
                 : Center(
                     child: Text("No apps available here",

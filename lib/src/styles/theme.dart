@@ -147,6 +147,7 @@ class AppTheme {
           fontSize: Globals.deviceType == "phone"
               ? kSubtitle2FontSize
               : kSubtitle2FontSize + _kSize,
+          fontWeight: FontWeight.normal,
           color: kAccentColor,
           fontFamily: 'Roboto Regular',
         ),

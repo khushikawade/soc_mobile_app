@@ -30,7 +30,8 @@ class ErrorMsgWidget extends StatelessWidget {
           Container(
             alignment: Alignment.center,
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: "Something went wrong",
                     toLanguage: Globals.selectedLanguage,

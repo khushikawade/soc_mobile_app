@@ -32,7 +32,8 @@ class ShareButtonWidget extends StatelessWidget {
                     "Love the PS 456 Bronx Bears app!");
               },
               child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English"
+                      Globals.selectedLanguage != "English" &&
+                      Globals.selectedLanguage != ""
                   ? Container(
                       child: TranslationWidget(
                         message: "Share this app",
@@ -59,7 +60,8 @@ class ShareButtonWidget extends StatelessWidget {
                 iNeedSupport(context);
               },
               child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English"
+                      Globals.selectedLanguage != "English" &&
+                      Globals.selectedLanguage != ""
                   ? Container(
                       child: TranslationWidget(
                         message: "I need support ",

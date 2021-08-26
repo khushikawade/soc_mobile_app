@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -9,12 +7,14 @@ import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/Strings.dart';
 import 'package:Soc/src/widgets/device_info_widget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,6 +59,7 @@ class _StartupPageState extends State<StartupPage> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     // print(pref.getInt(Strings.bottomNavigation));
     Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
+    Globals.splashImageUrl = pref.getString(Strings.SplashUrl);
   }
 
   @override
@@ -80,13 +81,26 @@ class _StartupPageState extends State<StartupPage> {
 
   Widget _buildSplashScreen() {
     return Center(
-      child: SizedBox(
-        height: 200,
-        width: 200,
-        child: Image.asset('assets/images/splash_screen_icon.png',
-            fit: BoxFit.fill),
-      ),
-    );
+        child: Globals.splashImageUrl != null && Globals.splashImageUrl != " "
+            ?
+            //   SizedBox(
+            // height: 200,
+            // width: 200,
+            // child: Image.asset('assets/images/splash_screen_icon.png',
+            //     fit: BoxFit.fill),
+
+            CachedNetworkImage(
+                imageUrl: Globals.splashImageUrl!,
+                fit: BoxFit.fill,
+                errorWidget: (context, url, error) => Icon(
+                  Icons.error,
+                ),
+              )
+            : Text("Loading ...")
+
+        // Image.asset('assets/images/splash_screen_icon.png',
+        //     fit: BoxFit.fill),
+        );
   }
 
   @override
@@ -159,6 +173,10 @@ class _StartupPageState extends State<StartupPage> {
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
                         Globals.homeObjet = state.obj;
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.setString(
+                            Strings.SplashUrl, state.obj["Splash_Screen__c"]);
                         state.obj != null
                             ? Navigator.pushReplacement(
                                 context,

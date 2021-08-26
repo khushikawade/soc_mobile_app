@@ -21,7 +21,6 @@ class TranslationWidget extends StatefulWidget {
 
   @override
   _TranslationWidgetState createState() => _TranslationWidgetState();
-
 }
 
 class _TranslationWidgetState extends State<TranslationWidget> {
@@ -43,20 +42,20 @@ class _TranslationWidgetState extends State<TranslationWidget> {
           default:
             if (snapshot.hasError) {
               if (Globals.isNetworkError == false) {
-              Globals.isNetworkError = true;
-              Future.delayed(const Duration(seconds: 3), () {
-               scaffoldKey.showSnackBar(SnackBar(
-                  content: const Text('Unable to translate please check internet connection',),
-                  backgroundColor: Colors.black.withOpacity(0.8),
-                  behavior: SnackBarBehavior.floating,
-                  margin: EdgeInsets.only(left: 16, right: 16, bottom: 30), 
-                  padding: EdgeInsets.only(left: 16,right: 16),
-              )); 
-            });      
-              } 
-                translation = widget.message!;
-     
-         
+                Globals.isNetworkError = true;
+                Future.delayed(const Duration(seconds: 3), () {
+                  scaffoldKey.showSnackBar(SnackBar(
+                    content: const Text(
+                      'Unable to translate please check internet connection',
+                    ),
+                    backgroundColor: Colors.black.withOpacity(0.8),
+                    behavior: SnackBarBehavior.floating,
+                    margin: EdgeInsets.only(left: 16, right: 16, bottom: 30),
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                  ));
+                });
+              }
+              translation = widget.message!;
             } else {
               translation = snapshot.data;
               Globals.isNetworkError = false;
@@ -64,7 +63,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
             return widget.builder!(translation!);
         }
       },
-    );    
+    );
   }
 
   Widget buildWaiting() => translation == null

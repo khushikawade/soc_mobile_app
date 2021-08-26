@@ -97,7 +97,8 @@ class _InformationPageState extends State<InformationPage> {
                     )
                   : Container(),
               Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English"
+                      Globals.selectedLanguage != "English" &&
+                      Globals.selectedLanguage != ""
                   ? TranslationWidget(
                       message: htmlData ?? Globals.appSetting.appInformationC,
                       fromLanguage: "en",

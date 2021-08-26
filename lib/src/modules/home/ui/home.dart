@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
           if (i == Globals.newsIndex) {
             setState(() {
               Globals.indicator.value = false;
-              Globals.callsnackbar=true;
+              Globals.callsnackbar = true;
             });
           } else {
             setState(() {});
@@ -156,7 +156,11 @@ class _HomePageState extends State<HomePage> {
         hideNavigationBarWhenKeyboardShows:
             true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
         decoration: NavBarDecoration(
-            borderRadius: BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(25),
+              topLeft: Radius.circular(25),
+            ),
+            // circular(25.0),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey,
@@ -175,6 +179,7 @@ class _HomePageState extends State<HomePage> {
           duration: Duration(milliseconds: 200),
         ),
         navBarStyle: NavBarStyle.style6,
+        navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
       )),
     );
   }

@@ -158,9 +158,9 @@ class Utility {
     try {
       String dateNew = date;
       final string = dateNew.toString();
-      final formatter = DateFormat('yyyy-mm-dd');
+      final formatter = DateFormat('yyyy-MM-dd');
       final dateTime = formatter.parse(string);
-      final DateFormat formatNew = DateFormat('dd/mm/yyyy');
+      final DateFormat formatNew = DateFormat('dd/MM/yyyy');
       final String formatted = formatNew.format(dateTime);
       // return DateTime.parse((dateNew));
       // print(formatted);
@@ -173,7 +173,7 @@ class Utility {
   static getDate(date) {
     try {
       DateTime parseDate =
-          new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
+          new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(date).toLocal();
       var inputDate = DateTime.parse(parseDate.toString());
       var outputFormat = DateFormat('MM/dd/yyyy hh:mm a');
       // var outputDate = outputFormat.format(inputDate);

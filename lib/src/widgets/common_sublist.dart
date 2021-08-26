@@ -115,7 +115,8 @@ class _SubListPageState extends State<SubListPage> {
   Widget _buildFormName(int index, obj) {
     return InkWell(
       child: Globals.selectedLanguage != null &&
-              Globals.selectedLanguage != "English"
+              Globals.selectedLanguage != "English" &&
+              Globals.selectedLanguage != ""
           ? TranslationWidget(
               message: obj.titleC.toString(),
               fromLanguage: "en",
