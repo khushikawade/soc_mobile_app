@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:xml2json/xml2json.dart';
-import '../../../overrides.dart' as overrides;
+import '../../../overrides.dart'; //as overrides;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 part 'social_event.dart';
@@ -33,7 +33,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future getEventDetails() async {
     try {
-      final link = Uri.parse("${overrides.Overrides.socialPagexmlUrl}");
+      final link = Uri.parse("${Overrides.socialPagexmlUrl}");
       Xml2Json xml2json = new Xml2Json();
       http.Response response = await http.get(link);
       if (response.statusCode == 200) {
