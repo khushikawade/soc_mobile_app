@@ -34,8 +34,6 @@ class SliderWidget extends StatefulWidget {
 
 class _SliderWidgetState extends State<SliderWidget> {
   static const double _kPadding = 16.0;
-  static const double _KButtonSize = 110.0;
-  static const double _kLabelSpacing = 15.0;
   var _controller = new PageController();
   static const _kDuration = const Duration(milliseconds: 400);
   int pageinitialIndex = 0;
@@ -161,17 +159,6 @@ class _SliderWidgetState extends State<SliderWidget> {
       ]),
     );
   }
-
-  // Future<String> _buildlink() async {
-  //   link = widget.obj[widget.currentIndex].link.toString();
-  //   RegExp exp =
-  //       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
-  //   Iterable<RegExpMatch> matches = exp.allMatches(link);
-  //   matches.forEach((match) {
-  //     link2 = link.substring(match.start, match.end);
-  //   });
-  //   return link2;
-  // }
 
   void htmlparser() {
     final doc = parse(object[0].description["__cdata"]);

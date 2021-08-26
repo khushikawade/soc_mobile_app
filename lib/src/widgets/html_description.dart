@@ -4,7 +4,6 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -31,7 +30,6 @@ class AboutusPage extends StatefulWidget {
 }
 
 class _AboutusPageState extends State<AboutusPage> {
-  // static const double _kIconSize = 45.0;
   static const double _kLabelSpacing = 20.0;
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 

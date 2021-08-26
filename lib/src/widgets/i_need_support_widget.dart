@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 UrlLauncherWidget objurl = new UrlLauncherWidget();
 void iNeedSupport(BuildContext context) {
@@ -14,5 +15,15 @@ void iNeedSupport(BuildContext context) {
       path: Globals.appSetting.contactEmailC,
       queryParameters: {'subject': subject, 'body': body});
 
-  objurl.callurlLaucher(context, Uri.decodeFull(params.toString()));
+  _launchURL(params.toString());
+  // objurl.callurlLaucher(context, Uri.decodeFull(params.toString()));
+}
+
+Future<void> _launchURL(url) async {
+  if (await canLaunch(url)) {
+    String str = url.replaceAll("+", " ");
+    await launch(str);
+  } else {
+    throw 'Could not launch $url';
+  }
 }
