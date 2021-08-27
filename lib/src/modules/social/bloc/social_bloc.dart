@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:xml2json/xml2json.dart';
-import '../../../overrides.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 part 'social_event.dart';

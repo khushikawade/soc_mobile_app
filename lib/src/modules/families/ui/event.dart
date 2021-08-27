@@ -367,7 +367,7 @@ class _EventPageState extends State<EventPage>
                 }
 
                 return connected
-                    ? Column(
+                    ? ListView(
                         children: [
                           BlocBuilder<FamilyBloc, FamilyState>(
                               bloc: _eventBloc,

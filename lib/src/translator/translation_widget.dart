@@ -27,14 +27,6 @@ class _TranslationWidgetState extends State<TranslationWidget> {
   ConnectivityResult? connectivity;
   String? translation;
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   final bool connected = connectivity != ConnectivityResult.none;
-  //   Globals.isNetworkError = !connected;
-  // }
-
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = Scaffold.of(context);
