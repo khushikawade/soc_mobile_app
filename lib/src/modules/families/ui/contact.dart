@@ -45,13 +45,14 @@ class _ContactPageState extends State<ContactPage> {
   bool? iserrorstate = false;
   static const double _kboxborderwidth = 0.75;
   bool? isloadingstate = false;
-  final Set<Marker> _markers = {};
+  final List<Marker> _markers = [];
 
   @override
   void initState() {
     super.initState();
     homebloc.add(FetchBottomNavigationBar());
     Globals.callsnackbar = true;
+    _markers.add(Marker(markerId:MarkerId ("Your location"), draggable: false,position: LatLng(Globals.homeObjet["Contact_Office_Location__Latitude__s"],Globals.homeObjet["Contact_Office_Location__Longitude__s"])));
   }
 
   @override
@@ -175,9 +176,9 @@ class _ContactPageState extends State<ContactPage> {
                                       initialCameraPosition: CameraPosition(
                                           // bearing: 192.8334901395799,
                                           target: LatLng(Globals.homeObjet["Contact_Office_Location__Latitude__s"],Globals.homeObjet["Contact_Office_Location__Longitude__s"]),
-                                          zoom: 15,
+                                          zoom: 18,
                                           tilt: 59.440717697143555),
-                                      markers:  _markers.toSet(), //   values.toSet(),
+                                      markers:  Set.from(_markers) //_markers.toSet(), //   values.toSet(),
                                      
                 ),
               )

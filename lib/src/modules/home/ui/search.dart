@@ -326,6 +326,7 @@ class _SearchPageState extends State<SearchPage> {
                 child: state.obj.map != null && state.obj.length > 0
                     ? Container(
                         child: ListView(
+                          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                         scrollDirection: Axis.vertical,
                         padding: EdgeInsets.all(_kLabelSpacing / 2),
                         children: state.obj.map<Widget>((data) {
