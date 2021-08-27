@@ -65,14 +65,12 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                 iserrorstate = true;
               }
 
-              return new Stack(fit: StackFit.expand, children: [
-                connected
-                    ? WebView(
-                        initialUrl: '${widget.url}',
-                      )
-                    : NoInternetErrorWidget(
-                        connected: connected, issplashscreen: false),
-              ]);
+              return connected
+                  ? WebView(
+                      initialUrl: '${widget.url}',
+                    )
+                  : NoInternetErrorWidget(
+                      connected: connected, issplashscreen: false);
             },
             child: Container()));
   }

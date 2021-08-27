@@ -49,79 +49,75 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 35.0),
-      child: Scaffold(
-          // url: url != null ? url : "www.google.com",
-          // withJavascript: true,
-          // withZoom: false,
-          // hidden: true,
-          appBar: AppBar(
-            elevation: 0.0,
-            leading: BackButtonWidget(),
-            title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
-            actions: [
-              widget.isSocialpage
-                  ? IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(),
-                      onPressed: () {
-                        reloadWebView();
-                      },
-                      icon: Icon(
-                        IconData(0xe80f,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        size: Globals.deviceType == "phone" ? 20 : 28,
-                      ))
-                  : Container(
-                      height: 0,
+    return Scaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          leading: BackButtonWidget(),
+          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          actions: [
+            widget.isSocialpage
+                ? IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    onPressed: () {
+                      reloadWebView();
+                    },
+                    icon: Icon(
+                      IconData(0xe80f,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      size: Globals.deviceType == "phone" ? 20 : 28,
+                    ))
+                : Container(
+                    height: 0,
+                  ),
+            HorzitalSpacerWidget(_kPadding / 1.2),
+            widget.isSocialpage
+                ? IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    onPressed: () {
+                      final String body =
+                          "Hey, check out this site! " + url.toString();
+                      SharePopUp obj = new SharePopUp();
+                      obj.callFunction(context, body, "");
+                    },
+                    icon: Icon(
+                      Icons.share,
+                      size: Globals.deviceType == "phone" ? 18 : 26,
                     ),
-              HorzitalSpacerWidget(_kPadding / 1.2),
-              widget.isSocialpage
-                  ? IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(),
-                      onPressed: () {
-                        final String body =
-                            "Hey, check out this site! " + url.toString();
-                        SharePopUp obj = new SharePopUp();
-                        obj.callFunction(context, body, "");
-                      },
-                      icon: Icon(
-                        Icons.share,
-                        size: Globals.deviceType == "phone" ? 18 : 26,
-                      ),
-                    )
-                  : Container(
-                      height: 0,
-                    ),
-              HorzitalSpacerWidget(_kPadding / 1.2),
-              widget.isSocialpage
-                  ? IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(),
-                      onPressed: () {
-                        urlobj.callurlLaucher(context, url);
-                      },
-                      icon: Icon(
-                        IconData(0xe80e,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        size: Globals.deviceType == "phone" ? 20 : 28,
-                      ))
-                  : Container(height: 0),
-              HorzitalSpacerWidget(_kPadding / 1.5),
-            ],
-          ),
-          body: WebView(
+                  )
+                : Container(
+                    height: 0,
+                  ),
+            HorzitalSpacerWidget(_kPadding / 1.2),
+            widget.isSocialpage
+                ? IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    onPressed: () {
+                      urlobj.callurlLaucher(context, url);
+                    },
+                    icon: Icon(
+                      IconData(0xe80e,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      size: Globals.deviceType == "phone" ? 20 : 28,
+                    ))
+                : Container(height: 0),
+            HorzitalSpacerWidget(_kPadding / 1.5),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.only(bottom: 40),
+          child: WebView(
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (controller) {
               _webViewController = controller;
             },
             initialUrl: widget.link,
-          )),
-    );
+          ),
+        ));
   }
 
   void reloadWebView() {

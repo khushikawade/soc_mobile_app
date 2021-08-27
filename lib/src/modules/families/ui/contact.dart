@@ -5,7 +5,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/mapwidget.dart';
+
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -15,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // ignore: must_be_immutable
 class ContactPage extends StatefulWidget {
@@ -44,6 +45,8 @@ class _ContactPageState extends State<ContactPage> {
   bool? iserrorstate = false;
   static const double _kboxborderwidth = 0.75;
   bool? isloadingstate = false;
+  final Set<Marker> _markers = {};
+
   @override
   void initState() {
     super.initState();
@@ -104,7 +107,8 @@ class _ContactPageState extends State<ContactPage> {
         ),
         child: Globals.homeObjet["Contact_Name__c"] != null &&
                 Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: Globals.homeObjet["Contact_Name__c"] ?? "-",
                 toLanguage: Globals.selectedLanguage,
@@ -157,15 +161,31 @@ class _ContactPageState extends State<ContactPage> {
                     null
             ? SizedBox(
                 height: _kboxheight * 2,
-                child: GoogleMaps(
-                  latitude:
-                      Globals.homeObjet["Contact_Office_Location__Latitude__s"],
-                  longitude: Globals
-                      .homeObjet["Contact_Office_Location__Longitude__s"],
+                child: GoogleMap(
+                 compassEnabled: true,
+                                      buildingsEnabled: true,
+                                      scrollGesturesEnabled: true,
+                                      rotateGesturesEnabled: true,
+                                      zoomControlsEnabled: true,
+                                      tiltGesturesEnabled: true,
+                                      zoomGesturesEnabled: true,
+                                      mapType: MapType.normal,
+                                      myLocationButtonEnabled: true,
+                                      myLocationEnabled: true,
+                                      initialCameraPosition: CameraPosition(
+                                          // bearing: 192.8334901395799,
+                                          target: LatLng(Globals.homeObjet["Contact_Office_Location__Latitude__s"],Globals.homeObjet["Contact_Office_Location__Longitude__s"]),
+                                          zoom: 15,
+                                          tilt: 59.440717697143555),
+                                      markers:  _markers.toSet(), //   values.toSet(),
+                                     
                 ),
               )
             : EmptyContainer());
   }
+
+
+
 
   Widget _buildPhoneWidget() {
     return Padding(
@@ -210,7 +230,8 @@ class _ContactPageState extends State<ContactPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Address:",
                   toLanguage: Globals.selectedLanguage,
@@ -233,7 +254,8 @@ class _ContactPageState extends State<ContactPage> {
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: Globals.homeObjet["Contact_Address__c"] ?? '-',
                     toLanguage: Globals.selectedLanguage,
@@ -262,7 +284,8 @@ class _ContactPageState extends State<ContactPage> {
       child: Row(
         children: [
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Phone :",
                   toLanguage: Globals.selectedLanguage,
@@ -291,7 +314,8 @@ class _ContactPageState extends State<ContactPage> {
                 }
               },
               child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English"
+                      Globals.selectedLanguage != "English" &&
+                      Globals.selectedLanguage != ""
                   ? TranslationWidget(
                       message: Globals.homeObjet["Contact_Phone__c"] ?? '-',
                       toLanguage: Globals.selectedLanguage,
@@ -340,7 +364,8 @@ class _ContactPageState extends State<ContactPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Email :",
                   toLanguage: Globals.selectedLanguage,

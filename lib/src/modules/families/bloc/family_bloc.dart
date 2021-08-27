@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
-import 'package:dio/dio.dart';
+import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/families/modal/stafflist.dart';
 import 'package:Soc/src/overrides.dart';
@@ -32,6 +32,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         yield FamilyLoading();
         List<FamiliesList> list = await getFamilyList();
+
+        getCalendarId(list);
+
         if (list.length > 0) {
           list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
           yield FamiliesDataSucess(obj: list);
@@ -45,6 +48,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         yield FamilyLoading();
         List<FamiliesSubList> list = await getFamilySubList(event.id);
+
         if (list.length > 0) {
           list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
           yield FamiliesSublistSucess(obj: list);
@@ -92,7 +96,15 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {
         yield ErrorLoading(err: e);
-        // yield CalendarListSuccess();
+      }
+    }
+  }
+
+  getCalendarId(list) {
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].calendarId != null && list[i].calendarId != "") {
+        Globals.calendar_Id = list[i].calendarId;
+        break;
       }
     }
   }
@@ -100,7 +112,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Future<List<FamiliesList>> getFamilyList() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,App_Icon_URL__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c FROM Families_App__c where School_App__c = '${Overrides.schoolID}'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,App_Icon_URL__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,Calendar_Id__c FROM Families_App__c where School_App__c = '${Overrides.schoolID}'")}");
       if (response.statusCode == 200) {
         dataArray = response.data["records"];
         return response.data["records"]
@@ -151,9 +163,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<CalendarEventList>> getCalendarEventList() async {
     try {
-          final response = await http.get(
+      final response = await http.get(
         Uri.parse(
-            'https://www.googleapis.com/calendar/v3/calendars/${Overrides.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
+            'https://www.googleapis.com/calendar/v3/calendars/${Globals.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

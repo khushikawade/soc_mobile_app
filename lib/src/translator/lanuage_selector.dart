@@ -40,13 +40,11 @@ class LanguageSelector {
     _openSettingsBottomSheet(context, onLanguageChanged);
   }
 
-  Widget divider() {
+  Widget divider(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: _kLabelSpacing * 1.8),
+      margin: EdgeInsets.symmetric(horizontal: 10),
       height: 0.5,
-      decoration: BoxDecoration(
-        color: Color(0xff6c75a4),
-      ),
+      decoration: BoxDecoration(color: Color(0xffD9D6D5)),
     );
   }
 
@@ -57,12 +55,13 @@ class LanguageSelector {
           Container(
             margin: EdgeInsets.only(
               // top: 5,
-              left: 30,
-              right: 30,
+              left: 10,
+              right: 10,
             ),
-            color: (languagesList.indexOf(language) % 2 == 0)
-                ? Theme.of(context).colorScheme.background
-                : Theme.of(context).colorScheme.secondary,
+            color: Colors.white,
+            // (languagesList.indexOf(language) % 2 == 0)
+            //     ? Theme.of(context).colorScheme.background
+            //     : Theme.of(context).colorScheme.secondary,
             child: Theme(
               data: ThemeData(
                 unselectedWidgetColor: Theme.of(context).colorScheme.onPrimary,
@@ -87,11 +86,16 @@ class LanguageSelector {
                             SnackBar(
                               content: const Text(
                                 'Language already selected',
-                              ), behavior: SnackBarBehavior.floating,
-                                      margin: EdgeInsets.only(left: 16, right: 16, bottom: MediaQuery.of(context).size.height*0.08), padding: EdgeInsets.only(
-        left: 16,
-      ),
-
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              margin: EdgeInsets.only(
+                                  left: 16,
+                                  right: 16,
+                                  bottom: MediaQuery.of(context).size.height *
+                                      0.08),
+                              padding: EdgeInsets.only(
+                                left: 16,
+                              ),
                               backgroundColor: Colors.black.withOpacity(0.8),
                             ),
                           );
@@ -113,7 +117,7 @@ class LanguageSelector {
               ),
             ),
           ),
-          divider(),
+          divider(context),
         ],
       );
 
@@ -135,132 +139,129 @@ class LanguageSelector {
             return StatefulBuilder(builder: (BuildContext context,
                 StateSetter setState /*You can rename this!*/) {
               return new OrientationBuilder(builder: (context, orientation) {
-                orientation == Orientation.landscape
-                    ? SystemChrome.setEnabledSystemUIOverlays(
-                        [SystemUiOverlay.bottom])
-                    : SystemChrome.setEnabledSystemUIOverlays(
-                        SystemUiOverlay.values);
+                //   orientation == Orientation.landscape
+                //       ? SystemChrome.setEnabledSystemUIOverlays(
+                //           [SystemUiOverlay.bottom])
+                //       : SystemChrome.setEnabledSystemUIOverlays(
+                //           SystemUiOverlay.values);
                 return SafeArea(
-                  child: Container(
-                    height: orientation == Orientation.landscape
-                        ? MediaQuery.of(context).size.width * 0.965
-                        : MediaQuery.of(context).size.height * 0.60,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            FocusScope.of(context).requestFocus(FocusNode());
-                          },
-                          icon: Icon(
-                            Icons.clear,
-                            size: Globals.deviceType == "phone" ? 28 : 36,
-                          ),
+                    child: Container(
+                  height: orientation == Orientation.landscape
+                      ? MediaQuery.of(context).size.width * 0.965
+                      : MediaQuery.of(context).size.height * 0.60,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        },
+                        icon: Icon(
+                          Icons.clear,
+                          size: Globals.deviceType == "phone" ? 28 : 36,
                         ),
-                        Center(
-                          child: Text(
-                            "Select language",
-                            style:
-                                Theme.of(context).textTheme.headline6!.copyWith(
-                                      fontSize: AppTheme.kBottomSheetTitleSize,
-                                    ),
-                          ),
-                        ),
-                        SpacerWidget(_kLabelSpacing * 1.5),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: _kLabelSpacing / 1.5),
-                          child: SizedBox(
-                            height: 51,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 1,
-                              child: TextFormField(
-                                  focusNode: myFocusNode,
-                                  controller: _controller,
-                                  decoration: InputDecoration(
-                                    hintText: 'Search',
-                                    filled: true,
-                                    fillColor:
-                                        Theme.of(context).colorScheme.secondary,
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(30.0)),
-                                      borderSide: BorderSide(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          width: 2),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(30.0)),
-                                      borderSide: BorderSide(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          width: 2),
-                                    ),
-                                    prefixIcon: Icon(
-                                      const IconData(0xe805,
-                                          fontFamily: Overrides.kFontFam,
-                                          fontPackage: Overrides.kFontPkg),
-                                      size: Globals.deviceType == "phone"
-                                          ? 20
-                                          : 28,
-                                    ),
-                                    suffixIcon: _controller.text.isEmpty
-                                        ? null
-                                        : InkWell(
-                                            onTap: () {
-                                              _controller.clear();
-                                              issuggestionList = false;
-                                              FocusScope.of(context)
-                                                  .requestFocus(FocusNode());
-                                              setState(() {});
-                                            },
-                                            child: Icon(
-                                              Icons.clear,
-                                              size:
-                                                  Globals.deviceType == "phone"
-                                                      ? 20
-                                                      : 28,
-                                            ),
-                                          ),
+                      ),
+                      Center(
+                        child: Text(
+                          "Select language",
+                          style:
+                              Theme.of(context).textTheme.headline6!.copyWith(
+                                    fontSize: AppTheme.kBottomSheetTitleSize,
                                   ),
-                                  onChanged: (value) {
-                                    onItemChanged(value, setState);
-                                  }),
-                            ),
+                        ),
+                      ),
+                      SpacerWidget(_kLabelSpacing * 1.5),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: _kLabelSpacing / 1.5),
+                        child: SizedBox(
+                          height: 51,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 1,
+                            child: TextFormField(
+                                focusNode: myFocusNode,
+                                controller: _controller,
+                                decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  filled: true,
+                                  fillColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30.0)),
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        width: 2),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30.0)),
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        width: 2),
+                                  ),
+                                  prefixIcon: Icon(
+                                    const IconData(0xe805,
+                                        fontFamily: Overrides.kFontFam,
+                                        fontPackage: Overrides.kFontPkg),
+                                    size:
+                                        Globals.deviceType == "phone" ? 20 : 28,
+                                  ),
+                                  suffixIcon: _controller.text.isEmpty
+                                      ? null
+                                      : InkWell(
+                                          onTap: () {
+                                            _controller.clear();
+                                            issuggestionList = false;
+                                            FocusScope.of(context)
+                                                .requestFocus(FocusNode());
+                                            setState(() {});
+                                          },
+                                          child: Icon(
+                                            Icons.clear,
+                                            size: Globals.deviceType == "phone"
+                                                ? 20
+                                                : 28,
+                                          ),
+                                        ),
+                                ),
+                                onChanged: (value) {
+                                  onItemChanged(value, setState);
+                                }),
                           ),
                         ),
-                        issuggestionList!
-                            ? _buildsuggestiontlist(context, onLanguageChanged)
-                            : Container(
-                                height: 0,
-                              ),
-                        issuggestionList!
-                            ? Container(
-                                height: 0,
-                              )
-                            : Expanded(
-                                child: _buildLanguagesList(
-                                    context, onLanguageChanged),
-                              ),
-                      ],
-                    ),
+                      ),
+                      issuggestionList!
+                          ? _buildsuggestiontlist(context, onLanguageChanged)
+                          : Container(
+                              height: 0,
+                            ),
+                      issuggestionList!
+                          ? Container(
+                              height: 0,
+                            )
+                          : Expanded(
+                              child: _buildLanguagesList(
+                                  context, onLanguageChanged),
+                            ),
+                    ],
                   ),
-                );
+                ));
               });
             });
           }
         });
-    future.then((void value) => _closeModal(value));
   }
+  // });
+  // future.then((void value) => _closeModal());
 
-  void _closeModal(void value) {
-    // print("modal close call ");
+  void _closeModal() {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 
@@ -279,13 +280,11 @@ class LanguageSelector {
   }
 
   _buildLanguagesList(context, onLanguageChanged) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 25),
-      child: ListView(
-        children: languagesList
-            .map<Widget>((i) => _listTile(i, context, onLanguageChanged, false))
-            .toList(),
-      ),
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 35),
+      children: languagesList
+          .map<Widget>((i) => _listTile(i, context, onLanguageChanged, false))
+          .toList(),
     );
   }
 

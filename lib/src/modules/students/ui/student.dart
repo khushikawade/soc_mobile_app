@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -129,7 +130,8 @@ class _StudentPageState extends State<StudentPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
+                                      Globals.selectedLanguage != "English" &&
+                                      Globals.selectedLanguage != ""
                                   ? TranslationWidget(
                                       message: "${list[index].titleC}",
                                       fromLanguage: "en",
@@ -160,7 +162,8 @@ class _StudentPageState extends State<StudentPage> {
           })
         : Center(
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: "No apps available here",
                     fromLanguage: "en",
@@ -240,26 +243,23 @@ class _StudentPageState extends State<StudentPage> {
                     height: 0,
                     width: 0,
                     child: BlocListener<HomeBloc, HomeState>(
-                      bloc: _homeBloc,
-                      listener: (context, state) async {
-                        if (state is BottomNavigationBarSuccess) {
-                          AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObjet = state.obj;
-                          setState(() {});
-                        } else if (state is HomeErrorReceived) {
-                          Container(
-                            alignment: Alignment.center,
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            child:
-                                Center(child: Text("Unable to load the data")),
-                          );
-                        }
-                      },
-                      child: Container(
-                        height: 0,
-                        width: 0,
-                      ),
-                    ),
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.homeObjet = state.obj;
+                            setState(() {});
+                          } else if (state is HomeErrorReceived) {
+                            Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Center(
+                                  child: Text("Unable to load the data")),
+                            );
+                          }
+                        },
+                        child: EmptyContainer()),
                   ),
                 ]);
               },

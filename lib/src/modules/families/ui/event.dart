@@ -17,13 +17,16 @@ import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
 class EventPage extends StatefulWidget {
-  EventPage(
-      {required this.isbuttomsheet,
-      required this.appBarTitle,
-      required this.language});
+  EventPage({
+    required this.isbuttomsheet,
+    required this.appBarTitle,
+    required this.language,
+    // required this.calendarId,
+  });
   String? language;
   bool? isbuttomsheet;
   String? appBarTitle;
+  // String calendarId;
 
   @override
   _EventPageState createState() => _EventPageState();
@@ -42,7 +45,9 @@ class _EventPageState extends State<EventPage>
   @override
   void initState() {
     super.initState();
+    // Globals.calendar_Id = widget.calendarId;
     _eventBloc.add(CalendarListEvent());
+
     // _ktabmargin = MediaQuery.of(context).size.height * 0.25;
   }
 
@@ -95,7 +100,8 @@ class _EventPageState extends State<EventPage>
                             .split("/")[0],
                         style: Theme.of(context).textTheme.headline5!),
                     Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
+                            Globals.selectedLanguage != "English" &&
+                            Globals.selectedLanguage != ""
                         ? TranslationWidget(
                             message: Utility.getMonthFromDate(
                                     list.start.toString().contains('dateTime')
@@ -143,7 +149,8 @@ class _EventPageState extends State<EventPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
+                            Globals.selectedLanguage != "English" &&
+                            Globals.selectedLanguage != ""
                         ? TranslationWidget(
                             message: list.summary!,
                             toLanguage: Globals.selectedLanguage,
@@ -174,7 +181,8 @@ class _EventPageState extends State<EventPage>
                               overflow: TextOverflow.ellipsis,
                             )),
                     Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English"
+                            Globals.selectedLanguage != "English" &&
+                            Globals.selectedLanguage != ""
                         ? TranslationWidget(
                             message: Utility.convertDateFormat2(
                                     list.start.toString().contains('dateTime')
@@ -263,14 +271,36 @@ class _EventPageState extends State<EventPage>
                       color: Theme.of(context).colorScheme.primaryVariant,
                     ),
                     tabs: [
-                      Tab(text: 'Upcoming'),
-                      Tab(text: 'Past'),
+                      Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English" &&
+                              Globals.selectedLanguage != ""
+                          ? TranslationWidget(
+                              message: "Upcoming",
+                              toLanguage: Globals.selectedLanguage,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Tab(
+                                text: translatedMessage.toString(),
+                              ),
+                            )
+                          : Tab(text: 'Upcoming'),
+                      Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English" &&
+                              Globals.selectedLanguage != ""
+                          ? TranslationWidget(
+                              message: "Past",
+                              toLanguage: Globals.selectedLanguage,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Tab(
+                                text: translatedMessage.toString(),
+                              ),
+                            )
+                          : Tab(text: 'Past'),
                     ],
                   ),
                 ),
                 Container(
                     height: Globals.deviceType == "phone"
-                        ? MediaQuery.of(context).size.height * 0.85
+                        ? MediaQuery.of(context).size.height * 0.75
                         : MediaQuery.of(context).size.height * 0.85,
                     decoration: BoxDecoration(
                         border: Border(
@@ -280,7 +310,7 @@ class _EventPageState extends State<EventPage>
                           child: new RefreshIndicator(
                         child: new ListView.builder(
                             scrollDirection: Axis.vertical,
-                            padding: EdgeInsets.only(bottom: 120),
+                            padding: EdgeInsets.only(bottom: 20),
                             itemCount: state.futureListobj!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return _buildList(state.futureListobj![index],
@@ -292,7 +322,7 @@ class _EventPageState extends State<EventPage>
                           child: new RefreshIndicator(
                         child: new ListView.builder(
                             scrollDirection: Axis.vertical,
-                            padding: EdgeInsets.only(bottom: 120),
+                            padding: EdgeInsets.only(bottom: 20),
                             itemCount: state.pastListobj!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return _buildList(state.pastListobj![index],
@@ -310,9 +340,10 @@ class _EventPageState extends State<EventPage>
         appBar: CustomAppBarWidget(
           appBarTitle: widget.appBarTitle!,
           isSearch: true,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
           isShare: false,
-          sharedpopUpheaderText: "",
-          sharedpopBodytext: "",
+          isCenterIcon: true,
           language: Globals.selectedLanguage,
         ),
         body: RefreshIndicator(
@@ -352,9 +383,7 @@ class _EventPageState extends State<EventPage>
                                 } else if (state is CalendarListSuccess) {
                                   return _buildTabs(state);
                                 } else if (state is ErrorLoading) {
-                                  return ListView(
-                                      shrinkWrap: true,
-                                      children: [ErrorMsgWidget()]);
+                                  return ListView(children: [ErrorMsgWidget()]);
                                 }
                                 return Container();
                               }),

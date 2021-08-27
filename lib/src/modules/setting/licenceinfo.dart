@@ -62,7 +62,8 @@ class _LicenceinfoState extends State<Licenceinfo> {
           padding: const EdgeInsets.symmetric(
               horizontal: _kLabelSpacing * 1, vertical: _kLabelSpacing),
           child: Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: list[index]["name"] ?? '-',
                   fromLanguage: "en",

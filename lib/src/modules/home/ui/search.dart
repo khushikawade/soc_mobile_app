@@ -291,7 +291,8 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 HorzitalSpacerWidget(_kLabelSpacing),
                 Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
+                        Globals.selectedLanguage != "English" &&
+                        Globals.selectedLanguage != ""
                     ? TranslationWidget(
                         message: items[index].titleC != null &&
                                 items[index].titleC.isNotEmpty
@@ -346,7 +347,8 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                             child: ListTile(
                                 title: Globals.selectedLanguage != null &&
-                                        Globals.selectedLanguage != "English"
+                                        Globals.selectedLanguage != "English" &&
+                                        Globals.selectedLanguage != ""
                                     ? TranslationWidget(
                                         message: data.titleC,
                                         toLanguage: Globals.selectedLanguage,
@@ -418,7 +420,8 @@ class _SearchPageState extends State<SearchPage> {
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
         Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: "Search",
                 toLanguage: Globals.selectedLanguage,
@@ -448,7 +451,8 @@ class _SearchPageState extends State<SearchPage> {
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
         Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: "Recent Search",
                 toLanguage: Globals.selectedLanguage,
@@ -507,45 +511,43 @@ class _SearchPageState extends State<SearchPage> {
                   iserrorstate = true;
                 }
 
-                return new Stack(fit: StackFit.expand, children: [
-                  connected
-                      ? Container(
-                          child:
-                              Column(mainAxisSize: MainAxisSize.max, children: [
-                            SpacerWidget(_kLabelSpacing / 4),
-                            _buildHeading(),
-                            SpacerWidget(_kLabelSpacing / 2),
-                            _buildSearchbar(),
-                            issuggestionList
-                                ? _buildissuggestionList()
-                                : SizedBox(height: 0),
-                            SpacerWidget(_kLabelSpacing / 2),
-                            issuggestionList == false
-                                ? _buildHeading2()
-                                : SizedBox(height: 0),
-                            issuggestionList == false
-                                ? _buildRecentItemList()
-                                : SizedBox(height: 0),
-                            Container(
-                              height: 0,
-                              width: 0,
-                              child: BlocListener<HomeBloc, HomeState>(
-                                  bloc: _homeBloc,
-                                  listener: (context, state) async {
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObjet = state.obj;
-                                      setState(() {});
-                                    } else if (state is HomeErrorReceived) {}
-                                  },
-                                  child: EmptyContainer()),
-                            ),
-                          ]),
-                        )
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false),
-                ]);
+                return connected
+                    ? Container(
+                        child:
+                            Column(mainAxisSize: MainAxisSize.max, children: [
+                          SpacerWidget(_kLabelSpacing / 4),
+                          _buildHeading(),
+                          SpacerWidget(_kLabelSpacing / 2),
+                          _buildSearchbar(),
+                          issuggestionList
+                              ? _buildissuggestionList()
+                              : SizedBox(height: 0),
+                          SpacerWidget(_kLabelSpacing / 2),
+                          issuggestionList == false
+                              ? _buildHeading2()
+                              : SizedBox(height: 0),
+                          issuggestionList == false
+                              ? _buildRecentItemList()
+                              : SizedBox(height: 0),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  } else if (state is HomeErrorReceived) {}
+                                },
+                                child: EmptyContainer()),
+                          ),
+                        ]),
+                      )
+                    : NoInternetErrorWidget(
+                        connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

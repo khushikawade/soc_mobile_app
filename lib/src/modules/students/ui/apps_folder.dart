@@ -124,7 +124,9 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                         )
                                       : Container(),
                                   Globals.selectedLanguage != null &&
-                                          Globals.selectedLanguage != "English"
+                                          Globals.selectedLanguage !=
+                                              "English" &&
+                                          Globals.selectedLanguage != ""
                                       ? TranslationWidget(
                                           message:
                                               apps[index].appFolderc != null &&
@@ -168,7 +170,8 @@ class AppsFolderPageState extends State<AppsFolderPage>
                   : Center(
                       child: Container(
                           child: Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English"
+                                  Globals.selectedLanguage != "English" &&
+                                  Globals.selectedLanguage != ""
                               ? TranslationWidget(
                                   message: "No apps available here",
                                   fromLanguage: "en",

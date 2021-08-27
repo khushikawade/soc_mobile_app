@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 UrlLauncherWidget objurl = new UrlLauncherWidget();
 void iNeedSupport(BuildContext context) {
