@@ -53,6 +53,8 @@ class _SocialPageState extends State<SocialPage> {
     final document = parse(obj.description["__cdata"]);
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
+    print(index);
+    print(imageLink);
 
     return Container(
       padding: EdgeInsets.symmetric(

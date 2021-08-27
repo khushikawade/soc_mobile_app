@@ -52,10 +52,10 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       leading: BackButtonWidget(),
       title: widget.isCenterIcon != null && widget.isCenterIcon == true
           ? SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())
-          : Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? widget.appBarTitle.isNotEmpty
+          : widget.appBarTitle != ""
+              ? Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English" &&
+                      Globals.selectedLanguage != ""
                   ? TranslationWidget(
                       message: widget.appBarTitle,
                       fromLanguage: "en",
@@ -64,7 +64,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                         translatedMessage.toString(),
                         style: Theme.of(context).textTheme.headline2!.copyWith(
                             color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.w500),
+                            fontWeight: FontWeight.w400),
                         textAlign: TextAlign.center,
                       ),
                     )
@@ -72,7 +72,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                       widget.appBarTitle,
                       style: Theme.of(context).textTheme.headline2!.copyWith(
                           color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.w500),
+                          fontWeight: FontWeight.w400),
                       textAlign: TextAlign.center,
                     )
               : EmptyContainer(),
@@ -104,25 +104,25 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                 ),
               )
             : Container(),
-        widget.ishtmlpage == true
-            ? IconButton(
-                onPressed: () {
-                  widget.sharedpopBodytext != null &&
-                          widget.sharedpopUpheaderText != 'null' &&
-                          widget.sharedpopBodytext!.length > 1
-                      ? shareobj.callFunction(
-                          context,
-                          widget.sharedpopBodytext.toString(),
-                          widget.sharedpopUpheaderText.toString())
-                      : print("null");
-                },
-                icon: Icon(
-                  Icons.share,
-                  size: Globals.deviceType == "phone" ? 18 : 26,
-                ))
-            : Container(
-                height: 0,
-              ),
+        // widget.ishtmlpage == true
+        //     ? IconButton(
+        //         onPressed: () {
+        //           widget.sharedpopBodytext != null &&
+        //                   widget.sharedpopUpheaderText != 'null' &&
+        //                   widget.sharedpopBodytext!.length > 1
+        //               ? shareobj.callFunction(
+        //                   context,
+        //                   widget.sharedpopBodytext.toString(),
+        //                   widget.sharedpopUpheaderText.toString())
+        //               : print("null");
+        //         },
+        //         icon: Icon(
+        //           Icons.share,
+        //           size: Globals.deviceType == "phone" ? 18 : 26,
+        //         ))
+        // : Container(
+        //     height: 0,
+        //   ),
         HorzitalSpacerWidget(_kLabelSpacing / 3)
       ],
     );

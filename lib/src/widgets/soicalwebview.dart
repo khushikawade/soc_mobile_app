@@ -108,12 +108,15 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
             HorzitalSpacerWidget(_kPadding / 1.5),
           ],
         ),
-        body: WebView(
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (controller) {
-            _webViewController = controller;
-          },
-          initialUrl: widget.link,
+        body: Padding(
+          padding: const EdgeInsets.only(bottom: 40),
+          child: WebView(
+            javascriptMode: JavascriptMode.unrestricted,
+            onWebViewCreated: (controller) {
+              _webViewController = controller;
+            },
+            initialUrl: widget.link,
+          ),
         ));
   }
 

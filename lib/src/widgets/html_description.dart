@@ -107,7 +107,7 @@ class _AboutusPageState extends State<AboutusPage> {
     return Scaffold(
       appBar: CustomAppBarWidget(
         isSearch: false,
-        isShare: false,
+        isShare: true,
         appBarTitle: widget.appbarTitle,
         ishtmlpage: widget.ishtml,
         sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),

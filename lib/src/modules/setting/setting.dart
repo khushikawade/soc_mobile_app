@@ -81,9 +81,16 @@ class _SettingPageState extends State<SettingPage> {
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
                           translatedMessage.toString(),
-                          style: Theme.of(context).textTheme.headline2!,
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
                         ))
-                : Text(tittle, style: Theme.of(context).textTheme.headline2!),
+                : Text(tittle,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(fontWeight: FontWeight.w500)),
           ),
         ),
       ],

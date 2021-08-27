@@ -182,7 +182,6 @@ class _InformationPageState extends State<InformationPage> {
                             child: isloadingstate!
                                 ? ShimmerLoading(
                                     isLoading: true,
-                                    // child:
                                     child: _buildContent1(),
                                   )
                                 : _buildContent1(),
