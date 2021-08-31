@@ -63,21 +63,25 @@ class _ContactPageState extends State<ContactPage> {
     return Container(
       child: Globals.homeObjet != null &&
               Globals.homeObjet["Contact_Image__c"] != null
-          ? CachedNetworkImage(
-              imageUrl: Globals.homeObjet["Contact_Image__c"],
-              fit: BoxFit.fill,
-              placeholder: (context, url) => Container(
-                alignment: Alignment.center,
-                child: ShimmerLoading(
-                  isLoading: true,
-                  child: Container(
-                    height: 200,
-                    color: Colors.white,
+          ? Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+              child: CachedNetworkImage(
+                imageUrl: Globals.homeObjet["Contact_Image__c"],
+                fit: BoxFit.fill,
+                placeholder: (context, url) => Container(
+                  alignment: Alignment.center,
+                  child: ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      height: 200,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              errorWidget: (context, url, error) => Icon(
-                Icons.error,
+                errorWidget: (context, url, error) => Icon(
+                  Icons.error,
+                ),
               ),
             )
           : Container(
@@ -162,30 +166,30 @@ class _ContactPageState extends State<ContactPage> {
             ? SizedBox(
                 height: _kboxheight * 2,
                 child: GoogleMap(
-                 compassEnabled: true,
-                                      buildingsEnabled: true,
-                                      scrollGesturesEnabled: true,
-                                      rotateGesturesEnabled: true,
-                                      zoomControlsEnabled: true,
-                                      tiltGesturesEnabled: true,
-                                      zoomGesturesEnabled: true,
-                                      mapType: MapType.normal,
-                                      myLocationButtonEnabled: true,
-                                      myLocationEnabled: true,
-                                      initialCameraPosition: CameraPosition(
-                                          // bearing: 192.8334901395799,
-                                          target: LatLng(Globals.homeObjet["Contact_Office_Location__Latitude__s"],Globals.homeObjet["Contact_Office_Location__Longitude__s"]),
-                                          zoom: 15,
-                                          tilt: 59.440717697143555),
-                                      markers:  _markers.toSet(), //   values.toSet(),
-                                     
+                  compassEnabled: true,
+                  buildingsEnabled: true,
+                  scrollGesturesEnabled: true,
+                  rotateGesturesEnabled: true,
+                  zoomControlsEnabled: true,
+                  tiltGesturesEnabled: true,
+                  zoomGesturesEnabled: true,
+                  mapType: MapType.normal,
+                  myLocationButtonEnabled: true,
+                  myLocationEnabled: true,
+                  initialCameraPosition: CameraPosition(
+                      // bearing: 192.8334901395799,
+                      target: LatLng(
+                          Globals.homeObjet[
+                              "Contact_Office_Location__Latitude__s"],
+                          Globals.homeObjet[
+                              "Contact_Office_Location__Longitude__s"]),
+                      zoom: 15,
+                      tilt: 59.440717697143555),
+                  markers: _markers.toSet(), //   values.toSet(),
                 ),
               )
             : EmptyContainer());
   }
-
-
-
 
   Widget _buildPhoneWidget() {
     return Padding(

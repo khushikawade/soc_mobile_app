@@ -52,5 +52,4 @@ class MyCustomIcon {
   static const IconData error_icon = IconData(0xe81c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData no_data_icon = IconData(0xe81d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData no_internet_icon = IconData(0xe81e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData translate_logo_max_500x500 = IconData(0xe81f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

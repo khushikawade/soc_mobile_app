@@ -26,7 +26,7 @@ class StudentPage extends StatefulWidget {
 }
 
 class _StudentPageState extends State<StudentPage> {
-  static const double _kLableSpacing = 10.0;
+  static const double _kLableSpacing = 12.0;
   int? gridLength;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
@@ -122,10 +122,7 @@ class _StudentPageState extends State<StudentPage> {
                                         Icon(Icons.error),
                                   ),
                                 )
-                              : Container(
-                                  height: 0,
-                                  width: 0,
-                                ),
+                              : EmptyContainer(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -142,7 +139,7 @@ class _StudentPageState extends State<StudentPage> {
                                             textAlign: TextAlign.center,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle2!),
+                                                .bodyText1!),
                                       ),
                                     )
                                   : Expanded(
@@ -150,7 +147,7 @@ class _StudentPageState extends State<StudentPage> {
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2!),
+                                              .bodyText1!),
                                     ),
                             ],
                           ),

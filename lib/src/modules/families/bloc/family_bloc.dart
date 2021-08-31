@@ -48,11 +48,19 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         yield FamilyLoading();
         List<FamiliesSubList> list = await getFamilySubList(event.id);
+        // bool isempty;
+        // for (final i in list) {
+        //   if (list[i].sortOredr == null) {
+        //     isempty = true;
+        //   }
+        // }
 
-        if (list.length > 0) {
-          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
-          yield FamiliesSublistSucess(obj: list);
-        }
+        // if (list.length > 0) {
+        //   list.sort((a, b) => a.sortOredr != null && a.sortOredr != ""
+        //       ? a.sortOredr.compareTo(b.sortOredr)
+        //       : '');
+        // }
+        yield FamiliesSublistSucess(obj: list);
       } catch (e) {
         yield ErrorLoading(err: e);
       }

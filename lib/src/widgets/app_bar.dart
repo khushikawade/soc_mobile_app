@@ -100,7 +100,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                 },
                 icon: Icon(
                   Icons.share,
-                  size: Globals.deviceType == "phone" ? 18 : 26,
+                  size: Globals.deviceType == "phone" ? 20 : 28,
                 ),
               )
             : Container(),

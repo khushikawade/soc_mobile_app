@@ -10,16 +10,22 @@ class BackButtonWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 18.0, left: 10),
-          child: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(
-              const IconData(0xe80d,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              size: Globals.deviceType == "phone" ? 20 : 28,
+          padding: const EdgeInsets.only(
+            top: 5.0,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(0.0),
+            width: 40.0,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                const IconData(0xe80d,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                size: Globals.deviceType == "phone" ? 20 : 28,
+              ),
             ),
           ),
         ),

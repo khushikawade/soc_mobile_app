@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
@@ -310,7 +312,9 @@ class _EventPageState extends State<EventPage>
                           child: new RefreshIndicator(
                         child: new ListView.builder(
                             scrollDirection: Axis.vertical,
-                            padding: EdgeInsets.only(bottom: 20),
+                            padding: Platform.isAndroid
+                                ? EdgeInsets.only(bottom: 20)
+                                : EdgeInsets.only(bottom: 60),
                             itemCount: state.futureListobj!.length,
                             itemBuilder: (BuildContext context, int index) {
                               return _buildList(state.futureListobj![index],
