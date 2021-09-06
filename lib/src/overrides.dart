@@ -14,7 +14,7 @@ class Overrides {
       'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
   static const String schoolID =
-      'a1T3J000000RcpLUAS'; //a1T3J000000RcpLUAS    a1T3J000000RHEKUA4
+      'a1T3J000000RHEKUA4'; //a1T3J000000RcpLUAS    a1T3J000000RHEKUA4
 
   static String calendar_Id = "";
   // 'c_00ehll6ecff5iminj79562jv14@group.calendar.google.com'; //'appdevelopersdp7@gmail.com';

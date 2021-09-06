@@ -152,13 +152,13 @@ class _FamilyPageState extends State<FamilyPage> {
       return Container(
         child: ClipRRect(
           child: SizedBox(
-            height: 20,
-            width: 20,
+            height: 35,
+            width: 35,
             child: CachedNetworkImage(
               imageUrl: obj.appIconUrlC!,
               fit: BoxFit.cover,
-              height: 20,
-              width: 20,
+              height: 35,
+              width: 35,
               placeholder: (context, url) => Container(
                 alignment: Alignment.center,
                 child: CircularProgressIndicator(
@@ -178,7 +178,7 @@ class _FamilyPageState extends State<FamilyPage> {
           fontPackage: 'font_awesome_flutter',
         ),
         color: Theme.of(context).colorScheme.primary,
-        size: Globals.deviceType == "phone" ? 18 : 26,
+        size: Globals.deviceType == "phone" ? 22 : 30,
       );
     }
   }

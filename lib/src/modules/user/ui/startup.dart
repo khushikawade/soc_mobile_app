@@ -89,11 +89,14 @@ class _StartupPageState extends State<StartupPage> {
             // child: Image.asset('assets/images/splash_screen_icon.png',
             //     fit: BoxFit.fill),
 
-            CachedNetworkImage(
-                imageUrl: Globals.splashImageUrl!,
-                fit: BoxFit.fill,
-                errorWidget: (context, url, error) => Icon(
-                  Icons.error,
+            Padding(
+                padding: const EdgeInsets.all(16),
+                child: CachedNetworkImage(
+                  imageUrl: Globals.splashImageUrl!,
+                  fit: BoxFit.fill,
+                  errorWidget: (context, url, error) => Icon(
+                    Icons.error,
+                  ),
                 ),
               )
             : Text("Loading ...")
@@ -175,8 +178,8 @@ class _StartupPageState extends State<StartupPage> {
                         Globals.homeObjet = state.obj;
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
-                        prefs.setString(
-                            Strings.SplashUrl, state.obj["Splash_Screen__c"]);
+                        prefs.setString(Strings.SplashUrl,
+                            state.obj["Splash_Screen__c"] ?? '');
                         state.obj != null
                             ? Navigator.pushReplacement(
                                 context,

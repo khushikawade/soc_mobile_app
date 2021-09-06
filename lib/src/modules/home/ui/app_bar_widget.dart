@@ -85,10 +85,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           elevation: 0.0,
           leading: IconButton(
             icon: Icon(
-              IconData(0xe800,
+              IconData(0xe81f,
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
-              size: Globals.deviceType == "phone" ? 24 : 32,
+              size: Globals.deviceType == "phone" ? 32 : 40,
             ),
             onPressed: () {
               setState(() {});

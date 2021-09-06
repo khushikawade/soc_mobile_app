@@ -69,6 +69,7 @@ dependencies:
   adaptive_theme: ^2.2.0
   flutter_offline: ^2.0.0
   flutter_svg: ^0.22.0
+  mailto: ^2.0.0
   
   
 

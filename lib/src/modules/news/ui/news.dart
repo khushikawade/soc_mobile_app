@@ -85,14 +85,13 @@ class _NewsPageState extends State<NewsPage> {
         child: Row(
           children: <Widget>[
             Container(
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.center,
               width: _kIconSize * 1.4,
               height: _kIconSize * 1.5,
               child: obj.image != null
                   ? ClipRRect(
                       child: CachedNetworkImage(
                         imageUrl: obj.image!,
-                        fit: BoxFit.fill,
                         placeholder: (context, url) => Container(
                             alignment: Alignment.center,
                             child: ShimmerLoading(
@@ -107,13 +106,11 @@ class _NewsPageState extends State<NewsPage> {
                       ),
                     )
                   : Container(
-                      width: _kIconSize * 1.4,
                       height: _kIconSize * 1.5,
                       alignment: Alignment.centerLeft,
                       child: ClipRRect(
                         child: CachedNetworkImage(
                           imageUrl: Globals.homeObjet["App_Logo__c"],
-                          fit: BoxFit.fill,
                           placeholder: (context, url) => Container(
                               alignment: Alignment.center,
                               child: ShimmerLoading(
