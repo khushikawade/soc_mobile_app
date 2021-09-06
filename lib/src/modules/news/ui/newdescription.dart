@@ -8,6 +8,7 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class Newdescription extends StatefulWidget {
   final obj;
@@ -149,24 +150,24 @@ class _NewdescriptionState extends State<Newdescription> {
                               .copyWith(fontWeight: FontWeight.w500),
                         ),
                 ),
-                Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English" &&
-                        Globals.selectedLanguage != ""
-                    ? TranslationWidget(
-                        message: widget.date,
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                          style: Theme.of(context).textTheme.subtitle1!,
-                          textAlign: TextAlign.justify,
-                        ),
-                      )
-                    : Text(
-                        widget.date,
-                        style: Theme.of(context).textTheme.subtitle1!,
-                        textAlign: TextAlign.justify,
-                      ),
+                // Globals.selectedLanguage != null &&
+                //         Globals.selectedLanguage != "English" &&
+                //         Globals.selectedLanguage != ""
+                //     ? TranslationWidget(
+                //         message: widget.date,
+                //         toLanguage: Globals.selectedLanguage,
+                //         fromLanguage: "en",
+                //         builder: (translatedMessage) => Text(
+                //           translatedMessage.toString(),
+                //           style: Theme.of(context).textTheme.subtitle1!,
+                //           textAlign: TextAlign.justify,
+                //         ),
+                //       )
+                //     : Text(
+                //         widget.date,
+                //         style: Theme.of(context).textTheme.subtitle1!,
+                //         textAlign: TextAlign.justify,
+                //       ),
               ],
             ),
             Container(
@@ -179,13 +180,17 @@ class _NewdescriptionState extends State<Newdescription> {
                           message: widget.obj.contents["en"].toString(),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
+                          builder: (translatedMessage) => 
+                          // ParsedText(text: "[@michael:51515151] Hello this is an example of the ParsedText, links like http://www.google.com or http://www.facebook.com are clickable and phone number 444-555-6666 can call too. But you can also do more with this package, for example Bob will change style and David too. foo@gmail.com And the magic number is 42! #react #react-native",)
+                          Text(
                             translatedMessage.toString(),
                             style: Theme.of(context).textTheme.bodyText1!,
                             textAlign: TextAlign.left,
                           ),
                         )
-                      : Text(
+                      : 
+                      // Html(data: widget.obj.contents["en"],)
+                      Text(
                           widget.obj.contents["en"].toString(),
                           style: Theme.of(context).textTheme.bodyText1!,
                           textAlign: TextAlign.left,
@@ -193,7 +198,7 @@ class _NewdescriptionState extends State<Newdescription> {
                 ],
               ),
             ),
-            SpacerWidget(_kLabelSpacing),
+            // SpacerWidget(_kLabelSpacing),
             GestureDetector(
               onTap: () {
                 _launchURL(widget.obj.url);
@@ -221,7 +226,8 @@ class _NewdescriptionState extends State<Newdescription> {
                                   textAlign: TextAlign.justify,
                                 ),
                               )
-                            : Text(
+                            : 
+                            Text(
                                 widget.obj.url.toString(),
                                 style: Theme.of(context)
                                     .textTheme
@@ -237,38 +243,25 @@ class _NewdescriptionState extends State<Newdescription> {
             ),
           ],
         ),
-        Container(
-          child: Wrap(
-            children: [
-              Text(
-                widget.obj.contents["en"].toString(),
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      decoration: TextDecoration.underline,
-                    ),
-                textAlign: TextAlign.left,
-              ),
-            ],
-          ),
-        ),
-        SpacerWidget(_kLabelSpacing),
-        GestureDetector(
-          onTap: () {
-            _launchURL(widget.obj.url);
-          },
-          child: widget.obj.url != null
-              ? Wrap(
-                  children: [
-                    Text(
-                      widget.obj.url.toString(),
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                            decoration: TextDecoration.underline,
-                          ),
-                      textAlign: TextAlign.justify,
-                    ),
-                  ],
-                )
-              : Container(),
-        ),
+        
+        // GestureDetector(
+        //   onTap: () {
+        //     _launchURL(widget.obj.url);
+        //   },
+        //   child: widget.obj.url != null
+        //       ? Wrap(
+        //           children: [
+        //             Text(
+        //               widget.obj.url.toString(),
+        //               style: Theme.of(context).textTheme.bodyText1?.copyWith(
+        //                     decoration: TextDecoration.underline,
+        //                   ),
+        //               textAlign: TextAlign.justify,
+        //             ),
+        //           ],
+        //         )
+        //       : Container(),
+        // ),
         Container(
           height: 0,
           width: 0,

@@ -25,7 +25,7 @@ class NewsPage extends StatefulWidget {
 
 class _NewsPageState extends State<NewsPage> {
   static const double _kIconSize = 48.0;
-  static const double _kLabelSpacing = 20.0;
+  static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
@@ -131,16 +131,18 @@ class _NewsPageState extends State<NewsPage> {
               width: _kLabelSpacing / 2,
             ),
             Expanded(
-              flex: 5,
+              // flex: 5,
               child: Container(
-                  padding: EdgeInsets.symmetric(
-                      vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
+                  // padding: EdgeInsets.symmetric(
+                  //     vertical: _kLabelSpacing / 2,),
+                  child: 
+                  // Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
                         _buildnewsHeading(obj),
-                      ])),
+                      // ])
+                      ),
             ),
           ],
         ),
@@ -155,7 +157,9 @@ class _NewsPageState extends State<NewsPage> {
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message: obj.contents["en"] ?? '-',
+                message:obj.headings != "" &&
+                                  obj.headings != null 
+                              ? obj.headings["en"].toString(): obj.contents["en"] ?? '-',
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
@@ -165,7 +169,9 @@ class _NewsPageState extends State<NewsPage> {
                 ),
               )
             : Text(
-                obj.contents["en"] ?? '-',
+               obj.headings != "" &&
+                                  obj.headings != null 
+                              ? obj.headings["en"].toString(): obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: Theme.of(context).textTheme.headline4!,

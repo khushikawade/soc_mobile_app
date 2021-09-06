@@ -87,7 +87,7 @@ class _SocialPageState extends State<SocialPage> {
               alignment: Alignment.center,
               width: _kIconSize * 1.4,
               height: _kIconSize * 1.5,
-              child: imageLink != null && imageLink.length > 4
+              child: imageLink != null 
                   ? ClipRRect(
                       child: CachedNetworkImage(
                         imageUrl: imageLink,

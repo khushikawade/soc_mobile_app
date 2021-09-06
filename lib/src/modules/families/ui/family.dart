@@ -17,6 +17,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -151,22 +152,22 @@ class _FamilyPageState extends State<FamilyPage> {
     if (obj.appIconUrlC != null) {
       return Container(
         child: ClipRRect(
-          child: SizedBox(
-            height: 35,
-            width: 35,
-            child: CachedNetworkImage(
-              imageUrl: obj.appIconUrlC!,
-              fit: BoxFit.cover,
-              height: 35,
-              width: 35,
-              placeholder: (context, url) => Container(
+          child: CachedNetworkImage(
+            imageUrl: obj.appIconUrlC!,
+            fit: BoxFit.cover,
+            height: Globals.deviceType == "phone" ?40:44,
+            width: Globals.deviceType == "phone" ?40:44,
+             placeholder: (context, url) => Container(
                 alignment: Alignment.center,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                ),
-              ),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
+                child: ShimmerLoading(
+                  isLoading: true,
+                  child: Container(
+                    height: 20,
+                    width: 20,
+                    color: Colors.white,
+                  ),
+                )),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
         ),
       );
@@ -178,7 +179,7 @@ class _FamilyPageState extends State<FamilyPage> {
           fontPackage: 'font_awesome_flutter',
         ),
         color: Theme.of(context).colorScheme.primary,
-        size: Globals.deviceType == "phone" ? 22 : 30,
+        size: Globals.deviceType == "phone" ? 24 : 32,
       );
     }
   }

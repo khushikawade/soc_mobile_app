@@ -40,4 +40,5 @@ class Globals {
   static String? calendar_Id = "";
   static final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
+  static int?navIndex=0;
 }
