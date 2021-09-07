@@ -94,7 +94,7 @@ class _ContactPageState extends State<ContactPage> {
           : Container(
               child: ClipRRect(
                 child: CachedNetworkImage(
-                  imageUrl: Globals.homeObjet["App_Logo__c"],
+                  imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
                   placeholder: (context, url) => Container(
                       alignment: Alignment.center,
                       child: ShimmerLoading(

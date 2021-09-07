@@ -141,7 +141,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             fit: BoxFit.fill,
                             width: 60,
                             height: 60,
-                            imageUrl: Globals.homeObjet["App_Logo__c"],
+                            imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
                             placeholder: (context, url) => Container(
                                 alignment: Alignment.center,
                                 child: ShimmerLoading(

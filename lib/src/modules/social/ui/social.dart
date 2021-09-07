@@ -53,8 +53,8 @@ class _SocialPageState extends State<SocialPage> {
     final document = parse(obj.description["__cdata"]);
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
-    print(index);
-    print(imageLink);
+    // print(index);
+    // print(imageLink);
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -101,7 +101,19 @@ class _SocialPageState extends State<SocialPage> {
                                 color: Colors.white,
                               ),
                             )),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        errorWidget: (context, url, error) =>CachedNetworkImage(
+                        imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                        placeholder: (context, url) => Container(
+                            alignment: Alignment.center,
+                            child: ShimmerLoading(
+                              isLoading: true,
+                              child: Container(
+                                width: _kIconSize * 1.4,
+                                height: _kIconSize * 1.5,
+                                color: Colors.white,
+                              ),
+                            )),
+                      ),// Icon(Icons.error),
                       ),
                     )
                   : Container(
@@ -109,7 +121,7 @@ class _SocialPageState extends State<SocialPage> {
                       alignment: Alignment.centerLeft,
                       child: ClipRRect(
                         child: CachedNetworkImage(
-                          imageUrl: Globals.homeObjet["App_Logo__c"],
+                          imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
                           placeholder: (context, url) => Container(
                               alignment: Alignment.center,
                               child: ShimmerLoading(

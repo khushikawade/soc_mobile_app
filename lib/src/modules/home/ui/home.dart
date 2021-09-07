@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
@@ -36,6 +37,8 @@ class _HomePageState extends State<HomePage> {
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   Timer? timer;
   late PersistentTabController _controller;
+  BuildContext? testContext;
+
 
   @override
   void initState() {
@@ -128,59 +131,88 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => true,
-      child: Scaffold(
-          body: PersistentTabView(
-        context,
-        controller: _controller,
-        screens: _buildScreens(),
-        // hideNavigationBar: true,
-        onItemSelected: (int i) {
-          if (i == Globals.newsIndex) {
-            setState(() {
-              Globals.indicator.value = false;
-              Globals.callsnackbar = true;
-            });
-          } else {
-            setState(() {});
-          }
-        },
-        items: _navBarsItems(),
-        confineInSafeArea: true,
-        backgroundColor: Theme.of(context).backgroundColor,
-        handleAndroidBackButtonPress: true,
-        resizeToAvoidBottomInset:
-            true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-        stateManagement: true, // Default is true.
-        hideNavigationBarWhenKeyboardShows:
-            true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-        decoration: NavBarDecoration(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(25),
-              topLeft: Radius.circular(25),
+    return Scaffold(
+        body: PersistentTabView(
+      context,
+      controller: _controller,
+      screens: _buildScreens(),
+      // hideNavigationBar: true,
+      onItemSelected: (int i) {
+        if (i == Globals.newsIndex) {
+          setState(() {
+            Globals.indicator.value = false;
+            Globals.callsnackbar = true;
+          });
+        } else {
+          setState(() {});
+        }
+      },
+      items: _navBarsItems(),
+      confineInSafeArea: true,
+      backgroundColor: Theme.of(context).backgroundColor,
+      handleAndroidBackButtonPress: true,
+      resizeToAvoidBottomInset:
+          true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+      stateManagement: true, // Default is true.
+      hideNavigationBarWhenKeyboardShows:
+          true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+      decoration: NavBarDecoration(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(25),
+            topLeft: Radius.circular(25),
+          ),
+          // circular(25.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey,
+              blurRadius: 10.0,
             ),
-            // circular(25.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 10.0,
+          ]),
+          onWillPop: (context) async {
+        await _onBackPressed();
+        return false;
+      },
+      popAllScreensOnTapOfSelectedTab: true,
+      popActionScreens: PopActionScreensType.all,
+      itemAnimationProperties: ItemAnimationProperties(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.ease,
+      ),
+      screenTransitionAnimation: ScreenTransitionAnimation(
+        animateTabTransition: true,
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 200),
+      ),
+      navBarStyle: NavBarStyle.style6,
+      navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+    ));
+  }
+
+ _onBackPressed() {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: Colors.white,
+              title: Text(
+                "Do you want to exit the app?",
+                style: Theme.of(context).textTheme.headline2!
               ),
-            ]),
-        popAllScreensOnTapOfSelectedTab: true,
-        popActionScreens: PopActionScreensType.all,
-        itemAnimationProperties: ItemAnimationProperties(
-          duration: Duration(milliseconds: 200),
-          curve: Curves.ease,
-        ),
-        screenTransitionAnimation: ScreenTransitionAnimation(
-          animateTabTransition: true,
-          curve: Curves.ease,
-          duration: Duration(milliseconds: 200),
-        ),
-        navBarStyle: NavBarStyle.style6,
-        navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
-      )),
-    );
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text(
+                    "No",
+                    style: Theme.of(context).textTheme.headline2!
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () => exit(0),
+                  child: Text(
+                    "Yes",
+                    style: Theme.of(context).textTheme.headline2!
+                  ),
+                ),
+              ],
+            ));
   }
 }

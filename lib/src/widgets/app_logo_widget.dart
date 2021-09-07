@@ -4,13 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class AppLogoWidget extends StatelessWidget {
-  static const double _kIconSize = 60;//45.0;
+  static const double _kIconSize = 50;//45.0;
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        SizedBox(
+        Container(
             height:
                 Globals.deviceType == "phone" ? _kIconSize : _kIconSize * 1.2,
             width: Globals.deviceType == "phone"
@@ -31,7 +31,7 @@ class AppLogoWidget extends StatelessWidget {
                             color: Colors.white,
                           ),
                         )),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    errorWidget: (context, url, error) => Text("Loading...")//Icon(Icons.error),
                   ),
                 ))),
       ],

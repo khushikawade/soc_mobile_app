@@ -93,12 +93,12 @@ class _NewdescriptionState extends State<Newdescription> {
                         onTap: (){
                           showDialog(
                             context: context,
-                            builder: (_) => NewsImagePage(imageURL: Globals.homeObjet["App_Logo__c"])     
+                            builder: (_) => NewsImagePage(imageURL: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"])     
                           );
                        },
                           child: CachedNetworkImage(
                             fit: BoxFit.fill,
-                            imageUrl: Globals.homeObjet["App_Logo__c"],
+                            imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
                             placeholder: (context, url) => Container(
                                 alignment: Alignment.center,
                                 child: ShimmerLoading(
