@@ -108,7 +108,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               },
             ),
           ),
-          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          title: AppLogoWidget(),//SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: <Widget>[
             SearchButtonWidget(
               language: 'English',

@@ -139,7 +139,7 @@ class _StudentPageState extends State<StudentPage> {
                                             textAlign: TextAlign.center,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1!),
+                                                .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
                                       ),
                                     )
                                   : Expanded(
@@ -147,7 +147,7 @@ class _StudentPageState extends State<StudentPage> {
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1!),
+                                              .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
                                     ),
                             ],
                           ),

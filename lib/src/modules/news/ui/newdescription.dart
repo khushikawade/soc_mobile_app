@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
@@ -8,13 +9,8 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 class Newdescription extends StatefulWidget {
-  final obj;
-  final String date;
-  final bool isbuttomsheet;
-  final String? language;
   Newdescription(
       {Key? key,
       required this.obj,
@@ -22,13 +18,19 @@ class Newdescription extends StatefulWidget {
       required this.isbuttomsheet,
       required this.language})
       : super(key: key);
+
+  final String date;
+  final bool isbuttomsheet;
+  final String? language;
+  final obj;
+
   _NewdescriptionState createState() => _NewdescriptionState();
 }
 
 class _NewdescriptionState extends State<Newdescription> {
-  static const double _kLabelSpacing = 20.0;
-  static const double _kIconSize = 45.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  static const double _kIconSize = 45.0;
+  static const double _kLabelSpacing = 20.0;
   final HomeBloc _homeBloc = new HomeBloc();
 
   @override
@@ -62,24 +64,38 @@ class _NewdescriptionState extends State<Newdescription> {
               height: MediaQuery.of(context).size.width * 0.5,
               child: ClipRRect(
                 child: widget.obj.image != null && widget.obj.image != ""
-                    ? CachedNetworkImage(
-                        imageUrl: widget.obj.image,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            child: ShimmerLoading(
-                              isLoading: true,
-                              child: Container(
-                                width: _kIconSize * 1.4,
-                                height: _kIconSize * 1.5,
-                                color: Colors.white,
-                              ),
-                            )),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      )
+                    ? GestureDetector(
+                      onTap: (){
+                        showDialog(
+                          context: context,
+                          builder: (_) => NewsImagePage(imageURL: widget.obj.image)     
+                        );
+                      },
+                      child: CachedNetworkImage(
+                          imageUrl: widget.obj.image,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width: _kIconSize * 1.4,
+                                  height: _kIconSize * 1.5,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          errorWidget: (context, url, error) => Icon(Icons.error),
+                        ),
+                    )
                     : Container(
                         alignment: Alignment.center,
-                        child: ClipRRect(
+                        child: GestureDetector(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (_) => NewsImagePage(imageURL: Globals.homeObjet["App_Logo__c"])     
+                          );
+                       },
                           child: CachedNetworkImage(
                             fit: BoxFit.fill,
                             imageUrl: Globals.homeObjet["App_Logo__c"],
@@ -181,7 +197,6 @@ class _NewdescriptionState extends State<Newdescription> {
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => 
-                          // ParsedText(text: "[@michael:51515151] Hello this is an example of the ParsedText, links like http://www.google.com or http://www.facebook.com are clickable and phone number 444-555-6666 can call too. But you can also do more with this package, for example Bob will change style and David too. foo@gmail.com And the magic number is 42! #react #react-native",)
                           Text(
                             translatedMessage.toString(),
                             style: Theme.of(context).textTheme.bodyText1!,
@@ -189,7 +204,6 @@ class _NewdescriptionState extends State<Newdescription> {
                           ),
                         )
                       : 
-                      // Html(data: widget.obj.contents["en"],)
                       Text(
                           widget.obj.contents["en"].toString(),
                           style: Theme.of(context).textTheme.bodyText1!,
@@ -198,7 +212,6 @@ class _NewdescriptionState extends State<Newdescription> {
                 ],
               ),
             ),
-            // SpacerWidget(_kLabelSpacing),
             GestureDetector(
               onTap: () {
                 _launchURL(widget.obj.url);
@@ -243,25 +256,6 @@ class _NewdescriptionState extends State<Newdescription> {
             ),
           ],
         ),
-        
-        // GestureDetector(
-        //   onTap: () {
-        //     _launchURL(widget.obj.url);
-        //   },
-        //   child: widget.obj.url != null
-        //       ? Wrap(
-        //           children: [
-        //             Text(
-        //               widget.obj.url.toString(),
-        //               style: Theme.of(context).textTheme.bodyText1?.copyWith(
-        //                     decoration: TextDecoration.underline,
-        //                   ),
-        //               textAlign: TextAlign.justify,
-        //             ),
-        //           ],
-        //         )
-        //       : Container(),
-        // ),
         Container(
           height: 0,
           width: 0,
