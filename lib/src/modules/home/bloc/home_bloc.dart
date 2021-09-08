@@ -115,7 +115,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future fetchBottomNavigationBar() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-        Uri.encodeFull('sobjects/School_App__c/${Overrides.schoolID}'),
+        Uri.encodeFull('sobjects/School_App__c/${Overrides.SCHOOL_ID}'),
       );
 
       if (response.statusCode == 200) {
