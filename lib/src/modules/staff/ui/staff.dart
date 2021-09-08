@@ -110,26 +110,22 @@ class _StaffPageState extends State<StaffPage> {
     if (obj.appIconUrlC != null) {
       return Container(
         child: ClipRRect(
-          child: SizedBox(
-            height: 20,
-            width: 20,
-            child: CachedNetworkImage(
-              imageUrl: obj.appIconUrlC!,
-              fit: BoxFit.cover,
-              height: 20,
-              width: 20,
-              placeholder: (context, url) => Container(
-                  alignment: Alignment.center,
-                  child: ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      height: 20,
-                      width: 20,
-                      color: Colors.white,
-                    ),
-                  )),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
+          child: CachedNetworkImage(
+            imageUrl: obj.appIconUrlC!,
+            fit: BoxFit.cover,
+           height: Globals.deviceType == "phone" ?30:38,
+            width: Globals.deviceType == "phone" ?30:38,
+            placeholder: (context, url) => Container(
+                alignment: Alignment.center,
+                child: ShimmerLoading(
+                  isLoading: true,
+                  child: Container(
+                    height: 20,
+                    width: 20,
+                    color: Colors.white,
+                  ),
+                )),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
         ),
       );
@@ -141,7 +137,7 @@ class _StaffPageState extends State<StaffPage> {
           fontPackage: 'font_awesome_flutter',
         ),
         color: Theme.of(context).colorScheme.primary,
-        size: Globals.deviceType == "phone" ? 18 : 26,
+        size: Globals.deviceType == "phone" ? 24 : 32,
       );
     }
   }

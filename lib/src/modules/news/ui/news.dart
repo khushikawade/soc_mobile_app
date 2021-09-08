@@ -2,11 +2,11 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/Strings.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -25,7 +25,7 @@ class NewsPage extends StatefulWidget {
 
 class _NewsPageState extends State<NewsPage> {
   static const double _kIconSize = 48.0;
-  static const double _kLabelSpacing = 20.0;
+  static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
@@ -90,27 +90,41 @@ class _NewsPageState extends State<NewsPage> {
               height: _kIconSize * 1.5,
               child: obj.image != null
                   ? ClipRRect(
-                      child: CachedNetworkImage(
-                        imageUrl: obj.image!,
-                        placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            child: ShimmerLoading(
-                              isLoading: true,
-                              child: Container(
-                                width: _kIconSize * 1.4,
-                                height: _kIconSize * 1.5,
-                                color: Colors.white,
-                              ),
-                            )),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      child: GestureDetector(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (_) => NewsImagePage(imageURL: obj.image!)     
+                          );
+                       },
+                        child: CachedNetworkImage(
+                          imageUrl: obj.image!,
+                          placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width: _kIconSize * 1.4,
+                                  height: _kIconSize * 1.5,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          errorWidget: (context, url, error) => Icon(Icons.error),
+                        ),
                       ),
                     )
                   : Container(
                       height: _kIconSize * 1.5,
                       alignment: Alignment.centerLeft,
-                      child: ClipRRect(
+                      child: GestureDetector(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (_) => NewsImagePage(imageURL: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"])     
+                          );
+                       },
                         child: CachedNetworkImage(
-                          imageUrl: Globals.homeObjet["App_Logo__c"],
+                          imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
                           placeholder: (context, url) => Container(
                               alignment: Alignment.center,
                               child: ShimmerLoading(
@@ -131,16 +145,18 @@ class _NewsPageState extends State<NewsPage> {
               width: _kLabelSpacing / 2,
             ),
             Expanded(
-              flex: 5,
+              // flex: 5,
               child: Container(
-                  padding: EdgeInsets.symmetric(
-                      vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
+                  // padding: EdgeInsets.symmetric(
+                  //     vertical: _kLabelSpacing / 2,),
+                  child: 
+                  // Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
                         _buildnewsHeading(obj),
-                      ])),
+                      // ])
+                      ),
             ),
           ],
         ),
@@ -155,7 +171,9 @@ class _NewsPageState extends State<NewsPage> {
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message: obj.contents["en"] ?? '-',
+                message:obj.headings != "" &&
+                                  obj.headings != null 
+                              ? obj.headings["en"].toString(): obj.contents["en"] ?? '-',
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
@@ -165,7 +183,9 @@ class _NewsPageState extends State<NewsPage> {
                 ),
               )
             : Text(
-                obj.contents["en"] ?? '-',
+               obj.headings != "" &&
+                                  obj.headings != null 
+                              ? obj.headings["en"].toString(): obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: Theme.of(context).textTheme.headline4!,

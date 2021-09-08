@@ -67,8 +67,8 @@ class _SearchPageState extends State<SearchPage> {
   getListLength() async {
     int length = await HiveDbServices().getListLength(Strings.hiveLogName);
     length < 1 ? isDBListEmpty = true : isDBListEmpty = false;
-    print(" ************");
-    print(isDBListEmpty);
+    // print(" ************");
+    // print(isDBListEmpty);
   }
 
   deleteItem() async {

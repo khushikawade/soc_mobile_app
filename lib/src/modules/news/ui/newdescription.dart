@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
@@ -10,10 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Newdescription extends StatefulWidget {
-  final obj;
-  final String date;
-  final bool isbuttomsheet;
-  final String? language;
   Newdescription(
       {Key? key,
       required this.obj,
@@ -21,13 +18,19 @@ class Newdescription extends StatefulWidget {
       required this.isbuttomsheet,
       required this.language})
       : super(key: key);
+
+  final String date;
+  final bool isbuttomsheet;
+  final String? language;
+  final obj;
+
   _NewdescriptionState createState() => _NewdescriptionState();
 }
 
 class _NewdescriptionState extends State<Newdescription> {
-  static const double _kLabelSpacing = 20.0;
-  static const double _kIconSize = 45.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  static const double _kIconSize = 45.0;
+  static const double _kLabelSpacing = 20.0;
   final HomeBloc _homeBloc = new HomeBloc();
 
   @override
@@ -61,27 +64,41 @@ class _NewdescriptionState extends State<Newdescription> {
               height: MediaQuery.of(context).size.width * 0.5,
               child: ClipRRect(
                 child: widget.obj.image != null && widget.obj.image != ""
-                    ? CachedNetworkImage(
-                        imageUrl: widget.obj.image,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            child: ShimmerLoading(
-                              isLoading: true,
-                              child: Container(
-                                width: _kIconSize * 1.4,
-                                height: _kIconSize * 1.5,
-                                color: Colors.white,
-                              ),
-                            )),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      )
+                    ? GestureDetector(
+                      onTap: (){
+                        showDialog(
+                          context: context,
+                          builder: (_) => NewsImagePage(imageURL: widget.obj.image)     
+                        );
+                      },
+                      child: CachedNetworkImage(
+                          imageUrl: widget.obj.image,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width: _kIconSize * 1.4,
+                                  height: _kIconSize * 1.5,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          errorWidget: (context, url, error) => Icon(Icons.error),
+                        ),
+                    )
                     : Container(
                         alignment: Alignment.center,
-                        child: ClipRRect(
+                        child: GestureDetector(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (_) => NewsImagePage(imageURL: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"])     
+                          );
+                       },
                           child: CachedNetworkImage(
                             fit: BoxFit.fill,
-                            imageUrl: Globals.homeObjet["App_Logo__c"],
+                            imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
                             placeholder: (context, url) => Container(
                                 alignment: Alignment.center,
                                 child: ShimmerLoading(
@@ -149,24 +166,24 @@ class _NewdescriptionState extends State<Newdescription> {
                               .copyWith(fontWeight: FontWeight.w500),
                         ),
                 ),
-                Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English" &&
-                        Globals.selectedLanguage != ""
-                    ? TranslationWidget(
-                        message: widget.date,
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                          style: Theme.of(context).textTheme.subtitle1!,
-                          textAlign: TextAlign.justify,
-                        ),
-                      )
-                    : Text(
-                        widget.date,
-                        style: Theme.of(context).textTheme.subtitle1!,
-                        textAlign: TextAlign.justify,
-                      ),
+                // Globals.selectedLanguage != null &&
+                //         Globals.selectedLanguage != "English" &&
+                //         Globals.selectedLanguage != ""
+                //     ? TranslationWidget(
+                //         message: widget.date,
+                //         toLanguage: Globals.selectedLanguage,
+                //         fromLanguage: "en",
+                //         builder: (translatedMessage) => Text(
+                //           translatedMessage.toString(),
+                //           style: Theme.of(context).textTheme.subtitle1!,
+                //           textAlign: TextAlign.justify,
+                //         ),
+                //       )
+                //     : Text(
+                //         widget.date,
+                //         style: Theme.of(context).textTheme.subtitle1!,
+                //         textAlign: TextAlign.justify,
+                //       ),
               ],
             ),
             Container(
@@ -179,13 +196,15 @@ class _NewdescriptionState extends State<Newdescription> {
                           message: widget.obj.contents["en"].toString(),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
+                          builder: (translatedMessage) => 
+                          Text(
                             translatedMessage.toString(),
                             style: Theme.of(context).textTheme.bodyText1!,
                             textAlign: TextAlign.left,
                           ),
                         )
-                      : Text(
+                      : 
+                      Text(
                           widget.obj.contents["en"].toString(),
                           style: Theme.of(context).textTheme.bodyText1!,
                           textAlign: TextAlign.left,
@@ -193,7 +212,6 @@ class _NewdescriptionState extends State<Newdescription> {
                 ],
               ),
             ),
-            SpacerWidget(_kLabelSpacing),
             GestureDetector(
               onTap: () {
                 _launchURL(widget.obj.url);
@@ -221,7 +239,8 @@ class _NewdescriptionState extends State<Newdescription> {
                                   textAlign: TextAlign.justify,
                                 ),
                               )
-                            : Text(
+                            : 
+                            Text(
                                 widget.obj.url.toString(),
                                 style: Theme.of(context)
                                     .textTheme
@@ -236,38 +255,6 @@ class _NewdescriptionState extends State<Newdescription> {
                   : Container(),
             ),
           ],
-        ),
-        Container(
-          child: Wrap(
-            children: [
-              Text(
-                widget.obj.contents["en"].toString(),
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      decoration: TextDecoration.underline,
-                    ),
-                textAlign: TextAlign.left,
-              ),
-            ],
-          ),
-        ),
-        SpacerWidget(_kLabelSpacing),
-        GestureDetector(
-          onTap: () {
-            _launchURL(widget.obj.url);
-          },
-          child: widget.obj.url != null
-              ? Wrap(
-                  children: [
-                    Text(
-                      widget.obj.url.toString(),
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                            decoration: TextDecoration.underline,
-                          ),
-                      textAlign: TextAlign.justify,
-                    ),
-                  ],
-                )
-              : Container(),
         ),
         Container(
           height: 0,

@@ -89,8 +89,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       //   Globals.indicator.value = false;
       // }
 
-      print(
-          "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
+      // print(
+      //     "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
       // prefs.setBool("enableIndicator", true);
     });
 
@@ -101,11 +101,11 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     OneSignal.shared
         .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
-      print("SUBSCRIPTION STATE CHANGED: ${changes.jsonRepresentation()}");
+      // print("SUBSCRIPTION STATE CHANGED: ${changes.jsonRepresentation()}");
     });
 
     OneSignal.shared.setPermissionObserver((OSPermissionStateChanges changes) {
-      print("PERMISSION STATE CHANGED: ${changes.jsonRepresentation()}");
+      // print("PERMISSION STATE CHANGED: ${changes.jsonRepresentation()}");
     });
 
     OneSignal.shared.setEmailSubscriptionObserver(
@@ -114,7 +114,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
 
     OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-      print("Accepted permission: $accepted");
+      // print("Accepted permission: $accepted");
     });
 
     if (Platform.isIOS) {

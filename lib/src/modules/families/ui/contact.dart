@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class ContactPage extends StatefulWidget {
@@ -93,7 +94,7 @@ class _ContactPageState extends State<ContactPage> {
           : Container(
               child: ClipRRect(
                 child: CachedNetworkImage(
-                  imageUrl: Globals.homeObjet["App_Logo__c"],
+                  imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
                   placeholder: (context, url) => Container(
                       alignment: Alignment.center,
                       child: ShimmerLoading(
@@ -233,6 +234,17 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
+void _launchMapsUrl() async {
+  final url = 'https://www.google.com/maps/search/?api=1&query=${Globals.homeObjet[
+                                "Contact_Office_Location__Latitude__s"]},${Globals.homeObjet[
+                                "Contact_Office_Location__Longitude__s"]}';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
   Widget _buildaddress() {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -265,24 +277,14 @@ class _ContactPageState extends State<ContactPage> {
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English" &&
-                    Globals.selectedLanguage != ""
-                ? TranslationWidget(
-                    message: Globals.homeObjet["Contact_Address__c"] ?? '-',
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
+            child:  GestureDetector(
+              onTap: _launchMapsUrl,
+              child: Text(
+                      Globals.homeObjet["Contact_Address__c"] ?? '-',
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(),
                       textAlign: TextAlign.start,
                     ),
-                  )
-                : Text(
-                    Globals.homeObjet["Contact_Address__c"] ?? '-',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-                    textAlign: TextAlign.start,
-                  ),
+            ),
           )
         ],
       ),
@@ -325,20 +327,7 @@ class _ContactPageState extends State<ContactPage> {
                       context, "tel:" + Globals.homeObjet["Contact_Phone__c"]);
                 }
               },
-              child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English" &&
-                      Globals.selectedLanguage != ""
-                  ? TranslationWidget(
-                      message: Globals.homeObjet["Contact_Phone__c"] ?? '-',
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.bodyText1!,
-                        textAlign: TextAlign.center,
-                      ),
-                    )
-                  : Text(
+              child:  Text(
                       Globals.homeObjet["Contact_Phone__c"] ?? '-',
                       style: Theme.of(context).textTheme.bodyText1!,
                       textAlign: TextAlign.center,

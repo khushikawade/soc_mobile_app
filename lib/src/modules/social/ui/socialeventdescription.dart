@@ -225,6 +225,7 @@ class SocialDescription extends StatelessWidget {
                 alignment: Alignment.center,
                 child: ClipRRect(
                   child: CachedNetworkImage(
+                    fit: BoxFit.cover,
                     imageUrl:
                         Utility.getHTMLImgSrc(object.description["__cdata"]),
                     placeholder: (context, url) => Container(
@@ -237,7 +238,19 @@ class SocialDescription extends StatelessWidget {
                             color: Colors.white,
                           ),
                         )),
-                    errorWidget: (context, url, error) => Container(),
+                    errorWidget: (context, url, error) => CachedNetworkImage(
+                        imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                        placeholder: (context, url) => Container(
+                            alignment: Alignment.center,
+                            child: ShimmerLoading(
+                              isLoading: true,
+                              child: Container(
+                                width: _kIconSize * 1.4,
+                                height: _kIconSize * 1.5,
+                                color: Colors.white,
+                              ),
+                            )),
+                      ),
                   ),
                 ),
                 // child: Html(
@@ -249,7 +262,7 @@ class SocialDescription extends StatelessWidget {
                 alignment: Alignment.center,
                 child: ClipRRect(
                   child: CachedNetworkImage(
-                    imageUrl: Globals.homeObjet["App_Logo__c"],
+                    imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
                     placeholder: (context, url) => Container(
                         alignment: Alignment.center,
                         child: ShimmerLoading(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class ListWidget extends StatelessWidget {
-  static const double _kLabelSpacing = 17.0;
+  // static const double _kLabelSpacing = 17.0;
   int? index;
   Widget? listItem;
   final obj;
@@ -21,6 +21,7 @@ class ListWidget extends StatelessWidget {
               : Theme.of(context).colorScheme.background,
         ),
         child: Container(
+          
           child: ListTile(
             leading: obj!.appIconC != null && obj!.appIconC.length > 0
                 ? Icon(
@@ -39,7 +40,7 @@ class ListWidget extends StatelessWidget {
                       fontPackage: 'font_awesome_flutter',
                     ),
                     color: Theme.of(context).colorScheme.primary,
-                    size: Globals.deviceType == "phone" ? 14 : 22,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
                   ),
             title: listItem!,
           ),

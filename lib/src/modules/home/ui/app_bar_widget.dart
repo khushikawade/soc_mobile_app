@@ -83,27 +83,32 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       return AppBar(
           leadingWidth: _kIconSize,
           elevation: 0.0,
-          leading: IconButton(
-            icon: Icon(
-              IconData(0xe81f,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              size: Globals.deviceType == "phone" ? 32 : 40,
+          leading: 
+          Container(
+            padding: EdgeInsets.only(left: 10),
+            child: GestureDetector(
+              child: Image(image: AssetImage("assets/images/gtranslate.png"), ),
+              // Icon(
+              //   IconData(0xe822,
+              //       fontFamily: Overrides.kFontFam,
+              //       fontPackage: Overrides.kFontPkg),
+              //   size: Globals.deviceType == "phone" ? 32 : 40,
+              // ),
+              onTap: () {
+                setState(() {});
+                LanguageSelector(context, (language) {
+                  if (language != null) {
+                    setState(() {
+                      Globals.selectedLanguage = language;
+                      Globals.languageChanged.value = language;
+                    });
+                    refresh!(true);
+                  }
+                });
+              },
             ),
-            onPressed: () {
-              setState(() {});
-              LanguageSelector(context, (language) {
-                if (language != null) {
-                  setState(() {
-                    Globals.selectedLanguage = language;
-                    Globals.languageChanged.value = language;
-                  });
-                  refresh!(true);
-                }
-              });
-            },
           ),
-          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          title: AppLogoWidget(),//SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: <Widget>[
             SearchButtonWidget(
               language: 'English',
