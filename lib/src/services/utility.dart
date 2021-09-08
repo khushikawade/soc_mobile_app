@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -225,5 +227,24 @@ class Utility {
     } catch (e) {
       return '';
     }
+  }
+
+  static String bottomNavBar(context, title){
+   String data="data";
+   var translatedTitle= TranslationWidget(
+                                      message:"HEllo, What are you doing?",
+                                          //"${title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+                                      fromLanguage: "en",
+                                      toLanguage: Globals.selectedLanguage,
+                                      builder: (translatedMessage) => Text(
+                                          translatedMessage.toString(),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline2!),
+                                    );
+                      print(translatedTitle);
+                        return data;
   }
 }
