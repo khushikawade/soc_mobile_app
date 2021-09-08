@@ -41,15 +41,17 @@ class _NewsPageState extends State<NewsPage> {
     hideIndicator();
   }
 
-  setindexvalue() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setInt(Strings.bottomNavigation, 0);
-  }
+  // setindexvalue() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   pref.setInt(Strings.bottomNavigation, 0);
+  // }
 
   hideIndicator() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
-      prefs.setBool("enableIndicator", false);
+      Globals.indicator.value = false;
+      pref.setInt(Strings.bottomNavigation, 0);
+      Globals.homeIndex=0;
     });
   }
 
@@ -86,8 +88,8 @@ class _NewsPageState extends State<NewsPage> {
           children: <Widget>[
             Container(
               alignment: Alignment.center,
-              width: _kIconSize * 1.4,
-              height: _kIconSize * 1.5,
+              width: Globals.deviceType == "phone" ?_kIconSize * 1.4:_kIconSize * 2,
+              height: Globals.deviceType == "phone" ?_kIconSize * 1.5:_kIconSize * 2,
               child: obj.image != null
                   ? ClipRRect(
                       child: GestureDetector(
@@ -114,7 +116,8 @@ class _NewsPageState extends State<NewsPage> {
                       ),
                     )
                   : Container(
-                      height: _kIconSize * 1.5,
+                     width: Globals.deviceType == "phone" ?_kIconSize * 1.4:_kIconSize * 2,
+              height: Globals.deviceType == "phone" ?_kIconSize * 1.5:_kIconSize * 2,
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
                         onTap: (){

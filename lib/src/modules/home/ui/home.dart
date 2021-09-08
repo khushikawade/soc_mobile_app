@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/translator/language_list.dart';
+import 'package:Soc/src/translator/translator_api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -18,7 +19,8 @@ class HomePage extends StatefulWidget {
   final String? title;
   final homeObj;
   final String? language;
-  HomePage({Key? key, this.title, this.homeObj, this.language})
+  final Widget Function(String translation)? builder;
+  HomePage({Key? key, this.title, this.homeObj, this.language,this.builder})
       : super(key: key);
 
   @override
@@ -29,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
+  
   var item;
   var item2;
 
@@ -38,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   Timer? timer;
   late PersistentTabController _controller;
   BuildContext? testContext;
-
+   String? translation;
 
   @override
   void initState() {
@@ -83,13 +86,17 @@ class _HomePageState extends State<HomePage> {
         .split(";")
         .map<PersistentBottomNavBarItem>(
       (item) {
-        if (item.split("_")[0].toString().toLowerCase().contains("news")) {
-          Globals.newsIndex = Globals.homeObjet["Bottom_Navigation__c"]
-              .split(";")
-              .indexOf(item);
-        }
-        setState(() {});
-        return PersistentBottomNavBarItem(
+        // if (item.split("_")[0].toString().toLowerCase().contains("news")) {
+        //   Globals.newsIndex = Globals.homeObjet["Bottom_Navigation__c"]
+        //       .split(";")
+        //       .indexOf(item);
+        // }
+        // setState(() {});
+        return 
+      //   FutureBuilder(
+      // future: TranslationAPI.translate("${item.split("_")[0]}", Globals.selectedLanguage!,),
+      // builder: (BuildContext context, AsyncSnapshot snapshot) {
+        PersistentBottomNavBarItem(
           icon: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -125,6 +132,9 @@ class _HomePageState extends State<HomePage> {
           activeColorPrimary: Theme.of(context).primaryColor,
           inactiveColorPrimary: CupertinoColors.systemGrey,
         );
+        // return widget.builder!(translation!);
+        // });
+        
       },
     ).toList();
   }
@@ -140,7 +150,7 @@ class _HomePageState extends State<HomePage> {
       onItemSelected: (int i) {
         if (i == Globals.newsIndex) {
           setState(() {
-            Globals.indicator.value = false;
+            // Globals.indicator.value = false;
             Globals.callsnackbar = true;
           });
         } else {
@@ -169,8 +179,8 @@ class _HomePageState extends State<HomePage> {
             ),
           ]),
           onWillPop: (context) async {
-        await _onBackPressed();
-        return false;
+            await _onBackPressed();
+            return false;
       },
       popAllScreensOnTapOfSelectedTab: true,
       popActionScreens: PopActionScreensType.all,
