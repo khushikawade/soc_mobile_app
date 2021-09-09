@@ -18,7 +18,7 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
 class SocialPage extends StatefulWidget {
-  SocialPage({Key? key, this.title}) : super(key: key);
+  SocialPage({Key? key, this.title,}) : super(key: key);
   final String? title;
 
   @override
@@ -160,14 +160,15 @@ class _SocialPageState extends State<SocialPage> {
                                           "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
                                       fromLanguage: "en",
                                       toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Text(
+                                      builder: (translatedMessage) {                                     
+                                     return  Text(
                                           translatedMessage.toString(),
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 2,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline2!),
-                                    )
+                                              .headline2!
+                                    );})
                                   : Text(
                                       "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
                                       overflow: TextOverflow.ellipsis,

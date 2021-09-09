@@ -129,7 +129,7 @@ class _StaffPageState extends State<StaffPage> {
           ),
         ),
       );
-    } else {
+    } else if(obj.appIconC!=null){
       return Icon(
         IconData(
           int.parse('0x${obj.appIconC!}'),
@@ -139,6 +139,16 @@ class _StaffPageState extends State<StaffPage> {
         color: Theme.of(context).colorScheme.primary,
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
+    }else{
+     return Icon(
+                IconData(
+                0xf550,
+                      fontFamily: 'FontAwesomeSolid',
+                      fontPackage: 'font_awesome_flutter',
+                    ),
+                    color: Theme.of(context).colorScheme.primary,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
+                  );
     }
   }
 

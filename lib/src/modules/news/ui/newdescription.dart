@@ -9,6 +9,8 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+
 
 class Newdescription extends StatefulWidget {
   Newdescription(
@@ -125,29 +127,38 @@ class _NewdescriptionState extends State<Newdescription> {
                           Globals.selectedLanguage != "English" &&
                           Globals.selectedLanguage != ""
                       ? TranslationWidget(
-                          message: widget.obj.headings != "" &&
-                                  widget.obj.headings != null &&
-                                  widget.obj.headings.length > 0
-                              ? widget.obj.headings["en"].toString()
-                              : widget.obj.contents["en"]
-                                      .toString()
-                                      .split(" ")[0] +
-                                  " " +
-                                  widget.obj.contents["en"]
-                                      .toString()
-                                      .split(" ")[1] +
-                                  "...",
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(fontWeight: FontWeight.w500),
+                            message: widget.obj.headings != "" &&
+                                    widget.obj.headings != null &&
+                                    widget.obj.headings.length > 0
+                                ? widget.obj.headings["en"].toString()
+                                : widget.obj.contents["en"]
+                                        .toString()
+                                        .split(" ")[0] +
+                                    " " +
+                                    widget.obj.contents["en"]
+                                        .toString()
+                                        .split(" ")[1] +
+                                    "...",
+                            toLanguage: Globals.selectedLanguage,
+                            fromLanguage: "en",
+                            builder: (translatedMessage) => Linkify(
+                            onOpen: (link) => link.url,
+                            options: LinkifyOptions(humanize: false),
+                                text: 
+                                translatedMessage.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(fontWeight: FontWeight.w500),
+                            
+                            
                           ),
-                        )
-                      : Text(
+                      )
+                      : Linkify(
+                            onOpen: (link) => link.url,
+                            options: LinkifyOptions(humanize: false),
+                            linkStyle: TextStyle(color: Colors.blue),
+                                text: 
                           widget.obj.headings != "" &&
                                   widget.obj.headings != null &&
                                   widget.obj.headings.length > 0
@@ -197,14 +208,22 @@ class _NewdescriptionState extends State<Newdescription> {
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => 
-                          Text(
+                         Linkify(
+                            onOpen: (link) => _launchURL(link.url),
+                            options: LinkifyOptions(humanize: false),
+                            linkStyle: TextStyle(color: Colors.blue),
+                                text: 
                             translatedMessage.toString(),
                             style: Theme.of(context).textTheme.bodyText1!,
                             textAlign: TextAlign.left,
                           ),
                         )
                       : 
-                      Text(
+                     Linkify(
+                            onOpen: (link) => _launchURL(link.url),
+                            options: LinkifyOptions(humanize: false),
+                            linkStyle: TextStyle(color: Colors.blue),
+                                text: 
                           widget.obj.contents["en"].toString(),
                           style: Theme.of(context).textTheme.bodyText1!,
                           textAlign: TextAlign.left,
@@ -213,9 +232,9 @@ class _NewdescriptionState extends State<Newdescription> {
               ),
             ),
             GestureDetector(
-              onTap: () {
-                _launchURL(widget.obj.url);
-              },
+              // onTap: () {
+              //   _launchURL(widget.obj.url);
+              // },
               child: widget.obj.url != null
                   ? Wrap(
                       children: [
@@ -226,7 +245,11 @@ class _NewdescriptionState extends State<Newdescription> {
                                 message: widget.obj.url.toString(),
                                 toLanguage: Globals.selectedLanguage,
                                 fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
+                                builder: (translatedMessage) => Linkify(
+                            onOpen: (link) => link.url,
+                            linkStyle: TextStyle(color: Colors.blue),
+                            options: LinkifyOptions(humanize: false),
+                                text: 
                                   translatedMessage.toString(),
                                   style: Theme.of(context)
                                       .textTheme
@@ -240,7 +263,10 @@ class _NewdescriptionState extends State<Newdescription> {
                                 ),
                               )
                             : 
-                            Text(
+                            Linkify(
+                            onOpen: (link) => link.url,
+                            linkStyle: TextStyle(color: Colors.blue),
+                                text: 
                                 widget.obj.url.toString(),
                                 style: Theme.of(context)
                                     .textTheme

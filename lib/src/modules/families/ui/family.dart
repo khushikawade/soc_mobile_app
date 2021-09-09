@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -28,7 +27,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
-  FamilyPage({Key? key, this.obj, this.searchObj}) : super(key: key);
+  FamilyPage({Key? key, this.obj, this.searchObj,}) : super(key: key);
 
   @override
   _FamilyPageState createState() => _FamilyPageState();
@@ -171,7 +170,7 @@ class _FamilyPageState extends State<FamilyPage> {
           ),
         ),
       );
-    } else {
+    } else if(obj.appIconC!=null){
       return Icon(
         IconData(
           int.parse('0x${obj.appIconC!}'),
@@ -181,6 +180,16 @@ class _FamilyPageState extends State<FamilyPage> {
         color: Theme.of(context).colorScheme.primary,
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
+    }else{
+     return Icon(
+                IconData(
+                0xf550,
+                      fontFamily: 'FontAwesomeSolid',
+                      fontPackage: 'font_awesome_flutter',
+                    ),
+                    color: Theme.of(context).colorScheme.primary,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
+                  );
     }
   }
 
@@ -211,9 +220,10 @@ class _FamilyPageState extends State<FamilyPage> {
                 message: obj.titleC,
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Text(
+                builder: (translatedMessage) { 
+                 return Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText2!),
+                    style: Theme.of(context).textTheme.bodyText2!);}
               )
             : Text(obj.titleC.toString(),
                 style: Theme.of(context).textTheme.bodyText1!),

@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -28,6 +29,7 @@ class StudentPage extends StatefulWidget {
 class _StudentPageState extends State<StudentPage> {
   static const double _kLableSpacing = 12.0;
   int? gridLength;
+    final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
@@ -46,7 +48,8 @@ class _StudentPageState extends State<StudentPage> {
   }
 
   _launchURL(StudentApp obj, subList) async {
-    if (obj.appUrlC == 'app_folder') {
+    if(obj.appUrlC != null ){
+    if (obj.appUrlC == 'app_folder') { 
       showDialog(
         context: context,
         builder: (_) => AppsFolderPage(
@@ -72,6 +75,8 @@ class _StudentPageState extends State<StudentPage> {
           throw 'Could not launch ${obj.appUrlC}';
         }
       }
+    }}else{
+       Utility.showSnackBar(_scaffoldKey, "No URL available", context);
     }
   }
 
@@ -134,6 +139,7 @@ class _StudentPageState extends State<StudentPage> {
                                       fromLanguage: "en",
                                       toLanguage: Globals.selectedLanguage,
                                       builder: (translatedMessage) => Container(
+                                        alignment: Alignment.center,
                                         padding: EdgeInsets.symmetric(horizontal: 10),
                                         width: MediaQuery.of(context).size.width*0.3,
                                         child: SingleChildScrollView(
@@ -148,6 +154,7 @@ class _StudentPageState extends State<StudentPage> {
                                       ),
                                     )
                                   : Container(
+                                      alignment:Alignment.center,
                                         padding: EdgeInsets.symmetric(horizontal: 10),
                                         width: MediaQuery.of(context).size.width*0.3,
                                         child: SingleChildScrollView(
@@ -195,6 +202,7 @@ class _StudentPageState extends State<StudentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
         appBar: AppBarWidget(
           refresh: (v) {
             setState(() {});

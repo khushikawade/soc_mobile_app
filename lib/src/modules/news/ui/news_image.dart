@@ -68,7 +68,7 @@ class NewsImagePageState extends State<NewsImagePage>
                 maxScale: 5,
                 child: CachedNetworkImage(
                             imageUrl: widget.imageURL,
-                            fit: BoxFit.fill,
+                            // fit: BoxFit.fill,
                             placeholder: (context, url) => Container(
                                 alignment: Alignment.center,
                                 child: ShimmerLoading(
