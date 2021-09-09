@@ -46,7 +46,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
                 Future.delayed(const Duration(seconds: 3), () {
                   scaffoldKey.showSnackBar(SnackBar(
                     content: const Text(
-                      'Unable to translate please check internet connection',
+                      'Unable to translate, Please check internet connection',
                     ),
                     backgroundColor: Colors.black.withOpacity(0.8),
                     behavior: SnackBarBehavior.floating,
@@ -60,7 +60,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
               translation = snapshot.data;
               Globals.isNetworkError = false;
             }
-            return widget.builder!(translation!);
+            return  widget.builder!(translation!);
         }
       },
     );

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
@@ -8,9 +7,9 @@ import 'package:Soc/src/modules/social/ui/social.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/shared_preference.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
-import 'package:Soc/src/translator/translator_api.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -32,17 +31,13 @@ class _HomePageState extends State<HomePage> {
   final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
-  
   var item;
   var item2;
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
-  Timer? timer;
   late PersistentTabController _controller;
-  BuildContext? testContext;
-   String? translation;
 
   @override
   void initState() {
@@ -51,9 +46,15 @@ class _HomePageState extends State<HomePage> {
     _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
   }
 
-  getindicatorValue() async {
-    Globals.selectedLanguage = await _sharedPref.getString('selected_language');
-  }
+// refreshScreen()async{
+//   await  Future.delayed(const Duration(seconds: 2), () {
+//                  setState(() {         
+//                  });
+//                 });
+// }
+  // getindicatorValue() async {
+  //   Globals.selectedLanguage = await _sharedPref.getString('selected_language');
+  // }
 
   List<Widget> _buildScreens() {
     List<Widget> _screens = [];
@@ -91,13 +92,9 @@ class _HomePageState extends State<HomePage> {
         //   Globals.newsIndex = Globals.homeObjet["Bottom_Navigation__c"]
         //       .split(";")
         //       .indexOf(item);
-        // }
+        // // }
         // setState(() {});
-        return 
-      //   FutureBuilder(
-      // future: TranslationAPI.translate("${item.split("_")[0]}", Globals.selectedLanguage!,),
-      // builder: (BuildContext context, AsyncSnapshot snapshot) {
-        PersistentBottomNavBarItem(
+        return PersistentBottomNavBarItem(
           icon: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -122,23 +119,52 @@ class _HomePageState extends State<HomePage> {
                 valueListenable: Globals.indicator,
                 child: Container(),
               ),
-              Icon(
-                IconData(int.parse(item.split("_")[1]),
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
+              Expanded(
+                child: Container(
+                  child: Column(
+                    children: [
+                      Icon(
+                        IconData(int.parse(item.split("_")[1]),
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                      ),
+                    SpacerWidget(2),
+                     Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
+            ? TranslationWidget(
+                message:"${item.split("_")[0]}",
+                fromLanguage: "en",
+                toLanguage: Globals.selectedLanguage,
+                builder: (translatedMessage) => Expanded(
+                  child: Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.bodyText2!,
+                  ),
+                ),
+              )
+               : Expanded(
+                  child: Text(
+                  "${item.split("_")[0]}",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.headline4!,
+                ),
+                )
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
-          title: ("${item.split("_")[0]}"),
+          // title:(''), //("${item.split("_")[0]}"),
           activeColorPrimary: Theme.of(context).primaryColor,
           inactiveColorPrimary: CupertinoColors.systemGrey,
-        );
-        // return widget.builder!(translation!);
-        // });
-        
+        );        
       },
     ).toList();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -149,14 +175,8 @@ class _HomePageState extends State<HomePage> {
       screens: _buildScreens(),
       // hideNavigationBar: true,
       onItemSelected: (int i) {
-        if (i == Globals.newsIndex) {
           setState(() {
-            // Globals.indicator.value = false;
-            Globals.callsnackbar = true;
           });
-        } else {
-          setState(() {});
-        }
       },
       items: _navBarsItems(),
       confineInSafeArea: true,
