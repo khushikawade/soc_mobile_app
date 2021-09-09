@@ -54,7 +54,7 @@ class NewsImagePageState extends State<NewsImagePage>
           child: Container(
             margin: const EdgeInsets.only(
                 top: 20, left: 20.0, right: 20, bottom: 20),
-            height: MediaQuery.of(context).size.height * 0.5,
+            height: MediaQuery.of(context).size.height * 0.6,
             decoration: ShapeDecoration(
                 // color: Colors.white,
                 shape: RoundedRectangleBorder(

@@ -11,7 +11,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  final double _kIconSize = 35.0;
+  final double _kIconSize = Globals.deviceType == "phone" ?35:45.0;
   final double height = 60;
   final double _kLabelSpacing = 16.0;
   final String language1 = Translations.supportedLanguages.first;
@@ -81,13 +81,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return AppBar(
-          leadingWidth: _kIconSize,
+          automaticallyImplyLeading: false,
+           leadingWidth: _kIconSize,
           elevation: 0.0,
           leading: 
           Container(
             padding: EdgeInsets.only(left: 10),
             child: GestureDetector(
-              child: Image(image: AssetImage("assets/images/gtranslate.png"), ),
+              child: Image(image: AssetImage("assets/images/gtranslate.png"),),
               // Icon(
               //   IconData(0xe822,
               //       fontFamily: Overrides.kFontFam,

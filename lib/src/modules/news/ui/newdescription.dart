@@ -61,7 +61,7 @@ class _NewdescriptionState extends State<Newdescription> {
           children: [
             Container(
               alignment: Alignment.center,
-              height: MediaQuery.of(context).size.width * 0.5,
+              // height: MediaQuery.of(context).size.width * 0.5,
               child: ClipRRect(
                 child: widget.obj.image != null && widget.obj.image != ""
                     ? GestureDetector(

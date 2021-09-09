@@ -85,8 +85,8 @@ class _SocialPageState extends State<SocialPage> {
           children: <Widget>[
             Container(
               alignment: Alignment.center,
-              width: _kIconSize * 1.4,
-              height: _kIconSize * 1.5,
+             width: Globals.deviceType == "phone" ?_kIconSize * 1.4:_kIconSize * 2,
+              height: Globals.deviceType == "phone" ?_kIconSize * 1.5:_kIconSize * 2,
               child: imageLink != null 
                   ? ClipRRect(
                       child: CachedNetworkImage(
@@ -117,8 +117,9 @@ class _SocialPageState extends State<SocialPage> {
                       ),
                     )
                   : Container(
-                      height: _kIconSize * 1.5,
-                      alignment: Alignment.centerLeft,
+                     width: Globals.deviceType == "phone" ?_kIconSize * 1.4:_kIconSize * 2,
+                     height: Globals.deviceType == "phone" ?_kIconSize * 1.5:_kIconSize * 2,
+                     alignment: Alignment.centerLeft,
                       child: ClipRRect(
                         child: CachedNetworkImage(
                           imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
