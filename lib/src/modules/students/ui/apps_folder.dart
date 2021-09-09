@@ -85,102 +85,103 @@ class AppsFolderPageState extends State<AppsFolderPage>
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0))),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 20, left: 20.0, right: 20, bottom: 20),
-              child: apps.length > 0
-                  ? GridView.count(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: _kLableSpacing,
-                      mainAxisSpacing: _kLableSpacing,
-                      children: List.generate(
-                        apps.length,
-                        (index) {
-                          return InkWell(
-                              onTap: () => _launchURL(apps[index]),
-                              child: Column(
-                                children: [
-                                  apps[index].appIconC != null &&
-                                          apps[index].appIconC != ''
-                                      ? Container(
-                                          height: 65,
-                                          width: 65,
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                apps[index].appIconC ?? '',
-                                            placeholder: (context, url) =>
-                                                Container(
-                                                    alignment: Alignment.center,
-                                                    child: ShimmerLoading(
-                                                      isLoading: true,
-                                                      child: Container(
-                                                        color: Colors.white,
-                                                      ),
-                                                    )),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Icon(Icons.error),
-                                          ),
-                                        )
-                                      : Container(),
-                                  Globals.selectedLanguage != null &&
-                                          Globals.selectedLanguage !=
-                                              "English" &&
-                                          Globals.selectedLanguage != ""
-                                      ? TranslationWidget(
-                                          message:
+            child: Scaffold(
+              body: Padding(
+                padding: const EdgeInsets.only(
+                    top: 20, left: 20.0, right: 20, bottom: 20),
+                child: apps.length > 0
+                    ? GridView.count(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: _kLableSpacing,
+                        mainAxisSpacing: _kLableSpacing,
+                        children: List.generate(
+                          apps.length,
+                          (index) {
+                            return InkWell(
+                                onTap: () => _launchURL(apps[index]),
+                                child: Column(
+                                  children: [
+                                    apps[index].appIconC != null &&
+                                            apps[index].appIconC != ''
+                                        ? Container(
+                                            height: 65,
+                                            width: 65,
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  apps[index].appIconC ?? '',
+                                              placeholder: (context, url) =>
+                                                  Container(
+                                                      alignment: Alignment.center,
+                                                      child: ShimmerLoading(
+                                                        isLoading: true,
+                                                        child: Container(
+                                                          color: Colors.white,
+                                                        ),
+                                                      )),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                            ),
+                                          )
+                                        : Container(),
+                                    Globals.selectedLanguage != null &&
+                                            Globals.selectedLanguage !=
+                                                "English" &&
+                                            Globals.selectedLanguage != ""
+                                        ? TranslationWidget(
+                                            message:
+                                                apps[index].appFolderc != null &&
+                                                        widget.folderName ==
+                                                            apps[index].appFolderc
+                                                    ? "${apps[index].titleC}"
+                                                    : '',
+                                            fromLanguage: "en",
+                                            toLanguage: Globals.selectedLanguage,
+                                            builder: (translatedMessage) =>
+                                                Text(
+                                                      translatedMessage.toString(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2!),
+                                          )
+                                        : 
+                                    Expanded(
+                                            child: Text(
                                               apps[index].appFolderc != null &&
                                                       widget.folderName ==
                                                           apps[index].appFolderc
                                                   ? "${apps[index].titleC}"
                                                   : '',
-                                          fromLanguage: "en",
-                                          toLanguage: Globals.selectedLanguage,
-                                          builder: (translatedMessage) =>
-                                              Expanded(
-                                            child: Text(
-                                                translatedMessage.toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2!),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2!
+                                                  .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primaryVariant,
+                                                  ),
+                                            ),
                                           ),
-                                        )
-                                      : Expanded(
-                                          child: Text(
-                                            apps[index].appFolderc != null &&
-                                                    widget.folderName ==
-                                                        apps[index].appFolderc
-                                                ? "${apps[index].titleC}"
-                                                : '',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2!
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primaryVariant,
-                                                ),
-                                          ),
-                                        ),
-                                ],
-                              ));
-                        },
-                      ),
-                    )
-                  : Center(
-                      child: Container(
-                          child: Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English" &&
-                                  Globals.selectedLanguage != ""
-                              ? TranslationWidget(
-                                  message: "No apps available here",
-                                  fromLanguage: "en",
-                                  toLanguage: Globals.selectedLanguage,
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                  ),
-                                )
-                              : Text("No apps available here"))),
+                                  ],
+                                ));
+                          },
+                        ),
+                      )
+                    : Center(
+                        child: Container(
+                            child: Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English" &&
+                                    Globals.selectedLanguage != ""
+                                ? TranslationWidget(
+                                    message: "No apps available here",
+                                    fromLanguage: "en",
+                                    toLanguage: Globals.selectedLanguage,
+                                    builder: (translatedMessage) => Text(
+                                      translatedMessage.toString(),
+                                    ),
+                                  )
+                                : Text("No apps available here"))),
+              ),
             ),
           ),
         ),

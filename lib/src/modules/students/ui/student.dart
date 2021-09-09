@@ -133,22 +133,31 @@ class _StudentPageState extends State<StudentPage> {
                                       message: "${list[index].titleC}",
                                       fromLanguage: "en",
                                       toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Expanded(
-                                        child: Text(
-                                            translatedMessage.toString(),
-                                            textAlign: TextAlign.center,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
+                                      builder: (translatedMessage) => Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 10),
+                                        width: MediaQuery.of(context).size.width*0.3,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Text(
+                                              translatedMessage.toString(),
+                                              textAlign: TextAlign.center,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
+                                        ),
                                       ),
                                     )
-                                  : Expanded(
-                                      child: Text("${list[index].titleC}",
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
-                                    ),
+                                  : Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 10),
+                                        width: MediaQuery.of(context).size.width*0.3,
+                                        child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,     
+                                          child: Text("${list[index].titleC}",
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
+                                  ),),
                             ],
                           ),
                         ],
