@@ -141,7 +141,7 @@ class _StudentPageState extends State<StudentPage> {
                                       builder: (translatedMessage) => Container(
                                         alignment: Alignment.center,
                                         padding: EdgeInsets.symmetric(horizontal: 10),
-                                        width: MediaQuery.of(context).size.width*0.3,
+                                        width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
                                         child: SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
                                           child: Text(
@@ -156,8 +156,9 @@ class _StudentPageState extends State<StudentPage> {
                                   : Container(
                                       alignment:Alignment.center,
                                         padding: EdgeInsets.symmetric(horizontal: 10),
-                                        width: MediaQuery.of(context).size.width*0.3,
+                                       width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
                                         child: SingleChildScrollView(
+                                          
                                         scrollDirection: Axis.horizontal,     
                                           child: Text("${list[index].titleC}",
                                             textAlign: TextAlign.center,
