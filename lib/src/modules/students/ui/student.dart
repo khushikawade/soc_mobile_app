@@ -17,6 +17,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:marquee/marquee.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class StudentPage extends StatefulWidget {
@@ -128,45 +129,187 @@ class _StudentPageState extends State<StudentPage> {
                                   ),
                                 )
                               : EmptyContainer(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English" &&
-                                      Globals.selectedLanguage != ""
-                                  ? TranslationWidget(
-                                      message: "${list[index].titleC}",
-                                      fromLanguage: "en",
-                                      toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Container(
-                                        alignment: Alignment.center,
-                                        padding: EdgeInsets.symmetric(horizontal: 10),
-                                        width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Text(
-                                              translatedMessage.toString(),
-                                              textAlign: TextAlign.center,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      alignment:Alignment.center,
-                                        padding: EdgeInsets.symmetric(horizontal: 10),
-                                       width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
-                                        child: SingleChildScrollView(
-                                          
-                                        scrollDirection: Axis.horizontal,     
-                                          child: Text("${list[index].titleC}",
+                          Container(
+                            
+                            child: Globals.selectedLanguage != null &&
+                                    Globals.selectedLanguage != "English" &&
+                                    Globals.selectedLanguage != ""
+                                ? TranslationWidget(
+                                    message: "${list[index].titleC}",
+                                    fromLanguage: "en",
+                                    toLanguage: Globals.selectedLanguage,
+                                    builder: (translatedMessage) => Container(
+                                      alignment: Alignment.center,
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Text(
+                                            translatedMessage.toString(),
                                             textAlign: TextAlign.center,
                                             style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
+                                      ),
+                                    ),
+                                  )
+                                : 
+                                
+                                // Container(
+                                //       alignment: Alignment.center,
+                                //       padding: EdgeInsets.symmetric(horizontal: 10),
+                                //       width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
+                                //       child: SingleChildScrollView(
+                                //         scrollDirection: Axis.horizontal,
+                                //         child: Text(
+                                //             list[index].titleC.toString(),
+                                //             textAlign: TextAlign.center,
+                                //             style: Theme.of(context)
+                                //                 .textTheme
+                                //                 .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
+                                //       ),
+                                //     ),
+                                
+                                // Container(
+                                //     alignment:Alignment.center,
+                                //       padding: EdgeInsets.symmetric(horizontal: 10),
+                                //      width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
+                                //       child: 
+                                      orientation == Orientation.portrait&&Globals.deviceType == "phone"&&
+                                        list[index].titleC!.length>11?
+                                      Expanded(
+                                        child: 
+                                        Marquee(text: "${list[index].titleC}",
+                                        
+                                        style: Theme.of(context)
                                           .textTheme
-                                          .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
-                                  ),),
-                            ],
+                                          .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24),
+                                          scrollAxis: Axis.horizontal,
+                                          velocity: 30.0,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        
+                                        blankSpace: 50,//MediaQuery.of(context).size.width
+                                        // velocity: 100.0,
+                                        pauseAfterRound: Duration(seconds: 5),
+                                        showFadingOnlyWhenScrolling: true,
+                                        // startPadding: 20.0,
+                                        
+                                        accelerationDuration: Duration(seconds: 1),
+                                        accelerationCurve: Curves.linear,
+                                        decelerationDuration: Duration(milliseconds: 500),
+                                        decelerationCurve: Curves.easeOut,
+                                        )):orientation == Orientation.landscape&&Globals.deviceType == "phone"&&
+                                        list[index].titleC!.length>18?
+                                        Expanded(
+                                        child: 
+                                        Marquee(text: "${list[index].titleC}",
+                                        
+                                        style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24),
+                                          scrollAxis: Axis.horizontal,
+                                          velocity: 30.0,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        
+                                        blankSpace: 50,//MediaQuery.of(context).size.width
+                                        // velocity: 100.0,
+                                        pauseAfterRound: Duration(seconds: 5),
+                                        showFadingOnlyWhenScrolling: true,
+                                        // startPadding: 20.0,
+                                        
+                                        accelerationDuration: Duration(seconds: 1),
+                                        accelerationCurve: Curves.linear,
+                                        decelerationDuration: Duration(milliseconds: 500),
+                                        decelerationCurve: Curves.easeOut,
+                                        )):
+                                      orientation == Orientation.portrait&&Globals.deviceType != "phone"&&
+                                        list[index].titleC!.length>11?
+                                        Expanded(
+                                        child: 
+                                        Marquee(text: "${list[index].titleC}",
+                                        
+                                        style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24),
+                                          scrollAxis: Axis.horizontal,
+                                          velocity: 30.0,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        
+                                        blankSpace: 50,//MediaQuery.of(context).size.width
+                                        // velocity: 100.0,
+                                        pauseAfterRound: Duration(seconds: 5),
+                                        showFadingOnlyWhenScrolling: true,
+                                        // startPadding: 20.0,
+                                        
+                                        accelerationDuration: Duration(seconds: 1),
+                                        accelerationCurve: Curves.linear,
+                                        decelerationDuration: Duration(milliseconds: 500),
+                                        decelerationCurve: Curves.easeOut,
+                                        )):orientation == Orientation.landscape&&Globals.deviceType != "phone"&&
+                                        list[index].titleC!.length>18?
+                                      Expanded(
+                                        child: 
+                                        Marquee(text: "${list[index].titleC}",
+                                        
+                                        style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24),
+                                          scrollAxis: Axis.horizontal,
+                                          velocity: 30.0,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        
+                                        blankSpace: 50,//MediaQuery.of(context).size.width
+                                        // velocity: 100.0,
+                                        pauseAfterRound: Duration(seconds: 5),
+                                        showFadingOnlyWhenScrolling: true,
+                                        // startPadding: 20.0,
+                                        
+                                        accelerationDuration: Duration(seconds: 1),
+                                        accelerationCurve: Curves.linear,
+                                        decelerationDuration: Duration(milliseconds: 500),
+                                        decelerationCurve: Curves.easeOut,
+                                        )):
+                                        
+                                      //  orientation == Orientation.portrait&&Globals.deviceType != "phone"&&
+                                      //   list[index].titleC!.length>11?
+                                      //   Marquee(text: "${list[index].titleC}",
+                                        
+                                      //   style: Theme.of(context)
+                                      //     .textTheme
+                                      //     .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24),
+                                      //     scrollAxis: Axis.horizontal,
+                                      //     velocity: 30.0,
+                                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                                        
+                                      //   blankSpace: 50,//MediaQuery.of(context).size.width
+                                      //   // velocity: 100.0,
+                                      //   pauseAfterRound: Duration(seconds: 5),
+                                      //   showFadingOnlyWhenScrolling: true,
+                                      //   // startPadding: 20.0,
+                                        
+                                      //   accelerationDuration: Duration(seconds: 1),
+                                      //   accelerationCurve: Curves.linear,
+                                      //   decelerationDuration: Duration(milliseconds: 500),
+                                      //   decelerationCurve: Curves.easeOut,
+                                      //   )
+                                        
+                                        
+                                        
+                                        Container(
+                                      alignment: Alignment.center,
+                                      padding: EdgeInsets.symmetric(horizontal: 10),
+                                      // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Text(
+                                            "${list[index].titleC}",
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
+                                      ),
+                                        )
+                                      // ),)))
                           ),
                         ],
                       ));

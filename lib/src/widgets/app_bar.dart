@@ -51,7 +51,10 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       elevation: 0.0,
       leading: BackButtonWidget(),
       title: widget.isCenterIcon != null && widget.isCenterIcon == true
-          ? SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())
+          ? 
+          // SizedBox(width: 100.0, height: 60.0, child: 
+          AppLogoWidget()
+          // )
           : widget.appBarTitle != ""
               ? Globals.selectedLanguage != null &&
                       Globals.selectedLanguage != "English" &&

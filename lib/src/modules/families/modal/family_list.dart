@@ -1,7 +1,7 @@
 import 'package:Soc/src/modules/families/modal/family_attributes.dart';
 
 class FamiliesList {
-  Attributes? attributes;
+  // Attributes? attributes;
   String? titleC;
   String? appIconC; //
   String? appIconUrlC;
@@ -15,7 +15,8 @@ class FamiliesList {
   final sortOredr;
 
   FamiliesList(
-      {this.attributes,
+      {
+        // this.attributes,
       this.titleC,
       this.appIconC,
       this.appUrlC,
@@ -29,9 +30,9 @@ class FamiliesList {
       this.sortOredr});
 
   factory FamiliesList.fromJson(Map<String, dynamic> json) => FamiliesList(
-      attributes: json['attributes'] == null
-          ? null
-          : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
+      // attributes: json['attributes'] == null
+      //     ? null
+      //     : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
       titleC: json['Title__c'] as String?,
       appIconC: json['App_Icon__c'] as String?,
       appIconUrlC: json['App_Icon_URL__c'] as String?,
@@ -45,7 +46,7 @@ class FamiliesList {
       sortOredr: json['Sort_Order__c']);
 
   Map<String, dynamic> toJson() => {
-        'attributes': attributes?.toJson(),
+        // 'attributes': attributes?.toJson(),
         'Title__c': titleC,
         'App_Icon__c': appIconC,
         'URL__c': appUrlC,
