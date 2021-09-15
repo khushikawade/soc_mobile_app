@@ -78,8 +78,12 @@ class _AboutusPageState extends State<AboutusPage> {
                   fromLanguage: "en",
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) =>
-                  
-                      Html(data: translatedMessage.toString()),
+                      Html(data: translatedMessage,
+                      onLinkTap: (String? url, RenderContext context, Map<String, String> attributes, dom.Element? element) {
+                      // print(url);
+                      _launchURL(url);
+                  },
+                  ),
                 )
               : 
               // Linkify(text:Utility.htmlData(  htmlData ?? widget.htmlText), onOpen: (link) => link.url,
