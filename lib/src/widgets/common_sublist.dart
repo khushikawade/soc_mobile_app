@@ -50,25 +50,26 @@ class _SubListPageState extends State<SubListPage> {
 
   _route(obj, index) {
     if (obj.typeC == "URL") {
-      obj.urlC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => InAppUrlLauncer(
-                        title: obj.titleC!,
-                        url: obj.urlC!,
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-
+   
+      // obj.urlC != null 
+      //     ? Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //             builder: (BuildContext context) => InAppUrlLauncer(
+      //                   title: obj.titleC!,
+      //                   url: obj.urlC??obj.appUrlC,
+      //                   isbuttomsheet: true,
+      //                   language: Globals.selectedLanguage,
+      //                 )))
+      //     : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+ 
       obj.appUrlC != null
           ? Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
                         title: obj.titleC!,
-                        url: obj.urlC!,
+                        url: obj.appUrlC!,
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )))

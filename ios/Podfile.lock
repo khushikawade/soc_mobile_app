@@ -19,10 +19,10 @@ PODS:
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps
-  - GoogleMaps (4.1.0):
-    - GoogleMaps/Maps (= 4.1.0)
-  - GoogleMaps/Base (4.1.0)
-  - GoogleMaps/Maps (4.1.0):
+  - GoogleMaps (4.2.0):
+    - GoogleMaps/Maps (= 4.2.0)
+  - GoogleMaps/Base (4.2.0)
+  - GoogleMaps/Maps (4.2.0):
     - GoogleMaps/Base
   - image_picker (0.0.1):
     - Flutter
@@ -134,7 +134,7 @@ SPEC CHECKSUMS:
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
-  GoogleMaps: 008e2c80e38605b56b560e8deb73d4194ff30bef
+  GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
   image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
   onesignal_flutter: 79eb89d25249b078d3c358fb7827b22909f7fbed
   OneSignalXCFramework: 4e08d8353adec161c3d9174e2572c849e1225c9f
@@ -150,6 +150,6 @@ SPEC CHECKSUMS:
   webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
   wifi_info_flutter: 55d4c2469034f5b5c38063ccefa62f708a503a2b
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
 
-COCOAPODS: 1.11.0
+COCOAPODS: 1.11.2

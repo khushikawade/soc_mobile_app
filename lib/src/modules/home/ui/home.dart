@@ -133,6 +133,7 @@ class _HomePageState extends State<HomePage> {
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
+                shimmerHeight: 8,
                 message:"${item.split("_")[0]}",
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,

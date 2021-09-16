@@ -2,10 +2,13 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:html/dom.dart' as dom;
 
 // ignore: must_be_immutable
 class AboutusPage extends StatefulWidget {
@@ -75,10 +78,23 @@ class _AboutusPageState extends State<AboutusPage> {
                   fromLanguage: "en",
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) =>
-                      Html(data: translatedMessage.toString()),
+                      Html(data: translatedMessage,
+                      onLinkTap: (String? url, RenderContext context, Map<String, String> attributes, dom.Element? element) {
+                      // print(url);
+                      _launchURL(url);
+                  },
+                  ),
                 )
-              : Html(
+              : 
+              // Linkify(text:Utility.htmlData(  htmlData ?? widget.htmlText), onOpen: (link) => link.url,
+              //               options: LinkifyOptions(humanize: false),
+              //                  ),
+              Html(
                   data: htmlData ?? widget.htmlText,
+                  onLinkTap: (String? url, RenderContext context, Map<String, String> attributes, dom.Element? element) {
+                    print(url);
+                    _launchURL(url);
+                  },
                   style: {
                     "table": Style(
                       backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
@@ -118,5 +134,18 @@ class _AboutusPageState extends State<AboutusPage> {
         _buildContent1(),
       ]),
     );
+  }
+
+
+       _launchURL(obj) async {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => InAppUrlLauncer(
+                  title: widget.appbarTitle.toString(),
+                  url: obj,
+                  isbuttomsheet: true,
+                  language: Globals.selectedLanguage,
+                )));
   }
 }

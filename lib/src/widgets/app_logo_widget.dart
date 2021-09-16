@@ -11,6 +11,9 @@ class AppLogoWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
+          padding: EdgeInsets.only(left: 30),
+            // color: Colors.red,
+        // alignment: Alignment.centerRight,
             height:
                 Globals.deviceType == "phone" ? _kIconSize : _kIconSize * 1.2,
             width: Globals.deviceType == "phone"

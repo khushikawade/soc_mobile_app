@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 class TranslationWidget extends StatefulWidget {
+  final double? shimmerHeight;
   final String? message;
   final String? fromLanguage;
   final String? toLanguage;
   final Widget Function(String translation)? builder;
 
   TranslationWidget({
+    this.shimmerHeight,
     @required this.message,
     this.fromLanguage,
     @required this.toLanguage,
@@ -70,7 +72,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
       ? ShimmerLoading(
           isLoading: true,
           child: Container(
-            height: 20,
+            height: widget.shimmerHeight??20,
             width: 40,
             // child: Text(widget.message!),
             color: Colors.white,

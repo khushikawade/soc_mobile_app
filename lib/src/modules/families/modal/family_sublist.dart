@@ -1,7 +1,7 @@
 import 'family_subattributes.dart';
 
 class FamiliesSubList {
-  SubAttributes? attributes;
+  // SubAttributes? attributes;
   String? titleC;
   String? appUrlC;
   String? pdfURL;
@@ -13,7 +13,8 @@ class FamiliesSubList {
   final sortOredr;
 
   FamiliesSubList(
-      {this.attributes,
+      {
+        // this.attributes,
       this.titleC,
       this.appUrlC,
       this.pdfURL,
@@ -26,10 +27,10 @@ class FamiliesSubList {
 
   factory FamiliesSubList.fromJson(Map<String, dynamic> json) =>
       FamiliesSubList(
-        attributes: json['attributes'] == null
-            ? null
-            : SubAttributes.fromJson(
-                json['attributes'] as Map<String, dynamic>),
+        // attributes: json['attributes'] == null
+        //     ? null
+        //     : SubAttributes.fromJson(
+        //         json['attributes'] as Map<String, dynamic>),
         titleC: json['Title__c'] as String?,
         appUrlC: json['URL__c'] as String?,
         pdfURL: json['PDF_URL__c'] as String?,
@@ -42,7 +43,7 @@ class FamiliesSubList {
       );
 
   Map<String, dynamic> toJson() => {
-        'attributes': attributes?.toJson(),
+        // 'attributes': attributes?.toJson(),
         'Title__c': titleC,
         'URL__c': appUrlC,
         'PDF_URL__c': pdfURL,
