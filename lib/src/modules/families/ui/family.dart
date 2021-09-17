@@ -106,7 +106,7 @@ class _FamilyPageState extends State<FamilyPage> {
                       )))
           : Utility.showSnackBar(
               _scaffoldKey, "No calendar/events available", context);
-    } else if (obj.typeC == "RFT_HTML") {
+    } else if (obj.typeC == "RFT_HTML"||obj.typeC=="HTML/RTF"||obj.typeC=="RTF/HTML") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,

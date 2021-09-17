@@ -39,7 +39,7 @@ class FamiliesSubList {
         rtfHTMLC: json['RTF_HTML__c'] as String?,
         typeC: json['Type__c'] as String?,
         appIconC: json['App_Icon__c'],
-        sortOredr: json['App_Icon__c'],
+        sortOredr: json['Sort_Order__c'],
       );
 
   Map<String, dynamic> toJson() => {
