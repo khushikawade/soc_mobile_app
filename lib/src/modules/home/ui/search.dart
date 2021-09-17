@@ -131,7 +131,7 @@ class _SearchPageState extends State<SearchPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML") {
+    } else if (obj.typeC == "RFT_HTML"||obj.typeC=="HTML/RTF") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
