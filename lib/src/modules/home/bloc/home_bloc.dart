@@ -35,6 +35,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is GlobalSearchEvent) {
       try {
         yield SearchLoading();
+        List<SearchList> filteredList=[];
         List<SearchList> list = await getGlobalSearch({
           "q": event.keyword,
           "sobjects": [
@@ -46,7 +47,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "PDF_URL__c",
                 "Name",
                 "RTF_HTML__c",
-                "Type__c"
+                "Type__c",
+                "School_App__c"
               ],
               "name": "Families_App__c"
             },
@@ -59,7 +61,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "PDF_URL__c",
                 "Name",
                 "RTF_HTML__c",
-                "Type__c"
+                "Type__c",
+                "School_App__c"
               ]
             },
             {
@@ -71,7 +74,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "PDF_URL__c",
                 "Name",
                 "RTF_HTML__c",
-                "Type__c"
+                "Type__c",
+                "School_App__c"
               ]
             },
             {
@@ -82,7 +86,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "PDF_URL__c",
                 "Name",
                 "RTF_HTML__c",
-                "Type__c"
+                "Type__c",
+                "School_App__c"
               ],
               "name": "Staff_Sub_Menu_App__c"
             },
@@ -94,7 +99,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "Deep_Link__c",
                 "Id",
                 "Name",
-                "App_Folder__c"
+                "App_Folder__c",
+                "School_App__c"
               ],
               "name": "Student_App__c"
             }
@@ -103,9 +109,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           "overallLimit": 100,
           "defaultLimit": 10
         });
+        for(int i=0;i<list.length;i++){
+          if(list[i].schoolId==Globals.homeObjet["Id"]){
+            filteredList.add(list[i]);
+          }
+        }
+       
         yield GlobalSearchSuccess(
-          obj: list,
+          obj: filteredList,
         );
+        
+        
       } catch (e) {
         yield HomeErrorReceived(err: e);
       }

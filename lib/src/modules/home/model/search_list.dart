@@ -12,6 +12,7 @@ class SearchList {
   String? rtfHTMLC;
   String? pdfURL;
   String? deepLink;
+  String? schoolId;
   // final sortOredr;
 
   SearchList(
@@ -25,7 +26,8 @@ class SearchList {
       this.pdfURL,
       this.rtfHTMLC,
       this.typeC,
-      this.deepLink
+      this.deepLink,
+      this.schoolId
       // this.sortOredr
       });
 
@@ -44,6 +46,7 @@ class SearchList {
         rtfHTMLC: json['RTF_HTML__c'] as String?,
         typeC: json['Type__c'] as String?,
         deepLink: json['Deep_Link__c'] as String?,
+        schoolId: json['School_App__c'] as String?,
         // sortOredr: json['Sort_Order__c'],
       );
 
@@ -58,7 +61,8 @@ class SearchList {
         'Name': name,
         'RTF_HTML__c': rtfHTMLC,
         'Type__c': typeC,
-        'Deep_Link__c': deepLink
+        'Deep_Link__c': deepLink,
+        'School_App__c':schoolId
         // 'Sort_Order__c': sortOredr
       };
 }
