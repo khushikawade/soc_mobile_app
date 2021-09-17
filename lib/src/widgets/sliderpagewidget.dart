@@ -3,13 +3,9 @@ import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
-import 'package:Soc/src/widgets/sharepopmenu.dart';
-import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
@@ -24,7 +20,7 @@ class SliderWidget extends StatefulWidget {
       required this.date,
       required this.isbuttomsheet,
       required this.language});
-  var obj;
+  final obj;
   int currentIndex;
   bool? issocialpage;
   bool? iseventpage;
@@ -38,8 +34,6 @@ class SliderWidget extends StatefulWidget {
 
 class _SliderWidgetState extends State<SliderWidget> {
   static const double _kPadding = 16.0;
-  static const double _KButtonSize = 110.0;
-  static const double _kLabelSpacing = 15.0;
   var _controller = new PageController();
   static const _kDuration = const Duration(milliseconds: 400);
   int pageinitialIndex = 0;
@@ -58,6 +52,7 @@ class _SliderWidgetState extends State<SliderWidget> {
     first = true;
     pageinitialIndex = widget.currentIndex;
     _controller = PageController(initialPage: widget.currentIndex);
+    Globals.callsnackbar = false;
   }
 
   @override
@@ -162,95 +157,12 @@ class _SliderWidgetState extends State<SliderWidget> {
           ),
         )
       ]),
-      // bottomSheet: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
-  }
-
-  Widget buttomButtonsWidget(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        padding: EdgeInsets.all(_kPadding),
-        color: AppTheme.kBackgroundColor,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            SizedBox(
-              width: _KButtonSize,
-              height: _KButtonSize / 2,
-              child: ElevatedButton(
-                onPressed: () async {
-                  _buildlink();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SoicalPageWebview(
-                                link: link2,
-                                isSocialpage: true,
-                                isbuttomsheet: true,
-                              )));
-                },
-                child: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
-                    ? TranslationWidget(
-                        message: "More",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                        ),
-                      )
-                    : Text("More"),
-              ),
-            ),
-            HorzitalSpacerWidget(_kPadding / 2),
-            SizedBox(
-              width: _KButtonSize,
-              height: _KButtonSize / 2,
-              child: ElevatedButton(
-                onPressed: () async {
-                  SharePopUp obj = new SharePopUp();
-                  String link = await _buildlink();
-                  final String body =
-                      "${widget.obj[widget.currentIndex].title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}"
-                              " " +
-                          link;
-                  obj.callFunction(context, body, "");
-                },
-                child: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
-                    ? TranslationWidget(
-                        message: "Share",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                        ),
-                      )
-                    : Text("Share"),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<String> _buildlink() async {
-    link = widget.obj[widget.currentIndex].link.toString();
-    RegExp exp =
-        new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
-    Iterable<RegExpMatch> matches = exp.allMatches(link);
-    matches.forEach((match) {
-      link2 = link.substring(match.start, match.end);
-    });
-    return link2;
   }
 
   void htmlparser() {
-    var doc = parse(object[0].description["__cdata"]);
-    var element = doc.getElementById('content');
+    final doc = parse(object[0].description["__cdata"]);
+    final element = doc.getElementById('content');
     debugPrint(element!.querySelectorAll('div').toString());
   }
 }

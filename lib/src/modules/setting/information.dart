@@ -1,25 +1,33 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
 
 class InformationPage extends StatefulWidget {
-  String htmlText;
+  // String htmlText;
 
   bool isbuttomsheet;
   bool ishtml;
   String appbarTitle;
+  bool? isloadingstate = false;
 
   @override
   InformationPage({
     Key? key,
-    required this.htmlText,
+    // required this.htmlText,
     required this.isbuttomsheet,
     required this.ishtml,
     required this.appbarTitle,
@@ -32,71 +40,186 @@ class _InformationPageState extends State<InformationPage> {
   static const double _kLabelSpacing = 20.0;
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _bloc = new HomeBloc();
+  bool? iserrorstate = false;
 
-  Widget _buildContent1() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
-      child: Wrap(
-        children: [
-          Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
-              ? TranslationWidget(
-                  message: widget.htmlText,
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => Html(
-                    data: translatedMessage.toString(),
-                  ),
-                )
-              : Html(
-                  data: widget.htmlText,
-                  style: {
-                    "table": Style(
-                      backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                    ),
-                    "tr": Style(
-                      border: Border(bottom: BorderSide(color: Colors.grey)),
-                    ),
-                    "th": Style(
-                      padding: EdgeInsets.all(6),
-                      backgroundColor: Colors.grey,
-                    ),
-                    "td": Style(
-                      padding: EdgeInsets.all(6),
-                      alignment: Alignment.topLeft,
-                    ),
-                    'h5':
-                        Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                  },
-                ),
-        ],
-      ),
-    );
+  bool? isloadingstate = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc.add(FetchBottomNavigationBar());
+    Globals.callsnackbar = true;
   }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBarWidget(
-        isSearch: false,
-        isShare: false,
-        appBarTitle: widget.appbarTitle,
-        ishtmlpage: widget.ishtml,
-        sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
-        sharedpopUpheaderText: "Please checkout this link",
-        language: Globals.selectedLanguage,
-      ),
-      body: ListView(children: [
-        _buildContent1(),
+  Widget _buildContent1() {
+    String? htmlData;
+    if (Globals.appSetting.appInformationC.toString().contains("src=") ==
+        true) {
+      String img = Utility.getHTMLImgSrc(Globals.appSetting.appInformationC);
+      htmlData =
+          Globals.appSetting.appInformationC.toString().replaceAll("$img", " ");
+    }
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
+          child: Wrap(
+            children: [
+              Globals.appSetting.appInformationC.toString().contains("src=") &&
+                      Globals.appSetting.appInformationC
+                              .toString()
+                              .split('"')[1] !=
+                          ""
+                  ? Container(
+                      alignment: Alignment.center,
+                      child: ClipRRect(
+                        child: CachedNetworkImage(
+                          imageUrl: Utility.getHTMLImgSrc(
+                              Globals.appSetting.appInformationC),
+                          placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          errorWidget: (context, url, error) => Container(),
+                        ),
+                      ),
+                    )
+                  : Container(),
+              Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English" &&
+                      Globals.selectedLanguage != ""
+                  ? TranslationWidget(
+                      message: htmlData ?? Globals.appSetting.appInformationC,
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) => Html(
+                        data: translatedMessage.toString(),
+                      ),
+                    )
+                  : Html(
+                      data: htmlData ?? Globals.appSetting.appInformationC,
+                      style: {
+                        "table": Style(
+                          backgroundColor:
+                              Color.fromARGB(0x50, 0xee, 0xee, 0xee),
+                        ),
+                        "tr": Style(
+                          border:
+                              Border(bottom: BorderSide(color: Colors.grey)),
+                        ),
+                        "th": Style(
+                          padding: EdgeInsets.all(6),
+                          backgroundColor: Colors.grey,
+                        ),
+                        "td": Style(
+                          padding: EdgeInsets.all(6),
+                          alignment: Alignment.topLeft,
+                        ),
+                        'h5': Style(
+                            maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                      },
+                    ),
+            ],
+          ),
+        ),
         SizedBox(
           height: 100.0,
           child: ShareButtonWidget(
             language: Globals.selectedLanguage,
           ),
-        )
-      ]),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
+        ),
+      ],
     );
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: CustomAppBarWidget(
+          isSearch: false,
+          isShare: false,
+          appBarTitle: widget.appbarTitle,
+          ishtmlpage: widget.ishtml,
+          sharedpopBodytext: Globals.appSetting.appInformationC!
+              .replaceAll(exp, '')
+              .toString(),
+          sharedpopUpheaderText: "Please checkout this ",
+          language: Globals.selectedLanguage,
+        ),
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
+
+                if (connected) {
+                  if (iserrorstate == true) {
+                    iserrorstate = false;
+                    _bloc.add(FetchBottomNavigationBar());
+                  }
+                } else if (!connected) {
+                  iserrorstate = true;
+                }
+
+                return connected
+                    ? Column(
+                        children: [
+                          Expanded(
+                            child: isloadingstate!
+                                ? ShimmerLoading(
+                                    isLoading: true,
+                                    child: _buildContent1(),
+                                  )
+                                : _buildContent1(),
+                          ),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _bloc,
+                              listener: (context, state) async {
+                                if (state is HomeLoading) {
+                                  isloadingstate = true;
+                                  // print('inloading state :${isloadingstate!}');
+                                }
+
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                  isloadingstate = false;
+                                }
+                              },
+                              child: Container(),
+                            ),
+                          ),
+                        ],
+                      )
+                    : NoInternetErrorWidget(
+                        connected: connected, issplashscreen: false);
+              },
+              child: Container()),
+          onRefresh: refreshPage,
+        ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _bloc.add(FetchBottomNavigationBar());
   }
 }

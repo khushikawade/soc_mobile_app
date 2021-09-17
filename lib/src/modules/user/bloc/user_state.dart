@@ -47,7 +47,7 @@ class InvalidCredentials extends UserState {
 class ErrorReceived extends UserState {
   final err;
   ErrorReceived({this.err});
-  ErrorReceived copyWith({var err}) {
+  ErrorReceived copyWith({final err}) {
     return ErrorReceived(err: err ?? this.err);
   }
 

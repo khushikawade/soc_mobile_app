@@ -1,24 +1,33 @@
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 class FamilyPage extends StatefulWidget {
-  var obj;
-  var searchObj;
-  FamilyPage({Key? key, this.obj, this.searchObj}) : super(key: key);
+  final obj;
+  final searchObj;
+  FamilyPage({Key? key, this.obj, this.searchObj,}) : super(key: key);
 
   @override
   _FamilyPageState createState() => _FamilyPageState();
@@ -28,7 +37,10 @@ class _FamilyPageState extends State<FamilyPage> {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
-  var object;
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  HomeBloc _homeBloc = HomeBloc();
+  bool? iserrorstate = false;
+
   @override
   void initState() {
     super.initState();
@@ -40,7 +52,13 @@ class _FamilyPageState extends State<FamilyPage> {
     super.dispose();
   }
 
-  _route(FamiliesList obj, index) {
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _bloc.add(FamiliesEvent());
+    _homeBloc.add(FetchBottomNavigationBar());
+  }
+
+  _familiyPageRoute(FamiliesList obj, index) {
     if (obj.titleC == "Contact") {
       obj.titleC != null
           ? Navigator.push(
@@ -53,26 +71,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         language: Globals.selectedLanguage ?? "English",
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.titleC == "Staff Directory") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => StaffDirectory(
-                    appBarTitle: obj.titleC!,
-                    obj: obj,
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )));
-    } else if (obj.titleC == "Calendar/Events") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => EventPage(
-                    isbuttomsheet: true,
-                    appBarTitle: obj.titleC,
-                    language: Globals.selectedLanguage,
-                  )));
-    } else if (obj.typeC == "URL") {
+    } else if (obj.typeC == "URL" || obj.titleC == "Afterschool Consent 2") {
       obj.appUrlC != null
           ? Navigator.push(
               context,
@@ -84,6 +83,29 @@ class _FamilyPageState extends State<FamilyPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    } else if (obj.typeC == "Form") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "Calendar/Events") {
+      obj.calendarId != null && obj.calendarId != ""
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => EventPage(
+                        isbuttomsheet: true,
+                        appBarTitle: obj.titleC,
+                        language: Globals.selectedLanguage,
+                        // calendarId: obj.calendarId.toString(),
+                      )))
+          : Utility.showSnackBar(
+              _scaffoldKey, "No calendar/events available", context);
     } else if (obj.typeC == "RFT_HTML") {
       obj.rtfHTMLC != null
           ? Navigator.push(
@@ -91,7 +113,6 @@ class _FamilyPageState extends State<FamilyPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        // url: obj.appUrlC ?? '',
                         isbuttomsheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
@@ -126,6 +147,52 @@ class _FamilyPageState extends State<FamilyPage> {
     }
   }
 
+  Widget _buildLeading(FamiliesList obj) {
+    if (obj.appIconUrlC != null) {
+      return Container(
+        child: ClipRRect(
+          child: CachedNetworkImage(
+            imageUrl: obj.appIconUrlC!,
+            fit: BoxFit.cover,
+            height: Globals.deviceType == "phone" ?40:44,
+            width: Globals.deviceType == "phone" ?40:44,
+             placeholder: (context, url) => Container(
+                alignment: Alignment.center,
+                child: ShimmerLoading(
+                  isLoading: true,
+                  child: Container(
+                    height: 20,
+                    width: 20,
+                    color: Colors.white,
+                  ),
+                )),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+        ),
+      );
+    } else if(obj.appIconC!=null){
+      return Icon(
+        IconData(
+          int.parse('0x${obj.appIconC!}'),
+          fontFamily: 'FontAwesomeSolid',
+          fontPackage: 'font_awesome_flutter',
+        ),
+        color: Theme.of(context).colorScheme.primary,
+        size: Globals.deviceType == "phone" ? 24 : 32,
+      );
+    }else{
+     return Icon(
+                IconData(
+                0xf550,
+                      fontFamily: 'FontAwesomeSolid',
+                      fontPackage: 'font_awesome_flutter',
+                    ),
+                    color: Theme.of(context).colorScheme.primary,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
+                  );
+    }
+  }
+
   Widget _buildList(FamiliesList obj, int index) {
     return Container(
       decoration: BoxDecoration(
@@ -135,44 +202,35 @@ class _FamilyPageState extends State<FamilyPage> {
         ),
         borderRadius: BorderRadius.circular(0.0),
         color: (index % 2 == 0)
-            ? Theme.of(context).backgroundColor
+            ? Theme.of(context).colorScheme.background
             : Theme.of(context).colorScheme.secondary,
       ),
       child: ListTile(
         onTap: () {
-          _route(obj, index);
+          _familiyPageRoute(obj, index);
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         contentPadding:
             EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: Icon(
-          IconData(
-            int.parse(obj.appIconC!),
-            fontFamily: 'FontAwesomeSolid',
-            fontPackage: 'font_awesome_flutter',
-          ),
-          color: AppTheme.kListIconColor3,
-          size: Globals.deviceType == "phone" ? 18 : 26,
-        ),
+        leading: _buildLeading(obj),
         title: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
                 message: obj.titleC,
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.bodyText2,
-                ),
+                builder: (translatedMessage) { 
+                 return Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.bodyText2!);}
               )
-            : Text(
-                obj.titleC.toString(),
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
+            : Text(obj.titleC.toString(),
+                style: Theme.of(context).textTheme.bodyText1!),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
-          color: AppTheme.kButtonbackColor,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
@@ -180,59 +238,95 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBarWidget(),
-        body: BlocBuilder<FamilyBloc, FamilyState>(
-            bloc: _bloc,
-            builder: (BuildContext contxt, FamilyState state) {
-              if (state is FamilyInitial || state is FamilyLoading) {
-                return Center(
-                    child: CircularProgressIndicator(
-                  
-                ));
-              } else if (state is FamiliesDataSucess) {
-                return state.obj != null && state.obj!.length > 0
-                    ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: state.obj!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buildList(state.obj![index], index);
-                        },
-                      )
-                    : Container(
-                        alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English"
-                            ? TranslationWidget(
-                                message: "No data found",
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                ),
-                              )
-                            : Text("No data found"),
-                      );
-              } else if (state is ErrorLoading) {
-                return Container(
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English"
-                      ? TranslationWidget(
-                          message: "Unable to load the data",
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                          ),
-                        )
-                      : Text("Unable to load the data"),
-                );
-              } else {
-                return Container();
+      key: _scaffoldKey,
+      appBar: AppBarWidget(
+        refresh: (v) {
+          setState(() {});
+        },
+      ),
+      body: RefreshIndicator(
+        key: refreshKey,
+        child: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
+
+              if (connected) {
+                if (iserrorstate == true) {
+                  _bloc.add(FamiliesEvent());
+                  iserrorstate = false;
+                }
+              } else if (!connected) {
+                iserrorstate = true;
               }
-            }));
+
+              return connected
+                  ? Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: BlocBuilder<FamilyBloc, FamilyState>(
+                              bloc: _bloc,
+                              builder:
+                                  (BuildContext contxt, FamilyState state) {
+                                if (state is FamilyInitial ||
+                                    state is FamilyLoading) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else if (state is FamiliesDataSucess) {
+                                  return state.obj != null &&
+                                          state.obj!.length > 0
+                                      ? ListView.builder(
+                                          padding: EdgeInsets.only(bottom: 35),
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: state.obj!.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return _buildList(
+                                                state.obj![index], index);
+                                          },
+                                        )
+                                      : 
+                                      // ListView(children: [
+
+                                          NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                          );
+                                          
+                                        // ]);
+                                } else if (state is ErrorLoading) {
+                                  return ListView(children: [ErrorMsgWidget()]);
+                                } else {
+                                  return Container();
+                                }
+                              }),
+                        ),
+                        Container(
+                          height: 0,
+                          width: 0,
+                          child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
+                              child: EmptyContainer()),
+                        ),
+                      ],
+                    )
+                  : NoInternetErrorWidget(
+                      connected: connected, issplashscreen: false);
+            },
+            child: Container()),
+        onRefresh: refreshPage,
+      ),
+    );
   }
 }

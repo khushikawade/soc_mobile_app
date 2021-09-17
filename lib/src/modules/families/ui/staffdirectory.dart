@@ -1,17 +1,22 @@
 import 'dart:ui';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
-import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
 class StaffDirectory extends StatefulWidget {
@@ -33,14 +38,20 @@ class StaffDirectory extends StatefulWidget {
 
 class _StaffDirectoryState extends State<StaffDirectory> {
   static const double _kLabelSpacing = 16.0;
-  final _controller = TextEditingController();
+  static const double _kIconSize = 45.0;
+  static const double _KButtonMinSize = 45.0;
+  String? language = Globals.selectedLanguage;
   FamilyBloc _bloc = FamilyBloc();
   UrlLauncherWidget objurl = new UrlLauncherWidget();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
+  bool? iserrorstate = false;
 
   @override
   void initState() {
     super.initState();
     _bloc.add(SDevent());
+    Globals.callsnackbar = true;
   }
 
   Widget _buildHeading(String tittle) {
@@ -51,294 +62,304 @@ class _StaffDirectoryState extends State<StaffDirectory> {
         border: Border.all(
           width: 0,
         ),
-        color: AppTheme.kOnPrimaryColor,
+        color: Theme.of(context).colorScheme.primary,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: tittle,
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline6!.copyWith(
-                          color: AppTheme.kFontColor2,
-                        ),
+                    style: Theme.of(context).textTheme.headline6!,
                   ),
                 )
-              : Text(
-                  tittle,
-                  style: Theme.of(context).textTheme.headline6!.copyWith(
-                        color: AppTheme.kFontColor2,
-                      ),
-                ),
+              : Text(tittle, style: Theme.of(context).textTheme.headline6!),
         ],
       ),
     );
   }
 
-  Widget _buildSearchbar() {
-    return SizedBox(
-        height: 50,
-        child: Container(
-            padding: EdgeInsets.symmetric(
-                vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
-            color: AppTheme.kFieldbackgroundColor,
-            child: TextFormField(
-              controller: _controller,
-              cursorColor: Colors.black,
-              decoration: InputDecoration(
-                isDense: true,
-                labelText: 'Search School App',
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: _kLabelSpacing / 2,
-                ),
-                filled: true,
-                fillColor: AppTheme.kBackgroundColor,
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(
-                  const IconData(0xe805,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  size: Globals.deviceType == "phone" ? 20 : 28,
-                  color: AppTheme.kprefixIconColor,
-                ),
-                suffix: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _controller.clear();
-                    });
-                  },
-                  icon: Icon(
-                    Icons.clear,
-                    color: AppTheme.kIconColor,
-                    size: Globals.deviceType == "phone" ? 18 : 26,
-                  ),
-                ),
-              ),
-            )));
-  }
-
   Widget contactItem(obj, index) {
-    return InkWell(
-        onTap: () {},
-        child: Container(
-            margin: EdgeInsets.symmetric(
-                horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
-            padding: EdgeInsets.symmetric(
-                horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 1.5),
-            decoration: BoxDecoration(
-              border: (index % 2 == 0)
-                  ? Border.all(color: Theme.of(context).colorScheme.secondary,)
-                  : Border.all(color: Theme.of(context).backgroundColor),
-              borderRadius: BorderRadius.circular(0.0),
-              color: (index % 2 == 0)
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).backgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  color: Color.fromRGBO(0, 0, 0, 0.2),
-                  spreadRadius: 0,
-                  blurRadius: 1,
-                  offset: Offset(0, 1),
-                ),
-              ],
-            ),
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  obj.imageUrlC != null && obj.imageUrlC.length > 0
-                      ? Center(
+    return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
+      padding: EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing / 2, vertical: _kLabelSpacing / 1.5),
+      decoration: BoxDecoration(
+        border: (index % 2 == 0)
+            ? Border.all(
+                color: Theme.of(context).colorScheme.background,
+              )
+            : Border.all(color: Theme.of(context).colorScheme.secondary),
+        borderRadius: BorderRadius.circular(0.0),
+        color: (index % 2 == 0)
+            ? Theme.of(context).colorScheme.background
+            : Theme.of(context).colorScheme.secondary,
+        boxShadow: [
+          BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, 0.2),
+            spreadRadius: 0,
+            blurRadius: 1,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                HorzitalSpacerWidget(_kLabelSpacing / 1.5),
+                obj.imageUrlC != null && obj.imageUrlC.length > 0
+                    ? CachedNetworkImage(
+                        imageUrl: obj.imageUrlC,
+                        fit: BoxFit.fill,
+                        width: 60,
+                        height: 60,
+                        placeholder: (context, url) => Container(
+                            alignment: Alignment.center,
+                            child: ShimmerLoading(
+                              isLoading: true,
+                              child: Container(
+                                width: _kIconSize * 1.4,
+                                height: _kIconSize * 1.5,
+                                color: Colors.white,
+                              ),
+                            )),
+                      )
+                    : Container(
+                        child: ClipRRect(
                           child: CachedNetworkImage(
-                              imageUrl: obj.imageUrlC,
-                              fit: BoxFit.fill,
-                              width: 60,
-                              height: 60,
-                              placeholder: (context, url) => SizedBox(
-                                  height: 5,
-                                  width: 5,
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 1,
-                                      backgroundColor:
-                                          Theme.of(context).accentColor,
-                                    ),
-                                  ))),
-                        )
-                      : Center(
-                          child: Container(
-                              child: Image.asset(
-                            'assets/images/appicon.png',
                             fit: BoxFit.fill,
-                            height: 60,
                             width: 60,
-                          )),
-                        ),
-                  HorzitalSpacerWidget(_kLabelSpacing),
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? TranslationWidget(
-                              message: obj.titleC ?? "-",
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  textAlign: TextAlign.start,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(fontWeight: FontWeight.w400)),
-                            )
-                          : Text(obj.titleC ?? "-",
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(fontWeight: FontWeight.w400)),
-                      SpacerWidget(_kLabelSpacing),
-                      Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English"
-                          ? TranslationWidget(
-                              message: obj.descriptionC ?? "-",
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  textAlign: TextAlign.start,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(fontWeight: FontWeight.w400)))
-                          : Text(obj.descriptionC ?? "-",
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(fontWeight: FontWeight.w400)),
-                      SpacerWidget(_kLabelSpacing),
-                      InkWell(
-                        onTap: () {
-                          if (obj.emailC != null) {
-                            objurl.callurlLaucher(
-                                context, 'mailto:"${obj.emailC}"');
-                          }
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.email,
-                              size: Globals.deviceType == "phone" ? 14 : 22,
-                            ),
-                            HorzitalSpacerWidget(_kLabelSpacing / 2),
-                            Expanded(
-                              child: Text(
-                                obj.emailC ?? "-",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1!
-                                    .copyWith(fontWeight: FontWeight.w400),
-                              ),
-                            ),
-                          ],
+                            height: 60,
+                            imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                            placeholder: (context, url) => Container(
+                                alignment: Alignment.center,
+                                child: ShimmerLoading(
+                                  isLoading: true,
+                                  child: Container(
+                                    width: _kIconSize * 1.4,
+                                    height: _kIconSize * 1.5,
+                                    color: Colors.white,
+                                  ),
+                                )),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
                         ),
                       ),
-                      SpacerWidget(_kLabelSpacing / 2),
-                      InkWell(
-                        onTap: () {
-                          if (obj.phoneC != null) {
-                            objurl.callurlLaucher(context, "tel:" + obj.phoneC);
-                          }
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.local_phone,
-                              size: Globals.deviceType == "phone" ? 14 : 22,
-                            ),
-                            HorzitalSpacerWidget(_kLabelSpacing / 2),
-                            Expanded(
-                              child: Text(
-                                obj.phoneC ?? "-",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1!
-                                    .copyWith(fontWeight: FontWeight.w400),
-                              ),
-                            )
-                          ],
+                HorzitalSpacerWidget(_kLabelSpacing),
+                Expanded(
+                  child: Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English" &&
+                          Globals.selectedLanguage != ""
+                      ? TranslationWidget(
+                          message: obj.titleC ?? "-",
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context).textTheme.headline2!),
+                        )
+                      : Text(obj.titleC ?? "-",
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.headline2!),
+                ),
+                obj.phoneC.toString().isNotEmpty && obj.phoneC.length > 1
+                    ? Container(
+                        height: _KButtonMinSize,
+                        width: _KButtonMinSize,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: CircleBorder(),
+                            padding: EdgeInsets.all(8),
+                          ),
+                          onPressed: () {
+                            if (obj.phoneC != null) {
+                              objurl.callurlLaucher(
+                                  context, "tel:" + obj.phoneC);
+                            }
+                          },
+                          child: Icon(
+                            Icons.local_phone_outlined,
+                            color: Theme.of(context).colorScheme.background,
+                          ),
                         ),
-                      ),
-                    ],
-                  ))
-                ])));
+                      )
+                    : EmptyContainer(),
+                HorzitalSpacerWidget(_kLabelSpacing / 2),
+                obj.emailC.toString().isNotEmpty && obj.emailC.length > 1
+                    ? Container(
+                        height: _KButtonMinSize,
+                        width: _KButtonMinSize,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: CircleBorder(),
+                              padding: EdgeInsets.all(6),
+                            ),
+                            onPressed: () {
+                              if (obj.emailC != null) {
+                                objurl.callurlLaucher(
+                                    context, 'mailto:"${obj.emailC}"');
+                              }
+                            },
+                            child: Icon(
+                              Icons.email_outlined,
+                              color: Theme.of(context).colorScheme.background,
+                            )),
+                      )
+                    : EmptyContainer()
+              ]),
+          SpacerWidget(_kLabelSpacing / 1.2),
+          Row(
+            children: [
+              Expanded(
+                child: Globals.selectedLanguage != null &&
+                        Globals.selectedLanguage != "English" &&
+                        Globals.selectedLanguage != ""
+                    ? TranslationWidget(
+                        message: obj.descriptionC ?? "-",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            textAlign: TextAlign.start,
+                            style: Theme.of(context).textTheme.bodyText1!))
+                    : Text(obj.descriptionC ?? "-",
+                        textAlign: TextAlign.start,
+                        style: Theme.of(context).textTheme.bodyText1!),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        appBarTitle: widget.appBarTitle,
-        isSearch: true,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-        isShare: false,
-        isCenterIcon: true,
-        language: Globals.selectedLanguage,
-      ),
-      body: SafeArea(
-        child: BlocBuilder<FamilyBloc, FamilyState>(
-            bloc: _bloc,
-            builder: (BuildContext contxt, FamilyState state) {
-              if (state is FamilyInitial || state is FamilyLoading) {
-                return Container(
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    alignment: Alignment.center,
-                    child: CircularProgressIndicator(
-                      backgroundColor: Theme.of(context).accentColor,
-                    ));
-              } else if (state is SDDataSucess) {
-                return Column(
-                  children: [
-                    _buildHeading("STAFF DIRECTORY"),
-                    Expanded(
-                      child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: state.obj!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return contactItem(state.obj![index], index);
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              } else if (state is ErrorLoading) {
-                return Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English"
-                    ? TranslationWidget(
-                        message: "Unable to load the data",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                            ))
-                    : Text("Unable to load the data");
-              } else {
-                return Container();
-              }
-            }),
-      ),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
-    );
+        appBar: CustomAppBarWidget(
+          appBarTitle: widget.appBarTitle,
+          isSearch: true,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+          isShare: false,
+          isCenterIcon: true,
+          language: Globals.selectedLanguage,
+        ),
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
+
+                if (connected) {
+                  if (iserrorstate == true) {
+                    iserrorstate = false;
+                    _bloc.add(SDevent());
+                  }
+                } else if (!connected) {
+                  iserrorstate = true;
+                }
+
+                return connected
+                    ? Column(
+                        children: [
+                          Expanded(
+                            child: BlocBuilder<FamilyBloc, FamilyState>(
+                                bloc: _bloc,
+                                builder:
+                                    (BuildContext contxt, FamilyState state) {
+                                  if (state is FamilyInitial ||
+                                      state is FamilyLoading) {
+                                    return Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.8,
+                                        alignment: Alignment.center,
+                                        child: CircularProgressIndicator());
+                                  } else if (state is SDDataSucess) {
+                                    return state.obj != null &&
+                                            state.obj!.length > 0
+                                        ? Column(
+                                            children: [
+                                              _buildHeading("STAFF DIRECTORY"),
+                                              SpacerWidget(_kLabelSpacing / 4),
+                                              Expanded(
+                                                child: ListView.builder(
+                                                  padding: EdgeInsets.only(
+                                                      bottom: 25.0),
+                                                  scrollDirection:
+                                                      Axis.vertical,
+                                                  itemCount: state.obj!.length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    return contactItem(
+                                                        state.obj![index],
+                                                        index);
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Expanded(
+                                            child: ListView(children: [
+                                            NoDataFoundErrorWidget(
+                                                isResultNotFoundMsg: false)
+                                          ]));
+                                  } else if (state is ErrorLoading) {
+                                    return ListView(
+                                        children: [ErrorMsgWidget()]);
+                                  }
+                                  return Container();
+                                }),
+                          ),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    Globals.homeObjet = state.obj;
+                                    setState(() {});
+                                  } else if (state is HomeErrorReceived) {
+                                    ErrorMsgWidget();
+                                  }
+                                },
+                                child: EmptyContainer()),
+                          ),
+                          SpacerWidget(_kLabelSpacing * 2),
+                        ],
+                      )
+                    : NoInternetErrorWidget(
+                        connected: connected, issplashscreen: false);
+              },
+              child: Container()),
+          onRefresh: refreshPage,
+        ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _bloc.add(SDevent());
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

@@ -1,14 +1,19 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,12 +32,19 @@ class _SettingPageState extends State<SettingPage> {
   bool _lights = true;
   bool? push;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final HomeBloc _homeBloc = new HomeBloc();
+  bool? iserrorstate = false;
+  bool? isloadingstate = false;
+
   @override
   void initState() {
     super.initState();
     OneSignal.shared
         .getDeviceState()
         .then((value) => {pushState(value!.pushDisabled)});
+    _homeBloc.add(FetchBottomNavigationBar());
+    Globals.callsnackbar = true;
   }
 
   pushState(data) async {
@@ -56,21 +68,29 @@ class _SettingPageState extends State<SettingPage> {
           padding: EdgeInsets.symmetric(vertical: _kLabelSpacing / 1.5),
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            color: AppTheme.kOnPrimaryColor,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),
             child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
                 ? TranslationWidget(
                     message: tittle,
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.headline3),
-                  )
-                : Text(tittle, style: Theme.of(context).textTheme.headline3),
+                          translatedMessage.toString(),
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                        ))
+                : Text(tittle,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(fontWeight: FontWeight.w500)),
           ),
         ),
       ],
@@ -91,7 +111,7 @@ class _SettingPageState extends State<SettingPage> {
                 onChanged: (bool value) async {
                   setState(() {
                     _lights = value;
-                    // bool status = !_lights;
+
                     push = !push!;
                     OneSignal.shared.disablePush(push!);
                   });
@@ -113,9 +133,11 @@ class _SettingPageState extends State<SettingPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? Container(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 0, vertical: _kLabelSpacing / 2),
                 child: TranslationWidget(
                   message: "Enable Notification",
                   fromLanguage: "en",
@@ -124,20 +146,14 @@ class _SettingPageState extends State<SettingPage> {
                     padding: const EdgeInsets.only(left: _kLabelSpacing),
                     child: Text(translatedMessage.toString(),
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline2!
-                            .copyWith(fontWeight: FontWeight.normal)),
+                        style: Theme.of(context).textTheme.headline2!),
                   ),
                 ),
               )
             : Padding(
                 padding: const EdgeInsets.only(left: _kLabelSpacing),
                 child: Text("Enable Notification",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(fontWeight: FontWeight.normal)),
+                    style: Theme.of(context).textTheme.headline2!),
               ),
         _buildSwitch(),
       ],
@@ -151,62 +167,114 @@ class _SettingPageState extends State<SettingPage> {
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => Licenceinfo()));
-
-        // urlobj.callurlLaucher(context, "https://www.google.com/");
       },
       child: Container(
-        padding: EdgeInsets.all(16),
-        child: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
-            ? TranslationWidget(
-                message: "Open Source licences",
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(fontWeight: FontWeight.normal)),
-              )
-            : Text("Open Source licences",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(fontWeight: FontWeight.normal)),
-      ),
+          padding: EdgeInsets.all(16),
+          child: Globals.selectedLanguage != null &&
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
+              ? TranslationWidget(
+                  message: "Open Source licences",
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline2!,
+                      ))
+              : Text(
+                  "Open Source licences",
+                  style: Theme.of(context).textTheme.headline2!,
+                )),
     );
+  }
+
+  Widget _buildItem() {
+    return ListView(padding: const EdgeInsets.only(bottom: 25.0), children: [
+      _buildHeading("Push Notifcation"),
+      _buildNotification(),
+      _buildHeading("Acknowledgements"),
+      _buildLicence(),
+      HorzitalSpacerWidget(_kLabelSpacing * 20),
+      SizedBox(
+          width: MediaQuery.of(context).size.width * 1,
+          height: 100.0,
+          child: ShareButtonWidget(
+            language: Globals.selectedLanguage,
+          ))
+    ]);
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        appBarTitle: 'Setting',
-        isSearch: false,
-        isShare: false,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-        language: Globals.selectedLanguage,
-      ),
-      body: Container(
-          child: ListView(
-        children: [
-          _buildHeading("Push Notifcation"),
-          _buildNotification(),
-          _buildHeading("Acknowledgements"),
-          _buildLicence(),
-          HorzitalSpacerWidget(_kLabelSpacing * 20),
-          SizedBox(
-              width: MediaQuery.of(context).size.width * 1,
-              height: 100.0,
-              child: ShareButtonWidget(
-                language: Globals.selectedLanguage,
-              )),
-        ],
-      )),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
-    );
+        appBar: CustomAppBarWidget(
+          appBarTitle: 'Setting',
+          isSearch: false,
+          isShare: false,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+          language: Globals.selectedLanguage,
+        ),
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: Container(
+              child: OfflineBuilder(
+                  connectivityBuilder: (
+                    BuildContext context,
+                    ConnectivityResult connectivity,
+                    Widget child,
+                  ) {
+                    final bool connected =
+                        connectivity != ConnectivityResult.none;
+
+                    if (connected) {
+                      if (iserrorstate == true) {
+                        _homeBloc.add(FetchBottomNavigationBar());
+                        iserrorstate = false;
+                      }
+                    } else if (!connected) {
+                      iserrorstate = true;
+                    }
+
+                    return connected
+                        ? Column(
+                            children: [
+                              Expanded(
+                                  child: isloadingstate!
+                                      ? ShimmerLoading(
+                                          isLoading: true, child: _buildItem())
+                                      : _buildItem()),
+                              Container(
+                                height: 0,
+                                width: 0,
+                                child: BlocListener<HomeBloc, HomeState>(
+                                    bloc: _homeBloc,
+                                    listener: (context, state) async {
+                                      if (state is HomeLoading) {
+                                        isloadingstate = true;
+                                      }
+
+                                      if (state is BottomNavigationBarSuccess) {
+                                        AppTheme.setDynamicTheme(
+                                            Globals.appSetting, context);
+                                        Globals.homeObjet = state.obj;
+                                        isloadingstate = false;
+                                        setState(() {});
+                                      }
+                                    },
+                                    child: EmptyContainer()),
+                              ),
+                            ],
+                          )
+                        : NoInternetErrorWidget(
+                            connected: connected, issplashscreen: false);
+                  },
+                  child: Container())),
+          onRefresh: refreshPage,
+        ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    _homeBloc.add(FetchBottomNavigationBar());
   }
 }

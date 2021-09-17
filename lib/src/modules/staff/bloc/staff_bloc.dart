@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:Soc/src/modules/staff/models/staffmodal.dart';
 import 'package:Soc/src/modules/staff/models/staff_sublist.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,9 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
           yield StaffDataSucess(
             obj: list,
           );
-        }
+        }else{yield StaffDataSucess(
+            obj: list,
+          );}
       } catch (e) {
         yield ErrorInStaffLoading(err: e);
       }
@@ -44,7 +47,9 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
           yield StaffSubListSucess(
             obj: list,
           );
-        }
+        }else{yield StaffSubListSucess(
+            obj: list,
+          );}
       } catch (e) {
         yield ErrorInStaffLoading(err: e);
       }
@@ -54,7 +59,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
   Future<List<StaffList>> getStaffDetails() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name,PDF_URL__c,Type__c, App_Icon__c,RTF_HTML__c,Sort_Order__c FROM Staff_App__c where School_App__c = 'a1T3J000000RHEKUA4'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name,PDF_URL__c,App_Icon_URL__c,Type__c, App_Icon__c,RTF_HTML__c,Sort_Order__c FROM Staff_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       if (response.statusCode == 200) {
         return response.data["records"]
             .map<StaffList>((i) => StaffList.fromJson(i))

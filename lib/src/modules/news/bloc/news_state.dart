@@ -16,7 +16,7 @@ class NewsLoaded extends NewsState {
 
   NewsLoaded({this.obj});
 
-  NewsLoaded copyWith({var obj}) {
+  NewsLoaded copyWith({final obj}) {
     return NewsLoaded(obj: obj ?? this.obj);
   }
 
@@ -27,7 +27,7 @@ class NewsLoaded extends NewsState {
 class NewsErrorReceived extends NewsState {
   final err;
   NewsErrorReceived({this.err});
-  NewsErrorReceived copyWith({var err}) {
+  NewsErrorReceived copyWith({final err}) {
     return NewsErrorReceived(err: err ?? this.err);
   }
 

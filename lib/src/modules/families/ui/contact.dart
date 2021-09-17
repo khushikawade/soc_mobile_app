@@ -1,14 +1,22 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
-import 'package:Soc/src/widgets/mapwidget.dart';
+
+import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class ContactPage extends StatefulWidget {
@@ -31,15 +39,26 @@ class ContactPage extends StatefulWidget {
 class _ContactPageState extends State<ContactPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
+  bool issuccesstate = false;
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
-
+  final HomeBloc homebloc = new HomeBloc();
+  bool? iserrorstate = false;
   static const double _kboxborderwidth = 0.75;
-  var longitude;
-  var latitude;
+  bool? isloadingstate = false;
+  final List<Marker> _markers = [];
 
   @override
   void initState() {
     super.initState();
+    homebloc.add(FetchBottomNavigationBar());
+    Globals.callsnackbar = true;
+    _markers.add(Marker(
+        markerId: MarkerId("Your location"),
+        draggable: false,
+        position: LatLng(
+            Globals.homeObjet["Contact_Office_Location__Latitude__s"],
+            Globals.homeObjet["Contact_Office_Location__Longitude__s"])));
   }
 
   @override
@@ -49,51 +68,74 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget _buildIcon() {
     return Container(
-      child: widget.obj != null && widget.obj["Contact_Image__c"] != null
-          ? CachedNetworkImage(
-              imageUrl: widget.obj["Contact_Image__c"],
-              fit: BoxFit.fill,
-              placeholder: (context, url) => Container(
-                alignment: Alignment.center,
-                width: 5,
-                height: 5,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
+      child: Globals.homeObjet != null &&
+              Globals.homeObjet["Contact_Image__c"] != null
+          ? Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+              child: CachedNetworkImage(
+                imageUrl: Globals.homeObjet["Contact_Image__c"],
+                fit: BoxFit.fill,
+                placeholder: (context, url) => Container(
+                  alignment: Alignment.center,
+                  child: ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      height: 200,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
-              errorWidget: (context, url, error) => Icon(
-                Icons.error,
+                errorWidget: (context, url, error) => Icon(
+                  Icons.error,
+                ),
               ),
             )
           : Container(
-              child: Image.asset(
-              'assets/images/appicon.png',
-              height: 160,
-              width: MediaQuery.of(context).size.width * 1,
-            )),
+              child: ClipRRect(
+                child: CachedNetworkImage(
+                  imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                  placeholder: (context, url) => Container(
+                      alignment: Alignment.center,
+                      child: ShimmerLoading(
+                        isLoading: true,
+                        child: Container(
+                          height: 200,
+                          color: Colors.white,
+                        ),
+                      )),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              ),
+            ),
     );
   }
 
-  Widget tittleWidget() {
+  Widget _buildTitleWidget() {
     return Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
         ),
-        child: widget.obj["Contact_Name__c"] != null &&
+        child: Globals.homeObjet["Contact_Name__c"] != null &&
                 Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English"
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message: widget.obj["Contact_Name__c"] ?? "-",
+                message: Globals.homeObjet["Contact_Name__c"] ?? "-",
                 toLanguage: Globals.selectedLanguage,
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
               )
             : Text(
-                widget.obj["Contact_Name__c"] ?? "-",
-                style: Theme.of(context).textTheme.headline2,
+                Globals.homeObjet["Contact_Name__c"] ?? "-",
+                style: Theme.of(context).textTheme.headline2!.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
               ));
   }
 
@@ -101,7 +143,7 @@ class _ContactPageState extends State<ContactPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Container(
-        height: _kboxheight * 2.5,
+        height: MediaQuery.of(context).size.height * 0.20,
         width: MediaQuery.of(context).size.width * 1,
         decoration: BoxDecoration(
             border: Border.all(
@@ -116,28 +158,46 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget _buildmap() {
     return Container(
-      margin: EdgeInsets.only(
-          top: _kLabelSpacing / 3,
-          bottom: _kLabelSpacing / 1.5,
-          right: _kLabelSpacing / 3,
-          left: _kLabelSpacing / 3),
-      decoration: BoxDecoration(
-          color: AppTheme.kmapBackgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(4.0))),
-      child: widget.obj["Contact_Office_Location__Latitude__s"] != null &&
-              widget.obj["Contact_Office_Location__Longitude__s"] != null
-          ? SizedBox(
-              height: _kboxheight * 2,
-              child: GoogleMaps(
-                latitude: widget.obj["Contact_Office_Location__Latitude__s"],
-                longitude: widget.obj["Contact_Office_Location__Longitude__s"],
-                // locationName: 'soc client',
-              ),
-            )
-          : Container(
-              height: 0,
-            ),
-    );
+        margin: EdgeInsets.only(
+            top: _kLabelSpacing / 3,
+            bottom: _kLabelSpacing / 1.5,
+            right: _kLabelSpacing / 3,
+            left: _kLabelSpacing / 3),
+        decoration: BoxDecoration(
+            color: AppTheme.kmapBackgroundColor,
+            borderRadius: BorderRadius.all(Radius.circular(4.0))),
+        child: Globals.homeObjet["Contact_Office_Location__Latitude__s"] !=
+                    null &&
+                Globals.homeObjet["Contact_Office_Location__Longitude__s"] !=
+                    null
+            ? SizedBox(
+                height: _kboxheight * 2,
+                child: GoogleMap(
+                    compassEnabled: true,
+                    buildingsEnabled: true,
+                    scrollGesturesEnabled: true,
+                    rotateGesturesEnabled: true,
+                    zoomControlsEnabled: true,
+                    tiltGesturesEnabled: true,
+                    zoomGesturesEnabled: true,
+                    mapType: MapType.normal,
+                    myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
+                    initialCameraPosition: CameraPosition(
+                        // bearing: 192.8334901395799,
+                        target: LatLng(
+                            Globals.homeObjet[
+                                "Contact_Office_Location__Latitude__s"],
+                            Globals.homeObjet[
+                                "Contact_Office_Location__Longitude__s"]),
+                        zoom: 18,
+                        tilt: 59.440717697143555),
+                    markers: Set.from(
+                        _markers) //_markers.toSet(), //   values.toSet(),
+
+                    ),
+              )
+            : EmptyContainer());
   }
 
   Widget _buildPhoneWidget() {
@@ -158,7 +218,7 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
-  Widget _buildaddressWidget() {
+  Widget _buildAddressWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Container(
@@ -174,6 +234,17 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
+void _launchMapsUrl() async {
+  final url = 'https://www.google.com/maps/search/?api=1&query=${Globals.homeObjet[
+                                "Contact_Office_Location__Latitude__s"]},${Globals.homeObjet[
+                                "Contact_Office_Location__Longitude__s"]}';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
   Widget _buildaddress() {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -183,47 +254,37 @@ class _ContactPageState extends State<ContactPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Address:",
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(color: Color(0xff171717)),
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                 )
               : Text(
                   "Address : ",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: Color(0xff171717)),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                   textAlign: TextAlign.center,
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
-                ? TranslationWidget(
-                    message: widget.obj["Contact_Address__c"] ?? '-',
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText2,
+            child:  GestureDetector(
+              onTap: _launchMapsUrl,
+              child: Text(
+                      Globals.homeObjet["Contact_Address__c"] ?? '-',
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(),
                       textAlign: TextAlign.start,
                     ),
-                  )
-                : Text(
-                    widget.obj["Contact_Address__c"] ?? '-',
-                    style: Theme.of(context).textTheme.bodyText2,
-                    textAlign: TextAlign.start,
-                  ),
+            ),
           )
         ],
       ),
@@ -237,49 +298,41 @@ class _ContactPageState extends State<ContactPage> {
       child: Row(
         children: [
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Phone :",
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(color: Color(0xff171717)),
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                 )
               : Text(
                   "Phone : ",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: Color(0xff171717)),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
-          InkWell(
-            onTap: () {
-              if (widget.obj["Contact_Phone__c"] != null) {
-                urlobj.callurlLaucher(
-                    context, "tel:" + widget.obj["Contact_Phone__c"]);
-              }
-            },
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English"
-                ? TranslationWidget(
-                    message: widget.obj["Contact_Phone__c"] ?? '-',
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText2,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: InkWell(
+              onTap: () {
+                if (Globals.homeObjet["Contact_Phone__c"] != null) {
+                  urlobj.callurlLaucher(
+                      context, "tel:" + Globals.homeObjet["Contact_Phone__c"]);
+                }
+              },
+              child:  Text(
+                      Globals.homeObjet["Contact_Phone__c"] ?? '-',
+                      style: Theme.of(context).textTheme.bodyText1!,
+                      textAlign: TextAlign.center,
                     ),
-                  )
-                : Text(
-                    widget.obj["Contact_Phone__c"] ?? '-',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
+            ),
           )
         ],
       ),
@@ -308,39 +361,43 @@ class _ContactPageState extends State<ContactPage> {
       padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English"
+                  Globals.selectedLanguage != "English" &&
+                  Globals.selectedLanguage != ""
               ? TranslationWidget(
                   message: "Email :",
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Text(
                     translatedMessage.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(color: Color(0xff171717)),
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                 )
               : Text(
                   "Email : ",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: Color(0xff171717)),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
-          InkWell(
-            onTap: () {
-              widget.obj["Contact_Email__c"] != null
-                  ? urlobj.callurlLaucher(
-                      context, 'mailto:"${widget.obj["Contact_Email__c"]}"')
-                  : print("null value");
-            },
-            child: Text(
-              widget.obj["Contact_Email__c"] ?? '-',
-              style: Theme.of(context).textTheme.bodyText2,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: InkWell(
+              onTap: () {
+                Globals.homeObjet["Contact_Email__c"] != null
+                    ? urlobj.callurlLaucher(context,
+                        'mailto:"${Globals.homeObjet["Contact_Email__c"]}"')
+                    : print("null value");
+              },
+              child: Text(
+                Globals.homeObjet["Contact_Email__c"] ?? '-',
+                style: Theme.of(context).textTheme.bodyText1!,
+              ),
             ),
           )
         ],
@@ -348,31 +405,107 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
+  Widget _buildItem() {
+    return ListView(padding: const EdgeInsets.only(bottom: 35.0), children: [
+      _buildIcon(),
+      SpacerWidget(_kLabelSpacing),
+      _buildTitleWidget(),
+      SpacerWidget(_kLabelSpacing / 1.5),
+      _buildMapWidget(),
+      _buildAddressWidget(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      _buildPhoneWidget(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      _buildEmailWidget(),
+    ]);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        isSearch: true,
-        isShare: false,
-        appBarTitle: widget.appBarTitle,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-        language: Globals.selectedLanguage,
-      ),
-      body: ListView(children: [
-        _buildIcon(),
-        SpacerWidget(_kLabelSpacing),
-        tittleWidget(),
-        SpacerWidget(_kLabelSpacing / 1.5),
-        _buildMapWidget(),
-        _buildaddressWidget(),
-        SpacerWidget(_kLabelSpacing / 1.25),
-        _buildPhoneWidget(),
-        SpacerWidget(_kLabelSpacing / 1.25),
-        _buildEmailWidget(),
-      ]),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
-    );
+        appBar: CustomAppBarWidget(
+          isSearch: true,
+          isShare: false,
+          appBarTitle: widget.appBarTitle,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+          language: Globals.selectedLanguage,
+        ),
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
+                Globals.isNetworkError = !connected;
+
+                if (connected) {
+                  if (iserrorstate == true) {
+                    homebloc.add(FetchBottomNavigationBar());
+                    iserrorstate = false;
+                  }
+                } else if (!connected) {
+                  iserrorstate = true;
+                }
+
+                return new Stack(fit: StackFit.expand, children: [
+                  connected
+                      ? Column(
+                          children: [
+                            Expanded(
+                                child: isloadingstate!
+                                    ? ShimmerLoading(
+                                        isLoading: true, child: _buildItem())
+                                    : _buildItem()),
+                            Container(
+                              height: 0,
+                              width: 0,
+                              child: BlocListener<HomeBloc, HomeState>(
+                                  bloc: homebloc,
+                                  listener: (context, state) async {
+                                    if (state is HomeLoading) {
+                                      isloadingstate = true;
+                                    }
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      Globals.homeObjet = state.obj;
+                                      isloadingstate = false;
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: EmptyContainer()),
+                            ),
+                          ],
+                        )
+                      : NoInternetErrorWidget(
+                          connected: connected, issplashscreen: false),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                      bloc: homebloc,
+                      listener: (context, state) async {
+                        if (state is BottomNavigationBarSuccess) {
+                          AppTheme.setDynamicTheme(Globals.appSetting, context);
+                          Globals.homeObjet = state.obj;
+                          setState(() {});
+                        }
+                      },
+                      child: EmptyContainer(),
+                    ),
+                  ),
+                ]);
+              },
+              child: EmptyContainer()),
+          onRefresh: refreshPage,
+        ));
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    homebloc.add(FetchBottomNavigationBar());
   }
 }

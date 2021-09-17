@@ -3,24 +3,24 @@ import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  static const double _kIconSize = 35.0;
-  static const double height = 60;
-  static const double _kLabelSpacing = 16.0;
-  String language1 = Translations.supportedLanguages.first;
-  String language2 = Translations.supportedLanguages.last;
-  var item;
+  final double _kIconSize = Globals.deviceType == "phone" ?35:45.0;
+  final double height = 60;
+  final double _kLabelSpacing = 16.0;
+  final String language1 = Translations.supportedLanguages.first;
+  final String language2 = Translations.supportedLanguages.last;
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
+  final ValueChanged? refresh;
+
+  AppBarWidget({Key? key, required this.refresh}) : super(key: key);
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -43,7 +43,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 MaterialPageRoute(
                     builder: (context) => InformationPage(
                           appbarTitle: 'Information',
-                          htmlText: '',
                           isbuttomsheet: true,
                           ishtml: true,
                         )));
@@ -66,14 +65,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           .map((item) => PopupMenuItem<IconMenu>(
               value: item,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                     horizontal: _kLabelSpacing / 4, vertical: 0),
                 child: Text(
                   item.text,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: Color(0xff474D55)),
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(),
                 ),
               )))
           .toList(),
@@ -84,45 +80,36 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-      // child:
       return AppBar(
-          leadingWidth: _kIconSize,
+          automaticallyImplyLeading: false,
+           leadingWidth: _kIconSize,
           elevation: 0.0,
-          leading: IconButton(
-            icon: const Icon(IconData(0xe800,
-                fontFamily: Overrides.kFontFam,
-                fontPackage: Overrides.kFontPkg)),
-            onPressed: () {
-              LanguageSelector(context, item, (language) {
-                if (language != null) {
-                  setState(() {
-                    Globals.selectedLanguage = language;
-                    languageChanged.value = language;
-                  });
-                }
-              });
-            },
+          leading: 
+          Container(
+            padding: EdgeInsets.only(left: 10),
+            child: GestureDetector(
+              child: Image(image: AssetImage("assets/images/gtranslate.png"),),
+              // Icon(
+              //   IconData(0xe822,
+              //       fontFamily: Overrides.kFontFam,
+              //       fontPackage: Overrides.kFontPkg),
+              //   size: Globals.deviceType == "phone" ? 32 : 40,
+              // ),
+              onTap: () {
+                setState(() {});
+                LanguageSelector(context, (language) {
+                  if (language != null) {
+                    setState(() {
+                      Globals.selectedLanguage = language;
+                      Globals.languageChanged.value = language;
+                    });
+                    refresh!(true);
+                  }
+                });
+              },
+            ),
           ),
-
-          //     GestureDetector(
-          //   onTap: () {
-          //     LanguageSelector(context, item, (language) {
-          //       if (language != null) {
-          //         setState(() {
-          //           Globals.selectedLanguage = language;
-          //           languageChanged.value = language;
-          //         });
-          //       }
-          //     });
-          //   },
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(12.0),
-          //     child: const Icon(IconData(0xe800,
-          //         fontFamily: Overrides.kFontFam,
-          //         fontPackage: Overrides.kFontPkg)),
-          //   ),
-          // ),
-          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          title: AppLogoWidget(),//SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: <Widget>[
             SearchButtonWidget(
               language: 'English',

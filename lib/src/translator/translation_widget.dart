@@ -1,15 +1,19 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 class TranslationWidget extends StatefulWidget {
-  var message;
+  final double? shimmerHeight;
+  final String? message;
   final String? fromLanguage;
   final String? toLanguage;
   final Widget Function(String translation)? builder;
 
   TranslationWidget({
+    this.shimmerHeight,
     @required this.message,
     this.fromLanguage,
     @required this.toLanguage,
@@ -22,9 +26,12 @@ class TranslationWidget extends StatefulWidget {
 }
 
 class _TranslationWidgetState extends State<TranslationWidget> {
+  ConnectivityResult? connectivity;
   String? translation;
+
   @override
   Widget build(BuildContext context) {
+    final scaffoldKey = Scaffold.of(context);
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
 
@@ -36,11 +43,26 @@ class _TranslationWidgetState extends State<TranslationWidget> {
             return buildWaiting();
           default:
             if (snapshot.hasError) {
-              translation = 'Network issue';
+              if (Globals.isNetworkError == false) {
+                Globals.isNetworkError = true;
+                Future.delayed(const Duration(seconds: 3), () {
+                  scaffoldKey.showSnackBar(SnackBar(
+                    content: const Text(
+                      'Unable to translate, Please check internet connection',
+                    ),
+                    backgroundColor: Colors.black.withOpacity(0.8),
+                    behavior: SnackBarBehavior.floating,
+                    margin: EdgeInsets.only(left: 16, right: 16, bottom: 30),
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                  ));
+                });
+              }
+              translation = widget.message!;
             } else {
               translation = snapshot.data;
+              Globals.isNetworkError = false;
             }
-            return widget.builder!(translation!);
+            return  widget.builder!(translation!);
         }
       },
     );
@@ -50,8 +72,9 @@ class _TranslationWidgetState extends State<TranslationWidget> {
       ? ShimmerLoading(
           isLoading: true,
           child: Container(
-            height: 20,
+            height: widget.shimmerHeight??20,
             width: 40,
+            // child: Text(widget.message!),
             color: Colors.white,
           ),
         )

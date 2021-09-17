@@ -58,9 +58,6 @@ dependencies:
   hive: ^2.0.4
   hive_generator: ^1.1.0
   build_runner: ^2.0.6
-  device_apps:
-  android_intent:
-  # device_calendar: ^3.1.0
   add_2_calendar: ^2.1.0
   font_awesome_flutter: ^9.1.0
   package_info: ^2.0.2
@@ -71,6 +68,11 @@ dependencies:
   shimmer: ^2.0.0
   adaptive_theme: ^2.2.0
   flutter_offline: ^2.0.0
+  flutter_svg: ^0.22.0
+  mailto: ^2.0.0
+  marquee: ^2.2.0
+  
+  
   
 
   
@@ -106,9 +108,9 @@ flutter:
     - assets/locale/localization_en.json
     - assets/locale/localization_nl.json
     - assets/images/
-    - assets/images/image-icons/
+    
 
-  # An image asset can refer to one or more resolution-specific "variants", see
+  # An image asset can refer to one or more resolution-specific "finaliants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
   # For details regarding adding assets from package dependencies, see

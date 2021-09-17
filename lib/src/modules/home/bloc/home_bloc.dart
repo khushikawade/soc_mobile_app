@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -14,7 +13,6 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  var data;
   HomeBloc() : super(HomeInitial());
   final DbServices _dbServices = DbServices();
 
@@ -28,6 +26,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try {
         yield HomeLoading();
         final data = await fetchBottomNavigationBar();
+
         yield BottomNavigationBarSuccess(obj: data);
       } catch (e) {
         yield HomeErrorReceived(err: e);
@@ -90,8 +89,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             {
               "fields": [
                 "Title__c",
-                "App_Icon__c",
                 "App_URL__c",
+                "App_Icon_URL__c",
                 "Deep_Link__c",
                 "Id",
                 "Name",
@@ -116,7 +115,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future fetchBottomNavigationBar() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-        Uri.encodeFull('sobjects/School_App__c/a1T3J000000RHEKUA4'),
+        Uri.encodeFull('sobjects/School_App__c/${Overrides.SCHOOL_ID}'),
       );
 
       if (response.statusCode == 200) {
@@ -125,11 +124,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         return data;
       }
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("Please check your Internet Connection.");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 
@@ -144,11 +139,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             .toList();
       }
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("Please check your Internet Connection.");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 }

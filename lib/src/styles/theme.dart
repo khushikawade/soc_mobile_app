@@ -89,7 +89,7 @@ class AppTheme {
               ? kHeadline1TextFontSize
               : kHeadline1TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.normal,
           color: kAccentColor,
         ),
         headline2: TextStyle(
@@ -97,7 +97,7 @@ class AppTheme {
               ? kHeadline2TextFontSize
               : kHeadline2TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.normal,
           color: kAccentColor,
         ),
         headline3: TextStyle(
@@ -112,7 +112,7 @@ class AppTheme {
               ? kHeadline4TextFontSize
               : kHeadline4TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.normal,
           color: kAccentColor,
         ),
         headline5: TextStyle(
@@ -120,7 +120,7 @@ class AppTheme {
               ? kHeadline1TextFontSize
               : kHeadline1TextFontSize + _kSize,
           fontFamily: 'Roboto Bold',
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.normal,
           color: kAccentColor,
         ),
         headline6: TextStyle(
@@ -147,6 +147,7 @@ class AppTheme {
           fontSize: Globals.deviceType == "phone"
               ? kSubtitle2FontSize
               : kSubtitle2FontSize + _kSize,
+          fontWeight: FontWeight.normal,
           color: kAccentColor,
           fontFamily: 'Roboto Regular',
         ),
@@ -165,7 +166,7 @@ class AppTheme {
               : kBodyText1FontSize + _kSize,
           color: kAccentColor,
           fontFamily: 'Roboto Regular',
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.normal,
           height: 1.2,
         ),
       ),
@@ -175,6 +176,7 @@ class AppTheme {
             new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         hintStyle: TextStyle(
             color: kTxtFieldColor,
+            height: 1.2,
             fontSize: Globals.deviceType == "phone"
                 ? kSubtitleFontSize
                 : kSubtitleFontSize + _kSize),
@@ -222,6 +224,9 @@ class AppTheme {
         Utility.getColorFromHex(appSetting.secondaryColorC!);
     Color _backgroundColor =
         Utility.getColorFromHex(appSetting.backgroundColorC!);
+    Color _fontColor = appSetting.fontColorC != null
+        ? Utility.getColorFromHex(appSetting.fontColorC!)
+        : kBlackColor;
 
     AdaptiveTheme.of(context).setTheme(
         light: AdaptiveTheme.of(context).lightTheme.copyWith(
@@ -231,7 +236,8 @@ class AppTheme {
                   onPrimary: _primaryColor,
                   primary: _primaryColor,
                   secondary: _secondaryColor,
-                  background: _backgroundColor),
+                  background: _backgroundColor,
+                  primaryVariant: _fontColor),
               //Background color
               backgroundColor: _backgroundColor,
               scaffoldBackgroundColor: _backgroundColor,
@@ -253,6 +259,31 @@ class AppTheme {
                 color: _primaryColor,
               ),
 
+              inputDecorationTheme: InputDecorationTheme(
+                labelStyle: TextStyle(color: _fontColor),
+                fillColor: Theme.of(context).colorScheme.background,
+                isDense: true,
+                filled: true,
+                contentPadding:
+                    new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                hintStyle: TextStyle(
+                    color: _fontColor,
+                    height: 1.2,
+                    fontSize: Globals.deviceType == "phone"
+                        ? kSubtitleFontSize
+                        : kSubtitleFontSize + _kSize),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.secondary, width: 2),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary, width: 2),
+                ),
+              ),
+
               elevatedButtonTheme: ElevatedButtonThemeData(
                   style: ButtonStyle(
                       textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(
@@ -272,6 +303,97 @@ class AppTheme {
                                   new BorderRadius.circular(kBorderRadius))),
                       foregroundColor:
                           MaterialStateProperty.all<Color>(_backgroundColor))),
+
+              //Text Theme starts
+
+              textTheme: TextTheme(
+                headline1: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kHeadline1TextFontSize
+                      : kHeadline1TextFontSize + _kSize,
+                  fontFamily: 'Roboto Bold',
+                  fontWeight: FontWeight.normal,
+                  color: _fontColor,
+                ),
+                headline2: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kHeadline2TextFontSize
+                      : kHeadline2TextFontSize + _kSize,
+                  fontFamily: 'Roboto Bold',
+                  fontWeight: FontWeight.normal,
+                  color: _fontColor,
+                ),
+                headline3: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kHeadline2TextFontSize
+                      : kHeadline2TextFontSize + _kSize,
+                  fontFamily: 'Roboto Bold',
+                  color: _fontColor,
+                ),
+                headline4: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kHeadline4TextFontSize
+                      : kHeadline4TextFontSize + _kSize,
+                  fontFamily: 'Roboto Bold',
+                  fontWeight: FontWeight.normal,
+                  color: _fontColor,
+                ),
+                headline5: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kHeadline1TextFontSize
+                      : kHeadline1TextFontSize + _kSize,
+                  fontFamily: 'Roboto Bold',
+                  fontWeight: FontWeight.normal,
+                  color: _fontColor,
+                ),
+                headline6: TextStyle(
+                    fontSize: Globals.deviceType == "phone"
+                        ? kTitleFontSize
+                        : kTitleFontSize + _kSize,
+                    color: _fontColor,
+                    fontFamily: 'Roboto-SemiBold'),
+                caption: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kCaptionFontSize
+                      : kCaptionFontSize + _kSize,
+                  color: _fontColor,
+                  fontWeight: FontWeight.normal,
+                  height: 1.2,
+                ),
+                subtitle1: TextStyle(
+                    fontSize: Globals.deviceType == "phone"
+                        ? kSubtitleFontSize
+                        : kSubtitleFontSize + _kSize,
+                    color: _fontColor,
+                    fontWeight: FontWeight.normal),
+                subtitle2: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kSubtitle2FontSize
+                      : kSubtitle2FontSize + _kSize,
+                  color: _fontColor,
+                  fontFamily: 'Roboto Regular',
+                ),
+                bodyText1: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kBodyText1FontSize
+                      : kBodyText1FontSize + _kSize,
+                  color: _fontColor,
+                  fontWeight: FontWeight.normal,
+                  fontFamily: 'Roboto Regular',
+                  height: 1.5,
+                ),
+                bodyText2: TextStyle(
+                  fontSize: Globals.deviceType == "phone"
+                      ? kBodyText1FontSize
+                      : kBodyText1FontSize + _kSize,
+                  color: _fontColor,
+                  fontFamily: 'Roboto Regular',
+                  fontWeight: FontWeight.normal,
+                  height: 1.2,
+                ),
+              ),
+
+              //Text theme ends
             ));
   }
 }

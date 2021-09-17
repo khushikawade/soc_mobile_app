@@ -1,13 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
-import 'package:Soc/src/modules/families/ui/family.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
-import 'package:Soc/src/modules/news/ui/news.dart';
-import 'package:Soc/src/modules/social/ui/soical.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
-import 'package:Soc/src/modules/staff/ui/staff.dart';
-import 'package:Soc/src/modules/students/ui/student.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -15,13 +8,13 @@ import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // ignore: must_be_immutable
 class SubListPage extends StatefulWidget {
-  var obj;
+  final obj;
   String? module;
   bool isbuttomsheet;
   String appBarTitle;
@@ -57,6 +50,19 @@ class _SubListPageState extends State<SubListPage> {
 
   _route(obj, index) {
     if (obj.typeC == "URL") {
+   
+      // obj.urlC != null 
+      //     ? Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //             builder: (BuildContext context) => InAppUrlLauncer(
+      //                   title: obj.titleC!,
+      //                   url: obj.urlC??obj.appUrlC,
+      //                   isbuttomsheet: true,
+      //                   language: Globals.selectedLanguage,
+      //                 )))
+      //     : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+ 
       obj.appUrlC != null
           ? Navigator.push(
               context,
@@ -68,7 +74,9 @@ class _SubListPageState extends State<SubListPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML" || obj.typeC == "RTF/HTML") {
+    } else if (obj.typeC == "RFT_HTML" ||
+        obj.typeC == "RTF/HTML" ||
+        obj.typeC == "HTML/RTF") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
@@ -93,9 +101,7 @@ class _SubListPageState extends State<SubListPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-    } else {
-      print("");
-    }
+    } else {}
   }
 
   Widget _buildList(int index, Widget listItem, obj) {
@@ -103,25 +109,30 @@ class _SubListPageState extends State<SubListPage> {
         onTap: () {
           _route(obj, index);
         },
-        child: ListWidget(index, _buildFormName(index, obj)));
+        child: ListWidget(index, _buildFormName(index, obj), obj));
   }
 
   Widget _buildFormName(int index, obj) {
     return InkWell(
       child: Globals.selectedLanguage != null &&
-              Globals.selectedLanguage != "English"
+              Globals.selectedLanguage != "English" &&
+              Globals.selectedLanguage != ""
           ? TranslationWidget(
               message: obj.titleC.toString(),
               fromLanguage: "en",
               toLanguage: Globals.selectedLanguage,
               builder: (translatedMessage) => Text(
                 translatedMessage.toString(),
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      fontWeight: FontWeight.w400,
+                    ),
               ),
             )
           : Text(
               obj.titleC.toString(),
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    fontWeight: FontWeight.w400,
+                  ),
             ),
     );
   }
@@ -149,6 +160,7 @@ class _SubListPageState extends State<SubListPage> {
                           child: ListView.builder(
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
+                            padding: EdgeInsets.only(bottom: 20),
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: state.obj!.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -159,21 +171,7 @@ class _SubListPageState extends State<SubListPage> {
                             },
                           ),
                         )
-                      : Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Globals.selectedLanguage != null &&
-                                  Globals.selectedLanguage != "English"
-                              ? TranslationWidget(
-                                  message: "No data found",
-                                  fromLanguage: "en",
-                                  toLanguage: Globals.selectedLanguage,
-                                  builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                  ),
-                                )
-                              : Text("No data found"),
-                        );
+                      : NoDataFoundErrorWidget(isResultNotFoundMsg: false);
                 } else {
                   return Container();
                 }
@@ -189,8 +187,7 @@ class _SubListPageState extends State<SubListPage> {
                           ? SafeArea(
                               child: ListView.builder(
                                 scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.only(bottom: 20),
                                 itemCount: state.obj!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return _buildList(
@@ -200,29 +197,12 @@ class _SubListPageState extends State<SubListPage> {
                                 },
                               ),
                             )
-                          : Container(
-                              alignment: Alignment.center,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English"
-                                  ? TranslationWidget(
-                                      message: "No data found",
-                                      fromLanguage: "en",
-                                      toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                      ),
-                                    )
-                                  : Text("No data found"),
-                            );
+                          : NoDataFoundErrorWidget(isResultNotFoundMsg: false);
                     } else {
                       return Container();
                     }
                   })
               : Container(),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
     );
   }
 }

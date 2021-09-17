@@ -1,4 +1,5 @@
 class Overrides {
+  static String APP_NAME = '';
   static const String privacyPolicyUrl =
       'https:/www.solvedconsulting.com/privacy';
   static String PUSH_APP_ID = "13df1ef7-3cf4-4233-b656-c6b1a683d0ec";
@@ -13,4 +14,9 @@ class Overrides {
   static String? API_BASE_URL =
       'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
+  static const String SCHOOL_ID = 'a1T3J000000RpXNUA0';
+  //'a1T3J000000RHEKUA4'; // a1T3J000000RowRUAS //a1T3J000000RowRUAS
+  // static String calendar_Id = "";
+  // 'c_00ehll6ecff5iminj79562jv14@group.calendar.google.com'; //'appdevelopersdp7@gmail.com';
+  // 'https://www.googleapis.com/calendar/v3/calendars/appdevelopersdp7@gmail.com/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M';
 }

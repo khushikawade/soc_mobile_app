@@ -17,7 +17,7 @@ class FamilyLoading extends FamilyState {
 class ErrorLoading extends FamilyState {
   final err;
   ErrorLoading({this.err});
-  ErrorLoading copyWith({var err}) {
+  ErrorLoading copyWith({final err}) {
     return ErrorLoading(err: err ?? this.err);
   }
 
@@ -32,7 +32,7 @@ class FamiliesDataSucess extends FamilyState {
     this.obj,
   });
   FamiliesDataSucess copyWith({
-    var obj,
+    final obj,
   }) {
     return FamiliesDataSucess(obj: obj ?? this.obj);
   }
@@ -49,7 +49,7 @@ class FamiliesSublistSucess extends FamilyState {
   });
 
   FamiliesSublistSucess copyWith({
-    var obj,
+    final obj,
   }) {
     return FamiliesSublistSucess(obj: obj ?? this.obj);
   }
@@ -64,7 +64,7 @@ class SDDataSucess extends FamilyState {
     this.obj,
   });
   SDDataSucess copyWith({
-    var obj,
+    final obj,
   }) {
     return SDDataSucess(obj: obj ?? this.obj);
   }
@@ -74,14 +74,15 @@ class SDDataSucess extends FamilyState {
 }
 
 class CalendarListSuccess extends FamilyState {
-  List<CalendarList>? obj;
-  CalendarListSuccess({
-    this.obj,
-  });
+  List<CalendarEventList>? pastListobj;
+  List<CalendarEventList>? futureListobj;
+  CalendarListSuccess({this.pastListobj, this.futureListobj});
   CalendarListSuccess copyWith({
-    var obj,
+    final obj,
   }) {
-    return CalendarListSuccess(obj: obj ?? this.obj);
+    return CalendarListSuccess(
+        pastListobj: obj ?? this.pastListobj,
+        futureListobj: obj ?? this.futureListobj);
   }
 
   @override

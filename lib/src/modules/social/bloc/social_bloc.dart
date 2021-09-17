@@ -1,17 +1,17 @@
 import 'dart:async';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:xml2json/xml2json.dart';
-import '../../../overrides.dart' as overrides;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 part 'social_event.dart';
 part 'social_state.dart';
 
 class SocialBloc extends Bloc<SocialEvent, SocialState> {
-  var data;
+  // final data;
   SocialBloc() : super(SocialInitial());
 
   SocialState get initialState => SocialInitial();
@@ -33,7 +33,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future getEventDetails() async {
     try {
-      var link = Uri.parse("${overrides.Overrides.socialPagexmlUrl}");
+      final link = Uri.parse("${Globals.homeObjet["Social_API_URL__c"]}");
       Xml2Json xml2json = new Xml2Json();
       http.Response response = await http.get(link);
       if (response.statusCode == 200) {
@@ -54,14 +54,10 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           );
         }).toList();
       } else {
-        print("else");
+        throw ('something_went_wrong');
       }
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("Please check your Internet Connection.");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 }

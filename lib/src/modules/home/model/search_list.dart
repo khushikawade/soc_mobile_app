@@ -12,7 +12,7 @@ class SearchList {
   String? rtfHTMLC;
   String? pdfURL;
   String? deepLink;
-  // var sortOredr;
+  // final sortOredr;
 
   SearchList(
       {this.attributes,
