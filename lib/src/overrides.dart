@@ -14,7 +14,7 @@ class Overrides {
   static String? API_BASE_URL =
       'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
-  static const String SCHOOL_ID = 'a1T3J000000RowRUAS';
+  static const String SCHOOL_ID = 'a1T3J000000RpXNUA0';
   //'a1T3J000000RHEKUA4'; // a1T3J000000RowRUAS //a1T3J000000RowRUAS
   // static String calendar_Id = "";
   // 'c_00ehll6ecff5iminj79562jv14@group.calendar.google.com'; //'appdevelopersdp7@gmail.com';

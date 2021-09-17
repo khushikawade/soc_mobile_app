@@ -8,6 +8,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
@@ -238,7 +239,9 @@ class _StaffPageState extends State<StaffPage> {
                 }
 
                 return connected
-                    ? Column(mainAxisSize: MainAxisSize.max, children: [
+                    ? Column(
+                      mainAxisSize: MainAxisSize.max, 
+                      children: [
                         BlocBuilder<StaffBloc, StaffState>(
                             bloc: _bloc,
                             builder: (BuildContext contxt, StaffState state) {
@@ -252,30 +255,33 @@ class _StaffPageState extends State<StaffPage> {
                                 return state.obj != null &&
                                         state.obj!.length > 0
                                     ? Expanded(
-                                        child: ListView.builder(
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: state.obj!.length,
-                                          padding: EdgeInsets.only(bottom: 20),
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return _buildList(
-                                                state.obj![index], index);
-                                          },
-                                        ),
-                                      )
-                                    : Expanded(
-                                        child: ListView(children: [
-                                          NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false)
-                                        ]),
-                                      );
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: state.obj!.length,
+                                        padding: EdgeInsets.only(bottom: 20),
+                                        itemBuilder: (BuildContext context,
+                                            int index) {
+                                          return _buildList(
+                                              state.obj![index], index);
+                                        },
+                                      ),
+                                    )
+                                    : 
+                                    //  ListView(children: [
+                                          Expanded(
+                                            child: NoDataFoundErrorWidget(
+                                              isResultNotFoundMsg: false,
+                                            ),
+                                          )
+                                        ;  
+                                        // ]);
                               } else if (state is ErrorInStaffLoading) {
                               } else {
                                 return Expanded(
                                   child: ListView(children: [ErrorMsgWidget()]),
                                 );
                               }
-
+                        
                               return Container();
                             }),
                         Container(
@@ -291,10 +297,7 @@ class _StaffPageState extends State<StaffPage> {
                                 setState(() {});
                               }
                             },
-                            child: Container(
-                              height: 0,
-                              width: 0,
-                            ),
+                            child: EmptyContainer()
                           ),
                         ),
                       ])

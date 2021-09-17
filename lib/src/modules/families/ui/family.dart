@@ -289,11 +289,14 @@ class _FamilyPageState extends State<FamilyPage> {
                                                 state.obj![index], index);
                                           },
                                         )
-                                      : ListView(children: [
+                                      : 
+                                      // ListView(children: [
+
                                           NoDataFoundErrorWidget(
                                             isResultNotFoundMsg: false,
-                                          )
-                                        ]);
+                                          );
+                                          
+                                        // ]);
                                 } else if (state is ErrorLoading) {
                                   return ListView(children: [ErrorMsgWidget()]);
                                 } else {

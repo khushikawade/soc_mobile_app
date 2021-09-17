@@ -30,7 +30,9 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
           yield StaffDataSucess(
             obj: list,
           );
-        }
+        }else{yield StaffDataSucess(
+            obj: list,
+          );}
       } catch (e) {
         yield ErrorInStaffLoading(err: e);
       }
@@ -45,7 +47,9 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
           yield StaffSubListSucess(
             obj: list,
           );
-        }
+        }else{yield StaffSubListSucess(
+            obj: list,
+          );}
       } catch (e) {
         yield ErrorInStaffLoading(err: e);
       }

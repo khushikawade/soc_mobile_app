@@ -38,6 +38,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         if (list.length > 0) {
           list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
           yield FamiliesDataSucess(obj: list);
+        }else{
+          yield FamiliesDataSucess(obj: list);
         }
       } catch (e) {
         yield ErrorLoading(err: e);
@@ -48,19 +50,24 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         yield FamilyLoading();
         List<FamiliesSubList> list = await getFamilySubList(event.id);
-        // bool isempty;
+        bool isempty;
         // for (final i in list) {
         //   if (list[i].sortOredr == null) {
         //     isempty = true;
         //   }
         // }
 
-        // if (list.length > 0) {
-        //   list.sort((a, b) => a.sortOredr != null && a.sortOredr != ""
-        //       ? a.sortOredr.compareTo(b.sortOredr)
-        //       : '');
-        // }
-        yield FamiliesSublistSucess(obj: list);
+        if (list.length > 0) {
+          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr)
+          // a.sortOredr != null && a.sortOredr != ""
+          //     ? a.sortOredr.compareTo(b.sortOredr)
+          //     : ''
+              );
+               yield FamiliesSublistSucess(obj: list);
+        }else{
+          yield FamiliesSublistSucess(obj: list);
+        }
+        // yield FamiliesSublistSucess(obj: list);
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -73,6 +80,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         if (list.length > 0) {
           list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
+          yield SDDataSucess(obj: list);
+        }else{
           yield SDDataSucess(obj: list);
         }
       } catch (e) {
