@@ -10,6 +10,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+
 
 
 class Newdescription extends StatefulWidget {
@@ -42,7 +45,21 @@ class _NewdescriptionState extends State<Newdescription> {
   }
 
   _launchURL(obj) async {
+ if(obj.toString().split(":")[0]=='http'){
+  String url=obj.toString().replaceAll("http", "https");
     Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => InAppUrlLauncer(
+                  title: widget.obj.headings["en"].toString(),
+                  url:'https://formstack.io/60E4A',// url,
+                  isbuttomsheet: true,
+                  language: Globals.selectedLanguage,
+                )));
+        // await canLaunch('https://formstack.io/60E4A') ? await launch('https://formstack.io/60E4A') : throw 'Could not launch ${'https://formstack.io/60E4A'}';
+        }
+                else{
+                  Navigator.push(
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => InAppUrlLauncer(
@@ -51,6 +68,7 @@ class _NewdescriptionState extends State<Newdescription> {
                   isbuttomsheet: true,
                   language: Globals.selectedLanguage,
                 )));
+                }
   }
 
   Widget _buildNewsDescription() {
@@ -142,7 +160,7 @@ class _NewdescriptionState extends State<Newdescription> {
                             toLanguage: Globals.selectedLanguage,
                             fromLanguage: "en",
                             builder: (translatedMessage) => Linkify(
-                            onOpen: (link) => link.url,
+                            onOpen: (link) => _launchURL( link.url),
                             options: LinkifyOptions(humanize: false),
                                 text: 
                                 translatedMessage.toString(),
@@ -155,7 +173,7 @@ class _NewdescriptionState extends State<Newdescription> {
                           ),
                       )
                       : Linkify(
-                            onOpen: (link) => link.url,
+                            onOpen: (link) => _launchURL( link.url),
                             options: LinkifyOptions(humanize: false),
                             linkStyle: TextStyle(color: Colors.blue),
                                 text: 
@@ -209,7 +227,7 @@ class _NewdescriptionState extends State<Newdescription> {
                           fromLanguage: "en",
                           builder: (translatedMessage) => 
                          Linkify(
-                            onOpen: (link) => _launchURL(link.url),
+                            onOpen: (link) => _launchURL( link.url),
                             options: LinkifyOptions(humanize: false),
                             linkStyle: TextStyle(color: Colors.blue),
                                 text: 
@@ -220,7 +238,7 @@ class _NewdescriptionState extends State<Newdescription> {
                         )
                       : 
                      Linkify(
-                            onOpen: (link) => _launchURL(link.url),
+                            onOpen: (link) => _launchURL( link.url),
                             options: LinkifyOptions(humanize: false),
                             linkStyle: TextStyle(color: Colors.blue),
                                 text: 
@@ -246,7 +264,7 @@ class _NewdescriptionState extends State<Newdescription> {
                                 toLanguage: Globals.selectedLanguage,
                                 fromLanguage: "en",
                                 builder: (translatedMessage) => Linkify(
-                            onOpen: (link) => link.url,
+                            onOpen: (link) => _launchURL( link.url),
                             linkStyle: TextStyle(color: Colors.blue),
                             options: LinkifyOptions(humanize: false),
                                 text: 
@@ -264,7 +282,7 @@ class _NewdescriptionState extends State<Newdescription> {
                               )
                             : 
                             Linkify(
-                            onOpen: (link) => link.url,
+                            onOpen: (link) => _launchURL( link.url),
                             linkStyle: TextStyle(color: Colors.blue),
                                 text: 
                                 widget.obj.url.toString(),

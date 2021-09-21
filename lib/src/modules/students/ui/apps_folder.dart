@@ -56,15 +56,32 @@ class AppsFolderPageState extends State<AppsFolderPage>
 
   _launchURL(obj) async {
     if (obj.deepLinkC == 'NO') {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.titleC!,
-                    url: obj.appUrlC!,
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )));
+
+      if(obj.toString().split(":")[0]=='http'){
+  String url=obj.appUrlC!.toString().replaceAll("http", "https");
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => InAppUrlLauncer(
+                  title: obj.titleC!,
+                  url:url,
+                  isbuttomsheet: true,
+                  language: Globals.selectedLanguage,
+                )));
+        // await canLaunch('https://formstack.io/60E4A') ? await launch('https://formstack.io/60E4A') : throw 'Could not launch ${'https://formstack.io/60E4A'}';
+        }
+                else{
+                  Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => InAppUrlLauncer(
+                  title: obj.titleC!,
+                  url: obj.appUrlC!,
+                  isbuttomsheet: true,
+                  language: Globals.selectedLanguage,
+                )));
+                }
+
     } else {
       await launch(obj.appUrlC!);
     }

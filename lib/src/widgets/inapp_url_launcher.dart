@@ -1,18 +1,18 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class InAppUrlLauncer extends StatefulWidget {
   final String title;
   final String url;
   final bool? hideHeader;
-  bool isbuttomsheet;
-  String? language;
+  final bool isbuttomsheet;
+  final String? language;
   @override
   InAppUrlLauncer(
       {Key? key,
@@ -27,10 +27,12 @@ class InAppUrlLauncer extends StatefulWidget {
 
 class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   bool? iserrorstate = false;
-
+final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
   @override
   void initState() {
     super.initState();
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
   @override
@@ -68,6 +70,10 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
               return connected
                   ? WebView(
                       initialUrl: '${widget.url}',
+                       javascriptMode: JavascriptMode.unrestricted,
+                       onWebViewCreated: (WebViewController webViewController) {
+                    _controller.complete(webViewController);
+                  },
                     )
                   : NoInternetErrorWidget(
                       connected: connected, issplashscreen: false);

@@ -138,7 +138,21 @@ class _AboutusPageState extends State<AboutusPage> {
 
 
        _launchURL(obj) async {
+
+      if(obj.toString().split(":")[0]=='http'){
+  String url=obj.toString().replaceAll("http", "https");
     Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => InAppUrlLauncer(
+                  title: widget.appbarTitle.toString(),
+                  url:url,
+                  isbuttomsheet: true,
+                  language: Globals.selectedLanguage,
+                )));
+         }
+                else{
+                  Navigator.push(
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => InAppUrlLauncer(
@@ -147,5 +161,9 @@ class _AboutusPageState extends State<AboutusPage> {
                   isbuttomsheet: true,
                   language: Globals.selectedLanguage,
                 )));
+                }
+
+
+    
   }
 }

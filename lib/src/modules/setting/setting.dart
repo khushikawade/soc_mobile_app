@@ -15,11 +15,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
-  bool isbuttomsheet;
-  String appbarTitle;
+  final bool isbuttomsheet;
+  final String appbarTitle;
   SettingPage(
       {Key? key, required this.isbuttomsheet, required this.appbarTitle})
       : super(key: key);
@@ -31,6 +32,7 @@ class _SettingPageState extends State<SettingPage> {
   static const double _kLabelSpacing = 18.0;
   bool _lights = true;
   bool? push;
+  PackageInfo? packageInfo;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
@@ -40,12 +42,17 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void initState() {
     super.initState();
+    appversion();
     OneSignal.shared
         .getDeviceState()
         .then((value) => {pushState(value!.pushDisabled)});
     _homeBloc.add(FetchBottomNavigationBar());
     Globals.callsnackbar = true;
   }
+
+  void appversion()async{
+  packageInfo = await PackageInfo.fromPlatform();
+}
 
   pushState(data) async {
     SharedPreferences pushStatus = await SharedPreferences.getInstance();
@@ -188,12 +195,24 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
+
+  Widget _appVersion() {
+    return Container(
+        padding: EdgeInsets.all(16),
+        child: Text(
+                packageInfo!.version,
+                style: Theme.of(context).textTheme.headline2!,
+              ));
+  }
+
   Widget _buildItem() {
     return ListView(padding: const EdgeInsets.only(bottom: 25.0), children: [
       _buildHeading("Push Notifcation"),
       _buildNotification(),
       _buildHeading("Acknowledgements"),
       _buildLicence(),
+      _buildHeading("App Version"),
+      _appVersion(),
       HorzitalSpacerWidget(_kLabelSpacing * 20),
       SizedBox(
           width: MediaQuery.of(context).size.width * 1,
