@@ -43,7 +43,6 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         final data1 = data["rss"]["channel"]["item"];
         final data2 = data1 as List;
         return data2.map((i) {
-          print(data1[0][7]);
           return Item(
             title: i["title"] ?? '',
             description: i["description"] ?? '',

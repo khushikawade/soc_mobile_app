@@ -257,36 +257,36 @@ class _NewsPageState extends State<NewsPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: BlocBuilder(
-                              bloc: bloc,
-                              builder: (BuildContext context, NewsState state) {
-                                if (state is NewsLoaded) {
-                                  return state.obj != null &&
-                                          state.obj!.length > 0
-                                      ? _buildList(state.obj)
-                                      : 
-                                        NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,isNews:true);
-                                } else if (state is NewsLoading) {
-                                  return Expanded(
-                                    child: Container(
-                                      height: MediaQuery.of(context).size.height *
-                                          0.8,
-                                      child: Center(
-                                          child: CircularProgressIndicator()),
-                                    ),
-                                  );
-                                } else if (state is NewsErrorReceived) {
-                                  return 
-                                  ListView(
-                                    shrinkWrap: true,
-                                    children: [ErrorMsgWidget()]);
-                                } else {
-                                  return Container();
-                                }
-                              }),
-                        ),
+                        BlocBuilder(
+                            bloc: bloc,
+                            builder: (BuildContext context, NewsState state) {
+                              if (state is NewsLoaded) {
+                                return state.obj != null &&
+                                        state.obj!.length > 0
+                                    ? _buildList(state.obj)
+                                    : 
+                                      Expanded(
+                                        child: NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,isNews:true),
+                                      );
+                              } else if (state is NewsLoading) {
+                                return Expanded(
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.8,
+                                    child: Center(
+                                        child: CircularProgressIndicator()),
+                                  ),
+                                );
+                              } else if (state is NewsErrorReceived) {
+                                return 
+                                ListView(
+                                  shrinkWrap: true,
+                                  children: [ErrorMsgWidget()]);
+                              } else {
+                                return Container();
+                              }
+                            }),
                         Container(
                           height: 0,
                           width: 0,
