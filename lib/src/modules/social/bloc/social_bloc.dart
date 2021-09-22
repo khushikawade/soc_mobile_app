@@ -51,6 +51,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             creator: i['dc\$creator'] ?? '',
             pubDate: i['pubDate'] ?? '',
             content: i['content'] ?? '',
+            enclosure : i['enclosure']??'',
             mediaContent : i['media\$content']??'',
           );
         }).toList();

@@ -7,6 +7,7 @@ class Item {
   final pubDate;
   final content;
   final mediaContent;
+  final enclosure;
 
   Item({
     this.title,
@@ -16,6 +17,7 @@ class Item {
     this.creator,
     this.pubDate,
     this.content,
-    this.mediaContent
+    this.mediaContent,
+    this.enclosure
   });
 }

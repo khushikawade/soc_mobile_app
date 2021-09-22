@@ -88,10 +88,10 @@ class _SocialPageState extends State<SocialPage> {
               alignment: Alignment.center,
              width: Globals.deviceType == "phone" ?_kIconSize * 1.4:_kIconSize * 2,
               height: Globals.deviceType == "phone" ?_kIconSize * 1.5:_kIconSize * 2,
-              child:(obj.mediaContent!=null &&obj.mediaContent!="" && obj.mediaContent['url']!=null&&obj.mediaContent['url']!="")||(imageLink != null && imageLink!="")
+              child:(obj.enclosure!=null &&obj.enclosure!="" && obj.enclosure['url']!=null&&obj.enclosure['url']!="")||(imageLink != null && imageLink!="")
                   ? ClipRRect(
                       child: CachedNetworkImage(
-                        imageUrl: obj.mediaContent['url']??imageLink??Globals.homeObjet["App_Logo__c"],
+                        imageUrl: obj.enclosure['url']??imageLink??Globals.homeObjet["App_Logo__c"],
                         placeholder: (context, url) => Container(
                             alignment: Alignment.center,
                             child: ShimmerLoading(
