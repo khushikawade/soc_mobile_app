@@ -46,16 +46,6 @@ class _HomePageState extends State<HomePage> {
     _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
   }
 
-// refreshScreen()async{
-//   await  Future.delayed(const Duration(seconds: 2), () {
-//                  setState(() {         
-//                  });
-//                 });
-// }
-  // getindicatorValue() async {
-  //   Globals.selectedLanguage = await _sharedPref.getString('selected_language');
-  // }
-
   List<Widget> _buildScreens() {
     List<Widget> _screens = [];
     Globals.homeObjet["Bottom_Navigation__c"]
@@ -99,14 +89,22 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ValueListenableBuilder(
+              Expanded(
+                child: Container(
+                  child: Column(
+                    children: [
+                      Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ValueListenableBuilder(
                 builder: (BuildContext context, dynamic value, Widget? child) {
                   return item.split("_")[0] == "News" &&
                           Globals.indicator.value == true
                       ? Wrap(
                           children: [
                             Container(
-                              margin: EdgeInsets.only(top: 8, right: 2),
+                              margin: EdgeInsets.only(top: 0, right: 2),
                               height: 8,
                               width: 8,
                               decoration: BoxDecoration(
@@ -119,14 +117,12 @@ class _HomePageState extends State<HomePage> {
                 valueListenable: Globals.indicator,
                 child: Container(),
               ),
-              Expanded(
-                child: Container(
-                  child: Column(
-                    children: [
-                      Icon(
-                        IconData(int.parse(item.split("_")[1]),
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
+                          Icon(
+                            IconData(int.parse(item.split("_")[1]),
+                                fontFamily: Overrides.kFontFam,
+                                fontPackage: Overrides.kFontPkg),
+                          ),
+                        ],
                       ),
                     SpacerWidget(2),
                      Globals.selectedLanguage != null &&

@@ -354,8 +354,10 @@ class _StudentPageState extends State<StudentPage> {
                                     )
                                   : 
                                   // ListView(children: [
-                                      NoDataFoundErrorWidget(
-                                          isResultNotFoundMsg: false);
+                                     NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                          );
                                     // ]);
                             } else if (state is StudentError) {
                               return ListView(children: [ErrorMsgWidget()]);

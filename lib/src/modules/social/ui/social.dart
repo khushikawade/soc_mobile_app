@@ -36,6 +36,7 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
+    print(Globals.homeObjet);
   }
 
   @override
@@ -87,10 +88,10 @@ class _SocialPageState extends State<SocialPage> {
               alignment: Alignment.center,
              width: Globals.deviceType == "phone" ?_kIconSize * 1.4:_kIconSize * 2,
               height: Globals.deviceType == "phone" ?_kIconSize * 1.5:_kIconSize * 2,
-              child: imageLink != null 
+              child:(obj.enclosure!=null &&obj.enclosure!="" && obj.enclosure['url']!=null&&obj.enclosure['url']!="")||(imageLink != null && imageLink!="")
                   ? ClipRRect(
                       child: CachedNetworkImage(
-                        imageUrl: imageLink,
+                        imageUrl: obj.enclosure['url']??imageLink??Globals.homeObjet["App_Logo__c"],
                         placeholder: (context, url) => Container(
                             alignment: Alignment.center,
                             child: ShimmerLoading(
@@ -102,7 +103,7 @@ class _SocialPageState extends State<SocialPage> {
                               ),
                             )),
                         errorWidget: (context, url, error) =>CachedNetworkImage(
-                        imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                        imageUrl: Globals.splashImageUrl!=null && Globals.splashImageUrl!=""?Globals.splashImageUrl:Globals.homeObjet["App_Logo__c"],
                         placeholder: (context, url) => Container(
                             alignment: Alignment.center,
                             child: ShimmerLoading(
@@ -122,7 +123,7 @@ class _SocialPageState extends State<SocialPage> {
                      alignment: Alignment.centerLeft,
                       child: ClipRRect(
                         child: CachedNetworkImage(
-                          imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                          imageUrl: Globals.splashImageUrl!=null && Globals.splashImageUrl!=""?Globals.splashImageUrl:Globals.homeObjet["App_Logo__c"],
                           placeholder: (context, url) => Container(
                               alignment: Alignment.center,
                               child: ShimmerLoading(
@@ -133,8 +134,19 @@ class _SocialPageState extends State<SocialPage> {
                                   color: Colors.white,
                                 ),
                               )),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
+                           errorWidget: (context, url, error) =>CachedNetworkImage(
+                        imageUrl: Globals.splashImageUrl!=null && Globals.splashImageUrl!=""?Globals.splashImageUrl:Globals.homeObjet["App_Logo__c"],
+                        placeholder: (context, url) => Container(
+                            alignment: Alignment.center,
+                            child: ShimmerLoading(
+                              isLoading: true,
+                              child: Container(
+                                width: _kIconSize * 1.4,
+                                height: _kIconSize * 1.5,
+                                color: Colors.white,
+                              ),
+                            )),
+                      ),
                         ),
                       ),
                     ),
@@ -283,7 +295,9 @@ class _SocialPageState extends State<SocialPage> {
                                       : Expanded(
                                           child: ListView(children: [
                                             NoDataFoundErrorWidget(
-                                                isResultNotFoundMsg: false)
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                          )
                                           ]),
                                         );
                                 } else if (state is Loading) {
@@ -314,8 +328,8 @@ class _SocialPageState extends State<SocialPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
+                                  
+                                  setState(() {Globals.homeObjet = state.obj;});
                                 }
                               },
                               child: Container(

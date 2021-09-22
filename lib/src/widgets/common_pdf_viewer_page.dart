@@ -103,7 +103,10 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                   zoomSteps: 2,
                   scrollDirection: Axis.vertical,
                 )
-          : NoDataFoundErrorWidget(isResultNotFoundMsg: false),
+          : NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                          )
     );
   }
 }

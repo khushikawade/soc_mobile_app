@@ -239,7 +239,7 @@ class SocialDescription extends StatelessWidget {
                           ),
                         )),
                     errorWidget: (context, url, error) => CachedNetworkImage(
-                        imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                        imageUrl: Globals.splashImageUrl!=null && Globals.splashImageUrl!=""?Globals.splashImageUrl:Globals.homeObjet["App_Logo__c"],
                         placeholder: (context, url) => Container(
                             alignment: Alignment.center,
                             child: ShimmerLoading(
@@ -262,7 +262,7 @@ class SocialDescription extends StatelessWidget {
                 alignment: Alignment.center,
                 child: ClipRRect(
                   child: CachedNetworkImage(
-                    imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                    imageUrl: Globals.splashImageUrl!=null && Globals.splashImageUrl!=""?Globals.splashImageUrl:Globals.homeObjet["App_Logo__c"],
                     placeholder: (context, url) => Container(
                         alignment: Alignment.center,
                         child: ShimmerLoading(

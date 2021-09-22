@@ -91,7 +91,7 @@ class _StartupPageState extends State<StartupPage> {
                   ),
                 ),
               )
-            : Text("Loading ...")
+            : Text("Loading ...", style: TextStyle(fontSize: 28, color: Colors.black),)
 
         // Image.asset('assets/images/splash_screen_icon.png',
         //     fit: BoxFit.fill),
@@ -171,7 +171,7 @@ class _StartupPageState extends State<StartupPage> {
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
                         prefs.setString(Strings.SplashUrl,
-                            state.obj["Splash_Screen__c"] ?? '');
+                            state.obj["Splash_Screen__c"] ??state.obj["App_Logo__c"]);
                         state.obj != null
                             ? Navigator.pushReplacement(
                                 context,
@@ -181,8 +181,10 @@ class _StartupPageState extends State<StartupPage> {
                                     homeObj: state.obj,
                                   ),
                                 ))
-                            : NoDataFoundErrorWidget(
-                                isResultNotFoundMsg: false);
+                            :  NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                          );
                       } else if (state is HomeErrorReceived) {
                         ErrorMsgWidget();
                       }

@@ -42,15 +42,17 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         final data = json.decode(jsondata);
         final data1 = data["rss"]["channel"]["item"];
         final data2 = data1 as List;
-        return data1.map((i) {
+        return data2.map((i) {
           return Item(
             title: i["title"] ?? '',
             description: i["description"] ?? '',
             link: i["link"] ?? '',
             guid: i['guid'] ?? '',
-            creator: i['creator'] ?? '',
+            creator: i['dc\$creator'] ?? '',
             pubDate: i['pubDate'] ?? '',
             content: i['content'] ?? '',
+            enclosure : i['enclosure']??'',
+            mediaContent : i['media\$content']??'',
           );
         }).toList();
       } else {
