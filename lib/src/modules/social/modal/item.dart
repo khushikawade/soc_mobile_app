@@ -5,7 +5,8 @@ class Item {
   final guid;
   final creator;
   final pubDate;
-  String? content;
+  final content;
+  final mediaContent;
 
   Item({
     this.title,
@@ -15,5 +16,6 @@ class Item {
     this.creator,
     this.pubDate,
     this.content,
+    this.mediaContent
   });
 }

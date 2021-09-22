@@ -16,6 +16,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NewsPage extends StatefulWidget {
@@ -52,6 +53,12 @@ class _NewsPageState extends State<NewsPage> {
       Globals.indicator.value = false;
       pref.setInt(Strings.bottomNavigation, 0);
       Globals.homeIndex=0;
+    });
+
+ OneSignal.shared.setNotificationWillShowInForegroundHandler(
+        (OSNotificationReceivedEvent notification) async {
+      notification.complete(notification.notification);
+      bloc.add(FetchNotificationList());
     });
   }
 
@@ -123,11 +130,11 @@ class _NewsPageState extends State<NewsPage> {
                         onTap: (){
                           showDialog(
                             context: context,
-                            builder: (_) => NewsImagePage(imageURL: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"])     
+                            builder: (_) => NewsImagePage(imageURL: Globals.splashImageUrl!=null && Globals.splashImageUrl!=""?Globals.splashImageUrl:Globals.homeObjet["App_Logo__c"])     
                           );
                        },
                         child: CachedNetworkImage(
-                          imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                          imageUrl: Globals.splashImageUrl!=null && Globals.splashImageUrl!=""?Globals.splashImageUrl:Globals.homeObjet["App_Logo__c"],
                           placeholder: (context, url) => Container(
                               alignment: Alignment.center,
                               child: ShimmerLoading(
@@ -246,41 +253,40 @@ class _NewsPageState extends State<NewsPage> {
 
               return connected
                   ? Column(
+                     mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        BlocBuilder(
-                            bloc: bloc,
-                            builder: (BuildContext context, NewsState state) {
-                              if (state is NewsLoaded) {
-                                return state.obj != null &&
-                                        state.obj!.length > 0
-                                    ? _buildList(state.obj)
-                                    : Expanded(
-                                        child: ListView(children: [
-                                          NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false)
-                                        ]),
-                                      );
-                              } else if (state is NewsLoading) {
-                                return Expanded(
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.8,
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
-                                  ),
-                                );
-                              } else if (state is NewsErrorReceived) {
-                                return Expanded(
-                                  child: ListView(children: [
-                                    ErrorMsgWidget(),
-                                  ]),
-                                );
-                              } else {
-                                return Container();
-                              }
-                            }),
+                        Expanded(
+                          child: BlocBuilder(
+                              bloc: bloc,
+                              builder: (BuildContext context, NewsState state) {
+                                if (state is NewsLoaded) {
+                                  return state.obj != null &&
+                                          state.obj!.length > 0
+                                      ? _buildList(state.obj)
+                                      : 
+                                        NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,isNews:true);
+                                } else if (state is NewsLoading) {
+                                  return Expanded(
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height *
+                                          0.8,
+                                      child: Center(
+                                          child: CircularProgressIndicator()),
+                                    ),
+                                  );
+                                } else if (state is NewsErrorReceived) {
+                                  return 
+                                  ListView(
+                                    shrinkWrap: true,
+                                    children: [ErrorMsgWidget()]);
+                                } else {
+                                  return Container();
+                                }
+                              }),
+                        ),
                         Container(
                           height: 0,
                           width: 0,

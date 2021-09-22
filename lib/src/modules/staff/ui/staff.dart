@@ -208,7 +208,10 @@ class _StaffPageState extends State<StaffPage> {
                   // color: AppTheme.kButtonbackColor,
                 ),
               )
-            : NoDataFoundErrorWidget(isResultNotFoundMsg: false));
+            : NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                          ));
   }
 
   Widget build(BuildContext context) {
@@ -269,9 +272,10 @@ class _StaffPageState extends State<StaffPage> {
                                     : 
                                     //  ListView(children: [
                                           Expanded(
-                                            child: NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false,
-                                            ),
+                                            child:  NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                          )
                                           )
                                         ;  
                                         // ]);

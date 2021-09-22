@@ -393,9 +393,10 @@ class _SearchPageState extends State<SearchPage> {
                           );
                         }).toList(),
                       ))
-                    : NoDataFoundErrorWidget(
-                        isResultNotFoundMsg: true,
-                      ));
+                    :  NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                          ));
           } else if (state is SearchLoading) {
             return Expanded(
                 child: Center(

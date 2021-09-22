@@ -8,7 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 // ignore: must_be_immutable
 class NoDataFoundErrorWidget extends StatelessWidget {
   bool isResultNotFoundMsg;
-  NoDataFoundErrorWidget({Key? key, required this.isResultNotFoundMsg})
+  bool ?isNews;
+  NoDataFoundErrorWidget({Key? key, required this.isResultNotFoundMsg,required this.isNews})
       : super(key: key);
 
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class NoDataFoundErrorWidget extends StatelessWidget {
                   Globals.selectedLanguage != "English" &&
                   Globals.selectedLanguage != ""
               ? TranslationWidget(
-                  message: isResultNotFoundMsg
+                  message: isNews!?"No Message Yet":isResultNotFoundMsg
                       ? "No result found"
                       : "No data found",
                   toLanguage: Globals.selectedLanguage,
@@ -40,7 +41,7 @@ class NoDataFoundErrorWidget extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyText1!),
                 )
               : Text(
-                  isResultNotFoundMsg ? "No result found" : "No data found",
+                  isNews!?"No Message Yet":isResultNotFoundMsg ? "No result found" : "No data found",
                   style: Theme.of(context).textTheme.bodyText1!),
         ),
       ],
