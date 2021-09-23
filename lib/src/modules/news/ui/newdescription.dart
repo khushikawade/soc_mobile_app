@@ -12,9 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
-
-
 class Newdescription extends StatefulWidget {
   Newdescription(
       {Key? key,
@@ -46,20 +43,14 @@ class _NewdescriptionState extends State<Newdescription> {
 
   _launchURL(obj) async {
  if(obj.toString().split(":")[0]=='http'){
-  String url=obj.toString().replaceAll("http", "https");
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => InAppUrlLauncer(
-                  title: widget.obj.headings["en"].toString(),
-                  url: url,// url,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                )));
-        // await canLaunch('https://formstack.io/60E4A') ? await launch('https://formstack.io/60E4A') : throw 'Could not launch ${'https://formstack.io/60E4A'}';
+  if (await canLaunch(obj)) {
+  await launch(obj);  
+        } else {
+          throw 'Could not launch ${obj!}';
         }
-                else{
-                  Navigator.push(
+      }
+     else{
+          Navigator.push(
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => InAppUrlLauncer(
@@ -195,24 +186,7 @@ class _NewdescriptionState extends State<Newdescription> {
                               .copyWith(fontWeight: FontWeight.w500),
                         ),
                 ),
-                // Globals.selectedLanguage != null &&
-                //         Globals.selectedLanguage != "English" &&
-                //         Globals.selectedLanguage != ""
-                //     ? TranslationWidget(
-                //         message: widget.date,
-                //         toLanguage: Globals.selectedLanguage,
-                //         fromLanguage: "en",
-                //         builder: (translatedMessage) => Text(
-                //           translatedMessage.toString(),
-                //           style: Theme.of(context).textTheme.subtitle1!,
-                //           textAlign: TextAlign.justify,
-                //         ),
-                //       )
-                //     : Text(
-                //         widget.date,
-                //         style: Theme.of(context).textTheme.subtitle1!,
-                //         textAlign: TextAlign.justify,
-                //       ),
+                
               ],
             ),
             Container(
@@ -241,8 +215,7 @@ class _NewdescriptionState extends State<Newdescription> {
                             onOpen: (link) => _launchURL( link.url),
                             options: LinkifyOptions(humanize: false),
                             linkStyle: TextStyle(color: Colors.blue),
-                                text: 
-                          widget.obj.contents["en"].toString(),
+                                text: widget.obj.contents["en"].toString(),
                           style: Theme.of(context).textTheme.bodyText1!,
                           textAlign: TextAlign.left,
                         ),
@@ -250,9 +223,6 @@ class _NewdescriptionState extends State<Newdescription> {
               ),
             ),
             GestureDetector(
-              // onTap: () {
-              //   _launchURL(widget.obj.url);
-              // },
               child: widget.obj.url != null
                   ? Wrap(
                       children: [

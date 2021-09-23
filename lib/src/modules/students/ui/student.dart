@@ -60,19 +60,14 @@ class _StudentPageState extends State<StudentPage> {
       );
     } else {
       if (obj.deepLinkC == 'NO') {
-             if(obj.toString().split(":")[0]=='http'){
-  String url=obj.appUrlC!.toString().replaceAll("http", "https");
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => InAppUrlLauncer(
-                  title: obj.titleC!,
-                  url:url,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                )));
-         }
-                else{
+        if(obj.toString().split(":")[0]=='http'){
+          if (await canLaunch(obj.appUrlC!)) {
+            await launch(obj.appUrlC!);  
+          } else {
+            throw 'Could not launch ${obj.appUrlC!}';
+        }
+      }
+      else{
                   Navigator.push(
         context,
         MaterialPageRoute(

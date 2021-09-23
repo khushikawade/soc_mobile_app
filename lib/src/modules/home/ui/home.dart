@@ -12,7 +12,9 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,7 +29,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
   final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
@@ -38,12 +40,50 @@ class _HomePageState extends State<HomePage> {
       ValueNotifier<String>("English");
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   late PersistentTabController _controller;
+  final NewsBloc _newsBloc = new NewsBloc();
+  late AppLifecycleState _notification;
 
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() { _notification = state; });
+if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList());
+  }
+
+  Widget callNotification() {
+  return  BlocListener<NewsBloc, NewsState>(
+                    bloc: _newsBloc,
+                    listener: (context, state) async {
+                      if (state is NewsLoaded) {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        SharedPreferences intPrefs =
+                            await SharedPreferences.getInstance();
+                        intPrefs.getInt("totalCount") == null
+                            ? intPrefs.setInt("totalCount", Globals.notiCount!)
+                            : intPrefs.getInt("totalCount");
+                        // print(intPrefs.getInt("totalCount"));
+                        if (Globals.notiCount! >
+                            intPrefs.getInt("totalCount")!) {
+                          intPrefs.setInt("totalCount", Globals.notiCount!);
+                          prefs.setBool("enableIndicator", true);
+                          Globals.indicator.value = true;
+                        }
+                      }
+                    },
+                    child: Container(),
+                  );
+  }
   @override
   void initState() {
     super.initState();
     _bloc.initPushState(context);
     _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
+     WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+     WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
   }
 
   List<Widget> _buildScreens() {
@@ -151,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                   maxLines: 2,
                   style: Theme.of(context).textTheme.headline4!,
                 ),
-                )
+                ),callNotification() 
                     ],
                   ),
                 ),

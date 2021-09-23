@@ -42,10 +42,13 @@ class _StartupPageState extends State<StartupPage> {
     _loginBloc.add(PerfomLogin());
     _newsBloc.add(FetchNotificationList());
     getindexvalue();
+  }
 
+  late AppLifecycleState _notification;
 
-    // timer =
-    //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() { _notification = state; });
+    print(_notification);
   }
 
   getindexvalue() async {
@@ -58,7 +61,6 @@ class _StartupPageState extends State<StartupPage> {
   void dispose() {
     _bloc.close();
     _loginBloc.close();
-
     super.dispose();
   }
 

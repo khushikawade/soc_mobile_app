@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:html/dom.dart' as dom;
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class AboutusPage extends StatefulWidget {
@@ -140,16 +141,11 @@ class _AboutusPageState extends State<AboutusPage> {
        _launchURL(obj) async {
 
       if(obj.toString().split(":")[0]=='http'){
-  String url=obj.toString().replaceAll("http", "https");
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => InAppUrlLauncer(
-                  title: widget.appbarTitle.toString(),
-                  url:url,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                )));
+   if (await canLaunch(obj)) {
+  await launch(obj);  
+        } else {
+          throw 'Could not launch ${obj!}';
+        }
          }
                 else{
                   Navigator.push(

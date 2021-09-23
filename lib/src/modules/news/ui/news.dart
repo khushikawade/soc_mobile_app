@@ -24,7 +24,7 @@ class NewsPage extends StatefulWidget {
   _NewsPageState createState() => _NewsPageState();
 }
 
-class _NewsPageState extends State<NewsPage> {
+class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver{
   static const double _kIconSize = 48.0;
   static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
@@ -34,18 +34,24 @@ class _NewsPageState extends State<NewsPage> {
   final HomeBloc _homeBloc = new HomeBloc();
   var object;
   String newsTimeStamp = '';
+  late AppLifecycleState _notification;
 
   @override
   void initState() {
     super.initState();
     bloc.add(FetchNotificationList());
     hideIndicator();
+     WidgetsBinding.instance!.addObserver(this);
   }
 
   // setindexvalue() async {
   //   SharedPreferences pref = await SharedPreferences.getInstance();
   //   pref.setInt(Strings.bottomNavigation, 0);
   // }
+void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() { _notification = state; });
+if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
+  }
 
   hideIndicator() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -65,6 +71,7 @@ class _NewsPageState extends State<NewsPage> {
 
   @override
   void dispose() {
+     WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
