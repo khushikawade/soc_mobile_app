@@ -36,7 +36,6 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
-    print(Globals.homeObjet);
   }
 
   @override
@@ -284,7 +283,7 @@ class _SocialPageState extends State<SocialPage> {
                 return connected
                     ? Column(
                         children: <Widget>[
-                          BlocBuilder(
+                          BlocBuilder<SocialBloc, SocialState>(
                               bloc: bloc,
                               builder:
                                   (BuildContext context, SocialState state) {
