@@ -52,7 +52,7 @@ class _NewdescriptionState extends State<Newdescription> {
         MaterialPageRoute(
             builder: (BuildContext context) => InAppUrlLauncer(
                   title: widget.obj.headings["en"].toString(),
-                  url:'https://formstack.io/60E4A',// url,
+                  url: url,// url,
                   isbuttomsheet: true,
                   language: Globals.selectedLanguage,
                 )));
