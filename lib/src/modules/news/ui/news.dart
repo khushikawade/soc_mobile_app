@@ -58,6 +58,7 @@ class _NewsPageState extends State<NewsPage> {
  OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
+         Globals.indicator.value = true;
       bloc.add(FetchNotificationList());
     });
   }
@@ -295,6 +296,18 @@ class _NewsPageState extends State<NewsPage> {
                             listener: (context, state) async {
                               if (state is NewsLoaded) {
                                 object = state.obj;
+                                SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        SharedPreferences intPrefs =
+                            await SharedPreferences.getInstance();
+                        intPrefs.getInt("totalCount") == null
+                            ? intPrefs.setInt("totalCount", Globals.notiCount!)
+                            : intPrefs.getInt("totalCount");
+                        // print(intPrefs.getInt("totalCount"));
+                        if (Globals.notiCount! >
+                            intPrefs.getInt("totalCount")!) {
+                          intPrefs.setInt("totalCount", Globals.notiCount!);
+                        }
                               }
                             },
                             child: Container(),

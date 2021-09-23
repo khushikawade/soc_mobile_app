@@ -74,8 +74,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
     SharedPreferences pref = await SharedPreferences.getInstance();
-
-
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);

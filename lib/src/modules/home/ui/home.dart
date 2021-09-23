@@ -93,20 +93,22 @@ class _HomePageState extends State<HomePage> {
                 child: Container(
                   child: Column(
                     children: [
-                      Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      Stack(
+                        alignment: Alignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ValueListenableBuilder(
+                            ValueListenableBuilder(
                 builder: (BuildContext context, dynamic value, Widget? child) {
                   return item.split("_")[0] == "News" &&
                           Globals.indicator.value == true
                       ? Wrap(
                           children: [
                             Container(
-                              margin: EdgeInsets.only(top: 0, right: 2),
-                              height: 8,
-                              width: 8,
+                              margin: EdgeInsets.only(bottom: 15, left: 50),
+                              // padding:EdgeInsets.only(bottom: 25,) ,
+                              height: 7,
+                              width: 7,
                               decoration: BoxDecoration(
                                   color: Colors.red, shape: BoxShape.circle),
                             ),
@@ -122,6 +124,8 @@ class _HomePageState extends State<HomePage> {
                                 fontFamily: Overrides.kFontFam,
                                 fontPackage: Overrides.kFontPkg),
                           ),
+
+                        
                         ],
                       ),
                     SpacerWidget(2),
@@ -173,6 +177,9 @@ class _HomePageState extends State<HomePage> {
       // hideNavigationBar: true,
       onItemSelected: (int i) {
           setState(() {
+            if(i==1){
+                 Globals.indicator.value = false;
+            }
           });
       },
       items: _navBarsItems(),
