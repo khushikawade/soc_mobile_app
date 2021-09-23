@@ -215,19 +215,19 @@ class SocialDescription extends StatelessWidget {
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),
-        object.description != null &&
+       (object.enclosure!=null &&object.enclosure!="" && object.enclosure['url']!=null&&object.enclosure['url']!="")||(object.description != null &&
                 object.description["__cdata"] != null &&
                 object.description["__cdata"]
                     .toString()
                     .contains("<img src=") &&
-                object.description["__cdata"].toString().split('"')[1] != ""
+                object.description["__cdata"].toString().split('"')[1] != "")
             ? Container(
                 alignment: Alignment.center,
                 child: ClipRRect(
                   child: CachedNetworkImage(
                     fit: BoxFit.cover,
-                    imageUrl:
-                        Utility.getHTMLImgSrc(object.description["__cdata"]),
+                    imageUrl:object.enclosure['url']??
+                        Utility.getHTMLImgSrc(object.description["__cdata"])??Globals.homeObjet["App_Logo__c"],
                     placeholder: (context, url) => Container(
                         alignment: Alignment.center,
                         child: ShimmerLoading(
