@@ -39,6 +39,7 @@ class ContactPage extends StatefulWidget {
 class _ContactPageState extends State<ContactPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
+  static const double _kIconSize = 48.0;
   bool issuccesstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
@@ -86,15 +87,31 @@ class _ContactPageState extends State<ContactPage> {
                     ),
                   ),
                 ),
-                errorWidget: (context, url, error) => Icon(
-                  Icons.error,
+                errorWidget: (context, url, error) => CachedNetworkImage(
+                  imageUrl: Globals.splashImageUrl != null &&
+                          Globals.splashImageUrl != ""
+                      ? Globals.splashImageUrl
+                      : Globals.homeObjet["App_Logo__c"],
+                  placeholder: (context, url) => Container(
+                      alignment: Alignment.center,
+                      child: ShimmerLoading(
+                        isLoading: true,
+                        child: Container(
+                          width: _kIconSize * 1.4,
+                          height: _kIconSize * 1.5,
+                          color: Colors.white,
+                        ),
+                      )),
                 ),
               ),
             )
           : Container(
               child: ClipRRect(
                 child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl!=null && Globals.splashImageUrl!=""?Globals.splashImageUrl:Globals.homeObjet["App_Logo__c"],
+                  imageUrl: Globals.splashImageUrl != null &&
+                          Globals.splashImageUrl != ""
+                      ? Globals.splashImageUrl
+                      : Globals.homeObjet["App_Logo__c"],
                   placeholder: (context, url) => Container(
                       alignment: Alignment.center,
                       child: ShimmerLoading(
@@ -104,7 +121,22 @@ class _ContactPageState extends State<ContactPage> {
                           color: Colors.white,
                         ),
                       )),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => CachedNetworkImage(
+                    imageUrl: Globals.splashImageUrl != null &&
+                            Globals.splashImageUrl != ""
+                        ? Globals.splashImageUrl
+                        : Globals.homeObjet["App_Logo__c"],
+                    placeholder: (context, url) => Container(
+                        alignment: Alignment.center,
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            width: _kIconSize * 1.4,
+                            height: _kIconSize * 1.5,
+                            color: Colors.white,
+                          ),
+                        )),
+                  ),
                 ),
               ),
             ),
@@ -194,7 +226,6 @@ class _ContactPageState extends State<ContactPage> {
                         tilt: 59.440717697143555),
                     markers: Set.from(
                         _markers) //_markers.toSet(), //   values.toSet(),
-
                     ),
               )
             : EmptyContainer());
@@ -234,16 +265,15 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
-void _launchMapsUrl() async {
-  final url = 'https://www.google.com/maps/search/?api=1&query=${Globals.homeObjet[
-                                "Contact_Office_Location__Latitude__s"]},${Globals.homeObjet[
-                                "Contact_Office_Location__Longitude__s"]}';
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
+  void _launchMapsUrl() async {
+    final url =
+        'https://www.google.com/maps/search/?api=1&query=${Globals.homeObjet["Contact_Office_Location__Latitude__s"]},${Globals.homeObjet["Contact_Office_Location__Longitude__s"]}';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
-}
 
   Widget _buildaddress() {
     return Padding(
@@ -277,13 +307,24 @@ void _launchMapsUrl() async {
                 ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
-            child:  GestureDetector(
+            child: GestureDetector(
               onTap: _launchMapsUrl,
               child: Text(
-                      Globals.homeObjet["Contact_Address__c"] ?? '-',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-                      textAlign: TextAlign.start,
-                    ),
+                Globals.homeObjet["Contact_Address__c"] ?? '-',
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.blue,
+                  fontSize: Globals.deviceType == "phone"
+                      ? AppTheme.kBodyText1FontSize
+                      : AppTheme.kBodyText1FontSize + AppTheme.kSize,
+                  color: Colors.blue,//AppTheme.kAccentColor,
+                  fontWeight: FontWeight.normal,
+                  fontFamily: 'Roboto Regular',
+                  height: 1.5,
+                  
+                ), //Theme.of(context).textTheme.bodyText1!,
+                textAlign: TextAlign.start,
+              ),
             ),
           )
         ],
@@ -327,11 +368,11 @@ void _launchMapsUrl() async {
                       context, "tel:" + Globals.homeObjet["Contact_Phone__c"]);
                 }
               },
-              child:  Text(
-                      Globals.homeObjet["Contact_Phone__c"] ?? '-',
-                      style: Theme.of(context).textTheme.bodyText1!,
-                      textAlign: TextAlign.center,
-                    ),
+              child: Text(
+                Globals.homeObjet["Contact_Phone__c"] ?? '-',
+                style: Theme.of(context).textTheme.bodyText1!,
+                textAlign: TextAlign.center,
+              ),
             ),
           )
         ],
@@ -414,9 +455,13 @@ void _launchMapsUrl() async {
       _buildMapWidget(),
       _buildAddressWidget(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      _buildPhoneWidget(),
+      Globals.homeObjet["Contact_Phone__c"] != null
+          ? _buildPhoneWidget()
+          : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      _buildEmailWidget(),
+      Globals.homeObjet["Contact_Email__c"] != null
+          ? _buildEmailWidget()
+          : Container(),
     ]);
   }
 

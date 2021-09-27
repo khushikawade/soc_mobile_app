@@ -21,7 +21,7 @@ void iNeedSupport(BuildContext context) {
 
 launchMailto(subject, body) async {
   final mailtoLink = Mailto(
-    to: [Globals.appSetting.contactEmailC.toString()],
+    to: ["admin@solvedconsulting.com"],//[Globals.appSetting.contactEmailC.toString()],
     cc: [],
     subject: subject,
     body: body,

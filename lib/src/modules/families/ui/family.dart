@@ -26,14 +26,18 @@ import 'package:flutter_offline/flutter_offline.dart';
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
-  FamilyPage({Key? key, this.obj, this.searchObj,}) : super(key: key);
+  FamilyPage({
+    Key? key,
+    this.obj,
+    this.searchObj,
+  }) : super(key: key);
 
   @override
   _FamilyPageState createState() => _FamilyPageState();
 }
 
 class _FamilyPageState extends State<FamilyPage> {
-  static const double _kLabelSpacing = 16.0;
+  static const double _kLabelSpacing = 10.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -105,7 +109,9 @@ class _FamilyPageState extends State<FamilyPage> {
                       )))
           : Utility.showSnackBar(
               _scaffoldKey, "No calendar/events available", context);
-    } else if (obj.typeC == "RFT_HTML"||obj.typeC=="HTML/RTF"||obj.typeC=="RTF/HTML") {
+    } else if (obj.typeC == "RFT_HTML" ||
+        obj.typeC == "HTML/RTF" ||
+        obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
@@ -153,9 +159,9 @@ class _FamilyPageState extends State<FamilyPage> {
           child: CachedNetworkImage(
             imageUrl: obj.appIconUrlC!,
             fit: BoxFit.cover,
-            height: Globals.deviceType == "phone" ?40:44,
-            width: Globals.deviceType == "phone" ?40:44,
-             placeholder: (context, url) => Container(
+            height: Globals.deviceType == "phone" ?  30 : 38,
+            width: Globals.deviceType == "phone" ?  30 : 38,
+            placeholder: (context, url) => Container(
                 alignment: Alignment.center,
                 child: ShimmerLoading(
                   isLoading: true,
@@ -165,11 +171,19 @@ class _FamilyPageState extends State<FamilyPage> {
                     color: Colors.white,
                   ),
                 )),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+            errorWidget: (context, url, error) => Icon(
+        IconData(
+          0xf550,
+          fontFamily: 'FontAwesomeSolid',
+          fontPackage: 'font_awesome_flutter',
+        ),
+        color: Theme.of(context).colorScheme.primary,
+        size: Globals.deviceType == "phone" ? 20 : 28,
+      )
           ),
         ),
       );
-    } else if(obj.appIconC!=null){
+    } else if (obj.appIconC != null) {
       return Icon(
         IconData(
           int.parse('0x${obj.appIconC!}'),
@@ -179,16 +193,16 @@ class _FamilyPageState extends State<FamilyPage> {
         color: Theme.of(context).colorScheme.primary,
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
-    }else{
-     return Icon(
-                IconData(
-                0xf550,
-                      fontFamily: 'FontAwesomeSolid',
-                      fontPackage: 'font_awesome_flutter',
-                    ),
-                    color: Theme.of(context).colorScheme.primary,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  );
+    } else {
+      return Icon(
+        IconData(
+          0xf550,
+          fontFamily: 'FontAwesomeSolid',
+          fontPackage: 'font_awesome_flutter',
+        ),
+        color: Theme.of(context).colorScheme.primary,
+        size: Globals.deviceType == "phone" ? 20 : 28,
+      );
     }
   }
 
@@ -209,8 +223,8 @@ class _FamilyPageState extends State<FamilyPage> {
           _familiyPageRoute(obj, index);
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        contentPadding:
-            EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
+        // contentPadding:
+        //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: _buildLeading(obj),
         title: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
@@ -219,11 +233,10 @@ class _FamilyPageState extends State<FamilyPage> {
                 message: obj.titleC,
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) { 
-                 return Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText2!);}
-              )
+                builder: (translatedMessage) {
+                  return Text(translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.bodyText2!);
+                })
             : Text(obj.titleC.toString(),
                 style: Theme.of(context).textTheme.bodyText1!),
         trailing: Icon(
@@ -288,14 +301,14 @@ class _FamilyPageState extends State<FamilyPage> {
                                                 state.obj![index], index);
                                           },
                                         )
-                                      : 
+                                      :
                                       // ListView(children: [
-                                          NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                          );
-                                          
-                                        // ]);
+                                      NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: false,
+                                          isNews: false,
+                                        );
+
+                                  // ]);
                                 } else if (state is ErrorLoading) {
                                   return ListView(children: [ErrorMsgWidget()]);
                                 } else {

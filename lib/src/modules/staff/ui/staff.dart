@@ -12,11 +12,9 @@ import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/error_message_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +23,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 class StaffPage extends StatefulWidget {
   StaffPage({Key? key, this.title, this.language}) : super(key: key);
   final String? title;
-  String? language;
+  final String? language;
 
   @override
   _StaffPageState createState() => _StaffPageState();
@@ -65,7 +63,9 @@ class _StaffPageState extends State<StaffPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML"||obj.typeC=="HTML/RTF"||obj.typeC=="RTF/HTML") {
+    } else if (obj.typeC == "RFT_HTML" ||
+        obj.typeC == "HTML/RTF" ||
+        obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
@@ -112,25 +112,32 @@ class _StaffPageState extends State<StaffPage> {
       return Container(
         child: ClipRRect(
           child: CachedNetworkImage(
-            imageUrl: obj.appIconUrlC!,
-            fit: BoxFit.cover,
-           height: Globals.deviceType == "phone" ?30:38,
-            width: Globals.deviceType == "phone" ?30:38,
-            placeholder: (context, url) => Container(
-                alignment: Alignment.center,
-                child: ShimmerLoading(
-                  isLoading: true,
-                  child: Container(
-                    height: 20,
-                    width: 20,
-                    color: Colors.white,
-                  ),
-                )),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
+              imageUrl: obj.appIconUrlC!,
+              fit: BoxFit.cover,
+              height: Globals.deviceType == "phone" ? 30 : 38,
+              width: Globals.deviceType == "phone" ? 30 : 38,
+              placeholder: (context, url) => Container(
+                  alignment: Alignment.center,
+                  child: ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      height: 20,
+                      width: 20,
+                      color: Colors.white,
+                    ),
+                  )),
+              errorWidget: (context, url, error) => Icon(
+                    IconData(
+                      0xf550,
+                      fontFamily: 'FontAwesomeSolid',
+                      fontPackage: 'font_awesome_flutter',
+                    ),
+                    color: Theme.of(context).colorScheme.primary,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
+                  )),
         ),
       );
-    } else if(obj.appIconC!=null){
+    } else if (obj.appIconC != null) {
       return Icon(
         IconData(
           int.parse('0x${obj.appIconC!}'),
@@ -140,16 +147,16 @@ class _StaffPageState extends State<StaffPage> {
         color: Theme.of(context).colorScheme.primary,
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
-    }else{
-     return Icon(
-                IconData(
-                0xf550,
-                      fontFamily: 'FontAwesomeSolid',
-                      fontPackage: 'font_awesome_flutter',
-                    ),
-                    color: Theme.of(context).colorScheme.primary,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  );
+    } else {
+      return Icon(
+        IconData(
+          0xf550,
+          fontFamily: 'FontAwesomeSolid',
+          fontPackage: 'font_awesome_flutter',
+        ),
+        color: Theme.of(context).colorScheme.primary,
+        size: Globals.deviceType == "phone" ? 20 : 28,
+      );
     }
   }
 
@@ -171,8 +178,8 @@ class _StaffPageState extends State<StaffPage> {
                   _route(obj, index);
                 },
                 visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-                contentPadding: EdgeInsets.only(
-                    left: _kLabelSpacing, right: _kLabelSpacing / 2),
+                // contentPadding: EdgeInsets.only(
+                //     left: _kLabelSpacing, right: _kLabelSpacing / 2),
                 leading: _buildLeading(obj),
                 // leading: Icon(
                 //   IconData(
@@ -209,9 +216,9 @@ class _StaffPageState extends State<StaffPage> {
                 ),
               )
             : NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                          ));
+                isResultNotFoundMsg: false,
+                isNews: false,
+              ));
   }
 
   Widget build(BuildContext context) {
@@ -242,9 +249,7 @@ class _StaffPageState extends State<StaffPage> {
                 }
 
                 return connected
-                    ? Column(
-                      mainAxisSize: MainAxisSize.max, 
-                      children: [
+                    ? Column(mainAxisSize: MainAxisSize.max, children: [
                         BlocBuilder<StaffBloc, StaffState>(
                             bloc: _bloc,
                             builder: (BuildContext contxt, StaffState state) {
@@ -258,51 +263,48 @@ class _StaffPageState extends State<StaffPage> {
                                 return state.obj != null &&
                                         state.obj!.length > 0
                                     ? Expanded(
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        itemCount: state.obj!.length,
-                                        padding: EdgeInsets.only(bottom: 20),
-                                        itemBuilder: (BuildContext context,
-                                            int index) {
-                                          return _buildList(
-                                              state.obj![index], index);
-                                        },
-                                      ),
-                                    )
-                                    : 
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: state.obj!.length,
+                                          padding: EdgeInsets.only(bottom: 20),
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return _buildList(
+                                                state.obj![index], index);
+                                          },
+                                        ),
+                                      )
+                                    :
                                     //  ListView(children: [
-                                          Expanded(
-                                            child:  NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                          )
-                                          )
-                                        ;  
-                                        // ]);
+                                    Expanded(
+                                        child: NoDataFoundErrorWidget(
+                                        isResultNotFoundMsg: false,
+                                        isNews: false,
+                                      ));
+                                // ]);
                               } else if (state is ErrorInStaffLoading) {
                               } else {
                                 return Expanded(
                                   child: ListView(children: [ErrorMsgWidget()]),
                                 );
                               }
-                        
+
                               return Container();
                             }),
                         Container(
                           height: 0,
                           width: 0,
                           child: BlocListener<HomeBloc, HomeState>(
-                            bloc: _homeBloc,
-                            listener: (context, state) async {
-                              if (state is BottomNavigationBarSuccess) {
-                                AppTheme.setDynamicTheme(
-                                    Globals.appSetting, context);
-                                Globals.homeObjet = state.obj;
-                                setState(() {});
-                              }
-                            },
-                            child: EmptyContainer()
-                          ),
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
+                              child: EmptyContainer()),
                         ),
                       ])
                     : NoInternetErrorWidget(
