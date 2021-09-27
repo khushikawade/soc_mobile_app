@@ -4,6 +4,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -13,16 +14,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:html/dom.dart' as dom;
 
 // ignore: must_be_immutable
 
 class InformationPage extends StatefulWidget {
   // String htmlText;
 
-  bool isbuttomsheet;
-  bool ishtml;
-  String appbarTitle;
-  bool? isloadingstate = false;
+  final bool isbuttomsheet;
+  final bool ishtml;
+  final String appbarTitle;
+  final bool? isloadingstate = false;
 
   @override
   InformationPage({
@@ -109,6 +112,13 @@ class _InformationPageState extends State<InformationPage> {
                     )
                   : Html(
                       data: htmlData ?? Globals.appSetting.appInformationC,
+                      onLinkTap: (String? url,
+                          RenderContext context,
+                          Map<String, String> attributes,
+                          dom.Element? element) {
+                        print(url);
+                        _launchURL(url);
+                      },
                       style: {
                         "table": Style(
                           backgroundColor:
@@ -221,5 +231,25 @@ class _InformationPageState extends State<InformationPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     _bloc.add(FetchBottomNavigationBar());
+  }
+
+  _launchURL(obj) async {
+    if (obj.toString().split(":")[0] == 'http') {
+      if (await canLaunch(obj)) {
+        await launch(obj);
+      } else {
+        throw 'Could not launch ${obj!}';
+      }
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: widget.appbarTitle.toString(),
+                    url: obj,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    }
   }
 }

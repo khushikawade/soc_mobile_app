@@ -7,7 +7,6 @@ import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -78,21 +77,23 @@ class _AboutusPageState extends State<AboutusPage> {
                   message: htmlData ?? widget.htmlText,
                   fromLanguage: "en",
                   toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) =>
-                      Html(data: translatedMessage,
-                      onLinkTap: (String? url, RenderContext context, Map<String, String> attributes, dom.Element? element) {
+                  builder: (translatedMessage) => Html(
+                    data: translatedMessage,
+                    onLinkTap: (String? url, RenderContext context,
+                        Map<String, String> attributes, dom.Element? element) {
                       // print(url);
                       _launchURL(url);
-                  },
+                    },
                   ),
                 )
-              : 
+              :
               // Linkify(text:Utility.htmlData(  htmlData ?? widget.htmlText), onOpen: (link) => link.url,
               //               options: LinkifyOptions(humanize: false),
               //                  ),
               Html(
                   data: htmlData ?? widget.htmlText,
-                  onLinkTap: (String? url, RenderContext context, Map<String, String> attributes, dom.Element? element) {
+                  onLinkTap: (String? url, RenderContext context,
+                      Map<String, String> attributes, dom.Element? element) {
                     print(url);
                     _launchURL(url);
                   },
@@ -137,29 +138,23 @@ class _AboutusPageState extends State<AboutusPage> {
     );
   }
 
-
-       _launchURL(obj) async {
-
-      if(obj.toString().split(":")[0]=='http'){
-   if (await canLaunch(obj)) {
-  await launch(obj);  
-        } else {
-          throw 'Could not launch ${obj!}';
-        }
-         }
-                else{
-                  Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => InAppUrlLauncer(
-                  title: widget.appbarTitle.toString(),
-                  url: obj,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                )));
-                }
-
-
-    
+  _launchURL(obj) async {
+    if (obj.toString().split(":")[0] == 'http') {
+      if (await canLaunch(obj)) {
+        await launch(obj);
+      } else {
+        throw 'Could not launch ${obj!}';
+      }
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: widget.appbarTitle.toString(),
+                    url: obj,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    }
   }
 }
