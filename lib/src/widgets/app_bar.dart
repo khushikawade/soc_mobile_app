@@ -19,9 +19,11 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
     required this.sharedpopBodytext,
     this.isCenterIcon,
     this.ishtmlpage,
+     this.marginLeft,
     required this.language,
   })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
+  double? marginLeft;
   bool? islinearProgress = false;
   String appBarTitle;
   bool? isSearch;
@@ -53,7 +55,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       title: widget.isCenterIcon != null && widget.isCenterIcon == true
           ? 
           // SizedBox(width: 100.0, height: 60.0, child: 
-          AppLogoWidget()
+          AppLogoWidget(marginLeft: widget.marginLeft,)
           // )
           : widget.appBarTitle != ""
               ? Globals.selectedLanguage != null &&

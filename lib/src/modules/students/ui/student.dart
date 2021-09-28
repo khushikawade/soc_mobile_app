@@ -309,6 +309,7 @@ class _StudentPageState extends State<StudentPage> {
     return Scaffold(
       key: _scaffoldKey,
         appBar: AppBarWidget(
+           marginLeft: 30,
           refresh: (v) {
             setState(() {});
           },

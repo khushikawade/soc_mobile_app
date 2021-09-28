@@ -4,6 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class AppLogoWidget extends StatelessWidget {
+  final double ?marginLeft;
+  AppLogoWidget(
+      {Key? key,
+      required this.marginLeft,
+     })
+      : super(key: key);
+
   static const double _kIconSize = 50;//45.0;
   Widget build(BuildContext context) {
     return Row(
@@ -11,7 +18,7 @@ class AppLogoWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(left: 30),
+          padding: EdgeInsets.only(left: marginLeft??0),
             // color: Colors.red,
         // alignment: Alignment.centerRight,
             height:

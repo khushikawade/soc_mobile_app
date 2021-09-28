@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
@@ -79,18 +80,19 @@ class _StaffPageState extends State<StaffPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (obj.typeC == "PDF") {
-      obj.pdfURL != null
+    } else if (obj.typeC == "Calendar/Events") {
+      obj.calendarId != null && obj.calendarId != ""
           ? Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => CommonPdfViewerPage(
-                        url: obj.pdfURL,
-                        tittle: obj.titleC,
+                  builder: (BuildContext context) => EventPage(
                         isbuttomsheet: true,
+                        appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
+                        // calendarId: obj.calendarId.toString(),
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+          : Utility.showSnackBar(
+              _scaffoldKey, "No calendar/events available", context);
     } else if (obj.typeC == "Sub-Menu") {
       Navigator.push(
           context,
@@ -111,11 +113,57 @@ class _StaffPageState extends State<StaffPage> {
     if (obj.appIconUrlC != null) {
       return Container(
         child: ClipRRect(
+            child: CachedNetworkImage(
+                imageUrl: obj.appIconUrlC!,
+                fit: BoxFit.cover,
+                height: Globals.deviceType == "phone" ? 45 : 55,
+                width: Globals.deviceType == "phone" ? 45 : 55,
+                placeholder: (context, url) => Container(
+                    alignment: Alignment.center,
+                    child: ShimmerLoading(
+                      isLoading: true,
+                      child: Container(
+                        height: 20,
+                        width: 20,
+                        color: Colors.white,
+                      ),
+                    )),
+                errorWidget: (context, url, error) => CachedNetworkImage(
+                      imageUrl:
+                          "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+                      fit: BoxFit.cover,
+                      height: Globals.deviceType == "phone" ? 45 : 55,
+                      width: Globals.deviceType == "phone" ? 45 : 55,
+                      placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: ShimmerLoading(
+                            isLoading: true,
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              color: Colors.white,
+                            ),
+                          )),
+                    ))),
+      );
+    } else if (obj.appIconC != null) {
+      return Icon(
+        IconData(
+          int.parse('0x${obj.appIconC!}'),
+          fontFamily: 'FontAwesomeSolid',
+          fontPackage: 'font_awesome_flutter',
+        ),
+        color: Theme.of(context).colorScheme.primary,
+        size: Globals.deviceType == "phone" ? 24 : 32,
+      );
+    } else {
+      return ClipRRect(
           child: CachedNetworkImage(
-              imageUrl: obj.appIconUrlC!,
+              imageUrl:
+                  "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
               fit: BoxFit.cover,
-              height: Globals.deviceType == "phone" ? 30 : 38,
-              width: Globals.deviceType == "phone" ? 30 : 38,
+              height: Globals.deviceType == "phone" ? 45 : 55,
+              width: Globals.deviceType == "phone" ? 45 : 55,
               placeholder: (context, url) => Container(
                   alignment: Alignment.center,
                   child: ShimmerLoading(
@@ -134,29 +182,7 @@ class _StaffPageState extends State<StaffPage> {
                     ),
                     color: Theme.of(context).colorScheme.primary,
                     size: Globals.deviceType == "phone" ? 20 : 28,
-                  )),
-        ),
-      );
-    } else if (obj.appIconC != null) {
-      return Icon(
-        IconData(
-          int.parse('0x${obj.appIconC!}'),
-          fontFamily: 'FontAwesomeSolid',
-          fontPackage: 'font_awesome_flutter',
-        ),
-        color: Theme.of(context).colorScheme.primary,
-        size: Globals.deviceType == "phone" ? 24 : 32,
-      );
-    } else {
-      return Icon(
-        IconData(
-          0xf550,
-          fontFamily: 'FontAwesomeSolid',
-          fontPackage: 'font_awesome_flutter',
-        ),
-        color: Theme.of(context).colorScheme.primary,
-        size: Globals.deviceType == "phone" ? 20 : 28,
-      );
+                  )));
     }
   }
 
@@ -225,6 +251,7 @@ class _StaffPageState extends State<StaffPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          marginLeft: 30,
           refresh: (v) {
             setState(() {});
           },
