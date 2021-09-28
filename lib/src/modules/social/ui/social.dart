@@ -257,6 +257,7 @@ class _SocialPageState extends State<SocialPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBarWidget(
+          marginLeft: 30,
           refresh: (v) {
             setState(() {});
           },

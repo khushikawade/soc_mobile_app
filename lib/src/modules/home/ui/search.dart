@@ -494,7 +494,7 @@ class _SearchPageState extends State<SearchPage> {
             elevation: 0.0,
             leading: BackButtonWidget(),
             title:
-                SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
+                SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget(marginLeft: 0,))),
         body: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(

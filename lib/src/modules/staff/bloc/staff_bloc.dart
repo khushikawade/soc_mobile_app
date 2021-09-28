@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../globals.dart';
 part 'staff_event.dart';
 part 'staff_state.dart';
 
@@ -25,6 +27,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
       try {
         yield StaffLoading();
         List<StaffList> list = await getStaffDetails();
+        getCalendarId(list);
         if (list.length > 0) {
           list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
           yield StaffDataSucess(
@@ -52,6 +55,14 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
           );}
       } catch (e) {
         yield ErrorInStaffLoading(err: e);
+      }
+    }
+  }
+ getCalendarId(list) {
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].calendarId != null && list[i].calendarId != "") {
+        Globals.calendar_Id = list[i].calendarId;
+        break;
       }
     }
   }

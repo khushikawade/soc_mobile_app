@@ -236,6 +236,7 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
+         marginLeft: 30,
         refresh: (v) {
           setState(() {});
         },

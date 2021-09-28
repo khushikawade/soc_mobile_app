@@ -68,7 +68,7 @@ class _SliderWidgetState extends State<SliderWidget> {
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
           leading: BackButtonWidget(),
-          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget(marginLeft: 0,)),
           actions: <Widget>[
             Row(
               children: [

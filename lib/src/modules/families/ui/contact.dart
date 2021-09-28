@@ -474,6 +474,7 @@ class _ContactPageState extends State<ContactPage> {
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
           language: Globals.selectedLanguage,
+          marginLeft: 30,
         ),
         body: RefreshIndicator(
           key: refreshKey,

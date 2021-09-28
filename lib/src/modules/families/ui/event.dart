@@ -350,7 +350,9 @@ class _EventPageState extends State<EventPage>
           isCenterIcon: true,
           language: Globals.selectedLanguage,
         ),
-        body: RefreshIndicator(
+        body: 
+        
+        RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(
               connectivityBuilder: (

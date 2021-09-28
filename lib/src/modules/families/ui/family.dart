@@ -62,7 +62,7 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   _familiyPageRoute(FamiliesList obj, index) {
-    if (obj.titleC == "Contact") {
+    if (obj.titleC == "Contact" || obj.titleC == "contact") {
       obj.titleC != null
           ? Navigator.push(
               context,
@@ -157,30 +157,37 @@ class _FamilyPageState extends State<FamilyPage> {
       return Container(
         child: ClipRRect(
           child: CachedNetworkImage(
-            imageUrl: obj.appIconUrlC!,
-            fit: BoxFit.cover,
-            height: Globals.deviceType == "phone" ?  30 : 38,
-            width: Globals.deviceType == "phone" ?  30 : 38,
-            placeholder: (context, url) => Container(
-                alignment: Alignment.center,
-                child: ShimmerLoading(
-                  isLoading: true,
-                  child: Container(
-                    height: 20,
-                    width: 20,
-                    color: Colors.white,
-                  ),
-                )),
-            errorWidget: (context, url, error) => Icon(
-        IconData(
-          0xf550,
-          fontFamily: 'FontAwesomeSolid',
-          fontPackage: 'font_awesome_flutter',
-        ),
-        color: Theme.of(context).colorScheme.primary,
-        size: Globals.deviceType == "phone" ? 20 : 28,
-      )
-          ),
+              imageUrl: obj.appIconUrlC!,
+              fit: BoxFit.cover,
+              height: Globals.deviceType == "phone" ? 35 : 43,
+              width: Globals.deviceType == "phone" ? 35 : 43,
+              placeholder: (context, url) => Container(
+                  alignment: Alignment.center,
+                  child: ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      height: 20,
+                      width: 20,
+                      color: Colors.white,
+                    ),
+                  )),
+              errorWidget: (context, url, error) => CachedNetworkImage(
+                      imageUrl:
+                          "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_list_icon+.png",
+                      fit: BoxFit.cover,
+                      height: Globals.deviceType == "phone" ? 35 : 43,
+                      width: Globals.deviceType == "phone" ? 35 : 43,
+                      placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: ShimmerLoading(
+                            isLoading: true,
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              color: Colors.white,
+                            ),
+                          )),
+                    )),
         ),
       );
     } else if (obj.appIconC != null) {
@@ -194,7 +201,24 @@ class _FamilyPageState extends State<FamilyPage> {
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
     } else {
-      return Icon(
+      return ClipRRect(
+          child: CachedNetworkImage(
+                      imageUrl:
+                          "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_list_icon+.png",
+                      fit: BoxFit.cover,
+                      height: Globals.deviceType == "phone" ? 35 : 43,
+                      width: Globals.deviceType == "phone" ? 35 : 43,
+                      placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: ShimmerLoading(
+                            isLoading: true,
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              color: Colors.white,
+                            ),
+                          )),
+                   errorWidget: (context, url, error) =>Icon(
         IconData(
           0xf550,
           fontFamily: 'FontAwesomeSolid',
@@ -202,7 +226,7 @@ class _FamilyPageState extends State<FamilyPage> {
         ),
         color: Theme.of(context).colorScheme.primary,
         size: Globals.deviceType == "phone" ? 20 : 28,
-      );
+      ) ));
     }
   }
 
@@ -252,6 +276,7 @@ class _FamilyPageState extends State<FamilyPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBarWidget(
+        marginLeft: 30,
         refresh: (v) {
           setState(() {});
         },

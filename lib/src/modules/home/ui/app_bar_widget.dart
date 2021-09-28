@@ -19,8 +19,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
   final ValueChanged? refresh;
+  final double? marginLeft;
 
-  AppBarWidget({Key? key, required this.refresh}) : super(key: key);
+  AppBarWidget({Key? key, required this.refresh,required this.marginLeft}) : super(key: key);
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -109,7 +110,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               },
             ),
           ),
-          title: AppLogoWidget(),//SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          title: AppLogoWidget(marginLeft: marginLeft,),//SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: <Widget>[
             SearchButtonWidget(
               language: 'English',
