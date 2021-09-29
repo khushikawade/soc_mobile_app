@@ -11,7 +11,7 @@ class CustomIconWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: ClipRRect(
-          child: CachedNetworkImage(
+          child:CachedNetworkImage(
               imageUrl: iconUrl!,
               height: Globals.deviceType == "phone"
                   ? AppTheme.kIconSize

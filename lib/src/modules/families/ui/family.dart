@@ -153,7 +153,7 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Widget _buildLeading(FamiliesList obj) {
     if (obj.appIconUrlC != null) {
-      return CustomIconWidget(iconUrl: obj.appIconUrlC!,);
+      return CustomIconWidget(iconUrl: obj.appIconUrlC??"https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",);
       // return Container(
       //   child: ClipRRect(
       //     child: CachedNetworkImage(

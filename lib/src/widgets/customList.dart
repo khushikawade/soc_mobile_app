@@ -23,7 +23,7 @@ class ListWidget extends StatelessWidget {
         child: Container(         
           child: ListTile(
             leading: 
-            CustomIconWidget(iconUrl: obj.appIconUrlC!,),
+            CustomIconWidget(iconUrl: obj.appIconUrlC??"https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png"),
             // obj!.appIconC != null && obj!.appIconC.length > 0
             //     ? Icon(
             //         IconData(

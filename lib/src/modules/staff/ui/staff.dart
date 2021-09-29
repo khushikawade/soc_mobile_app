@@ -121,7 +121,7 @@ class _StaffPageState extends State<StaffPage> {
   Widget _buildLeading(StaffList obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconWidget(
-        iconUrl: obj.appIconUrlC!,
+        iconUrl: obj.appIconUrlC??"https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
       );
       // return Container(
       //   child: ClipRRect(
