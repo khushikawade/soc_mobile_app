@@ -20,8 +20,7 @@ class ListWidget extends StatelessWidget {
               ? Theme.of(context).colorScheme.secondary
               : Theme.of(context).colorScheme.background,
         ),
-        child: Container(
-          
+        child: Container(         
           child: ListTile(
             leading: obj!.appIconC != null && obj!.appIconC.length > 0
                 ? Icon(
