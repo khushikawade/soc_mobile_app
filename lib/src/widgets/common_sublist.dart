@@ -50,8 +50,7 @@ class _SubListPageState extends State<SubListPage> {
 
   _route(obj, index) {
     if (obj.typeC == "URL") {
-   
-      // obj.urlC != null 
+      // obj.urlC != null
       //     ? Navigator.push(
       //         context,
       //         MaterialPageRoute(
@@ -62,7 +61,7 @@ class _SubListPageState extends State<SubListPage> {
       //                   language: Globals.selectedLanguage,
       //                 )))
       //     : Utility.showSnackBar(_scaffoldKey, "No link available", context);
- 
+
       obj.appUrlC != null
           ? Navigator.push(
               context,
@@ -171,10 +170,11 @@ class _SubListPageState extends State<SubListPage> {
                             },
                           ),
                         )
-                      :  NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                          );
+                      : NoDataFoundErrorWidget(
+                          isResultNotFoundMsg: false,
+                          isNews: false,
+                          isEvents: false,
+                        );
                 } else {
                   return Container();
                 }
@@ -200,10 +200,11 @@ class _SubListPageState extends State<SubListPage> {
                                 },
                               ),
                             )
-                          :  NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                          );
+                          : NoDataFoundErrorWidget(
+                              isResultNotFoundMsg: false,
+                              isNews: false,
+                              isEvents: false,
+                            );
                     } else {
                       return Container();
                     }

@@ -47,7 +47,9 @@ class _StartupPageState extends State<StartupPage> {
   late AppLifecycleState _notification;
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() { _notification = state; });
+    setState(() {
+      _notification = state;
+    });
     print(_notification);
   }
 
@@ -93,7 +95,10 @@ class _StartupPageState extends State<StartupPage> {
                   ),
                 ),
               )
-            : Text("Loading ...", style: TextStyle(fontSize: 28, color: Colors.black),)
+            : Text(
+                "Loading ...",
+                style: TextStyle(fontSize: 28, color: Colors.black),
+              )
 
         // Image.asset('assets/images/splash_screen_icon.png',
         //     fit: BoxFit.fill),
@@ -172,8 +177,10 @@ class _StartupPageState extends State<StartupPage> {
                         Globals.homeObjet = state.obj;
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
-                        prefs.setString(Strings.SplashUrl,
-                            state.obj["Splash_Screen__c"] ??state.obj["App_Logo__c"]);
+                        prefs.setString(
+                            Strings.SplashUrl,
+                            state.obj["Splash_Screen__c"] ??
+                                state.obj["App_Logo__c"]);
                         state.obj != null
                             ? Navigator.pushReplacement(
                                 context,
@@ -183,10 +190,11 @@ class _StartupPageState extends State<StartupPage> {
                                     homeObj: state.obj,
                                   ),
                                 ))
-                            :  NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                          );
+                            : NoDataFoundErrorWidget(
+                                isResultNotFoundMsg: false,
+                                isNews: false,
+                                isEvents: false,
+                              );
                       } else if (state is HomeErrorReceived) {
                         ErrorMsgWidget();
                       }

@@ -78,35 +78,35 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        isSearch: false,
-        isShare: true,
-        appBarTitle: widget.tittle!,
-        sharedpopBodytext: widget.url.toString(),
-        sharedpopUpheaderText: "Please check out this",
-        language: Globals.selectedLanguage,
-      ),
-      body: widget.url != null && widget.url != ""
-          ? document == null
-              ? Center(
-                  child: CircularProgressIndicator(
-                  valueColor:
-                      new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
-                ))
-              : PDFViewer(
-                  document: document!,
-                  enableSwipeNavigation: true,
-                  showIndicator: true,
-                  lazyLoad: false,
-                  showNavigation: false,
-                  showPicker: false,
-                  zoomSteps: 2,
-                  scrollDirection: Axis.vertical,
-                )
-          : NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                          )
-    );
+        appBar: CustomAppBarWidget(
+          isSearch: false,
+          isShare: true,
+          appBarTitle: widget.tittle!,
+          sharedpopBodytext: widget.url.toString(),
+          sharedpopUpheaderText: "Please check out this",
+          language: Globals.selectedLanguage,
+        ),
+        body: widget.url != null && widget.url != ""
+            ? document == null
+                ? Center(
+                    child: CircularProgressIndicator(
+                    valueColor:
+                        new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
+                  ))
+                : PDFViewer(
+                    document: document!,
+                    enableSwipeNavigation: true,
+                    showIndicator: true,
+                    lazyLoad: false,
+                    showNavigation: false,
+                    showPicker: false,
+                    zoomSteps: 2,
+                    scrollDirection: Axis.vertical,
+                  )
+            : NoDataFoundErrorWidget(
+                isResultNotFoundMsg: false,
+                isNews: false,
+                isEvents: false,
+              ));
   }
 }

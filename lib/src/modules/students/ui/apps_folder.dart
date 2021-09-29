@@ -56,26 +56,23 @@ class AppsFolderPageState extends State<AppsFolderPage>
 
   _launchURL(obj) async {
     if (obj.deepLinkC == 'NO') {
-
-      if(obj.appUrlC!.toString().split(":")[0]=='http'){
-   if (await canLaunch(obj.appUrlC!)) {
-  await launch(obj.appUrlC!);  
+      if (obj.appUrlC!.toString().split(":")[0] == 'http') {
+        if (await canLaunch(obj.appUrlC!)) {
+          await launch(obj.appUrlC!);
         } else {
           throw 'Could not launch ${obj.appUrlC!}';
         }
-         }
-                else{
-                  Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => InAppUrlLauncer(
-                  title: obj.titleC!,
-                  url: obj.appUrlC!,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                )));
-                }
-
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => InAppUrlLauncer(
+                      title: obj.titleC!,
+                      url: obj.appUrlC!,
+                      isbuttomsheet: true,
+                      language: Globals.selectedLanguage,
+                    )));
+      }
     } else {
       await launch(obj.appUrlC!);
     }
@@ -97,8 +94,8 @@ class AppsFolderPageState extends State<AppsFolderPage>
                 // color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0))),
-            child:ClipRRect(
-        borderRadius: BorderRadius.circular(20.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
               child: Scaffold(
                 body: Padding(
                   padding: const EdgeInsets.only(
@@ -125,7 +122,8 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                     apps[index].appIconC ?? '',
                                                 placeholder: (context, url) =>
                                                     Container(
-                                                        alignment: Alignment.center,
+                                                        alignment:
+                                                            Alignment.center,
                                                         child: ShimmerLoading(
                                                           isLoading: true,
                                                           child: Container(
@@ -143,51 +141,66 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                   "English" &&
                                               Globals.selectedLanguage != ""
                                           ? TranslationWidget(
-                                              message: 
-                                                  apps[index].appFolderc != null &&
-                                                          widget.folderName ==
-                                                              apps[index].appFolderc
-                                                      ? "${apps[index].titleC}"
-                                                      : '',
+                                              message: apps[index].appFolderc !=
+                                                          null &&
+                                                      widget.folderName ==
+                                                          apps[index].appFolderc
+                                                  ? "${apps[index].titleC}"
+                                                  : '',
                                               fromLanguage: "en",
-                                              toLanguage: Globals.selectedLanguage,
+                                              toLanguage:
+                                                  Globals.selectedLanguage,
                                               builder: (translatedMessage) =>
                                                   Container(
-                                        alignment: Alignment.center,
-                                        padding: EdgeInsets.symmetric(horizontal: 10),
-                                        width: MediaQuery.of(context).size.width*0.3,
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child:Text(
-                                                          translatedMessage.toString(),
-                                                          style: Theme.of(context)
-                                                              .textTheme
-                                                              .bodyText2!),
-                                                  ),),
-                                            )
-                                          : 
-                                   Container(
-                                        alignment: Alignment.center,
-                                        padding: EdgeInsets.symmetric(horizontal: 10),
-                                        width: MediaQuery.of(context).size.width*0.3,
-                                        child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,     
-                                          child:  Text(
-                                                apps[index].appFolderc != null &&
-                                                        widget.folderName ==
-                                                            apps[index].appFolderc
-                                                    ? "${apps[index].titleC}"
-                                                    : '',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2!
-                                                    .copyWith(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primaryVariant,
-                                                    ),
+                                                alignment: Alignment.center,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.3,
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  child: Text(
+                                                      translatedMessage
+                                                          .toString(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2!),
+                                                ),
                                               ),
-                                            ),),
+                                            )
+                                          : Container(
+                                              alignment: Alignment.center,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10),
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.3,
+                                              child: SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Text(
+                                                  apps[index].appFolderc !=
+                                                              null &&
+                                                          widget.folderName ==
+                                                              apps[index]
+                                                                  .appFolderc
+                                                      ? "${apps[index].titleC}"
+                                                      : '',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2!
+                                                      .copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primaryVariant,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
                                     ],
                                   ));
                             },

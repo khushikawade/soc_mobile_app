@@ -11,6 +11,7 @@ import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -253,92 +254,117 @@ class _EventPageState extends State<EventPage>
       DefaultTabController(
           length: 2,
           initialIndex: 0,
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  child: TabBar(
-                    indicatorSize: TabBarIndicatorSize.label,
-                    labelColor: Theme.of(context).colorScheme.primaryVariant,
-                    indicatorColor: Theme.of(context).colorScheme.primary,
-                    unselectedLabelColor: Colors.black,
-                    unselectedLabelStyle: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.normal,
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                    ),
-                    tabs: [
-                      Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English" &&
-                              Globals.selectedLanguage != ""
-                          ? TranslationWidget(
-                              message: "Upcoming",
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Tab(
-                                text: translatedMessage.toString(),
-                              ),
-                            )
-                          : Tab(text: 'Upcoming'),
-                      Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English" &&
-                              Globals.selectedLanguage != ""
-                          ? TranslationWidget(
-                              message: "Past",
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Tab(
-                                text: translatedMessage.toString(),
-                              ),
-                            )
-                          : Tab(text: 'Past'),
-                    ],
-                  ),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
+                  Widget>[
+            Container(
+              child: TabBar(
+                indicatorSize: TabBarIndicatorSize.label,
+                labelColor: Theme.of(context).colorScheme.primaryVariant,
+                indicatorColor: Theme.of(context).colorScheme.primary,
+                unselectedLabelColor: Colors.black,
+                unselectedLabelStyle: TextStyle(
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.normal,
+                  color: Theme.of(context).colorScheme.primaryVariant,
                 ),
-                Container(
-                    height: Globals.deviceType == "phone"
-                        ? MediaQuery.of(context).size.height * 0.75
-                        : MediaQuery.of(context).size.height * 0.85,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(color: Colors.grey, width: 0.5))),
-                    child: TabBarView(children: <Widget>[
-                      Tab(
+                labelStyle: TextStyle(
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.primaryVariant,
+                ),
+                tabs: [
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English" &&
+                          Globals.selectedLanguage != ""
+                      ? TranslationWidget(
+                          message: "Upcoming",
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Tab(
+                            text: translatedMessage.toString(),
+                          ),
+                        )
+                      : Tab(text: 'Upcoming'),
+                  Globals.selectedLanguage != null &&
+                          Globals.selectedLanguage != "English" &&
+                          Globals.selectedLanguage != ""
+                      ? TranslationWidget(
+                          message: "Past",
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Tab(
+                            text: translatedMessage.toString(),
+                          ),
+                        )
+                      : Tab(text: 'Past'),
+                ],
+              ),
+            ),
+            Container(
+                height: Globals.deviceType == "phone"
+                    ? MediaQuery.of(context).size.height * 0.75
+                    : MediaQuery.of(context).size.height * 0.85,
+                decoration: BoxDecoration(
+                    border: Border(
+                        top: BorderSide(color: Colors.grey, width: 0.5))),
+                child: TabBarView(children: <Widget>[
+                  state.futureListobj!.length > 0
+                      ? Tab(
                           child: new RefreshIndicator(
-                        child: new ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            padding: Platform.isAndroid
-                                ? EdgeInsets.only(bottom: 20)
-                                : EdgeInsets.only(bottom: 60),
-                            itemCount: state.futureListobj!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return _buildList(state.futureListobj![index],
-                                  index, state.futureListobj);
-                            }),
-                        onRefresh: refreshPage,
-                      )),
-                      Tab(
+                          child: new ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              padding: Platform.isAndroid
+                                  ? EdgeInsets.only(bottom: 20)
+                                  : EdgeInsets.only(bottom: 60),
+                              itemCount: state.futureListobj!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return state.futureListobj!.length > 0
+                                    ? _buildList(state.futureListobj![index],
+                                        index, state.futureListobj)
+                                    : NoDataFoundErrorWidget(
+                                        isResultNotFoundMsg: false,
+                                        isNews: false,
+                                        isEvents: true,
+                                      );
+                              }),
+                          onRefresh: refreshPage,
+                        ))
+                      : NoDataFoundErrorWidget(
+                          isResultNotFoundMsg: false,
+                          isNews: false,
+                          isEvents: true,
+                        ),
+                  state.pastListobj!.length > 0
+                      ? Tab(
                           child: new RefreshIndicator(
-                        child: new ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            padding: EdgeInsets.only(bottom: 20),
-                            itemCount: state.pastListobj!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return _buildList(state.pastListobj![index],
-                                  index, state.pastListobj);
-                            }),
-                        onRefresh: refreshPage,
-                      ))
-                    ])),
-              ]))
+                          child: new ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              padding: EdgeInsets.only(bottom: 20),
+                              itemCount: state.pastListobj!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return state.pastListobj!.length > 0
+                                    ? _buildList(state.pastListobj![index],
+                                        index, state.pastListobj)
+                                    : NoDataFoundErrorWidget(
+                                        isResultNotFoundMsg: false,
+                                        isNews: false,
+                                        isEvents: true,
+                                      );
+                              }),
+                          onRefresh: refreshPage,
+                        ))
+                      : NoDataFoundErrorWidget(
+                          isResultNotFoundMsg: false,
+                          isNews: false,
+                          isEvents: true,
+                        )
+                ])),
+          ]))
     ]);
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
@@ -350,9 +376,7 @@ class _EventPageState extends State<EventPage>
           isCenterIcon: true,
           language: Globals.selectedLanguage,
         ),
-        body: 
-        
-        RefreshIndicator(
+        body: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(
               connectivityBuilder: (

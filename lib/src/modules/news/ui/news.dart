@@ -24,7 +24,7 @@ class NewsPage extends StatefulWidget {
   _NewsPageState createState() => _NewsPageState();
 }
 
-class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver{
+class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   static const double _kIconSize = 48.0;
   static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
@@ -41,16 +41,19 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver{
     super.initState();
     bloc.add(FetchNotificationList());
     hideIndicator();
-     WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   // setindexvalue() async {
   //   SharedPreferences pref = await SharedPreferences.getInstance();
   //   pref.setInt(Strings.bottomNavigation, 0);
   // }
-void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() { _notification = state; });
-if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _notification = state;
+    });
+    if (_notification == AppLifecycleState.resumed)
+      bloc.add(FetchNotificationList());
   }
 
   hideIndicator() async {
@@ -58,20 +61,20 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
     setState(() {
       Globals.indicator.value = false;
       pref.setInt(Strings.bottomNavigation, 0);
-      Globals.homeIndex=0;
+      Globals.homeIndex = 0;
     });
 
- OneSignal.shared.setNotificationWillShowInForegroundHandler(
+    OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
-         Globals.indicator.value = true;
+      Globals.indicator.value = true;
       bloc.add(FetchNotificationList());
     });
   }
 
   @override
   void dispose() {
-     WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -103,17 +106,21 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
           children: <Widget>[
             Container(
               alignment: Alignment.center,
-              width: Globals.deviceType == "phone" ?_kIconSize * 1.4:_kIconSize * 2,
-              height: Globals.deviceType == "phone" ?_kIconSize * 1.5:_kIconSize * 2,
+              width: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
+              height: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.5
+                  : _kIconSize * 2,
               child: obj.image != null
                   ? ClipRRect(
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           showDialog(
-                            context: context,
-                            builder: (_) => NewsImagePage(imageURL: obj.image!)     
-                          );
-                       },
+                              context: context,
+                              builder: (_) =>
+                                  NewsImagePage(imageURL: obj.image!));
+                        },
                         child: CachedNetworkImage(
                           imageUrl: obj.image!,
                           placeholder: (context, url) => Container(
@@ -126,23 +133,34 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
                                   color: Colors.white,
                                 ),
                               )),
-                          errorWidget: (context, url, error) => Icon(Icons.error),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
                       ),
                     )
                   : Container(
-                     width: Globals.deviceType == "phone" ?_kIconSize * 1.4:_kIconSize * 2,
-              height: Globals.deviceType == "phone" ?_kIconSize * 1.5:_kIconSize * 2,
+                      width: Globals.deviceType == "phone"
+                          ? _kIconSize * 1.4
+                          : _kIconSize * 2,
+                      height: Globals.deviceType == "phone"
+                          ? _kIconSize * 1.5
+                          : _kIconSize * 2,
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           showDialog(
-                            context: context,
-                            builder: (_) => NewsImagePage(imageURL: Globals.splashImageUrl!=null && Globals.splashImageUrl!=""?Globals.splashImageUrl:Globals.homeObjet["App_Logo__c"])     
-                          );
-                       },
+                              context: context,
+                              builder: (_) => NewsImagePage(
+                                  imageURL: Globals.splashImageUrl != null &&
+                                          Globals.splashImageUrl != ""
+                                      ? Globals.splashImageUrl
+                                      : Globals.homeObjet["App_Logo__c"]));
+                        },
                         child: CachedNetworkImage(
-                          imageUrl: Globals.splashImageUrl!=null && Globals.splashImageUrl!=""?Globals.splashImageUrl:Globals.homeObjet["App_Logo__c"],
+                          imageUrl: Globals.splashImageUrl != null &&
+                                  Globals.splashImageUrl != ""
+                              ? Globals.splashImageUrl
+                              : Globals.homeObjet["App_Logo__c"],
                           placeholder: (context, url) => Container(
                               alignment: Alignment.center,
                               child: ShimmerLoading(
@@ -165,16 +183,16 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
             Expanded(
               // flex: 5,
               child: Container(
-                  // padding: EdgeInsets.symmetric(
-                  //     vertical: _kLabelSpacing / 2,),
-                  child: 
-                  // Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     mainAxisAlignment: MainAxisAlignment.start,
-                  //     children: [
-                        _buildnewsHeading(obj),
-                      // ])
-                      ),
+                // padding: EdgeInsets.symmetric(
+                //     vertical: _kLabelSpacing / 2,),
+                child:
+                    // Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     mainAxisAlignment: MainAxisAlignment.start,
+                    //     children: [
+                    _buildnewsHeading(obj),
+                // ])
+              ),
             ),
           ],
         ),
@@ -189,9 +207,9 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message:obj.headings != "" &&
-                                  obj.headings != null 
-                              ? obj.headings["en"].toString(): obj.contents["en"] ?? '-',
+                message: obj.headings != "" && obj.headings != null
+                    ? obj.headings["en"].toString()
+                    : obj.contents["en"] ?? '-',
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
@@ -201,9 +219,9 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
                 ),
               )
             : Text(
-               obj.headings != "" &&
-                                  obj.headings != null 
-                              ? obj.headings["en"].toString(): obj.contents["en"] ?? '-',
+                obj.headings != "" && obj.headings != null
+                    ? obj.headings["en"].toString()
+                    : obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: Theme.of(context).textTheme.headline4!,
@@ -236,7 +254,7 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
-         marginLeft: 30,
+        marginLeft: 30,
         refresh: (v) {
           setState(() {});
         },
@@ -262,7 +280,7 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
 
               return connected
                   ? Column(
-                     mainAxisSize: MainAxisSize.max,
+                      mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -273,10 +291,12 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
                                 return state.obj != null &&
                                         state.obj!.length > 0
                                     ? _buildList(state.obj)
-                                    : 
-                                      Expanded(
+                                    : Expanded(
                                         child: NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,isNews:true),
+                                          isResultNotFoundMsg: false,
+                                          isNews: true,
+                                          isEvents: false,
+                                        ),
                                       );
                               } else if (state is NewsLoading) {
                                 return Expanded(
@@ -288,10 +308,9 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
                                   ),
                                 );
                               } else if (state is NewsErrorReceived) {
-                                return 
-                                ListView(
-                                  shrinkWrap: true,
-                                  children: [ErrorMsgWidget()]);
+                                return ListView(
+                                    shrinkWrap: true,
+                                    children: [ErrorMsgWidget()]);
                               } else {
                                 return Container();
                               }
@@ -305,17 +324,19 @@ if(_notification== AppLifecycleState.resumed)bloc.add(FetchNotificationList());
                               if (state is NewsLoaded) {
                                 object = state.obj;
                                 SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        SharedPreferences intPrefs =
-                            await SharedPreferences.getInstance();
-                        intPrefs.getInt("totalCount") == null
-                            ? intPrefs.setInt("totalCount", Globals.notiCount!)
-                            : intPrefs.getInt("totalCount");
-                        // print(intPrefs.getInt("totalCount"));
-                        if (Globals.notiCount! >
-                            intPrefs.getInt("totalCount")!) {
-                          intPrefs.setInt("totalCount", Globals.notiCount!);
-                        }
+                                    await SharedPreferences.getInstance();
+                                SharedPreferences intPrefs =
+                                    await SharedPreferences.getInstance();
+                                intPrefs.getInt("totalCount") == null
+                                    ? intPrefs.setInt(
+                                        "totalCount", Globals.notiCount!)
+                                    : intPrefs.getInt("totalCount");
+                                // print(intPrefs.getInt("totalCount"));
+                                if (Globals.notiCount! >
+                                    intPrefs.getInt("totalCount")!) {
+                                  intPrefs.setInt(
+                                      "totalCount", Globals.notiCount!);
+                                }
                               }
                             },
                             child: Container(),

@@ -116,8 +116,12 @@ class _StaffPageState extends State<StaffPage> {
             child: CachedNetworkImage(
                 imageUrl: obj.appIconUrlC!,
                 fit: BoxFit.cover,
-                height: Globals.deviceType == "phone" ? 45 : 55,
-                width: Globals.deviceType == "phone" ? 45 : 55,
+                height: Globals.deviceType == "phone"
+                    ? AppTheme.kIconSize
+                    : AppTheme.kTabIconSize,
+                width: Globals.deviceType == "phone"
+                    ? AppTheme.kIconSize
+                    : AppTheme.kTabIconSize,
                 placeholder: (context, url) => Container(
                     alignment: Alignment.center,
                     child: ShimmerLoading(
@@ -132,8 +136,12 @@ class _StaffPageState extends State<StaffPage> {
                       imageUrl:
                           "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
                       fit: BoxFit.cover,
-                      height: Globals.deviceType == "phone" ? 45 : 55,
-                      width: Globals.deviceType == "phone" ? 45 : 55,
+                      height: Globals.deviceType == "phone"
+                          ? AppTheme.kIconSize
+                          : AppTheme.kTabIconSize,
+                      width: Globals.deviceType == "phone"
+                          ? AppTheme.kIconSize
+                          : AppTheme.kTabIconSize,
                       placeholder: (context, url) => Container(
                           alignment: Alignment.center,
                           child: ShimmerLoading(
@@ -162,8 +170,12 @@ class _StaffPageState extends State<StaffPage> {
               imageUrl:
                   "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
               fit: BoxFit.cover,
-              height: Globals.deviceType == "phone" ? 45 : 55,
-              width: Globals.deviceType == "phone" ? 45 : 55,
+              height: Globals.deviceType == "phone"
+                  ? AppTheme.kIconSize
+                  : AppTheme.kTabIconSize,
+              width: Globals.deviceType == "phone"
+                  ? AppTheme.kIconSize
+                  : AppTheme.kTabIconSize,
               placeholder: (context, url) => Container(
                   alignment: Alignment.center,
                   child: ShimmerLoading(
@@ -244,6 +256,7 @@ class _StaffPageState extends State<StaffPage> {
             : NoDataFoundErrorWidget(
                 isResultNotFoundMsg: false,
                 isNews: false,
+                isEvents: false,
               ));
   }
 
@@ -307,6 +320,7 @@ class _StaffPageState extends State<StaffPage> {
                                         child: NoDataFoundErrorWidget(
                                         isResultNotFoundMsg: false,
                                         isNews: false,
+                                        isEvents: false,
                                       ));
                                 // ]);
                               } else if (state is ErrorInStaffLoading) {

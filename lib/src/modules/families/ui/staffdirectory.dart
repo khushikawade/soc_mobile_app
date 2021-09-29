@@ -325,6 +325,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                             NoDataFoundErrorWidget(
                                               isResultNotFoundMsg: false,
                                               isNews: false,
+                                              isEvents: false,
                                             )
                                           ]));
                                   } else if (state is ErrorLoading) {

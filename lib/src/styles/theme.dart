@@ -62,6 +62,9 @@ class AppTheme {
   static const double kCaptionFontSize = 14.0;
   static const double kBottomSheetTitleSize = 20.0;
   static const double kSize = 8.0;
+  static const double kIconSize = 45.0;
+  static const double kTabIconSize = 55.0;
+
 
   //Borders
   static const double kBorderRadius = 0.0;

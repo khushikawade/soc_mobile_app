@@ -30,7 +30,7 @@ class StudentPage extends StatefulWidget {
 class _StudentPageState extends State<StudentPage> {
   static const double _kLableSpacing = 12.0;
   int? gridLength;
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
@@ -49,44 +49,44 @@ class _StudentPageState extends State<StudentPage> {
   }
 
   _launchURL(StudentApp obj, subList) async {
-    if(obj.appUrlC != null ){
-    if (obj.appUrlC == 'app_folder') { 
-      showDialog(
-        context: context,
-        builder: (_) => AppsFolderPage(
-          obj: subList,
-          folderName: obj.titleC!,
-        ),
-      );
-    } else {
-      if (obj.deepLinkC == 'NO') {
-        if(obj.toString().split(":")[0]=='http'){
-          if (await canLaunch(obj.appUrlC!)) {
-            await launch(obj.appUrlC!);  
-          } else {
-            throw 'Could not launch ${obj.appUrlC!}';
-        }
-      }
-      else{
-                  Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => InAppUrlLauncer(
-                  title: obj.titleC!,
-                  url: obj.appUrlC!,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                )));
-                }
+    if (obj.appUrlC != null) {
+      if (obj.appUrlC == 'app_folder') {
+        showDialog(
+          context: context,
+          builder: (_) => AppsFolderPage(
+            obj: subList,
+            folderName: obj.titleC!,
+          ),
+        );
       } else {
-        if (await canLaunch(obj.appUrlC!)) {
-          await launch(obj.appUrlC!);
+        if (obj.deepLinkC == 'NO') {
+          if (obj.toString().split(":")[0] == 'http') {
+            if (await canLaunch(obj.appUrlC!)) {
+              await launch(obj.appUrlC!);
+            } else {
+              throw 'Could not launch ${obj.appUrlC!}';
+            }
+          } else {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => InAppUrlLauncer(
+                          title: obj.titleC!,
+                          url: obj.appUrlC!,
+                          isbuttomsheet: true,
+                          language: Globals.selectedLanguage,
+                        )));
+          }
         } else {
-          throw 'Could not launch ${obj.appUrlC}';
+          if (await canLaunch(obj.appUrlC!)) {
+            await launch(obj.appUrlC!);
+          } else {
+            throw 'Could not launch ${obj.appUrlC}';
+          }
         }
       }
-    }}else{
-       Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+    } else {
+      Utility.showSnackBar(_scaffoldKey, "No URL available", context);
     }
   }
 
@@ -139,139 +139,215 @@ class _StudentPageState extends State<StudentPage> {
                                 )
                               : EmptyContainer(),
                           Container(
-                            child: Globals.selectedLanguage != null &&
-                                    Globals.selectedLanguage != "English" &&
-                                    Globals.selectedLanguage != ""
-                                ? TranslationWidget(
-                                    message: "${list[index].titleC}",
-                                    fromLanguage: "en",
-                                    toLanguage: Globals.selectedLanguage,
-                                    builder: (translatedMessage) => Container(
-                                      // alignment: Alignment.center,
-                                      // padding: EdgeInsets.symmetric(horizontal: 10),
-                                      // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
-                                      child:
-                                      orientation == Orientation.portrait&&
-                                        translatedMessage.toString().length>11?
-                                      Expanded(
-                                        child: Marquee(text: translatedMessage.toString(),
-                                        style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24),
+                              child: Globals.selectedLanguage != null &&
+                                      Globals.selectedLanguage != "English" &&
+                                      Globals.selectedLanguage != ""
+                                  ? TranslationWidget(
+                                      message: "${list[index].titleC}",
+                                      fromLanguage: "en",
+                                      toLanguage: Globals.selectedLanguage,
+                                      builder: (translatedMessage) => Container(
+                                        // alignment: Alignment.center,
+                                        // padding: EdgeInsets.symmetric(horizontal: 10),
+                                        // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
+                                        child: orientation ==
+                                                    Orientation.portrait &&
+                                                translatedMessage
+                                                        .toString()
+                                                        .length >
+                                                    11
+                                            ? Expanded(
+                                                child: Marquee(
+                                                  text: translatedMessage
+                                                      .toString(),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1!
+                                                      .copyWith(
+                                                          fontSize:
+                                                              Globals.deviceType ==
+                                                                      "phone"
+                                                                  ? 16
+                                                                  : 24),
+                                                  scrollAxis: Axis.horizontal,
+                                                  velocity: 30.0,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  blankSpace: 50,
+                                                  //MediaQuery.of(context).size.width
+                                                  // velocity: 100.0,
+                                                  pauseAfterRound:
+                                                      Duration(seconds: 5),
+                                                  showFadingOnlyWhenScrolling:
+                                                      true,
+                                                  startPadding: 10.0,
+                                                  accelerationDuration:
+                                                      Duration(seconds: 1),
+                                                  accelerationCurve:
+                                                      Curves.linear,
+                                                  decelerationDuration:
+                                                      Duration(
+                                                          milliseconds: 500),
+                                                  decelerationCurve:
+                                                      Curves.easeOut,
+                                                ),
+                                              )
+                                            : orientation ==
+                                                        Orientation.landscape &&
+                                                    translatedMessage
+                                                            .toString()
+                                                            .length >
+                                                        18
+                                                ? Expanded(
+                                                    child: Marquee(
+                                                    text: translatedMessage
+                                                        .toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText1!
+                                                        .copyWith(
+                                                            fontSize:
+                                                                Globals.deviceType ==
+                                                                        "phone"
+                                                                    ? 16
+                                                                    : 24),
+                                                    scrollAxis: Axis.horizontal,
+                                                    velocity: 30.0,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+
+                                                    blankSpace:
+                                                        50, //MediaQuery.of(context).size.width
+                                                    // velocity: 100.0,
+                                                    pauseAfterRound:
+                                                        Duration(seconds: 5),
+                                                    showFadingOnlyWhenScrolling:
+                                                        true,
+                                                    startPadding: 10.0,
+                                                    accelerationDuration:
+                                                        Duration(seconds: 1),
+                                                    accelerationCurve:
+                                                        Curves.linear,
+                                                    decelerationDuration:
+                                                        Duration(
+                                                            milliseconds: 500),
+                                                    decelerationCurve:
+                                                        Curves.easeOut,
+                                                  ))
+                                                : SingleChildScrollView(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    child: Text(
+                                                        translatedMessage
+                                                            .toString(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText1!
+                                                            .copyWith(
+                                                                fontSize: Globals
+                                                                            .deviceType ==
+                                                                        "phone"
+                                                                    ? 16
+                                                                    : 24)),
+                                                  ),
+                                      ),
+                                    )
+                                  : orientation == Orientation.portrait &&
+                                          list[index].titleC!.length > 11
+                                      ? Expanded(
+                                          child: Marquee(
+                                          text: "${list[index].titleC}",
+
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1!
+                                              .copyWith(
+                                                  fontSize:
+                                                      Globals.deviceType ==
+                                                              "phone"
+                                                          ? 16
+                                                          : 24),
                                           scrollAxis: Axis.horizontal,
                                           velocity: 30.0,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        blankSpace: 50,
-                                        //MediaQuery.of(context).size.width
-                                        // velocity: 100.0, 
-                                        pauseAfterRound: Duration(seconds: 5),
-                                        showFadingOnlyWhenScrolling: true,
-                                        startPadding: 10.0,
-                                        accelerationDuration: Duration(seconds: 1),
-                                        accelerationCurve: Curves.linear,
-                                        decelerationDuration: Duration(milliseconds: 500),
-                                        decelerationCurve: Curves.easeOut,
-                                        ),
-                                      )
-                                      :
-                                      orientation == Orientation.landscape&&
-                                        translatedMessage.toString().length>18?
-                                        Expanded(
-                                        child: 
-                                        Marquee(text: translatedMessage.toString(),
-                                        style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24),
-                                          scrollAxis: Axis.horizontal,
-                                          velocity: 30.0,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        
-                                        blankSpace: 50,//MediaQuery.of(context).size.width
-                                        // velocity: 100.0,
-                                        pauseAfterRound: Duration(seconds: 5),
-                                        showFadingOnlyWhenScrolling: true,
-                                        startPadding: 10.0,
-                                        accelerationDuration: Duration(seconds: 1),
-                                        accelerationCurve: Curves.linear,
-                                        decelerationDuration: Duration(milliseconds: 500),
-                                        decelerationCurve: Curves.easeOut,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+
+                                          blankSpace:
+                                              50, //MediaQuery.of(context).size.width
+                                          // velocity: 100.0,
+                                          pauseAfterRound: Duration(seconds: 5),
+                                          showFadingOnlyWhenScrolling: true,
+                                          startPadding: 10.0,
+
+                                          accelerationDuration:
+                                              Duration(seconds: 1),
+                                          accelerationCurve: Curves.linear,
+                                          decelerationDuration:
+                                              Duration(milliseconds: 500),
+                                          decelerationCurve: Curves.easeOut,
                                         ))
-                                        :
-                                       SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Text(
-                                            translatedMessage.toString(),
-                                            textAlign: TextAlign.center,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
-                                      ),
-                                    ),
-                                  )
-                                :                                
-                                      orientation == Orientation.portrait&&
-                                        list[index].titleC!.length>11?
-                                      Expanded(
-                                        child: 
-                                        Marquee(text: "${list[index].titleC}",
-                                        
-                                        style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24),
-                                          scrollAxis: Axis.horizontal,
-                                          velocity: 30.0,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        
-                                        blankSpace: 50,//MediaQuery.of(context).size.width
-                                        // velocity: 100.0,
-                                        pauseAfterRound: Duration(seconds: 5),
-                                        showFadingOnlyWhenScrolling: true,
-                                        startPadding: 10.0,
-                                        
-                                        accelerationDuration: Duration(seconds: 1),
-                                        accelerationCurve: Curves.linear,
-                                        decelerationDuration: Duration(milliseconds: 500),
-                                        decelerationCurve: Curves.easeOut,
-                                        )):orientation == Orientation.landscape&&
-                                        list[index].titleC!.length>18?
-                                        Expanded(
-                                        child: 
-                                        Marquee(text: "${list[index].titleC}",
-                                        
-                                        style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24),
-                                          scrollAxis: Axis.horizontal,
-                                          velocity: 30.0,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        
-                                        blankSpace: 50,//MediaQuery.of(context).size.width
-                                        // velocity: 100.0,
-                                        pauseAfterRound: Duration(seconds: 5),
-                                        showFadingOnlyWhenScrolling: true,
-                                        startPadding: 10.0,
-                                        
-                                        accelerationDuration: Duration(seconds: 1),
-                                        accelerationCurve: Curves.linear,
-                                        decelerationDuration: Duration(milliseconds: 500),
-                                        decelerationCurve: Curves.easeOut,
-                                        )):
-                                        Container(
-                                      alignment: Alignment.center,
-                                      padding: EdgeInsets.symmetric(horizontal: 10),
-                                      // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Text(
-                                            "${list[index].titleC}",
-                                            textAlign: TextAlign.center,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1!.copyWith(fontSize:Globals.deviceType == "phone"? 16:24)),
-                                      ),
-                                        )
-                                      // ),)))
-                          ),
+                                      : orientation == Orientation.landscape &&
+                                              list[index].titleC!.length > 18
+                                          ? Expanded(
+                                              child: Marquee(
+                                              text: "${list[index].titleC}",
+
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .copyWith(
+                                                      fontSize:
+                                                          Globals.deviceType ==
+                                                                  "phone"
+                                                              ? 16
+                                                              : 24),
+                                              scrollAxis: Axis.horizontal,
+                                              velocity: 30.0,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+
+                                              blankSpace:
+                                                  50, //MediaQuery.of(context).size.width
+                                              // velocity: 100.0,
+                                              pauseAfterRound:
+                                                  Duration(seconds: 5),
+                                              showFadingOnlyWhenScrolling: true,
+                                              startPadding: 10.0,
+
+                                              accelerationDuration:
+                                                  Duration(seconds: 1),
+                                              accelerationCurve: Curves.linear,
+                                              decelerationDuration:
+                                                  Duration(milliseconds: 500),
+                                              decelerationCurve: Curves.easeOut,
+                                            ))
+                                          : Container(
+                                              alignment: Alignment.center,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10),
+                                              // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
+                                              child: SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Text(
+                                                    "${list[index].titleC}",
+                                                    textAlign: TextAlign.center,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText1!
+                                                        .copyWith(
+                                                            fontSize:
+                                                                Globals.deviceType ==
+                                                                        "phone"
+                                                                    ? 16
+                                                                    : 24)),
+                                              ),
+                                            )
+                              // ),)))
+                              ),
                         ],
                       ));
                 },
@@ -307,9 +383,9 @@ class _StudentPageState extends State<StudentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
+        key: _scaffoldKey,
         appBar: AppBarWidget(
-           marginLeft: 30,
+          marginLeft: 30,
           refresh: (v) {
             setState(() {});
           },
@@ -348,13 +424,14 @@ class _StudentPageState extends State<StudentPage> {
                                       child: _buildGrid(
                                           state.obj!, state.subFolder!),
                                     )
-                                  : 
+                                  :
                                   // ListView(children: [
-                                     NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                          );
-                                    // ]);
+                                  NoDataFoundErrorWidget(
+                                      isResultNotFoundMsg: false,
+                                      isNews: false,
+                                      isEvents: false,
+                                    );
+                              // ]);
                             } else if (state is StudentError) {
                               return ListView(children: [ErrorMsgWidget()]);
                             }

@@ -396,6 +396,7 @@ class _SearchPageState extends State<SearchPage> {
                     :  NoDataFoundErrorWidget(
                                             isResultNotFoundMsg: false,
                                             isNews: false,
+                                            isEvents: false,
                                           ));
           } else if (state is SearchLoading) {
             return Expanded(

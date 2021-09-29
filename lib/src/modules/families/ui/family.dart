@@ -159,8 +159,12 @@ class _FamilyPageState extends State<FamilyPage> {
           child: CachedNetworkImage(
               imageUrl: obj.appIconUrlC!,
               fit: BoxFit.cover,
-              height: Globals.deviceType == "phone" ? 45 : 55,
-              width: Globals.deviceType == "phone" ? 45 : 55,
+              height: Globals.deviceType == "phone"
+                  ? AppTheme.kIconSize
+                  : AppTheme.kTabIconSize,
+              width: Globals.deviceType == "phone"
+                  ? AppTheme.kIconSize
+                  : AppTheme.kTabIconSize,
               placeholder: (context, url) => Container(
                   alignment: Alignment.center,
                   child: ShimmerLoading(
@@ -172,22 +176,26 @@ class _FamilyPageState extends State<FamilyPage> {
                     ),
                   )),
               errorWidget: (context, url, error) => CachedNetworkImage(
-                      imageUrl:
-                          "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
-                      fit: BoxFit.cover,
-                      height: Globals.deviceType == "phone" ? 45 : 55,
-                      width: Globals.deviceType == "phone" ? 45 : 55,
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              height: 20,
-                              width: 20,
-                              color: Colors.white,
-                            ),
-                          )),
-                    )),
+                    imageUrl:
+                        "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+                    fit: BoxFit.cover,
+                    height: Globals.deviceType == "phone"
+                        ? AppTheme.kIconSize
+                        : AppTheme.kTabIconSize,
+                    width: Globals.deviceType == "phone"
+                        ? AppTheme.kIconSize
+                        : AppTheme.kTabIconSize,
+                    placeholder: (context, url) => Container(
+                        alignment: Alignment.center,
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            color: Colors.white,
+                          ),
+                        )),
+                  )),
         ),
       );
     } else if (obj.appIconC != null) {
@@ -203,30 +211,34 @@ class _FamilyPageState extends State<FamilyPage> {
     } else {
       return ClipRRect(
           child: CachedNetworkImage(
-                      imageUrl:
-                          "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
-                      fit: BoxFit.cover,
-                      height: Globals.deviceType == "phone" ? 45 : 55,
-                      width: Globals.deviceType == "phone" ? 45 : 55,
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              height: 20,
-                              width: 20,
-                              color: Colors.white,
-                            ),
-                          )),
-                   errorWidget: (context, url, error) =>Icon(
-        IconData(
-          0xf550,
-          fontFamily: 'FontAwesomeSolid',
-          fontPackage: 'font_awesome_flutter',
-        ),
-        color: Theme.of(context).colorScheme.primary,
-        size: Globals.deviceType == "phone" ? 20 : 28,
-      ) ));
+              imageUrl:
+                  "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+              fit: BoxFit.cover,
+              height: Globals.deviceType == "phone"
+                  ? AppTheme.kIconSize
+                  : AppTheme.kTabIconSize,
+              width: Globals.deviceType == "phone"
+                  ? AppTheme.kIconSize
+                  : AppTheme.kTabIconSize,
+              placeholder: (context, url) => Container(
+                  alignment: Alignment.center,
+                  child: ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      height: 20,
+                      width: 20,
+                      color: Colors.white,
+                    ),
+                  )),
+              errorWidget: (context, url, error) => Icon(
+                    IconData(
+                      0xf550,
+                      fontFamily: 'FontAwesomeSolid',
+                      fontPackage: 'font_awesome_flutter',
+                    ),
+                    color: Theme.of(context).colorScheme.primary,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
+                  )));
     }
   }
 
@@ -331,6 +343,7 @@ class _FamilyPageState extends State<FamilyPage> {
                                       NoDataFoundErrorWidget(
                                           isResultNotFoundMsg: false,
                                           isNews: false,
+                                          isEvents: false,
                                         );
 
                                   // ]);
