@@ -133,7 +133,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Future<List<FamiliesSubList>> getFamilySubList(id) async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c FROM Family_Sub_Menu_App__c where Families_App__c='$id'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,App_Icon_URL__c FROM Family_Sub_Menu_App__c where Families_App__c='$id'")}");
 
       if (response.statusCode == 200) {
         return response.data["records"]

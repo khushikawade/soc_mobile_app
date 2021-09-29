@@ -57,6 +57,7 @@ class StaffList {
         'RTF_HTML__c': rtfHTMLC,
         'Type__c': typeC,
         'Calendar_Id__c': calendarId,
-        'Sort_Order__c': sortOredr
+        'Sort_Order__c': sortOredr,
+        'App_Icon_URL__c':appIconUrlC
       };
 }

@@ -4,6 +4,7 @@ class FamiliesSubList {
   // SubAttributes? attributes;
   String? titleC;
   String? appUrlC;
+  String? appIconUrlC;
   String? pdfURL;
   String? id;
   String? name;
@@ -17,6 +18,7 @@ class FamiliesSubList {
         // this.attributes,
       this.titleC,
       this.appUrlC,
+      this.appIconUrlC,
       this.pdfURL,
       this.id,
       this.name,
@@ -33,6 +35,7 @@ class FamiliesSubList {
         //         json['attributes'] as Map<String, dynamic>),
         titleC: json['Title__c'] as String?,
         appUrlC: json['URL__c'] as String?,
+        appIconUrlC: json['App_Icon_URL__c'] as String?,
         pdfURL: json['PDF_URL__c'] as String?,
         id: json['Id'] as String?,
         name: json['Name'] as String?,
@@ -52,6 +55,7 @@ class FamiliesSubList {
         'RTF_HTML__c': rtfHTMLC,
         'Type__c': typeC,
         'App_Icon__c': appIconC,
-        'Sort_Order__c': sortOredr
+        'Sort_Order__c': sortOredr,
+        'App_Icon_URL__c':appIconUrlC
       };
 }

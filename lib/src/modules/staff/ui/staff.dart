@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
@@ -7,7 +8,6 @@ import 'package:Soc/src/modules/staff/models/staffmodal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -16,8 +16,6 @@ import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -81,6 +79,16 @@ class _StaffPageState extends State<StaffPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "Form") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
     } else if (obj.typeC == "Calendar/Events") {
       obj.calendarId != null && obj.calendarId != ""
           ? Navigator.push(
@@ -112,7 +120,9 @@ class _StaffPageState extends State<StaffPage> {
 
   Widget _buildLeading(StaffList obj) {
     if (obj.appIconUrlC != null) {
-       return CustomIconWidget(iconUrl: obj.appIconUrlC!,);
+      return CustomIconWidget(
+        iconUrl: obj.appIconUrlC!,
+      );
       // return Container(
       //   child: ClipRRect(
       //       child: CachedNetworkImage(
@@ -167,7 +177,10 @@ class _StaffPageState extends State<StaffPage> {
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
     } else {
-       return CustomIconWidget(iconUrl: "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",);
+      return CustomIconWidget(
+        iconUrl:
+            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+      );
       // return ClipRRect(
       //     child: CachedNetworkImage(
       //         imageUrl:

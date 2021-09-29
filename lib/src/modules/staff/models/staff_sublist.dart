@@ -4,6 +4,7 @@ class StaffSubList {
   StaffSubListAttributes? attributes;
   String? titleC;
   dynamic appIconC;
+  String? appIconUrlC;
   dynamic urlC;
   String? id;
   String? name;
@@ -16,6 +17,7 @@ class StaffSubList {
       {this.attributes,
       this.titleC,
       this.appIconC,
+      this.appIconUrlC,
       this.urlC,
       this.id,
       this.name,
@@ -31,6 +33,7 @@ class StaffSubList {
                 json['attributes'] as Map<String, dynamic>),
         titleC: json['Title__c'] as String?,
         appIconC: json['App_Icon__c'] as String?,
+        appIconUrlC: json['App_Icon_URL__c'] as String?,
         urlC: json['URL__c'] as String?,
         pdfURL: json['PDF_URL__c'] as String?,
         id: json['Id'] as String?,
@@ -44,6 +47,7 @@ class StaffSubList {
         'attributes': attributes?.toJson(),
         'Title__c': titleC,
         'App_Icon__c': appIconC,
+        'App_Icon_URL__c':appIconUrlC,
         'URL__c': urlC,
         'PDF_URL__c': pdfURL,
         'Id': id,
