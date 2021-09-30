@@ -113,136 +113,104 @@ class _StudentPageState extends State<StudentPage> {
               children: List.generate(
                 list.length,
                 (index) {
-                  return GestureDetector(
-                      onTap: () => _launchURL(list[index], subList),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          list[index].appIconC != null &&
-                                  list[index].appIconC != ''
-                              ? Container(
-                                  height: 85,
-                                  width: 85,
-                                  child: CachedNetworkImage(
-                                    imageUrl: list[index].appIconC ?? '',
-                                    placeholder: (context, url) => Container(
-                                        alignment: Alignment.center,
-                                        child: ShimmerLoading(
-                                          isLoading: true,
-                                          child: Container(
-                                            color: Colors.white,
-                                          ),
-                                        )),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                  ),
-                                )
-                              : EmptyContainer(),
-                          Container(
-                              child: Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English" &&
-                                      Globals.selectedLanguage != ""
-                                  ? TranslationWidget(
-                                      message: "${list[index].titleC}",
-                                      fromLanguage: "en",
-                                      toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Container(
-                                        // alignment: Alignment.center,
-                                        // padding: EdgeInsets.symmetric(horizontal: 10),
-                                        // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
-                                        child: orientation ==
-                                                    Orientation.portrait &&
-                                                translatedMessage
-                                                        .toString()
-                                                        .length >
-                                                    11
-                                            ? Expanded(
-                                                child: Marquee(
-                                                  text: translatedMessage
-                                                      .toString(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1!
-                                                      .copyWith(
-                                                          fontSize:
-                                                              Globals.deviceType ==
-                                                                      "phone"
-                                                                  ? 16
-                                                                  : 24),
-                                                  scrollAxis: Axis.horizontal,
-                                                  velocity: 30.0,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  blankSpace: 50,
-                                                  //MediaQuery.of(context).size.width
-                                                  // velocity: 100.0,
-                                                  pauseAfterRound:
-                                                      Duration(seconds: 5),
-                                                  showFadingOnlyWhenScrolling:
-                                                      true,
-                                                  startPadding: 10.0,
-                                                  accelerationDuration:
-                                                      Duration(seconds: 1),
-                                                  accelerationCurve:
-                                                      Curves.linear,
-                                                  decelerationDuration:
-                                                      Duration(
-                                                          milliseconds: 500),
-                                                  decelerationCurve:
-                                                      Curves.easeOut,
-                                                ),
-                                              )
-                                            : orientation ==
-                                                        Orientation.landscape &&
+                  return list[index].status == null ||
+                          list[index].status == 'Show'
+                      ? GestureDetector(
+                          onTap: () => _launchURL(list[index], subList),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              list[index].appIconC != null &&
+                                      list[index].appIconC != ''
+                                  ? Container(
+                                      height: 85,
+                                      width: 85,
+                                      child: CachedNetworkImage(
+                                        imageUrl: list[index].appIconC ?? '',
+                                        placeholder: (context, url) =>
+                                            Container(
+                                                alignment: Alignment.center,
+                                                child: ShimmerLoading(
+                                                  isLoading: true,
+                                                  child: Container(
+                                                    color: Colors.white,
+                                                  ),
+                                                )),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                      ),
+                                    )
+                                  : EmptyContainer(),
+                              Container(
+                                  child: Globals.selectedLanguage != null &&
+                                          Globals.selectedLanguage !=
+                                              "English" &&
+                                          Globals.selectedLanguage != ""
+                                      ? TranslationWidget(
+                                          message: "${list[index].titleC}",
+                                          fromLanguage: "en",
+                                          toLanguage: Globals.selectedLanguage,
+                                          builder: (translatedMessage) =>
+                                              Container(
+                                            // alignment: Alignment.center,
+                                            // padding: EdgeInsets.symmetric(horizontal: 10),
+                                            // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
+                                            child: orientation ==
+                                                        Orientation.portrait &&
                                                     translatedMessage
                                                             .toString()
                                                             .length >
-                                                        18
+                                                        11
                                                 ? Expanded(
                                                     child: Marquee(
-                                                    text: translatedMessage
-                                                        .toString(),
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText1!
-                                                        .copyWith(
-                                                            fontSize:
-                                                                Globals.deviceType ==
-                                                                        "phone"
-                                                                    ? 16
-                                                                    : 24),
-                                                    scrollAxis: Axis.horizontal,
-                                                    velocity: 30.0,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-
-                                                    blankSpace:
-                                                        50, //MediaQuery.of(context).size.width
-                                                    // velocity: 100.0,
-                                                    pauseAfterRound:
-                                                        Duration(seconds: 5),
-                                                    showFadingOnlyWhenScrolling:
-                                                        true,
-                                                    startPadding: 10.0,
-                                                    accelerationDuration:
-                                                        Duration(seconds: 1),
-                                                    accelerationCurve:
-                                                        Curves.linear,
-                                                    decelerationDuration:
-                                                        Duration(
-                                                            milliseconds: 500),
-                                                    decelerationCurve:
-                                                        Curves.easeOut,
-                                                  ))
-                                                : SingleChildScrollView(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    child: Text(
+                                                      text: translatedMessage
+                                                          .toString(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText1!
+                                                          .copyWith(
+                                                              fontSize:
+                                                                  Globals.deviceType ==
+                                                                          "phone"
+                                                                      ? 16
+                                                                      : 24),
+                                                      scrollAxis:
+                                                          Axis.horizontal,
+                                                      velocity: 30.0,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      blankSpace: 50,
+                                                      //MediaQuery.of(context).size.width
+                                                      // velocity: 100.0,
+                                                      pauseAfterRound:
+                                                          Duration(seconds: 5),
+                                                      showFadingOnlyWhenScrolling:
+                                                          true,
+                                                      startPadding: 10.0,
+                                                      accelerationDuration:
+                                                          Duration(seconds: 1),
+                                                      accelerationCurve:
+                                                          Curves.linear,
+                                                      decelerationDuration:
+                                                          Duration(
+                                                              milliseconds:
+                                                                  500),
+                                                      decelerationCurve:
+                                                          Curves.easeOut,
+                                                    ),
+                                                  )
+                                                : orientation ==
+                                                            Orientation
+                                                                .landscape &&
                                                         translatedMessage
+                                                                .toString()
+                                                                .length >
+                                                            18
+                                                    ? Expanded(
+                                                        child: Marquee(
+                                                        text: translatedMessage
                                                             .toString(),
-                                                        textAlign:
-                                                            TextAlign.center,
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyText1!
@@ -251,46 +219,57 @@ class _StudentPageState extends State<StudentPage> {
                                                                             .deviceType ==
                                                                         "phone"
                                                                     ? 16
-                                                                    : 24)),
-                                                  ),
-                                      ),
-                                    )
-                                  : orientation == Orientation.portrait &&
-                                          list[index].titleC!.length > 11
-                                      ? Expanded(
-                                          child: Marquee(
-                                          text: "${list[index].titleC}",
+                                                                    : 24),
+                                                        scrollAxis:
+                                                            Axis.horizontal,
+                                                        velocity: 30.0,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
 
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1!
-                                              .copyWith(
-                                                  fontSize:
-                                                      Globals.deviceType ==
-                                                              "phone"
-                                                          ? 16
-                                                          : 24),
-                                          scrollAxis: Axis.horizontal,
-                                          velocity: 30.0,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-
-                                          blankSpace:
-                                              50, //MediaQuery.of(context).size.width
-                                          // velocity: 100.0,
-                                          pauseAfterRound: Duration(seconds: 5),
-                                          showFadingOnlyWhenScrolling: true,
-                                          startPadding: 10.0,
-
-                                          accelerationDuration:
-                                              Duration(seconds: 1),
-                                          accelerationCurve: Curves.linear,
-                                          decelerationDuration:
-                                              Duration(milliseconds: 500),
-                                          decelerationCurve: Curves.easeOut,
-                                        ))
-                                      : orientation == Orientation.landscape &&
-                                              list[index].titleC!.length > 18
+                                                        blankSpace:
+                                                            50, //MediaQuery.of(context).size.width
+                                                        // velocity: 100.0,
+                                                        pauseAfterRound:
+                                                            Duration(
+                                                                seconds: 5),
+                                                        showFadingOnlyWhenScrolling:
+                                                            true,
+                                                        startPadding: 10.0,
+                                                        accelerationDuration:
+                                                            Duration(
+                                                                seconds: 1),
+                                                        accelerationCurve:
+                                                            Curves.linear,
+                                                        decelerationDuration:
+                                                            Duration(
+                                                                milliseconds:
+                                                                    500),
+                                                        decelerationCurve:
+                                                            Curves.easeOut,
+                                                      ))
+                                                    : SingleChildScrollView(
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        child: Text(
+                                                            translatedMessage
+                                                                .toString(),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyText1!
+                                                                .copyWith(
+                                                                    fontSize: Globals.deviceType ==
+                                                                            "phone"
+                                                                        ? 16
+                                                                        : 24)),
+                                                      ),
+                                          ),
+                                        )
+                                      : orientation == Orientation.portrait &&
+                                              list[index].titleC!.length > 11
                                           ? Expanded(
                                               child: Marquee(
                                               text: "${list[index].titleC}",
@@ -324,32 +303,75 @@ class _StudentPageState extends State<StudentPage> {
                                                   Duration(milliseconds: 500),
                                               decelerationCurve: Curves.easeOut,
                                             ))
-                                          : Container(
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10),
-                                              // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
-                                              child: SingleChildScrollView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                child: Text(
-                                                    "${list[index].titleC}",
-                                                    textAlign: TextAlign.center,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText1!
-                                                        .copyWith(
-                                                            fontSize:
-                                                                Globals.deviceType ==
+                                          : orientation ==
+                                                      Orientation.landscape &&
+                                                  list[index].titleC!.length >
+                                                      18
+                                              ? Expanded(
+                                                  child: Marquee(
+                                                  text: "${list[index].titleC}",
+
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1!
+                                                      .copyWith(
+                                                          fontSize:
+                                                              Globals.deviceType ==
+                                                                      "phone"
+                                                                  ? 16
+                                                                  : 24),
+                                                  scrollAxis: Axis.horizontal,
+                                                  velocity: 30.0,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+
+                                                  blankSpace:
+                                                      50, //MediaQuery.of(context).size.width
+                                                  // velocity: 100.0,
+                                                  pauseAfterRound:
+                                                      Duration(seconds: 5),
+                                                  showFadingOnlyWhenScrolling:
+                                                      true,
+                                                  startPadding: 10.0,
+
+                                                  accelerationDuration:
+                                                      Duration(seconds: 1),
+                                                  accelerationCurve:
+                                                      Curves.linear,
+                                                  decelerationDuration:
+                                                      Duration(
+                                                          milliseconds: 500),
+                                                  decelerationCurve:
+                                                      Curves.easeOut,
+                                                ))
+                                              : Container(
+                                                  alignment: Alignment.center,
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                                  // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    child: Text(
+                                                        "${list[index].titleC}",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText1!
+                                                            .copyWith(
+                                                                fontSize: Globals
+                                                                            .deviceType ==
                                                                         "phone"
                                                                     ? 16
                                                                     : 24)),
-                                              ),
-                                            )
-                              // ),)))
-                              ),
-                        ],
-                      ));
+                                                  ),
+                                                )
+                                  // ),)))
+                                  ),
+                            ],
+                          ))
+                      : Container();
                 },
               ),
             );

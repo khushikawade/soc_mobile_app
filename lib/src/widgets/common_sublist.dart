@@ -92,11 +92,11 @@ class _SubListPageState extends State<SubListPage> {
   }
 
   Widget _buildList(int index, Widget listItem, obj) {
-    return GestureDetector(
+    return obj.status==null||obj.status=='Show'? GestureDetector(
         onTap: () {
           _route(obj, index);
         },
-        child: ListWidget(index, _buildFormName(index, obj), obj));
+       child:  ListWidget(index, _buildFormName(index, obj), obj)):Container();
   }
 
   Widget _buildFormName(int index, obj) {

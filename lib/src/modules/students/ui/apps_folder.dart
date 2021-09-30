@@ -108,101 +108,116 @@ class AppsFolderPageState extends State<AppsFolderPage>
                           children: List.generate(
                             apps.length,
                             (index) {
-                              return InkWell(
-                                  onTap: () => _launchURL(apps[index]),
-                                  child: Column(
-                                    children: [
-                                      apps[index].appIconC != null &&
-                                              apps[index].appIconC != ''
-                                          ? Container(
-                                              height: 65,
-                                              width: 65,
-                                              child: CachedNetworkImage(
-                                                imageUrl:
-                                                    apps[index].appIconC ?? '',
-                                                placeholder: (context, url) =>
-                                                    Container(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: ShimmerLoading(
-                                                          isLoading: true,
-                                                          child: Container(
-                                                            color: Colors.white,
-                                                          ),
-                                                        )),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Icon(Icons.error),
-                                              ),
-                                            )
-                                          : Container(),
-                                      Globals.selectedLanguage != null &&
-                                              Globals.selectedLanguage !=
-                                                  "English" &&
-                                              Globals.selectedLanguage != ""
-                                          ? TranslationWidget(
-                                              message: apps[index].appFolderc !=
-                                                          null &&
-                                                      widget.folderName ==
-                                                          apps[index].appFolderc
-                                                  ? "${apps[index].titleC}"
-                                                  : '',
-                                              fromLanguage: "en",
-                                              toLanguage:
-                                                  Globals.selectedLanguage,
-                                              builder: (translatedMessage) =>
-                                                  Container(
-                                                alignment: Alignment.center,
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.3,
-                                                child: SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: Text(
-                                                      translatedMessage
-                                                          .toString(),
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText2!),
-                                                ),
-                                              ),
-                                            )
-                                          : Container(
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10),
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.3,
-                                              child: SingleChildScrollView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                child: Text(
-                                                  apps[index].appFolderc !=
+                              return apps[index].status == null ||
+                                      apps[index].status == 'Show'
+                                  ? InkWell(
+                                      onTap: () => _launchURL(apps[index]),
+                                      child: Column(
+                                        children: [
+                                          apps[index].appIconC != null &&
+                                                  apps[index].appIconC != ''
+                                              ? Container(
+                                                  height: 65,
+                                                  width: 65,
+                                                  child: CachedNetworkImage(
+                                                    imageUrl:
+                                                        apps[index].appIconC ??
+                                                            '',
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child:
+                                                                ShimmerLoading(
+                                                              isLoading: true,
+                                                              child: Container(
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            )),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Icon(Icons.error),
+                                                  ),
+                                                )
+                                              : Container(),
+                                          Globals.selectedLanguage != null &&
+                                                  Globals.selectedLanguage !=
+                                                      "English" &&
+                                                  Globals.selectedLanguage != ""
+                                              ? TranslationWidget(
+                                                  message: apps[index]
+                                                                  .appFolderc !=
                                                               null &&
                                                           widget.folderName ==
                                                               apps[index]
                                                                   .appFolderc
                                                       ? "${apps[index].titleC}"
                                                       : '',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText2!
-                                                      .copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .primaryVariant,
-                                                      ),
+                                                  fromLanguage: "en",
+                                                  toLanguage:
+                                                      Globals.selectedLanguage,
+                                                  builder:
+                                                      (translatedMessage) =>
+                                                          Container(
+                                                    alignment: Alignment.center,
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10),
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.3,
+                                                    child:
+                                                        SingleChildScrollView(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      child: Text(
+                                                          translatedMessage
+                                                              .toString(),
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyText2!),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container(
+                                                  alignment: Alignment.center,
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.3,
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    child: Text(
+                                                      apps[index].appFolderc !=
+                                                                  null &&
+                                                              widget.folderName ==
+                                                                  apps[index]
+                                                                      .appFolderc
+                                                          ? "${apps[index].titleC}"
+                                                          : '',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2!
+                                                          .copyWith(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primaryVariant,
+                                                          ),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                    ],
-                                  ));
+                                        ],
+                                      ))
+                                  : Container();
                             },
                           ),
                         )

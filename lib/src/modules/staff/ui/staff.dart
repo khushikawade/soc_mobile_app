@@ -121,51 +121,9 @@ class _StaffPageState extends State<StaffPage> {
   Widget _buildLeading(StaffList obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconWidget(
-        iconUrl: obj.appIconUrlC??"https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+        iconUrl: obj.appIconUrlC ??
+            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
       );
-      // return Container(
-      //   child: ClipRRect(
-      //       child: CachedNetworkImage(
-      //           imageUrl: obj.appIconUrlC!,
-      //           fit: BoxFit.cover,
-      //           height: Globals.deviceType == "phone"
-      //               ? AppTheme.kIconSize
-      //               : AppTheme.kTabIconSize,
-      //           width: Globals.deviceType == "phone"
-      //               ? AppTheme.kIconSize
-      //               : AppTheme.kTabIconSize,
-      //           placeholder: (context, url) => Container(
-      //               alignment: Alignment.center,
-      //               child: ShimmerLoading(
-      //                 isLoading: true,
-      //                 child: Container(
-      //                   height: 20,
-      //                   width: 20,
-      //                   color: Colors.white,
-      //                 ),
-      //               )),
-      //           errorWidget: (context, url, error) => CachedNetworkImage(
-      //                 imageUrl:
-      //                     "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
-      //                 fit: BoxFit.cover,
-      //                 height: Globals.deviceType == "phone"
-      //                     ? AppTheme.kIconSize
-      //                     : AppTheme.kTabIconSize,
-      //                 width: Globals.deviceType == "phone"
-      //                     ? AppTheme.kIconSize
-      //                     : AppTheme.kTabIconSize,
-      //                 placeholder: (context, url) => Container(
-      //                     alignment: Alignment.center,
-      //                     child: ShimmerLoading(
-      //                       isLoading: true,
-      //                       child: Container(
-      //                         height: 20,
-      //                         width: 20,
-      //                         color: Colors.white,
-      //                       ),
-      //                     )),
-      //               ))),
-      // );
     } else if (obj.appIconC != null) {
       return Icon(
         IconData(
@@ -181,99 +139,64 @@ class _StaffPageState extends State<StaffPage> {
         iconUrl:
             "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
       );
-      // return ClipRRect(
-      //     child: CachedNetworkImage(
-      //         imageUrl:
-      //             "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
-      //         fit: BoxFit.cover,
-      //         height: Globals.deviceType == "phone"
-      //             ? AppTheme.kIconSize
-      //             : AppTheme.kTabIconSize,
-      //         width: Globals.deviceType == "phone"
-      //             ? AppTheme.kIconSize
-      //             : AppTheme.kTabIconSize,
-      //         placeholder: (context, url) => Container(
-      //             alignment: Alignment.center,
-      //             child: ShimmerLoading(
-      //               isLoading: true,
-      //               child: Container(
-      //                 height: 20,
-      //                 width: 20,
-      //                 color: Colors.white,
-      //               ),
-      //             )),
-      //         errorWidget: (context, url, error) => Icon(
-      //               IconData(
-      //                 0xf550,
-      //                 fontFamily: 'FontAwesomeSolid',
-      //                 fontPackage: 'font_awesome_flutter',
-      //               ),
-      //               color: Theme.of(context).colorScheme.primary,
-      //               size: Globals.deviceType == "phone" ? 20 : 28,
-      //             )));
     }
   }
 
   Widget _buildList(StaffList obj, int index) {
-    return Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AppTheme.kDividerColor2,
-            width: 0.65,
-          ),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
-        ),
-        child: obj.titleC != null && obj.titleC!.length > 0
-            ? ListTile(
-                onTap: () {
-                  _route(obj, index);
-                },
-                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-                // contentPadding: EdgeInsets.only(
-                //     left: _kLabelSpacing, right: _kLabelSpacing / 2),
-                leading: _buildLeading(obj),
-                // leading: Icon(
-                //   IconData(
-                //     int.parse('0x${obj.appIconC!}'),
-                //     fontFamily: 'FontAwesomeSolid',
-                //     fontPackage: 'font_awesome_flutter',
-                //   ),
-                //   // color: AppTheme.kListIconColor3,
-                //   size: Globals.deviceType == "phone" ? 18 : 26,
-                // ),
-                title: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English" &&
-                        Globals.selectedLanguage != ""
-                    ? TranslationWidget(
-                        message: obj.titleC.toString(),
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                          style:
-                              Theme.of(context).textTheme.bodyText2!.copyWith(),
-                        ),
-                      )
-                    : Text(
-                        obj.titleC.toString(),
-                        style:
-                            Theme.of(context).textTheme.bodyText2!.copyWith(),
-                      ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: Globals.deviceType == "phone" ? 12 : 20,
-                  color: Theme.of(context).colorScheme.primary,
-                  // color: AppTheme.kButtonbackColor,
-                ),
-              )
-            : NoDataFoundErrorWidget(
-                isResultNotFoundMsg: false,
-                isNews: false,
-                isEvents: false,
-              ));
+    return obj.status == 'Show' || obj.status == null
+        ? Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: AppTheme.kDividerColor2,
+                width: 0.65,
+              ),
+              borderRadius: BorderRadius.circular(0.0),
+              color: (index % 2 == 0)
+                  ? Theme.of(context).colorScheme.background
+                  : Theme.of(context).colorScheme.secondary,
+            ),
+            child: obj.titleC != null && obj.titleC!.length > 0
+                ? ListTile(
+                    onTap: () {
+                      _route(obj, index);
+                    },
+                    visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                    leading: _buildLeading(obj),
+                    title: Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English" &&
+                            Globals.selectedLanguage != ""
+                        ? TranslationWidget(
+                            message: obj.titleC.toString(),
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2!
+                                  .copyWith(),
+                            ),
+                          )
+                        : Text(
+                            obj.titleC.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(),
+                          ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: Globals.deviceType == "phone" ? 12 : 20,
+                      color: Theme.of(context).colorScheme.primary,
+                      // color: AppTheme.kButtonbackColor,
+                    ),
+                  )
+                : NoDataFoundErrorWidget(
+                    isResultNotFoundMsg: false,
+                    isNews: false,
+                    isEvents: false,
+                  ))
+        : Container();
   }
 
   Widget build(BuildContext context) {
