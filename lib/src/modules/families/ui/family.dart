@@ -85,7 +85,7 @@ class _FamilyPageState extends State<FamilyPage> {
           //               language: Globals.selectedLanguage,
           //             ))):
                       
-                      _launchURL(obj.appUrlC)
+                      _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
@@ -178,11 +178,11 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
     _launchURL(obj) async {
- if(obj.toString().split(":")[0]=='http'){
-  if (await canLaunch (obj)) {
-  await launch(obj);  
+ if(obj.appUrlC.toString().split(":")[0]=='http'){
+  if (await canLaunch (obj.appUrlC)) {
+  await launch(obj.appUrlC);  
         } else {
-          throw 'Could not launch ${obj!}';
+          throw 'Could not launch ${obj.appUrlC!}';
         }
       }
      else{
@@ -190,8 +190,8 @@ class _FamilyPageState extends State<FamilyPage> {
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => InAppUrlLauncer(
-                  title: widget.obj.headings["en"].toString(),
-                  url: obj,
+                  title: obj.titleC,
+                  url: obj.appUrlC,
                   isbuttomsheet: true,
                   language: Globals.selectedLanguage,
                 )));
