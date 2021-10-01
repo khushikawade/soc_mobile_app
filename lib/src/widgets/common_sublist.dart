@@ -92,11 +92,13 @@ class _SubListPageState extends State<SubListPage> {
   }
 
   Widget _buildList(int index, Widget listItem, obj) {
-    return obj.status==null||obj.status=='Show'? GestureDetector(
-        onTap: () {
-          _route(obj, index);
-        },
-       child:  ListWidget(index, _buildFormName(index, obj), obj)):Container();
+    return obj.status == null || obj.status == 'Show'
+        ? GestureDetector(
+            onTap: () {
+              _route(obj, index);
+            },
+            child: ListWidget(index, _buildFormName(index, obj), obj))
+        : Container();
   }
 
   Widget _buildFormName(int index, obj) {
@@ -143,21 +145,19 @@ class _SubListPageState extends State<SubListPage> {
                   return Center(child: CircularProgressIndicator());
                 } else if (state is FamiliesSublistSucess) {
                   return state.obj != null && state.obj!.length > 0
-                      ? SafeArea(
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            padding: EdgeInsets.only(bottom: 20),
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: state.obj!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return _buildList(
-                                  index,
-                                  _buildFormName(index, state.obj![index]),
-                                  state.obj![index]);
-                            },
-                          ),
-                        )
+                      ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        padding: EdgeInsets.only(bottom: 45),
+                        // physics: NeverScrollableScrollPhysics(),
+                        itemCount: state.obj!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return _buildList(
+                              index,
+                              _buildFormName(index, state.obj![index]),
+                              state.obj![index]);
+                        },
+                      )
                       : NoDataFoundErrorWidget(
                           isResultNotFoundMsg: false,
                           isNews: false,
@@ -175,19 +175,17 @@ class _SubListPageState extends State<SubListPage> {
                       return Center(child: CircularProgressIndicator());
                     } else if (state is StaffSubListSucess) {
                       return state.obj != null && state.obj!.length > 0
-                          ? SafeArea(
-                              child: ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                padding: EdgeInsets.only(bottom: 20),
-                                itemCount: state.obj!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return _buildList(
-                                      index,
-                                      _buildFormName(index, state.obj![index]),
-                                      state.obj![index]);
-                                },
-                              ),
-                            )
+                          ? ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            padding: EdgeInsets.only(bottom: 45),
+                            itemCount: state.obj!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildList(
+                                  index,
+                                  _buildFormName(index, state.obj![index]),
+                                  state.obj![index]);
+                            },
+                          )
                           : NoDataFoundErrorWidget(
                               isResultNotFoundMsg: false,
                               isNews: false,

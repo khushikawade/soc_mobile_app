@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FamilyPage extends StatefulWidget {
   final obj;
@@ -61,29 +62,30 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   _familiyPageRoute(FamiliesList obj, index) {
-    if (obj.titleC == "Contact" || obj.titleC == "contact") {
-      obj.titleC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => ContactPage(
-                        obj: widget.obj,
-                        isbuttomsheet: true,
-                        appBarTitle: obj.titleC!,
-                        language: Globals.selectedLanguage ?? "English",
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    if (obj.typeC == "Contact") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ContactPage(
+                    obj: widget.obj,
+                    isbuttomsheet: true,
+                    appBarTitle: obj.titleC!,
+                    language: Globals.selectedLanguage ?? "English",
+                  )));
     } else if (obj.typeC == "URL" || obj.titleC == "Afterschool Consent 2") {
       obj.appUrlC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => InAppUrlLauncer(
-                        title: obj.titleC!,
-                        url: obj.appUrlC ?? '',
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )))
+          ? 
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) => InAppUrlLauncer(
+          //               title: obj.titleC!,
+          //               url: obj.appUrlC ?? '',
+          //               isbuttomsheet: true,
+          //               language: Globals.selectedLanguage,
+          //             ))):
+                      
+                      _launchURL(obj.appUrlC)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
@@ -175,46 +177,69 @@ class _FamilyPageState extends State<FamilyPage> {
     }
   }
 
+    _launchURL(obj) async {
+ if(obj.toString().split(":")[0]=='http'){
+  if (await canLaunch (obj)) {
+  await launch(obj);  
+        } else {
+          throw 'Could not launch ${obj!}';
+        }
+      }
+     else{
+          Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => InAppUrlLauncer(
+                  title: widget.obj.headings["en"].toString(),
+                  url: obj,
+                  isbuttomsheet: true,
+                  language: Globals.selectedLanguage,
+                )));
+                }
+  }
+
   Widget _buildList(FamiliesList obj, int index) {
-    return obj.status=='Show'||obj.status==null? Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: AppTheme.kDividerColor2,
-          width: 0.65,
-        ),
-        borderRadius: BorderRadius.circular(0.0),
-        color: (index % 2 == 0)
-            ? Theme.of(context).colorScheme.background
-            : Theme.of(context).colorScheme.secondary,
-      ),
-      child: ListTile(
-        onTap: () {
-          _familiyPageRoute(obj, index);
-        },
-        visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        // contentPadding:
-        //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: _buildLeading(obj),
-        title: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: obj.titleC,
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) {
-                  return Text(translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText2!);
-                })
-            : Text(obj.titleC.toString(),
-                style: Theme.of(context).textTheme.bodyText1!),
-        trailing: Icon(
-          Icons.arrow_forward_ios_rounded,
-          size: Globals.deviceType == "phone" ? 12 : 20,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-    ):Container();
+    return obj.status == 'Show' || obj.status == null
+        ? Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: AppTheme.kDividerColor2,
+                width: 0.65,
+              ),
+              borderRadius: BorderRadius.circular(0.0),
+              color: (index % 2 == 0)
+                  ? Theme.of(context).colorScheme.background
+                  : Theme.of(context).colorScheme.secondary,
+            ),
+            child: ListTile(
+              onTap: () {
+                _familiyPageRoute(obj, index);
+              },
+              visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+              // contentPadding:
+              //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
+              leading: _buildLeading(obj),
+              title: Globals.selectedLanguage != null &&
+                      Globals.selectedLanguage != "English" &&
+                      Globals.selectedLanguage != ""
+                  ? TranslationWidget(
+                      message: obj.titleC,
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.bodyText2!);
+                      })
+                  : Text(obj.titleC.toString(),
+                      style: Theme.of(context).textTheme.bodyText1!),
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: Globals.deviceType == "phone" ? 12 : 20,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          )
+        : Container();
   }
 
   Widget build(BuildContext context) {
