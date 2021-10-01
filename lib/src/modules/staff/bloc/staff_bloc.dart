@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
 import '../../../globals.dart';
 part 'staff_event.dart';
 part 'staff_state.dart';
@@ -86,7 +85,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
   Future<List<StaffSubList>> getStaffSubList(id) async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name,PDF_URL__c,Type__c,RTF_HTML__c,Sort_Order__c,App_Icon_URL__c  FROM Staff_Sub_Menu_App__c,Active_Status__c where   Staff_App__c ='$id'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name,PDF_URL__c,Type__c,RTF_HTML__c,Sort_Order__c,App_Icon_URL__c,Active_Status__c  FROM Staff_Sub_Menu_App__c where   Staff_App__c ='$id'")}");
       if (response.statusCode == 200) {
         return response.data["records"]
             .map<StaffSubList>((i) => StaffSubList.fromJson(i))

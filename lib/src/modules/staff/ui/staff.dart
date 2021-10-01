@@ -19,6 +19,7 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StaffPage extends StatefulWidget {
   StaffPage({Key? key, this.title, this.language}) : super(key: key);
@@ -118,6 +119,27 @@ class _StaffPageState extends State<StaffPage> {
     }
   }
 
+    _launchURL(obj) async {
+ if(obj.toString().split(":")[0]=='http'){
+  if (await canLaunch (obj)) {
+  await launch(obj);  
+        } else {
+          throw 'Could not launch ${obj!}';
+        }
+      }
+     else{
+          Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => InAppUrlLauncer(
+                  title: obj.headings["en"].toString(),
+                  url: obj,
+                  isbuttomsheet: true,
+                  language: Globals.selectedLanguage,
+                )));
+                }
+  }
+  
   Widget _buildLeading(StaffList obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconWidget(
