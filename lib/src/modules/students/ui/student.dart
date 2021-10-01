@@ -50,7 +50,7 @@ class _StudentPageState extends State<StudentPage> {
 
   _launchURL(StudentApp obj, subList) async {
     if (obj.appUrlC != null) {
-      if (obj.appUrlC == 'app_folder') {
+      if (obj.appUrlC == 'app_folder'||obj.isFolder==true) {
         showDialog(
           context: context,
           builder: (_) => AppsFolderPage(
