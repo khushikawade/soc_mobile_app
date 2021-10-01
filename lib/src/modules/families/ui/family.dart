@@ -180,7 +180,7 @@ class _FamilyPageState extends State<FamilyPage> {
     _launchURL(obj) async {
  if(obj.appUrlC.toString().split(":")[0]=='http'){
   if (await canLaunch (obj.appUrlC)) {
-  await launch(obj.appUrlC);  
+          await launch(obj.appUrlC);  
         } else {
           throw 'Could not launch ${obj.appUrlC!}';
         }
