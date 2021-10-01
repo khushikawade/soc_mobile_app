@@ -54,15 +54,7 @@ class _StaffPageState extends State<StaffPage> {
   _route(StaffList obj, index) {
     if (obj.typeC == "URL") {
       obj.urlC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => InAppUrlLauncer(
-                        title: obj.titleC!,
-                        url: obj.urlC!,
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )))
+          ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
@@ -120,11 +112,11 @@ class _StaffPageState extends State<StaffPage> {
   }
 
     _launchURL(obj) async {
- if(obj.toString().split(":")[0]=='http'){
-  if (await canLaunch (obj)) {
-  await launch(obj);  
+ if(obj.urlC.toString().split(":")[0]=='http'){
+  if (await canLaunch (obj.urlC)) {
+  await launch(obj.urlC);  
         } else {
-          throw 'Could not launch ${obj!}';
+          throw 'Could not launch ${obj.urlC!}';
         }
       }
      else{
@@ -132,8 +124,8 @@ class _StaffPageState extends State<StaffPage> {
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => InAppUrlLauncer(
-                  title: obj.headings["en"].toString(),
-                  url: obj,
+                  title:  obj.titleC,
+                  url: obj.urlC,
                   isbuttomsheet: true,
                   language: Globals.selectedLanguage,
                 )));

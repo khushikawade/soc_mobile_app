@@ -5,7 +5,7 @@ class StaffSubList {
   String? titleC;
   dynamic appIconC;
   String? appIconUrlC;
-  dynamic urlC;
+  dynamic appUrlC;
   String? id;
   String? name;
   String? typeC;
@@ -19,7 +19,7 @@ class StaffSubList {
       this.titleC,
       this.appIconC,
       this.appIconUrlC,
-      this.urlC,
+      this.appUrlC,
       this.id,
       this.name,
       this.pdfURL,
@@ -37,7 +37,7 @@ class StaffSubList {
         titleC: json['Title__c'] as String?,
         appIconC: json['App_Icon__c'] as String?,
         appIconUrlC: json['App_Icon_URL__c'] as String?,
-        urlC: json['URL__c'] as String?,
+        appUrlC: json['URL__c'] as String?,
         pdfURL: json['PDF_URL__c'] as String?,
         id: json['Id'] as String?,
         name: json['Name'] as String?,
@@ -52,7 +52,7 @@ class StaffSubList {
         'Title__c': titleC,
         'App_Icon__c': appIconC,
         'App_Icon_URL__c':appIconUrlC,
-        'URL__c': urlC,
+        'URL__c': appUrlC,
         'PDF_URL__c': pdfURL,
         'Id': id,
         'Name': name,
