@@ -87,14 +87,16 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         final DateTime currentDate =
             DateTime.parse(formatter.format(now).toString());
         for (int i = 0; i < list.length; i++) {
-          var temp = list[i].start.toString().contains('dateTime')
-              ? list[i].start['dateTime'].toString().substring(0, 10)
-              : list[i].start['date'].toString().substring(0, 10);
-          if (DateTime.parse(temp).isBefore(currentDate)) {
-            pastListobj.add(list[i]);
-          } else {
-            futureListobj.add(list[i]);
-          }
+         try {
+            var temp = list[i].start.toString().contains('dateTime')
+                ? list[i].start['dateTime'].toString().substring(0, 10)
+                : list[i].start['date'].toString().substring(0, 10);
+            if (DateTime.parse(temp).isBefore(currentDate)) {
+              pastListobj.add(list[i]);
+            } else {
+              futureListobj.add(list[i]);
+            }
+          } catch (e) {}
         }
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);

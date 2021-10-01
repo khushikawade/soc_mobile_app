@@ -30,7 +30,7 @@ class StaffPage extends StatefulWidget {
 }
 
 class _StaffPageState extends State<StaffPage> {
-  static const double _kLabelSpacing = 16.0;
+  // static const double _kLabelSpacing = 16.0;
   FocusNode myFocusNode = new FocusNode();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -142,7 +142,7 @@ class _StaffPageState extends State<StaffPage> {
     }
   }
 
-  Widget _buildList(StaffList obj, int index) {
+  Widget _buildListItem(StaffList obj, int index) {
     return obj.status == 'Show' || obj.status == null
         ? Container(
             decoration: BoxDecoration(
@@ -191,11 +191,7 @@ class _StaffPageState extends State<StaffPage> {
                       // color: AppTheme.kButtonbackColor,
                     ),
                   )
-                : NoDataFoundErrorWidget(
-                    isResultNotFoundMsg: false,
-                    isNews: false,
-                    isEvents: false,
-                  ))
+                : Container())
         : Container();
   }
 
@@ -217,7 +213,6 @@ class _StaffPageState extends State<StaffPage> {
                 Widget child,
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
-
                 if (connected) {
                   if (iserrorstate == true) {
                     iserrorstate = false;
@@ -248,27 +243,24 @@ class _StaffPageState extends State<StaffPage> {
                                           padding: EdgeInsets.only(bottom: 20),
                                           itemBuilder: (BuildContext context,
                                               int index) {
-                                            return _buildList(
+                                            return _buildListItem(
                                                 state.obj![index], index);
                                           },
                                         ),
                                       )
                                     :
-                                    //  ListView(children: [
                                     Expanded(
                                         child: NoDataFoundErrorWidget(
                                         isResultNotFoundMsg: false,
                                         isNews: false,
                                         isEvents: false,
                                       ));
-                                // ]);
                               } else if (state is ErrorInStaffLoading) {
                               } else {
                                 return Expanded(
                                   child: ListView(children: [ErrorMsgWidget()]),
                                 );
                               }
-
                               return Container();
                             }),
                         Container(
