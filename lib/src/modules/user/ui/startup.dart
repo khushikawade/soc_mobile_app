@@ -108,6 +108,7 @@ class _StartupPageState extends State<StartupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: OfflineBuilder(
           connectivityBuilder: (
             BuildContext context,

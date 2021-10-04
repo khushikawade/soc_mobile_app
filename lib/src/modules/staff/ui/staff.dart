@@ -111,27 +111,26 @@ class _StaffPageState extends State<StaffPage> {
     }
   }
 
-    _launchURL(obj) async {
- if(obj.urlC.toString().split(":")[0]=='http'){
-  if (await canLaunch (obj.urlC)) {
-  await launch(obj.urlC);  
-        } else {
-          throw 'Could not launch ${obj.urlC!}';
-        }
+  _launchURL(obj) async {
+    if (obj.urlC.toString().split(":")[0] == 'http') {
+      if (await canLaunch(obj.urlC)) {
+        await launch(obj.urlC);
+      } else {
+        throw 'Could not launch ${obj.urlC!}';
       }
-     else{
-          Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => InAppUrlLauncer(
-                  title:  obj.titleC,
-                  url: obj.urlC,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                )));
-                }
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC,
+                    url: obj.urlC,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    }
   }
-  
+
   Widget _buildLeading(StaffList obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconWidget(
@@ -262,8 +261,7 @@ class _StaffPageState extends State<StaffPage> {
                                           },
                                         ),
                                       )
-                                    :
-                                    Expanded(
+                                    : Expanded(
                                         child: NoDataFoundErrorWidget(
                                         isResultNotFoundMsg: false,
                                         isNews: false,
