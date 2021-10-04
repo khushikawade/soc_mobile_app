@@ -192,19 +192,19 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildBottomSection(BuildContext context) {
-    String data = object.description["__cdata"].toString().contains("\\n")
-        ? object.description["__cdata"]
-            .toString()
-            .split("<div>")[2]
-            .split("\\n")[0]
-        : "";
-    String data2 = object.description["__cdata"].toString().contains("\\n")
-        ? object.description["__cdata"]
-            .toString()
-            .split("\\n#")[1]
-            .split("</div>")[0]
-        : "";
-
+    // String data = object.description["__cdata"].toString()
+    // .contains("\\n")
+    //     ? object.description["__cdata"]
+    //         .toString()
+    //         .split("<div>")[2]
+    //         .split("\\n")[0]
+    //     : "";
+    // String data2 = object.description["__cdata"].toString().contains("\\n#")
+    //     ? object.description["__cdata"]
+    //         .toString()
+    //         .split("\\n#")[1]
+    //         .split("</div>")[0]
+    //     : "";
     // String _socialDescription = object.description["__cdata"]
     //     .toString()
     //     .replaceAll(new RegExp(r'[\\]+'), '\n')
@@ -253,10 +253,6 @@ class SocialDescription extends StatelessWidget {
                       ),
                   ),
                 ),
-                // child: Html(
-                //     data: "<img" +
-                //         "${object.description["__cdata"].toString().split("<img")[1].split(">")[0]}" +
-                //         ">"),
               )
             : Container(
                 alignment: Alignment.center,
@@ -281,17 +277,27 @@ class SocialDescription extends StatelessWidget {
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message: "${data + "#" + data2}",
+                message:  "${object.description["__cdata"].replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "")}",
+                  // "${data + "#" + data2}",
                 fromLanguage: "en",
                 toLanguage: language,
-                builder: (translatedMessage) => Text(
-                    translatedMessage
-                        .toString()
-                        .replaceAll(new RegExp(r'[\\]+'), '\n')
-                        .replaceAll("n.", ".")
-                        .replaceAll("\nn", "\n")
-                        .replaceAll("\\ n ", ""),
-                    style: Theme.of(context).textTheme.subtitle1!),
+                builder: (translatedMessage) => 
+                Html(
+                  onImageError: (m, d) {},
+                  customRender: {
+                    "img": (RenderContext context, Widget child) {
+                      return Container();
+                    },
+                  },
+                  data:translatedMessage.toString(),
+                 style: {
+                    "body": Style(
+                      fontSize: Globals.deviceType == "phone"
+                          ? FontSize(13.0)
+                          : FontSize(21.0),
+                    ),
+                  },
+                ),
               )
             : Center(
                 child: Html(
@@ -302,7 +308,7 @@ class SocialDescription extends StatelessWidget {
                     },
                   },
                   data:
-                      "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")}",
+                 "${object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "")..replaceAll("\\ n ", "")}",
                   style: {
                     "body": Style(
                       fontSize: Globals.deviceType == "phone"

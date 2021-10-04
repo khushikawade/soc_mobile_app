@@ -52,7 +52,7 @@ class _SubListPageState extends State<SubListPage> {
   _route(obj, index) {
     if (obj.typeC == "URL") {
       obj.appUrlC != null
-          ?  _launchURL(obj)
+          ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML" ||
         obj.typeC == "RTF/HTML" ||
@@ -84,26 +84,27 @@ class _SubListPageState extends State<SubListPage> {
     } else {}
   }
 
-    _launchURL(obj) async {
- if(obj.appUrlC.toString().split(":")[0]=='http'){
-  if (await canLaunch (obj.appUrlC)) {
-  await launch(obj.appUrlC);  
-        } else {
-          throw 'Could not launch ${obj.appUrlC!}';
-        }
+  _launchURL(obj) async {
+    if (obj.appUrlC.toString().split(":")[0] == 'http') {
+      if (await canLaunch(obj.appUrlC)) {
+        await launch(obj.appUrlC);
+      } else {
+        throw 'Could not launch ${obj.appUrlC!}';
       }
-     else{
-          Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => InAppUrlLauncer(
-                  title: obj.titleC, //?? widget.obj.headings["en"].toString(),
-                  url: obj.appUrlC,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                )));
-                }
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title:
+                        obj.titleC, //?? widget.obj.headings["en"].toString(),
+                    url: obj.appUrlC,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    }
   }
+
   Widget _buildList(int index, Widget listItem, obj) {
     return obj.status == null || obj.status == 'Show'
         ? GestureDetector(
@@ -159,17 +160,17 @@ class _SubListPageState extends State<SubListPage> {
                 } else if (state is FamiliesSublistSucess) {
                   return state.obj != null && state.obj!.length > 0
                       ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        padding: EdgeInsets.only(bottom: 45),
-                        itemCount: state.obj!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return _buildList(
-                              index,
-                              _buildFormName(index, state.obj![index]),
-                              state.obj![index]);
-                        },
-                      )
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          padding: EdgeInsets.only(bottom: 45),
+                          itemCount: state.obj!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return _buildList(
+                                index,
+                                _buildFormName(index, state.obj![index]),
+                                state.obj![index]);
+                          },
+                        )
                       : NoDataFoundErrorWidget(
                           isResultNotFoundMsg: false,
                           isNews: false,
@@ -188,16 +189,16 @@ class _SubListPageState extends State<SubListPage> {
                     } else if (state is StaffSubListSucess) {
                       return state.obj != null && state.obj!.length > 0
                           ? ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            padding: EdgeInsets.only(bottom: 45),
-                            itemCount: state.obj!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return _buildList(
-                                  index,
-                                  _buildFormName(index, state.obj![index]),
-                                  state.obj![index]);
-                            },
-                          )
+                              scrollDirection: Axis.vertical,
+                              padding: EdgeInsets.only(bottom: 45),
+                              itemCount: state.obj!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return _buildList(
+                                    index,
+                                    _buildFormName(index, state.obj![index]),
+                                    state.obj![index]);
+                              },
+                            )
                           : NoDataFoundErrorWidget(
                               isResultNotFoundMsg: false,
                               isNews: false,
