@@ -118,7 +118,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 HorzitalSpacerWidget(_kLabelSpacing / 1.5),
-                obj.imageUrlC != null && obj.imageUrlC.length > 0
+                obj.imageUrlC != null 
                     ? CachedNetworkImage(
                         imageUrl: obj.imageUrlC,
                         fit: BoxFit.fill,
@@ -178,7 +178,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           textAlign: TextAlign.start,
                           style: Theme.of(context).textTheme.headline2!),
                 ),
-                obj.phoneC.toString().isNotEmpty && obj.phoneC.length > 1
+                obj.phoneC.toString().isNotEmpty 
                     ? Container(
                         height: _KButtonMinSize,
                         width: _KButtonMinSize,
@@ -201,7 +201,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       )
                     : EmptyContainer(),
                 HorzitalSpacerWidget(_kLabelSpacing / 2),
-                obj.emailC.toString().isNotEmpty && obj.emailC.length > 1
+                obj.emailC.toString().isNotEmpty 
                     ? Container(
                         height: _KButtonMinSize,
                         width: _KButtonMinSize,
