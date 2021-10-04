@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news_image.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
@@ -10,7 +11,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Newdescription extends StatefulWidget {
   Newdescription(
@@ -43,11 +43,15 @@ class _NewdescriptionState extends State<Newdescription> {
 
   _launchURL(obj) async {
     if (obj.toString().split(":")[0] == 'http') {
-      if (await canLaunch(obj)) {
-        await launch(obj);
-      } else {
-        throw 'Could not launch ${obj!}';
-      }
+      // if (await canLaunch(obj)) {
+      //   await launch(obj);
+      // } else {
+      //   throw 'Could not launch ${obj!}';
+      // }
+      try {
+        // await launch(obj);
+        await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
+      } catch (e) {}
     } else {
       Navigator.push(
           context,
