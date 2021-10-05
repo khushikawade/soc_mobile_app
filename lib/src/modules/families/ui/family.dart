@@ -42,6 +42,7 @@ class _FamilyPageState extends State<FamilyPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
+  List<FamiliesList> newList = [];
 
   @override
   void initState() {
@@ -198,47 +199,45 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   Widget _buildList(FamiliesList obj, int index) {
-    return obj.status == 'Show' || obj.status == null
-        ? Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: AppTheme.kDividerColor2,
-                width: 0.65,
-              ),
-              borderRadius: BorderRadius.circular(0.0),
-              color: (index % 2 == 0)
-                  ? Theme.of(context).colorScheme.background
-                  : Theme.of(context).colorScheme.secondary,
-            ),
-            child: ListTile(
-              onTap: () {
-                _familiyPageRoute(obj, index);
-              },
-              visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-              // contentPadding:
-              //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-              leading: _buildLeading(obj),
-              title: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English" &&
-                      Globals.selectedLanguage != ""
-                  ? TranslationWidget(
-                      message: obj.titleC,
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) {
-                        return Text(translatedMessage.toString(),
-                            style: Theme.of(context).textTheme.bodyText2!);
-                      })
-                  : Text(obj.titleC.toString(),
-                      style: Theme.of(context).textTheme.bodyText1!),
-              trailing: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: Globals.deviceType == "phone" ? 12 : 20,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-          )
-        : Container();
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: AppTheme.kDividerColor2,
+          width: 0.65,
+        ),
+        borderRadius: BorderRadius.circular(0.0),
+        color: (index % 2 == 0)
+            ? Theme.of(context).colorScheme.background
+            : Theme.of(context).colorScheme.secondary,
+      ),
+      child: ListTile(
+        onTap: () {
+          _familiyPageRoute(obj, index);
+        },
+        visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+        // contentPadding:
+        //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
+        leading: _buildLeading(obj),
+        title: Globals.selectedLanguage != null &&
+                Globals.selectedLanguage != "English" &&
+                Globals.selectedLanguage != ""
+            ? TranslationWidget(
+                message: obj.titleC,
+                fromLanguage: "en",
+                toLanguage: Globals.selectedLanguage,
+                builder: (translatedMessage) {
+                  return Text(translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.bodyText2!);
+                })
+            : Text(obj.titleC.toString(),
+                style: Theme.of(context).textTheme.bodyText1!),
+        trailing: Icon(
+          Icons.arrow_forward_ios_rounded,
+          size: Globals.deviceType == "phone" ? 12 : 20,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    );
   }
 
   Widget build(BuildContext context) {
@@ -280,19 +279,19 @@ class _FamilyPageState extends State<FamilyPage> {
                                   (BuildContext contxt, FamilyState state) {
                                 if (state is FamilyInitial ||
                                     state is FamilyLoading) {
-                                  return Center(
+                                  return Container(
+                                      alignment: Alignment.center,
                                       child: CircularProgressIndicator());
                                 } else if (state is FamiliesDataSucess) {
-                                  return state.obj != null &&
-                                          state.obj!.length > 0
+                                  return newList.length > 0
                                       ? ListView.builder(
                                           padding: EdgeInsets.only(bottom: 45),
                                           scrollDirection: Axis.vertical,
-                                          itemCount: state.obj!.length,
+                                          itemCount: newList.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return _buildList(
-                                                state.obj![index], index);
+                                                newList[index], index);
                                           },
                                         )
                                       :
@@ -326,6 +325,19 @@ class _FamilyPageState extends State<FamilyPage> {
                               },
                               child: EmptyContainer()),
                         ),
+                        BlocListener<FamilyBloc, FamilyState>(
+                            bloc: _bloc,
+                            listener: (context, state) async {
+                              if (state is FamiliesDataSucess) {
+                                newList.clear();
+                                for (int i = 0; i < state.obj!.length; i++) {
+                                  if (state.obj![i].status != "Hide") {
+                                    newList.add(state.obj![i]);
+                                  }
+                                }
+                              }
+                            },
+                            child: EmptyContainer()),
                       ],
                     )
                   : NoInternetErrorWidget(

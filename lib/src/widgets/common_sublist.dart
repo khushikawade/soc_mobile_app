@@ -1,11 +1,14 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
+import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
+import 'package:Soc/src/modules/staff/models/staff_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/customList.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -37,6 +40,8 @@ class _SubListPageState extends State<SubListPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
   StaffBloc _staffBloc = StaffBloc();
+  List<FamiliesSubList> familyList = [];
+  List<StaffSubList> staffList = [];
 
   @override
   void initState() {
@@ -90,7 +95,7 @@ class _SubListPageState extends State<SubListPage> {
       // } else {
       //   throw 'Could not launch ${obj.appUrlC!}';
       // }
-       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
       Navigator.push(
           context,
@@ -151,53 +156,33 @@ class _SubListPageState extends State<SubListPage> {
         language: Globals.selectedLanguage,
       ),
       key: _scaffoldKey,
-      body: widget.module == "family"
-          ? BlocBuilder<FamilyBloc, FamilyState>(
-              bloc: _bloc,
-              builder: (BuildContext contxt, FamilyState state) {
-                if (state is FamilyInitial || state is FamilyLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is FamiliesSublistSucess) {
-                  return state.obj != null && state.obj!.length > 0
-                      ? ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          padding: EdgeInsets.only(bottom: 45),
-                          itemCount: state.obj!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return _buildList(
-                                index,
-                                _buildFormName(index, state.obj![index]),
-                                state.obj![index]);
-                          },
-                        )
-                      : NoDataFoundErrorWidget(
-                          isResultNotFoundMsg: false,
-                          isNews: false,
-                          isEvents: false,
-                        );
-                } else {
-                  return Container();
-                }
-              })
-          : widget.module == 'staff'
-              ? BlocBuilder<StaffBloc, StaffState>(
-                  bloc: _staffBloc,
-                  builder: (BuildContext contxt, StaffState state) {
-                    if (state is StaffInitial || state is StaffLoading) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (state is StaffSubListSucess) {
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          widget.module == "family"
+              ? BlocBuilder<FamilyBloc, FamilyState>(
+                  bloc: _bloc,
+                  builder: (BuildContext contxt, FamilyState state) {
+                    if (state is FamilyInitial || state is FamilyLoading) {
+                      return Container(
+                          height: MediaQuery.of(context).size.height * 0.75,
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator());
+                    } else if (state is FamiliesSublistSucess) {
                       return state.obj != null && state.obj!.length > 0
-                          ? ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              padding: EdgeInsets.only(bottom: 45),
-                              itemCount: state.obj!.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return _buildList(
-                                    index,
-                                    _buildFormName(index, state.obj![index]),
-                                    state.obj![index]);
-                              },
+                          ? Expanded(
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                padding: EdgeInsets.only(bottom: 45),
+                                itemCount: state.obj!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return _buildList(
+                                      index,
+                                      _buildFormName(index, state.obj![index]),
+                                      state.obj![index]);
+                                },
+                              ),
                             )
                           : NoDataFoundErrorWidget(
                               isResultNotFoundMsg: false,
@@ -208,7 +193,70 @@ class _SubListPageState extends State<SubListPage> {
                       return Container();
                     }
                   })
-              : Container(),
+              : widget.module == 'staff'
+                  ? BlocBuilder<StaffBloc, StaffState>(
+                      bloc: _staffBloc,
+                      builder: (BuildContext contxt, StaffState state) {
+                        if (state is StaffInitial || state is StaffLoading) {
+                          return Container(
+                              height: MediaQuery.of(context).size.height * 0.75,
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator());
+                        } else if (state is StaffSubListSucess) {
+                          return staffList.length > 0
+                              ? Expanded(
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    padding: EdgeInsets.only(bottom: 45),
+                                    itemCount: staffList.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return _buildList(
+                                          index,
+                                          _buildFormName(
+                                              index, staffList[index]),
+                                          staffList[index]);
+                                    },
+                                  ),
+                                )
+                              : NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: false,
+                                );
+                        } else {
+                          return Container();
+                        }
+                      })
+                  : Container(),
+          BlocListener<FamilyBloc, FamilyState>(
+              bloc: _bloc,
+              listener: (context, state) async {
+                if (state is FamiliesSublistSucess) {
+                  familyList.clear();
+                  for (int i = 0; i < state.obj!.length; i++) {
+                    if (state.obj![i].status != "Hide") {
+                      familyList.add(state.obj![i]);
+                    }
+                  }
+                }
+              },
+              child: EmptyContainer()),
+          BlocListener<StaffBloc, StaffState>(
+              bloc: _staffBloc,
+              listener: (context, state) async {
+                if (state is StaffSubListSucess) {
+                  staffList.clear();
+                  for (int i = 0; i < state.obj!.length; i++) {
+                    if (state.obj![i].status != "Hide") {
+                      staffList.add(state.obj![i]);
+                    }
+                  }
+                }
+              },
+              child: EmptyContainer()),
+        ],
+      ),
     );
   }
 }

@@ -39,6 +39,7 @@ class _StaffPageState extends State<StaffPage> {
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
   var obj;
+  List<StaffList> newList = [];
 
   @override
   void initState() {
@@ -290,6 +291,19 @@ class _StaffPageState extends State<StaffPage> {
                               },
                               child: EmptyContainer()),
                         ),
+                        BlocListener<StaffBloc, StaffState>(
+                            bloc: _bloc,
+                            listener: (context, state) async {
+                              if (state is StaffDataSucess) {
+                                newList.clear();
+                                for (int i = 0; i < state.obj!.length; i++) {
+                                  if (state.obj![i].status != "Hide") {
+                                    newList.add(state.obj![i]);
+                                  }
+                                }
+                              }
+                            },
+                            child: EmptyContainer()),
                       ])
                     : NoInternetErrorWidget(
                         connected: connected, issplashscreen: false);

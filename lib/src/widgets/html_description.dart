@@ -93,7 +93,7 @@ class _AboutusPageState extends State<AboutusPage> {
                   data: htmlData ?? widget.htmlText,
                   onLinkTap: (String? url, RenderContext context,
                       Map<String, String> attributes, dom.Element? element) {
-                    print(url);
+                    // print(url);
                     _launchURL(url);
                   },
                   style: {

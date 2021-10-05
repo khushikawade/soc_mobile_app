@@ -28,13 +28,17 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         List<StaffList> list = await getStaffDetails();
         getCalendarId(list);
         if (list.length > 0) {
-          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          for (int i = 0; i < list.length; i++) {
+            list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          }
           yield StaffDataSucess(
             obj: list,
           );
-        }else{yield StaffDataSucess(
+        } else {
+          yield StaffDataSucess(
             obj: list,
-          );}
+          );
+        }
       } catch (e) {
         yield ErrorInStaffLoading(err: e);
       }
@@ -46,18 +50,22 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         List<StaffSubList> list = await getStaffSubList(event.id);
         if (list.length > 0) {
           list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+
           yield StaffSubListSucess(
             obj: list,
           );
-        }else{yield StaffSubListSucess(
+        } else {
+          yield StaffSubListSucess(
             obj: list,
-          );}
+          );
+        }
       } catch (e) {
         yield ErrorInStaffLoading(err: e);
       }
     }
   }
- getCalendarId(list) {
+
+  getCalendarId(list) {
     for (int i = 0; i < list.length; i++) {
       if (list[i].calendarId != null && list[i].calendarId != "") {
         Globals.calendar_Id = list[i].calendarId;
