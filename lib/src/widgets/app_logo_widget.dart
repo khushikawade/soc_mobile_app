@@ -12,7 +12,9 @@ class AppLogoWidget extends StatelessWidget {
       : super(key: key);
 
   static const double _kIconSize = 50;//45.0;
+
   Widget build(BuildContext context) {
+    print(Globals.homeObjet["App_Logo__c"]);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
