@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class FamilyPage extends StatefulWidget {
   final obj;
@@ -74,7 +73,7 @@ class _FamilyPageState extends State<FamilyPage> {
                   )));
     } else if (obj.typeC == "URL" || obj.titleC == "Afterschool Consent 2") {
       obj.appUrlC != null
-          ? 
+          ?
           // Navigator.push(
           //     context,
           //     MaterialPageRoute(
@@ -84,8 +83,8 @@ class _FamilyPageState extends State<FamilyPage> {
           //               isbuttomsheet: true,
           //               language: Globals.selectedLanguage,
           //             ))):
-                      
-                      _launchURL(obj)
+
+          _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
@@ -177,25 +176,25 @@ class _FamilyPageState extends State<FamilyPage> {
     }
   }
 
-    _launchURL(obj) async {
- if(obj.appUrlC.toString().split(":")[0]=='http'){
-  if (await canLaunch (obj.appUrlC)) {
-          await launch(obj.appUrlC);  
-        } else {
-          throw 'Could not launch ${obj.appUrlC!}';
-        }
-      }
-     else{
-          Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => InAppUrlLauncer(
-                  title: obj.titleC,
-                  url: obj.appUrlC,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                )));
-                }
+  _launchURL(obj) async {
+    if (obj.appUrlC.toString().split(":")[0] == 'http') {
+      // if (await canLaunch(obj.appUrlC)) {
+      //   await launch(obj.appUrlC);
+      // } else {
+      //   throw 'Could not launch ${obj.appUrlC!}';
+      // }
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC,
+                    url: obj.appUrlC,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    }
   }
 
   Widget _buildList(FamiliesList obj, int index) {

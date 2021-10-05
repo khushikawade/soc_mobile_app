@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:html/dom.dart' as dom;
 
 // ignore: must_be_immutable
@@ -235,11 +234,13 @@ class _InformationPageState extends State<InformationPage> {
 
   _launchURL(obj) async {
     if (obj.toString().split(":")[0] == 'http') {
-      if (await canLaunch(obj)) {
-        await launch(obj);
-      } else {
-        throw 'Could not launch ${obj!}';
-      }
+      // if (await canLaunch(obj)) {
+      //   await launch(obj);
+      // } else {
+      //   throw 'Could not launch ${obj!}';
+      // }
+        await Utility.launchUrlOnExternalBrowser(obj);
+
     } else {
       Navigator.push(
           context,

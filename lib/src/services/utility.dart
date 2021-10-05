@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -227,6 +228,19 @@ class Utility {
       }
     } catch (e) {
       return '';
+    }
+  }
+
+  static launchUrlOnExternalBrowser(String url) async {
+    // if (await canLaunch(url)) {
+    //   await launch(url);
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
+    try {
+      await launch(url);
+    } catch (e) {
+      print(e);
     }
   }
 }

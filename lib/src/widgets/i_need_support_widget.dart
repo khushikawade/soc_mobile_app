@@ -1,7 +1,7 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:mailto/mailto.dart';
 
 UrlLauncherWidget objurl = new UrlLauncherWidget();
@@ -26,5 +26,6 @@ launchMailto(subject, body) async {
     subject: subject,
     body: body,
   );
-  await launch('$mailtoLink');
+  // await launch('$mailtoLink');
+   await Utility.launchUrlOnExternalBrowser('$mailtoLink');
 }
