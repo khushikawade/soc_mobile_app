@@ -118,12 +118,13 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
         .split(";")
         .map<PersistentBottomNavBarItem>(
       (item) {
-        // if (item.split("_")[0].toString().toLowerCase().contains("news")) {
-        //   Globals.newsIndex = Globals.homeObjet["Bottom_Navigation__c"]
-        //       .split(";")
-        //       .indexOf(item);
-        // // }
-        // setState(() {});
+        if (item.split("_")[0].toString().toLowerCase().contains("news")) {
+          Globals.newsIndex = Globals.homeObjet["Bottom_Navigation__c"]
+              .split(";")
+              .indexOf(item);
+        }
+        print(Globals.newsIndex);
+        setState(() {});
         return PersistentBottomNavBarItem(
           icon: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -217,7 +218,7 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
       // hideNavigationBar: true,
       onItemSelected: (int i) {
           setState(() {
-            if(i==1){
+            if(i==Globals.newsIndex){
                  Globals.indicator.value = false;
             }
           });
