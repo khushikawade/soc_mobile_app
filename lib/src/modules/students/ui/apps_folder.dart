@@ -62,7 +62,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
         // } else {
         //   throw 'Could not launch ${obj.appUrlC!}';
         // }
-        await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
+        await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
       } else {
         Navigator.push(
             context,
@@ -76,7 +76,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
       }
     } else {
       // await launch(obj.appUrlC!);
-      await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     }
   }
 
