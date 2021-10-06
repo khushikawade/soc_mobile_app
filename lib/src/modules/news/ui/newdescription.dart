@@ -50,7 +50,7 @@ class _NewdescriptionState extends State<Newdescription> {
       // }
       try {
         // await launch(obj);
-        await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
+        await Utility.launchUrlOnExternalBrowser(obj);
       } catch (e) {}
     } else {
       Navigator.push(
