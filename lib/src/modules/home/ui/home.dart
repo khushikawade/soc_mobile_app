@@ -123,7 +123,7 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
               .split(";")
               .indexOf(item);
         }
-        print(Globals.newsIndex);
+        // print(Globals.newsIndex);
         setState(() {});
         return PersistentBottomNavBarItem(
           icon: Row(
