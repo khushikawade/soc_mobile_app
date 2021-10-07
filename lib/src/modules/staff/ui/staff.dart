@@ -157,8 +157,7 @@ class _StaffPageState extends State<StaffPage> {
   }
 
   Widget _buildListItem(StaffList obj, int index) {
-    return obj.status == 'Show' || obj.status == null
-        ? Container(
+    return Container(
             decoration: BoxDecoration(
               border: Border.all(
                 color: AppTheme.kDividerColor2,
@@ -169,7 +168,7 @@ class _StaffPageState extends State<StaffPage> {
                   ? Theme.of(context).colorScheme.background
                   : Theme.of(context).colorScheme.secondary,
             ),
-            child: obj.titleC != null && obj.titleC!.length > 0
+            child: obj.titleC != null //&& obj.titleC!.length > 0
                 ? ListTile(
                     onTap: () {
                       _route(obj, index);
@@ -205,8 +204,8 @@ class _StaffPageState extends State<StaffPage> {
                       // color: AppTheme.kButtonbackColor,
                     ),
                   )
-                : Container())
-        : Container();
+                : Container());
+        
   }
 
   Widget build(BuildContext context) {
@@ -248,17 +247,16 @@ class _StaffPageState extends State<StaffPage> {
                                       child: CircularProgressIndicator()),
                                 );
                               } else if (state is StaffDataSucess) {
-                                return state.obj != null &&
-                                        state.obj!.length > 0
+                                return newList.length > 0
                                     ? Expanded(
                                         child: ListView.builder(
                                           scrollDirection: Axis.vertical,
-                                          itemCount: state.obj!.length,
+                                          itemCount: newList.length,
                                           padding: EdgeInsets.only(bottom: 20),
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return _buildListItem(
-                                                state.obj![index], index);
+                                                newList[index], index);
                                           },
                                         ),
                                       )
