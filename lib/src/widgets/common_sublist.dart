@@ -184,11 +184,13 @@ class _SubListPageState extends State<SubListPage> {
                                 },
                               ),
                             )
-                          : NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: false,
-                            );
+                          : Expanded(
+                            child: NoDataFoundErrorWidget(
+                                isResultNotFoundMsg: false,
+                                isNews: false,
+                                isEvents: false,
+                              ),
+                          );
                     } else {
                       return Container();
                     }
