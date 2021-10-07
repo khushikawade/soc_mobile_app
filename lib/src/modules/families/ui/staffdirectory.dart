@@ -320,14 +320,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                               ),
                                             ],
                                           )
-                                        : Expanded(
-                                            child: ListView(children: [
-                                            NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false,
-                                              isNews: false,
-                                              isEvents: false,
-                                            )
-                                          ]));
+                                        : NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: false,
+                                          isNews: false,
+                                          isEvents: false,
+                                        );
                                   } else if (state is ErrorLoading) {
                                     return ListView(
                                         children: [ErrorMsgWidget()]);
