@@ -413,7 +413,7 @@ class _EventPageState extends State<EventPage>
                                 } else if (state is CalendarListSuccess) {
                                   return _buildTabs(state);
                                 } else if (state is ErrorLoading) {
-                                  return ListView(children: [ErrorMsgWidget()]);
+                                  return ErrorMsgWidget();
                                 }
                                 return Container();
                               }),

@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/staff/models/staffmodal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -107,7 +108,19 @@ class _StaffPageState extends State<StaffPage> {
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage,
                   )));
-    } else {
+    } else if (obj.typeC == "PDF URL"||obj.typeC == "PDF") {
+      obj.pdfURL != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CommonPdfViewerPage(
+                        url: obj.pdfURL,
+                        tittle: obj.titleC,
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+    }else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }
   }

@@ -14,6 +14,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
 import '../bloc/user_bloc.dart';
@@ -183,14 +184,28 @@ class _StartupPageState extends State<StartupPage> {
                             state.obj["Splash_Screen__c"] ??
                                 state.obj["App_Logo__c"]);
                         state.obj != null
-                            ? Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomePage(
+                            ? 
+                            // Navigator.push(
+                            //     context,
+                            //     PageRouteBuilder(
+                            //       pageBuilder:
+                            //           (_, __, ___) =>
+                            //               HomePage(),
+                            //       transitionDuration: Duration(seconds: 0),
+                            //     ),
+                            //   )
+                          Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: HomePage(
                                     title: "SOC",
                                     homeObj: state.obj,
-                                  ),
-                                ))
+                                  ),))
+                            // Navigator.pushReplacement(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => HomePage(
+                            //         title: "SOC",
+                            //         homeObj: state.obj,
+                            //       ),
+                            //     ))
                             : NoDataFoundErrorWidget(
                                 isResultNotFoundMsg: false,
                                 isNews: false,

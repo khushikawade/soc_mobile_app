@@ -18,7 +18,7 @@ part 'family_event.dart';
 part 'family_state.dart';
 
 class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
-  var data;
+  // var data;
   FamilyBloc() : super(FamilyInitial());
   final DbServices _dbServices = DbServices();
 
