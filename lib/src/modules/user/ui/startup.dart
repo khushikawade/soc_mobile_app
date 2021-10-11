@@ -194,18 +194,18 @@ class _StartupPageState extends State<StartupPage> {
                             //       transitionDuration: Duration(seconds: 0),
                             //     ),
                             //   )
-                          Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: HomePage(
+                          // Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: HomePage(
+                          //           title: "SOC",
+                          //           homeObj: state.obj,
+                          //         ),))
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomePage(
                                     title: "SOC",
                                     homeObj: state.obj,
-                                  ),))
-                            // Navigator.pushReplacement(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => HomePage(
-                            //         title: "SOC",
-                            //         homeObj: state.obj,
-                            //       ),
-                            //     ))
+                                  ),
+                                ))
                             : NoDataFoundErrorWidget(
                                 isResultNotFoundMsg: false,
                                 isNews: false,
