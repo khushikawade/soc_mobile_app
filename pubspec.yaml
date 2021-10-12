@@ -72,7 +72,6 @@ dependencies:
   flutter_svg: ^0.22.0
   mailto: ^2.0.0
   marquee: ^2.2.0
-  page_transition: ^2.0.4
   
   
   

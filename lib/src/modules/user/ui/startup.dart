@@ -185,27 +185,19 @@ class _StartupPageState extends State<StartupPage> {
                                 state.obj["App_Logo__c"]);
                         state.obj != null
                             ? 
-                            // Navigator.push(
-                            //     context,
-                            //     PageRouteBuilder(
-                            //       pageBuilder:
-                            //           (_, __, ___) =>
-                            //               HomePage(),
-                            //       transitionDuration: Duration(seconds: 0),
-                            //     ),
-                            //   )
+                            Navigator.of(context).pushReplacement(_createRoute(state))
                           // Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: HomePage(
                           //           title: "SOC",
                           //           homeObj: state.obj,
                           //         ),))
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                    title: "SOC",
-                                    homeObj: state.obj,
-                                  ),
-                                ))
+                            // Navigator.pushReplacement(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => HomePage(
+                            //         title: "SOC",
+                            //         homeObj: state.obj,
+                            //       ),
+                            //     ))
                             : NoDataFoundErrorWidget(
                                 isResultNotFoundMsg: false,
                                 isNews: false,
@@ -250,4 +242,16 @@ class _StartupPageState extends State<StartupPage> {
           child: Container()),
     );
   }
+
+  Route _createRoute(state) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => HomePage(
+                                    title: "SOC",
+                                    homeObj: state.obj,
+                                  ),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return child;
+    },
+  );
+}
 }
