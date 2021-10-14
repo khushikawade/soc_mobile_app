@@ -12,6 +12,8 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:open_settings/open_settings.dart';
 import 'package:system_settings/system_settings.dart';
+import 'package:open_apps_settings/open_apps_settings.dart';
+import 'package:open_apps_settings/settings_enum.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final double _kIconSize = Globals.deviceType == "phone" ? 35 : 45.0;
@@ -84,8 +86,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             AppSettings.openAppSettings();
             break;
           case IconsMenu.Accessibility:
+          OpenAppsSettings.openAppsSettings(
+         settingsCode: SettingsCode.ACCESSIBILITY);
           //  OpenSettings.openAccessibilitySetting();
-          SystemSettings.accessibility();
+         // SystemSettings.accessibility();
             break;  
         }
       },
