@@ -3,6 +3,7 @@ class IconsMenu {
     Information,
     Setting,
     Permissions,
+    Accessibility,
   ];
 
   static const Information = IconMenu(
@@ -14,7 +15,11 @@ class IconsMenu {
   );
 
   static const Permissions = IconMenu(
-    text: 'Permissions',
+    text: 'Permission',
+  );
+
+  static const Accessibility = IconMenu(
+    text: 'Accessibility',
   );
 }
 
