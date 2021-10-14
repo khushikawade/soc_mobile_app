@@ -72,6 +72,8 @@ dependencies:
   flutter_svg: ^0.22.0
   mailto: ^2.0.0
   marquee: ^2.2.0
+  open_settings: ^2.0.2
+  system_settings: ^2.0.0
   
   
   

@@ -10,6 +10,8 @@ import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:open_settings/open_settings.dart';
+import 'package:system_settings/system_settings.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final double _kIconSize = Globals.deviceType == "phone" ? 35 : 45.0;
@@ -81,6 +83,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           case IconsMenu.Permissions:
             AppSettings.openAppSettings();
             break;
+          case IconsMenu.Accessibility:
+          //  OpenSettings.openAccessibilitySetting();
+          SystemSettings.accessibility();
+            break;  
         }
       },
       itemBuilder: (context) => IconsMenu.items
