@@ -41,17 +41,13 @@ class _NewdescriptionState extends State<Newdescription> {
     Globals.callsnackbar = true;
   }
 
-  _launchURL(obj) async {
-    if (obj.toString().split(":")[0] == 'http') {
-      // if (await canLaunch(obj)) {
-      //   await launch(obj);
-      // } else {
-      //   throw 'Could not launch ${obj!}';
-      // }
-      try {
-        // await launch(obj);
-        await Utility.launchUrlOnExternalBrowser(obj);
-      } catch (e) {}
+  void _launchURL(obj) async {
+    if (!obj.toString().contains('http')) {
+      await Utility.launchUrlOnExternalBrowser(obj);
+      return;
+    }
+    if ( obj.toString().split(":")[0] == 'http') {
+      await Utility.launchUrlOnExternalBrowser(obj);
     } else {
       Navigator.push(
           context,
