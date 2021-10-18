@@ -75,7 +75,7 @@ dependencies:
   open_settings: ^2.0.2
   system_settings: ^2.0.0
   open_apps_settings: ^0.0.4
-  
+  showcaseview: ^1.1.2
   
   
 

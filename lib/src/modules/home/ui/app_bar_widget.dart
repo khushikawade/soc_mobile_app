@@ -9,14 +9,16 @@ import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:open_settings/open_settings.dart';
 import 'package:system_settings/system_settings.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  final double _kIconSize = Globals.deviceType == "phone" ? 35 : 45.0;
+  final double _kIconSize = Globals.deviceType == "phone" ? 100 : 100.0;
   final double height = 60;
   final double _kLabelSpacing = 16.0;
   final String language1 = Translations.supportedLanguages.first;
@@ -85,12 +87,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           case IconsMenu.Permissions:
             AppSettings.openAppSettings();
             break;
-          case IconsMenu.Accessibility:
-          OpenAppsSettings.openAppsSettings(
-         settingsCode: SettingsCode.ACCESSIBILITY);
-          //  OpenSettings.openAccessibilitySetting();
-         // SystemSettings.accessibility();
-            break;  
+          // case IconsMenu.Accessibility:
+          //   OpenAppsSettings.openAppsSettings(
+          //       settingsCode: SettingsCode.ACCESSIBILITY);
+          //   //  OpenSettings.openAccessibilitySetting();
+          //   // SystemSettings.accessibility();
+          //   break;
         }
       },
       itemBuilder: (context) => IconsMenu.items
@@ -113,34 +115,50 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return AppBar(
-          automaticallyImplyLeading: false,
+          // automaticallyImplyLeading: true,
           leadingWidth: _kIconSize,
           elevation: 0.0,
-          leading: Container(
-            padding: EdgeInsets.only(left: 10),
-            child: GestureDetector(
-              child: Image(
-                image: AssetImage("assets/images/gtranslate.png"),
-              ),
-              // Icon(
-              //   IconData(0xe822,
-              //       fontFamily: Overrides.kFontFam,
-              //       fontPackage: Overrides.kFontPkg),
-              //   size: Globals.deviceType == "phone" ? 32 : 40,
-              // ),
-              onTap: () {
-                setState(() {});
-                LanguageSelector(context, (language) {
-                  if (language != null) {
-                    setState(() {
-                      Globals.selectedLanguage = language;
-                      Globals.languageChanged.value = language;
+          leading: Row(
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 10),
+                child: GestureDetector(
+                  child: Image(
+                     height: 25,
+                    image: AssetImage("assets/images/gtranslate.png"),
+                  ),
+                  // Icon(
+                  //   IconData(0xe822,
+                  //       fontFamily: Overrides.kFontFam,
+                  //       fontPackage: Overrides.kFontPkg),
+                  //   size: Globals.deviceType == "phone" ? 32 : 40,
+                  // ),
+                  onTap: () {
+                    setState(() {});
+                    LanguageSelector(context, (language) {
+                      if (language != null) {
+                        setState(() {
+                          Globals.selectedLanguage = language;
+                          Globals.languageChanged.value = language;
+                        });
+                        refresh!(true);
+                      }
                     });
-                    refresh!(true);
-                  }
-                });
-              },
-            ),
+                  },
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 10),
+                  child: IconButton(
+                onPressed: () {
+                 OpenAppsSettings.openAppsSettings(
+                          settingsCode: SettingsCode.ACCESSIBILITY);
+                },
+                icon: const Icon(FontAwesomeIcons.universalAccess,color: Colors.blue),
+              )),
+            ],
           ),
           title: AppLogoWidget(
             marginLeft: marginLeft,
