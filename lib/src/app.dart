@@ -1,9 +1,12 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/user/ui/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+// import 'package:firebase_analytics/observer.dart';
 
 class App extends StatefulWidget {
   @override
@@ -13,6 +16,9 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
+
+  static FirebaseAnalytics analytics = new FirebaseAnalytics();
+  static FirebaseAnalyticsObserver  observer = new FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   void initState() {
@@ -36,7 +42,8 @@ class _AppState extends State<App> {
         title: 'Adaptive Theme Demo',
         theme: theme,
         darkTheme: darkTheme,
-        home: StartupPage(),
+        navigatorObservers: <NavigatorObserver>[observer],
+        home: StartupPage(analytics:analytics, observer:observer),
       ),
     );
   }
