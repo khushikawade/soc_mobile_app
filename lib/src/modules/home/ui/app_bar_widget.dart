@@ -9,6 +9,8 @@ import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:open_apps_settings/open_apps_settings.dart';
+import 'package:open_apps_settings/settings_enum.dart';
 import 'package:open_settings/open_settings.dart';
 import 'package:system_settings/system_settings.dart';
 
@@ -83,8 +85,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             AppSettings.openAppSettings();
             break;
           case IconsMenu.Accessibility:
-          //  OpenSettings.openAccessibilitySetting();
-          SystemSettings.accessibility();
+          //  OpenSettings.openAppNotificationSetting();
+           OpenAppsSettings.openAppsSettings(
+
+         settingsCode: SettingsCode.ACCESSIBILITY);
+           //openAccessibilitySetting();
+           // SystemSettings.accessibility();
             break;  
         }
       },
