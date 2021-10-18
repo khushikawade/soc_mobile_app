@@ -74,8 +74,15 @@ dependencies:
   marquee: ^2.2.0
   open_settings: ^2.0.2
   system_settings: ^2.0.0
+<<<<<<< HEAD
   open_apps_settings: ^0.0.4
   showcaseview: ^1.1.2
+=======
+  showcaseview: ^1.1.2
+  bubble_showcase: ^1.1.0
+ 
+  
+>>>>>>> e3fd83ae5624c54206557edf7d5d2b77320897db
   
   
 
@@ -89,6 +96,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.9.0
+ 
 
 
 flutter_icons:
