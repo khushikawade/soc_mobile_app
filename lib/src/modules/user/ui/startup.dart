@@ -34,6 +34,7 @@ class _StartupPageState extends State<StartupPage> {
   IosDeviceInfo? ios;
   bool? isnetworkisuue = false;
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
+  
 
   void initState() {
     super.initState();
