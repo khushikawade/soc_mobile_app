@@ -46,7 +46,7 @@ class _NewdescriptionState extends State<Newdescription> {
       await Utility.launchUrlOnExternalBrowser(obj);
       return;
     }
-    if ( obj.toString().split(":")[0] == 'http') {
+    if (obj.toString().split(":")[0] == 'http') {
       await Utility.launchUrlOnExternalBrowser(obj);
     } else {
       Navigator.push(
