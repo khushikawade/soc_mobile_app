@@ -10,6 +10,7 @@ import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:open_settings/open_settings.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:system_settings/system_settings.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
@@ -23,6 +24,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final ValueChanged? refresh;
   final double? marginLeft;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final _imgkey = GlobalKey<ScaffoldState>();
 
   AppBarWidget({Key? key, required this.refresh, required this.marginLeft})
       : super(key: key);
@@ -83,9 +86,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             AppSettings.openAppSettings();
             break;
           case IconsMenu.Accessibility:
-          //  OpenSettings.openAccessibilitySetting();
-          SystemSettings.accessibility();
-            break;  
+            //  OpenSettings.openAccessibilitySetting();
+            SystemSettings.accessibility();
+            break;
         }
       },
       itemBuilder: (context) => IconsMenu.items
@@ -114,8 +117,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           leading: Container(
             padding: EdgeInsets.only(left: 10),
             child: GestureDetector(
-              child: Image(
-                image: AssetImage("assets/images/gtranslate.png"),
+              child: Showcase(
+                description: 'Translate/Traducción/翻译/ترجمة/Traduction',
+                key: _imgkey,
+                child: Image(
+                  image: AssetImage("assets/images/gtranslate.png"),
+                ),
               ),
               // Icon(
               //   IconData(0xe822,

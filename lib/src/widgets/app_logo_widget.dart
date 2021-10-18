@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class AppLogoWidget extends StatelessWidget {
   final double ?marginLeft;
@@ -11,14 +12,16 @@ class AppLogoWidget extends StatelessWidget {
      })
       : super(key: key);
 
-  static const double _kIconSize = 50;//45.0;
+  static const double _kIconSize = 50;
+
+ 
 
   Widget build(BuildContext context) {
     print(Globals.homeObjet["App_Logo__c"]);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
+      children: [
         Container(
           padding: EdgeInsets.only(left: marginLeft??0),
             // color: Colors.red,
