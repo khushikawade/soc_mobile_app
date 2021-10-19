@@ -15,6 +15,7 @@ class AppLogoWidget extends StatelessWidget {
 
   Widget build(BuildContext context) {
     print(Globals.homeObjet["App_Logo__c"]);
+<<<<<<< HEAD
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -32,6 +33,28 @@ class AppLogoWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 7.0),
                 child: ClipRRect(
                   child: CachedNetworkImage(
+=======
+    return Container(
+      padding: EdgeInsets.only(right: 35),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+           
+            padding: EdgeInsets.only(left: marginLeft??0),
+              // color: Colors.red,
+          // alignment: Alignment.centerRight,
+              height:
+                  Globals.deviceType == "phone" ? _kIconSize : _kIconSize * 1.2,
+              width: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.75
+                  : _kIconSize * 1.95,
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 7.0),
+                  child: ClipRRect(
+                    child: CachedNetworkImage(
+>>>>>>> 350b8890c8d6a6e05257dfa1cc8d2a14ac8c7f2a
                       imageUrl: Globals.homeObjet["App_Logo__c"],
                       placeholder: (context, url) => Container(
                           alignment: Alignment.center,
@@ -43,11 +66,19 @@ class AppLogoWidget extends StatelessWidget {
                               color: Colors.white,
                             ),
                           )),
+<<<<<<< HEAD
                       errorWidget: (context, url, error) =>
                           Text("Loading...") //Icon(Icons.error),
                       ),
                 ))),
       ],
+=======
+                      errorWidget: (context, url, error) => Text("Loading...")//Icon(Icons.error),
+                    ),
+                  ))),
+        ],
+      ),
+>>>>>>> 350b8890c8d6a6e05257dfa1cc8d2a14ac8c7f2a
     );
   }
 }
