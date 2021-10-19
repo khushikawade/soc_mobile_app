@@ -11,14 +11,20 @@ import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
 import '../bloc/user_bloc.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class StartupPage extends StatefulWidget {
+  final FirebaseAnalytics? analytics;
+  final FirebaseAnalyticsObserver? observer;
+
+  StartupPage({this.analytics, this.observer});
   @override
   _StartupPageState createState() => new _StartupPageState();
 }
@@ -34,6 +40,10 @@ class _StartupPageState extends State<StartupPage> {
   IosDeviceInfo? ios;
   bool? isnetworkisuue = false;
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
+
+  // Future<Null> _sendAnalytics() async {
+  //   await widget.analytics.logEvent();
+  // }  
 
   void initState() {
     super.initState();
