@@ -3,18 +3,23 @@ import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:flutter/material.dart';
-import 'package:open_settings/open_settings.dart';
-import 'package:showcaseview/showcaseview.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_bubble/speech_bubble.dart';
+
 import 'package:system_settings/system_settings.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final double _kIconSize = Globals.deviceType == "phone" ? 35 : 45.0;
+
   final double height = 60;
   final double _kLabelSpacing = 16.0;
   final String language1 = Translations.supportedLanguages.first;
@@ -24,8 +29,16 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final ValueChanged? refresh;
   final double? marginLeft;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
+  bool? initalscreen;
 
-  final _imgkey = GlobalKey<ScaffoldState>();
+  final GlobalKey _bshowcase = GlobalKey();
+  Future<void> main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    initalscreen = preferences.getBool('initalscreen');
+    await preferences.setBool('initalscreen', true);
+  }
 
   AppBarWidget({Key? key, required this.refresh, required this.marginLeft})
       : super(key: key);
@@ -117,13 +130,33 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           leading: Container(
             padding: EdgeInsets.only(left: 10),
             child: GestureDetector(
-              child: Showcase(
-                description: 'Translate/Traducción/翻译/ترجمة/Traduction',
-                key: _imgkey,
-                child: Image(
-                  image: AssetImage("assets/images/gtranslate.png"),
-                ),
-              ),
+              child: initalscreen == false || initalscreen == null
+                  ? BubbleShowcase(
+                      bubbleShowcaseId: 'my_bubble_showcase',
+                      bubbleSlides: [
+                        _firstSlide(TextStyle()),
+                      ],
+                      bubbleShowcaseVersion: 1,
+                      child: Image(
+                        key: _bshowcase,
+                        image: AssetImage("assets/images/gtranslate.png"),
+                      ),
+                    )
+                  : Image(
+                      image: AssetImage("assets/images/gtranslate.png"),
+                    ),
+
+              // child: BubbleShowcase(
+              //   bubbleShowcaseId: 'my_bubble_showcase',
+              //   bubbleSlides: [
+              //     _firstSlide(TextStyle()),
+              //   ],
+              //   bubbleShowcaseVersion: 1,
+              //   child: Image(
+              //     key: _bshowcase,
+              //     image: AssetImage("assets/images/gtranslate.png"),
+              //   ),
+              // ),
               // Icon(
               //   IconData(0xe822,
               //       fontFamily: Overrides.kFontFam,
@@ -155,4 +188,33 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           ]);
     });
   }
+
+  BubbleSlide _firstSlide(TextStyle textStyle) => RelativeBubbleSlide(
+      widgetKey: _bshowcase,
+      shape: const Circle(
+        spreadRadius: -7,
+      ),
+      child: AbsoluteBubbleSlideChild(
+        widget: Padding(
+          padding: const EdgeInsets.only(top: 70.0),
+          child: SpeechBubble(
+            nipLocation: NipLocation.TOP_LEFT,
+            // nipHeight: 30,
+            color: Colors.blue,
+            child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              Text(
+                "Translate/Traducción/翻译/ترجمة/Traduction",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                ),
+              )
+            ]),
+          ),
+        ),
+        positionCalculator: (size) => Position(
+          top: 15,
+          left: 10,
+        ),
+      ));
 }

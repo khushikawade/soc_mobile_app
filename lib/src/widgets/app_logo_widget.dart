@@ -2,7 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:showcaseview/showcaseview.dart';
+
 
 class AppLogoWidget extends StatelessWidget {
   final double ?marginLeft;

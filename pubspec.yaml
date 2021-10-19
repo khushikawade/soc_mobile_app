@@ -74,8 +74,8 @@ dependencies:
   marquee: ^2.2.0
   open_settings: ^2.0.2
   system_settings: ^2.0.0
-  showcaseview: ^1.1.2
   bubble_showcase: ^1.1.0
+  speech_bubble: ^0.0.9
  
   
   
