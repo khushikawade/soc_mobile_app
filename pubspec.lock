@@ -78,13 +78,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-  bubble_showcase:
-    dependency: "direct main"
-    description:
-      name: bubble_showcase
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
   build:
     dependency: transitive
     description:
@@ -721,13 +714,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.4"
-  open_settings:
-    dependency: "direct main"
-    description:
-      name: open_settings
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.2"
   package_config:
     dependency: transitive
     description:
@@ -1041,13 +1027,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
-  system_settings:
-    dependency: "direct main"
-    description:
-      name: system_settings
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   table_calendar:
     dependency: "direct main"
     description:
