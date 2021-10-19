@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 class StaffPage extends StatefulWidget {
   StaffPage({Key? key, this.title, this.language}) : super(key: key);
@@ -41,7 +42,6 @@ class _StaffPageState extends State<StaffPage> {
   bool? iserrorstate = false;
   var obj;
   List<StaffList> newList = [];
-  StaffList list = StaffList();
 
   @override
   void initState() {
@@ -171,50 +171,59 @@ class _StaffPageState extends State<StaffPage> {
   }
 
   Widget _buildListItem(StaffList obj, int index) {
-    return Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AppTheme.kDividerColor2,
-            width: 0.65,
-          ),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
-        ),
-        child: obj.titleC != null //&& obj.titleC!.length > 0
-            ? ListTile(
-                onTap: () {
-                  _route(obj, index);
-                },
-                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-                leading: _buildLeading(obj),
-                title: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English" &&
-                        Globals.selectedLanguage != ""
-                    ? TranslationWidget(
-                        message: obj.titleC.toString(),
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                          style:
-                              Theme.of(context).textTheme.bodyText2!.copyWith(),
-                        ),
-                      )
-                    : Text(
-                        obj.titleC.toString(),
-                        style:
-                            Theme.of(context).textTheme.bodyText2!.copyWith(),
-                      ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: Globals.deviceType == "phone" ? 12 : 20,
-                  color: Theme.of(context).colorScheme.primary,
-                  // color: AppTheme.kButtonbackColor,
-                ),
-              )
-            : Container());
+    return Column(
+      children: [
+        // buildImageBanner(),
+        Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: AppTheme.kDividerColor2,
+                width: 0.65,
+              ),
+              borderRadius: BorderRadius.circular(0.0),
+              color: (index % 2 == 0)
+                  ? Theme.of(context).colorScheme.background
+                  : Theme.of(context).colorScheme.secondary,
+            ),
+            child: obj.titleC != null //&& obj.titleC!.length > 0
+                ? ListTile(
+                    onTap: () {
+                      _route(obj, index);
+                    },
+                    visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                    leading: _buildLeading(obj),
+                    title: Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English" &&
+                            Globals.selectedLanguage != ""
+                        ? TranslationWidget(
+                            message: obj.titleC.toString(),
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2!
+                                  .copyWith(),
+                            ),
+                          )
+                        : Text(
+                            obj.titleC.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(),
+                          ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: Globals.deviceType == "phone" ? 12 : 20,
+                      color: Theme.of(context).colorScheme.primary,
+                      // color: AppTheme.kButtonbackColor,
+                    ),
+                  )
+                : Container()),
+      ],
+    );
   }
 
   Widget build(BuildContext context) {
@@ -226,139 +235,137 @@ class _StaffPageState extends State<StaffPage> {
             setState(() {});
           },
         ),
-        body: DefaultTabController(
-            length: 2,
-            child: NestedScrollView(
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return <Widget>[
-                    SliverAppBar(
-                      expandedHeight: 200.0,
+        body: RefreshIndicator(
+          key: refreshKey,
+          // onRefresh: refreshPage,
+          child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                Globals.homeObjet["Staff_Banner_Image__c"] != null
+                    ? SliverAppBar(
+                        expandedHeight: 200.0,
+                        floating: false,
 
-                      floating: false,
-                      // snap: true,
-                      //pinned: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Image.network(list.bannerimagec!,
+                        // pinned: true,
+                        flexibleSpace: FlexibleSpaceBar(
+                          centerTitle: true,
+                          background: Image.network(
+                            Globals.homeObjet["Staff_Banner_Image__c"],
                             fit: BoxFit.cover,
-                            loadingBuilder: (context, child, loadingProgress) {
-                          if (list.bannerimagec == null) return child;
-                          return Center(
-                            child: Container(),
-                          );
-                        }
+                          ),
+                        ),
+                      )
+                    : SliverAppBar(),
+              ];
+            },
+            body: OfflineBuilder(
+                connectivityBuilder: (
+                  BuildContext context,
+                  ConnectivityResult connectivity,
+                  Widget child,
+                ) {
+                  final bool connected =
+                      connectivity != ConnectivityResult.none;
+                  if (connected) {
+                    if (iserrorstate == true) {
+                      iserrorstate = false;
+                      _bloc.add(StaffPageEvent());
+                    }
+                  } else if (!connected) {
+                    iserrorstate = true;
+                  }
 
-                            //fit: BoxFit.fill)),
+                  return connected
+                      ? Container(
+                          child:
+                              Column(mainAxisSize: MainAxisSize.max, children: [
+                            BlocBuilder<StaffBloc, StaffState>(
+                                bloc: _bloc,
+                                builder:
+                                    (BuildContext contxt, StaffState state) {
+                                  if (state is StaffInitial ||
+                                      state is StaffLoading) {
+                                    return Expanded(
+                                      child: Center(
+                                          child: CircularProgressIndicator()),
+                                    );
+                                  } else if (state is StaffDataSucess) {
+                                    return newList.length > 0
+                                        ? Expanded(
+                                            child: ListView.builder(
+                                              scrollDirection: Axis.vertical,
+                                              itemCount: newList.length,
+                                              padding:
+                                                  EdgeInsets.only(bottom: 20),
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return _buildListItem(
+                                                    newList[index], index);
+                                              },
+                                            ),
+                                          )
+                                        : Expanded(
+                                            child: NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                            isEvents: false,
+                                          ));
+                                  } else if (state is ErrorInStaffLoading) {
+                                  } else {
+                                    return Expanded(
+                                      child: ListView(
+                                          children: [ErrorMsgWidget()]),
+                                    );
+                                  }
+                                  return Container();
+                                }),
+                            Container(
+                              height: 0,
+                              width: 0,
+                              child: BlocListener<HomeBloc, HomeState>(
+                                  bloc: _homeBloc,
+                                  listener: (context, state) async {
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      Globals.homeObjet = state.obj;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: EmptyContainer()),
                             ),
-                      ),
-                    ),
-                  ];
+                            BlocListener<StaffBloc, StaffState>(
+                                bloc: _bloc,
+                                listener: (context, state) async {
+                                  if (state is StaffDataSucess) {
+                                    newList.clear();
+                                    for (int i = 0;
+                                        i < state.obj!.length;
+                                        i++) {
+                                      if (state.obj![i].status != "Hide") {
+                                        newList.add(state.obj![i]);
+                                      }
+                                    }
+                                  }
+                                },
+                                child: EmptyContainer()),
+                          ]),
+                        )
+                      : NoInternetErrorWidget(
+                          connected: connected, issplashscreen: false);
                 },
-                body: RefreshIndicator(
-                  key: refreshKey,
-                  child: OfflineBuilder(
-                      connectivityBuilder: (
-                        BuildContext context,
-                        ConnectivityResult connectivity,
-                        Widget child,
-                      ) {
-                        final bool connected =
-                            connectivity != ConnectivityResult.none;
-                        if (connected) {
-                          if (iserrorstate == true) {
-                            iserrorstate = false;
-                            _bloc.add(StaffPageEvent());
-                          }
-                        } else if (!connected) {
-                          iserrorstate = true;
-                        }
-
-                        return connected
-                            ? Column(mainAxisSize: MainAxisSize.max, children: [
-                                BlocBuilder<StaffBloc, StaffState>(
-                                    bloc: _bloc,
-                                    builder: (BuildContext contxt,
-                                        StaffState state) {
-                                      if (state is StaffInitial ||
-                                          state is StaffLoading) {
-                                        return Expanded(
-                                          child: Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                        );
-                                      } else if (state is StaffDataSucess) {
-                                        return newList.length > 0
-                                            ? Expanded(
-                                                child: ListView.builder(
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  itemCount: newList.length,
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 20),
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return _buildListItem(
-                                                        newList[index], index);
-                                                  },
-                                                ),
-                                              )
-                                            : Expanded(
-                                                child: NoDataFoundErrorWidget(
-                                                isResultNotFoundMsg: false,
-                                                isNews: false,
-                                                isEvents: false,
-                                              ));
-                                      } else if (state is ErrorInStaffLoading) {
-                                      } else {
-                                        return Expanded(
-                                          child: ListView(
-                                              children: [ErrorMsgWidget()]),
-                                        );
-                                      }
-                                      return Container();
-                                    }),
-                                Container(
-                                  height: 0,
-                                  width: 0,
-                                  child: BlocListener<HomeBloc, HomeState>(
-                                      bloc: _homeBloc,
-                                      listener: (context, state) async {
-                                        if (state
-                                            is BottomNavigationBarSuccess) {
-                                          AppTheme.setDynamicTheme(
-                                              Globals.appSetting, context);
-                                          Globals.homeObjet = state.obj;
-                                          setState(() {});
-                                        }
-                                      },
-                                      child: EmptyContainer()),
-                                ),
-                                BlocListener<StaffBloc, StaffState>(
-                                    bloc: _bloc,
-                                    listener: (context, state) async {
-                                      if (state is StaffDataSucess) {
-                                        newList.clear();
-                                        for (int i = 0;
-                                            i < state.obj!.length;
-                                            i++) {
-                                          if (state.obj![i].status != "Hide") {
-                                            newList.add(state.obj![i]);
-                                          }
-                                        }
-                                      }
-                                    },
-                                    child: EmptyContainer()),
-                              ])
-                            : NoInternetErrorWidget(
-                                connected: connected, issplashscreen: false);
-                      },
-                      child: Container()),
-                  onRefresh: refreshPage,
-                ))));
+                child: Container()),
+          ),
+          onRefresh: refreshPage,
+        ));
   }
 
   Future refreshPage() async {
+    await Future.delayed(Duration(seconds: 5));
+
     refreshKey.currentState?.show(atTop: false);
     _bloc.add(StaffPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());

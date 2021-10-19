@@ -10,7 +10,7 @@ import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:open_settings/open_settings.dart';
-import 'package:showcaseview/showcaseview.dart';
+// import 'package:showcaseview/showcaseview.dart';
 import 'package:system_settings/system_settings.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
@@ -117,19 +117,21 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           leading: Container(
             padding: EdgeInsets.only(left: 10),
             child: GestureDetector(
-              child: Showcase(
-                description: 'Translate/Traducción/翻译/ترجمة/Traduction',
-                key: _imgkey,
-                child: Image(
-                  image: AssetImage("assets/images/gtranslate.png"),
-                ),
+              child:
+
+                  // Showcase(
+                  //   description: 'Translate/Traducción/翻译/ترجمة/Traduction',
+                  //   key: _imgkey,
+                  //   child: Image(
+                  //     image: AssetImage("assets/images/gtranslate.png"),
+                  //   ),
+                  // ),
+                  Icon(
+                IconData(0xe822,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                size: Globals.deviceType == "phone" ? 32 : 40,
               ),
-              // Icon(
-              //   IconData(0xe822,
-              //       fontFamily: Overrides.kFontFam,
-              //       fontPackage: Overrides.kFontPkg),
-              //   size: Globals.deviceType == "phone" ? 32 : 40,
-              // ),
               onTap: () {
                 setState(() {});
                 LanguageSelector(context, (language) {

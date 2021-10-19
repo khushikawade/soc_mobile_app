@@ -43,6 +43,7 @@ class _FamilyPageState extends State<FamilyPage> {
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
   List<FamiliesList> newList = [];
+  FamiliesList list = FamiliesList();
 
   @override
   void initState() {
@@ -242,110 +243,122 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBarWidget(
-        marginLeft: 30,
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: RefreshIndicator(
-        key: refreshKey,
-        child: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final bool connected = connectivity != ConnectivityResult.none;
-
-              if (connected) {
-                if (iserrorstate == true) {
-                  _bloc.add(FamiliesEvent());
-                  iserrorstate = false;
-                }
-              } else if (!connected) {
-                iserrorstate = true;
-              }
-
-              return connected
-                  ? Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: BlocBuilder<FamilyBloc, FamilyState>(
-                              bloc: _bloc,
-                              builder:
-                                  (BuildContext contxt, FamilyState state) {
-                                if (state is FamilyInitial ||
-                                    state is FamilyLoading) {
-                                  return Container(
-                                      alignment: Alignment.center,
-                                      child: CircularProgressIndicator());
-                                } else if (state is FamiliesDataSucess) {
-                                  return newList.length > 0
-                                      ? ListView.builder(
-                                          padding: EdgeInsets.only(bottom: 45),
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: newList.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return _buildList(
-                                                newList[index], index);
-                                          },
-                                        )
-                                      :
-                                      // ListView(children: [
-                                      NoDataFoundErrorWidget(
-                                          isResultNotFoundMsg: false,
-                                          isNews: false,
-                                          isEvents: false,
-                                        );
-
-                                  // ]);
-                                } else if (state is ErrorLoading) {
-                                  return ListView(children: [ErrorMsgWidget()]);
-                                } else {
-                                  return Container();
-                                }
-                              }),
+        key: _scaffoldKey,
+        appBar: AppBarWidget(
+          marginLeft: 30,
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                Globals.homeObjet["Family_Banner_Image__c"] != null
+                    ? SliverAppBar(
+                        expandedHeight: 200.0,
+                        floating: false,
+                        // pinned: true,
+                        flexibleSpace: FlexibleSpaceBar(
+                          centerTitle: true,
+                          background: Image.network(
+                            Globals.homeObjet["Family_Banner_Image__c"],
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
-                                  setState(() {});
-                                }
-                              },
-                              child: EmptyContainer()),
-                        ),
-                        BlocListener<FamilyBloc, FamilyState>(
-                            bloc: _bloc,
-                            listener: (context, state) async {
-                              if (state is FamiliesDataSucess) {
-                                newList.clear();
-                                for (int i = 0; i < state.obj!.length; i++) {
-                                  if (state.obj![i].status != "Hide") {
-                                    newList.add(state.obj![i]);
-                                  }
-                                }
-                              }
-                            },
-                            child: EmptyContainer()),
-                      ],
-                    )
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
+                      )
+                    : SliverAppBar(),
+              ];
             },
-            child: Container()),
-        onRefresh: refreshPage,
-      ),
-    );
+            body: OfflineBuilder(
+                connectivityBuilder: (
+                  BuildContext context,
+                  ConnectivityResult connectivity,
+                  Widget child,
+                ) {
+                  final bool connected =
+                      connectivity != ConnectivityResult.none;
+
+                  if (connected) {
+                    if (iserrorstate == true) {
+                      _bloc.add(FamiliesEvent());
+                      iserrorstate = false;
+                    }
+                  } else if (!connected) {
+                    iserrorstate = true;
+                  }
+
+                  return connected
+                      ? Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(
+                              child: BlocBuilder<FamilyBloc, FamilyState>(
+                                  bloc: _bloc,
+                                  builder:
+                                      (BuildContext contxt, FamilyState state) {
+                                    if (state is FamilyInitial ||
+                                        state is FamilyLoading) {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    } else if (state is FamiliesDataSucess) {
+                                      return state.obj != null &&
+                                              state.obj!.length > 0
+                                          ? ListView.builder(
+                                              padding:
+                                                  EdgeInsets.only(bottom: 45),
+                                              scrollDirection: Axis.vertical,
+                                              itemCount: state.obj!.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return _buildList(
+                                                    state.obj![index], index);
+                                              },
+                                            )
+                                          :
+                                          // ListView(children: [
+                                          NoDataFoundErrorWidget(
+                                              isResultNotFoundMsg: false,
+                                              isNews: false,
+                                              isEvents: false,
+                                            );
+
+                                      // ]);
+                                    } else if (state is ErrorLoading) {
+                                      return ListView(
+                                          children: [ErrorMsgWidget()]);
+                                    } else {
+                                      return Container();
+                                    }
+                                  }),
+                            ),
+                            Container(
+                              height: 0,
+                              width: 0,
+                              child: BlocListener<HomeBloc, HomeState>(
+                                  bloc: _homeBloc,
+                                  listener: (context, state) async {
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      Globals.homeObjet = state.obj;
+
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: EmptyContainer()),
+                            ),
+                          ],
+                        )
+                      : NoInternetErrorWidget(
+                          connected: connected, issplashscreen: false);
+                },
+                child: Container()),
+          ),
+          onRefresh: refreshPage,
+        ));
   }
 }
