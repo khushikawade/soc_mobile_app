@@ -4,7 +4,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:showcaseview/showcaseview.dart';
+// import 'package:showcaseview/showcaseview.dart';
 
 class App extends StatefulWidget {
   @override
@@ -37,14 +37,16 @@ class _AppState extends State<App> {
         title: 'Adaptive Theme Demo',
         theme: theme,
         darkTheme: darkTheme,
-        home: ShowCaseWidget(
-            builder: Builder(builder: (context) => StartupPage()),
-            onStart: (index, key) {
-              print('onStart: $index, $key');
-            },
-            onComplete: (index, key) {
-              print('onComplete: $index, $key');
-            }),
+        home: 
+        StartupPage(),
+        // ShowCaseWidget(
+        //     builder: Builder(builder: (context) => StartupPage()),
+        //     onStart: (index, key) {
+        //       print('onStart: $index, $key');
+        //     },
+        //     onComplete: (index, key) {
+        //       print('onComplete: $index, $key');
+        //     }),
       ),
     );
   }
