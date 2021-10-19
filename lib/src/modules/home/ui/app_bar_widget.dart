@@ -12,8 +12,6 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:open_settings/open_settings.dart';
-import 'package:system_settings/system_settings.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
 
@@ -126,7 +124,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 padding: EdgeInsets.only(left: 10),
                 child: GestureDetector(
                   child: Image(
-                     height: 25,
+                    height: Globals.deviceType == "phone" ? 28 : 32,
                     image: AssetImage("assets/images/gtranslate.png"),
                   ),
                   // Icon(
@@ -150,14 +148,18 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(left: 10),
+                  padding: EdgeInsets.only(left: 10),
                   child: IconButton(
-                onPressed: () {
-                 OpenAppsSettings.openAppsSettings(
+                    onPressed: () {
+                      OpenAppsSettings.openAppsSettings(
                           settingsCode: SettingsCode.ACCESSIBILITY);
-                },
-                icon: const Icon(FontAwesomeIcons.universalAccess,color: Colors.blue),
-              )),
+                    },
+                    icon: Icon(
+                      FontAwesomeIcons.universalAccess,
+                      color: Colors.blue,
+                      size: Globals.deviceType == "phone" ? 20 : 32,
+                    ),
+                  )),
             ],
           ),
           title: AppLogoWidget(
