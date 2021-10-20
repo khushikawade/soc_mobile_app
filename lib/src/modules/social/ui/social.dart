@@ -36,6 +36,7 @@ class _SocialPageState extends State<SocialPage> {
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
   SocialBloc bloc = SocialBloc();
+  // GlobalKey _imgkey = GlobalKey();
 
   void initState() {
     super.initState();
