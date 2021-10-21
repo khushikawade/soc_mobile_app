@@ -33,6 +33,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   bool? ishtmlpage;
   bool? isCenterIcon;
   String? language;
+  
 
   @override
   final Size preferredSize;

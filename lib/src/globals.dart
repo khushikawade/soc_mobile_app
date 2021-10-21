@@ -1,3 +1,4 @@
+import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'modules/home/models/app_setting.dart';
@@ -37,8 +38,9 @@ class Globals {
   static int? homeIndex;
   static bool? isNetworkError = false;
   static bool? callsnackbar = true;
+  static bool? initalscreen ;
   static String? calendar_Id = "";
   static final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  static int?navIndex=0;
+  static int? navIndex = 0;
 }

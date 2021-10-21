@@ -16,7 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
-import 'package:showcaseview/showcaseview.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SocialPage extends StatefulWidget {
   SocialPage({
@@ -36,20 +36,24 @@ class _SocialPageState extends State<SocialPage> {
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
   SocialBloc bloc = SocialBloc();
-  GlobalKey _imgkey = GlobalKey();
-  
+  // GlobalKey _imgkey = GlobalKey();
 
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
-    WidgetsBinding.instance!.addPostFrameCallback(
-        (_) => ShowCaseWidget.of(context)!.startShowCase([_imgkey]));
-        _imgkey = GlobalKey();
+    _showcase();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future<void> _showcase() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    Globals.initalscreen = preferences.getBool('initalscreen');
+    await preferences.setBool('initalscreen', true);
   }
 
   Future refreshPage() async {
@@ -293,10 +297,7 @@ class _SocialPageState extends State<SocialPage> {
         appBar: AppBarWidget(
           marginLeft: 30,
           refresh: (v) {
-            setState(() {
-              WidgetsBinding.instance!.addPostFrameCallback(
-                  (_) => ShowCaseWidget.of(context)!.startShowCase([_imgkey]));
-            });
+            setState(() {});
           },
         ),
         body: RefreshIndicator(
