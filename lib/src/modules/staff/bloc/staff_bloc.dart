@@ -77,7 +77,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
   Future<List<StaffList>> getStaffDetails() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name,PDF_URL__c,App_Icon_URL__c,Type__c, App_Icon__c,RTF_HTML__c,Sort_Order__c,Calendar_Id__c,Active_Status__c FROM Staff_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name,PDF_URL__c,App_Icon_URL__c,Type__c, App_Icon__c,RTF_HTML__c,Sort_Order__c,Calendar_Id__c,Active_Status__c ,Banner_Image_cFROM Staff_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       if (response.statusCode == 200) {
         return response.data["records"]
             .map<StaffList>((i) => StaffList.fromJson(i))

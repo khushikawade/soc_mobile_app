@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 // import 'package:firebase_analytics/observer.dart';
+// import 'package:showcaseview/showcaseview.dart';
 
 class App extends StatefulWidget {
   @override
@@ -44,7 +45,17 @@ class _AppState extends State<App> {
         darkTheme: darkTheme,
         navigatorObservers: <NavigatorObserver>[observer],
         home: StartupPage(analytics:analytics, observer:observer),
+       
+        // ShowCaseWidget(
+        //     builder: Builder(builder: (context) => StartupPage()),
+        //     onStart: (index, key) {
+        //       print('onStart: $index, $key');
+        //     },
+        //     onComplete: (index, key) {
+        //       print('onComplete: $index, $key');
+        //     }),
       ),
     );
   }
 }
+

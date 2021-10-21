@@ -156,12 +156,11 @@ class _NewdescriptionState extends State<Newdescription> {
                                           .length >
                                       1
                                   ? widget.obj.contents["en"]
-                                          .toString()
-                                          .split(" ")[0] +
-                                      " " +
+                                          .toString().replaceAll("\n"," ")
+                                          .split(" ")[0] +" "+
                                       widget.obj.contents["en"]
-                                          .toString()
-                                          .split(" ")[1] +
+                                          .toString().replaceAll("\n"," ")
+                                          .split(" ")[1].split("\n")[0] +
                                       "..."
                                   : widget.obj.contents["en"],
                           toLanguage: Globals.selectedLanguage,
@@ -190,12 +189,11 @@ class _NewdescriptionState extends State<Newdescription> {
                                           .length >
                                       1
                                   ? widget.obj.contents["en"]
-                                          .toString()
-                                          .split(" ")[0] +
-                                      " " +
+                                          .toString().replaceAll("\n"," ")
+                                          .split(" ")[0] +" "+
                                       widget.obj.contents["en"]
-                                          .toString()
-                                          .split(" ")[1] +
+                                          .toString().replaceAll("\n"," ")
+                                          .split(" ")[1].split("\n")[0] +
                                       "..."
                                   : widget.obj.contents["en"],
                           style: Theme.of(context)

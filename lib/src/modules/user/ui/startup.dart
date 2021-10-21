@@ -40,6 +40,7 @@ class _StartupPageState extends State<StartupPage> {
   IosDeviceInfo? ios;
   bool? isnetworkisuue = false;
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
+  
 
   // Future<Null> _sendAnalytics() async {
   //   await widget.analytics.logEvent();
