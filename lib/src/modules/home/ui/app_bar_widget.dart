@@ -126,8 +126,56 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           elevation: 0.0,
           leading: Row(
             children: [
-              Globals.initalscreen == false
-                  ? _showcase(setState, context)
+              // Globals.initalscreen == false
+              true
+                  ?
+
+                  // _showcase(setState, context)
+
+                  BubbleShowcase(
+                      bubbleShowcaseId: 'my_bubble_showcase',
+                      bubbleShowcaseVersion: 1,
+                      bubbleSlides: [
+                        RelativeBubbleSlide(
+                          widgetKey: _bshowcase,
+                          child: RelativeBubbleSlideChild(
+                            // direction: AxisDirection.right,
+                            widget: SpeechBubble(
+                              // nipLocation: NipLocation.LEFT,
+                              color: Colors.blue,
+                              child: Padding(
+                                padding: EdgeInsets.all(30),
+                                child: Text(
+                                  'This is a new cool feature !',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                      child: Container(
+                          padding: EdgeInsets.only(left: 10),
+                          child: GestureDetector(
+                            key: _bshowcase,
+                            child: Image(
+                              width: Globals.deviceType == "phone" ? 24 : 32,
+                              height: Globals.deviceType == "phone" ? 24 : 32,
+                              image: AssetImage("assets/images/gtranslate.png"),
+                            ),
+                            onTap: () {
+                              setState(() {});
+                              LanguageSelector(context, (language) {
+                                if (language != null) {
+                                  setState(() {
+                                    Globals.selectedLanguage = language;
+                                    Globals.languageChanged.value = language;
+                                  });
+                                  refresh!(true);
+                                }
+                              });
+                            },
+                          )))
                   : Container(
                       padding: EdgeInsets.only(left: 10),
                       child: GestureDetector(
@@ -149,81 +197,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                             }
                           });
                         },
-                      )
-                      // : GestureDetector(
-                      //     child: Image(
-                      //       width: Globals.deviceType == "phone" ? 24 : 32,
-                      //       height: Globals.deviceType == "phone" ? 24 : 32,
-                      //       image: AssetImage("assets/images/gtranslate.png"),
-                      //     ),
-                      //     onTap: () {
-                      //       setState(() {});
-                      //       LanguageSelector(context, (language) {
-                      //         if (language != null) {
-                      //           setState(() {
-                      //             Globals.selectedLanguage = language;
-                      //             Globals.languageChanged.value = language;
-                      //           });
-                      //           refresh!(true);
-                      //         }
-                      //       });
-                      //     },
-                      //   )
-
-                      //initalscreen == false || initalscreen == null
-                      //     ? BubbleShowcase(
-                      //         bubbleShowcaseId: 'my_bubble_showcase',
-                      //         bubbleSlides: [
-                      //           _firstSlide(TextStyle()),
-                      //         ],
-                      //         bubbleShowcaseVersion: 1,
-                      //         child: GestureDetector(
-                      //           child: Image(
-                      //             height: Globals.deviceType == "phone" ? 24 : 32,
-                      //             image: AssetImage("assets/images/gtranslate.png"),
-                      //           ),
-                      //           onTap: () {
-                      //             setState(() {});
-                      //             LanguageSelector(context, (language) {
-                      //               if (language != null) {
-                      //                 setState(() {
-                      //                   Globals.selectedLanguage = language;
-                      //                   Globals.languageChanged.value = language;
-                      //                 });
-                      //                 refresh!(true);
-                      //               }
-                      //             });
-                      //           },
-                      //         ))
-                      //     :
-                      //     GestureDetector(
-                      //   child: Image(
-                      //     height: Globals.deviceType == "phone" ? 24 : 32,
-                      //     image: AssetImage("assets/images/gtranslate.png"),
-                      //   ),
-                      //   onTap: () {
-                      //     setState(() {});
-                      //     LanguageSelector(context, (language) {
-                      //       if (language != null) {
-                      //         setState(() {
-                      //           Globals.selectedLanguage = language;
-                      //           Globals.languageChanged.value = language;
-                      //         });
-                      //         refresh!(true);
-                      //       }
-                      //     });
-                      //   },
-                      // )
-
-                      //      Image(
-                      //       key: _bshowcase,
-                      //       image: AssetImage("assets/images/gtranslate.png"),
-                      //     ),
-                      //   )
-                      // : Image(
-                      //     image: AssetImage("assets/images/gtranslate.png"),
-                      //   ),
-                      ),
+                      )),
               Container(
                   padding: EdgeInsets.only(left: 10),
                   child: IconButton(
@@ -410,7 +384,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       ),
       child: AbsoluteBubbleSlideChild(
         widget: Padding(
-          padding: const EdgeInsets.only(top: 60.0),
+          padding: const EdgeInsets.only(top: 0.0),
           child: SpeechBubble(
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
@@ -427,8 +401,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         positionCalculator: (size) => Position(
-          top: 15,
-          left: 10,
+          top: 0,
+          left: 0,
         ),
       ));
 }
