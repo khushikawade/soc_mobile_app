@@ -119,8 +119,6 @@ PODS:
   - OneSignalXCFramework (3.7.0)
   - open_apps_settings (0.0.1):
     - Flutter
-  - open_settings (0.0.1):
-    - Flutter
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -134,8 +132,6 @@ PODS:
   - sqflite (0.0.2):
     - Flutter
     - FMDB (>= 2.7.5)
-  - system_settings (0.0.1):
-    - Flutter
   - url_launcher (0.0.1):
     - Flutter
   - video_player (0.0.1):
@@ -161,13 +157,11 @@ DEPENDENCIES:
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
   - open_apps_settings (from `.symlinks/plugins/open_apps_settings/ios`)
-  - open_settings (from `.symlinks/plugins/open_settings/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - system_settings (from `.symlinks/plugins/system_settings/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
@@ -218,8 +212,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
   open_apps_settings:
     :path: ".symlinks/plugins/open_apps_settings/ios"
-  open_settings:
-    :path: ".symlinks/plugins/open_settings/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
@@ -230,8 +222,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
-  system_settings:
-    :path: ".symlinks/plugins/system_settings/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
   video_player:
@@ -259,7 +249,7 @@ SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  google_maps_flutter: abdb8dee6c52d4be36ad131ee6ebfacd14417c5a
+  google_maps_flutter: 279865bd07e2d8751f43a3bc64bac7f6075d0c93
   GoogleAppMeasurement: 2be61ce546ad074dbe4dd545f222ac6033bb1d9e
   GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9
   GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
@@ -269,7 +259,6 @@ SPEC CHECKSUMS:
   onesignal_flutter: abfc75e8d08a0d9c977aacfab9454af58f4f4fcc
   OneSignalXCFramework: 974dc438d68910cf04f3c8ab034e0131d41438c1
   open_apps_settings: b15bcddca026a201319f58e24f36464218793efc
-  open_settings: 9628e736cb2738fd1dc84159565755c214478158
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
@@ -277,7 +266,6 @@ SPEC CHECKSUMS:
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
-  system_settings: 8f5cdbfa72c677fc8d665b863bcc20d393d87e9d
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
