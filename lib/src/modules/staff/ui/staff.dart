@@ -42,6 +42,7 @@ class _StaffPageState extends State<StaffPage> {
   bool? iserrorstate = false;
   var obj;
   List<StaffList> newList = [];
+  StaffList list = StaffList();
 
   @override
   void initState() {
