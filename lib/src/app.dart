@@ -5,17 +5,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
-// import 'package:showcaseview/showcaseview.dart';
->>>>>>> eb02c6c7ee91a7f84e6a7cdfc957095266600431
-=======
 import 'package:firebase_analytics/firebase_analytics.dart';
-// import 'package:firebase_analytics/observer.dart';
-// import 'package:showcaseview/showcaseview.dart';
->>>>>>> dev_production
 
 class App extends StatefulWidget {
   @override
