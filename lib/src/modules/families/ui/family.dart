@@ -44,11 +44,24 @@ class _FamilyPageState extends State<FamilyPage> {
   bool? iserrorstate = false;
   List<FamiliesList> newList = [];
   FamiliesList list = FamiliesList();
+  bool _atBottom = false;
 
   @override
   void initState() {
     super.initState();
     _bloc.add(FamiliesEvent());
+  //   _scrollController.addListener(() {
+  //     if (_scrollController.position.pixels < 50) {
+  //       // You're at the top. 
+  //       setState(() {
+  //          _atBottom = false;
+  //       });
+  //     } else {
+  //        setState(() {
+  //          _atBottom = true;
+  //       });
+  //     }
+  // });
   }
 
   @override
@@ -320,6 +333,10 @@ class _FamilyPageState extends State<FamilyPage> {
       },
       child: Container());
 
+  // var _scrollController = ScrollController();
+
+
+
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
@@ -328,12 +345,13 @@ class _FamilyPageState extends State<FamilyPage> {
           refresh: (v) {
             setState(() {});
           },
-        ),
+        ) ,
         body: RefreshIndicator(
           key: refreshKey,
           child: Globals.homeObjet["Family_Banner_Image__c"] != null &&
                   Globals.homeObjet["Family_Banner_Image__c"] != ''
               ? NestedScrollView(
+                // controller: _scrollController,
                   headerSliverBuilder:
                       (BuildContext context, bool innerBoxIsScrolled) {
                     return <Widget>[
