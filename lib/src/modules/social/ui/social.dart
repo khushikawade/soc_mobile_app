@@ -42,19 +42,11 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
-    _showcase();
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Future<void> _showcase() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    Globals.initalscreen = preferences.getBool('initalscreen');
-    await preferences.setBool('initalscreen', true);
   }
 
   Future refreshPage() async {
@@ -298,10 +290,9 @@ class _SocialPageState extends State<SocialPage> {
         appBar: AppBarWidget(
           marginLeft: 30,
           refresh: (v) {
-          //   setState(() {
-          //     WidgetsBinding.instance!.addPostFrameCallback(
-          //         (_) => ShowCaseWidget.of(context)!.startShowCase([_imgkey]));
-          //   });
+            setState(() {
+
+            });
           },
         ),
         body: RefreshIndicator(

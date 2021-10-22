@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
@@ -40,6 +41,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   bool? initalscreen;
 
   final GlobalKey _bshowcase = GlobalKey();
+  final GlobalKey _openSettingShowCaseKey = GlobalKey();
 
   AppBarWidget({Key? key, required this.refresh, required this.marginLeft})
       : super(key: key);
@@ -124,142 +126,44 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           // automaticallyImplyLeading: true,
           leadingWidth: _kIconSize,
           elevation: 0.0,
-          leading: Row(
-            children: [
-              // Globals.initalscreen == false
-              true
-                  ?
-
-                  // _showcase(setState, context)
-
-                  BubbleShowcase(
-                      bubbleShowcaseId: 'my_bubble_showcase',
-                      bubbleShowcaseVersion: 1,
-                      bubbleSlides: [
-                        RelativeBubbleSlide(
-                          widgetKey: _bshowcase,
-                          child: RelativeBubbleSlideChild(
-                            // direction: AxisDirection.right,
-                            widget: SpeechBubble(
-                              // nipLocation: NipLocation.LEFT,
-                              color: Colors.blue,
-                              child: Padding(
-                                padding: EdgeInsets.all(30),
-                                child: Text(
-                                  'This is a new cool feature !',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                      child: Container(
-                          padding: EdgeInsets.only(left: 10),
-                          child: GestureDetector(
-                            key: _bshowcase,
-                            child: Image(
-                              width: Globals.deviceType == "phone" ? 24 : 32,
-                              height: Globals.deviceType == "phone" ? 24 : 32,
-                              image: AssetImage("assets/images/gtranslate.png"),
-                            ),
-                            onTap: () {
-                              setState(() {});
-                              LanguageSelector(context, (language) {
-                                if (language != null) {
-                                  setState(() {
-                                    Globals.selectedLanguage = language;
-                                    Globals.languageChanged.value = language;
-                                  });
-                                  refresh!(true);
-                                }
-                              });
-                            },
-                          )))
-                  : Container(
-                      padding: EdgeInsets.only(left: 10),
-                      child: GestureDetector(
-                        key: _bshowcase,
-                        child: Image(
-                          width: Globals.deviceType == "phone" ? 24 : 32,
-                          height: Globals.deviceType == "phone" ? 24 : 32,
-                          image: AssetImage("assets/images/gtranslate.png"),
-                        ),
-                        onTap: () {
-                          setState(() {});
-                          LanguageSelector(context, (language) {
-                            if (language != null) {
-                              setState(() {
-                                Globals.selectedLanguage = language;
-                                Globals.languageChanged.value = language;
-                              });
-                              refresh!(true);
-                            }
-                          });
-                        },
-                      )),
-              Container(
-                  padding: EdgeInsets.only(left: 10),
-                  child: IconButton(
-                    onPressed: () {
-                      OpenAppsSettings.openAppsSettings(
-                          settingsCode: SettingsCode.ACCESSIBILITY);
-                    },
-                    icon: Icon(
-                      FontAwesomeIcons.universalAccess,
-                      color: Colors.blue,
-                      size: Globals.deviceType == "phone" ? 26 : 32,
-                    ),
-                  )),
+          leading: BubbleShowcase(
+            enabled: !Globals.hasShowcaseInitialised,
+            showCloseButton: false,
+            bubbleShowcaseId: 'my_bubble_showcase',
+            bubbleSlides: [
+              _firstSlide(context),
+              _openSettingsButtonSlide(context)
             ],
+            bubbleShowcaseVersion: 1,
+            child: Row(
+              children: [
+                _translateButton(setState, context),
+                _openSettingsButton(context)
+                //  Container(
+                //     padding: EdgeInsets.only(left: 10),
+                //     child: GestureDetector(
+                //       key: _bshowcase,
+                //       child: Image(
+                //         width: Globals.deviceType == "phone" ? 24 : 32,
+                //         height: Globals.deviceType == "phone" ? 24 : 32,
+                //         image: AssetImage("assets/images/gtranslate.png"),
+                //       ),
+                //       onTap: () {
+                //         setState(() {});
+                //         LanguageSelector(context, (language) {
+                //           if (language != null) {
+                //             setState(() {
+                //               Globals.selectedLanguage = language;
+                //               Globals.languageChanged.value = language;
+                //             });
+                //             refresh!(true);
+                //           }
+                //         });
+                //       },
+                //     )),
+              ],
+            ),
           ),
-
-          // leading: Row(
-          //   // crossAxisAlignment: CrossAxisAlignment.center,
-          //   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     Container(
-          //       padding: EdgeInsets.only(left: 10),
-          //       child: GestureDetector(
-          //         child: Image(
-          //           height: Globals.deviceType == "phone" ? 28 : 32,
-          //           image: AssetImage("assets/images/gtranslate.png"),
-          //         ),
-          //         // Icon(
-          //         //   IconData(0xe822,
-          //         //       fontFamily: Overrides.kFontFam,
-          //         //       fontPackage: Overrides.kFontPkg),
-          //         //   size: Globals.deviceType == "phone" ? 32 : 40,
-          //         // ),
-          //         onTap: () {
-          //           setState(() {});
-          //           LanguageSelector(context, (language) {
-          //             if (language != null) {
-          //               setState(() {
-          //                 Globals.selectedLanguage = language;
-          //                 Globals.languageChanged.value = language;
-          //               });
-          //               refresh!(true);
-          //             }
-          //           });
-          //         },
-          //       ),
-          //     ),
-          //     Container(
-          //         padding: EdgeInsets.only(left: 10),
-          //         child: IconButton(
-          //           onPressed: () {
-          //             OpenAppsSettings.openAppsSettings(
-          //                 settingsCode: SettingsCode.ACCESSIBILITY);
-          //           },
-          //           icon: Icon(
-          //             FontAwesomeIcons.universalAccess,
-          //             color: Colors.blue,
-          //             size: Globals.deviceType == "phone" ? 20 : 32,
-          //           ),
-          //         )),
-          //   ],
-          // ),
           title: AppLogoWidget(
             marginLeft: marginLeft,
           ), //SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
@@ -272,120 +176,62 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     });
   }
 
-  Container _showcase(StateSetter setState, BuildContext context) {
+  Widget _translateButton(StateSetter setState, BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(left: 10),
-        child: BubbleShowcase(
-            bubbleShowcaseId: 'my_bubble_showcase',
-            bubbleSlides: [
-              _firstSlide(),
-            ],
-            bubbleShowcaseVersion: 1,
-            child: GestureDetector(
-              key: _bshowcase,
-              child: Image(
-                width: Globals.deviceType == "phone" ? 24 : 32,
-                height: Globals.deviceType == "phone" ? 24 : 32,
-                image: AssetImage("assets/images/gtranslate.png"),
-              ),
-              onTap: () {
-                setState(() {});
-                LanguageSelector(context, (language) {
-                  if (language != null) {
-                    setState(() {
-                      Globals.selectedLanguage = language;
-                      Globals.languageChanged.value = language;
-                    });
-                    refresh!(true);
-                  }
-                });
-              },
-            ))
-        // : GestureDetector(
-        //     child: Image(
-        //       width: Globals.deviceType == "phone" ? 24 : 32,
-        //       height: Globals.deviceType == "phone" ? 24 : 32,
-        //       image: AssetImage("assets/images/gtranslate.png"),
-        //     ),
-        //     onTap: () {
-        //       setState(() {});
-        //       LanguageSelector(context, (language) {
-        //         if (language != null) {
-        //           setState(() {
-        //             Globals.selectedLanguage = language;
-        //             Globals.languageChanged.value = language;
-        //           });
-        //           refresh!(true);
-        //         }
-        //       });
-        //     },
-        //   )
-
-        //initalscreen == false || initalscreen == null
-        //     ? BubbleShowcase(
-        //         bubbleShowcaseId: 'my_bubble_showcase',
-        //         bubbleSlides: [
-        //           _firstSlide(TextStyle()),
-        //         ],
-        //         bubbleShowcaseVersion: 1,
-        //         child: GestureDetector(
-        //           child: Image(
-        //             height: Globals.deviceType == "phone" ? 24 : 32,
-        //             image: AssetImage("assets/images/gtranslate.png"),
-        //           ),
-        //           onTap: () {
-        //             setState(() {});
-        //             LanguageSelector(context, (language) {
-        //               if (language != null) {
-        //                 setState(() {
-        //                   Globals.selectedLanguage = language;
-        //                   Globals.languageChanged.value = language;
-        //                 });
-        //                 refresh!(true);
-        //               }
-        //             });
-        //           },
-        //         ))
-        //     :
-        //     GestureDetector(
-        //   child: Image(
-        //     height: Globals.deviceType == "phone" ? 24 : 32,
-        //     image: AssetImage("assets/images/gtranslate.png"),
-        //   ),
-        //   onTap: () {
-        //     setState(() {});
-        //     LanguageSelector(context, (language) {
-        //       if (language != null) {
-        //         setState(() {
-        //           Globals.selectedLanguage = language;
-        //           Globals.languageChanged.value = language;
-        //         });
-        //         refresh!(true);
-        //       }
-        //     });
-        //   },
-        // )
-
-        //      Image(
-        //       key: _bshowcase,
-        //       image: AssetImage("assets/images/gtranslate.png"),
-        //     ),
-        //   )
-        // : Image(
-        //     image: AssetImage("assets/images/gtranslate.png"),
-        //   ),
-        );
+      padding: EdgeInsets.only(left: 10),
+      child: GestureDetector(
+        key: _bshowcase,
+        child: Image(
+          width: Globals.deviceType == "phone" ? 24 : 32,
+          height: Globals.deviceType == "phone" ? 24 : 32,
+          image: AssetImage("assets/images/gtranslate.png"),
+        ),
+        onTap: () {
+          setState(() {});
+          LanguageSelector(context, (language) {
+            if (language != null) {
+              setState(() {
+                Globals.selectedLanguage = language;
+                Globals.languageChanged.value = language;
+              });
+              refresh!(true);
+            }
+          });
+        },
+      ),
+    );
   }
 
-  BubbleSlide _firstSlide() => RelativeBubbleSlide(
+  Widget _openSettingsButton(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.only(left: 5),
+        child: IconButton(
+          onPressed: () {
+            OpenAppsSettings.openAppsSettings(
+                settingsCode: SettingsCode.ACCESSIBILITY);
+          },
+          icon: Container(
+            key: _openSettingShowCaseKey,
+            child: Icon(
+              FontAwesomeIcons.universalAccess,
+              color: Colors.blue,
+              size: Globals.deviceType == "phone" ? 26 : 32,
+            ),
+          ),
+        ));
+  }
+
+  BubbleSlide _firstSlide(context) => RelativeBubbleSlide(
       widgetKey: _bshowcase,
       shape: const Circle(
         spreadRadius: 8,
       ),
+      passThroughMode: PassthroughMode.NONE,
       child: AbsoluteBubbleSlideChild(
         widget: Padding(
-          padding: const EdgeInsets.only(top: 0.0),
+          padding: const EdgeInsets.only(top: 0.5),
           child: SpeechBubble(
+            borderRadius: 8,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
             color: Colors.blue,
@@ -401,34 +247,49 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         positionCalculator: (size) => Position(
-          top: 0,
-          left: 0,
+            // top: Utility.displayHeight(context) * .120,
+            // left: Utility.displayWidth(context) * 0.030,
+            top: _calculateWidgetOffset(_bshowcase).dy + 45,
+            left: _calculateWidgetOffset(_bshowcase).dx),
+      ));
+
+  BubbleSlide _openSettingsButtonSlide(context) => RelativeBubbleSlide(
+      widgetKey: _openSettingShowCaseKey,
+      shape: const Circle(
+        spreadRadius: 8,
+      ),
+      passThroughMode: PassthroughMode.NONE,
+      child: AbsoluteBubbleSlideChild(
+        widget: Padding(
+          padding: const EdgeInsets.only(top: 0.5),
+          child: SpeechBubble(
+            borderRadius: 2,
+            nipLocation: NipLocation.TOP_LEFT,
+            // nipHeight: 30,
+            color: Colors.blue,
+            child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              Text(
+                "Click here to change Acceesibility",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                ),
+              )
+            ]),
+          ),
+        ),
+        positionCalculator: (size) => Position(
+          // top: Utility.displayHeight(context) * .120,
+          // left: Utility.displayWidth(context) * 0.120,
+
+          top: _calculateWidgetOffset(_openSettingShowCaseKey).dy + 45,
+          left: _calculateWidgetOffset(_openSettingShowCaseKey).dx + 2,
         ),
       ));
+
+  Offset _calculateWidgetOffset(GlobalKey key) {
+    RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
+    Offset position = box.localToGlobal(Offset.zero); //this is global position
+    return position;
+  }
 }
-
-
-
-// Container _showcase1(StateSetter setState, BuildContext context) {
-//   return Container(
-//       padding: EdgeInsets.only(left: 10),
-//       child: GestureDetector(
-//         child: Image(
-//           width: Globals.deviceType == "phone" ? 24 : 32,
-//           height: Globals.deviceType == "phone" ? 24 : 32,
-//           image: AssetImage("assets/images/gtranslate.png"),
-//         ),
-//         onTap: () {
-//           setState(() {});
-//           LanguageSelector(context, (language) {
-//             if (language != null) {
-//               setState(() {
-//                 Globals.selectedLanguage = language;
-//                 Globals.languageChanged.value = language;
-//               });
-            
-//             }
-//           });
-//         },
-//       ));
-//}
