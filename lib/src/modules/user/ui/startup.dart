@@ -63,7 +63,7 @@ class _StartupPageState extends State<StartupPage> {
     if(_flag == true){
       Globals.hasShowcaseInitialised = true;
     }
-    preferences.setBool('hasShowcaseInitialised', true);
+    preferences.setBool('hasShowcaseInitialised', false);
   }
 
   late AppLifecycleState _notification;

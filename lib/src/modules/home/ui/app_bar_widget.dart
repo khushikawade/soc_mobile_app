@@ -130,7 +130,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             enabled: !Globals.hasShowcaseInitialised,
             showCloseButton: false,
             bubbleShowcaseId: 'my_bubble_showcase',
-            doNotReopenOnClose: true,
+            // doNotReopenOnClose: true,
             bubbleSlides: [
               _firstSlide(context),
               _openSettingsButtonSlide(context)
@@ -235,7 +235,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 8,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.blue,
+            color: Colors.black54,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
                 "Translate/Traducción/翻译/ترجمة/Traduction",
@@ -269,10 +269,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 2,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.blue,
+            color: Colors.black54,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
-                "Click here to change Acceesibility",
+                "Accessibility Settings",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.0,
