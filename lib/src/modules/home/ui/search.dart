@@ -24,7 +24,6 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
   final bool isbuttomsheet;
@@ -113,11 +112,12 @@ class _SearchPageState extends State<SearchPage> {
                       language: Globals.selectedLanguage,
                     )));
       } else {
-        if (await canLaunch(obj.appURLC!)) {
-          await launch(obj.appURLC!);
-        } else {
-          throw 'Could not launch ${obj.appURLC}';
-        }
+        // if (await canLaunch(obj.appURLC!)) {
+        //   await launch(obj.appURLC!);
+        // } else {
+        //   throw 'Could not launch ${obj.appURLC}';
+        // }
+        await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
       }
     } else if (obj.typeC == "URL") {
       obj.urlC != null

@@ -42,6 +42,7 @@ class _FamilyPageState extends State<FamilyPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
+  List<FamiliesList> newList = [];
 
   @override
   void initState() {
@@ -61,29 +62,30 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   _familiyPageRoute(FamiliesList obj, index) {
-    if (obj.titleC == "Contact" || obj.titleC == "contact") {
-      obj.titleC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => ContactPage(
-                        obj: widget.obj,
-                        isbuttomsheet: true,
-                        appBarTitle: obj.titleC!,
-                        language: Globals.selectedLanguage ?? "English",
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    if (obj.typeC == "Contact") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ContactPage(
+                    obj: widget.obj,
+                    isbuttomsheet: true,
+                    appBarTitle: obj.titleC!,
+                    language: Globals.selectedLanguage ?? "English",
+                  )));
     } else if (obj.typeC == "URL" || obj.titleC == "Afterschool Consent 2") {
       obj.appUrlC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => InAppUrlLauncer(
-                        title: obj.titleC!,
-                        url: obj.appUrlC ?? '',
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )))
+          ?
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) => InAppUrlLauncer(
+          //               title: obj.titleC!,
+          //               url: obj.appUrlC ?? '',
+          //               isbuttomsheet: true,
+          //               language: Globals.selectedLanguage,
+          //             ))):
+
+          _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
@@ -175,8 +177,29 @@ class _FamilyPageState extends State<FamilyPage> {
     }
   }
 
+  _launchURL(obj) async {
+    if (obj.appUrlC.toString().split(":")[0] == 'http') {
+      // if (await canLaunch(obj.appUrlC)) {
+      //   await launch(obj.appUrlC);
+      // } else {
+      //   throw 'Could not launch ${obj.appUrlC!}';
+      // }
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC,
+                    url: obj.appUrlC,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    }
+  }
+
   Widget _buildList(FamiliesList obj, int index) {
-    return obj.status=='Show'||obj.status==null? Container(
+    return Container(
       decoration: BoxDecoration(
         border: Border.all(
           color: AppTheme.kDividerColor2,
@@ -214,7 +237,7 @@ class _FamilyPageState extends State<FamilyPage> {
           color: Theme.of(context).colorScheme.primary,
         ),
       ),
-    ):Container();
+    );
   }
 
   Widget build(BuildContext context) {
@@ -256,19 +279,19 @@ class _FamilyPageState extends State<FamilyPage> {
                                   (BuildContext contxt, FamilyState state) {
                                 if (state is FamilyInitial ||
                                     state is FamilyLoading) {
-                                  return Center(
+                                  return Container(
+                                      alignment: Alignment.center,
                                       child: CircularProgressIndicator());
                                 } else if (state is FamiliesDataSucess) {
-                                  return state.obj != null &&
-                                          state.obj!.length > 0
+                                  return newList.length > 0
                                       ? ListView.builder(
                                           padding: EdgeInsets.only(bottom: 45),
                                           scrollDirection: Axis.vertical,
-                                          itemCount: state.obj!.length,
+                                          itemCount: newList.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return _buildList(
-                                                state.obj![index], index);
+                                                newList[index], index);
                                           },
                                         )
                                       :
@@ -302,6 +325,19 @@ class _FamilyPageState extends State<FamilyPage> {
                               },
                               child: EmptyContainer()),
                         ),
+                        BlocListener<FamilyBloc, FamilyState>(
+                            bloc: _bloc,
+                            listener: (context, state) async {
+                              if (state is FamiliesDataSucess) {
+                                newList.clear();
+                                for (int i = 0; i < state.obj!.length; i++) {
+                                  if (state.obj![i].status != "Hide") {
+                                    newList.add(state.obj![i]);
+                                  }
+                                }
+                              }
+                            },
+                            child: EmptyContainer()),
                       ],
                     )
                   : NoInternetErrorWidget(

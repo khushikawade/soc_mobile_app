@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -16,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class ContactPage extends StatefulWidget {
@@ -268,11 +268,12 @@ class _ContactPageState extends State<ContactPage> {
   void _launchMapsUrl() async {
     final url =
         'https://www.google.com/maps/search/?api=1&query=${Globals.homeObjet["Contact_Office_Location__Latitude__s"]},${Globals.homeObjet["Contact_Office_Location__Longitude__s"]}';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
+    // if (await canLaunch(url)) {
+    //   await launch(url);
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
+    await Utility.launchUrlOnExternalBrowser(url);
   }
 
   Widget _buildaddress() {

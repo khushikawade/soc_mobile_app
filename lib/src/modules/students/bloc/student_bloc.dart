@@ -26,10 +26,12 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         List<StudentApp> list = await getStudentDetails();
         if (list.length > 0) {
           for (int i = 0; i < list.length; i++) {
-            list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
-            if (list[i].appFolderc == null || list[i].appFolderc == "") {
-              appList.add(list[i]);
-            }
+            if (list[i].status == "Show"||list[i].status ==null) {
+              list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+              if (list[i].appFolderc == null || list[i].appFolderc == "") {
+                appList.add(list[i]);
+              }
+            } else {}
           }
         }
         yield StudentDataSucess(obj: appList, subFolder: list);

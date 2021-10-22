@@ -8,10 +8,14 @@ import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:open_apps_settings/open_apps_settings.dart';
+import 'package:open_apps_settings/settings_enum.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  final double _kIconSize = Globals.deviceType == "phone" ?35:45.0;
+  final double _kIconSize = Globals.deviceType == "phone" ? 100 : 100.0;
   final double height = 60;
   final double _kLabelSpacing = 16.0;
   final String language1 = Translations.supportedLanguages.first;
@@ -21,12 +25,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final ValueChanged? refresh;
   final double? marginLeft;
 
-  AppBarWidget({Key? key, required this.refresh,required this.marginLeft}) : super(key: key);
+  AppBarWidget({Key? key, required this.refresh, required this.marginLeft})
+      : super(key: key);
 
   @override
   Size get preferredSize => Size.fromHeight(height);
 
   Widget _buildPopupMenuWidget(BuildContext context) {
+    final scaffoldKey = Scaffold.of(context);
     return PopupMenuButton<IconMenu>(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
@@ -39,14 +45,31 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       onSelected: (value) {
         switch (value) {
           case IconsMenu.Information:
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => InformationPage(
-                          appbarTitle: 'Information',
-                          isbuttomsheet: true,
-                          ishtml: true,
-                        )));
+            Globals.appSetting.appInformationC != null
+                ? Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => InformationPage(
+                              appbarTitle: 'Information',
+                              isbuttomsheet: true,
+                              ishtml: true,
+                            )))
+                : scaffoldKey.showSnackBar(
+                    SnackBar(
+                      content: const Text(
+                        'No Information Available',
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                      margin: EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: MediaQuery.of(context).size.height * 0.04),
+                      padding: EdgeInsets.only(
+                        left: 16,
+                      ),
+                      backgroundColor: Colors.black.withOpacity(0.8),
+                    ),
+                  );
             break;
           case IconsMenu.Setting:
             Navigator.push(
@@ -82,35 +105,49 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return AppBar(
-          automaticallyImplyLeading: false,
-           leadingWidth: _kIconSize,
+          leadingWidth: _kIconSize,
           elevation: 0.0,
-          leading: 
-          Container(
-            padding: EdgeInsets.only(left: 10),
-            child: GestureDetector(
-              child: Image(image: AssetImage("assets/images/gtranslate.png"),),
-              // Icon(
-              //   IconData(0xe822,
-              //       fontFamily: Overrides.kFontFam,
-              //       fontPackage: Overrides.kFontPkg),
-              //   size: Globals.deviceType == "phone" ? 32 : 40,
-              // ),
-              onTap: () {
-                setState(() {});
-                LanguageSelector(context, (language) {
-                  if (language != null) {
-                    setState(() {
-                      Globals.selectedLanguage = language;
-                      Globals.languageChanged.value = language;
+          leading: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 10),
+                child: GestureDetector(
+                  child: Image(
+                    height: Globals.deviceType == "phone" ? 26 : 32,
+                    image: AssetImage("assets/images/gtranslate.png"),
+                  ),
+                  onTap: () {
+                    setState(() {});
+                    LanguageSelector(context, (language) {
+                      if (language != null) {
+                        setState(() {
+                          Globals.selectedLanguage = language;
+                          Globals.languageChanged.value = language;
+                        });
+                        refresh!(true);
+                      }
                     });
-                    refresh!(true);
-                  }
-                });
-              },
-            ),
+                  },
+                ),
+              ),
+              Container(
+                  padding: EdgeInsets.only(left: 10),
+                  child: IconButton(
+                    onPressed: () {
+                      OpenAppsSettings.openAppsSettings(
+                          settingsCode: SettingsCode.ACCESSIBILITY);
+                    },
+                    icon: Icon(
+                      FontAwesomeIcons.universalAccess,
+                      color: Colors.blue,
+                      size: Globals.deviceType == "phone" ? 24 : 32,
+                    ),
+                  )),
+            ],
           ),
-          title: AppLogoWidget(marginLeft: marginLeft,),//SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          title: AppLogoWidget(
+            marginLeft: marginLeft,
+          ), //SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: <Widget>[
             SearchButtonWidget(
               language: 'English',

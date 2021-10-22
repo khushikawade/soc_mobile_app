@@ -18,7 +18,7 @@ part 'family_event.dart';
 part 'family_state.dart';
 
 class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
-  var data;
+  // var data;
   FamilyBloc() : super(FamilyInitial());
   final DbServices _dbServices = DbServices();
 
@@ -37,8 +37,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         if (list.length > 0) {
           list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+
           yield FamiliesDataSucess(obj: list);
-        }else{
+        } else {
           yield FamiliesDataSucess(obj: list);
         }
       } catch (e) {
@@ -50,13 +51,13 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         yield FamilyLoading();
         List<FamiliesSubList> list = await getFamilySubList(event.id);
-       if (list.length > 0) {
+        if (list.length > 0) {
           list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+
           yield FamiliesSublistSucess(obj: list);
-        }else{
+        } else {
           yield FamiliesSublistSucess(obj: list);
         }
-     
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -70,7 +71,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         if (list.length > 0) {
           list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
           yield SDDataSucess(obj: list);
-        }else{ yield SDDataSucess(obj: list);}
+        } else {
+          yield SDDataSucess(obj: list);
+        }
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -87,7 +90,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         final DateTime currentDate =
             DateTime.parse(formatter.format(now).toString());
         for (int i = 0; i < list.length; i++) {
-         try {
+          try {
             var temp = list[i].start.toString().contains('dateTime')
                 ? list[i].start['dateTime'].toString().substring(0, 10)
                 : list[i].start['date'].toString().substring(0, 10);
@@ -152,7 +155,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Future<List<SDlist>> getStaffList() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
 
       if (response.statusCode == 200) {
         dataArray = response.data["records"];

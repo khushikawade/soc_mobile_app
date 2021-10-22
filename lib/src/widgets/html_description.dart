@@ -8,7 +8,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
-import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class AboutusPage extends StatefulWidget {
@@ -94,7 +93,7 @@ class _AboutusPageState extends State<AboutusPage> {
                   data: htmlData ?? widget.htmlText,
                   onLinkTap: (String? url, RenderContext context,
                       Map<String, String> attributes, dom.Element? element) {
-                    print(url);
+                    // print(url);
                     _launchURL(url);
                   },
                   style: {
@@ -140,11 +139,12 @@ class _AboutusPageState extends State<AboutusPage> {
 
   _launchURL(obj) async {
     if (obj.toString().split(":")[0] == 'http') {
-      if (await canLaunch(obj)) {
-        await launch(obj);
-      } else {
-        throw 'Could not launch ${obj!}';
-      }
+      // if (await canLaunch(obj)) {
+      //   await launch(obj);
+      // } else {
+      //   throw 'Could not launch ${obj!}';
+      // }
+      await Utility.launchUrlOnExternalBrowser(obj);
     } else {
       Navigator.push(
           context,

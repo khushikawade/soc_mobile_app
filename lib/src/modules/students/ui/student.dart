@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:marquee/marquee.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class StudentPage extends StatefulWidget {
   final homeObj;
@@ -50,7 +49,7 @@ class _StudentPageState extends State<StudentPage> {
 
   _launchURL(StudentApp obj, subList) async {
     if (obj.appUrlC != null) {
-      if (obj.appUrlC == 'app_folder'||obj.isFolder==true) {
+      if (obj.appUrlC == 'app_folder' || obj.isFolder == true) {
         showDialog(
           context: context,
           builder: (_) => AppsFolderPage(
@@ -61,11 +60,12 @@ class _StudentPageState extends State<StudentPage> {
       } else {
         if (obj.deepLinkC == 'NO') {
           if (obj.toString().split(":")[0] == 'http') {
-            if (await canLaunch(obj.appUrlC!)) {
-              await launch(obj.appUrlC!);
-            } else {
-              throw 'Could not launch ${obj.appUrlC!}';
-            }
+            // if (await canLaunch(obj.appUrlC!)) {
+            //   await launch(obj.appUrlC!);
+            // } else {
+            //   throw 'Could not launch ${obj.appUrlC!}';
+            // }
+            await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
           } else {
             Navigator.push(
                 context,
@@ -78,11 +78,15 @@ class _StudentPageState extends State<StudentPage> {
                         )));
           }
         } else {
-          if (await canLaunch(obj.appUrlC!)) {
-            await launch(obj.appUrlC!);
-          } else {
-            throw 'Could not launch ${obj.appUrlC}';
-          }
+          try {
+            // await launch(obj.appUrlC!);
+            await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
+          } catch (e) {}
+          // if (await canLaunch(obj.appUrlC!)) {
+          //   await launch(obj.appUrlC!);
+          // } else {
+          //   throw 'Could not launch ${obj.appUrlC}';
+          // }
         }
       }
     } else {
