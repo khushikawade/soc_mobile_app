@@ -48,7 +48,6 @@ class _StaffPageState extends State<StaffPage> {
   void initState() {
     super.initState();
     _bloc.add(StaffPageEvent());
-  
   }
 
   @override
@@ -228,6 +227,96 @@ class _StaffPageState extends State<StaffPage> {
     );
   }
 
+  Widget _body() => OfflineBuilder(
+      connectivityBuilder: (
+        BuildContext context,
+        ConnectivityResult connectivity,
+        Widget child,
+      ) {
+        final bool connected = connectivity != ConnectivityResult.none;
+        if (connected) {
+          if (iserrorstate == true) {
+            iserrorstate = false;
+            _bloc.add(StaffPageEvent());
+          }
+        } else if (!connected) {
+          iserrorstate = true;
+        }
+
+        return connected
+            ? Container(
+                child: Column(mainAxisSize: MainAxisSize.max, children: [
+                  BlocBuilder<StaffBloc, StaffState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, StaffState state) {
+                        if (state is StaffInitial || state is StaffLoading) {
+                          return Expanded(
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        } else if (state is StaffDataSucess) {
+                          return newList.length > 0
+                              ? Expanded(
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: newList.length,
+                                    padding: EdgeInsets.only(bottom: 20),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return _buildListItem(
+                                          newList[index], index);
+                                    },
+                                  ),
+                                )
+                              : Expanded(
+                                  child: NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: false,
+                                ));
+                        } else if (state is ErrorInStaffLoading) {
+                          return Placeholder();
+                        } else {
+                          return Expanded(
+                            child: ListView(children: [ErrorMsgWidget()]),
+                          );
+                        }
+                      }),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.homeObjet = state.obj;
+
+                            setState(() {});
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                  BlocListener<StaffBloc, StaffState>(
+                      bloc: _bloc,
+                      listener: (context, state) async {
+                        if (state is StaffDataSucess) {
+                          newList.clear();
+                          for (int i = 0; i < state.obj!.length; i++) {
+                            if (state.obj![i].status != "Hide") {
+                              newList.add(state.obj![i]);
+                            }
+                          }
+                        }
+                      },
+                      child: EmptyContainer()),
+                ]),
+              )
+            : NoInternetErrorWidget(
+                connected: connected, issplashscreen: false);
+      },
+      child: Container());
+
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
@@ -240,15 +329,15 @@ class _StaffPageState extends State<StaffPage> {
         body: RefreshIndicator(
           key: refreshKey,
           // onRefresh: refreshPage,
-          child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                Globals.homeObjet["Staff_Banner_Image__c"] != null
-                    ? SliverAppBar(
+          child: Globals.homeObjet["Staff_Banner_Image__c"] != null &&
+                  Globals.homeObjet["Staff_Banner_Image__c"] != ''
+              ? NestedScrollView(
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return <Widget>[
+                      SliverAppBar(
                         expandedHeight: 200.0,
                         floating: false,
-
                         // pinned: true,
                         flexibleSpace: FlexibleSpaceBar(
                           centerTitle: true,
@@ -258,109 +347,11 @@ class _StaffPageState extends State<StaffPage> {
                           ),
                         ),
                       )
-                    : SliverAppBar(),
-              ];
-            },
-            body: OfflineBuilder(
-                connectivityBuilder: (
-                  BuildContext context,
-                  ConnectivityResult connectivity,
-                  Widget child,
-                ) {
-                  final bool connected =
-                      connectivity != ConnectivityResult.none;
-                  if (connected) {
-                    if (iserrorstate == true) {
-                      iserrorstate = false;
-                      _bloc.add(StaffPageEvent());
-                    }
-                  } else if (!connected) {
-                    iserrorstate = true;
-                  }
-
-                  return connected
-                      ? Container(
-                          child:
-                              Column(mainAxisSize: MainAxisSize.max, children: [
-                            BlocBuilder<StaffBloc, StaffState>(
-                                bloc: _bloc,
-                                builder:
-                                    (BuildContext contxt, StaffState state) {
-                                  if (state is StaffInitial ||
-                                      state is StaffLoading) {
-                                    return Expanded(
-                                      child: Center(
-                                          child: CircularProgressIndicator()),
-                                    );
-                                  } else if (state is StaffDataSucess) {
-                                    return newList.length > 0
-                                        ? Expanded(
-                                            child: ListView.builder(
-                                              scrollDirection: Axis.vertical,
-                                              itemCount: newList.length,
-                                              padding:
-                                                  EdgeInsets.only(bottom: 20),
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return _buildListItem(
-                                                    newList[index], index);
-                                              },
-                                            ),
-                                          )
-                                        : Expanded(
-                                            child: NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                            isEvents: false,
-                                          ));
-                                  } else if (state is ErrorInStaffLoading) {
-                                  } else {
-                                    return Expanded(
-                                      child: ListView(
-                                          children: [ErrorMsgWidget()]),
-                                    );
-                                  }
-                                  return Container();
-                                }),
-                            Container(
-                              height: 0,
-                              width: 0,
-                              child: BlocListener<HomeBloc, HomeState>(
-                                  bloc: _homeBloc,
-                                  listener: (context, state) async {
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObjet = state.obj;
-
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: EmptyContainer()),
-                            ),
-                            BlocListener<StaffBloc, StaffState>(
-                                bloc: _bloc,
-                                listener: (context, state) async {
-                                  if (state is StaffDataSucess) {
-                                    newList.clear();
-                                    for (int i = 0;
-                                        i < state.obj!.length;
-                                        i++) {
-                                      if (state.obj![i].status != "Hide") {
-                                        newList.add(state.obj![i]);
-                                      }
-                                    }
-                                  }
-                                },
-                                child: EmptyContainer()),
-                          ]),
-                        )
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false);
-                },
-                child: Container()),
-          ),
+                    ];
+                  },
+                  body: _body(),
+                )
+              : _body(),
           onRefresh: refreshPage,
         ));
   }

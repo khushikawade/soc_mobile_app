@@ -291,7 +291,6 @@ class _SocialPageState extends State<SocialPage> {
           marginLeft: 30,
           refresh: (v) {
             setState(() {
-
             });
           },
         ),
