@@ -138,7 +138,7 @@ class _StartupPageState extends State<StartupPage> {
             Widget child,
           ) {
             final bool connected = connectivity != ConnectivityResult.none;
-            final call = connected ? _loginBloc.add(PerfomLogin()) : null;
+            // final call = connected ? _loginBloc.add(PerfomLogin()) : null;
             return new Stack(
               fit: StackFit.expand,
               children: [

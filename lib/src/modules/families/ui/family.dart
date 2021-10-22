@@ -343,12 +343,37 @@ class _FamilyPageState extends State<FamilyPage> {
                               floating: false,
                               // pinned: true,
                               flexibleSpace: FlexibleSpaceBar(
-                                centerTitle: true,
-                                background: Image.network(
-                                  Globals.homeObjet["Family_Banner_Image__c"],
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                                  centerTitle: true,
+                                  background: Container(
+                                    child: Image.network(
+                                      Globals
+                                          .homeObjet["Family_Banner_Image__c"],
+                                      fit: BoxFit.cover,
+                                    ),
+                                    // child: Stack(
+                                    //   children: [
+                                    //     Container(
+                                    //          width: Utility.displayWidth(context),
+                                    //       child: Image.network(
+                                    //         Globals.homeObjet[
+                                    //             "Family_Banner_Image__c"],
+                                    //         fit: BoxFit.cover,
+                                    //       ),
+                                    //     ),
+                                    //     Positioned(
+                                    //       bottom: 0,
+
+                                    //       child:
+                                    //       Container(
+                                    //         color: Colors.black12,
+                                    //          width: Utility.displayWidth(context),
+                                    //         child: Center(child: Text('Families', style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).backgroundColor),)),
+                                    //       )
+
+                                    //     )
+                                    //   ],
+                                    // ),
+                                  )),
                             )
                           : SliverAppBar(),
                     ];

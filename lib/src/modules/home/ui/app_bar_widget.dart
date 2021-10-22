@@ -130,6 +130,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             enabled: !Globals.hasShowcaseInitialised,
             showCloseButton: false,
             bubbleShowcaseId: 'my_bubble_showcase',
+            doNotReopenOnClose: true,
             bubbleSlides: [
               _firstSlide(context),
               _openSettingsButtonSlide(context)
@@ -258,8 +259,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       shape: const Circle(
         spreadRadius: 8,
       ),
+
       passThroughMode: PassthroughMode.NONE,
       child: AbsoluteBubbleSlideChild(
+
         widget: Padding(
           padding: const EdgeInsets.only(top: 0.5),
           child: SpeechBubble(

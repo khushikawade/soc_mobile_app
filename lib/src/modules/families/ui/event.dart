@@ -368,6 +368,7 @@ class _EventPageState extends State<EventPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
+          marginLeft: 30,
           appBarTitle: widget.appBarTitle!,
           isSearch: true,
           sharedpopBodytext: '',
