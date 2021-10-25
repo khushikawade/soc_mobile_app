@@ -1,8 +1,8 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/families/ui/contact.dart';
-import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
+import 'package:Soc/src/modules/about/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
+import 'package:Soc/src/modules/resources/families/ui/contact.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/hive_db_services.dart';
 import 'package:Soc/src/services/utility.dart';

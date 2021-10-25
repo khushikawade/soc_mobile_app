@@ -1,8 +1,8 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
-import 'package:Soc/src/modules/families/modal/family_sublist.dart';
-import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
-import 'package:Soc/src/modules/staff/models/staff_sublist.dart';
+import 'package:Soc/src/modules/resources/families/bloc/family_bloc.dart';
+import 'package:Soc/src/modules/resources/families/modal/family_sublist.dart';
+import 'package:Soc/src/modules/resources/staff/bloc/staff_bloc.dart';
+import 'package:Soc/src/modules/resources/staff/models/staff_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
