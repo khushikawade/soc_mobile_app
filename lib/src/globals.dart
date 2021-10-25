@@ -38,7 +38,7 @@ class Globals {
   static int? homeIndex;
   static bool? isNetworkError = false;
   static bool? callsnackbar = true;
-  static bool? initalscreen ;
+  static bool hasShowcaseInitialised = false;
   static String? calendar_Id = "";
   static final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();

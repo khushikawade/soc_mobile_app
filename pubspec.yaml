@@ -76,7 +76,6 @@ dependencies:
   bubble_showcase: ^1.1.0
   speech_bubble: ^0.0.9
   firebase_analytics: ^8.3.3 
-  showcaseview: ^1.1.2 
 
 dev_dependencies:
   flutter_test:

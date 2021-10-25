@@ -44,11 +44,24 @@ class _FamilyPageState extends State<FamilyPage> {
   bool? iserrorstate = false;
   List<FamiliesList> newList = [];
   FamiliesList list = FamiliesList();
+  bool _atBottom = false;
 
   @override
   void initState() {
     super.initState();
     _bloc.add(FamiliesEvent());
+  //   _scrollController.addListener(() {
+  //     if (_scrollController.position.pixels < 50) {
+  //       // You're at the top. 
+  //       setState(() {
+  //          _atBottom = false;
+  //       });
+  //     } else {
+  //        setState(() {
+  //          _atBottom = true;
+  //       });
+  //     }
+  // });
   }
 
   @override
@@ -241,6 +254,89 @@ class _FamilyPageState extends State<FamilyPage> {
     );
   }
 
+  Widget _body() => OfflineBuilder(
+      connectivityBuilder: (
+        BuildContext context,
+        ConnectivityResult connectivity,
+        Widget child,
+      ) {
+        final bool connected = connectivity != ConnectivityResult.none;
+
+        if (connected) {
+          if (iserrorstate == true) {
+            _bloc.add(FamiliesEvent());
+            iserrorstate = false;
+          }
+        } else if (!connected) {
+          iserrorstate = true;
+        }
+
+        return connected
+            ? Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: BlocBuilder<FamilyBloc, FamilyState>(
+                        bloc: _bloc,
+                        builder: (BuildContext contxt, FamilyState state) {
+                          if (state is FamilyInitial ||
+                              state is FamilyLoading) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (state is FamiliesDataSucess) {
+                            return state.obj != null && state.obj!.length > 0
+                                ? ListView.builder(
+                                    padding: EdgeInsets.only(bottom: 45),
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: state.obj!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return _buildList(
+                                          state.obj![index], index);
+                                    },
+                                  )
+                                :
+                                // ListView(children: [
+                                NoDataFoundErrorWidget(
+                                    isResultNotFoundMsg: false,
+                                    isNews: false,
+                                    isEvents: false,
+                                  );
+
+                            // ]);
+                          } else if (state is ErrorLoading) {
+                            return ListView(children: [ErrorMsgWidget()]);
+                          } else {
+                            return Container();
+                          }
+                        }),
+                  ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.homeObjet = state.obj;
+
+                            setState(() {});
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                ],
+              )
+            : NoInternetErrorWidget(
+                connected: connected, issplashscreen: false);
+      },
+      child: Container());
+
+  // var _scrollController = ScrollController();
+
+
+
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
@@ -249,115 +345,59 @@ class _FamilyPageState extends State<FamilyPage> {
           refresh: (v) {
             setState(() {});
           },
-        ),
+        ) ,
         body: RefreshIndicator(
           key: refreshKey,
-          child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                Globals.homeObjet["Family_Banner_Image__c"] != null
-                    ? SliverAppBar(
-                        expandedHeight: 200.0,
-                        floating: false,
-                        // pinned: true,
-                        flexibleSpace: FlexibleSpaceBar(
-                          centerTitle: true,
-                          background: Image.network(
-                            Globals.homeObjet["Family_Banner_Image__c"],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
-                    : SliverAppBar(),
-              ];
-            },
-            body: OfflineBuilder(
-                connectivityBuilder: (
-                  BuildContext context,
-                  ConnectivityResult connectivity,
-                  Widget child,
-                ) {
-                  final bool connected =
-                      connectivity != ConnectivityResult.none;
+          child: Globals.homeObjet["Family_Banner_Image__c"] != null &&
+                  Globals.homeObjet["Family_Banner_Image__c"] != ''
+              ? NestedScrollView(
+                // controller: _scrollController,
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return <Widget>[
+                      Globals.homeObjet["Family_Banner_Image__c"] != null
+                          ? SliverAppBar(
+                              expandedHeight: 200.0,
+                              floating: false,
+                              // pinned: true,
+                              flexibleSpace: FlexibleSpaceBar(
+                                  centerTitle: true,
+                                  background: Container(
+                                    child: Image.network(
+                                      Globals
+                                          .homeObjet["Family_Banner_Image__c"],
+                                      fit: BoxFit.cover,
+                                    ),
+                                    // child: Stack(
+                                    //   children: [
+                                    //     Container(
+                                    //          width: Utility.displayWidth(context),
+                                    //       child: Image.network(
+                                    //         Globals.homeObjet[
+                                    //             "Family_Banner_Image__c"],
+                                    //         fit: BoxFit.cover,
+                                    //       ),
+                                    //     ),
+                                    //     Positioned(
+                                    //       bottom: 0,
 
-                  if (connected) {
-                    if (iserrorstate == true) {
-                      _bloc.add(FamiliesEvent());
-                      iserrorstate = false;
-                    }
-                  } else if (!connected) {
-                    iserrorstate = true;
-                  }
+                                    //       child:
+                                    //       Container(
+                                    //         color: Colors.black12,
+                                    //          width: Utility.displayWidth(context),
+                                    //         child: Center(child: Text('Families', style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).backgroundColor),)),
+                                    //       )
 
-                  return connected
-                      ? Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(
-                              child: BlocBuilder<FamilyBloc, FamilyState>(
-                                  bloc: _bloc,
-                                  builder:
-                                      (BuildContext contxt, FamilyState state) {
-                                    if (state is FamilyInitial ||
-                                        state is FamilyLoading) {
-                                      return Center(
-                                          child: CircularProgressIndicator());
-                                    } else if (state is FamiliesDataSucess) {
-                                      return state.obj != null &&
-                                              state.obj!.length > 0
-                                          ? ListView.builder(
-                                              padding:
-                                                  EdgeInsets.only(bottom: 45),
-                                              scrollDirection: Axis.vertical,
-                                              itemCount: state.obj!.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return _buildList(
-                                                    state.obj![index], index);
-                                              },
-                                            )
-                                          :
-                                          // ListView(children: [
-                                          NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false,
-                                              isNews: false,
-                                              isEvents: false,
-                                            );
-
-                                      // ]);
-                                    } else if (state is ErrorLoading) {
-                                      return ListView(
-                                          children: [ErrorMsgWidget()]);
-                                    } else {
-                                      return Container();
-                                    }
-                                  }),
-                            ),
-                            Container(
-                              height: 0,
-                              width: 0,
-                              child: BlocListener<HomeBloc, HomeState>(
-                                  bloc: _homeBloc,
-                                  listener: (context, state) async {
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObjet = state.obj;
-
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: EmptyContainer()),
-                            ),
-                          ],
-                        )
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false);
-                },
-                child: Container()),
-          ),
+                                    //     )
+                                    //   ],
+                                    // ),
+                                  )),
+                            )
+                          : SliverAppBar(),
+                    ];
+                  },
+                  body: _body())
+              : _body(),
           onRefresh: refreshPage,
         ));
   }
