@@ -22,14 +22,14 @@ class HomePage extends StatefulWidget {
   final homeObj;
   final String? language;
   final Widget Function(String translation)? builder;
-  HomePage({Key? key, this.title, this.homeObj, this.language,this.builder})
+  HomePage({Key? key, this.title, this.homeObj, this.language, this.builder})
       : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
@@ -44,45 +44,46 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
   late AppLifecycleState _notification;
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() { _notification = state; });
-if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList());
+    setState(() {
+      _notification = state;
+    });
+    if (_notification == AppLifecycleState.resumed)
+      _newsBloc.add(FetchNotificationList());
   }
 
   Widget callNotification() {
-  return  BlocListener<NewsBloc, NewsState>(
-                    bloc: _newsBloc,
-                    listener: (context, state) async {
-                      if (state is NewsLoaded) {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        SharedPreferences intPrefs =
-                            await SharedPreferences.getInstance();
-                        intPrefs.getInt("totalCount") == null
-                            ? intPrefs.setInt("totalCount", Globals.notiCount!)
-                            : intPrefs.getInt("totalCount");
-                        // print(intPrefs.getInt("totalCount"));
-                        if (Globals.notiCount! >
-                            intPrefs.getInt("totalCount")!) {
-                          intPrefs.setInt("totalCount", Globals.notiCount!);
-                          prefs.setBool("enableIndicator", true);
-                          Globals.indicator.value = true;
-                        }
-                      }
-                    },
-                    child: Container(),
-                  );
+    return BlocListener<NewsBloc, NewsState>(
+      bloc: _newsBloc,
+      listener: (context, state) async {
+        if (state is NewsLoaded) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          SharedPreferences intPrefs = await SharedPreferences.getInstance();
+          intPrefs.getInt("totalCount") == null
+              ? intPrefs.setInt("totalCount", Globals.notiCount!)
+              : intPrefs.getInt("totalCount");
+          // print(intPrefs.getInt("totalCount"));
+          if (Globals.notiCount! > intPrefs.getInt("totalCount")!) {
+            intPrefs.setInt("totalCount", Globals.notiCount!);
+            prefs.setBool("enableIndicator", true);
+            Globals.indicator.value = true;
+          }
+        }
+      },
+      child: Container(),
+    );
   }
+
   @override
   void initState() {
     super.initState();
     _bloc.initPushState(context);
     _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
-     WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
   void dispose() {
-     WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -136,63 +137,65 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
                     children: [
                       Stack(
                         alignment: Alignment.center,
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-                      // mainAxisAlignment: MainAxisAlignment.center,
+                        // crossAxisAlignment: CrossAxisAlignment.center,
+                        // mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                            ValueListenableBuilder(
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  return item.split("_")[0] == "News" &&
-                          Globals.indicator.value == true
-                      ? Wrap(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(bottom: 15, left: 50),
-                              // padding:EdgeInsets.only(bottom: 25,) ,
-                              height: 7,
-                              width: 7,
-                              decoration: BoxDecoration(
-                                  color: Colors.red, shape: BoxShape.circle),
-                            ),
-                          ],
-                        )
-                      : Container();
-                },
-                valueListenable: Globals.indicator,
-                child: Container(),
-              ),
+                          ValueListenableBuilder(
+                            builder: (BuildContext context, dynamic value,
+                                Widget? child) {
+                              return item.split("_")[0] == "News" &&
+                                      Globals.indicator.value == true
+                                  ? Wrap(
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                              bottom: 15, left: 50),
+                                          // padding:EdgeInsets.only(bottom: 25,) ,
+                                          height: 7,
+                                          width: 7,
+                                          decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              shape: BoxShape.circle),
+                                        ),
+                                      ],
+                                    )
+                                  : Container();
+                            },
+                            valueListenable: Globals.indicator,
+                            child: Container(),
+                          ),
                           Icon(
                             IconData(int.parse(item.split("_")[1]),
                                 fontFamily: Overrides.kFontFam,
                                 fontPackage: Overrides.kFontPkg),
                           ),
-
-                        
                         ],
                       ),
-                    SpacerWidget(2),
-                     Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                shimmerHeight: 8,
-                message:"${item.split("_")[0]}",
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Expanded(
-                  child: Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText2!,
-                  ),
-                ),
-              )
-               : Expanded(
-                  child: Text(
-                  "${item.split("_")[0]}",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.headline4!,
-                ),
-                ),callNotification() 
+                      SpacerWidget(2),
+                      Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English" &&
+                              Globals.selectedLanguage != ""
+                          ? TranslationWidget(
+                              shimmerHeight: 8,
+                              message: "${item.split("_")[0]}",
+                              fromLanguage: "en",
+                              toLanguage: Globals.selectedLanguage,
+                              builder: (translatedMessage) => Expanded(
+                                child: Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context).textTheme.bodyText2!,
+                                ),
+                              ),
+                            )
+                          : Expanded(
+                              child: Text(
+                                "${item.split("_")[0]}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: Theme.of(context).textTheme.headline4!,
+                              ),
+                            ),
+                      callNotification()
                     ],
                   ),
                 ),
@@ -202,11 +205,10 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
           // title:(''), //("${item.split("_")[0]}"),
           activeColorPrimary: Theme.of(context).primaryColor,
           inactiveColorPrimary: CupertinoColors.systemGrey,
-        );        
+        );
       },
     ).toList();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -217,11 +219,11 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
       screens: _buildScreens(),
       // hideNavigationBar: true,
       onItemSelected: (int i) {
-          setState(() {
-            if(i==Globals.newsIndex){
-                 Globals.indicator.value = false;
-            }
-          });
+        setState(() {
+          if (i == Globals.newsIndex) {
+            Globals.indicator.value = false;
+          }
+        });
       },
       items: _navBarsItems(),
       confineInSafeArea: true,
@@ -244,9 +246,9 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
               blurRadius: 10.0,
             ),
           ]),
-          onWillPop: (context) async {
-            await _onBackPressed();
-            return false;
+      onWillPop: (context) async {
+        await _onBackPressed();
+        return false;
       },
       popAllScreensOnTapOfSelectedTab: true,
       popActionScreens: PopActionScreensType.all,
@@ -264,29 +266,23 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
     ));
   }
 
- _onBackPressed() {
+  _onBackPressed() {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
               backgroundColor: Colors.white,
-              title: Text(
-                "Do you want to exit the app?",
-                style: Theme.of(context).textTheme.headline2!
-              ),
+              title: Text("Do you want to exit the app?",
+                  style: Theme.of(context).textTheme.headline2!),
               actions: <Widget>[
                 FlatButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: Text(
-                    "No",
-                    style: Theme.of(context).textTheme.headline2!
-                  ),
+                  child:
+                      Text("No", style: Theme.of(context).textTheme.headline2!),
                 ),
                 FlatButton(
                   onPressed: () => exit(0),
-                  child: Text(
-                    "Yes",
-                    style: Theme.of(context).textTheme.headline2!
-                  ),
+                  child: Text("Yes",
+                      style: Theme.of(context).textTheme.headline2!),
                 ),
               ],
             ));

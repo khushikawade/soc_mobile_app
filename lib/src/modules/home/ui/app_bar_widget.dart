@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
@@ -208,8 +209,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         padding: EdgeInsets.only(left: 5),
         child: IconButton(
           onPressed: () {
-            OpenAppsSettings.openAppsSettings(
-                settingsCode: SettingsCode.ACCESSIBILITY);
+            if (Platform.isAndroid) {
+              OpenAppsSettings.openAppsSettings(
+                  settingsCode: SettingsCode.ACCESSIBILITY);
+            } else {
+              AppSettings.openAccessibilitySettings(
+                asAnotherTask: true
+              );
+            }
           },
           icon: Container(
             key: _openSettingShowCaseKey,
@@ -235,7 +242,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 8,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.blue,
+            color: Colors.black54,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
                 "Translate/Traducción/翻译/ترجمة/Traduction",
@@ -267,10 +274,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 2,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.blue,
+            color: Colors.black54,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
-                "Click here to change Acceesibility",
+                "Accessibility Settings",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.0,
