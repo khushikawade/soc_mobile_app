@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/about/ui/staffdirectory.dart';
+import 'package:Soc/src/modules/about/ui/about_staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
 import 'package:Soc/src/modules/resources/families/ui/contact.dart';

@@ -1,6 +1,6 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/about/ui/sd_detail_page.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
-import 'package:Soc/src/modules/resources/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
@@ -63,34 +63,32 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   Widget build(BuildContext context) {
+  
     return Scaffold(
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
           leading: BackButtonWidget(),
-          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget(marginLeft: 0,)),
+          title: //SizedBox(width: 100.0, height: 60.0, child: 
+          AppLogoWidget(marginLeft: 50,),
           actions: <Widget>[
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () async {
-                    setState(() {});
-                    if (widget.currentIndex > 0) {
-                      _controller.previousPage(
-                          duration: _kDuration, curve: _kCurve);
-                    }
-                  },
-                  icon: Icon(
-                    const IconData(0xe80c,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: widget.currentIndex == 0
-                        ? AppTheme.kDecativeIconColor
-                        : null,
-                    size: Globals.deviceType == "phone" ? 18 : 26,
-                  ),
-                ),
-              ],
+            IconButton(
+              onPressed: () async {
+                setState(() {});
+                if (widget.currentIndex > 0) {
+                  _controller.previousPage(
+                      duration: _kDuration, curve: _kCurve);
+                }
+              },
+              icon: Icon(
+                const IconData(0xe80c,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: widget.currentIndex == 0
+                    ? AppTheme.kDecativeIconColor
+                    : null,
+                size: Globals.deviceType == "phone" ? 18 : 26,
+              ),
             ),
             HorzitalSpacerWidget(_kPadding / 3),
             IconButton(
@@ -142,11 +140,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                       language: Globals.selectedLanguage,
                     )
                   : widget.iseventpage!
-                      ? EventDescription(
-                          obj: object[widget.currentIndex],
-                          isbuttomsheet: true,
-                          language: Globals.selectedLanguage,
-                        )
+                      ? AboutSDDetailPage(obj:object[widget.currentIndex],)
                       : Newdescription(
                           obj: object[widget.currentIndex],
                           date: widget.date,

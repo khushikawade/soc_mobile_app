@@ -4,10 +4,12 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/button_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -37,6 +39,8 @@ class SchoolDetailPage extends StatefulWidget {
 }
 
 class _SchoolDetailPageState extends State<SchoolDetailPage> {
+      static const double _kPadding = 16.0;
+  static const double _KButtonSize = 110.0;
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
   static const double _kIconSize = 48.0;
@@ -68,7 +72,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   }
 
   Widget _buildIcon() {
-
      // TO DO : HTML Widget ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     return Container(
       child: Globals.homeObjet != null &&
@@ -248,13 +251,7 @@ Widget _buildDescriptionWidget() {
               color: AppTheme.kTxtfieldBorderColor,
             ),
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
-        child: _buildmap(),
-      ),
-    );
-  }
-
-  Widget _buildmap() {
-    return Container(
+        child: Container(
         margin: EdgeInsets.only(
             top: _kLabelSpacing / 3,
             bottom: _kLabelSpacing / 1.5,
@@ -293,7 +290,9 @@ Widget _buildDescriptionWidget() {
                         _markers) //_markers.toSet(), //   values.toSet(),
                     ),
               )
-            : EmptyContainer());
+            : EmptyContainer()),
+      ),
+    );
   }
 
   Widget _buildPhoneWidget() {
@@ -462,7 +461,8 @@ Widget _buildDescriptionWidget() {
       Globals.homeObjet["Contact_Phone__c"] != null
           ? _buildPhoneWidget()
           : Container(),
-     
+          SpacerWidget(_kLabelSpacing / 1.25),
+     ButtonWidget(title: "Share",)
     ]);
   }
 

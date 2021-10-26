@@ -4,12 +4,12 @@ abstract class AboutEvent extends Equatable {
   const AboutEvent();
 }
 
-class AboutDistrictEvent extends AboutEvent {
+class AboutStaffDirectoryEvent extends AboutEvent {
   @override
   List<Object> get props => [];
 
-  @override
-  String toString() => 'SocialButtonPressed';
+  // @override
+  // String toString() => 'AboutButtonPressed';
 }
 
 class AboutSublistEvent extends AboutEvent {
@@ -18,10 +18,8 @@ class AboutSublistEvent extends AboutEvent {
   AboutSublistEvent({
     @required this.id,
   });
-
   @override
   List<Object> get props => [id!];
-
   @override
   String toString() => 'GlobalSearchEvent { keyword: $id}';
 }
@@ -29,7 +27,6 @@ class AboutSublistEvent extends AboutEvent {
 class SDevent extends AboutEvent {
   @override
   List<Object> get props => [];
-
   @override
   String toString() => 'SocialButtonPressed';
 }
@@ -37,7 +34,6 @@ class SDevent extends AboutEvent {
 class CalendarListEvent extends AboutEvent {
   @override
   List<Object> get props => [];
-
   @override
   String toString() => 'Calendar';
 }

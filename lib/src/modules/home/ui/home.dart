@@ -107,7 +107,7 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
           // ),
         );
       } else if (element.contains('staff')) {
-        _screens.add(Resources());
+        _screens.add(ResourcesPage());
       } else if (element.contains('social')) {
         _screens.add(
           SocialPage(),

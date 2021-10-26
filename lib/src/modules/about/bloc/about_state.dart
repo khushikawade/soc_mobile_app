@@ -27,7 +27,7 @@ class ErrorLoading extends AboutState {
 
 // ignore: must_be_immutable
 class AboutDataSucess extends AboutState {
-  List<AboutList>? obj;
+  List<AboutStaffDirectoryList>? obj;
   AboutDataSucess({
     this.obj,
   });
@@ -40,51 +40,3 @@ class AboutDataSucess extends AboutState {
   @override
   List<Object> get props => [];
 }
-
-class AboutSublistSucess extends AboutState {
-  List<AboutSubList>? obj;
-
-  AboutSublistSucess({
-    this.obj,
-  });
-
-  AboutSublistSucess copyWith({
-    final obj,
-  }) {
-    return AboutSublistSucess(obj: obj ?? this.obj);
-  }
-
-  @override
-  List<Object> get props => [];
-}
-
-class SDDataSucess extends AboutState {
-  List<SDlist>? obj;
-  SDDataSucess({
-    this.obj,
-  });
-  SDDataSucess copyWith({
-    final obj,
-  }) {
-    return SDDataSucess(obj: obj ?? this.obj);
-  }
-
-  @override
-  List<Object> get props => [];
-}
-
-// class CalendarListSuccess extends AboutState {
-//   List<CalendarEventList>? pastListobj;
-//   List<CalendarEventList>? futureListobj;
-//   CalendarListSuccess({this.pastListobj, this.futureListobj});
-//   CalendarListSuccess copyWith({
-//     final obj,
-//   }) {
-//     return CalendarListSuccess(
-//         pastListobj: obj ?? this.pastListobj,
-//         futureListobj: obj ?? this.futureListobj);
-//   }
-
-//   @override
-//   List<Object> get props => [];
-// }

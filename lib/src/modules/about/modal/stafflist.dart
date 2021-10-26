@@ -1,5 +1,5 @@
 import 'package:Soc/src/modules/about/modal/sd_attributes.dart';
-class SDlist {
+class AboutStaffDirectoryList {
   SDAttributes? attributes;
   dynamic titleC;
   String? imageUrlC;
@@ -9,8 +9,10 @@ class SDlist {
   String? emailC;
   dynamic sortOrderC;
   String? phoneC;
+  String ? department;
+  String ? urlC;
 
-  SDlist({
+  AboutStaffDirectoryList({
     this.attributes,
     this.titleC,
     this.imageUrlC,
@@ -20,9 +22,11 @@ class SDlist {
     this.emailC,
     this.sortOrderC,
     this.phoneC,
+    this.department,
+    this.urlC
   });
 
-  factory SDlist.fromJson(Map<String, dynamic> json) => SDlist(
+  factory AboutStaffDirectoryList.fromJson(Map<String, dynamic> json) => AboutStaffDirectoryList(
         attributes: json['attributes'] == null
             ? null
             : SDAttributes.fromJson(json['attributes'] as Map<String, dynamic>),
@@ -34,6 +38,9 @@ class SDlist {
         emailC: json['Email__c'] as String?,
         sortOrderC: json['Sort_Order__c'],
         phoneC: json['Phone__c'] as String?,
+        department: json['Department__c'] as String?,
+        urlC: json['URL__c'] as String?,
+
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,5 +53,7 @@ class SDlist {
         'Email__c': emailC,
         'Sort_Order__c': sortOrderC,
         'Phone__c': phoneC,
+        'Department__c':department,
+        'URL__c':urlC
       };
 }

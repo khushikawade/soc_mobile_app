@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/about/ui/staffdirectory.dart';
+import 'package:Soc/src/modules/about/ui/about_staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/modules/resources/families/bloc/family_bloc.dart';
@@ -86,17 +86,18 @@ class _FamilyPageState extends State<FamilyPage> {
 
           _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "Form") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => StaffDirectory(
-                    appBarTitle: obj.titleC!,
-                    obj: obj,
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )));
     } 
+    // else if (obj.typeC == "Form") {
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (BuildContext context) => StaffDirectory(
+    //                 appBarTitle: obj.titleC!,
+    //                 obj: obj,
+    //                 isbuttomsheet: true,
+    //                 language: Globals.selectedLanguage,
+    //               )));
+    // } 
     // else if (obj.typeC == "Calendar/Events") {
     //   obj.calendarId != null && obj.calendarId != ""
     //       ? Navigator.push(
@@ -180,11 +181,6 @@ class _FamilyPageState extends State<FamilyPage> {
 
   _launchURL(obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http') {
-      // if (await canLaunch(obj.appUrlC)) {
-      //   await launch(obj.appUrlC);
-      // } else {
-      //   throw 'Could not launch ${obj.appUrlC!}';
-      // }
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
     } else {
       Navigator.push(
