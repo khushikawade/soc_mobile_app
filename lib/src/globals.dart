@@ -1,4 +1,3 @@
-import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'modules/home/models/app_setting.dart';
@@ -22,7 +21,7 @@ class Globals {
   static bool? isnetworkexception = false;
   static ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
   static ValueNotifier<String> languageChanged =
-      ValueNotifier<String>("English");
+      ValueNotifier<String>("English");    
   static final scaffoldKey = GlobalKey<ScaffoldState>();
   static String? release = "";
   static String? manufacturer = "";
@@ -38,7 +37,8 @@ class Globals {
   static int? homeIndex;
   static bool? isNetworkError = false;
   static bool? callsnackbar = true;
-  static bool hasShowcaseInitialised = false;
+  // static bool hasShowcaseInitialised = false;
+  static ValueNotifier<bool> hasShowcaseInitialised = ValueNotifier<bool>(false);
   static String? calendar_Id = "";
   static final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();

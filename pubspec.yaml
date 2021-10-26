@@ -75,7 +75,14 @@ dependencies:
   # app_settings: ^4.1.1
   app_settings:
     path: ./plugins/app_settings
-  bubble_showcase: ^1.1.0
+  # bubble_showcase: ^1.1.0
+  # bubble_showcase:
+  #   path: /Users/piyushrathod/Documents/piyush_projects/BubbleShowcase
+  bubble_showcase:
+    git:
+      url: https://github.com/piyushrathodIn/BubbleShowcase.git
+      ref: onfinished_callback
+    
   speech_bubble: ^0.0.9
   firebase_analytics: ^8.3.3 
 

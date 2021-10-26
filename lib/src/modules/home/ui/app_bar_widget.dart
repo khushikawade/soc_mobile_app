@@ -13,6 +13,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
@@ -128,15 +129,22 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           leadingWidth: _kIconSize,
           elevation: 0.0,
           leading: BubbleShowcase(
-            enabled: !Globals.hasShowcaseInitialised,
+            enabled: !Globals.hasShowcaseInitialised.value,
             showCloseButton: false,
             bubbleShowcaseId: 'my_bubble_showcase',
-            doNotReopenOnClose: true,
+            // doNotReopenOnClose: true,
             bubbleSlides: [
               _firstSlide(context),
               _openSettingsButtonSlide(context)
             ],
             bubbleShowcaseVersion: 1,
+            onFinished: () {
+              setState(() {
+                Globals.hasShowcaseInitialised.value = true;
+              });
+               _promtPushNotificationPermission();
+              if (refresh != null) refresh!(true);
+            },
             child: Row(
               children: [
                 _translateButton(setState, context),
@@ -178,6 +186,17 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     });
   }
 
+  void _promtPushNotificationPermission() async {
+    if (Platform.isIOS) {
+      await OneSignal.shared
+          .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    }
+    if (Platform.isAndroid) {
+      await OneSignal.shared
+          .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    }
+  }
+
   Widget _translateButton(StateSetter setState, BuildContext context) {
     return Container(
       padding: EdgeInsets.only(left: 10),
@@ -213,9 +232,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               OpenAppsSettings.openAppsSettings(
                   settingsCode: SettingsCode.ACCESSIBILITY);
             } else {
-              AppSettings.openAccessibilitySettings(
-                asAnotherTask: true
-              );
+              AppSettings.openAccessibilitySettings(asAnotherTask: true);
             }
           },
           icon: Container(

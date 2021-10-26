@@ -61,9 +61,9 @@ class _StartupPageState extends State<StartupPage> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     bool? _flag = preferences.getBool('hasShowcaseInitialised');
     if(_flag == true){
-      Globals.hasShowcaseInitialised = true;
+      Globals.hasShowcaseInitialised.value = true;
     }
-    preferences.setBool('hasShowcaseInitialised', false);
+    preferences.setBool('hasShowcaseInitialised', true);
   }
 
   late AppLifecycleState _notification;

@@ -88,14 +88,14 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
 
-    if (Platform.isIOS) {
-      await OneSignal.shared
-          .promptUserForPushNotificationPermission(fallbackToSettings: true);
-    }
-    if (Platform.isAndroid) {
-      await OneSignal.shared
-          .promptUserForPushNotificationPermission(fallbackToSettings: true);
-    }
+    // if (Platform.isIOS) {
+    //   await OneSignal.shared
+    //       .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    // }
+    // if (Platform.isAndroid) {
+    //   await OneSignal.shared
+    //       .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    // }
     updateDeviceId();
   }
 

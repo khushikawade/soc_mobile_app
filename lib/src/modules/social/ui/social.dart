@@ -290,8 +290,7 @@ class _SocialPageState extends State<SocialPage> {
         appBar: AppBarWidget(
           marginLeft: 30,
           refresh: (v) {
-            setState(() {
-            });
+            setState(() {});
           },
         ),
         body: RefreshIndicator(

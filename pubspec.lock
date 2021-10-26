@@ -81,9 +81,11 @@ packages:
   bubble_showcase:
     dependency: "direct main"
     description:
-      name: bubble_showcase
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: onfinished_callback
+      resolved-ref: c54198efd7f034aad421b0221c314f5a659b4800
+      url: "https://github.com/piyushrathodIn/BubbleShowcase.git"
+    source: git
     version: "1.1.0"
   build:
     dependency: transitive

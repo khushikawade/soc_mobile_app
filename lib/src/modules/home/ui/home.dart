@@ -210,59 +210,91 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     ).toList();
   }
 
+  Widget _continueShowCaseInstructions(String text) => TranslationWidget(
+      message: text,
+      fromLanguage: "en",
+      toLanguage: Globals.selectedLanguage,
+      builder: (translatedMessage) => Text(
+            '$translatedMessage',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline1!.copyWith(
+                // color: Colors.red,
+                color: Theme.of(context).backgroundColor,
+                fontSize: 32,
+                fontStyle: FontStyle.italic),
+          ));
+
+  Widget _tabBarBody() => PersistentTabView(
+        context,
+        controller: _controller,
+        screens: _buildScreens(),
+        // hideNavigationBar: true,
+        onItemSelected: (int i) {
+          setState(() {
+            // To make sure if the ShowCase is in the progress and user taps on bottom nav bar items so the Showcase should not apear on other pages/
+             Globals.hasShowcaseInitialised.value = true;
+            // New news item indicator
+            if (i == Globals.newsIndex) {
+              Globals.indicator.value = false;
+            }
+          });
+        },
+        items: _navBarsItems(),
+        confineInSafeArea: true,
+        backgroundColor: Theme.of(context).backgroundColor,
+        handleAndroidBackButtonPress: true,
+        resizeToAvoidBottomInset:
+            true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+        stateManagement: true, // Default is true.
+        hideNavigationBarWhenKeyboardShows:
+            true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+        decoration: NavBarDecoration(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(25),
+              topLeft: Radius.circular(25),
+            ),
+            // circular(25.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 10.0,
+              ),
+            ]),
+        onWillPop: (context) async {
+          await _onBackPressed();
+          return false;
+        },
+        popAllScreensOnTapOfSelectedTab: true,
+        popActionScreens: PopActionScreensType.all,
+        itemAnimationProperties: ItemAnimationProperties(
+          duration: Duration(milliseconds: 200),
+          curve: Curves.ease,
+        ),
+        screenTransitionAnimation: ScreenTransitionAnimation(
+          animateTabTransition: true,
+          curve: Curves.ease,
+          duration: Duration(milliseconds: 200),
+        ),
+        navBarStyle: NavBarStyle.style6,
+        navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+      );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PersistentTabView(
-      context,
-      controller: _controller,
-      screens: _buildScreens(),
-      // hideNavigationBar: true,
-      onItemSelected: (int i) {
-        setState(() {
-          if (i == Globals.newsIndex) {
-            Globals.indicator.value = false;
-          }
-        });
-      },
-      items: _navBarsItems(),
-      confineInSafeArea: true,
-      backgroundColor: Theme.of(context).backgroundColor,
-      handleAndroidBackButtonPress: true,
-      resizeToAvoidBottomInset:
-          true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-      stateManagement: true, // Default is true.
-      hideNavigationBarWhenKeyboardShows:
-          true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-      decoration: NavBarDecoration(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(25),
-            topLeft: Radius.circular(25),
-          ),
-          // circular(25.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey,
-              blurRadius: 10.0,
-            ),
-          ]),
-      onWillPop: (context) async {
-        await _onBackPressed();
-        return false;
-      },
-      popAllScreensOnTapOfSelectedTab: true,
-      popActionScreens: PopActionScreensType.all,
-      itemAnimationProperties: ItemAnimationProperties(
-        duration: Duration(milliseconds: 200),
-        curve: Curves.ease,
-      ),
-      screenTransitionAnimation: ScreenTransitionAnimation(
-        animateTabTransition: true,
-        curve: Curves.ease,
-        duration: Duration(milliseconds: 200),
-      ),
-      navBarStyle: NavBarStyle.style6,
-      navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+        body: Stack(
+      children: [
+        _tabBarBody(),
+        ValueListenableBuilder<bool>(
+            valueListenable: Globals.hasShowcaseInitialised,
+            builder: (context, value, _) {
+              if (Globals.hasShowcaseInitialised.value == true)
+                return Container();
+              return Center(
+                  child: _continueShowCaseInstructions(
+                      'Tap anywhere on the screen to continue.'));
+            }),
+      ],
     ));
   }
 
