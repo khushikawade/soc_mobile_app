@@ -84,7 +84,7 @@ class _SocialPageState extends State<SocialPage> {
                         obj: mainObj,
                         currentIndex: index,
                         issocialpage: true,
-                        iseventpage: false,
+                        isAboutSDPage: false,
                         date: '1',
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,

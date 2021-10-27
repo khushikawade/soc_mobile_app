@@ -35,36 +35,17 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
         yield ErrorLoading(err: e);
       }
     }
-
-    // if (event is SDevent) {
-    //   try {
-    //     yield AboutLoading();
-    //     List<SDlist> list = await getStaffList();
-
-    //     if (list.length > 0) {
-    //       list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
-    //       yield SDDataSucess(obj: list);
-    //     } else {
-    //       yield SDDataSucess(obj: list);
-    //     }
-    //   } catch (e) {
-    //     yield ErrorLoading(err: e);
-    //   }
-    // }
-
-  
   }
 
   Future<List<AboutStaffDirectoryList>> getAboutSDList() async {
     try {
-      // final ResponseModel response = await _dbServices.getapi(
-      //     "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,App_Icon_URL__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,Calendar_Id__c,Active_Status__c FROM About_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       final ResponseModel response = await _dbServices.getapi(
           "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c,URL__c,Department__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       if (response.statusCode == 200) {
         dataArray = response.data["records"];
         return response.data["records"]
-            .map<AboutStaffDirectoryList>((i) => AboutStaffDirectoryList.fromJson(i)).toSet()
+            .map<AboutStaffDirectoryList>(
+                (i) => AboutStaffDirectoryList.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');
@@ -73,24 +54,4 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
       throw (e);
     }
   }
-
-
-  // Future<List<SDlist>> getStaffList() async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.getapi(
-  //         "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
-
-  //     if (response.statusCode == 200) {
-  //       dataArray = response.data["records"];
-  //       return response.data["records"]
-  //           .map<SDlist>((i) => SDlist.fromJson(i))
-  //           .toList();
-  //     } else {
-  //       throw ('something_went_wrong');
-  //     }
-  //   } catch (e) {
-  //     throw (e);
-  //   }
-  // }
-
 }

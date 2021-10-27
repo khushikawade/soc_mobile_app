@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/about/modal/stafflist.dart';
-import 'package:Soc/src/modules/about/ui/sd_detail_page.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -46,7 +45,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 45.0;
   static const double _KButtonMinSize = 45.0;
-  AboutBloc _bloc = AboutBloc();
   UrlLauncherWidget objurl = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
@@ -61,14 +59,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     for (int i = 0; i < widget.obj.length; i++) {
       if (widget.obj[i].department == widget.appBarTitle) {
         sdList.add(widget.obj[i]);
-      }
-      //To remove url contains record from slider page
-       if (widget.obj[i].urlC != null &&  widget.obj[i].urlC!="") {
+        //To remove url contains record from slider page
+        if (widget.obj[i].urlC == null || widget.obj[i].urlC == "") {
           sliderList.add(widget.obj[i]);
-       }
+        }
+      }
     }
   }
-_launchURL(obj) async {
+
+  _launchURL(obj) async {
     if (obj.urlC.toString().split(":")[0] == 'http') {
       await Utility.launchUrlOnExternalBrowser(obj.urlC);
     } else {
@@ -76,38 +75,31 @@ _launchURL(obj) async {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.titleC,
+                    title: obj.titleC ?? "",
                     url: obj.urlC,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
   }
-  
-//   int getIndex(){
-// //    var elementPos = sliderList.map((e) =>  e.id);
-// // var element = sliderList.map((e) =>  e.id).indexOf(elementPos.toString().split("(")[1].split(")")[0]);
-// // // print(index);
-// // }
-// int ?index;
-// sliderList.forEach((element) {
-//     index=sliderList.indexOf(element);
-//     print(index);
-//   });
-//   return index!;
-//  }
 
   Widget staffDirectoryDetails(obj, index) {
     return GestureDetector(
-      onTap: (){
-        obj.urlC!=null && obj.urlC!=""?
-         _launchURL(obj):
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>  SliderWidget(obj: sdList, currentIndex: index,issocialpage: false, iseventpage: true, date: "", isbuttomsheet: true,language: Globals.selectedLanguage,)
-          ));
-         
+      onTap: () {
+        obj.urlC != null && obj.urlC != ""
+            ? _launchURL(obj)
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SliderWidget(
+                          obj: sliderList,
+                          currentIndex: index,
+                          issocialpage: false,
+                          isAboutSDPage: true,
+                          date: "",
+                          isbuttomsheet: true,
+                          language: Globals.selectedLanguage,
+                        )));
       },
       child: Container(
         margin: EdgeInsets.symmetric(
@@ -159,8 +151,9 @@ _launchURL(obj) async {
                               )),
                         )
                       : CustomIconWidget(
-                                iconUrl: "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
-      ),
+                          iconUrl:
+                              "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+                        ),
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
                     child: Globals.selectedLanguage != null &&
@@ -179,7 +172,7 @@ _launchURL(obj) async {
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.headline2!),
                   ),
-                  obj.phoneC!=null
+                  obj.phoneC != null
                       ? Container(
                           height: _KButtonMinSize,
                           width: _KButtonMinSize,
@@ -202,7 +195,7 @@ _launchURL(obj) async {
                         )
                       : EmptyContainer(),
                   HorzitalSpacerWidget(_kLabelSpacing / 2),
-                  obj.emailC!=null
+                  obj.emailC != null
                       ? Container(
                           height: _KButtonMinSize,
                           width: _KButtonMinSize,
@@ -224,7 +217,9 @@ _launchURL(obj) async {
                         )
                       : EmptyContainer()
                 ]),
-           obj.descriptionC!=null? SpacerWidget(_kLabelSpacing / 1.2):Container(),
+            obj.descriptionC != null
+                ? SpacerWidget(_kLabelSpacing / 1.2)
+                : Container(),
             Globals.selectedLanguage != null &&
                     Globals.selectedLanguage != "English" &&
                     Globals.selectedLanguage != ""
@@ -301,9 +296,7 @@ _launchURL(obj) async {
                                       isResultNotFoundMsg: false,
                                       isNews: false,
                                       isEvents: false,
-                                    )
-                             
-                              ),
+                                    )),
                           Container(
                             height: 0,
                             width: 0,
@@ -334,7 +327,6 @@ _launchURL(obj) async {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _bloc.add(SDevent());
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }

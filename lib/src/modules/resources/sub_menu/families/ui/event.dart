@@ -63,7 +63,7 @@
 //                 builder: (context) => SliderWidget(
 //                       obj: mainObj,
 //                       issocialpage: false,
-//                       iseventpage: true,
+//                       isAboutSDPage: true,
 //                       currentIndex: index,
 //                       date: '',
 //                       isbuttomsheet: true,

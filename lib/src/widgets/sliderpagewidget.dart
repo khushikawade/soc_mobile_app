@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/about/ui/sd_detail_page.dart';
+import 'package:Soc/src/modules/about/ui/about_sd_detail_page.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -16,14 +16,14 @@ class SliderWidget extends StatefulWidget {
       {required this.obj,
       required this.currentIndex,
       this.issocialpage,
-      required this.iseventpage,
+      required this.isAboutSDPage,
       required this.date,
       required this.isbuttomsheet,
       required this.language});
   final obj;
   int currentIndex;
   bool? issocialpage;
-  bool? iseventpage;
+  bool? isAboutSDPage;
   String date;
   bool isbuttomsheet;
   String? language;
@@ -63,14 +63,15 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   Widget build(BuildContext context) {
-  
     return Scaffold(
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
           leading: BackButtonWidget(),
-          title: //SizedBox(width: 100.0, height: 60.0, child: 
-          AppLogoWidget(marginLeft: 50,),
+          title: //SizedBox(width: 100.0, height: 60.0, child:
+              AppLogoWidget(
+            marginLeft: 50,
+          ),
           actions: <Widget>[
             IconButton(
               onPressed: () async {
@@ -139,8 +140,10 @@ class _SliderWidgetState extends State<SliderWidget> {
                       object: object[widget.currentIndex],
                       language: Globals.selectedLanguage,
                     )
-                  : widget.iseventpage!
-                      ? AboutSDDetailPage(obj:object[widget.currentIndex],)
+                  : widget.isAboutSDPage!
+                      ? AboutSDDetailPage(
+                          obj: object[widget.currentIndex],
+                        )
                       : Newdescription(
                           obj: object[widget.currentIndex],
                           date: widget.date,

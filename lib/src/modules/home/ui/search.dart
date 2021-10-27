@@ -2,7 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about_staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
-import 'package:Soc/src/modules/resources/families/ui/contact.dart';
+// import 'package:Soc/src/modules/resources/families/ui/contact.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/hive_db_services.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -78,19 +78,20 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _route(obj) async {
-    if (obj.titleC == "Contact") {
-      obj.titleC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => ContactPage(
-                        obj: Globals.homeObjet,
-                        isbuttomsheet: true,
-                        appBarTitle: obj.titleC!,
-                        language: Globals.selectedLanguage!,
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.titleC == "Staff Directory") {
+    // if (obj.titleC == "Contact") {
+    //   obj.titleC != null
+    //       ? Navigator.push(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (BuildContext context) => ContactPage(
+    //                     obj: Globals.homeObjet,
+    //                     isbuttomsheet: true,
+    //                     appBarTitle: obj.titleC!,
+    //                     language: Globals.selectedLanguage!,
+    //                   )))
+    //       : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    // } else 
+    if (obj.titleC == "Staff Directory") {
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -156,18 +157,20 @@ class _SearchPageState extends State<SearchPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-    } else if (obj.typeC == "Sub-Menu") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => SubListPage(
-                    obj: obj,
-                    module: "family",
-                    isbuttomsheet: true,
-                    appBarTitle: obj.titleC!,
-                    language: Globals.selectedLanguage,
-                  )));
-    } else {
+    } 
+    // else if (obj.typeC == "Sub-Menu") {
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (BuildContext context) => SubListPage(
+    //                 obj: obj,
+    //                 module: "family",
+    //                 isbuttomsheet: true,
+    //                 appBarTitle: obj.titleC!,
+    //                 language: Globals.selectedLanguage,
+    //               )));
+    // } 
+    else {
       Utility.showSnackBar(
           _scaffoldKey, "No data available for this record", context);
     }

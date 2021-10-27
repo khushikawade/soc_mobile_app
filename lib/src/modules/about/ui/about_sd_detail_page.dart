@@ -184,13 +184,10 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: InkWell(
                   onTap: () {
-                    
-                      urlobj.callurlLaucher(context,
-                          "tel:" + widget.obj!.phoneC);
-                    
+                    urlobj.callurlLaucher(context, "tel:" + widget.obj!.phoneC);
                   },
                   child: Text(
-                    widget.obj!.phoneC ?? "" ,
+                    widget.obj!.phoneC ?? "",
                     style: Theme.of(context).textTheme.bodyText1!,
                     textAlign: TextAlign.center,
                   ),
@@ -249,9 +246,8 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: InkWell(
                     onTap: () {
-                      urlobj.callurlLaucher(context,
-                              'mailto:"${widget.obj!.emailC}"')
-                         ;
+                      urlobj.callurlLaucher(
+                          context, 'mailto:"${widget.obj!.emailC}"');
                     },
                     child: Text(
                       widget.obj!.emailC ?? '-',
@@ -270,104 +266,93 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
       _buildTitleWidget(),
       SpacerWidget(_kLabelSpacing),
       _sdImage(),
-      SpacerWidget(_kLabelSpacing ),
+      SpacerWidget(_kLabelSpacing),
       _buildDescriptionWidget(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj!.phoneC != null
-          ? _buildPhoneWidget()
-          : Container(),
+      widget.obj!.phoneC != null ? _buildPhoneWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj!.emailC != null
-          ? _buildEmailWidget()
-          : Container(),
-          SpacerWidget(_kLabelSpacing / 1.25),
-          ButtonWidget(title: "Share",)
+      widget.obj!.emailC != null ? _buildEmailWidget() : Container(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      ButtonWidget(
+        title: "Share",
+      )
     ]);
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: CustomAppBarWidget(
-        //   isSearch: true,
-        //   isShare: false,
-        //   appBarTitle: "widget.obj.titleC",
-        //   sharedpopBodytext: '',
-        //   sharedpopUpheaderText: '',
-        //   language: Globals.selectedLanguage,
-        //   marginLeft: 30,
-        // ),
         body: RefreshIndicator(
-          key: refreshKey,
-          child: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final bool connected = connectivity != ConnectivityResult.none;
-                Globals.isNetworkError = !connected;
+      key: refreshKey,
+      child: OfflineBuilder(
+          connectivityBuilder: (
+            BuildContext context,
+            ConnectivityResult connectivity,
+            Widget child,
+          ) {
+            final bool connected = connectivity != ConnectivityResult.none;
+            Globals.isNetworkError = !connected;
 
-                if (connected) {
-                  if (iserrorstate == true) {
-                    homebloc.add(FetchBottomNavigationBar());
-                    iserrorstate = false;
-                  }
-                } else if (!connected) {
-                  iserrorstate = true;
-                }
+            if (connected) {
+              if (iserrorstate == true) {
+                homebloc.add(FetchBottomNavigationBar());
+                iserrorstate = false;
+              }
+            } else if (!connected) {
+              iserrorstate = true;
+            }
 
-                return new Stack(fit: StackFit.expand, children: [
-                  connected
-                      ? Column(
-                          children: [
-                            Expanded(
-                                child: isloadingstate!
-                                    ? ShimmerLoading(
-                                        isLoading: true, child: _buildItem())
-                                    : _buildItem()),
-                            Container(
-                              height: 0,
-                              width: 0,
-                              child: BlocListener<HomeBloc, HomeState>(
-                                  bloc: homebloc,
-                                  listener: (context, state) async {
-                                    if (state is HomeLoading) {
-                                      isloadingstate = true;
-                                    }
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObjet = state.obj;
-                                      isloadingstate = false;
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: EmptyContainer()),
-                            ),
-                          ],
-                        )
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                      bloc: homebloc,
-                      listener: (context, state) async {
-                        if (state is BottomNavigationBarSuccess) {
-                          AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObjet = state.obj;
-                          setState(() {});
-                        }
-                      },
-                      child: EmptyContainer(),
-                    ),
-                  ),
-                ]);
-              },
-              child: EmptyContainer()),
-          onRefresh: refreshPage,
-        ));
+            return new Stack(fit: StackFit.expand, children: [
+              connected
+                  ? Column(
+                      children: [
+                        Expanded(
+                            child: isloadingstate!
+                                ? ShimmerLoading(
+                                    isLoading: true, child: _buildItem())
+                                : _buildItem()),
+                        Container(
+                          height: 0,
+                          width: 0,
+                          child: BlocListener<HomeBloc, HomeState>(
+                              bloc: homebloc,
+                              listener: (context, state) async {
+                                if (state is HomeLoading) {
+                                  isloadingstate = true;
+                                }
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  isloadingstate = false;
+                                  setState(() {});
+                                }
+                              },
+                              child: EmptyContainer()),
+                        ),
+                      ],
+                    )
+                  : NoInternetErrorWidget(
+                      connected: connected, issplashscreen: false),
+              Container(
+                height: 0,
+                width: 0,
+                child: BlocListener<HomeBloc, HomeState>(
+                  bloc: homebloc,
+                  listener: (context, state) async {
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.homeObjet = state.obj;
+                      setState(() {});
+                    }
+                  },
+                  child: EmptyContainer(),
+                ),
+              ),
+            ]);
+          },
+          child: EmptyContainer()),
+      onRefresh: refreshPage,
+    ));
   }
 
   Future refreshPage() async {
