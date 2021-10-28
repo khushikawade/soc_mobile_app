@@ -85,6 +85,7 @@ dependencies:
     
   speech_bubble: ^0.0.9
   firebase_analytics: ^8.3.3 
+  path_provider: ^2.0.6
 
 dev_dependencies:
   flutter_test:

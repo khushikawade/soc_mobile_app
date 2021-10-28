@@ -35,6 +35,10 @@ class _TranslationWidgetState extends State<TranslationWidget> {
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
 
+    if (toLanguageCode == 'en') {
+      return widget.builder!(widget.message!);
+    }
+
     return FutureBuilder(
       future: TranslationAPI.translate(widget.message!, toLanguageCode),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -62,7 +66,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
               translation = snapshot.data;
               Globals.isNetworkError = false;
             }
-            return  widget.builder!(translation!);
+            return widget.builder!(translation!);
         }
       },
     );
@@ -72,7 +76,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
       ? ShimmerLoading(
           isLoading: true,
           child: Container(
-            height: widget.shimmerHeight??20,
+            height: widget.shimmerHeight ?? 20,
             width: 40,
             // child: Text(widget.message!),
             color: Colors.white,

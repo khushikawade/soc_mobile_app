@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/setting/information.dart';
+import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/language_list.dart';
@@ -42,11 +43,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   // final _scaffoldKey = GlobalKey<ScaffoldState>();
   //final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   bool? initalscreen;
+  bool? hideAccessibilityButton;
 
   final GlobalKey _bshowcase = GlobalKey();
   final GlobalKey _openSettingShowCaseKey = GlobalKey();
 
-  AppBarWidget({Key? key, required this.refresh, required this.marginLeft})
+  AppBarWidget({Key? key, required this.refresh, required this.marginLeft, this.hideAccessibilityButton})
       : super(key: key);
 
   @override
@@ -149,29 +151,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             child: Row(
               children: [
                 _translateButton(setState, context),
+                hideAccessibilityButton == true ? //To adjust Accessibility button apearance in the AppBar, since we are using the smae common widget in the Accessibility page and we don't wnat to show this "Accessibility Button" on the "Accessibility Page" itself.
+                Container() : 
                 _openSettingsButton(context)
-                //  Container(
-                //     padding: EdgeInsets.only(left: 10),
-                //     child: GestureDetector(
-                //       key: _bshowcase,
-                //       child: Image(
-                //         width: Globals.deviceType == "phone" ? 24 : 32,
-                //         height: Globals.deviceType == "phone" ? 24 : 32,
-                //         image: AssetImage("assets/images/gtranslate.png"),
-                //       ),
-                //       onTap: () {
-                //         setState(() {});
-                //         LanguageSelector(context, (language) {
-                //           if (language != null) {
-                //             setState(() {
-                //               Globals.selectedLanguage = language;
-                //               Globals.languageChanged.value = language;
-                //             });
-                //             refresh!(true);
-                //           }
-                //         });
-                //       },
-                //     )),
               ],
             ),
           ),
@@ -233,7 +215,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               OpenAppsSettings.openAppsSettings(
                   settingsCode: SettingsCode.ACCESSIBILITY);
             } else {
-              AppSettings.openAccessibilitySettings(asAnotherTask: true);
+              // AppSettings.openAccessibilitySettings(asAnotherTask: true);
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => IosAccessibilityGuidePage()));
             }
           },
           icon: Container(
@@ -260,7 +243,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 8,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.black54,
+            color: Colors.black87,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
                 "Translate/Traducción/翻译/ترجمة/Traduction",
@@ -292,7 +275,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 2,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.black54,
+            color: Colors.black87,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
                 "Accessibility Settings",
