@@ -7,14 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final appDocumentDirectory =
-      await path_provider.getApplicationDocumentsDirectory();
-  Hive
-    ..init(appDocumentDirectory.path)
-    ..registerAdapter(RecentAdapter());
+  
+  if (!kIsWeb) {
+    // Not running on the web!
+    final appDocumentDirectory =
+        await path_provider.getApplicationDocumentsDirectory();
+    Hive
+      ..init(appDocumentDirectory.path)
+      ..registerAdapter(RecentAdapter());
+  }
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

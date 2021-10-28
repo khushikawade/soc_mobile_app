@@ -41,17 +41,17 @@ class _NewdescriptionState extends State<Newdescription> {
     Globals.callsnackbar = true;
   }
 
-  _launchURL(obj) async {
-    if (obj.toString().split(":")[0] == 'http') {
-      // if (await canLaunch(obj)) {
-      //   await launch(obj);
-      // } else {
-      //   throw 'Could not launch ${obj!}';
-      // }
-      try {
-        // await launch(obj);
-        await Utility.launchUrlOnExternalBrowser(obj);
-      } catch (e) {}
+  void _launchURL(obj) async {
+    if (!obj.toString().contains('http')) {
+      await Utility.launchUrlOnExternalBrowser(obj);
+      return;
+    }
+    if (obj.toString().contains(
+            "zoom.us") || // Checking here for zoom/google meet app URLs to open these specific URLs Externally(In browser/Related App if installed already)
+        obj.toString().contains("meet.google.com")) {
+      await Utility.launchUrlOnExternalBrowser(obj);
+    } else if (obj.toString().split(":")[0] == 'http') {
+      await Utility.launchUrlOnExternalBrowser(obj);
     } else {
       Navigator.push(
           context,
@@ -151,13 +151,18 @@ class _NewdescriptionState extends State<Newdescription> {
                                   widget.obj.headings.length > 0
                               ? widget.obj.headings["en"].toString()
                               : widget.obj.contents["en"]
-                                      .toString()
-                                      .split(" ")[0] +
-                                  " " +
-                                  widget.obj.contents["en"]
-                                      .toString()
-                                      .split(" ")[1] +
-                                  "...",
+                                          .toString()
+                                          .split(" ")
+                                          .length >
+                                      1
+                                  ? widget.obj.contents["en"]
+                                          .toString().replaceAll("\n"," ")
+                                          .split(" ")[0] +" "+
+                                      widget.obj.contents["en"]
+                                          .toString().replaceAll("\n"," ")
+                                          .split(" ")[1].split("\n")[0] +
+                                      "..."
+                                  : widget.obj.contents["en"],
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Linkify(
@@ -179,13 +184,18 @@ class _NewdescriptionState extends State<Newdescription> {
                                   widget.obj.headings.length > 0
                               ? widget.obj.headings["en"].toString()
                               : widget.obj.contents["en"]
-                                      .toString()
-                                      .split(" ")[0] +
-                                  " " +
-                                  widget.obj.contents["en"]
-                                      .toString()
-                                      .split(" ")[1] +
-                                  "...",
+                                          .toString()
+                                          .split(" ")
+                                          .length >
+                                      1
+                                  ? widget.obj.contents["en"]
+                                          .toString().replaceAll("\n"," ")
+                                          .split(" ")[0] +" "+
+                                      widget.obj.contents["en"]
+                                          .toString().replaceAll("\n"," ")
+                                          .split(" ")[1].split("\n")[0] +
+                                      "..."
+                                  : widget.obj.contents["en"],
                           style: Theme.of(context)
                               .textTheme
                               .headline2!
