@@ -175,7 +175,8 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                     )
                   : Text(
                       "Phone : ",
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      style: 
+                      Theme.of(context).textTheme.bodyText2!.copyWith(
                             fontWeight: FontWeight.w500,
                           ),
                     ),
@@ -188,7 +189,17 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   },
                   child: Text(
                     widget.obj!.phoneC ?? "",
-                    style: Theme.of(context).textTheme.bodyText1!,
+                    style: TextStyle(
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.blue,
+              fontSize: Globals.deviceType == "phone"
+                  ? AppTheme.kBodyText1FontSize
+                  : AppTheme.kBodyText1FontSize + AppTheme.kSize,
+              color: Colors.blue,
+              fontWeight: FontWeight.normal,
+              fontFamily: 'Roboto Regular',
+              height: 1.5,
+            ),//Theme.of(context).textTheme.bodyText1!,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -250,8 +261,19 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                           context, 'mailto:"${widget.obj!.emailC}"');
                     },
                     child: Text(
+                      
                       widget.obj!.emailC ?? '-',
-                      style: Theme.of(context).textTheme.bodyText1!,
+                      style: TextStyle(
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.blue,
+              fontSize: Globals.deviceType == "phone"
+                  ? AppTheme.kBodyText1FontSize
+                  : AppTheme.kBodyText1FontSize + AppTheme.kSize,
+              color: Colors.blue,
+              fontWeight: FontWeight.normal,
+              fontFamily: 'Roboto Regular',
+              height: 1.5,
+            ),//Theme.of(context).textTheme.bodyText1!,
                     ),
                   ),
                 )

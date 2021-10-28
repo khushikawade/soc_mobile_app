@@ -246,7 +246,17 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           },
           child: Text(
             widget.obj.phone ?? '-',
-            style: Theme.of(context).textTheme.bodyText1!,
+            style: TextStyle(
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.blue,
+              fontSize: Globals.deviceType == "phone"
+                  ? AppTheme.kBodyText1FontSize
+                  : AppTheme.kBodyText1FontSize + AppTheme.kSize,
+              color: Colors.blue,
+              fontWeight: FontWeight.normal,
+              fontFamily: 'Roboto Regular',
+              height: 1.5,
+            ), //Theme.of(context).textTheme.bodyText1!,
             textAlign: TextAlign.center,
           ),
         ),

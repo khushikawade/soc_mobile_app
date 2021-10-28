@@ -159,7 +159,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             Globals.selectedLanguage != "English" &&
                             Globals.selectedLanguage != ""
                         ? TranslationWidget(
-                            message: obj.name ?? "-",
+                            message: obj.titleC ?? "-",
                             toLanguage: Globals.selectedLanguage,
                             fromLanguage: "en",
                             builder: (translatedMessage) => Text(
@@ -167,7 +167,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 textAlign: TextAlign.start,
                                 style: Theme.of(context).textTheme.headline2!),
                           )
-                        : Text(obj.name ?? "-",
+                        : Text(obj.titleC ?? "-",
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.headline2!),
                   ),

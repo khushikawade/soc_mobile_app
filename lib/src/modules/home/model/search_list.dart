@@ -7,13 +7,18 @@ class SearchList {
   dynamic appURLC;
   dynamic urlC;
   String? id;
-  String? name;
-  String? typeC;
   String? rtfHTMLC;
-  String? pdfURL;
-  String? deepLink;
   String? schoolId;
-  // final sortOredr;
+  String? dept;
+  dynamic descriptionC;
+  String? emailC;
+  String? imageUrlC;
+  String? phoneC;
+  String? webURLC;
+  String? address;
+  final geoLocation;
+  final statusC;
+  final sortOredr;
 
   SearchList(
       {this.attributes,
@@ -22,14 +27,18 @@ class SearchList {
       this.appURLC,
       this.urlC,
       this.id,
-      this.name,
-      this.pdfURL,
       this.rtfHTMLC,
-      this.typeC,
-      this.deepLink,
-      this.schoolId
-      // this.sortOredr
-      });
+      this.schoolId,
+      this.dept,
+      this.descriptionC,
+      this.emailC,
+      this.imageUrlC,
+      this.phoneC,
+      this.webURLC,
+      this.address,
+      this.geoLocation,
+      this.statusC,
+      this.sortOredr});
 
   factory SearchList.fromJson(Map<String, dynamic> json) => SearchList(
         attributes: json['attributes'] == null
@@ -40,14 +49,19 @@ class SearchList {
         // appIconC: json['App_Icon__c'] as String?,
         appURLC: json['App_URL__c'] as String?,
         urlC: json['URL__c'] as String?,
-        pdfURL: json['PDF_URL__c'] as String?,
         id: json['Id'] as String?,
-        name: json['Name'] as String?,
         rtfHTMLC: json['RTF_HTML__c'] as String?,
-        typeC: json['Type__c'] as String?,
-        deepLink: json['Deep_Link__c'] as String?,
         schoolId: json['School_App__c'] as String?,
-        // sortOredr: json['Sort_Order__c'],
+        dept: json['Department__c'] as String?,
+        descriptionC: json['Description__c'],
+        emailC: json['Email__c'] as String?,
+        imageUrlC: json['Image_URL__c'] as String?,
+        phoneC: json['Phone__c'] as String?,
+        webURLC: json['Website_URL__c'] as String?,
+        address: json['Contact_Address__c'] as String?,
+        geoLocation: json['Contact_Office_Location__c'],
+        statusC: json['Active_Status__c'],
+        sortOredr: json['Sort_Order__c'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -56,13 +70,18 @@ class SearchList {
         // 'App_Icon__c': appIconC,
         "App_URL__c": appURLC,
         'URL__c': urlC,
-        'PDF_URL__c': pdfURL,
         'Id': id,
-        'Name': name,
         'RTF_HTML__c': rtfHTMLC,
-        'Type__c': typeC,
-        'Deep_Link__c': deepLink,
-        'School_App__c':schoolId
-        // 'Sort_Order__c': sortOredr
+        'School_App__c': schoolId,
+        'Department__c': dept,
+        'Description__c': descriptionC,
+        'Email__c': emailC,
+        'Image_URL__c': imageUrlC,
+        'Phone__c': phoneC,
+        'Website_URL__c': webURLC,
+        'Contact_Address__c': address,
+        'Contact_Office_Location__c': geoLocation,
+        'Active_Status__c': statusC,
+        'Sort_Order__c': sortOredr
       };
 }

@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/about/ui/about_sd_detail_page.dart';
 import 'package:Soc/src/modules/about/ui/about_staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
@@ -91,16 +92,21 @@ class _SearchPageState extends State<SearchPage> {
     //                   )))
     //       : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     // } else 
-    if (obj.titleC == "Staff Directory") {
-      Navigator.push(
+    if (obj.urlC !=null) {
+     _launchURL(obj);
+         
+    } 
+   else if (obj.dept !=null||obj.dept!="") {
+    // if (obj.urlC !=null) {
+    //  _launchURL(obj);
+         
+    // } 
+     Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (BuildContext context) => StaffDirectory(
-                    appBarTitle: obj.titleC!,
-                    obj: obj,
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )));
+              builder: (BuildContext context) => AboutSDDetailPage(
+                          obj: obj,
+                        )));
     } else if (obj.deepLink != null) {
       if (obj.deepLink == 'NO') {
         Navigator.push(
@@ -120,17 +126,9 @@ class _SearchPageState extends State<SearchPage> {
         // }
         await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
       }
-    } else if (obj.typeC == "URL") {
+    } else if (obj.urlC !=null) {
       obj.urlC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => InAppUrlLauncer(
-                        title: obj.titleC!,
-                        url: obj.urlC!,
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )))
+          ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML"||obj.typeC=="HTML/RTF"||obj.typeC=="RTF/HTML") {
       obj.rtfHTMLC != null
@@ -158,21 +156,25 @@ class _SearchPageState extends State<SearchPage> {
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
     } 
-    // else if (obj.typeC == "Sub-Menu") {
-    //   Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (BuildContext context) => SubListPage(
-    //                 obj: obj,
-    //                 module: "family",
-    //                 isbuttomsheet: true,
-    //                 appBarTitle: obj.titleC!,
-    //                 language: Globals.selectedLanguage,
-    //               )));
-    // } 
     else {
       Utility.showSnackBar(
           _scaffoldKey, "No data available for this record", context);
+    }
+  }
+
+  _launchURL(obj) async {
+    if (obj.urlC.toString().split(":")[0] == 'http') {
+      await Utility.launchUrlOnExternalBrowser(obj.urlC);
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC ?? "",
+                    url: obj.urlC,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
     }
   }
 
@@ -384,11 +386,11 @@ class _SearchPageState extends State<SearchPage> {
                                         data.appURLC,
                                         data.urlC,
                                         data.id,
-                                        data.name,
-                                        data.pdfURL,
                                         data.rtfHTMLC,
-                                        data.typeC,
-                                        data.deepLink);
+                                        data.schoolId,
+                                        data.dept,
+                                        data.descriptionC,
+                                        data.emailC,);
 
                                     addtoDataBase(recentitem);
                                   }
@@ -498,7 +500,10 @@ class _SearchPageState extends State<SearchPage> {
             elevation: 0.0,
             leading: BackButtonWidget(),
             title:
-                SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget(marginLeft: 0,))),
+                // SizedBox(width: 100.0, height: 60.0, child: 
+                AppLogoWidget(marginLeft: 0,),
+                // )
+                ),
         body: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(
