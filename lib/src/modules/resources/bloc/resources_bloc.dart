@@ -25,7 +25,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
         yield ResourcesLoading();
         List<ResourcesList> list = await getResourcesSDList();
         if (list.length > 0) {
-          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
           yield ResourcesDataSucess(obj: list);
         } else {
           yield ResourcesDataSucess(obj: list);
@@ -39,7 +39,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
   Future<List<ResourcesList>> getResourcesSDList() async {
     try {
        final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id, Email__c,Sort_Order__c,Phone__c,Website_URL__c,RTF_HTML__c,Contact_Address__c,Contact_Office_Location__c FROM School_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,Id,Sort_Order__c,URL__c,App_Icon_URL__c,Active_Status__c FROM Resources_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       if (response.statusCode == 200) {
         dataArray = response.data["records"];
         return response.data["records"]

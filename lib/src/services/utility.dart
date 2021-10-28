@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -229,6 +226,13 @@ class Utility {
     } catch (e) {
       return '';
     }
+  }
+
+  static String parseHtml(str) {
+    if (str == null) return "";
+    String htmlTxt = str.replaceAll("\n", "");
+    var document = parse(htmlTxt);
+    return document.body!.text;
   }
 
   static launchUrlOnExternalBrowser(String url) async {

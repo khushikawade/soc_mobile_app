@@ -1,5 +1,5 @@
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
-import 'package:Soc/src/modules/about/modal/stafflist.dart';
+import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
 import 'package:Soc/src/modules/about/ui/about_staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
@@ -29,7 +29,6 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-  // static const double _kLabelSpacing = 10.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   AboutBloc _bloc = AboutBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -62,7 +61,9 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  Widget _buildList(String? dept,List<AboutStaffDirectoryList> obj, int index) {
+  Widget _buildList(
+      String? dept, List<AboutStaffDirectoryList> obj, int index) {
+    print(dept);
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -76,21 +77,17 @@ class _AboutPageState extends State<AboutPage> {
       ),
       child: ListTile(
         onTap: () {
-            Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>  StaffDirectory(
-            appBarTitle: obj[index].department!,
-            isbuttomsheet: true,
-            language: Globals.selectedLanguage,
-            obj: obj,
-          )));
-         
-          // _familiyPageRoute(obj, index);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => StaffDirectory(
+                        appBarTitle: dept!,
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                        obj: newList,
+                      )));
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        // contentPadding:
-        //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: _buildLeading(obj),
         title: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
@@ -157,8 +154,8 @@ class _AboutPageState extends State<AboutPage> {
                                       child: CircularProgressIndicator());
                                 } else if (state is AboutDataSucess) {
                                   department.clear();
-                                  for (int i = 0; i < state.obj!.length; i++) {
-                                    department.add(state.obj![i].department);
+                                  for (int i = 0; i < newList.length; i++) {
+                                    department.add(newList[i].department);
                                     department = department.toSet().toList();
                                   }
                                   return department.length > 0
@@ -204,12 +201,12 @@ class _AboutPageState extends State<AboutPage> {
                             listener: (context, state) async {
                               if (state is AboutDataSucess) {
                                 newList.clear();
-                                  for (int i = 0; i < state.obj!.length; i++) {
-                                    // if (state.obj![i].status != "Hide") {
-                                    //   newList.add(state.obj![i]);
-                                    
-                                    // }
-                                    }
+                                for (int i = 0; i < state.obj!.length; i++) {
+                                  if (state.obj![i].statusC != "Hide") {
+                                    newList.add(state.obj![i]);
+
+                                  }
+                                }
                               }
                             },
                             child: EmptyContainer()),

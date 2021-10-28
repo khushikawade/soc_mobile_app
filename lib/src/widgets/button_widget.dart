@@ -8,9 +8,15 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class ButtonWidget extends StatefulWidget {
+  final String? buttonTitle;
   final String? title;
+  final String? body;
+  final obj;
   ButtonWidget({
     required this.title,
+    required this.buttonTitle,
+    required this.body,
+    required this.obj,
   });
   @override
   _ButtonWidgetState createState() => _ButtonWidgetState();
@@ -41,25 +47,22 @@ class _ButtonWidgetState extends State<ButtonWidget> {
             child: ElevatedButton(
               onPressed: () async {
                 SharePopUp obj = new SharePopUp();
-                String link = await _buildlink();
-                // final String body =
-                //     "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}"
-                //             " " +
-                //         link;
-                obj.callFunction(context, "body", "");
+                final String title = widget.title!;
+                String body = widget.body!;
+                obj.callFunction(context, body, title);
               },
               child: Globals.selectedLanguage != null &&
                       Globals.selectedLanguage != "English" &&
                       Globals.selectedLanguage != ""
                   ? TranslationWidget(
-                      message: widget.title.toString(),
+                      message: widget.buttonTitle.toString(),
                       toLanguage: Globals.selectedLanguage,
                       fromLanguage: "en",
                       builder: (translatedMessage) => Text(
                         translatedMessage.toString(),
                       ),
                     )
-                  : Text(widget.title.toString()),
+                  : Text(widget.buttonTitle.toString()),
             ),
           ),
         ],
@@ -67,14 +70,14 @@ class _ButtonWidgetState extends State<ButtonWidget> {
     );
   }
 
-  Future<String> _buildlink() async {
-    // link = object.link.toString();
-    RegExp exp =
-        new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
-    Iterable<RegExpMatch> matches = exp.allMatches("link");
-    matches.forEach((match) {
-      // link2 = link.substring(match.start, match.end);
-    });
-    return 'link2';
-  }
+  // Future<String> _buildlink(obj) async {
+  //   String link = obj.link.toString();
+  //   RegExp exp =
+  //       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
+  //   Iterable<RegExpMatch> matches = exp.allMatches("link");
+  //   matches.forEach((match) {
+  //   String  link2 = link.substring(match.start, match.end);
+  //   });
+  //   return 'link2';
+  // }
 }

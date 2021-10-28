@@ -1,12 +1,16 @@
-
-import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
+import 'package:Soc/src/modules/resources/modal/resources_list.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
@@ -26,78 +30,56 @@ class ResourcesPage extends StatefulWidget {
 }
 
 class _ResourcesPageState extends State<ResourcesPage> {
-  // static const double _kLabelSpacing = 10.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  AboutBloc _bloc = AboutBloc();
+  ResourcesBloc _bloc = ResourcesBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
-  List<AboutStaffDirectoryEvent> newList = [];
+  List<ResourcesList> newList = [];
 
   @override
   void initState() {
     super.initState();
-    _bloc.add(AboutStaffDirectoryEvent());
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    _bloc.add(ResourcesListEvent());
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _bloc.add(AboutStaffDirectoryEvent());
+    _bloc.add(ResourcesListEvent());
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
-
-  Widget _buildLeading() {
-    // if (obj.appIconUrlC != null) {
-    //   return CustomIconWidget(
-    //     iconUrl: obj.appIconUrlC ??
-    //         "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
-    //   );
-    // } else if (obj.appIconC != null) {
-    //   return Icon(
-    //     IconData(
-    //       int.parse('0x${obj.appIconC!}'),
-    //       fontFamily: 'FontAwesomeSolid',
-    //       fontPackage: 'font_awesome_flutter',
-    //     ),
-    //     color: Theme.of(context).colorScheme.primary,
-    //     size: Globals.deviceType == "phone" ? 24 : 32,
-    //   );
-    // } else {
+  Widget _buildLeading(obj) {
+    if (obj.appIconURLC != null) {
+      return CustomIconWidget(
+        iconUrl: obj.appIconURLC ??
+            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+      );
+    } else {
       return CustomIconWidget(
         iconUrl:
             "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
       );
-    // }
+    }
   }
 
-  // _launchURL(obj) async {
-  //   if (obj.appUrlC.toString().split(":")[0] == 'http') {
-  //     // if (await canLaunch(obj.appUrlC)) {
-  //     //   await launch(obj.appUrlC);
-  //     // } else {
-  //     //   throw 'Could not launch ${obj.appUrlC!}';
-  //     // }
-  //     await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
-  //   } else {
-  //     Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //             builder: (BuildContext context) => InAppUrlLauncer(
-  //                   title: obj.titleC,
-  //                   url: obj.appUrlC,
-  //                   isbuttomsheet: true,
-  //                   language: Globals.selectedLanguage,
-  //                 )));
-  //   }
-  // }
+  _launchURL(obj) async {
+    if (obj.urlC.toString().split(":")[0] == 'http') {
+      await Utility.launchUrlOnExternalBrowser(obj.urlC);
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC,
+                    url: obj.urlC,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    }
+  }
 
-  Widget _buildList( int index) {
+  Widget _buildList(ResourcesList obj, int index) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -111,24 +93,22 @@ class _ResourcesPageState extends State<ResourcesPage> {
       ),
       child: ListTile(
         onTap: () {
-          // _familiyPageRoute(obj, index);
+          if (obj.urlC != null) _launchURL(obj);
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        // contentPadding:
-        //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: _buildLeading(),
+        leading: _buildLeading(obj),
         title: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message: "About list item",// obj.titleC,
+                message: obj.titleC,
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) {
                   return Text(translatedMessage.toString(),
                       style: Theme.of(context).textTheme.bodyText2!);
                 })
-            : Text( "About list item",//obj.titleC.toString(),
+            : Text(obj.titleC.toString(),
                 style: Theme.of(context).textTheme.bodyText1!),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
@@ -157,10 +137,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
               Widget child,
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
-
               if (connected) {
                 if (iserrorstate == true) {
-                  _bloc.add(AboutStaffDirectoryEvent());
+                  _bloc.add(ResourcesListEvent());
                   iserrorstate = false;
                 }
               } else if (!connected) {
@@ -172,16 +151,38 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Expanded(
-                          child: ListView.builder(
-                                            padding: EdgeInsets.only(bottom: 45),
-                                            scrollDirection: Axis.vertical,
-                                            itemCount: 10,
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return _buildList(
-                                                  index);
-                                            },
-                                          ),
+                          child: BlocBuilder<ResourcesBloc, ResourcesState>(
+                              bloc: _bloc,
+                              builder:
+                                  (BuildContext contxt, ResourcesState state) {
+                                if (state is ResourcesInitial ||
+                                    state is ResourcesLoading) {
+                                  return Container(
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator());
+                                } else if (state is ResourcesDataSucess) {
+                                  return newList.length > 0
+                                      ? ListView.builder(
+                                          padding: EdgeInsets.only(bottom: 45),
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: newList.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return _buildList(
+                                                state.obj![index], index);
+                                          },
+                                        )
+                                      : NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: false,
+                                          isNews: false,
+                                          isEvents: false,
+                                        );
+                                } else if (state is ResourcesErrorLoading) {
+                                  return ListView(children: [ErrorMsgWidget()]);
+                                } else {
+                                  return Container();
+                                }
+                              }),
                         ),
                         Container(
                           height: 0,
@@ -198,19 +199,19 @@ class _ResourcesPageState extends State<ResourcesPage> {
                               },
                               child: EmptyContainer()),
                         ),
-                        // BlocListener<AboutBloc, AboutState>(
-                        //     bloc: _bloc,
-                        //     listener: (context, state) async {
-                        //       if (state is AboutDataSucess) {
-                        //         newList.clear();
-                        //         for (int i = 0; i < state.obj!.length; i++) {
-                        //           if (state.obj![i].status != "Hide") {
-                        //             newList.add(state.obj![i]);
-                        //           }
-                        //         }
-                        //       }
-                        //     },
-                        //     child: EmptyContainer()),
+                        BlocListener<ResourcesBloc, ResourcesState>(
+                            bloc: _bloc,
+                            listener: (context, state) async {
+                              if (state is ResourcesDataSucess) {
+                                newList.clear();
+                                for (int i = 0; i < state.obj!.length; i++) {
+                                  if (state.obj![i].statusc != "Hide") {
+                                    newList.add(state.obj![i]);
+                                  }
+                                }
+                              }
+                            },
+                            child: EmptyContainer()),
                       ],
                     )
                   : NoInternetErrorWidget(

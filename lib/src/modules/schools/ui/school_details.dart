@@ -16,6 +16,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -175,12 +176,11 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                   message: widget.obj.rtfHTMLC,
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
-                  builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.headline2!),
+                  builder: (translatedMessage) => Html(
+                    data: translatedMessage.toString(),
+                  ),
                 )
-              : Text(widget.obj.rtfHTMLC,
-                  style: Theme.of(context).textTheme.headline2!),
+              : Html(data: widget.obj.rtfHTMLC),
         ],
       ),
     );
@@ -224,14 +224,11 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                         myLocationEnabled: true,
                         initialCameraPosition: CameraPosition(
                             // bearing: 192.8334901395799,
-                            target: LatLng(
-                                widget.obj.geoLocation["latitude"],
+                            target: LatLng(widget.obj.geoLocation["latitude"],
                                 widget.obj.geoLocation["longitude"]),
                             zoom: 18,
                             tilt: 59.440717697143555),
-                        markers: Set.from(
-                            _markers) 
-                        ),
+                        markers: Set.from(_markers)),
                   )
                 : EmptyContainer()),
       ),
@@ -270,7 +267,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           fontSize: Globals.deviceType == "phone"
               ? AppTheme.kBodyText1FontSize
               : AppTheme.kBodyText1FontSize + AppTheme.kSize,
-          color: Colors.blue, 
+          color: Colors.blue,
           fontWeight: FontWeight.normal,
           fontFamily: 'Roboto Regular',
           height: 1.5,
@@ -371,13 +368,22 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
       SpacerWidget(_kLabelSpacing / 1.25),
       widget.obj.address != null ? _buildAddressWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      Globals.homeObjet["Contact_Phone__c"] != null
-          ? _buildPhoneWidget()
-          : Container(),
+      widget.obj.phone != null ? _buildPhoneWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
       ButtonWidget(
-        title: "Share",
-      )
+        title: widget.obj!.titleC ?? "",
+        obj: widget.obj,
+        body: Utility.parseHtml(widget.obj.rtfHTMLC ?? "") +
+            "\n" +
+            "${widget.obj.webUrlC ?? ""}" +
+            "\n"
+                "${widget.obj.email ?? ""}" +
+            "\n" +
+            "${widget.obj.address ?? ""}" +
+            "\n" +
+            "${widget.obj.phone ?? ""}",
+        buttonTitle: "Share",
+      ),
     ]);
   }
 
@@ -386,7 +392,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         appBar: CustomAppBarWidget(
           isSearch: true,
           isShare: false,
-          appBarTitle: "Appbar",
+          appBarTitle: "",
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
           language: Globals.selectedLanguage,

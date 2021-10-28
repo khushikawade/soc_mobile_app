@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
-import 'package:Soc/src/modules/about/modal/stafflist.dart';
+import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';

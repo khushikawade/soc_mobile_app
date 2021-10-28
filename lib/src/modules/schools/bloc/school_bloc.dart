@@ -9,7 +9,8 @@ import 'package:equatable/equatable.dart';
 part 'school_event.dart';
 part 'school_state.dart';
 
-class SchoolDirectoryBloc extends Bloc<SchoolDirectoryEvent, SchoolDirectoryState> {
+class SchoolDirectoryBloc
+    extends Bloc<SchoolDirectoryEvent, SchoolDirectoryState> {
   // var data;
   SchoolDirectoryBloc() : super(SchoolDirectoryInitial());
   final DbServices _dbServices = DbServices();
@@ -33,13 +34,13 @@ class SchoolDirectoryBloc extends Bloc<SchoolDirectoryEvent, SchoolDirectoryStat
       } catch (e) {
         yield SchoolDirectoryErrorLoading(err: e);
       }
-    }  
+    }
   }
 
   Future<List<SchoolDirectoryList>> getSchoolDirectorySDList() async {
     try {
-       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id, Email__c,Sort_Order__c,Phone__c,Website_URL__c,RTF_HTML__c,Contact_Address__c,Contact_Office_Location__c FROM School_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+      final ResponseModel response = await _dbServices.getapi(
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id, Email__c,Sort_Order__c,Phone__c,Website_URL__c,RTF_HTML__c,Contact_Address__c,Contact_Office_Location__c,Active_Status__c FROM School_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       if (response.statusCode == 200) {
         dataArray = response.data["records"];
         return response.data["records"]
@@ -52,5 +53,4 @@ class SchoolDirectoryBloc extends Bloc<SchoolDirectoryEvent, SchoolDirectoryStat
       throw (e);
     }
   }
-
 }

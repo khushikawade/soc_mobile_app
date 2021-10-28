@@ -274,7 +274,16 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
       widget.obj!.emailC != null ? _buildEmailWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
       ButtonWidget(
-        title: "Share",
+        title: widget.obj!.titleC ?? "",
+        buttonTitle: "Share",
+        obj: widget.obj,
+        body: "${widget.obj!.descriptionC ?? ""}" +
+            "\n" +
+            "${widget.obj!.imageUrlC ?? ""}" +
+            "\n" +
+            "${"Phone : " + widget.obj!.phoneC != "" ? widget.obj!.phoneC : "-"}" +
+            "\n" +
+            "${"Email : " + widget.obj!.emailC != "" ? widget.obj!.emailC : "-"}",
       )
     ]);
   }
