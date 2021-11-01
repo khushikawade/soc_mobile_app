@@ -25,9 +25,8 @@ class ResourcesErrorLoading extends ResourcesState {
   List<Object> get props => [err];
 }
 
-// ignore: must_be_immutable
 class ResourcesDataSucess extends ResourcesState {
-  List<ResourcesList>? obj;
+  final List<ResourcesList>? obj;
   ResourcesDataSucess({
     this.obj,
   });
@@ -35,6 +34,19 @@ class ResourcesDataSucess extends ResourcesState {
     final obj,
   }) {
     return ResourcesDataSucess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class ResourcesSubListSucess extends ResourcesState {
+  final List<ResourcesSubList>? obj;
+  final List<ResourcesSubList>? subFolder;
+  ResourcesSubListSucess({this.obj, this.subFolder});
+  ResourcesSubListSucess copyWith({final obj, final subFolder}) {
+    return ResourcesSubListSucess(
+        obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }
 
   @override

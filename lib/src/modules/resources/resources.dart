@@ -4,10 +4,13 @@ import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/resources/modal/resources_list.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
+import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -63,6 +66,54 @@ class _ResourcesPageState extends State<ResourcesPage> {
     }
   }
 
+  _resourceRoute(ResourcesList obj, index) {
+    if (obj.typeC == "URL") {
+      obj.urlC != null
+          ? _launchURL(obj)
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    } else if (obj.typeC == "RFT_HTML" ||
+        obj.typeC == "HTML/RTF" ||
+        obj.typeC == "RTF/HTML") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AboutusPage(
+                        htmlText: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        ishtml: true,
+                        appbarTitle: obj.titleC!,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "PDF URL") {
+      obj.pdfURL != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CommonPdfViewerPage(
+                        url: obj.pdfURL,
+                        tittle: obj.titleC,
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+    } else if (obj.typeC == "Sub-Menu") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SubListPage(
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    module: "resource",
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else {
+      Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    }
+  }
+
   _launchURL(obj) async {
     if (obj.urlC.toString().split(":")[0] == 'http') {
       await Utility.launchUrlOnExternalBrowser(obj.urlC);
@@ -93,7 +144,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
       ),
       child: ListTile(
         onTap: () {
-          if (obj.urlC != null) _launchURL(obj);
+          _resourceRoute(obj, index);
+          //if (obj.urlC != null) _launchURL(obj);
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         leading: _buildLeading(obj),

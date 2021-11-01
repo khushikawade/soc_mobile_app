@@ -43,7 +43,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.app"
+        applicationId "com.district.app"
         minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion 30
