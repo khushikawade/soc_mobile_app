@@ -21,7 +21,6 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-// ignore: must_be_immutable
 class SchoolDetailPage extends StatefulWidget {
   final obj;
   SchoolDetailPage({
@@ -51,11 +50,11 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
     super.initState();
     homebloc.add(FetchBottomNavigationBar());
     Globals.callsnackbar = true;
-    _markers.add(Marker(
+    if(widget.obj.geoLocation!=null) {_markers.add(Marker(
         markerId: MarkerId("Location"),
         draggable: true,
         position: LatLng(widget.obj.geoLocation["latitude"],
-            widget.obj.geoLocation["longitude"])));
+            widget.obj.geoLocation["longitude"])));}
   }
 
   Widget _buildIcon() {
@@ -160,30 +159,25 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   }
 
   Widget _buildDescriptionWidget() {
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: _kLabelSpacing,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          widget.obj.rtfHTMLC != null &&
-                  Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: widget.obj.rtfHTMLC,
-                  toLanguage: Globals.selectedLanguage,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Html(
-                    data: translatedMessage.toString(),
-                  ),
-                )
-              : Html(data: widget.obj.rtfHTMLC),
-        ],
-      ),
-    );
+    return widget.obj.rtfHTMLC != null
+        ? Container(
+            margin: const EdgeInsets.symmetric(
+              horizontal: _kLabelSpacing,
+            ),
+            child: Globals.selectedLanguage != null &&
+                    Globals.selectedLanguage != "English" &&
+                    Globals.selectedLanguage != ""
+                ? TranslationWidget(
+                    message: widget.obj.rtfHTMLC,
+                    toLanguage: Globals.selectedLanguage,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Html(
+                      data: translatedMessage.toString(),
+                    ),
+                  )
+                : Html(data: widget.obj.rtfHTMLC),
+          )
+        : Container();
   }
 
   Widget _buildMapWidget() {
@@ -370,7 +364,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
       SpacerWidget(_kLabelSpacing),
       _buildDescriptionWidget(),
       SpacerWidget(_kLabelSpacing * 2),
-      _buildMapWidget(),
+     widget.obj.geoLocation!=null? _buildMapWidget():Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
       widget.obj.webUrlC != null ? _buildWebsiteWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
