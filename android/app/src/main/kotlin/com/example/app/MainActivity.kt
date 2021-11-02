@@ -1,4 +1,4 @@
-package com.district.app
+package com.district.school
 
 import io.flutter.embedding.android.FlutterActivity
 
