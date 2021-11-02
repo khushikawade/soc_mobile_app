@@ -11,20 +11,14 @@ import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
 import '../bloc/user_bloc.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 
 class StartupPage extends StatefulWidget {
-  final FirebaseAnalytics? analytics;
-  final FirebaseAnalyticsObserver? observer;
-
-  StartupPage({this.analytics, this.observer});
   @override
   _StartupPageState createState() => new _StartupPageState();
 }
@@ -35,16 +29,14 @@ class _StartupPageState extends State<StartupPage> {
   final HomeBloc _bloc = new HomeBloc();
   UserBloc _loginBloc = new UserBloc();
   final NewsBloc _newsBloc = new NewsBloc();
-  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+  // static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   AndroidDeviceInfo? androidInfo;
   IosDeviceInfo? ios;
   bool? isnetworkisuue = false;
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   
 
-  // Future<Null> _sendAnalytics() async {
-  //   await widget.analytics.logEvent();
-  // }  
+  
 
   void initState() {
     super.initState();
@@ -89,14 +81,7 @@ class _StartupPageState extends State<StartupPage> {
   Widget _buildSplashScreen() {
     return Center(
         child: Globals.splashImageUrl != null && Globals.splashImageUrl != " "
-            ?
-            //   SizedBox(
-            // height: 200,
-            // width: 200,
-            // child: Image.asset('assets/images/splash_screen_icon.png',
-            //     fit: BoxFit.fill),
-
-            Padding(
+            ?Padding(
                 padding: const EdgeInsets.all(16),
                 child: CachedNetworkImage(
                   imageUrl: Globals.splashImageUrl!,
@@ -110,9 +95,6 @@ class _StartupPageState extends State<StartupPage> {
                 "Loading ...",
                 style: TextStyle(fontSize: 28, color: Colors.black),
               )
-
-        // Image.asset('assets/images/splash_screen_icon.png',
-        //     fit: BoxFit.fill),
         );
   }
 
@@ -157,16 +139,7 @@ class _StartupPageState extends State<StartupPage> {
                     bloc: _loginBloc,
                     listener: (context, state) async {
                       if (state is LoginSuccess) {
-                        // SharedPreferences prefs = await SharedPreferences.getInstance();
-                        // setState(() {
-                        //   _status = prefs.getBool("enableIndicator")!;
-                        //   if (_status == true) {
-                        //     indicator.value = true;
-                        //   } else {
-                        //     indicator.value = false;
-                        //   }
-                        // });
-                        Globals.token != null && Globals.token != " "
+                            Globals.token != null && Globals.token != " "
                             ? _bloc.add(FetchBottomNavigationBar())
                             : Container(
                                 child: Center(
@@ -196,18 +169,6 @@ class _StartupPageState extends State<StartupPage> {
                         state.obj != null
                             ? 
                             Navigator.of(context).pushReplacement(_createRoute(state))
-                          // Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: HomePage(
-                          //           title: "SOC",
-                          //           homeObj: state.obj,
-                          //         ),))
-                            // Navigator.pushReplacement(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => HomePage(
-                            //         title: "SOC",
-                            //         homeObj: state.obj,
-                            //       ),
-                            //     ))
                             : NoDataFoundErrorWidget(
                                 isResultNotFoundMsg: false,
                                 isNews: false,
