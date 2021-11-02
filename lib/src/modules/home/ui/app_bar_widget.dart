@@ -10,14 +10,15 @@ import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
-// import 'package:app_settings/app_settings.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
+// import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:speech_bubble/speech_bubble.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
+import 'package:speech_bubble/speech_bubble.dart';
+// import 'package:open_apps_settings/settings_enum.dart';
 
 // class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 //   final double _kIconSize = Globals.deviceType == "phone" ? 35 : 45.0;

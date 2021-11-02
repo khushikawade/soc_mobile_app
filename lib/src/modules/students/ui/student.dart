@@ -42,11 +42,6 @@ class _StudentPageState extends State<StudentPage> {
     _bloc.add(StudentPageEvent());
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   _launchURL(StudentApp obj, subList) async {
     if (obj.appUrlC != null) {
       if (obj.appUrlC == 'app_folder' || obj.isFolder == true) {
@@ -60,11 +55,6 @@ class _StudentPageState extends State<StudentPage> {
       } else {
         if (obj.deepLinkC == 'NO') {
           if (obj.toString().split(":")[0] == 'http') {
-            // if (await canLaunch(obj.appUrlC!)) {
-            //   await launch(obj.appUrlC!);
-            // } else {
-            //   throw 'Could not launch ${obj.appUrlC!}';
-            // }
             await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
           } else {
             Navigator.push(
@@ -406,6 +396,84 @@ class _StudentPageState extends State<StudentPage> {
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
+  Widget _body() {
+    return RefreshIndicator(
+      key: refreshKey,
+      child: OfflineBuilder(
+          connectivityBuilder: (
+            BuildContext context,
+            ConnectivityResult connectivity,
+            Widget child,
+          ) {
+            final bool connected = connectivity != ConnectivityResult.none;
+
+            if (connected) {
+              if (iserrorstate == true) {
+                iserrorstate = false;
+                _bloc.add(StudentPageEvent());
+              }
+            } else if (!connected) {
+              iserrorstate = true;
+            }
+
+            return new Stack(fit: StackFit.expand, children: [
+              connected
+                  ? BlocBuilder<StudentBloc, StudentState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, StudentState state) {
+                        if (state is StudentInitial || state is Loading) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (state is StudentDataSucess) {
+                          return state.obj != null && state.obj!.length > 0
+                              ? Container(
+                                  padding: const EdgeInsets.only(
+                                      top: _kLableSpacing * 1.2,
+                                      bottom: _kLableSpacing * 4),
+                                  child:
+                                      _buildGrid(state.obj!, state.subFolder!),
+                                )
+                              :
+                              // ListView(children: [
+                              NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: false,
+                                );
+                          // ]);
+                        } else if (state is StudentError) {
+                          return ListView(children: [ErrorMsgWidget()]);
+                        }
+                        return Container();
+                      })
+                  : NoInternetErrorWidget(
+                      connected: connected, issplashscreen: false),
+              Container(
+                height: 0,
+                width: 0,
+                child: BlocListener<HomeBloc, HomeState>(
+                    bloc: _homeBloc,
+                    listener: (context, state) async {
+                      if (state is BottomNavigationBarSuccess) {
+                        AppTheme.setDynamicTheme(Globals.appSetting, context);
+                        Globals.homeObjet = state.obj;
+                        setState(() {});
+                      } else if (state is HomeErrorReceived) {
+                        Container(
+                          alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Center(child: Text("Unable to load the data")),
+                        );
+                      }
+                    },
+                    child: EmptyContainer()),
+              ),
+            ]);
+          },
+          child: Container()),
+      onRefresh: refreshPage,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -416,81 +484,32 @@ class _StudentPageState extends State<StudentPage> {
             setState(() {});
           },
         ),
-        body: RefreshIndicator(
-          key: refreshKey,
-          child: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final bool connected = connectivity != ConnectivityResult.none;
-
-                if (connected) {
-                  if (iserrorstate == true) {
-                    iserrorstate = false;
-                    _bloc.add(StudentPageEvent());
-                  }
-                } else if (!connected) {
-                  iserrorstate = true;
-                }
-
-                return new Stack(fit: StackFit.expand, children: [
-                  connected
-                      ? BlocBuilder<StudentBloc, StudentState>(
-                          bloc: _bloc,
-                          builder: (BuildContext contxt, StudentState state) {
-                            if (state is StudentInitial || state is Loading) {
-                              return Center(child: CircularProgressIndicator());
-                            } else if (state is StudentDataSucess) {
-                              return state.obj != null && state.obj!.length > 0
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: _kLableSpacing * 4),
-                                      child: _buildGrid(
-                                          state.obj!, state.subFolder!),
-                                    )
-                                  :
-                                  // ListView(children: [
-                                  NoDataFoundErrorWidget(
-                                      isResultNotFoundMsg: false,
-                                      isNews: false,
-                                      isEvents: false,
-                                    );
-                              // ]);
-                            } else if (state is StudentError) {
-                              return ListView(children: [ErrorMsgWidget()]);
-                            }
-                            return Container();
-                          })
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                        bloc: _homeBloc,
-                        listener: (context, state) async {
-                          if (state is BottomNavigationBarSuccess) {
-                            AppTheme.setDynamicTheme(
-                                Globals.appSetting, context);
-                            Globals.homeObjet = state.obj;
-                            setState(() {});
-                          } else if (state is HomeErrorReceived) {
-                            Container(
-                              alignment: Alignment.center,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: Center(
-                                  child: Text("Unable to load the data")),
-                            );
-                          }
-                        },
-                        child: EmptyContainer()),
-                  ),
-                ]);
-              },
-              child: Container()),
-          onRefresh: refreshPage,
-        ));
+        body: Globals.homeObjet["Student_Banner_Image__c"] != null &&
+                Globals.homeObjet["Student_Banner_Image__c"] != ''
+            ? NestedScrollView(
+                // controller: _scrollController,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    Globals.homeObjet["Student_Banner_Image__c"] != null
+                        ? SliverAppBar(
+                            expandedHeight: 80.0,
+                            floating: false,
+                            // pinned: true,
+                            flexibleSpace: FlexibleSpaceBar(
+                                centerTitle: true,
+                                background: Container(
+                                  child: Image.network(
+                                    Globals
+                                        .homeObjet["Student_Banner_Image__c"],
+                                    fit: BoxFit.cover,
+                                  ),
+                                )),
+                          )
+                        : SliverAppBar(),
+                  ];
+                },
+                body: _body())
+            : _body());
   }
 }

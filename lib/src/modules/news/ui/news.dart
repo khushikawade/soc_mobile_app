@@ -181,17 +181,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               width: _kLabelSpacing / 2,
             ),
             Expanded(
-              // flex: 5,
               child: Container(
-                // padding: EdgeInsets.symmetric(
-                //     vertical: _kLabelSpacing / 2,),
-                child:
-                    // Column(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     mainAxisAlignment: MainAxisAlignment.start,
-                    //     children: [
-                    _buildnewsHeading(obj),
-                // ])
+                child: _buildnewsHeading(obj),
               ),
             ),
           ],
@@ -207,7 +198,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message: obj.headings!.length > 0 &&  obj.headings != "" && obj.headings != null
+                message: obj.headings!.length > 0 &&
+                        obj.headings != "" &&
+                        obj.headings != null
                     ? obj.headings["en"].toString()
                     : obj.contents["en"] ?? '-',
                 fromLanguage: "en",
@@ -219,7 +212,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 ),
               )
             : Text(
-                obj.headings!.length > 0 && obj.headings != "" && obj.headings != null
+                obj.headings!.length > 0 &&
+                        obj.headings != "" &&
+                        obj.headings != null
                     ? obj.headings["en"].toString()
                     : obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
@@ -323,8 +318,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             listener: (context, state) async {
                               if (state is NewsLoaded) {
                                 object = state.obj;
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
+                                // SharedPreferences prefs =
+                                //     await SharedPreferences.getInstance();
                                 SharedPreferences intPrefs =
                                     await SharedPreferences.getInstance();
                                 intPrefs.getInt("totalCount") == null
