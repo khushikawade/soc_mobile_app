@@ -43,11 +43,17 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   //final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   bool? initalscreen;
   bool? hideAccessibilityButton;
+  bool? showClosebutton;
 
   final GlobalKey _bshowcase = GlobalKey();
   final GlobalKey _openSettingShowCaseKey = GlobalKey();
 
-  AppBarWidget({Key? key, required this.refresh, required this.marginLeft, this.hideAccessibilityButton})
+  AppBarWidget(
+      {Key? key,
+      required this.refresh,
+      required this.marginLeft,
+      this.hideAccessibilityButton,
+      this.showClosebutton})
       : super(key: key);
 
   @override
@@ -105,7 +111,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           case IconsMenu.Permissions:
             // AppSettings.openAppSettings();
             OpenAppsSettings.openAppsSettings(
-                  settingsCode: SettingsCode.APP_SETTINGS);
+                settingsCode: SettingsCode.APP_SETTINGS);
             break;
         }
       },
@@ -146,15 +152,26 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               setState(() {
                 Globals.hasShowcaseInitialised.value = true;
               });
-               _promtPushNotificationPermission();
+              _promtPushNotificationPermission();
               if (refresh != null) refresh!(true);
             },
             child: Row(
               children: [
+                showClosebutton == true
+                    ? IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                          Icons.close,
+                          size: Globals.deviceType == "phone" ? 30 : 34,
+                        ))
+                    : Container(),
                 _translateButton(setState, context),
-                hideAccessibilityButton == true ? //To adjust Accessibility button apearance in the AppBar, since we are using the smae common widget in the Accessibility page and we don't wnat to show this "Accessibility Button" on the "Accessibility Page" itself.
-                Container() : 
-                _openSettingsButton(context)
+                hideAccessibilityButton == true
+                    ? //To adjust Accessibility button apearance in the AppBar, since we are using the smae common widget in the Accessibility page and we don't wnat to show this "Accessibility Button" on the "Accessibility Page" itself.
+                    Container()
+                    : _openSettingsButton(context)
               ],
             ),
           ),
@@ -217,7 +234,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                   settingsCode: SettingsCode.ACCESSIBILITY);
             } else {
               // AppSettings.openAccessibilitySettings(asAnotherTask: true);
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => IosAccessibilityGuidePage()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          IosAccessibilityGuidePage()));
             }
           },
           icon: Container(
@@ -291,7 +312,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         positionCalculator: (size) => Position(
           // top: Utility.displayHeight(context) * .120,
           // left: Utility.displayWidth(context) * 0.120,
-
           top: _calculateWidgetOffset(_openSettingShowCaseKey).dy + 45,
           left: _calculateWidgetOffset(_openSettingShowCaseKey).dx + 2,
         ),

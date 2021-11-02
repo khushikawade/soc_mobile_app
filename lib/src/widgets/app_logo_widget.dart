@@ -24,7 +24,6 @@ class AppLogoWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
-           
             padding: EdgeInsets.only(left: marginLeft??0),
               // color: Colors.red,
           // alignment: Alignment.centerRight,
