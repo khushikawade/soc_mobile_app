@@ -12,12 +12,13 @@ class FamiliesList {
   String? rtfHTMLC;
   String? typeC;
   String? calendarId;
+
   final sortOredr;
   final status;
 
   FamiliesList(
       {
-        // this.attributes,
+      // this.attributes,
       this.titleC,
       this.appIconC,
       this.appUrlC,
@@ -46,8 +47,7 @@ class FamiliesList {
       typeC: json['Type__c'] as String?,
       calendarId: json['Calendar_Id__c'] as String?,
       sortOredr: json['Sort_Order__c'],
-      status:json['Active_Status__c']
-      );
+      status: json['Active_Status__c']);
 
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
@@ -61,7 +61,7 @@ class FamiliesList {
         'Type__c': typeC,
         'Calendar_Id__c': calendarId,
         'Sort_Order__c': sortOredr,
-        'App_Icon_URL__c':appIconUrlC,
-        'Active_Status__c':status
+        'App_Icon_URL__c': appIconUrlC,
+        'Active_Status__c': status,
       };
 }

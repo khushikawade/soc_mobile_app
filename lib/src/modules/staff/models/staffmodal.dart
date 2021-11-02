@@ -64,6 +64,5 @@ class StaffList {
         'Sort_Order__c': sortOredr,
         'App_Icon_URL__c': appIconUrlC,
         'Active_Status__c': status,
-        'Banner_Image_c': bannerimagec,
       };
 }

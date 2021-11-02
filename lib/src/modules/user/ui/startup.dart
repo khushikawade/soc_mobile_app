@@ -45,6 +45,17 @@ class _StartupPageState extends State<StartupPage> {
     _loginBloc.add(PerfomLogin());
     _newsBloc.add(FetchNotificationList());
     getindexvalue();
+    _showcase();
+  }
+
+  Future<void> _showcase() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    bool? _flag = preferences.getBool('hasShowcaseInitialised');
+    if(_flag == true){
+      Globals.hasShowcaseInitialised.value = true;
+    }
+    preferences.setBool('hasShowcaseInitialised', true);
   }
 
   late AppLifecycleState _notification;
@@ -109,7 +120,7 @@ class _StartupPageState extends State<StartupPage> {
             Widget child,
           ) {
             final bool connected = connectivity != ConnectivityResult.none;
-            final call = connected ? _loginBloc.add(PerfomLogin()) : null;
+            // final call = connected ? _loginBloc.add(PerfomLogin()) : null;
             return new Stack(
               fit: StackFit.expand,
               children: [

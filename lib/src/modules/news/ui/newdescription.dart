@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news_image.dart';
@@ -11,6 +13,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:share/share.dart';
 
 class Newdescription extends StatefulWidget {
   Newdescription(
@@ -34,6 +37,8 @@ class _NewdescriptionState extends State<Newdescription> {
   static const double _kIconSize = 45.0;
   static const double _kLabelSpacing = 20.0;
   final HomeBloc _homeBloc = new HomeBloc();
+  bool _downloadingFile = false;
+  static const double _KButtonSize = 110.0;
 
   @override
   void initState() {
@@ -156,11 +161,15 @@ class _NewdescriptionState extends State<Newdescription> {
                                           .length >
                                       1
                                   ? widget.obj.contents["en"]
-                                          .toString().replaceAll("\n"," ")
-                                          .split(" ")[0] +" "+
+                                          .toString()
+                                          .replaceAll("\n", " ")
+                                          .split(" ")[0] +
+                                      " " +
                                       widget.obj.contents["en"]
-                                          .toString().replaceAll("\n"," ")
-                                          .split(" ")[1].split("\n")[0] +
+                                          .toString()
+                                          .replaceAll("\n", " ")
+                                          .split(" ")[1]
+                                          .split("\n")[0] +
                                       "..."
                                   : widget.obj.contents["en"],
                           toLanguage: Globals.selectedLanguage,
@@ -189,11 +198,15 @@ class _NewdescriptionState extends State<Newdescription> {
                                           .length >
                                       1
                                   ? widget.obj.contents["en"]
-                                          .toString().replaceAll("\n"," ")
-                                          .split(" ")[0] +" "+
+                                          .toString()
+                                          .replaceAll("\n", " ")
+                                          .split(" ")[0] +
+                                      " " +
                                       widget.obj.contents["en"]
-                                          .toString().replaceAll("\n"," ")
-                                          .split(" ")[1].split("\n")[0] +
+                                          .toString()
+                                          .replaceAll("\n", " ")
+                                          .split(" ")[1]
+                                          .split("\n")[0] +
                                       "..."
                                   : widget.obj.contents["en"],
                           style: Theme.of(context)
@@ -292,9 +305,70 @@ class _NewdescriptionState extends State<Newdescription> {
             },
             child: Container(),
           ),
+        ),
+        SpacerWidget(AppTheme.kBodyPadding),
+        Row(
+          children: [
+            Container(
+              constraints: BoxConstraints(
+                minWidth: _KButtonSize,
+                maxWidth: 130.0,
+              ),
+              child: ElevatedButton(
+                  onPressed: () async {
+                    _shareNews();
+                  },
+                  child: _downloadingFile == true
+                      ? SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: CircularProgressIndicator(
+                            valueColor: new AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).backgroundColor),
+                          ),
+                        )
+                      : TranslationWidget(
+                          message: "Share".toString(),
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                          ),
+                        )),
+            ),
+          ],
         )
       ],
     );
+  }
+
+  _shareNews() async {
+    try {
+      if (_downloadingFile == true) return;
+      setState(() {
+        _downloadingFile = true;
+      });
+      String _title = widget.obj.headings["en"].toString();
+      String _description = widget.obj.contents["en"].toString();
+      String _imageUrl = widget.obj.image != null
+          ? widget.obj.image
+          : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+              ? Globals.splashImageUrl
+              : Globals.homeObjet["App_Logo__c"];
+      File _image = await Utility.createFileFromUrl(_imageUrl);
+      setState(() {
+        _downloadingFile = false;
+      });
+      Share.shareFiles(
+        [_image.path],
+        subject: '$_title',
+        text: '$_description',
+      );
+    } catch (e) {
+      setState(() {
+        _downloadingFile = false;
+      });
+    }
   }
 
   Widget build(BuildContext context) {

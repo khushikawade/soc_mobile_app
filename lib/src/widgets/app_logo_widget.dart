@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 // import 'package:showcaseview/showcaseview.dart';
 
 class AppLogoWidget extends StatelessWidget {
-  final double ?marginLeft;
-  AppLogoWidget(
-      {Key? key,
-      required this.marginLeft,
-     })
-      : super(key: key);
+  final double? marginLeft;
+  AppLogoWidget({
+    Key? key,
+    required this.marginLeft,
+  }) : super(key: key);
 
   static const double _kIconSize = 50;
 
@@ -25,7 +24,6 @@ class AppLogoWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
-           
             padding: EdgeInsets.only(left: marginLeft??0),
               // color: Colors.red,
           // alignment: Alignment.centerRight,

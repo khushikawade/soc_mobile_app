@@ -36,7 +36,6 @@ dependencies:
   webview_flutter: 
   modal_bottom_sheet: ^2.0.0
   cached_network_image: ^3.0.0
-  app_settings: 
   device_info: ^2.0.2
   xml2json: ^5.3.1
   dio: ^4.0.0
@@ -72,12 +71,19 @@ dependencies:
   flutter_svg: ^0.22.0
   mailto: ^2.0.0
   marquee: ^2.2.0
-  # firebase_analytics: ^8.3.3
   open_apps_settings: ^0.0.4
-  showcaseview: ^1.1.2
-  # social_share_plugin: ^0.3.1+1
-  # firebase_dynamic_links: ^2.0.1 TODO configure the app
-  
+  # app_settings: ^4.1.1
+  # bubble_showcase: ^1.1.0
+  # bubble_showcase:
+  #   path: /Users/piyushrathod/Documents/piyush_projects/BubbleShowcase
+  bubble_showcase:
+    git:
+      url: https://github.com/piyushrathodIn/BubbleShowcase.git
+      ref: onfinished_callback
+    
+  speech_bubble: ^0.0.9
+  firebase_analytics: ^8.3.3 
+  path_provider: ^2.0.6
 
 dev_dependencies:
   flutter_test:
