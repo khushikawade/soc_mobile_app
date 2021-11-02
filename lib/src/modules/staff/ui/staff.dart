@@ -319,41 +319,47 @@ class _StaffPageState extends State<StaffPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBarWidget(
-          marginLeft: 30,
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
-        body: RefreshIndicator(
-          key: refreshKey,
-          // onRefresh: refreshPage,
-          child: Globals.homeObjet["Staff_Banner_Image__c"] != null &&
-                  Globals.homeObjet["Staff_Banner_Image__c"] != ''
-              ? NestedScrollView(
-                  headerSliverBuilder:
-                      (BuildContext context, bool innerBoxIsScrolled) {
-                    return <Widget>[
-                      SliverAppBar(
-                        expandedHeight: 200.0,
-                        floating: false,
-                        // pinned: true,
-                        flexibleSpace: FlexibleSpaceBar(
-                          centerTitle: true,
-                          background: Image.network(
-                            Globals.homeObjet["Staff_Banner_Image__c"],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
-                    ];
-                  },
-                  body: _body(),
-                )
-              : _body(),
-          onRefresh: refreshPage,
-        ));
+      key: _scaffoldKey,
+      appBar: AppBarWidget(
+        marginLeft: 30,
+        refresh: (v) {
+          setState(() {});
+        },
+      ),
+      body: Globals.homeObjet["Staff_Banner_Image__c"] != null &&
+              Globals.homeObjet["Staff_Banner_Image__c"] != ''
+          ? NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    expandedHeight: 200.0,
+                    floating: false,
+                    // pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: true,
+                      background: Image.network(
+                        Globals.homeObjet["Staff_Banner_Image__c"],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                ];
+              },
+              body: RefreshIndicator(
+                key: refreshKey,
+                // onRefresh: refreshPage,
+                child: _body(),
+                onRefresh: refreshPage,
+              ),
+            )
+          : RefreshIndicator(
+              key: refreshKey,
+              // onRefresh: refreshPage,
+              child: _body(),
+              onRefresh: refreshPage,
+            ),
+    );
   }
 
   Future refreshPage() async {

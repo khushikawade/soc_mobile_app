@@ -50,18 +50,18 @@ class _FamilyPageState extends State<FamilyPage> {
   void initState() {
     super.initState();
     _bloc.add(FamiliesEvent());
-  //   _scrollController.addListener(() {
-  //     if (_scrollController.position.pixels < 50) {
-  //       // You're at the top. 
-  //       setState(() {
-  //          _atBottom = false;
-  //       });
-  //     } else {
-  //        setState(() {
-  //          _atBottom = true;
-  //       });
-  //     }
-  // });
+    //   _scrollController.addListener(() {
+    //     if (_scrollController.position.pixels < 50) {
+    //       // You're at the top.
+    //       setState(() {
+    //          _atBottom = false;
+    //       });
+    //     } else {
+    //        setState(() {
+    //          _atBottom = true;
+    //       });
+    //     }
+    // });
   }
 
   @override
@@ -335,8 +335,6 @@ class _FamilyPageState extends State<FamilyPage> {
 
   // var _scrollController = ScrollController();
 
-
-
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
@@ -345,60 +343,63 @@ class _FamilyPageState extends State<FamilyPage> {
           refresh: (v) {
             setState(() {});
           },
-        ) ,
-        body: RefreshIndicator(
-          key: refreshKey,
-          child: Globals.homeObjet["Family_Banner_Image__c"] != null &&
-                  Globals.homeObjet["Family_Banner_Image__c"] != ''
-              ? NestedScrollView(
+        ),
+        body: Globals.homeObjet["Family_Banner_Image__c"] != null &&
+                Globals.homeObjet["Family_Banner_Image__c"] != ''
+            ? NestedScrollView(
                 // controller: _scrollController,
-                  headerSliverBuilder:
-                      (BuildContext context, bool innerBoxIsScrolled) {
-                    return <Widget>[
-                      Globals.homeObjet["Family_Banner_Image__c"] != null
-                          ? SliverAppBar(
-                              expandedHeight: 200.0,
-                              floating: false,
-                              // pinned: true,
-                              flexibleSpace: FlexibleSpaceBar(
-                                  centerTitle: true,
-                                  background: Container(
-                                    child: Image.network(
-                                      Globals
-                                          .homeObjet["Family_Banner_Image__c"],
-                                      fit: BoxFit.cover,
-                                    ),
-                                    // child: Stack(
-                                    //   children: [
-                                    //     Container(
-                                    //          width: Utility.displayWidth(context),
-                                    //       child: Image.network(
-                                    //         Globals.homeObjet[
-                                    //             "Family_Banner_Image__c"],
-                                    //         fit: BoxFit.cover,
-                                    //       ),
-                                    //     ),
-                                    //     Positioned(
-                                    //       bottom: 0,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    Globals.homeObjet["Family_Banner_Image__c"] != null
+                        ? SliverAppBar(
+                            expandedHeight: 200.0,
+                            floating: false,
+                            // pinned: true,
+                            flexibleSpace: FlexibleSpaceBar(
+                                centerTitle: true,
+                                background: Container(
+                                  child: Image.network(
+                                    Globals.homeObjet["Family_Banner_Image__c"],
+                                    fit: BoxFit.cover,
+                                  ),
+                                  // child: Stack(
+                                  //   children: [
+                                  //     Container(
+                                  //          width: Utility.displayWidth(context),
+                                  //       child: Image.network(
+                                  //         Globals.homeObjet[
+                                  //             "Family_Banner_Image__c"],
+                                  //         fit: BoxFit.cover,
+                                  //       ),
+                                  //     ),
+                                  //     Positioned(
+                                  //       bottom: 0,
 
-                                    //       child:
-                                    //       Container(
-                                    //         color: Colors.black12,
-                                    //          width: Utility.displayWidth(context),
-                                    //         child: Center(child: Text('Families', style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).backgroundColor),)),
-                                    //       )
+                                  //       child:
+                                  //       Container(
+                                  //         color: Colors.black12,
+                                  //          width: Utility.displayWidth(context),
+                                  //         child: Center(child: Text('Families', style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).backgroundColor),)),
+                                  //       )
 
-                                    //     )
-                                    //   ],
-                                    // ),
-                                  )),
-                            )
-                          : SliverAppBar(),
-                    ];
-                  },
-                  body: _body())
-              : _body(),
-          onRefresh: refreshPage,
-        ));
+                                  //     )
+                                  //   ],
+                                  // ),
+                                )),
+                          )
+                        : SliverAppBar(),
+                  ];
+                },
+                body: RefreshIndicator(
+                  key: refreshKey,
+                  child: _body(),
+                  onRefresh: refreshPage,
+                ))
+            : RefreshIndicator(
+                key: refreshKey,
+                child: _body(),
+                onRefresh: refreshPage,
+              ));
   }
 }
