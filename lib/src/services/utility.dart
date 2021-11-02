@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -242,5 +245,17 @@ class Utility {
     } catch (e) {
       print(e);
     }
+  }
+
+  static Future<File> createFileFromUrl(_url) async {
+    String _fileExt = _url.split('.').last;
+    Response<List<int>> rs = await Dio().get<List<int>>(
+      _url,
+      options: Options(responseType: ResponseType.bytes),
+    );
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File file = new File('$dir/tempdoc.$_fileExt');
+    await file.writeAsBytes(rs.data!);
+    return file;
   }
 }

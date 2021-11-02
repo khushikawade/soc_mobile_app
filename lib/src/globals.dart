@@ -21,7 +21,7 @@ class Globals {
   static bool? isnetworkexception = false;
   static ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
   static ValueNotifier<String> languageChanged =
-      ValueNotifier<String>("English");
+      ValueNotifier<String>("English");    
   static final scaffoldKey = GlobalKey<ScaffoldState>();
   static String? release = "";
   static String? manufacturer = "";
@@ -37,8 +37,10 @@ class Globals {
   static int? homeIndex;
   static bool? isNetworkError = false;
   static bool? callsnackbar = true;
+  // static bool hasShowcaseInitialised = false;
+  static ValueNotifier<bool> hasShowcaseInitialised = ValueNotifier<bool>(false);
   static String? calendar_Id = "";
   static final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  static int?navIndex=0;
+  static int? navIndex = 0;
 }

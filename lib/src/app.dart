@@ -33,7 +33,7 @@ class _AppState extends State<App> {
       builder: (theme, darkTheme) => MaterialApp(
         debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
-        title: 'Adaptive Theme Demo',
+        title: 'Solved',
         theme: theme,
         darkTheme: darkTheme,
         home: StartupPage()
