@@ -73,8 +73,6 @@ dependencies:
   marquee: ^2.2.0
   open_apps_settings: ^0.0.4
   # app_settings: ^4.1.1
-  app_settings:
-    path: ./plugins/app_settings
   # bubble_showcase: ^1.1.0
   # bubble_showcase:
   #   path: /Users/piyushrathod/Documents/piyush_projects/BubbleShowcase

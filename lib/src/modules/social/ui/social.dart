@@ -16,10 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
-<<<<<<< HEAD
-=======
 import 'package:shared_preferences/shared_preferences.dart';
->>>>>>> 5835af378ab9cfb3953e059f30ec1b61e1bf0101
 // import 'package:showcaseview/showcaseview.dart';
 
 class SocialPage extends StatefulWidget {
@@ -45,12 +42,6 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
-<<<<<<< HEAD
-    // WidgetsBinding.instance!.addPostFrameCallback(
-    //     (_) => ShowCaseWidget.of(context)!.startShowCase([_imgkey]));
-        _imgkey = GlobalKey();
-=======
->>>>>>> 5835af378ab9cfb3953e059f30ec1b61e1bf0101
   }
 
   @override
@@ -299,14 +290,7 @@ class _SocialPageState extends State<SocialPage> {
         appBar: AppBarWidget(
           marginLeft: 30,
           refresh: (v) {
-<<<<<<< HEAD
-          //   setState(() {
-          //     WidgetsBinding.instance!.addPostFrameCallback(
-          //         (_) => ShowCaseWidget.of(context)!.startShowCase([_imgkey]));
-          //   });
-=======
             setState(() {});
->>>>>>> 5835af378ab9cfb3953e059f30ec1b61e1bf0101
           },
         ),
         body: RefreshIndicator(

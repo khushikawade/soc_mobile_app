@@ -37,7 +37,7 @@ class _NewdescriptionState extends State<Newdescription> {
   static const double _kIconSize = 45.0;
   static const double _kLabelSpacing = 20.0;
   final HomeBloc _homeBloc = new HomeBloc();
-  bool _downloadingFile = true;
+  bool _downloadingFile = false;
   static const double _KButtonSize = 110.0;
 
   @override
@@ -318,14 +318,23 @@ class _NewdescriptionState extends State<Newdescription> {
                   onPressed: () async {
                     _shareNews();
                   },
-                  child: TranslationWidget(
-                    message: "Share".toString(),
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                    ),
-                  )),
+                  child: _downloadingFile == true
+                      ? SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: CircularProgressIndicator(
+                            valueColor: new AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).backgroundColor),
+                          ),
+                        )
+                      : TranslationWidget(
+                          message: "Share".toString(),
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                          ),
+                        )),
             ),
           ],
         )
@@ -334,13 +343,32 @@ class _NewdescriptionState extends State<Newdescription> {
   }
 
   _shareNews() async {
-    String _imageUrl = widget.obj.image != null
-        ? widget.obj.image
-        : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-            ? Globals.splashImageUrl
-            : Globals.homeObjet["App_Logo__c"];
-    File _image = await Utility.createFileFromUrl(_imageUrl);
-    Share.shareFiles([_image.path], text: 'Great picture');
+    try {
+      if (_downloadingFile == true) return;
+      setState(() {
+        _downloadingFile = true;
+      });
+      String _title = widget.obj.headings["en"].toString();
+      String _description = widget.obj.contents["en"].toString();
+      String _imageUrl = widget.obj.image != null
+          ? widget.obj.image
+          : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+              ? Globals.splashImageUrl
+              : Globals.homeObjet["App_Logo__c"];
+      File _image = await Utility.createFileFromUrl(_imageUrl);
+      setState(() {
+        _downloadingFile = false;
+      });
+      Share.shareFiles(
+        [_image.path],
+        subject: '$_title',
+        text: '$_description',
+      );
+    } catch (e) {
+      setState(() {
+        _downloadingFile = false;
+      });
+    }
   }
 
   Widget build(BuildContext context) {
