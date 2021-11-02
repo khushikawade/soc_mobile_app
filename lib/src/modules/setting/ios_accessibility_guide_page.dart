@@ -27,12 +27,12 @@ class _IosAccessibilityGuidePageState extends State<IosAccessibilityGuidePage> {
                     style: Theme.of(context)
                         .textTheme
                         .headline1!
-                        .copyWith(color: Color.fromRGBO(0, 122, 255, 1)),
+                        .copyWith(fontWeight: FontWeight.bold),
                   );
                 }),
             Center(
               child: Container(
-                  padding: EdgeInsets.all(30.0),
+                  // padding: EdgeInsets.all(30.0),
                   child: Image.asset(
                     '$imagePath',
                     fit: BoxFit.cover,
@@ -48,7 +48,7 @@ class _IosAccessibilityGuidePageState extends State<IosAccessibilityGuidePage> {
           children: [
             TranslationWidget(
                 message:
-                    'There are lots of built-in Accessibility features are provided by iOS, perform the following steps to learn how to enable them.',
+                    'Your phone provides many accessibility features to support your vision, physical and motor, hearing, and learning needs. Configure these features and set up shortcuts for easy access.',
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) {
@@ -62,6 +62,8 @@ class _IosAccessibilityGuidePageState extends State<IosAccessibilityGuidePage> {
                 'assets/images/accessibility-1.png'),
             _tutorialStep('2. Choose any of the following features:',
                 'assets/images/accessibility-2.png'),
+            _tutorialStep('3. Scroll down to see more options:',
+                'assets/images/accessibility-3.png'),
             TextButton(
                 onPressed: () {
                   Navigator.push(
@@ -94,7 +96,8 @@ class _IosAccessibilityGuidePageState extends State<IosAccessibilityGuidePage> {
                     SizedBox(width: 5),
                     Padding(
                       padding: const EdgeInsets.only(top: 3.0),
-                      child: Icon(Icons.open_in_new, size: 20, color: Colors.blue),
+                      child:
+                          Icon(Icons.open_in_new, size: 20, color: Colors.blue),
                     )
                   ],
                 )),
@@ -108,6 +111,7 @@ class _IosAccessibilityGuidePageState extends State<IosAccessibilityGuidePage> {
     return Scaffold(
         appBar: AppBarWidget(
           marginLeft: 20,
+          showClosebutton: true,
           hideAccessibilityButton: true,
           refresh: (v) {
             setState(() {});
