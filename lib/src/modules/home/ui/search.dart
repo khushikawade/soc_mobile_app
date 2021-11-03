@@ -77,7 +77,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _route(obj) async {
-    if (obj.titleC == "Contact") {
+    if (obj.typeC == "Contact") {
       obj.titleC != null
           ? Navigator.push(
               context,
@@ -262,7 +262,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildItem(int index, items) {
     return InkWell(
       onTap: () async {
-        await _route(items[index]);
+        // await _route(items[index]);
       },
       child: Container(
           margin: EdgeInsets.only(
@@ -378,7 +378,7 @@ class _SearchPageState extends State<SearchPage> {
                                                     .primaryVariant),
                                       ),
                                 onTap: () async {
-                                  _route(data);
+                                  // _route(data);
                                   if (data != null) {
                                     deleteItem();
                                     final recentitem = Recent(

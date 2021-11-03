@@ -113,6 +113,21 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
           SocialPage(),
         );
       }
+      else if (element.contains('about')) {
+        _screens.add(
+          AboutPage(),
+        );
+      }
+       else if (element.contains('school')) {
+        _screens.add(
+          SchoolPage(),
+        );
+      }
+       else if (element.contains('resource')) {
+        _screens.add(
+          ResourcesPage(),
+        );
+      }
     });
     return _screens;
   }
@@ -179,7 +194,7 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
                 shimmerHeight: 8,
-                message:"${item.split("_")[0]=="Student"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
+                message:item.split("_")[0],//"${item.split("_")[0]=="Student"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Expanded(
@@ -191,7 +206,7 @@ if(_notification== AppLifecycleState.resumed)_newsBloc.add(FetchNotificationList
               )
                : Expanded(
                   child: Text(
-                 "${item.split("_")[0]=="Students"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
+                 item.split("_")[0],//"${item.split("_")[0]=="Students"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: Theme.of(context).textTheme.headline4!,
