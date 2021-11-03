@@ -1,47 +1,43 @@
 import 'package:Soc/src/modules/about/modal/sd_attributes.dart';
 
-class AboutStaffDirectoryList {
+class AboutList {
   SDAttributes? attributes;
   dynamic titleC;
-  String? imageUrlC;
   String? id;
   String? name;
-  dynamic descriptionC;
-  String? emailC;
   dynamic sortOrderC;
-  String? phoneC;
-  String? department;
   String? urlC;
+  String? appIconUrlC;
+  String? pdfURL;
+  String? rtfHTMLC;
+  String? typeC;
   final statusC;
 
-  AboutStaffDirectoryList(
+  AboutList(
       {this.attributes,
       this.titleC,
-      this.imageUrlC,
       this.id,
       this.name,
-      this.descriptionC,
-      this.emailC,
       this.sortOrderC,
-      this.phoneC,
-      this.department,
       this.urlC,
+      this.appIconUrlC,
+      this.pdfURL,
+      this.rtfHTMLC,
+      this.typeC,
       this.statusC});
 
-  factory AboutStaffDirectoryList.fromJson(Map<String, dynamic> json) =>
-      AboutStaffDirectoryList(
+  factory AboutList.fromJson(Map<String, dynamic> json) => AboutList(
         attributes: json['attributes'] == null
             ? null
             : SDAttributes.fromJson(json['attributes'] as Map<String, dynamic>),
         titleC: json['Title__c'],
-        imageUrlC: json['Image_URL__c'] as String?,
+        appIconUrlC: json['App_Icon_URL__c'] as String?,
         id: json['Id'] as String?,
         name: json['Name__c'] as String?,
-        descriptionC: json['Description__c'],
-        emailC: json['Email__c'] as String?,
+        rtfHTMLC: json['RTF_HTML__c'] as String?,
+        typeC: json['Type__c'] as String?,
+        pdfURL: json['PDF_URL__c'] as String?,
         sortOrderC: json['Sort_Order__c'],
-        phoneC: json['Phone__c'] as String?,
-        department: json['Department__c'] as String?,
         urlC: json['URL__c'] as String?,
         statusC: json['Active_Status__c'],
       );
@@ -49,14 +45,13 @@ class AboutStaffDirectoryList {
   Map<String, dynamic> toJson() => {
         'attributes': attributes?.toJson(),
         'Title__c': titleC,
-        'Image_URL__c': imageUrlC,
+        'PDF_URL__c': pdfURL,
         'Id': id,
         'Name__c': name,
-        'Description__c': descriptionC,
-        'Email__c': emailC,
+        'RTF_HTML__c': rtfHTMLC,
+        'Type__c': typeC,
         'Sort_Order__c': sortOrderC,
-        'Phone__c': phoneC,
-        'Department__c': department,
+        'App_Icon_URL__c': appIconUrlC,
         'URL__c': urlC,
         'Active_Status__c': statusC
       };

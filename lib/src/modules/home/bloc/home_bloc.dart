@@ -55,23 +55,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "School_App__c"
               ],
               "name": "School_Directory_App__c"
-            },
+            }
+            ,
             {
               "fields": [
                 "Id",
                 "Active_Status__c",
-                "Department__c",
                 "Description__c",
                 "Email__c",
                 "Image_URL__c",
                 "Phone__c",
                 "School_App__c",
                 "Sort_Order__c",
-                "Title__c",
-                "URL__c"
+                "Title__c"
               ],
               "name": "Staff_Directory_App__c"
-            },
+            }
+            ,
             {
               "fields": [
                 "Active_Status__c",
@@ -83,6 +83,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "School_App__c"
               ],
               "name": "Resources_App__c"
+            }
+            ,
+            {
+              "fields": [
+                "Active_Status__c",
+                "App_Icon_URL__c",
+                "Sort_Order__c",
+                "Title__c",
+                "Id",
+                "URL__c",
+                "School_App__c",
+                "PDF_URL__c",
+                "RTF_HTML__c",
+                "Type__c"
+              ],
+              "name": "About_App__c"
             }
           ],
           "in": "ALL",

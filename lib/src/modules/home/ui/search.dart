@@ -1,9 +1,7 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/about/ui/about_sd_detail_page.dart';
-import 'package:Soc/src/modules/about/ui/about_staffdirectory.dart';
+import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
-// import 'package:Soc/src/modules/resources/families/ui/contact.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/hive_db_services.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -13,7 +11,6 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
-import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -38,6 +35,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   bool issuggestionList = false;
   static const double _kLabelSpacing = 20.0;
+  static const double _kMargin = 16.0;
   final _controller = TextEditingController();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
@@ -79,35 +77,34 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _route(obj) async {
-    // if (obj.titleC == "Contact") {
-    //   obj.titleC != null
-    //       ? Navigator.push(
-    //           context,
-    //           MaterialPageRoute(
-    //               builder: (BuildContext context) => ContactPage(
-    //                     obj: Globals.homeObjet,
-    //                     isbuttomsheet: true,
-    //                     appBarTitle: obj.titleC!,
-    //                     language: Globals.selectedLanguage!,
-    //                   )))
-    //       : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    // } else 
-    if (obj.urlC !=null) {
-     _launchURL(obj);
-         
-    } 
-   else if (obj.dept !=null||obj.dept!="") {
-    // if (obj.urlC !=null) {
-    //  _launchURL(obj);
-         
-    // } 
-     Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => AboutSDDetailPage(
-                          obj: obj,
-                        )));
-    } else if (obj.deepLink != null) {
+    if (obj.titleC == "Contact") {
+      obj.titleC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => ContactPage(
+                        obj: Globals.homeObjet,
+                        isbuttomsheet: true,
+                        appBarTitle: obj.titleC!,
+                        language: Globals.selectedLanguage!,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    } else if (obj.urlC != null) {
+      _launchURL(obj);
+    }
+    //  else if (obj.dept !=null||obj.dept!="") {
+    //   // if (obj.urlC !=null) {
+    //   //  _launchURL(obj);
+
+    //   // }
+    //    Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (BuildContext context) => AboutSDDetailPage(
+    //                         obj: obj,
+    //                       )));
+    //   }
+    else if (obj.deepLink != null) {
       if (obj.deepLink == 'NO') {
         Navigator.push(
             context,
@@ -126,11 +123,13 @@ class _SearchPageState extends State<SearchPage> {
         // }
         await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
       }
-    } else if (obj.urlC !=null) {
+    } else if (obj.urlC != null) {
       obj.urlC != null
           ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML"||obj.typeC=="HTML/RTF"||obj.typeC=="RTF/HTML") {
+    } else if (obj.typeC == "RFT_HTML" ||
+        obj.typeC == "HTML/RTF" ||
+        obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
@@ -155,8 +154,7 @@ class _SearchPageState extends State<SearchPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-    } 
-    else {
+    } else {
       Utility.showSnackBar(
           _scaffoldKey, "No data available for this record", context);
     }
@@ -267,8 +265,10 @@ class _SearchPageState extends State<SearchPage> {
         await _route(items[index]);
       },
       child: Container(
-          margin: EdgeInsets.only(left: 16, right: 16, top: 6, bottom: 6),
-          padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
+          margin: EdgeInsets.only(
+              left: _kMargin, right: _kMargin, top: 6, bottom: 6),
+          padding: EdgeInsets.only(
+              left: _kMargin, right: _kMargin, top: 12, bottom: 12),
           decoration: BoxDecoration(
             color: (index % 2 == 0)
                 ? Theme.of(context).colorScheme.background
@@ -331,7 +331,8 @@ class _SearchPageState extends State<SearchPage> {
                 child: state.obj.map != null && state.obj.length > 0
                     ? Container(
                         child: ListView(
-                          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
                         scrollDirection: Axis.vertical,
                         padding: EdgeInsets.all(_kLabelSpacing / 2),
                         children: state.obj.map<Widget>((data) {
@@ -381,16 +382,17 @@ class _SearchPageState extends State<SearchPage> {
                                   if (data != null) {
                                     deleteItem();
                                     final recentitem = Recent(
-                                        1,
-                                        data.titleC,
-                                        data.appURLC,
-                                        data.urlC,
-                                        data.id,
-                                        data.rtfHTMLC,
-                                        data.schoolId,
-                                        data.dept,
-                                        data.descriptionC,
-                                        data.emailC,);
+                                      1,
+                                      data.titleC,
+                                      data.appURLC,
+                                      data.urlC,
+                                      data.id,
+                                      data.rtfHTMLC,
+                                      data.schoolId,
+                                      data.dept,
+                                      data.descriptionC,
+                                      data.emailC,
+                                    );
 
                                     addtoDataBase(recentitem);
                                   }
@@ -398,11 +400,11 @@ class _SearchPageState extends State<SearchPage> {
                           );
                         }).toList(),
                       ))
-                    :  NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                            isEvents: false,
-                                          ));
+                    : NoDataFoundErrorWidget(
+                        isResultNotFoundMsg: false,
+                        isNews: false,
+                        isEvents: false,
+                      ));
           } else if (state is SearchLoading) {
             return Expanded(
                 child: Center(
@@ -497,13 +499,15 @@ class _SearchPageState extends State<SearchPage> {
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         appBar: new AppBar(
-            elevation: 0.0,
-            leading: BackButtonWidget(),
-            title:
-                // SizedBox(width: 100.0, height: 60.0, child: 
-                AppLogoWidget(marginLeft: 0,),
-                // )
-                ),
+          elevation: 0.0,
+          leading: BackButtonWidget(),
+          title:
+              // SizedBox(width: 100.0, height: 60.0, child:
+              AppLogoWidget(
+            marginLeft: 0,
+          ),
+          // )
+        ),
         body: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(

@@ -27,7 +27,7 @@ class ErrorLoading extends AboutState {
 
 // ignore: must_be_immutable
 class AboutDataSucess extends AboutState {
-  List<AboutStaffDirectoryList>? obj;
+  List<AboutList>? obj;
   AboutDataSucess({
     this.obj,
   });

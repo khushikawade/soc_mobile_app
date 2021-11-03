@@ -1,13 +1,19 @@
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
 import 'package:Soc/src/modules/about/ui/about_staffdirectory.dart';
+import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
+import 'package:Soc/src/widgets/html_description.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +40,7 @@ class _AboutPageState extends State<AboutPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
-  List<AboutStaffDirectoryList> newList = [];
+  List<AboutList> newList = [];
   List<String?> department = [];
 
   @override
@@ -61,9 +67,82 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  Widget _buildList(
-      String? dept, List<AboutStaffDirectoryList> obj, int index) {
-    print(dept);
+  _aboutPageRoute(AboutList obj, List<AboutList> list, index) {
+    if (obj.typeC == "URL") {
+      obj.urlC != null
+          ? _launchURL(obj)
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    } else if (obj.typeC == "Form") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    appBarTitle: obj.titleC!,
+                    obj: list,
+                    isbuttomsheet: true,
+                    isAbout: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "RFT_HTML" ||
+        obj.typeC == "HTML/RTF" ||
+        obj.typeC == "RTF/HTML") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AboutusPage(
+                        htmlText: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        ishtml: true,
+                        appbarTitle: obj.titleC!,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "PDF URL") {
+      obj.pdfURL != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CommonPdfViewerPage(
+                        url: obj.pdfURL,
+                        tittle: obj.titleC,
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+    } else if (obj.typeC == "Sub-Menu") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SubListPage(
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    module: "family",
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else {
+      Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    }
+  }
+
+  _launchURL(AboutList obj) async {
+    if (obj.urlC.toString().split(":")[0] == 'http') {
+      await Utility.launchUrlOnExternalBrowser(obj.urlC!);
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC,
+                    url: obj.urlC!,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    }
+  }
+
+  Widget _buildList(AboutList listData, List<AboutList> obj, int index) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -77,16 +156,17 @@ class _AboutPageState extends State<AboutPage> {
       ),
       child: ListTile(
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => 
-                  StaffDirectory(
-                        appBarTitle: dept!,
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                        obj: newList,
-                      )));
+          _aboutPageRoute(listData, obj, index);
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) =>
+          //         StaffDirectory(
+          //               appBarTitle: listData.titleC??"-",
+          //               isbuttomsheet: true,
+          //               language: Globals.selectedLanguage,
+          //               obj: newList,
+          //             )));
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         leading: _buildLeading(obj),
@@ -94,14 +174,14 @@ class _AboutPageState extends State<AboutPage> {
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message: dept, //.titleC,
+                message: listData.titleC ?? "-",
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) {
                   return Text(translatedMessage.toString(),
                       style: Theme.of(context).textTheme.bodyText2!);
                 })
-            : Text(dept!, //.titleC.toString(),
+            : Text(listData.titleC ?? "-",
                 style: Theme.of(context).textTheme.bodyText1!),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
@@ -175,23 +255,17 @@ class _AboutPageState extends State<AboutPage> {
                                           alignment: Alignment.center,
                                           child: CircularProgressIndicator());
                                     } else if (state is AboutDataSucess) {
-                                      department.clear();
-                                      for (int i = 0; i < newList.length; i++) {
-                                        department.add(newList[i].department);
-                                        department =
-                                            department.toSet().toList();
-                                      }
-                                      return department.length > 0
+                                      return newList.length > 0
                                           ? ListView.builder(
                                               padding:
                                                   EdgeInsets.only(bottom: 45),
                                               scrollDirection: Axis.vertical,
-                                              itemCount: department.length,
+                                              itemCount: newList.length,
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index) {
                                                 return _buildList(
-                                                    department[index],
+                                                    state.obj![index],
                                                     state.obj!,
                                                     index);
                                               },

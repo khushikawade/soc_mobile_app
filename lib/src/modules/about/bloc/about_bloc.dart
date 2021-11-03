@@ -24,7 +24,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
     if (event is AboutStaffDirectoryEvent) {
       try {
         yield AboutLoading();
-        List<AboutStaffDirectoryList> list = await getAboutSDList();
+        List<AboutList> list = await getAboutSDList();
         if (list.length > 0) {
           list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
           yield AboutDataSucess(obj: list);
@@ -37,15 +37,15 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
     }
   }
 
-  Future<List<AboutStaffDirectoryList>> getAboutSDList() async {
+  Future<List<AboutList>> getAboutSDList() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c,URL__c,Department__c,Active_Status__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,Type__c,Id,Sort_Order__c,URL__c,RTF_HTML__c,PDF_URL__c,App_Icon_URL__c,Active_Status__c FROM About_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       if (response.statusCode == 200) {
         dataArray = response.data["records"];
         return response.data["records"]
-            .map<AboutStaffDirectoryList>(
-                (i) => AboutStaffDirectoryList.fromJson(i))
+            .map<AboutList>(
+                (i) => AboutList.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');
