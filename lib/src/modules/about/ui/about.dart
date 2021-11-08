@@ -202,6 +202,7 @@ class _AboutPageState extends State<AboutPage> {
           },
         ),
         body: NestedScrollView(
+          
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               Globals.homeObjet["About_Banner_Image__c"] != null
@@ -217,7 +218,7 @@ class _AboutPageState extends State<AboutPage> {
                         ),
                       ),
                     )
-                  : SliverAppBar(),
+                  : SliverAppBar(expandedHeight: 0,backgroundColor: Colors.red,),
             ];
           },
           body: RefreshIndicator(
@@ -241,7 +242,9 @@ class _AboutPageState extends State<AboutPage> {
                   }
 
                   return connected
-                      ? Column(
+                      ? 
+                      
+                      Column(
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Expanded(
@@ -264,7 +267,9 @@ class _AboutPageState extends State<AboutPage> {
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index) {
-                                                return _buildList(
+                                                return 
+                                              
+                                                _buildList(
                                                     state.obj![index],
                                                     state.obj!,
                                                     index);
