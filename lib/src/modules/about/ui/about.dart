@@ -110,17 +110,6 @@ class _AboutPageState extends State<AboutPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-    } else if (obj.typeC == "Sub-Menu") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => SubListPage(
-                    appBarTitle: obj.titleC!,
-                    obj: obj,
-                    module: "About",
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }

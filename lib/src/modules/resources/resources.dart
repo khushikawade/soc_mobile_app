@@ -105,7 +105,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
               builder: (BuildContext context) => SubListPage(
                     appBarTitle: obj.titleC!,
                     obj: obj,
-                    module: "Resources",
+                    module: "resources",
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
