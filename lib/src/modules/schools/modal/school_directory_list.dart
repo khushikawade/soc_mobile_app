@@ -1,26 +1,26 @@
 class SchoolDirectoryList {
   // SubAttributes? attributes;
   String? titleC;
-  String? imageURLC;
+  String? imageUrlC;
   String? address;
-  String? phone;
+  String? phoneC;
   String? rtfHTMLC;
-  String? email;
+  String? emailC;
   final geoLocation;
-  String? webUrlC;
+  String? urlC;
   String? id;
   final sortOredr;
   final statusC;
 
   SchoolDirectoryList(
       {this.titleC,
-      this.imageURLC,
+      this.imageUrlC,
       this.address,
-      this.phone,
+      this.phoneC,
       this.rtfHTMLC,
-      this.email,
+      this.emailC,
       this.geoLocation,
-      this.webUrlC,
+      this.urlC,
       this.id,
       this.sortOredr,
       this.statusC});
@@ -28,26 +28,26 @@ class SchoolDirectoryList {
   factory SchoolDirectoryList.fromJson(Map<String, dynamic> json) =>
       SchoolDirectoryList(
           titleC: json['Title__c'] as String?,
-          imageURLC: json['Image_URL__c'] as String?,
+          imageUrlC: json['Image_URL__c'] as String?,
           address: json['Contact_Address__c'] as String?,
-          phone: json['Phone__c'] as String?,
+          phoneC: json['phoneC__c'] as String?,
           rtfHTMLC: json['RTF_HTML__c'] as String?,
-          email: json['Email__c'] as String?,
+          emailC: json['emailC__c'] as String?,
           geoLocation: json['Contact_Office_Location__c'],
-          webUrlC: json['Website_URL__c'] as String?,
+          urlC: json['Website_URL__c'] as String?,
           id: json['Id'] as String?,
           sortOredr: json['Sort_Order__c'],
           statusC: json['Active_Status__c']);
 
   Map<String, dynamic> toJson() => {
         'Title__c': titleC,
-        'Image_URL__c': imageURLC,
+        'Image_URL__c': imageUrlC,
         'Contact_Address__c': address,
-        'Phone__c': phone,
+        'phoneC__c': phoneC,
         'RTF_HTML__c': rtfHTMLC,
-        'Email__c': email,
+        'emailC__c': emailC,
         'Contact_Office_Location__c': geoLocation,
-        'Website_URL__c': webUrlC,
+        'Website_URL__c': urlC,
         'Id': id,
         'Sort_Order__c': sortOredr,
         'Active_Status__c': statusC

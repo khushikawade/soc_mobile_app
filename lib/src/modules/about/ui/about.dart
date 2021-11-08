@@ -72,7 +72,7 @@ class _AboutPageState extends State<AboutPage> {
       obj.urlC != null
           ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "Form") {
+    } else if (obj.typeC == "District_Form") {
       Navigator.push(
           context,
           MaterialPageRoute(

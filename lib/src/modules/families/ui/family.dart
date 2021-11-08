@@ -86,7 +86,7 @@ class _FamilyPageState extends State<FamilyPage> {
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage ?? "English",
                   )));
-    } else if (obj.typeC == "URL" || obj.titleC == "Afterschool Consent 2") {
+    } else if (obj.typeC == "URL") {
       obj.appUrlC != null
           ?
           // Navigator.push(

@@ -12,14 +12,6 @@ import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
-  SliderWidget(
-      {required this.obj,
-      required this.currentIndex,
-      this.issocialpage,
-      required this.isAboutSDPage,
-      required this.date,
-      required this.isbuttomsheet,
-      required this.language});
   final obj;
   int currentIndex;
   bool? issocialpage;
@@ -27,6 +19,16 @@ class SliderWidget extends StatefulWidget {
   String date;
   bool isbuttomsheet;
   String? language;
+  bool isEvent;
+  SliderWidget(
+      {required this.obj,
+      required this.currentIndex,
+      this.issocialpage,
+      required this.isAboutSDPage,
+      required this.date,
+      required this.isbuttomsheet,
+      required this.language,
+      required this.isEvent});
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();

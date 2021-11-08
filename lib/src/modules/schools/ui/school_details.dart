@@ -59,12 +59,12 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
 
   Widget _buildIcon() {
     return Container(
-      child: widget.obj.imageURLC != null
+      child: widget.obj.imageUrlC != null
           ? Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
               child: CachedNetworkImage(
-                imageUrl: widget.obj.imageURLC,
+                imageUrl: widget.obj.imageUrlC,
                 fit: BoxFit.fill,
                 placeholder: (context, url) => Container(
                   alignment: Alignment.center,
@@ -239,7 +239,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
             urlobj.callurlLaucher(context, "tel:" + widget.obj.phone);
           },
           child: Text(
-            widget.obj.phone ?? '-',
+            widget.obj.phoneC ?? '-',
             style: TextStyle(
               decoration: TextDecoration.underline,
               decorationColor: Colors.blue,
@@ -264,7 +264,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
       child: Expanded(
           child: Linkify(
         onOpen: (link) => _launchURL(link.url),
-        text: widget.obj.webUrlC,
+        text: widget.obj.urlC,
         style: TextStyle(
           decoration: TextDecoration.underline,
           decorationColor: Colors.blue,
@@ -289,7 +289,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: widget.obj.titleC ?? "",
-                    url: widget.obj.webUrlC,
+                    url: widget.obj.urlC,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
@@ -302,10 +302,10 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
       child: Expanded(
         child: GestureDetector(
           onTap: () {
-            urlobj.callurlLaucher(context, 'mailto:"${widget.obj.email}"');
+            urlobj.callurlLaucher(context, 'mailto:"${widget.obj.emailC}"');
           },
           child: Text(
-            widget.obj.email,
+            widget.obj.emailC,
             style: TextStyle(
               decoration: TextDecoration.underline,
               decorationColor: Colors.blue,
@@ -366,26 +366,26 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
       SpacerWidget(_kLabelSpacing * 2),
      widget.obj.geoLocation!=null? _buildMapWidget():Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj.webUrlC != null ? _buildWebsiteWidget() : Container(),
+      widget.obj.urlC != null ? _buildWebsiteWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj.email != null ? _buildEmailWidget() : Container(),
+      widget.obj.emailC != null ? _buildEmailWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
       widget.obj.address != null ? _buildAddressWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj.phone != null ? _buildPhoneWidget() : Container(),
+      widget.obj.phoneC != null ? _buildPhoneWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
       ButtonWidget(
         title: widget.obj!.titleC ?? "",
         obj: widget.obj,
         body: Utility.parseHtml(widget.obj.rtfHTMLC ?? "") +
             "\n" +
-            "${widget.obj.webUrlC ?? ""}" +
+            "${widget.obj.urlC ?? ""}" +
             "\n"
-                "${widget.obj.email ?? ""}" +
+                "${widget.obj.emailC ?? ""}" +
             "\n" +
             "${widget.obj.address ?? ""}" +
             "\n" +
-            "${widget.obj.phone ?? ""}",
+            "${widget.obj.phoneC ?? ""}",
         buttonTitle: "Share",
       ),
     ]);

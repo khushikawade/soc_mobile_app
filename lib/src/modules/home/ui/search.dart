@@ -1,7 +1,9 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
+import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
+import 'package:Soc/src/modules/schools/ui/school_details.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/hive_db_services.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -11,6 +13,7 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -89,22 +92,36 @@ class _SearchPageState extends State<SearchPage> {
                         language: Globals.selectedLanguage!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.urlC != null) {
-      _launchURL(obj);
-    }
-    //  else if (obj.dept !=null||obj.dept!="") {
-    //   // if (obj.urlC !=null) {
-    //   //  _launchURL(obj);
-
-    //   // }
-    //    Navigator.push(
-    //         context,
-    //         MaterialPageRoute(
-    //             builder: (BuildContext context) => AboutSDDetailPage(
-    //                         obj: obj,
-    //                       )));
-    //   }
-    else if (obj.deepLink != null) {
+    } else if (obj.typeC == "Form") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    isAbout: false,
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "SchoolDirectoryApp") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SchoolDetailPage(
+                    obj: obj,
+                  )));
+    } else if (obj.typeC == "District_Form") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    isAbout: true,
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.deepLink != null) {
       if (obj.deepLink == 'NO') {
         Navigator.push(
             context,
@@ -123,9 +140,18 @@ class _SearchPageState extends State<SearchPage> {
         // }
         await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
       }
-    } else if (obj.urlC != null) {
+    } else if (obj.typeC == "URL") {
       obj.urlC != null
-          ? _launchURL(obj)
+          ? _launchURL(obj) 
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) => InAppUrlLauncer(
+          //               title: obj.titleC!,
+          //               url: obj.urlC!,
+          //               isbuttomsheet: true,
+          //               language: Globals.selectedLanguage,
+          //             )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
@@ -154,7 +180,20 @@ class _SearchPageState extends State<SearchPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-    } else {
+    }
+    //  else if (obj.typeC == "Sub-Menu") {
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (BuildContext context) => SubListPage(
+    //                 obj: obj,
+    //                 module: "family",
+    //                 isbuttomsheet: true,
+    //                 appBarTitle: obj.titleC!,
+    //                 language: Globals.selectedLanguage,
+    //               )));
+    // }
+    else {
       Utility.showSnackBar(
           _scaffoldKey, "No data available for this record", context);
     }
@@ -262,7 +301,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildItem(int index, items) {
     return InkWell(
       onTap: () async {
-        // await _route(items[index]);
+        await _route(items[index]);
       },
       child: Container(
           margin: EdgeInsets.only(
@@ -378,7 +417,7 @@ class _SearchPageState extends State<SearchPage> {
                                                     .primaryVariant),
                                       ),
                                 onTap: () async {
-                                  // _route(data);
+                                  _route(data);
                                   if (data != null) {
                                     deleteItem();
                                     final recentitem = Recent(

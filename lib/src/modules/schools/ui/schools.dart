@@ -2,7 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
-import 'package:Soc/src/modules/schools/modal/school_directory.dart';
+import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/schools/ui/school_details.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -85,10 +85,10 @@ class _SchoolPageState extends State<SchoolPage> {
               height: Globals.deviceType == "phone"
                   ? _kIconSize * 1.5
                   : _kIconSize * 2,
-              child: obj.imageURLC != null
+              child: obj.imageUrlC != null
                   ? ClipRRect(
                       child: CachedNetworkImage(
-                        imageUrl: obj.imageURLC!,
+                        imageUrl: obj.imageUrlC!,
                         placeholder: (context, url) => Container(
                             alignment: Alignment.center,
                             child: ShimmerLoading(

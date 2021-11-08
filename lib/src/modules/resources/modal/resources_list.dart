@@ -9,6 +9,7 @@ class ResourcesList {
   String? pdfURL;
   String? rtfHTMLC;
   String? calendarId;
+  String? name;
 
   ResourcesList({
     this.titleC,
@@ -21,6 +22,7 @@ class ResourcesList {
     this.pdfURL,
     this.rtfHTMLC,
     this.calendarId,
+    this.name
   });
 
   factory ResourcesList.fromJson(Map<String, dynamic> json) => ResourcesList(
@@ -34,6 +36,7 @@ class ResourcesList {
         pdfURL: json['PDF_URL__c'] as String?,
         rtfHTMLC: json['RTF_HTML__c'] as String?,
         calendarId: json['Calendar_Id__c'] as String?,
+        name: json['Name'] as String?,
       );
   Map<String, dynamic> toJson() => {
         'Title__c': titleC,
@@ -46,5 +49,6 @@ class ResourcesList {
         'RTF_HTML__c': rtfHTMLC,
         'Calendar_Id__c': calendarId,
         'PDF_URL__c': pdfURL,
+        'name':name
       };
 }
