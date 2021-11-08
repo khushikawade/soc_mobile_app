@@ -97,6 +97,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                         currentIndex: index,
                         issocialpage: false,
                         isAboutSDPage: false,
+                        isEvent: false,
                         date: "$newsTimeStamp",
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,

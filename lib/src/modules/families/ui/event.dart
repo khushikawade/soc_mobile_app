@@ -63,7 +63,8 @@ class _EventPageState extends State<EventPage>
                 builder: (context) => SliderWidget(
                       obj: mainObj,
                       issocialpage: false,
-                      isAboutSDPage: true,
+                      isAboutSDPage: false,
+                      isEvent: true,
                       currentIndex: index,
                       date: '',
                       isbuttomsheet: true,

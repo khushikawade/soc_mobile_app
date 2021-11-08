@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about_sd_detail_page.dart';
+import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -146,7 +147,12 @@ class _SliderWidgetState extends State<SliderWidget> {
                       ? AboutSDDetailPage(
                           obj: object[widget.currentIndex],
                         )
-                      : Newdescription(
+                      : widget.isEvent
+                      ? EventDescription(
+                          obj: object[widget.currentIndex],
+                          isbuttomsheet: true,
+                          language: Globals.selectedLanguage,
+                        ):Newdescription(
                           obj: object[widget.currentIndex],
                           date: widget.date,
                           isbuttomsheet: true,

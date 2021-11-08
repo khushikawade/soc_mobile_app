@@ -88,7 +88,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     );
   }
 
-  Widget listItem(list,obj, index) {
+  Widget listItem(list, obj, index) {
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
@@ -114,20 +114,23 @@ class _StaffDirectoryState extends State<StaffDirectory> {
         ],
       ),
       child: GestureDetector(
-       onTap: (){
-     if(widget.isAbout){    Navigator.push(
+        onTap: () {
+          if (widget.isAbout) {
+            Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => SliderWidget(
                           obj: list,
                           currentIndex: index,
                           issocialpage: false,
-                          isAboutSDPage: true,
+                          isAboutSDPage: widget.isAbout,
+                          isEvent: false,
                           date: "",
                           isbuttomsheet: true,
                           language: Globals.selectedLanguage,
-                        )));}
-       },
+                        )));
+          }
+        },
         child: Column(
           children: [
             Row(
@@ -256,7 +259,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               builder: (translatedMessage) => Text(
                                   translatedMessage.toString(),
                                   textAlign: TextAlign.start,
-                                  style: Theme.of(context).textTheme.bodyText1!))
+                                  style:
+                                      Theme.of(context).textTheme.bodyText1!))
                           : Text(obj.descriptionC ?? "",
                               textAlign: TextAlign.start,
                               style: Theme.of(context).textTheme.bodyText1!),
@@ -331,7 +335,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                                   itemBuilder:
                                                       (BuildContext context,
                                                           int index) {
-                                                    return listItem(state.obj,
+                                                    return listItem(
+                                                        state.obj,
                                                         state.obj![index],
                                                         index);
                                                   },

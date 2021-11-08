@@ -425,13 +425,7 @@ class _StudentPageState extends State<StudentPage> {
                           return Center(child: CircularProgressIndicator());
                         } else if (state is StudentDataSucess) {
                           return state.obj != null && state.obj!.length > 0
-                              ? Container(
-                                  padding: const EdgeInsets.only(
-                                      top: _kLableSpacing * 1.2,
-                                      bottom: _kLableSpacing * 4),
-                                  child:
-                                      _buildGrid(state.obj!, state.subFolder!),
-                                )
+                              ? _buildGrid(state.obj!, state.subFolder!)
                               :
                               // ListView(children: [
                               NoDataFoundErrorWidget(
@@ -509,7 +503,10 @@ class _StudentPageState extends State<StudentPage> {
                         : SliverAppBar(),
                   ];
                 },
-                body: _body())
+                body: Container(
+                    padding: const EdgeInsets.only(
+                        top: _kLableSpacing * 1.2, bottom: _kLableSpacing * 4),
+                    child: _body()))
             : _body());
   }
 }
