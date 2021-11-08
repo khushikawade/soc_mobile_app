@@ -1,5 +1,3 @@
-import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
-import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
@@ -13,6 +11,8 @@ import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
+import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
+import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -43,11 +43,25 @@ class _FamilyPageState extends State<FamilyPage> {
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
   List<FamiliesList> newList = [];
+  FamiliesList list = FamiliesList();
+  bool _atBottom = false;
 
   @override
   void initState() {
     super.initState();
     _bloc.add(FamiliesEvent());
+    //   _scrollController.addListener(() {
+    //     if (_scrollController.position.pixels < 50) {
+    //       // You're at the top.
+    //       setState(() {
+    //          _atBottom = false;
+    //       });
+    //     } else {
+    //        setState(() {
+    //          _atBottom = true;
+    //       });
+    //     }
+    // });
   }
 
   @override
@@ -74,7 +88,18 @@ class _FamilyPageState extends State<FamilyPage> {
                   )));
     } else if (obj.typeC == "URL" || obj.titleC == "Afterschool Consent 2") {
       obj.appUrlC != null
-          ? _launchURL(obj)
+          ?
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) => InAppUrlLauncer(
+          //               title: obj.titleC!,
+          //               url: obj.appUrlC ?? '',
+          //               isbuttomsheet: true,
+          //               language: Globals.selectedLanguage,
+          //             ))):
+
+          _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
@@ -169,6 +194,11 @@ class _FamilyPageState extends State<FamilyPage> {
 
   _launchURL(obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http') {
+      // if (await canLaunch(obj.appUrlC)) {
+      //   await launch(obj.appUrlC);
+      // } else {
+      //   throw 'Could not launch ${obj.appUrlC!}';
+      // }
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
     } else {
       Navigator.push(
@@ -225,16 +255,7 @@ class _FamilyPageState extends State<FamilyPage> {
     );
   }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBarWidget(
-        marginLeft: 30,
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: RefreshIndicator(
+  Widget _body() => RefreshIndicator(
         key: refreshKey,
         child: OfflineBuilder(
             connectivityBuilder: (
@@ -243,6 +264,7 @@ class _FamilyPageState extends State<FamilyPage> {
               Widget child,
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
+
               if (connected) {
                 if (iserrorstate == true) {
                   _bloc.add(FamiliesEvent());
@@ -263,26 +285,30 @@ class _FamilyPageState extends State<FamilyPage> {
                                   (BuildContext contxt, FamilyState state) {
                                 if (state is FamilyInitial ||
                                     state is FamilyLoading) {
-                                  return Container(
-                                      alignment: Alignment.center,
+                                  return Center(
                                       child: CircularProgressIndicator());
                                 } else if (state is FamiliesDataSucess) {
-                                  return newList.length > 0
+                                  return state.obj != null &&
+                                          state.obj!.length > 0
                                       ? ListView.builder(
                                           padding: EdgeInsets.only(bottom: 45),
                                           scrollDirection: Axis.vertical,
-                                          itemCount: newList.length,
+                                          itemCount: state.obj!.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return _buildList(
-                                                newList[index], index);
+                                                state.obj![index], index);
                                           },
                                         )
-                                      : NoDataFoundErrorWidget(
+                                      :
+                                      // ListView(children: [
+                                      NoDataFoundErrorWidget(
                                           isResultNotFoundMsg: false,
                                           isNews: false,
                                           isEvents: false,
                                         );
+
+                                  // ]);
                                 } else if (state is ErrorLoading) {
                                   return ListView(children: [ErrorMsgWidget()]);
                                 } else {
@@ -300,24 +326,12 @@ class _FamilyPageState extends State<FamilyPage> {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
                                   Globals.homeObjet = state.obj;
+
                                   setState(() {});
                                 }
                               },
                               child: EmptyContainer()),
                         ),
-                        BlocListener<FamilyBloc, FamilyState>(
-                            bloc: _bloc,
-                            listener: (context, state) async {
-                              if (state is FamiliesDataSucess) {
-                                newList.clear();
-                                for (int i = 0; i < state.obj!.length; i++) {
-                                  if (state.obj![i].status != "Hide") {
-                                    newList.add(state.obj![i]);
-                                  }
-                                }
-                              }
-                            },
-                            child: EmptyContainer()),
                       ],
                     )
                   : NoInternetErrorWidget(
@@ -325,7 +339,44 @@ class _FamilyPageState extends State<FamilyPage> {
             },
             child: Container()),
         onRefresh: refreshPage,
-      ),
-    );
+      );
+
+  // var _scrollController = ScrollController();
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBarWidget(
+          marginLeft: 30,
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
+        body: Globals.homeObjet["Family_Banner_Image__c"] != null &&
+                Globals.homeObjet["Family_Banner_Image__c"] != ''
+            ? NestedScrollView(
+                // controller: _scrollController,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    Globals.homeObjet["Family_Banner_Image__c"] != null
+                        ? SliverAppBar(
+                            expandedHeight: 80.0,
+                            floating: false,
+                            // pinned: true,
+                            flexibleSpace: FlexibleSpaceBar(
+                                centerTitle: true,
+                                background: Container(
+                                  child: Image.network(
+                                    Globals.homeObjet["Family_Banner_Image__c"],
+                                    fit: BoxFit.cover,
+                                  ),
+                                )),
+                          )
+                        : SliverAppBar(),
+                  ];
+                },
+                body: _body())
+            : _body());
   }
 }

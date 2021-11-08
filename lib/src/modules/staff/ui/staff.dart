@@ -1,4 +1,6 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
@@ -39,17 +41,12 @@ class _StaffPageState extends State<StaffPage> {
   bool? iserrorstate = false;
   var obj;
   List<StaffList> newList = [];
-  // StaffList list = StaffList();
+  StaffList list = StaffList();
 
   @override
   void initState() {
     super.initState();
     _bloc.add(StaffPageEvent());
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   _route(StaffList obj, index) {
@@ -73,33 +70,31 @@ class _StaffPageState extends State<StaffPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    }
-    // else if (obj.typeC == "Form") {
-    //   Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (BuildContext context) => StaffDirectory(
-    //                 appBarTitle: obj.titleC!,
-    //                 obj: obj,
-    //                 isbuttomsheet: true,
-    //                 language: Globals.selectedLanguage,
-    //               )));
-    // }
-    // else if (obj.typeC == "Calendar/Events") {
-    //   obj.calendarId != null && obj.calendarId != ""
-    //       ? Navigator.push(
-    //           context,
-    //           MaterialPageRoute(
-    //               builder: (BuildContext context) => EventPage(
-    //                     isbuttomsheet: true,
-    //                     appBarTitle: obj.titleC,
-    //                     language: Globals.selectedLanguage,
-    //                     // calendarId: obj.calendarId.toString(),
-    //                   )))
-    //       : Utility.showSnackBar(
-    //           _scaffoldKey, "No calendar/events available", context);
-    // }
-    else if (obj.typeC == "Sub-Menu") {
+    } else if (obj.typeC == "Form") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    isAbout: false,
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "Calendar/Events") {
+      obj.calendarId != null && obj.calendarId != ""
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => EventPage(
+                        isbuttomsheet: true,
+                        appBarTitle: obj.titleC,
+                        language: Globals.selectedLanguage,
+                        // calendarId: obj.calendarId.toString(),
+                      )))
+          : Utility.showSnackBar(
+              _scaffoldKey, "No calendar/events available", context);
+    } else if (obj.typeC == "Sub-Menu") {
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -172,72 +167,82 @@ class _StaffPageState extends State<StaffPage> {
   }
 
   Widget _buildListItem(StaffList obj, int index) {
-    return Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AppTheme.kDividerColor2,
-            width: 0.65,
-          ),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
-        ),
-        child: obj.titleC != null //&& obj.titleC!.length > 0
-            ? ListTile(
-                onTap: () {
-                  _route(obj, index);
-                },
-                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-                leading: _buildLeading(obj),
-                title: Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English" &&
-                        Globals.selectedLanguage != ""
-                    ? TranslationWidget(
-                        message: obj.titleC.toString(),
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                          style:
-                              Theme.of(context).textTheme.bodyText2!.copyWith(),
-                        ),
-                      )
-                    : Text(
-                        obj.titleC.toString(),
-                        style:
-                            Theme.of(context).textTheme.bodyText2!.copyWith(),
-                      ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: Globals.deviceType == "phone" ? 12 : 20,
-                  color: Theme.of(context).colorScheme.primary,
-                  // color: AppTheme.kButtonbackColor,
-                ),
-              )
-            : Container());
+    return Column(
+      children: [
+        // buildImageBanner(),
+        Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: AppTheme.kDividerColor2,
+                width: 0.65,
+              ),
+              borderRadius: BorderRadius.circular(0.0),
+              color: (index % 2 == 0)
+                  ? Theme.of(context).colorScheme.background
+                  : Theme.of(context).colorScheme.secondary,
+            ),
+            child: obj.titleC != null //&& obj.titleC!.length > 0
+                ? ListTile(
+                    onTap: () {
+                      _route(obj, index);
+                    },
+                    visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                    leading: _buildLeading(obj),
+                    title: Globals.selectedLanguage != null &&
+                            Globals.selectedLanguage != "English" &&
+                            Globals.selectedLanguage != ""
+                        ? TranslationWidget(
+                            message: obj.titleC.toString(),
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2!
+                                  .copyWith(),
+                            ),
+                          )
+                        : Text(
+                            obj.titleC.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(),
+                          ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: Globals.deviceType == "phone" ? 12 : 20,
+                      color: Theme.of(context).colorScheme.primary,
+                      // color: AppTheme.kButtonbackColor,
+                    ),
+                  )
+                : Container()),
+      ],
+    );
   }
 
   Widget _body() => RefreshIndicator(
-        key: refreshKey,
-        child: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final bool connected = connectivity != ConnectivityResult.none;
-              if (connected) {
-                if (iserrorstate == true) {
-                  iserrorstate = false;
-                  _bloc.add(StaffPageEvent());
-                }
-              } else if (!connected) {
-                iserrorstate = true;
+      key: refreshKey,
+      child: OfflineBuilder(
+          connectivityBuilder: (
+            BuildContext context,
+            ConnectivityResult connectivity,
+            Widget child,
+          ) {
+            final bool connected = connectivity != ConnectivityResult.none;
+            if (connected) {
+              if (iserrorstate == true) {
+                iserrorstate = false;
+                _bloc.add(StaffPageEvent());
               }
+            } else if (!connected) {
+              iserrorstate = true;
+            }
 
-              return connected
-                  ? Column(mainAxisSize: MainAxisSize.max, children: [
+            return connected
+                ? Container(
+                    child: Column(mainAxisSize: MainAxisSize.max, children: [
                       BlocBuilder<StaffBloc, StaffState>(
                           bloc: _bloc,
                           builder: (BuildContext contxt, StaffState state) {
@@ -268,12 +273,12 @@ class _StaffPageState extends State<StaffPage> {
                                       isEvents: false,
                                     ));
                             } else if (state is ErrorInStaffLoading) {
+                              return Placeholder();
                             } else {
                               return Expanded(
                                 child: ListView(children: [ErrorMsgWidget()]),
                               );
                             }
-                            return Container();
                           }),
                       Container(
                         height: 0,
@@ -285,6 +290,7 @@ class _StaffPageState extends State<StaffPage> {
                                 AppTheme.setDynamicTheme(
                                     Globals.appSetting, context);
                                 Globals.homeObjet = state.obj;
+
                                 setState(() {});
                               }
                             },
@@ -303,47 +309,52 @@ class _StaffPageState extends State<StaffPage> {
                             }
                           },
                           child: EmptyContainer()),
-                    ])
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
-            },
-            child: Container()),
-        onRefresh: refreshPage,
-      );
+                    ]),
+                  )
+                : NoInternetErrorWidget(
+                    connected: connected, issplashscreen: false);
+          },
+          child: Container()),
+      onRefresh: refreshPage);
+
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBarWidget(
-          marginLeft: 30,
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
-        body: Globals.homeObjet["Staff_Banner_Image__c"] != null &&
-                Globals.homeObjet["Staff_Banner_Image__c"] != ""
-            ? NestedScrollView(
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return <Widget>[
-                    SliverAppBar(
-                      expandedHeight: AppTheme.kBannerHeight,
-                      floating: false,
-                      // pinned: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true,
-                        background: Image.network(
-                          Globals.homeObjet["Staff_Banner_Image__c"],
-                          fit: BoxFit.cover,
-                        ),
+      key: _scaffoldKey,
+      appBar: AppBarWidget(
+        marginLeft: 30,
+        refresh: (v) {
+          setState(() {});
+        },
+      ),
+      body: Globals.homeObjet["Staff_Banner_Image__c"] != null &&
+              Globals.homeObjet["Staff_Banner_Image__c"] != ''
+          ? NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    expandedHeight: 80.0,
+                    floating: false,
+                    // pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: true,
+                      background: Image.network(
+                        Globals.homeObjet["Staff_Banner_Image__c"],
+                        fit: BoxFit.cover,
                       ),
-                    )
-                  ];
-                },
-                body: _body())
-            : _body());
+                    ),
+                  )
+                ];
+              },
+              body: _body(),
+            )
+          : _body(),
+    );
   }
 
   Future refreshPage() async {
+    await Future.delayed(Duration(seconds: 5));
+
     refreshKey.currentState?.show(atTop: false);
     _bloc.add(StaffPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());
