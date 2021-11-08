@@ -117,7 +117,7 @@ class _AboutPageState extends State<AboutPage> {
               builder: (BuildContext context) => SubListPage(
                     appBarTitle: obj.titleC!,
                     obj: obj,
-                    module: "family",
+                    module: "About",
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
@@ -192,6 +192,99 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
+  Widget _body() => RefreshIndicator(
+        key: refreshKey,
+        child: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
+
+              if (connected) {
+                if (iserrorstate == true) {
+                  _bloc.add(AboutStaffDirectoryEvent());
+                  iserrorstate = false;
+                }
+              } else if (!connected) {
+                iserrorstate = true;
+              }
+
+              return connected
+                  ? Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: BlocBuilder<AboutBloc, AboutState>(
+                              bloc: _bloc,
+                              builder: (BuildContext contxt, AboutState state) {
+                                if (state is AboutInitial ||
+                                    state is AboutLoading) {
+                                  return Container(
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator());
+                                } else if (state is AboutDataSucess) {
+                                  return newList.length > 0
+                                      ? ListView.builder(
+                                          padding: EdgeInsets.only(bottom: 45),
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: newList.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return _buildList(state.obj![index],
+                                                state.obj!, index);
+                                          },
+                                        )
+                                      : NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: false,
+                                          isNews: false,
+                                          isEvents: false,
+                                        );
+                                } else if (state is ErrorLoading) {
+                                  return ListView(children: [ErrorMsgWidget()]);
+                                } else {
+                                  return Container();
+                                }
+                              }),
+                        ),
+                        Container(
+                          height: 0,
+                          width: 0,
+                          child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.homeObjet = state.obj;
+                                  setState(() {});
+                                }
+                              },
+                              child: EmptyContainer()),
+                        ),
+                        BlocListener<AboutBloc, AboutState>(
+                            bloc: _bloc,
+                            listener: (context, state) async {
+                              if (state is AboutDataSucess) {
+                                newList.clear();
+                                for (int i = 0; i < state.obj!.length; i++) {
+                                  if (state.obj![i].statusC != "Hide") {
+                                    newList.add(state.obj![i]);
+                                  }
+                                }
+                              }
+                            },
+                            child: EmptyContainer()),
+                      ],
+                    )
+                  : NoInternetErrorWidget(
+                      connected: connected, issplashscreen: false);
+            },
+            child: Container()),
+        onRefresh: refreshPage,
+      );
+
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
@@ -201,12 +294,13 @@ class _AboutPageState extends State<AboutPage> {
             setState(() {});
           },
         ),
-        body: NestedScrollView(
-          
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              Globals.homeObjet["About_Banner_Image__c"] != null
-                  ? SliverAppBar(
+        body: Globals.homeObjet["About_Banner_Image__c"] != null &&
+                Globals.homeObjet["About_Banner_Image__c"] != ""
+            ? NestedScrollView(
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverAppBar(
                       expandedHeight: AppTheme.kBannerHeight,
                       floating: false,
                       // pinned: true,
@@ -218,114 +312,9 @@ class _AboutPageState extends State<AboutPage> {
                         ),
                       ),
                     )
-                  : SliverAppBar(expandedHeight: 0,backgroundColor: Colors.red,),
-            ];
-          },
-          body: RefreshIndicator(
-            key: refreshKey,
-            child: OfflineBuilder(
-                connectivityBuilder: (
-                  BuildContext context,
-                  ConnectivityResult connectivity,
-                  Widget child,
-                ) {
-                  final bool connected =
-                      connectivity != ConnectivityResult.none;
-
-                  if (connected) {
-                    if (iserrorstate == true) {
-                      _bloc.add(AboutStaffDirectoryEvent());
-                      iserrorstate = false;
-                    }
-                  } else if (!connected) {
-                    iserrorstate = true;
-                  }
-
-                  return connected
-                      ? 
-                      
-                      Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(
-                              child: BlocBuilder<AboutBloc, AboutState>(
-                                  bloc: _bloc,
-                                  builder:
-                                      (BuildContext contxt, AboutState state) {
-                                    if (state is AboutInitial ||
-                                        state is AboutLoading) {
-                                      return Container(
-                                          alignment: Alignment.center,
-                                          child: CircularProgressIndicator());
-                                    } else if (state is AboutDataSucess) {
-                                      return newList.length > 0
-                                          ? ListView.builder(
-                                              padding:
-                                                  EdgeInsets.only(bottom: 45),
-                                              scrollDirection: Axis.vertical,
-                                              itemCount: newList.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return 
-                                              
-                                                _buildList(
-                                                    state.obj![index],
-                                                    state.obj!,
-                                                    index);
-                                              },
-                                            )
-                                          : NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false,
-                                              isNews: false,
-                                              isEvents: false,
-                                            );
-                                    } else if (state is ErrorLoading) {
-                                      return ListView(
-                                          children: [ErrorMsgWidget()]);
-                                    } else {
-                                      return Container();
-                                    }
-                                  }),
-                            ),
-                            Container(
-                              height: 0,
-                              width: 0,
-                              child: BlocListener<HomeBloc, HomeState>(
-                                  bloc: _homeBloc,
-                                  listener: (context, state) async {
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObjet = state.obj;
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: EmptyContainer()),
-                            ),
-                            BlocListener<AboutBloc, AboutState>(
-                                bloc: _bloc,
-                                listener: (context, state) async {
-                                  if (state is AboutDataSucess) {
-                                    newList.clear();
-                                    for (int i = 0;
-                                        i < state.obj!.length;
-                                        i++) {
-                                      if (state.obj![i].statusC != "Hide") {
-                                        newList.add(state.obj![i]);
-                                      }
-                                    }
-                                  }
-                                },
-                                child: EmptyContainer()),
-                          ],
-                        )
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false);
+                  ];
                 },
-                child: Container()),
-            onRefresh: refreshPage,
-          ),
-        ));
+                body: _body())
+            : _body());
   }
 }

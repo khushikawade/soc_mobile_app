@@ -105,7 +105,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
               builder: (BuildContext context) => SubListPage(
                     appBarTitle: obj.titleC!,
                     obj: obj,
-                    module: "resource",
+                    module: "Resources",
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
@@ -171,16 +171,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     );
   }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBarWidget(
-        marginLeft: 30,
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: RefreshIndicator(
+  Widget _body() => RefreshIndicator(
         key: refreshKey,
         child: OfflineBuilder(
             connectivityBuilder: (
@@ -271,7 +262,38 @@ class _ResourcesPageState extends State<ResourcesPage> {
             },
             child: Container()),
         onRefresh: refreshPage,
-      ),
-    );
+      );
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBarWidget(
+          marginLeft: 30,
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
+        body: Globals.homeObjet["Resources_Banner_Image__c"] != null &&
+                Globals.homeObjet["Resources_Banner_Image__c"] != ""
+            ? NestedScrollView(
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverAppBar(
+                      expandedHeight: AppTheme.kBannerHeight,
+                      floating: false,
+                      // pinned: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                        centerTitle: true,
+                        background: Image.network(
+                          Globals.homeObjet["Resources_Banner_Image__c"],
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  ];
+                },
+                body: _body())
+            : _body());
   }
 }

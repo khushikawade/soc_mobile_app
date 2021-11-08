@@ -28,7 +28,7 @@ class _SchoolPageState extends State<SchoolPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   final HomeBloc _homeBloc = new HomeBloc();
-    List<SchoolDirectoryList> newList = [];
+  List<SchoolDirectoryList> newList = [];
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _SchoolPageState extends State<SchoolPage> {
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message:obj.titleC??"",
+                message: obj.titleC ?? "",
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
@@ -51,16 +51,16 @@ class _SchoolPageState extends State<SchoolPage> {
                   style: Theme.of(context).textTheme.bodyText2!,
                 ),
               )
-            : Text(obj.titleC??"",                
+            : Text(
+                obj.titleC ?? "",
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: Theme.of(context).textTheme.headline4!,
               ));
   }
 
-
-  Widget _buildList(SchoolDirectoryList  obj, int index) {
-        return Container(
+  Widget _buildList(SchoolDirectoryList obj, int index) {
+    return Container(
       padding: EdgeInsets.symmetric(
         horizontal: _kLabelSpacing,
         vertical: _kLabelSpacing / 2,
@@ -73,8 +73,7 @@ class _SchoolPageState extends State<SchoolPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => SchoolDetailPage(obj: obj)
-                      ));
+                  builder: (context) => SchoolDetailPage(obj: obj)));
         },
         child: Row(
           children: <Widget>[
@@ -100,8 +99,7 @@ class _SchoolPageState extends State<SchoolPage> {
                                 color: Colors.white,
                               ),
                             )),
-                        errorWidget: (context, url, error) =>
-                            Icon(Icons.error),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                     )
                   : Container(
@@ -127,8 +125,7 @@ class _SchoolPageState extends State<SchoolPage> {
                                 color: Colors.white,
                               ),
                             )),
-                        errorWidget: (context, url, error) =>
-                            Icon(Icons.error),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                     ),
             ),
@@ -137,8 +134,7 @@ class _SchoolPageState extends State<SchoolPage> {
             ),
             Expanded(
               child: Container(
-                child:
-                    _buildnewsHeading(obj),
+                child: _buildnewsHeading(obj),
               ),
             ),
           ],
@@ -147,15 +143,7 @@ class _SchoolPageState extends State<SchoolPage> {
     );
   }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWidget(
-        marginLeft: 30,
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: RefreshIndicator(
+  Widget _body() => RefreshIndicator(
         key: refreshKey,
         child: OfflineBuilder(
             connectivityBuilder: (
@@ -179,9 +167,11 @@ class _SchoolPageState extends State<SchoolPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: BlocBuilder<SchoolDirectoryBloc, SchoolDirectoryState>(
+                          child: BlocBuilder<SchoolDirectoryBloc,
+                                  SchoolDirectoryState>(
                               bloc: bloc,
-                              builder: (BuildContext contxt, SchoolDirectoryState state) {
+                              builder: (BuildContext contxt,
+                                  SchoolDirectoryState state) {
                                 if (state is SchoolDirectoryInitial ||
                                     state is SchoolDirectoryLoading) {
                                   return Container(
@@ -195,7 +185,8 @@ class _SchoolPageState extends State<SchoolPage> {
                                           itemCount: newList.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
-                                            return _buildList(newList[index], index);
+                                            return _buildList(
+                                                newList[index], index);
                                           },
                                         )
                                       : NoDataFoundErrorWidget(
@@ -203,7 +194,8 @@ class _SchoolPageState extends State<SchoolPage> {
                                           isNews: false,
                                           isEvents: false,
                                         );
-                                } else if (state is SchoolDirectoryErrorLoading) {
+                                } else if (state
+                                    is SchoolDirectoryErrorLoading) {
                                   return ListView(children: [ErrorMsgWidget()]);
                                 } else {
                                   return Container();
@@ -235,7 +227,6 @@ class _SchoolPageState extends State<SchoolPage> {
                                 for (int i = 0; i < state.obj!.length; i++) {
                                   if (state.obj![i].statusC != "Hide") {
                                     newList.add(state.obj![i]);
-
                                   }
                                 }
                               }
@@ -248,8 +239,38 @@ class _SchoolPageState extends State<SchoolPage> {
             },
             child: Container()),
         onRefresh: refreshPage,
-      ),
-    );
+      );
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBarWidget(
+          marginLeft: 30,
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
+        body: Globals.homeObjet["School_Banner_Image__c"] != null &&
+                Globals.homeObjet["School_Banner_Image__c"] != ""
+            ? NestedScrollView(
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverAppBar(
+                      expandedHeight: AppTheme.kBannerHeight,
+                      floating: false,
+                      // pinned: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                        centerTitle: true,
+                        background: Image.network(
+                          Globals.homeObjet["School_Banner_Image__c"],
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  ];
+                },
+                body: _body())
+            : _body());
   }
 
   Future refreshPage() async {
