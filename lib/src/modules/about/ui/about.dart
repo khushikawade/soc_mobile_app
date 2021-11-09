@@ -296,7 +296,7 @@ class _AboutPageState extends State<AboutPage> {
                         centerTitle: true,
                         background: Image.network(
                           Globals.homeObjet["About_Banner_Image__c"],
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                         ),
                       ),
                     )

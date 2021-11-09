@@ -263,7 +263,7 @@ class _SchoolPageState extends State<SchoolPage> {
                         centerTitle: true,
                         background: Image.network(
                           Globals.homeObjet["School_Banner_Image__c"],
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                         ),
                       ),
                     )

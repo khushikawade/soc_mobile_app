@@ -485,22 +485,19 @@ class _StudentPageState extends State<StudentPage> {
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    Globals.homeObjet["Student_Banner_Image__c"] != null
-                        ? SliverAppBar(
-                            expandedHeight: 80.0,
-                            floating: false,
-                            // pinned: true,
-                            flexibleSpace: FlexibleSpaceBar(
-                                centerTitle: true,
-                                background: Container(
-                                  child: Image.network(
-                                    Globals
-                                        .homeObjet["Student_Banner_Image__c"],
-                                    fit: BoxFit.cover,
-                                  ),
-                                )),
-                          )
-                        : SliverAppBar(),
+                    SliverAppBar(
+                      expandedHeight: AppTheme.kBannerHeight,
+                      floating: false,
+                      // pinned: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                          centerTitle: true,
+                          background: Container(
+                            child: Image.network(
+                              Globals.homeObjet["Student_Banner_Image__c"],
+                              fit: BoxFit.fill,
+                            ),
+                          )),
+                    )
                   ];
                 },
                 body: Container(
