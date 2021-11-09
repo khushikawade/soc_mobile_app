@@ -75,6 +75,7 @@ class _StaffPageState extends State<StaffPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    staffDirectoryCategoryId: null,
                     isAbout: false,
                     appBarTitle: obj.titleC!,
                     obj: obj,

@@ -106,6 +106,7 @@ class _FamilyPageState extends State<FamilyPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    staffDirectoryCategoryId: null,
                     isAbout: false,
                     appBarTitle: obj.titleC!,
                     obj: obj,

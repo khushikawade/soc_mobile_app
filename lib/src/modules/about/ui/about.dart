@@ -70,11 +70,12 @@ class _AboutPageState extends State<AboutPage> {
       obj.urlC != null
           ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "District_Form") {
+    } else if (obj.typeC == "Staff_Directory") {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    staffDirectoryCategoryId: obj.id,
                     appBarTitle: obj.titleC!,
                     obj: list,
                     isbuttomsheet: true,

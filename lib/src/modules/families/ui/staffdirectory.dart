@@ -25,6 +25,8 @@ class StaffDirectory extends StatefulWidget {
   bool isbuttomsheet;
   String appBarTitle;
   String? language;
+  String?
+      staffDirectoryCategoryId; // To support categories staff list which is used in the District template.
   bool isAbout;
   StaffDirectory(
       {Key? key,
@@ -32,7 +34,8 @@ class StaffDirectory extends StatefulWidget {
       required this.isbuttomsheet,
       required this.appBarTitle,
       required this.language,
-      required this.isAbout})
+      required this.isAbout,
+      this.staffDirectoryCategoryId})
       : super(key: key);
 
   @override
@@ -53,7 +56,13 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(SDevent());
+    if (widget.staffDirectoryCategoryId != null) {
+      _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
+      // TODO fetch staff list by given category which mostly used in the district template
+    } else {
+      _bloc.add(SDevent());
+    }
+
     Globals.callsnackbar = true;
   }
 
@@ -296,7 +305,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 if (connected) {
                   if (iserrorstate == true) {
                     iserrorstate = false;
-                    _bloc.add(SDevent());
+                    if (widget.staffDirectoryCategoryId != null) {
+                      _bloc.add(
+                          SDevent(categoryId: widget.staffDirectoryCategoryId));
+                    } else {
+                      _bloc.add(SDevent());
+                    }
                   }
                 } else if (!connected) {
                   iserrorstate = true;
@@ -386,7 +400,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _bloc.add(SDevent());
+    if (widget.staffDirectoryCategoryId != null) {
+      _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
+    } else {
+      _bloc.add(SDevent());
+    }
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }

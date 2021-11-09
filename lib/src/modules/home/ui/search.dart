@@ -96,6 +96,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                staffDirectoryCategoryId: null,
                     isAbout: false,
                     appBarTitle: obj.titleC!,
                     obj: obj,
@@ -109,11 +110,12 @@ class _SearchPageState extends State<SearchPage> {
               builder: (BuildContext context) => SchoolDetailPage(
                     obj: obj,
                   )));
-    } else if (obj.typeC == "District_Form") {
+    } else if (obj.typeC == "Staff_Directory") {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                staffDirectoryCategoryId: obj.id,
                     isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,

@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -40,7 +39,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
   Future<List<AboutList>> getAboutSDList() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Type__c,Id,Sort_Order__c,URL__c,RTF_HTML__c,PDF_URL__c,App_Icon_URL__c,Active_Status__c FROM About_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,Type__c,Id,Name,Sort_Order__c,URL__c,RTF_HTML__c,PDF_URL__c,App_Icon_URL__c,Active_Status__c FROM About_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       if (response.statusCode == 200) {
         dataArray = response.data["records"];
         return response.data["records"]
