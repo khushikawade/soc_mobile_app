@@ -31,6 +31,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   NewsBloc bloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
+  List icons = [0xe823, 0xe824, 0xe825];
 
   final HomeBloc _homeBloc = new HomeBloc();
   var object;
@@ -89,161 +90,142 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           ? Theme.of(context).colorScheme.background
           : Theme.of(context).colorScheme.secondary,
       child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SliderWidget(
-                        obj: object,
-                        currentIndex: index,
-                        issocialpage: false,
-                        iseventpage: false,
-                        date: "$newsTimeStamp",
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )));
-        },
-        child: 
-        ListTile(
-          leading: Container(
-            alignment: Alignment.center,
-            width: Globals.deviceType == "phone"
-                ? _kIconSize * 1.4
-                : _kIconSize * 2,
-            height: Globals.deviceType == "phone"
-                ? _kIconSize * 1.5
-                : _kIconSize * 2,
-            child: obj.image != null
-                ? ClipRRect(
-                    child: GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (_) =>
-                                NewsImagePage(imageURL: obj.image!));
-                      },
-                      child: CachedNetworkImage(
-                        imageUrl: obj.image!,
-                        placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            child: ShimmerLoading(
-                              isLoading: true,
-                              child: Container(
-                                width: _kIconSize * 1.4,
-                                height: _kIconSize * 1.5,
-                                color: Colors.white,
-                              ),
-                            )),
-                        errorWidget: (context, url, error) =>
-                            Icon(Icons.error),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SliderWidget(
+                          obj: object,
+                          currentIndex: index,
+                          issocialpage: false,
+                          iseventpage: false,
+                          date: "$newsTimeStamp",
+                          isbuttomsheet: true,
+                          language: Globals.selectedLanguage,
+                        )));
+          },
+          child: ListTile(
+            leading: Container(
+              alignment: Alignment.center,
+              width: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
+              height: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.5
+                  : _kIconSize * 2,
+              child: obj.image != null
+                  ? ClipRRect(
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (_) =>
+                                  NewsImagePage(imageURL: obj.image!));
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: obj.image!,
+                          placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width: _kIconSize * 1.4,
+                                  height: _kIconSize * 1.5,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: Globals.deviceType == "phone"
+                          ? _kIconSize * 1.4
+                          : _kIconSize * 2,
+                      height: Globals.deviceType == "phone"
+                          ? _kIconSize * 1.5
+                          : _kIconSize * 2,
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (_) => NewsImagePage(
+                                  imageURL: Globals.splashImageUrl != null &&
+                                          Globals.splashImageUrl != ""
+                                      ? Globals.splashImageUrl
+                                      : Globals.homeObjet["App_Logo__c"]));
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: Globals.splashImageUrl != null &&
+                                  Globals.splashImageUrl != ""
+                              ? Globals.splashImageUrl
+                              : Globals.homeObjet["App_Logo__c"],
+                          placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width: _kIconSize * 1.4,
+                                  height: _kIconSize * 1.5,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
                       ),
                     ),
-                  )
-                : Container(
-                    width: Globals.deviceType == "phone"
-                        ? _kIconSize * 1.4
-                        : _kIconSize * 2,
-                    height: Globals.deviceType == "phone"
-                        ? _kIconSize * 1.5
-                        : _kIconSize * 2,
-                    alignment: Alignment.centerLeft,
-                    child: GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (_) => NewsImagePage(
-                                imageURL: Globals.splashImageUrl != null &&
-                                        Globals.splashImageUrl != ""
-                                    ? Globals.splashImageUrl
-                                    : Globals.homeObjet["App_Logo__c"]));
-                      },
-                      child: CachedNetworkImage(
-                        imageUrl: Globals.splashImageUrl != null &&
-                                Globals.splashImageUrl != ""
-                            ? Globals.splashImageUrl
-                            : Globals.homeObjet["App_Logo__c"],
-                        placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            child: ShimmerLoading(
-                              isLoading: true,
-                              child: Container(
-                                width: _kIconSize * 1.4,
-                                height: _kIconSize * 1.5,
-                                color: Colors.white,
-                              ),
-                            )),
-                        errorWidget: (context, url, error) =>
-                            Icon(Icons.error),
-                      ),
-                    ),
-                  ),
-          ),
-        title: _buildnewsHeading(obj),
-        subtitle:_buildActionButton() ,
-        )
-        
-        
-      ),
+            ),
+            title: _buildnewsHeading(obj),
+            subtitle: _buildActionButton(),
+          )),
     );
   }
 
   Widget _buildActionButton() {
-    return Row(
-      // mainAxisAlignment: MainAxisAlignment.start,
-      // crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        IconButton(
-            onPressed: () {},
-            icon: Icon(
-              const IconData(0xe823,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              //Icons.favorite_outline_outlined,
-              size: Globals.deviceType == "phone" ? 30 : 34,
-            )),
-        Text(
-          "129",
-          style: Theme.of(context).textTheme.headline4!,
-        ),
-        Container(
-          margin: EdgeInsets.only(left: 10),
-          height: 5,
-          width: 5,
-          decoration:
-              BoxDecoration(color: Colors.black, shape: BoxShape.circle),
-        ),
-        IconButton(
-            onPressed: () {},
-            icon: Icon(
-              const IconData(0xe824,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              size: Globals.deviceType == "phone" ? 24 : 28,
-            )),
-        Text(
-          "129",
-          style: Theme.of(context).textTheme.headline4!,
-        ),
-        Container(
-          margin: EdgeInsets.only(left: 10),
-          height: 5,
-          width: 5,
-          decoration:
-              BoxDecoration(color: Colors.black, shape: BoxShape.circle),
-        ),
-        IconButton(
-            onPressed: () {},
-            icon: Icon(
-              const IconData(0xe825,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              size: Globals.deviceType == "phone" ? 24 : 28,
-            )),
-        Text(
-          "129",
-          style: Theme.of(context).textTheme.headline4!,
-        ),
-      ],
+    return Container(
+      height: 50,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        // padding: EdgeInsets.only(bottom: 40),
+        itemCount: icons.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Row(
+            children: [
+              Container(
+                child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      IconData(icons[index],
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: Colors.black,
+                      //Icons.favorite_outline_outlined,
+                      size: Globals.deviceType == "phone"
+                          ? (index == 0 ? 30 : 24)
+                          : (index == 0 ? 34 : 28),
+                    )),
+              ),
+              Text(
+                "129",
+                style: Theme.of(context).textTheme.headline4!,
+              ),
+              index < icons.length - 1
+                  ? Container(
+                      margin: EdgeInsets.only(left: 10),
+                      height: 5,
+                      width: 5,
+                      decoration: BoxDecoration(
+                          color: Colors.black, shape: BoxShape.circle),
+                    )
+                  : Container(),
+            ],
+          );
+        },
+      ),
     );
   }
 
