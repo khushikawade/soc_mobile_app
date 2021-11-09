@@ -208,7 +208,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message: obj.headings!.length > 0 &&  obj.headings != "" && obj.headings != null
+                message: obj.headings!.length > 0 &&
+                        obj.headings != "" &&
+                        obj.headings != null
                     ? obj.headings["en"].toString()
                     : obj.contents["en"] ?? '-',
                 fromLanguage: "en",
@@ -220,7 +222,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 ),
               )
             : Text(
-                obj.headings!.length > 0 && obj.headings != "" && obj.headings != null
+                obj.headings!.length > 0 &&
+                        obj.headings != "" &&
+                        obj.headings != null
                     ? obj.headings["en"].toString()
                     : obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
