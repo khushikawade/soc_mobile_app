@@ -16,6 +16,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NewsPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class NewsPage extends StatefulWidget {
   _NewsPageState createState() => _NewsPageState();
 }
 
-class _NewsPageState extends State<NewsPage> {
+class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   static const double _kIconSize = 48.0;
   static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
@@ -33,30 +34,47 @@ class _NewsPageState extends State<NewsPage> {
   final HomeBloc _homeBloc = new HomeBloc();
   var object;
   String newsTimeStamp = '';
+  late AppLifecycleState _notification;
 
   @override
   void initState() {
     super.initState();
     bloc.add(FetchNotificationList());
     hideIndicator();
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   // setindexvalue() async {
   //   SharedPreferences pref = await SharedPreferences.getInstance();
   //   pref.setInt(Strings.bottomNavigation, 0);
   // }
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _notification = state;
+    });
+    if (_notification == AppLifecycleState.resumed)
+      bloc.add(FetchNotificationList());
+  }
 
   hideIndicator() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       Globals.indicator.value = false;
       pref.setInt(Strings.bottomNavigation, 0);
-      Globals.homeIndex=0;
+      Globals.homeIndex = 0;
+    });
+
+    OneSignal.shared.setNotificationWillShowInForegroundHandler(
+        (OSNotificationReceivedEvent notification) async {
+      notification.complete(notification.notification);
+      Globals.indicator.value = true;
+      bloc.add(FetchNotificationList());
     });
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -88,17 +106,21 @@ class _NewsPageState extends State<NewsPage> {
           children: <Widget>[
             Container(
               alignment: Alignment.center,
-              width: Globals.deviceType == "phone" ?_kIconSize * 1.4:_kIconSize * 2,
-              height: Globals.deviceType == "phone" ?_kIconSize * 1.5:_kIconSize * 2,
+              width: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
+              height: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.5
+                  : _kIconSize * 2,
               child: obj.image != null
                   ? ClipRRect(
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           showDialog(
-                            context: context,
-                            builder: (_) => NewsImagePage(imageURL: obj.image!)     
-                          );
-                       },
+                              context: context,
+                              builder: (_) =>
+                                  NewsImagePage(imageURL: obj.image!));
+                        },
                         child: CachedNetworkImage(
                           imageUrl: obj.image!,
                           placeholder: (context, url) => Container(
@@ -111,23 +133,34 @@ class _NewsPageState extends State<NewsPage> {
                                   color: Colors.white,
                                 ),
                               )),
-                          errorWidget: (context, url, error) => Icon(Icons.error),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
                       ),
                     )
                   : Container(
-                     width: Globals.deviceType == "phone" ?_kIconSize * 1.4:_kIconSize * 2,
-              height: Globals.deviceType == "phone" ?_kIconSize * 1.5:_kIconSize * 2,
+                      width: Globals.deviceType == "phone"
+                          ? _kIconSize * 1.4
+                          : _kIconSize * 2,
+                      height: Globals.deviceType == "phone"
+                          ? _kIconSize * 1.5
+                          : _kIconSize * 2,
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           showDialog(
-                            context: context,
-                            builder: (_) => NewsImagePage(imageURL: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"])     
-                          );
-                       },
+                              context: context,
+                              builder: (_) => NewsImagePage(
+                                  imageURL: Globals.splashImageUrl != null &&
+                                          Globals.splashImageUrl != ""
+                                      ? Globals.splashImageUrl
+                                      : Globals.homeObjet["App_Logo__c"]));
+                        },
                         child: CachedNetworkImage(
-                          imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                          imageUrl: Globals.splashImageUrl != null &&
+                                  Globals.splashImageUrl != ""
+                              ? Globals.splashImageUrl
+                              : Globals.homeObjet["App_Logo__c"],
                           placeholder: (context, url) => Container(
                               alignment: Alignment.center,
                               child: ShimmerLoading(
@@ -148,18 +181,9 @@ class _NewsPageState extends State<NewsPage> {
               width: _kLabelSpacing / 2,
             ),
             Expanded(
-              // flex: 5,
               child: Container(
-                  // padding: EdgeInsets.symmetric(
-                  //     vertical: _kLabelSpacing / 2,),
-                  child: 
-                  // Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     mainAxisAlignment: MainAxisAlignment.start,
-                  //     children: [
-                        _buildnewsHeading(obj),
-                      // ])
-                      ),
+                child: _buildnewsHeading(obj),
+              ),
             ),
           ],
         ),
@@ -174,9 +198,11 @@ class _NewsPageState extends State<NewsPage> {
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
             ? TranslationWidget(
-                message:obj.headings != "" &&
-                                  obj.headings != null 
-                              ? obj.headings["en"].toString(): obj.contents["en"] ?? '-',
+                message: obj.headings!.length > 0 &&
+                        obj.headings != "" &&
+                        obj.headings != null
+                    ? obj.headings["en"].toString()
+                    : obj.contents["en"] ?? '-',
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
@@ -186,9 +212,11 @@ class _NewsPageState extends State<NewsPage> {
                 ),
               )
             : Text(
-               obj.headings != "" &&
-                                  obj.headings != null 
-                              ? obj.headings["en"].toString(): obj.contents["en"] ?? '-',
+                obj.headings!.length > 0 &&
+                        obj.headings != "" &&
+                        obj.headings != null
+                    ? obj.headings["en"].toString()
+                    : obj.contents["en"] ?? '-',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: Theme.of(context).textTheme.headline4!,
@@ -221,6 +249,7 @@ class _NewsPageState extends State<NewsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
+        marginLeft: 30,
         refresh: (v) {
           setState(() {});
         },
@@ -246,6 +275,7 @@ class _NewsPageState extends State<NewsPage> {
 
               return connected
                   ? Column(
+                      mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -257,10 +287,11 @@ class _NewsPageState extends State<NewsPage> {
                                         state.obj!.length > 0
                                     ? _buildList(state.obj)
                                     : Expanded(
-                                        child: ListView(children: [
-                                          NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false)
-                                        ]),
+                                        child: NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: false,
+                                          isNews: true,
+                                          isEvents: false,
+                                        ),
                                       );
                               } else if (state is NewsLoading) {
                                 return Expanded(
@@ -272,11 +303,9 @@ class _NewsPageState extends State<NewsPage> {
                                   ),
                                 );
                               } else if (state is NewsErrorReceived) {
-                                return Expanded(
-                                  child: ListView(children: [
-                                    ErrorMsgWidget(),
-                                  ]),
-                                );
+                                return ListView(
+                                    shrinkWrap: true,
+                                    children: [ErrorMsgWidget()]);
                               } else {
                                 return Container();
                               }
@@ -289,6 +318,20 @@ class _NewsPageState extends State<NewsPage> {
                             listener: (context, state) async {
                               if (state is NewsLoaded) {
                                 object = state.obj;
+                                // SharedPreferences prefs =
+                                //     await SharedPreferences.getInstance();
+                                SharedPreferences intPrefs =
+                                    await SharedPreferences.getInstance();
+                                intPrefs.getInt("totalCount") == null
+                                    ? intPrefs.setInt(
+                                        "totalCount", Globals.notiCount!)
+                                    : intPrefs.getInt("totalCount");
+                                // print(intPrefs.getInt("totalCount"));
+                                if (Globals.notiCount! >
+                                    intPrefs.getInt("totalCount")!) {
+                                  intPrefs.setInt(
+                                      "totalCount", Globals.notiCount!);
+                                }
                               }
                             },
                             child: Container(),

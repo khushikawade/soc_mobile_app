@@ -61,8 +61,10 @@ class AppTheme {
   static const double kTitleFontSize = 28.0;
   static const double kCaptionFontSize = 14.0;
   static const double kBottomSheetTitleSize = 20.0;
+  static const double kSize = 8.0;
+  static const double kIconSize = 40.0;
+  static const double kTabIconSize = 55.0;
 
-  static const double _kSize = 8.0;
 
   //Borders
   static const double kBorderRadius = 0.0;
@@ -87,7 +89,7 @@ class AppTheme {
         headline1: TextStyle(
           fontSize: Globals.deviceType == "phone"
               ? kHeadline1TextFontSize
-              : kHeadline1TextFontSize + _kSize,
+              : kHeadline1TextFontSize + kSize,
           fontFamily: 'Roboto Bold',
           fontWeight: FontWeight.normal,
           color: kAccentColor,
@@ -95,7 +97,7 @@ class AppTheme {
         headline2: TextStyle(
           fontSize: Globals.deviceType == "phone"
               ? kHeadline2TextFontSize
-              : kHeadline2TextFontSize + _kSize,
+              : kHeadline2TextFontSize + kSize,
           fontFamily: 'Roboto Bold',
           fontWeight: FontWeight.normal,
           color: kAccentColor,
@@ -103,14 +105,14 @@ class AppTheme {
         headline3: TextStyle(
           fontSize: Globals.deviceType == "phone"
               ? kHeadline2TextFontSize
-              : kHeadline2TextFontSize + _kSize,
+              : kHeadline2TextFontSize + kSize,
           fontFamily: 'Roboto Bold',
           color: kFontColor2,
         ),
         headline4: TextStyle(
           fontSize: Globals.deviceType == "phone"
               ? kHeadline4TextFontSize
-              : kHeadline4TextFontSize + _kSize,
+              : kHeadline4TextFontSize + kSize,
           fontFamily: 'Roboto Bold',
           fontWeight: FontWeight.normal,
           color: kAccentColor,
@@ -118,7 +120,7 @@ class AppTheme {
         headline5: TextStyle(
           fontSize: Globals.deviceType == "phone"
               ? kHeadline1TextFontSize
-              : kHeadline1TextFontSize + _kSize,
+              : kHeadline1TextFontSize + kSize,
           fontFamily: 'Roboto Bold',
           fontWeight: FontWeight.normal,
           color: kAccentColor,
@@ -126,13 +128,13 @@ class AppTheme {
         headline6: TextStyle(
             fontSize: Globals.deviceType == "phone"
                 ? kTitleFontSize
-                : kTitleFontSize + _kSize,
+                : kTitleFontSize + kSize,
             color: kAccentColor,
             fontFamily: 'Roboto-SemiBold'),
         caption: TextStyle(
           fontSize: Globals.deviceType == "phone"
               ? kCaptionFontSize
-              : kCaptionFontSize + _kSize,
+              : kCaptionFontSize + kSize,
           color: kFontColor1,
           fontWeight: FontWeight.normal,
           height: 1.2,
@@ -140,13 +142,13 @@ class AppTheme {
         subtitle1: TextStyle(
             fontSize: Globals.deviceType == "phone"
                 ? kSubtitleFontSize
-                : kSubtitleFontSize + _kSize,
+                : kSubtitleFontSize + kSize,
             color: kAccentColor,
             fontWeight: FontWeight.normal),
         subtitle2: TextStyle(
           fontSize: Globals.deviceType == "phone"
               ? kSubtitle2FontSize
-              : kSubtitle2FontSize + _kSize,
+              : kSubtitle2FontSize + kSize,
           fontWeight: FontWeight.normal,
           color: kAccentColor,
           fontFamily: 'Roboto Regular',
@@ -154,7 +156,7 @@ class AppTheme {
         bodyText1: TextStyle(
           fontSize: Globals.deviceType == "phone"
               ? kBodyText1FontSize
-              : kBodyText1FontSize + _kSize,
+              : kBodyText1FontSize + kSize,
           color: kAccentColor,
           fontWeight: FontWeight.normal,
           fontFamily: 'Roboto Regular',
@@ -163,7 +165,7 @@ class AppTheme {
         bodyText2: TextStyle(
           fontSize: Globals.deviceType == "phone"
               ? kBodyText1FontSize
-              : kBodyText1FontSize + _kSize,
+              : kBodyText1FontSize + kSize,
           color: kAccentColor,
           fontFamily: 'Roboto Regular',
           fontWeight: FontWeight.normal,
@@ -179,7 +181,7 @@ class AppTheme {
             height: 1.2,
             fontSize: Globals.deviceType == "phone"
                 ? kSubtitleFontSize
-                : kSubtitleFontSize + _kSize),
+                : kSubtitleFontSize + kSize),
         focusedBorder: OutlineInputBorder(
             borderSide:
                 BorderSide(width: kBorderWidth, color: kTxtfieldBorderColor),
@@ -200,7 +202,7 @@ class AppTheme {
             fontFamily: 'Roboto Regular',
             fontSize: Globals.deviceType == "phone"
                 ? kSubtitle2FontSize
-                : kSubtitle2FontSize + _kSize),
+                : kSubtitle2FontSize + kSize),
         selectedIconTheme: IconThemeData(
           color: Color(0xFF4a5aa6),
         ),
@@ -212,7 +214,7 @@ class AppTheme {
             fontFamily: 'Roboto Regular',
             fontSize: Globals.deviceType == "phone"
                 ? kSubtitle2FontSize
-                : kSubtitle2FontSize + _kSize),
+                : kSubtitle2FontSize + kSize),
         selectedItemColor: Color(0xff4a5aa6),
         unselectedItemColor: Color(0xff89A7D7),
         showUnselectedLabels: true,
@@ -247,7 +249,7 @@ class AppTheme {
                     color: _primaryColor,
                     fontSize: Globals.deviceType == "phone"
                         ? kTitleFontSize
-                        : kTitleFontSize + _kSize),
+                        : kTitleFontSize + kSize),
                 color: _backgroundColor,
                 foregroundColor: _primaryColor,
                 centerTitle: true,
@@ -271,7 +273,7 @@ class AppTheme {
                     height: 1.2,
                     fontSize: Globals.deviceType == "phone"
                         ? kSubtitleFontSize
-                        : kSubtitleFontSize + _kSize),
+                        : kSubtitleFontSize + kSize),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(30.0)),
                   borderSide: BorderSide(
@@ -289,7 +291,7 @@ class AppTheme {
                       textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(
                         fontSize: Globals.deviceType == "phone"
                             ? kButtonFontSize
-                            : kButtonFontSize + _kSize,
+                            : kButtonFontSize + kSize,
                         fontWeight: FontWeight.w500,
                         color: _backgroundColor,
                       )),
@@ -310,7 +312,7 @@ class AppTheme {
                 headline1: TextStyle(
                   fontSize: Globals.deviceType == "phone"
                       ? kHeadline1TextFontSize
-                      : kHeadline1TextFontSize + _kSize,
+                      : kHeadline1TextFontSize + kSize,
                   fontFamily: 'Roboto Bold',
                   fontWeight: FontWeight.normal,
                   color: _fontColor,
@@ -318,7 +320,7 @@ class AppTheme {
                 headline2: TextStyle(
                   fontSize: Globals.deviceType == "phone"
                       ? kHeadline2TextFontSize
-                      : kHeadline2TextFontSize + _kSize,
+                      : kHeadline2TextFontSize + kSize,
                   fontFamily: 'Roboto Bold',
                   fontWeight: FontWeight.normal,
                   color: _fontColor,
@@ -326,14 +328,14 @@ class AppTheme {
                 headline3: TextStyle(
                   fontSize: Globals.deviceType == "phone"
                       ? kHeadline2TextFontSize
-                      : kHeadline2TextFontSize + _kSize,
+                      : kHeadline2TextFontSize + kSize,
                   fontFamily: 'Roboto Bold',
                   color: _fontColor,
                 ),
                 headline4: TextStyle(
                   fontSize: Globals.deviceType == "phone"
                       ? kHeadline4TextFontSize
-                      : kHeadline4TextFontSize + _kSize,
+                      : kHeadline4TextFontSize + kSize,
                   fontFamily: 'Roboto Bold',
                   fontWeight: FontWeight.normal,
                   color: _fontColor,
@@ -341,7 +343,7 @@ class AppTheme {
                 headline5: TextStyle(
                   fontSize: Globals.deviceType == "phone"
                       ? kHeadline1TextFontSize
-                      : kHeadline1TextFontSize + _kSize,
+                      : kHeadline1TextFontSize + kSize,
                   fontFamily: 'Roboto Bold',
                   fontWeight: FontWeight.normal,
                   color: _fontColor,
@@ -349,13 +351,13 @@ class AppTheme {
                 headline6: TextStyle(
                     fontSize: Globals.deviceType == "phone"
                         ? kTitleFontSize
-                        : kTitleFontSize + _kSize,
+                        : kTitleFontSize + kSize,
                     color: _fontColor,
                     fontFamily: 'Roboto-SemiBold'),
                 caption: TextStyle(
                   fontSize: Globals.deviceType == "phone"
                       ? kCaptionFontSize
-                      : kCaptionFontSize + _kSize,
+                      : kCaptionFontSize + kSize,
                   color: _fontColor,
                   fontWeight: FontWeight.normal,
                   height: 1.2,
@@ -363,20 +365,20 @@ class AppTheme {
                 subtitle1: TextStyle(
                     fontSize: Globals.deviceType == "phone"
                         ? kSubtitleFontSize
-                        : kSubtitleFontSize + _kSize,
+                        : kSubtitleFontSize + kSize,
                     color: _fontColor,
                     fontWeight: FontWeight.normal),
                 subtitle2: TextStyle(
                   fontSize: Globals.deviceType == "phone"
                       ? kSubtitle2FontSize
-                      : kSubtitle2FontSize + _kSize,
+                      : kSubtitle2FontSize + kSize,
                   color: _fontColor,
                   fontFamily: 'Roboto Regular',
                 ),
                 bodyText1: TextStyle(
                   fontSize: Globals.deviceType == "phone"
                       ? kBodyText1FontSize
-                      : kBodyText1FontSize + _kSize,
+                      : kBodyText1FontSize + kSize,
                   color: _fontColor,
                   fontWeight: FontWeight.normal,
                   fontFamily: 'Roboto Regular',
@@ -385,7 +387,7 @@ class AppTheme {
                 bodyText2: TextStyle(
                   fontSize: Globals.deviceType == "phone"
                       ? kBodyText1FontSize
-                      : kBodyText1FontSize + _kSize,
+                      : kBodyText1FontSize + kSize,
                   color: _fontColor,
                   fontFamily: 'Roboto Regular',
                   fontWeight: FontWeight.normal,

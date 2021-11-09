@@ -118,7 +118,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 HorzitalSpacerWidget(_kLabelSpacing / 1.5),
-                obj.imageUrlC != null && obj.imageUrlC.length > 0
+                obj.imageUrlC != null 
                     ? CachedNetworkImage(
                         imageUrl: obj.imageUrlC,
                         fit: BoxFit.fill,
@@ -141,7 +141,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             fit: BoxFit.fill,
                             width: 60,
                             height: 60,
-                            imageUrl: Globals.splashImageUrl??Globals.homeObjet["App_Logo__c"],
+                            imageUrl: Globals.splashImageUrl != null &&
+                                    Globals.splashImageUrl != ""
+                                ? Globals.splashImageUrl
+                                : Globals.homeObjet["App_Logo__c"],
                             placeholder: (context, url) => Container(
                                 alignment: Alignment.center,
                                 child: ShimmerLoading(
@@ -163,7 +166,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           Globals.selectedLanguage != "English" &&
                           Globals.selectedLanguage != ""
                       ? TranslationWidget(
-                          message: obj.titleC ?? "-",
+                          message: obj.name ?? "-",
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
@@ -171,11 +174,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               textAlign: TextAlign.start,
                               style: Theme.of(context).textTheme.headline2!),
                         )
-                      : Text(obj.titleC ?? "-",
+                      : Text(obj.name ?? "-",
                           textAlign: TextAlign.start,
                           style: Theme.of(context).textTheme.headline2!),
                 ),
-                obj.phoneC.toString().isNotEmpty && obj.phoneC.length > 1
+                obj.phoneC.toString().isNotEmpty 
                     ? Container(
                         height: _KButtonMinSize,
                         width: _KButtonMinSize,
@@ -198,7 +201,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       )
                     : EmptyContainer(),
                 HorzitalSpacerWidget(_kLabelSpacing / 2),
-                obj.emailC.toString().isNotEmpty && obj.emailC.length > 1
+                obj.emailC.toString().isNotEmpty 
                     ? Container(
                         height: _KButtonMinSize,
                         width: _KButtonMinSize,
@@ -235,7 +238,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             translatedMessage.toString(),
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.bodyText1!))
-                    : Text(obj.descriptionC ?? "-",
+                    : Text(obj.descriptionC ?? "",
                         textAlign: TextAlign.start,
                         style: Theme.of(context).textTheme.bodyText1!),
               ),
@@ -317,11 +320,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                               ),
                                             ],
                                           )
-                                        : Expanded(
-                                            child: ListView(children: [
-                                            NoDataFoundErrorWidget(
-                                                isResultNotFoundMsg: false)
-                                          ]));
+                                        : NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: false,
+                                          isNews: false,
+                                          isEvents: false,
+                                        );
                                   } else if (state is ErrorLoading) {
                                     return ListView(
                                         children: [ErrorMsgWidget()]);

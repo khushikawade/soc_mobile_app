@@ -6,6 +6,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
@@ -68,11 +69,15 @@ class _SliderWidgetState extends State<SliderWidget> {
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
           leading: BackButtonWidget(),
-          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          title:
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AppLogoWidget(marginLeft: 40,)
+            ],
+          ),
           actions: <Widget>[
-            Row(
-              children: [
-                IconButton(
+            IconButton(
                   onPressed: () async {
                     setState(() {});
                     if (widget.currentIndex > 0) {
@@ -90,9 +95,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                     size: Globals.deviceType == "phone" ? 18 : 26,
                   ),
                 ),
-              ],
-            ),
-            HorzitalSpacerWidget(_kPadding / 3),
             IconButton(
               onPressed: () async {
                 setState(() {});
@@ -110,9 +112,10 @@ class _SliderWidgetState extends State<SliderWidget> {
                 size: Globals.deviceType == "phone" ? 18 : 26,
               )),
             ),
-            HorzitalSpacerWidget(_kPadding / 3),
+            SizedBox(width :10)
           ]),
       body: Column(children: <Widget>[
+        
         Expanded(
           child: PageView.builder(
             controller: _controller,

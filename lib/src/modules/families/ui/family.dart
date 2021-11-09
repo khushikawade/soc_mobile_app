@@ -7,6 +7,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
@@ -16,9 +17,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
@@ -27,24 +25,43 @@ import 'package:flutter_offline/flutter_offline.dart';
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
-  FamilyPage({Key? key, this.obj, this.searchObj,}) : super(key: key);
+  FamilyPage({
+    Key? key,
+    this.obj,
+    this.searchObj,
+  }) : super(key: key);
 
   @override
   _FamilyPageState createState() => _FamilyPageState();
 }
 
 class _FamilyPageState extends State<FamilyPage> {
-  static const double _kLabelSpacing = 16.0;
+  static const double _kLabelSpacing = 10.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
+  List<FamiliesList> newList = [];
+  FamiliesList list = FamiliesList();
+  bool _atBottom = false;
 
   @override
   void initState() {
     super.initState();
     _bloc.add(FamiliesEvent());
+    //   _scrollController.addListener(() {
+    //     if (_scrollController.position.pixels < 50) {
+    //       // You're at the top.
+    //       setState(() {
+    //          _atBottom = false;
+    //       });
+    //     } else {
+    //        setState(() {
+    //          _atBottom = true;
+    //       });
+    //     }
+    // });
   }
 
   @override
@@ -59,29 +76,30 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   _familiyPageRoute(FamiliesList obj, index) {
-    if (obj.titleC == "Contact") {
-      obj.titleC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => ContactPage(
-                        obj: widget.obj,
-                        isbuttomsheet: true,
-                        appBarTitle: obj.titleC!,
-                        language: Globals.selectedLanguage ?? "English",
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+    if (obj.typeC == "Contact") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ContactPage(
+                    obj: widget.obj,
+                    isbuttomsheet: true,
+                    appBarTitle: obj.titleC!,
+                    language: Globals.selectedLanguage ?? "English",
+                  )));
     } else if (obj.typeC == "URL" || obj.titleC == "Afterschool Consent 2") {
       obj.appUrlC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => InAppUrlLauncer(
-                        title: obj.titleC!,
-                        url: obj.appUrlC ?? '',
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )))
+          ?
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) => InAppUrlLauncer(
+          //               title: obj.titleC!,
+          //               url: obj.appUrlC ?? '',
+          //               isbuttomsheet: true,
+          //               language: Globals.selectedLanguage,
+          //             ))):
+
+          _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
@@ -106,7 +124,9 @@ class _FamilyPageState extends State<FamilyPage> {
                       )))
           : Utility.showSnackBar(
               _scaffoldKey, "No calendar/events available", context);
-    } else if (obj.typeC == "RFT_HTML") {
+    } else if (obj.typeC == "RFT_HTML" ||
+        obj.typeC == "HTML/RTF" ||
+        obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
@@ -149,28 +169,11 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Widget _buildLeading(FamiliesList obj) {
     if (obj.appIconUrlC != null) {
-      return Container(
-        child: ClipRRect(
-          child: CachedNetworkImage(
-            imageUrl: obj.appIconUrlC!,
-            fit: BoxFit.cover,
-            height: Globals.deviceType == "phone" ?40:44,
-            width: Globals.deviceType == "phone" ?40:44,
-             placeholder: (context, url) => Container(
-                alignment: Alignment.center,
-                child: ShimmerLoading(
-                  isLoading: true,
-                  child: Container(
-                    height: 20,
-                    width: 20,
-                    color: Colors.white,
-                  ),
-                )),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
-        ),
+      return CustomIconWidget(
+        iconUrl: obj.appIconUrlC ??
+            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
       );
-    } else if(obj.appIconC!=null){
+    } else if (obj.appIconC != null) {
       return Icon(
         IconData(
           int.parse('0x${obj.appIconC!}'),
@@ -180,16 +183,32 @@ class _FamilyPageState extends State<FamilyPage> {
         color: Theme.of(context).colorScheme.primary,
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
-    }else{
-     return Icon(
-                IconData(
-                0xf550,
-                      fontFamily: 'FontAwesomeSolid',
-                      fontPackage: 'font_awesome_flutter',
-                    ),
-                    color: Theme.of(context).colorScheme.primary,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  );
+    } else {
+      return CustomIconWidget(
+        iconUrl:
+            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+      );
+    }
+  }
+
+  _launchURL(obj) async {
+    if (obj.appUrlC.toString().split(":")[0] == 'http') {
+      // if (await canLaunch(obj.appUrlC)) {
+      //   await launch(obj.appUrlC);
+      // } else {
+      //   throw 'Could not launch ${obj.appUrlC!}';
+      // }
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC,
+                    url: obj.appUrlC,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
     }
   }
 
@@ -210,8 +229,8 @@ class _FamilyPageState extends State<FamilyPage> {
           _familiyPageRoute(obj, index);
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        contentPadding:
-            EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
+        // contentPadding:
+        //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: _buildLeading(obj),
         title: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
@@ -220,11 +239,10 @@ class _FamilyPageState extends State<FamilyPage> {
                 message: obj.titleC,
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) { 
-                 return Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText2!);}
-              )
+                builder: (translatedMessage) {
+                  return Text(translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.bodyText2!);
+                })
             : Text(obj.titleC.toString(),
                 style: Theme.of(context).textTheme.bodyText1!),
         trailing: Icon(
@@ -236,15 +254,7 @@ class _FamilyPageState extends State<FamilyPage> {
     );
   }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBarWidget(
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: RefreshIndicator(
+  Widget _body() => RefreshIndicator(
         key: refreshKey,
         child: OfflineBuilder(
             connectivityBuilder: (
@@ -280,7 +290,7 @@ class _FamilyPageState extends State<FamilyPage> {
                                   return state.obj != null &&
                                           state.obj!.length > 0
                                       ? ListView.builder(
-                                          padding: EdgeInsets.only(bottom: 35),
+                                          padding: EdgeInsets.only(bottom: 45),
                                           scrollDirection: Axis.vertical,
                                           itemCount: state.obj!.length,
                                           itemBuilder: (BuildContext context,
@@ -289,14 +299,15 @@ class _FamilyPageState extends State<FamilyPage> {
                                                 state.obj![index], index);
                                           },
                                         )
-                                      : 
+                                      :
                                       // ListView(children: [
+                                      NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: false,
+                                          isNews: false,
+                                          isEvents: false,
+                                        );
 
-                                          NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                          );
-                                          
-                                        // ]);
+                                  // ]);
                                 } else if (state is ErrorLoading) {
                                   return ListView(children: [ErrorMsgWidget()]);
                                 } else {
@@ -314,6 +325,7 @@ class _FamilyPageState extends State<FamilyPage> {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
                                   Globals.homeObjet = state.obj;
+
                                   setState(() {});
                                 }
                               },
@@ -326,7 +338,44 @@ class _FamilyPageState extends State<FamilyPage> {
             },
             child: Container()),
         onRefresh: refreshPage,
-      ),
-    );
+      );
+
+  // var _scrollController = ScrollController();
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBarWidget(
+          marginLeft: 30,
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
+        body: Globals.homeObjet["Family_Banner_Image__c"] != null &&
+                Globals.homeObjet["Family_Banner_Image__c"] != ''
+            ? NestedScrollView(
+                // controller: _scrollController,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    Globals.homeObjet["Family_Banner_Image__c"] != null
+                        ? SliverAppBar(
+                            expandedHeight: 80.0,
+                            floating: false,
+                            // pinned: true,
+                            flexibleSpace: FlexibleSpaceBar(
+                                centerTitle: true,
+                                background: Container(
+                                  child: Image.network(
+                                    Globals.homeObjet["Family_Banner_Image__c"],
+                                    fit: BoxFit.cover,
+                                  ),
+                                )),
+                          )
+                        : SliverAppBar(),
+                  ];
+                },
+                body: _body())
+            : _body());
   }
 }

@@ -12,7 +12,9 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,14 +22,14 @@ class HomePage extends StatefulWidget {
   final homeObj;
   final String? language;
   final Widget Function(String translation)? builder;
-  HomePage({Key? key, this.title, this.homeObj, this.language,this.builder})
+  HomePage({Key? key, this.title, this.homeObj, this.language, this.builder})
       : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
@@ -38,23 +40,52 @@ class _HomePageState extends State<HomePage> {
       ValueNotifier<String>("English");
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   late PersistentTabController _controller;
+  final NewsBloc _newsBloc = new NewsBloc();
+  late AppLifecycleState _notification;
+
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _notification = state;
+    });
+    if (_notification == AppLifecycleState.resumed)
+      _newsBloc.add(FetchNotificationList());
+  }
+
+  Widget callNotification() {
+    return BlocListener<NewsBloc, NewsState>(
+      bloc: _newsBloc,
+      listener: (context, state) async {
+        if (state is NewsLoaded) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          SharedPreferences intPrefs = await SharedPreferences.getInstance();
+          intPrefs.getInt("totalCount") == null
+              ? intPrefs.setInt("totalCount", Globals.notiCount!)
+              : intPrefs.getInt("totalCount");
+          // print(intPrefs.getInt("totalCount"));
+          if (Globals.notiCount! > intPrefs.getInt("totalCount")!) {
+            intPrefs.setInt("totalCount", Globals.notiCount!);
+            prefs.setBool("enableIndicator", true);
+            Globals.indicator.value = true;
+          }
+        }
+      },
+      child: Container(),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     _bloc.initPushState(context);
     _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
-// refreshScreen()async{
-//   await  Future.delayed(const Duration(seconds: 2), () {
-//                  setState(() {         
-//                  });
-//                 });
-// }
-  // getindicatorValue() async {
-  //   Globals.selectedLanguage = await _sharedPref.getString('selected_language');
-  // }
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
 
   List<Widget> _buildScreens() {
     List<Widget> _screens = [];
@@ -88,70 +119,83 @@ class _HomePageState extends State<HomePage> {
         .split(";")
         .map<PersistentBottomNavBarItem>(
       (item) {
-        // if (item.split("_")[0].toString().toLowerCase().contains("news")) {
-        //   Globals.newsIndex = Globals.homeObjet["Bottom_Navigation__c"]
-        //       .split(";")
-        //       .indexOf(item);
-        // // }
-        // setState(() {});
+        if (item.split("_")[0].toString().toLowerCase().contains("news")) {
+          Globals.newsIndex = Globals.homeObjet["Bottom_Navigation__c"]
+              .split(";")
+              .indexOf(item);
+        }
+        // print(Globals.newsIndex);
+        setState(() {});
         return PersistentBottomNavBarItem(
           icon: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ValueListenableBuilder(
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  return item.split("_")[0] == "News" &&
-                          Globals.indicator.value == true
-                      ? Wrap(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(top: 8, right: 2),
-                              height: 8,
-                              width: 8,
-                              decoration: BoxDecoration(
-                                  color: Colors.red, shape: BoxShape.circle),
-                            ),
-                          ],
-                        )
-                      : Container();
-                },
-                valueListenable: Globals.indicator,
-                child: Container(),
-              ),
               Expanded(
                 child: Container(
                   child: Column(
                     children: [
-                      Icon(
-                        IconData(int.parse(item.split("_")[1]),
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
+                      Stack(
+                        alignment: Alignment.center,
+                        // crossAxisAlignment: CrossAxisAlignment.center,
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ValueListenableBuilder(
+                            builder: (BuildContext context, dynamic value,
+                                Widget? child) {
+                              return item.split("_")[0] == "News" &&
+                                      Globals.indicator.value == true
+                                  ? Wrap(
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                              bottom: 15, left: 50),
+                                          // padding:EdgeInsets.only(bottom: 25,) ,
+                                          height: 7,
+                                          width: 7,
+                                          decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              shape: BoxShape.circle),
+                                        ),
+                                      ],
+                                    )
+                                  : Container();
+                            },
+                            valueListenable: Globals.indicator,
+                            child: Container(),
+                          ),
+                          Icon(
+                            IconData(int.parse(item.split("_")[1]),
+                                fontFamily: Overrides.kFontFam,
+                                fontPackage: Overrides.kFontPkg),
+                          ),
+                        ],
                       ),
-                    SpacerWidget(2),
-                     Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                shimmerHeight: 8,
-                message:"${item.split("_")[0]}",
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Expanded(
-                  child: Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText2!,
-                  ),
-                ),
-              )
-               : Expanded(
-                  child: Text(
-                  "${item.split("_")[0]}",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.headline4!,
-                ),
-                )
+                      SpacerWidget(2),
+                      Globals.selectedLanguage != null &&
+                              Globals.selectedLanguage != "English" &&
+                              Globals.selectedLanguage != ""
+                          ? TranslationWidget(
+                              shimmerHeight: 8,
+                              message: "${item.split("_")[0]}",
+                              fromLanguage: "en",
+                              toLanguage: Globals.selectedLanguage,
+                              builder: (translatedMessage) => Expanded(
+                                child: Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context).textTheme.bodyText2!,
+                                ),
+                              ),
+                            )
+                          : Expanded(
+                              child: Text(
+                                "${item.split("_")[0]}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: Theme.of(context).textTheme.headline4!,
+                              ),
+                            ),
+                      callNotification()
                     ],
                   ),
                 ),
@@ -161,88 +205,116 @@ class _HomePageState extends State<HomePage> {
           // title:(''), //("${item.split("_")[0]}"),
           activeColorPrimary: Theme.of(context).primaryColor,
           inactiveColorPrimary: CupertinoColors.systemGrey,
-        );        
+        );
       },
     ).toList();
   }
 
+  Widget _continueShowCaseInstructions(String text) => TranslationWidget(
+      message: text,
+      fromLanguage: "en",
+      toLanguage: Globals.selectedLanguage,
+      builder: (translatedMessage) => Text(
+            '$translatedMessage',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline1!.copyWith(
+                // color: Colors.red,
+                color: Theme.of(context).backgroundColor,
+                fontSize: 32,
+                fontStyle: FontStyle.italic),
+          ));
+
+  Widget _tabBarBody() => PersistentTabView(
+        context,
+        controller: _controller,
+        screens: _buildScreens(),
+        // hideNavigationBar: true,
+        onItemSelected: (int i) {
+          setState(() {
+            // To make sure if the ShowCase is in the progress and user taps on bottom nav bar items so the Showcase should not apear on other pages/
+             Globals.hasShowcaseInitialised.value = true;
+            // New news item indicator
+            if (i == Globals.newsIndex) {
+              Globals.indicator.value = false;
+            }
+          });
+        },
+        items: _navBarsItems(),
+        confineInSafeArea: true,
+        backgroundColor: Theme.of(context).backgroundColor,
+        handleAndroidBackButtonPress: true,
+        resizeToAvoidBottomInset:
+            true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+        stateManagement: true, // Default is true.
+        hideNavigationBarWhenKeyboardShows:
+            true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+        decoration: NavBarDecoration(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(25),
+              topLeft: Radius.circular(25),
+            ),
+            // circular(25.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 10.0,
+              ),
+            ]),
+        onWillPop: (context) async {
+          await _onBackPressed();
+          return false;
+        },
+        popAllScreensOnTapOfSelectedTab: true,
+        popActionScreens: PopActionScreensType.all,
+        itemAnimationProperties: ItemAnimationProperties(
+          duration: Duration(milliseconds: 200),
+          curve: Curves.ease,
+        ),
+        screenTransitionAnimation: ScreenTransitionAnimation(
+          animateTabTransition: true,
+          curve: Curves.ease,
+          duration: Duration(milliseconds: 200),
+        ),
+        navBarStyle: NavBarStyle.style6,
+        navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+      );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PersistentTabView(
-      context,
-      controller: _controller,
-      screens: _buildScreens(),
-      // hideNavigationBar: true,
-      onItemSelected: (int i) {
-          setState(() {
-          });
-      },
-      items: _navBarsItems(),
-      confineInSafeArea: true,
-      backgroundColor: Theme.of(context).backgroundColor,
-      handleAndroidBackButtonPress: true,
-      resizeToAvoidBottomInset:
-          true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-      stateManagement: true, // Default is true.
-      hideNavigationBarWhenKeyboardShows:
-          true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-      decoration: NavBarDecoration(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(25),
-            topLeft: Radius.circular(25),
-          ),
-          // circular(25.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey,
-              blurRadius: 10.0,
-            ),
-          ]),
-          onWillPop: (context) async {
-            await _onBackPressed();
-            return false;
-      },
-      popAllScreensOnTapOfSelectedTab: true,
-      popActionScreens: PopActionScreensType.all,
-      itemAnimationProperties: ItemAnimationProperties(
-        duration: Duration(milliseconds: 200),
-        curve: Curves.ease,
-      ),
-      screenTransitionAnimation: ScreenTransitionAnimation(
-        animateTabTransition: true,
-        curve: Curves.ease,
-        duration: Duration(milliseconds: 200),
-      ),
-      navBarStyle: NavBarStyle.style6,
-      navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+        body: Stack(
+      children: [
+        _tabBarBody(),
+        ValueListenableBuilder<bool>(
+            valueListenable: Globals.hasShowcaseInitialised,
+            builder: (context, value, _) {
+              if (Globals.hasShowcaseInitialised.value == true)
+                return Container();
+              return Center(
+                  child: _continueShowCaseInstructions(
+                      'Tap anywhere on the screen to continue.'));
+            }),
+      ],
     ));
   }
 
- _onBackPressed() {
+  _onBackPressed() {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
               backgroundColor: Colors.white,
-              title: Text(
-                "Do you want to exit the app?",
-                style: Theme.of(context).textTheme.headline2!
-              ),
+              title: Text("Do you want to exit the app?",
+                  style: Theme.of(context).textTheme.headline2!),
               actions: <Widget>[
                 FlatButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: Text(
-                    "No",
-                    style: Theme.of(context).textTheme.headline2!
-                  ),
+                  child:
+                      Text("No", style: Theme.of(context).textTheme.headline2!),
                 ),
                 FlatButton(
                   onPressed: () => exit(0),
-                  child: Text(
-                    "Yes",
-                    style: Theme.of(context).textTheme.headline2!
-                  ),
+                  child: Text("Yes",
+                      style: Theme.of(context).textTheme.headline2!),
                 ),
               ],
             ));

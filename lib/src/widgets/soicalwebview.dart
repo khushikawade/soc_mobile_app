@@ -53,7 +53,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
         appBar: AppBar(
           elevation: 0.0,
           leading: BackButtonWidget(),
-          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget(marginLeft: 0,)),
           actions: [
             widget.isSocialpage
                 ? IconButton(

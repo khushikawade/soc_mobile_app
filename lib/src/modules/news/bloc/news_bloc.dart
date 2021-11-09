@@ -70,62 +70,32 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     }
   }
 
-  void setData() {}
   Future<void> initPushState(context) async {
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
     SharedPreferences pref = await SharedPreferences.getInstance();
-
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
-
-      // SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      // _status = prefs.getBool("enableIndicator")!;
-      // if (_status == true) {
       Globals.indicator.value = true;
-      // } else {
-      //   Globals.indicator.value = false;
-      // }
-
       // print(
       //     "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-      // prefs.setBool("enableIndicator", true);
     });
-
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
       pref.setInt(Strings.bottomNavigation, 1);
     });
 
-    OneSignal.shared
-        .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
-      // print("SUBSCRIPTION STATE CHANGED: ${changes.jsonRepresentation()}");
-    });
-
-    OneSignal.shared.setPermissionObserver((OSPermissionStateChanges changes) {
-      // print("PERMISSION STATE CHANGED: ${changes.jsonRepresentation()}");
-    });
-
-    OneSignal.shared.setEmailSubscriptionObserver(
-        (OSEmailSubscriptionStateChanges emailChanges) {});
-
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
 
-    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-      // print("Accepted permission: $accepted");
-    });
-
-    if (Platform.isIOS) {
-      await OneSignal.shared
-          .promptUserForPushNotificationPermission(fallbackToSettings: true);
-    }
-    if (Platform.isAndroid) {
-      await OneSignal.shared
-          .promptUserForPushNotificationPermission(fallbackToSettings: true);
-    }
-
+    // if (Platform.isIOS) {
+    //   await OneSignal.shared
+    //       .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    // }
+    // if (Platform.isAndroid) {
+    //   await OneSignal.shared
+    //       .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    // }
     updateDeviceId();
   }
 

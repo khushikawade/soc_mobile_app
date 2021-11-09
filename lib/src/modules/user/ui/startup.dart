@@ -29,11 +29,14 @@ class _StartupPageState extends State<StartupPage> {
   final HomeBloc _bloc = new HomeBloc();
   UserBloc _loginBloc = new UserBloc();
   final NewsBloc _newsBloc = new NewsBloc();
-  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+  // static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   AndroidDeviceInfo? androidInfo;
   IosDeviceInfo? ios;
   bool? isnetworkisuue = false;
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
+  
+
+  
 
   void initState() {
     super.initState();
@@ -42,10 +45,26 @@ class _StartupPageState extends State<StartupPage> {
     _loginBloc.add(PerfomLogin());
     _newsBloc.add(FetchNotificationList());
     getindexvalue();
+    _showcase();
+  }
 
+  Future<void> _showcase() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    bool? _flag = preferences.getBool('hasShowcaseInitialised');
+    if(_flag == true){
+      Globals.hasShowcaseInitialised.value = true;
+    }
+    preferences.setBool('hasShowcaseInitialised', true);
+  }
 
-    // timer =
-    //     Timer.periodic(Duration(seconds: 5), (Timer t) => getindicatorValue());
+  late AppLifecycleState _notification;
+
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _notification = state;
+    });
+    print(_notification);
   }
 
   getindexvalue() async {
@@ -58,7 +77,6 @@ class _StartupPageState extends State<StartupPage> {
   void dispose() {
     _bloc.close();
     _loginBloc.close();
-
     super.dispose();
   }
 
@@ -74,14 +92,7 @@ class _StartupPageState extends State<StartupPage> {
   Widget _buildSplashScreen() {
     return Center(
         child: Globals.splashImageUrl != null && Globals.splashImageUrl != " "
-            ?
-            //   SizedBox(
-            // height: 200,
-            // width: 200,
-            // child: Image.asset('assets/images/splash_screen_icon.png',
-            //     fit: BoxFit.fill),
-
-            Padding(
+            ?Padding(
                 padding: const EdgeInsets.all(16),
                 child: CachedNetworkImage(
                   imageUrl: Globals.splashImageUrl!,
@@ -91,16 +102,17 @@ class _StartupPageState extends State<StartupPage> {
                   ),
                 ),
               )
-            : Text("Loading ...")
-
-        // Image.asset('assets/images/splash_screen_icon.png',
-        //     fit: BoxFit.fill),
+            : Text(
+                "Loading ...",
+                style: TextStyle(fontSize: 28, color: Colors.black),
+              )
         );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: OfflineBuilder(
           connectivityBuilder: (
             BuildContext context,
@@ -108,7 +120,7 @@ class _StartupPageState extends State<StartupPage> {
             Widget child,
           ) {
             final bool connected = connectivity != ConnectivityResult.none;
-            final call = connected ? _loginBloc.add(PerfomLogin()) : null;
+            // final call = connected ? _loginBloc.add(PerfomLogin()) : null;
             return new Stack(
               fit: StackFit.expand,
               children: [
@@ -138,16 +150,7 @@ class _StartupPageState extends State<StartupPage> {
                     bloc: _loginBloc,
                     listener: (context, state) async {
                       if (state is LoginSuccess) {
-                        // SharedPreferences prefs = await SharedPreferences.getInstance();
-                        // setState(() {
-                        //   _status = prefs.getBool("enableIndicator")!;
-                        //   if (_status == true) {
-                        //     indicator.value = true;
-                        //   } else {
-                        //     indicator.value = false;
-                        //   }
-                        // });
-                        Globals.token != null && Globals.token != " "
+                            Globals.token != null && Globals.token != " "
                             ? _bloc.add(FetchBottomNavigationBar())
                             : Container(
                                 child: Center(
@@ -170,19 +173,18 @@ class _StartupPageState extends State<StartupPage> {
                         Globals.homeObjet = state.obj;
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
-                        prefs.setString(Strings.SplashUrl,
-                            state.obj["Splash_Screen__c"] ?? '');
+                        prefs.setString(
+                            Strings.SplashUrl,
+                            state.obj["Splash_Screen__c"] ??
+                                state.obj["App_Logo__c"]);
                         state.obj != null
-                            ? Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                    title: "SOC",
-                                    homeObj: state.obj,
-                                  ),
-                                ))
+                            ? 
+                            Navigator.of(context).pushReplacement(_createRoute(state))
                             : NoDataFoundErrorWidget(
-                                isResultNotFoundMsg: false);
+                                isResultNotFoundMsg: false,
+                                isNews: false,
+                                isEvents: false,
+                              );
                       } else if (state is HomeErrorReceived) {
                         ErrorMsgWidget();
                       }
@@ -222,4 +224,16 @@ class _StartupPageState extends State<StartupPage> {
           child: Container()),
     );
   }
+
+  Route _createRoute(state) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => HomePage(
+                                    title: "SOC",
+                                    homeObj: state.obj,
+                                  ),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return child;
+    },
+  );
+}
 }

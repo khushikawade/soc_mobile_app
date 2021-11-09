@@ -1,17 +1,39 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/setting/information.dart';
+import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
-import 'package:app_settings/app_settings.dart';
+import 'package:bubble_showcase/bubble_showcase.dart';
+// import 'package:bubble_showcase/bubble_showcase.dart';
+// import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:open_apps_settings/open_apps_settings.dart';
+import 'package:open_apps_settings/settings_enum.dart';
+import 'package:speech_bubble/speech_bubble.dart';
+// import 'package:speech_bubble/speech_bubble.dart';
+// import 'package:open_apps_settings/settings_enum.dart';
 
+// class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
+//   final double _kIconSize = Globals.deviceType == "phone" ? 35 : 45.0;
+
+// import 'package:flutter/cupertino.dart';
+// import 'package:flutter/material.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:open_apps_settings/open_apps_settings.dart';
+// import 'package:open_apps_settings/settings_enum.dart';
+
+// ignore: must_be_immutable
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  final double _kIconSize = Globals.deviceType == "phone" ?35:45.0;
+  final double _kIconSize = Globals.deviceType == "phone" ? 100 : 100.0;
   final double height = 60;
   final double _kLabelSpacing = 16.0;
   final String language1 = Translations.supportedLanguages.first;
@@ -19,13 +41,29 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
   final ValueChanged? refresh;
+  final double? marginLeft;
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
+  //final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
+  bool? initalscreen;
+  bool? hideAccessibilityButton;
+  bool? showClosebutton;
 
-  AppBarWidget({Key? key, required this.refresh}) : super(key: key);
+  final GlobalKey _bshowcase = GlobalKey();
+  final GlobalKey _openSettingShowCaseKey = GlobalKey();
+
+  AppBarWidget(
+      {Key? key,
+      required this.refresh,
+      required this.marginLeft,
+      this.hideAccessibilityButton,
+      this.showClosebutton})
+      : super(key: key);
 
   @override
   Size get preferredSize => Size.fromHeight(height);
 
   Widget _buildPopupMenuWidget(BuildContext context) {
+    final scaffoldKey = Scaffold.of(context);
     return PopupMenuButton<IconMenu>(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
@@ -38,14 +76,31 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       onSelected: (value) {
         switch (value) {
           case IconsMenu.Information:
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => InformationPage(
-                          appbarTitle: 'Information',
-                          isbuttomsheet: true,
-                          ishtml: true,
-                        )));
+            Globals.appSetting.appInformationC != null
+                ? Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => InformationPage(
+                              appbarTitle: 'Information',
+                              isbuttomsheet: true,
+                              ishtml: true,
+                            )))
+                : scaffoldKey.showSnackBar(
+                    SnackBar(
+                      content: const Text(
+                        'No Information Available',
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                      margin: EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: MediaQuery.of(context).size.height * 0.04),
+                      padding: EdgeInsets.only(
+                        left: 16,
+                      ),
+                      backgroundColor: Colors.black.withOpacity(0.8),
+                    ),
+                  );
             break;
           case IconsMenu.Setting:
             Navigator.push(
@@ -57,7 +112,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                         )));
             break;
           case IconsMenu.Permissions:
-            AppSettings.openAppSettings();
+            // AppSettings.openAppSettings();
+            OpenAppsSettings.openAppsSettings(
+                settingsCode: SettingsCode.APP_SETTINGS);
             break;
         }
       },
@@ -81,35 +138,49 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return AppBar(
-          automaticallyImplyLeading: false,
-           leadingWidth: _kIconSize,
+          // automaticallyImplyLeading: true,
+          leadingWidth: _kIconSize,
           elevation: 0.0,
-          leading: 
-          Container(
-            padding: EdgeInsets.only(left: 10),
-            child: GestureDetector(
-              child: Image(image: AssetImage("assets/images/gtranslate.png"),),
-              // Icon(
-              //   IconData(0xe822,
-              //       fontFamily: Overrides.kFontFam,
-              //       fontPackage: Overrides.kFontPkg),
-              //   size: Globals.deviceType == "phone" ? 32 : 40,
-              // ),
-              onTap: () {
-                setState(() {});
-                LanguageSelector(context, (language) {
-                  if (language != null) {
-                    setState(() {
-                      Globals.selectedLanguage = language;
-                      Globals.languageChanged.value = language;
-                    });
-                    refresh!(true);
-                  }
-                });
-              },
+          leading: BubbleShowcase(
+            enabled: !Globals.hasShowcaseInitialised.value,
+            showCloseButton: false,
+            bubbleShowcaseId: 'my_bubble_showcase',
+            // doNotReopenOnClose: true,
+            bubbleSlides: [
+              _firstSlide(context),
+              _openSettingsButtonSlide(context)
+            ],
+            bubbleShowcaseVersion: 1,
+            onFinished: () {
+              setState(() {
+                Globals.hasShowcaseInitialised.value = true;
+              });
+              _promtPushNotificationPermission();
+              if (refresh != null) refresh!(true);
+            },
+            child: Row(
+              children: [
+                showClosebutton == true
+                    ? IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                          Icons.close,
+                          size: Globals.deviceType == "phone" ? 30 : 34,
+                        ))
+                    : Container(),
+                _translateButton(setState, context),
+                hideAccessibilityButton == true
+                    ? //To adjust Accessibility button apearance in the AppBar, since we are using the smae common widget in the Accessibility page and we don't wnat to show this "Accessibility Button" on the "Accessibility Page" itself.
+                    Container()
+                    : _openSettingsButton(context)
+              ],
             ),
           ),
-          title: AppLogoWidget(),//SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          title: AppLogoWidget(
+            marginLeft: marginLeft,
+          ), //SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
           actions: <Widget>[
             SearchButtonWidget(
               language: 'English',
@@ -117,5 +188,141 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             _buildPopupMenuWidget(context),
           ]);
     });
+  }
+
+  void _promtPushNotificationPermission() async {
+    if (Platform.isIOS) {
+      await OneSignal.shared
+          .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    }
+    if (Platform.isAndroid) {
+      await OneSignal.shared
+          .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    }
+  }
+
+  Widget _translateButton(StateSetter setState, BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(left: 10),
+      child: GestureDetector(
+        key: _bshowcase,
+        child: Image(
+          width: Globals.deviceType == "phone" ? 24 : 32,
+          height: Globals.deviceType == "phone" ? 24 : 32,
+          image: AssetImage("assets/images/gtranslate.png"),
+        ),
+        onTap: () {
+          setState(() {});
+          LanguageSelector(context, (language) {
+            if (language != null) {
+              setState(() {
+                Globals.selectedLanguage = language;
+                Globals.languageChanged.value = language;
+              });
+              refresh!(true);
+            }
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _openSettingsButton(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.only(left: 5),
+        child: IconButton(
+          onPressed: () {
+            if (Platform.isAndroid) {
+              OpenAppsSettings.openAppsSettings(
+                  settingsCode: SettingsCode.ACCESSIBILITY);
+            } else {
+              // AppSettings.openAccessibilitySettings(asAnotherTask: true);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          IosAccessibilityGuidePage()));
+            }
+          },
+          icon: Container(
+            key: _openSettingShowCaseKey,
+            child: Icon(
+              FontAwesomeIcons.universalAccess,
+              color: Colors.blue,
+              size: Globals.deviceType == "phone" ? 26 : 32,
+            ),
+          ),
+        ));
+  }
+
+  BubbleSlide _firstSlide(context) => RelativeBubbleSlide(
+      widgetKey: _bshowcase,
+      shape: const Circle(
+        spreadRadius: 8,
+      ),
+      passThroughMode: PassthroughMode.NONE,
+      child: AbsoluteBubbleSlideChild(
+        widget: Padding(
+          padding: const EdgeInsets.only(top: 0.5),
+          child: SpeechBubble(
+            borderRadius: 8,
+            nipLocation: NipLocation.TOP_LEFT,
+            // nipHeight: 30,
+            color: Colors.black87,
+            child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              Text(
+                "Translate/Traducción/翻译/ترجمة/Traduction",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                ),
+              )
+            ]),
+          ),
+        ),
+        positionCalculator: (size) => Position(
+            // top: Utility.displayHeight(context) * .120,
+            // left: Utility.displayWidth(context) * 0.030,
+            top: _calculateWidgetOffset(_bshowcase).dy + 45,
+            left: _calculateWidgetOffset(_bshowcase).dx),
+      ));
+
+  BubbleSlide _openSettingsButtonSlide(context) => RelativeBubbleSlide(
+      widgetKey: _openSettingShowCaseKey,
+      shape: const Circle(
+        spreadRadius: 8,
+      ),
+      passThroughMode: PassthroughMode.NONE,
+      child: AbsoluteBubbleSlideChild(
+        widget: Padding(
+          padding: const EdgeInsets.only(top: 0.5),
+          child: SpeechBubble(
+            borderRadius: 2,
+            nipLocation: NipLocation.TOP_LEFT,
+            // nipHeight: 30,
+            color: Colors.black87,
+            child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              Text(
+                "Accessibility Settings",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                ),
+              )
+            ]),
+          ),
+        ),
+        positionCalculator: (size) => Position(
+          // top: Utility.displayHeight(context) * .120,
+          // left: Utility.displayWidth(context) * 0.120,
+          top: _calculateWidgetOffset(_openSettingShowCaseKey).dy + 45,
+          left: _calculateWidgetOffset(_openSettingShowCaseKey).dx + 2,
+        ),
+      ));
+
+  Offset _calculateWidgetOffset(GlobalKey key) {
+    RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
+    Offset position = box.localToGlobal(Offset.zero); //this is global position
+    return position;
   }
 }

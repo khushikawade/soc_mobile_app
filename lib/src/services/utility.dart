@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -228,5 +232,32 @@ class Utility {
     } catch (e) {
       return '';
     }
+  }
+
+  static launchUrlOnExternalBrowser(String url) async {
+    // if (await canLaunch(url)) {
+    //   await launch(url);
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
+    try {
+      await launch(url);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<File> createFileFromUrl(_url) async {
+    Uri _imgUrl = Uri.parse(_url);
+    String _fileExt = _imgUrl.path.split('.').last;
+    String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Response<List<int>> rs = await Dio().get<List<int>>(
+      _url,
+      options: Options(responseType: ResponseType.bytes),
+    );
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File file = new File('$dir/$_fileName.$_fileExt');
+    await file.writeAsBytes(rs.data!);
+    return file;
   }
 }

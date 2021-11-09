@@ -18,7 +18,7 @@ part 'family_event.dart';
 part 'family_state.dart';
 
 class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
-  var data;
+  // var data;
   FamilyBloc() : super(FamilyInitial());
   final DbServices _dbServices = DbServices();
 
@@ -37,8 +37,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         if (list.length > 0) {
           list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+
           yield FamiliesDataSucess(obj: list);
-        }else{
+        } else {
           yield FamiliesDataSucess(obj: list);
         }
       } catch (e) {
@@ -50,24 +51,13 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         yield FamilyLoading();
         List<FamiliesSubList> list = await getFamilySubList(event.id);
-        bool isempty;
-        // for (final i in list) {
-        //   if (list[i].sortOredr == null) {
-        //     isempty = true;
-        //   }
-        // }
-
         if (list.length > 0) {
-          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr)
-          // a.sortOredr != null && a.sortOredr != ""
-          //     ? a.sortOredr.compareTo(b.sortOredr)
-          //     : ''
-              );
-               yield FamiliesSublistSucess(obj: list);
-        }else{
+          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+
+          yield FamiliesSublistSucess(obj: list);
+        } else {
           yield FamiliesSublistSucess(obj: list);
         }
-        // yield FamiliesSublistSucess(obj: list);
       } catch (e) {
         yield ErrorLoading(err: e);
       }
@@ -81,7 +71,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         if (list.length > 0) {
           list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
           yield SDDataSucess(obj: list);
-        }else{
+        } else {
           yield SDDataSucess(obj: list);
         }
       } catch (e) {
@@ -100,14 +90,16 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         final DateTime currentDate =
             DateTime.parse(formatter.format(now).toString());
         for (int i = 0; i < list.length; i++) {
-          var temp = list[i].start.toString().contains('dateTime')
-              ? list[i].start['dateTime'].toString().substring(0, 10)
-              : list[i].start['date'].toString().substring(0, 10);
-          if (DateTime.parse(temp).isBefore(currentDate)) {
-            pastListobj.add(list[i]);
-          } else {
-            futureListobj.add(list[i]);
-          }
+          try {
+            var temp = list[i].start.toString().contains('dateTime')
+                ? list[i].start['dateTime'].toString().substring(0, 10)
+                : list[i].start['date'].toString().substring(0, 10);
+            if (DateTime.parse(temp).isBefore(currentDate)) {
+              pastListobj.add(list[i]);
+            } else {
+              futureListobj.add(list[i]);
+            }
+          } catch (e) {}
         }
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
@@ -129,7 +121,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Future<List<FamiliesList>> getFamilyList() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,App_Icon_URL__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,Calendar_Id__c FROM Families_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,App_Icon_URL__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,Calendar_Id__c,Active_Status__c FROM Families_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       if (response.statusCode == 200) {
         dataArray = response.data["records"];
         return response.data["records"]
@@ -146,7 +138,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Future<List<FamiliesSubList>> getFamilySubList(id) async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c FROM Family_Sub_Menu_App__c where Families_App__c='$id'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,App_Icon_URL__c,Active_Status__c FROM Family_Sub_Menu_App__c where Families_App__c='$id'")}");
 
       if (response.statusCode == 200) {
         return response.data["records"]
@@ -163,7 +155,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Future<List<SDlist>> getStaffList() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
 
       if (response.statusCode == 200) {
         dataArray = response.data["records"];

@@ -1,5 +1,5 @@
-import 'package:Soc/src/globals.dart';
 import 'package:flutter/material.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 
 // ignore: must_be_immutable
 class ListWidget extends StatelessWidget {
@@ -20,28 +20,29 @@ class ListWidget extends StatelessWidget {
               ? Theme.of(context).colorScheme.secondary
               : Theme.of(context).colorScheme.background,
         ),
-        child: Container(
-          
+        child: Container(         
           child: ListTile(
-            leading: obj!.appIconC != null && obj!.appIconC.length > 0
-                ? Icon(
-                    IconData(
-                      int.parse('0x${obj.appIconC!}'),
-                      fontFamily: 'FontAwesomeSolid',
-                      fontPackage: 'font_awesome_flutter',
-                    ),
-                    color: Theme.of(context).colorScheme.primary,
-                    size: Globals.deviceType == "phone" ? 18 : 26,
-                  )
-                : Icon(
-                    IconData(
-                      0xf550,
-                      fontFamily: 'FontAwesomeSolid',
-                      fontPackage: 'font_awesome_flutter',
-                    ),
-                    color: Theme.of(context).colorScheme.primary,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  ),
+            leading: 
+            CustomIconWidget(iconUrl: obj.appIconUrlC??"https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png"),
+            // obj!.appIconC != null && obj!.appIconC.length > 0
+            //     ? Icon(
+            //         IconData(
+            //           int.parse('0x${obj.appIconC!}'),
+            //           fontFamily: 'FontAwesomeSolid',
+            //           fontPackage: 'font_awesome_flutter',
+            //         ),
+            //         color: Theme.of(context).colorScheme.primary,
+            //         size: Globals.deviceType == "phone" ? 18 : 26,
+            //       )
+            //     : Icon(
+            //         IconData(
+            //           0xf550,
+            //           fontFamily: 'FontAwesomeSolid',
+            //           fontPackage: 'font_awesome_flutter',
+            //         ),
+            //         color: Theme.of(context).colorScheme.primary,
+            //         size: Globals.deviceType == "phone" ? 20 : 28,
+            //       ),
             title: listItem!,
           ),
         ));

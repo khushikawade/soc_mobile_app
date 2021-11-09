@@ -12,11 +12,13 @@ class FamiliesList {
   String? rtfHTMLC;
   String? typeC;
   String? calendarId;
+
   final sortOredr;
+  final status;
 
   FamiliesList(
       {
-        // this.attributes,
+      // this.attributes,
       this.titleC,
       this.appIconC,
       this.appUrlC,
@@ -27,7 +29,8 @@ class FamiliesList {
       this.appIconUrlC,
       this.typeC,
       this.calendarId,
-      this.sortOredr});
+      this.sortOredr,
+      this.status});
 
   factory FamiliesList.fromJson(Map<String, dynamic> json) => FamiliesList(
       // attributes: json['attributes'] == null
@@ -43,7 +46,8 @@ class FamiliesList {
       rtfHTMLC: json['RTF_HTML__c'] as String?,
       typeC: json['Type__c'] as String?,
       calendarId: json['Calendar_Id__c'] as String?,
-      sortOredr: json['Sort_Order__c']);
+      sortOredr: json['Sort_Order__c'],
+      status: json['Active_Status__c']);
 
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
@@ -56,6 +60,8 @@ class FamiliesList {
         'RTF_HTML__c': rtfHTMLC,
         'Type__c': typeC,
         'Calendar_Id__c': calendarId,
-        'Sort_Order__c': sortOredr
+        'Sort_Order__c': sortOredr,
+        'App_Icon_URL__c': appIconUrlC,
+        'Active_Status__c': status,
       };
 }

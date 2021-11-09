@@ -24,7 +24,6 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
   final bool isbuttomsheet;
@@ -113,11 +112,12 @@ class _SearchPageState extends State<SearchPage> {
                       language: Globals.selectedLanguage,
                     )));
       } else {
-        if (await canLaunch(obj.appURLC!)) {
-          await launch(obj.appURLC!);
-        } else {
-          throw 'Could not launch ${obj.appURLC}';
-        }
+        // if (await canLaunch(obj.appURLC!)) {
+        //   await launch(obj.appURLC!);
+        // } else {
+        //   throw 'Could not launch ${obj.appURLC}';
+        // }
+        await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
       }
     } else if (obj.typeC == "URL") {
       obj.urlC != null
@@ -131,7 +131,7 @@ class _SearchPageState extends State<SearchPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML") {
+    } else if (obj.typeC == "RFT_HTML"||obj.typeC=="HTML/RTF"||obj.typeC=="RTF/HTML") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
@@ -393,9 +393,11 @@ class _SearchPageState extends State<SearchPage> {
                           );
                         }).toList(),
                       ))
-                    : NoDataFoundErrorWidget(
-                        isResultNotFoundMsg: true,
-                      ));
+                    :  NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                            isEvents: false,
+                                          ));
           } else if (state is SearchLoading) {
             return Expanded(
                 child: Center(
@@ -493,7 +495,7 @@ class _SearchPageState extends State<SearchPage> {
             elevation: 0.0,
             leading: BackButtonWidget(),
             title:
-                SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget())),
+                SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget(marginLeft: 0,))),
         body: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(

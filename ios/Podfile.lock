@@ -3,13 +3,57 @@ PODS:
     - Flutter
   - advance_pdf_viewer (1.0.5):
     - Flutter
-  - "app_settings (3.0.0+1)":
-    - Flutter
   - connectivity (0.0.1):
     - Flutter
     - Reachability
   - device_info (0.0.1):
     - Flutter
+  - Firebase/Analytics (8.8.0):
+    - Firebase/Core
+  - Firebase/Core (8.8.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (~> 8.8.0)
+  - Firebase/CoreOnly (8.8.0):
+    - FirebaseCore (= 8.8.0)
+  - firebase_analytics (8.3.4):
+    - Firebase/Analytics (= 8.8.0)
+    - firebase_core
+    - Flutter
+  - firebase_core (1.8.0):
+    - Firebase/CoreOnly (= 8.8.0)
+    - Flutter
+  - FirebaseAnalytics (8.8.0):
+    - FirebaseAnalytics/AdIdSupport (= 8.8.0)
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
+    - GoogleUtilities/MethodSwizzler (~> 7.4)
+    - GoogleUtilities/Network (~> 7.4)
+    - "GoogleUtilities/NSData+zlib (~> 7.4)"
+    - nanopb (~> 2.30908.0)
+  - FirebaseAnalytics/AdIdSupport (8.8.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleAppMeasurement (= 8.8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
+    - GoogleUtilities/MethodSwizzler (~> 7.4)
+    - GoogleUtilities/Network (~> 7.4)
+    - "GoogleUtilities/NSData+zlib (~> 7.4)"
+    - nanopb (~> 2.30908.0)
+  - FirebaseCore (8.8.0):
+    - FirebaseCoreDiagnostics (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Logger (~> 7.4)
+  - FirebaseCoreDiagnostics (8.8.0):
+    - GoogleDataTransport (~> 9.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/Logger (~> 7.4)
+    - nanopb (~> 2.30908.0)
+  - FirebaseInstallations (8.8.0):
+    - FirebaseCore (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleUtilities/UserDefaults (~> 7.4)
+    - PromisesObjC (< 3.0, >= 1.2)
   - Flutter (1.0.0)
   - flutter_webview_plugin (0.0.1):
     - Flutter
@@ -19,25 +63,78 @@ PODS:
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps
+  - GoogleAppMeasurement (8.8.0):
+    - GoogleAppMeasurement/AdIdSupport (= 8.8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
+    - GoogleUtilities/MethodSwizzler (~> 7.4)
+    - GoogleUtilities/Network (~> 7.4)
+    - "GoogleUtilities/NSData+zlib (~> 7.4)"
+    - nanopb (~> 2.30908.0)
+  - GoogleAppMeasurement/AdIdSupport (8.8.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 8.8.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
+    - GoogleUtilities/MethodSwizzler (~> 7.4)
+    - GoogleUtilities/Network (~> 7.4)
+    - "GoogleUtilities/NSData+zlib (~> 7.4)"
+    - nanopb (~> 2.30908.0)
+  - GoogleAppMeasurement/WithoutAdIdSupport (8.8.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.4)
+    - GoogleUtilities/MethodSwizzler (~> 7.4)
+    - GoogleUtilities/Network (~> 7.4)
+    - "GoogleUtilities/NSData+zlib (~> 7.4)"
+    - nanopb (~> 2.30908.0)
+  - GoogleDataTransport (9.1.0):
+    - GoogleUtilities/Environment (~> 7.2)
+    - nanopb (~> 2.30908.0)
+    - PromisesObjC (< 3.0, >= 1.2)
   - GoogleMaps (4.2.0):
     - GoogleMaps/Maps (= 4.2.0)
   - GoogleMaps/Base (4.2.0)
   - GoogleMaps/Maps (4.2.0):
     - GoogleMaps/Base
+  - GoogleUtilities/AppDelegateSwizzler (7.5.2):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (7.5.2):
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/Logger (7.5.2):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (7.5.2):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (7.5.2):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (7.5.2)"
+  - GoogleUtilities/Reachability (7.5.2):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (7.5.2):
+    - GoogleUtilities/Logger
   - image_picker (0.0.1):
     - Flutter
-  - onesignal_flutter (3.1.0):
+  - nanopb (2.30908.0):
+    - nanopb/decode (= 2.30908.0)
+    - nanopb/encode (= 2.30908.0)
+  - nanopb/decode (2.30908.0)
+  - nanopb/encode (2.30908.0)
+  - onesignal_flutter (3.2.3):
     - Flutter
-    - OneSignalXCFramework (= 3.5.3)
-  - OneSignalXCFramework (3.5.3)
+    - OneSignalXCFramework (= 3.7.0)
+  - OneSignalXCFramework (3.7.0)
+  - open_apps_settings (0.0.1):
+    - Flutter
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
+  - PromisesObjC (2.0.0)
   - Reachability (3.2)
   - share (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
+    - Flutter
+  - speech_bubble (0.0.1):
     - Flutter
   - sqflite (0.0.2):
     - Flutter
@@ -56,18 +153,21 @@ PODS:
 DEPENDENCIES:
   - add_2_calendar (from `.symlinks/plugins/add_2_calendar/ios`)
   - advance_pdf_viewer (from `.symlinks/plugins/advance_pdf_viewer/ios`)
-  - app_settings (from `.symlinks/plugins/app_settings/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
+  - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
+  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
+  - open_apps_settings (from `.symlinks/plugins/open_apps_settings/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - speech_bubble (from `.symlinks/plugins/speech_bubble/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
@@ -77,9 +177,19 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseCoreDiagnostics
+    - FirebaseInstallations
     - FMDB
+    - GoogleAppMeasurement
+    - GoogleDataTransport
     - GoogleMaps
+    - GoogleUtilities
+    - nanopb
     - OneSignalXCFramework
+    - PromisesObjC
     - Reachability
 
 EXTERNAL SOURCES:
@@ -87,12 +197,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/add_2_calendar/ios"
   advance_pdf_viewer:
     :path: ".symlinks/plugins/advance_pdf_viewer/ios"
-  app_settings:
-    :path: ".symlinks/plugins/app_settings/ios"
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
+  firebase_analytics:
+    :path: ".symlinks/plugins/firebase_analytics/ios"
+  firebase_core:
+    :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
   flutter_webview_plugin:
@@ -103,6 +215,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker/ios"
   onesignal_flutter:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
+  open_apps_settings:
+    :path: ".symlinks/plugins/open_apps_settings/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
@@ -111,6 +225,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  speech_bubble:
+    :path: ".symlinks/plugins/speech_bubble/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
   url_launcher:
@@ -127,22 +243,35 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   add_2_calendar: c201b1c7dc0299280f1b1a8158aa80e15a8f8912
   advance_pdf_viewer: 5c832f382b4ca84fe735f893b7e91aa830c27d7b
-  app_settings: d103828c9f5d515c4df9ee754dabd443f7cedcf3
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Firebase: 629510f1a9ddb235f3a7c5c8ceb23ba887f0f814
+  firebase_analytics: bd5bd37e6c1cfebb065466ecfdc044664ed6f01d
+  firebase_core: 3b4c707f5a8eff38f52fd5580895bcd89357bf42
+  FirebaseAnalytics: 5506ea8b867d8423485a84b4cd612d279f7b0b8a
+  FirebaseCore: 98b29e3828f0a53651c363937a7f7d92a19f1ba2
+  FirebaseCoreDiagnostics: fe77f42da6329d6d83d21fd9d621a6b704413bfc
+  FirebaseInstallations: 2563cb18a723ef9c6ef18318a49519b75dce613c
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
+  google_maps_flutter: 279865bd07e2d8751f43a3bc64bac7f6075d0c93
+  GoogleAppMeasurement: 5ba1164e3c844ba84272555e916d0a6d3d977e91
+  GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9
   GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
+  GoogleUtilities: 8de2a97a17e15b6b98e38e8770e2d129a57c0040
   image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
-  onesignal_flutter: 79eb89d25249b078d3c358fb7827b22909f7fbed
-  OneSignalXCFramework: 4e08d8353adec161c3d9174e2572c849e1225c9f
+  nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  onesignal_flutter: abfc75e8d08a0d9c977aacfab9454af58f4f4fcc
+  OneSignalXCFramework: 974dc438d68910cf04f3c8ab034e0131d41438c1
+  open_apps_settings: b15bcddca026a201319f58e24f36464218793efc
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
+  PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  speech_bubble: 51ae0c27684a0d858d4283cafd66591337a851c2
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e

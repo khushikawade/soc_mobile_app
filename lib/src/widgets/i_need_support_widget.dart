@@ -1,8 +1,10 @@
 import 'package:Soc/src/globals.dart';
+
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:mailto/mailto.dart';
+
 
 UrlLauncherWidget objurl = new UrlLauncherWidget();
 void iNeedSupport(BuildContext context) {
@@ -21,10 +23,11 @@ void iNeedSupport(BuildContext context) {
 
 launchMailto(subject, body) async {
   final mailtoLink = Mailto(
-    to: [Globals.appSetting.contactEmailC.toString()],
+    to: ["admin@solvedconsulting.com"],//[Globals.appSetting.contactEmailC.toString()],
     cc: [],
     subject: subject,
     body: body,
   );
-  await launch('$mailtoLink');
+  // await launch('$mailtoLink');
+   await Utility.launchUrlOnExternalBrowser('$mailtoLink');
 }
