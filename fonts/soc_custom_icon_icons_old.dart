@@ -53,4 +53,7 @@ class MyCustomIcon {
   static const IconData no_data_icon = IconData(0xe81d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData no_internet_icon = IconData(0xe81e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData translate_logo_max_500x500 = IconData(0xe81f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData group_7_2x = IconData(0xe820, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData group_6_2x = IconData(0xe821, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData group_7_2x_1 = IconData(0xe822, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

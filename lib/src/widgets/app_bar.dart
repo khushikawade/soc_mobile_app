@@ -81,7 +81,9 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                           fontWeight: FontWeight.w400),
                       textAlign: TextAlign.center,
                     )
-              : EmptyContainer(),
+              : AppLogoWidget(
+            marginLeft: 20,
+          ),
       actions: [
         widget.isSearch == true
             ? SearchButtonWidget(

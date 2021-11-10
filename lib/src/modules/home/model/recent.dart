@@ -26,6 +26,7 @@ class Recent {
   @HiveField(9)
   String? deepLink;
 
+
   Recent(this.hiveobjid, this.titleC, this.appURLC, this.urlC, this.id,
       this.name, this.pdfURL, this.rtfHTMLC, this.typeC, this.deepLink);
 }

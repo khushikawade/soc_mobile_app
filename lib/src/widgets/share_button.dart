@@ -6,11 +6,11 @@ import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 
 class ShareButtonWidget extends StatelessWidget {
-  String? language;
+  final String? language;
   ShareButtonWidget({Key? key, required this.language}) : super(key: key);
   static const double _kLabelSpacing = 17.0;
-  SharePopUp obj = new SharePopUp();
-  UrlLauncherWidget objurl = new UrlLauncherWidget();
+  final SharePopUp obj = new SharePopUp();
+  final UrlLauncherWidget objurl = new UrlLauncherWidget();
 
   @override
   Widget build(BuildContext context) {
