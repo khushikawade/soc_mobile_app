@@ -88,6 +88,7 @@ class _StudentPageState extends State<StudentPage> {
     return list.length > 0
         ? new OrientationBuilder(builder: (context, orientation) {
             return GridView.count(
+              padding: const EdgeInsets.only(bottom: AppTheme.kBodyPadding * 3),
               childAspectRatio: orientation == Orientation.portrait ? 1 : 3 / 2,
               crossAxisCount: orientation == Orientation.portrait &&
                       Globals.deviceType == "phone"

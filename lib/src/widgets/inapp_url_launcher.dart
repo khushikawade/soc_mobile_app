@@ -27,7 +27,7 @@ class InAppUrlLauncer extends StatefulWidget {
 
 class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   bool? iserrorstate = false;
-final Completer<WebViewController> _controller =
+  final Completer<WebViewController> _controller =
       Completer<WebViewController>();
   @override
   void initState() {
@@ -70,10 +70,10 @@ final Completer<WebViewController> _controller =
               return connected
                   ? WebView(
                       initialUrl: '${widget.url}',
-                       javascriptMode: JavascriptMode.unrestricted,
-                       onWebViewCreated: (WebViewController webViewController) {
-                    _controller.complete(webViewController);
-                  },
+                      javascriptMode: JavascriptMode.unrestricted,
+                      onWebViewCreated: (WebViewController webViewController) {
+                        _controller.complete(webViewController);
+                      },
                     )
                   : NoInternetErrorWidget(
                       connected: connected, issplashscreen: false);

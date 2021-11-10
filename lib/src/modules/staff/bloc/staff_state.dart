@@ -41,6 +41,7 @@ class StaffDataSucess extends StaffState {
   List<Object> get props => [];
 }
 
+// ignore: must_be_immutable
 class StaffSubListSucess extends StaffState {
   List<StaffSubList>? obj;
   List<StaffSubList>? subFolder;
