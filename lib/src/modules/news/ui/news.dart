@@ -180,9 +180,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     ),
             ),
             title: _buildnewsHeading(obj),
-            subtitle: NewsActionButton(
-                newsObj: obj, icons: icons,) //countObj: obj)
-            // //actionButton(obj),
+            subtitle: 
+            // NewsActionButton(
+            //     newsObj: obj, icons: icons,) //countObj: obj)
+            actionButton(obj),
             //NewActionButton(obj: obj, icons: icons), //_buildActionButton(),
           )),
     );
@@ -195,8 +196,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                               bloc: _countBloc,
                               listener: (context, state) async {
                                 if (state is ActionCountSuccess) {
-            // return NewsActionButton(
-            //     newsObj: obj, icons: icons, countObj: state.obj);
+             NewsActionButton(
+                newsObj: obj, icons: icons, countObj: state.obj);
           } else if (state is NewsLoading) {
              Expanded(
               child: Container(

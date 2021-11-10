@@ -10,11 +10,11 @@ class NewsActionButton extends StatefulWidget {
     Key? key,
     required this.newsObj,
     required this.icons,
-    // required this.countObj,
+    required this.countObj,
   }) : super(key: key);
 
   final NotificationList newsObj;
-  // final ActionCountList countObj;
+  final ActionCountList countObj;
   final List? icons;
 
   _NewsActionButtonState createState() => _NewsActionButtonState();
