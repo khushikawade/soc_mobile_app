@@ -287,7 +287,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                         centerTitle: true,
                         background: Image.network(
                           Globals.homeObjet["Resources_Banner_Image__c"],
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                         ),
                       ),
                     )

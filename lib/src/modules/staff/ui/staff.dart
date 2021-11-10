@@ -75,6 +75,7 @@ class _StaffPageState extends State<StaffPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    staffDirectoryCategoryId: null,
                     isAbout: false,
                     appBarTitle: obj.titleC!,
                     obj: obj,
@@ -333,14 +334,14 @@ class _StaffPageState extends State<StaffPage> {
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   SliverAppBar(
-                    expandedHeight: 80.0,
+                    expandedHeight: AppTheme.kBannerHeight,
                     floating: false,
                     // pinned: true,
                     flexibleSpace: FlexibleSpaceBar(
                       centerTitle: true,
                       background: Image.network(
                         Globals.homeObjet["Staff_Banner_Image__c"],
-                        fit: BoxFit.cover,
+                        fit: BoxFit.fill,
                       ),
                     ),
                   )

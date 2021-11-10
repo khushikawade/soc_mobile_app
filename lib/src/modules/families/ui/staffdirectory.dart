@@ -57,7 +57,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   void initState() {
     super.initState();
     if (widget.staffDirectoryCategoryId != null) {
-      // TODO fetch staff list by given category which mostly used in the district template
+      _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
     } else {
       _bloc.add(SDevent());
     }
@@ -123,7 +123,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
       ),
       child: GestureDetector(
         onTap: () {
-          if (widget.isAbout) {
+          if (widget.isAbout == true) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -304,7 +304,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 if (connected) {
                   if (iserrorstate == true) {
                     iserrorstate = false;
-                    _bloc.add(SDevent());
+                    if (widget.staffDirectoryCategoryId != null) {
+                      _bloc.add(
+                          SDevent(categoryId: widget.staffDirectoryCategoryId));
+                    } else {
+                      _bloc.add(SDevent());
+                    }
                   }
                 } else if (!connected) {
                   iserrorstate = true;
@@ -331,7 +336,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                             state.obj!.length > 0
                                         ? Column(
                                             children: [
-                                              _buildHeading("STAFF DIRECTORY"),
+                                              widget.isAbout == true
+                                                  ? Container()
+                                                  : _buildHeading(
+                                                      "STAFF DIRECTORY"),
                                               SpacerWidget(_kLabelSpacing / 4),
                                               Expanded(
                                                 child: ListView.builder(
@@ -394,7 +402,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _bloc.add(SDevent());
+    if (widget.staffDirectoryCategoryId != null) {
+      _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
+    } else {
+      _bloc.add(SDevent());
+    }
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }
