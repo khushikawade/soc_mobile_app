@@ -96,7 +96,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
-                staffDirectoryCategoryId: null,
+                    staffDirectoryCategoryId: null,
                     isAbout: false,
                     appBarTitle: obj.titleC!,
                     obj: obj,
@@ -115,7 +115,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
-                staffDirectoryCategoryId: obj.id,
+                    staffDirectoryCategoryId: obj.id,
                     isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,
@@ -143,7 +143,7 @@ class _SearchPageState extends State<SearchPage> {
       }
     } else if (obj.typeC == "URL") {
       obj.urlC != null
-          ? _launchURL(obj) 
+          ? _launchURL(obj)
           // Navigator.push(
           //     context,
           //     MaterialPageRoute(
@@ -541,10 +541,16 @@ class _SearchPageState extends State<SearchPage> {
         appBar: new AppBar(
           elevation: 0.0,
           leading: BackButtonWidget(),
-          title:
-              // SizedBox(width: 100.0, height: 60.0, child:
-              AppLogoWidget(
-            marginLeft: 0,
+          centerTitle: true,
+          title: // SizedBox(width: 100.0, height: 60.0, child:
+              Container(
+            // color: Colors.blue,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: AppLogoWidget(
+                marginLeft: 0,
+              ),
+            ),
           ),
           // )
         ),
