@@ -139,11 +139,6 @@ class _AboutusPageState extends State<AboutusPage> {
 
   _launchURL(obj) async {
     if (obj.toString().split(":")[0] == 'http') {
-      // if (await canLaunch(obj)) {
-      //   await launch(obj);
-      // } else {
-      //   throw 'Could not launch ${obj!}';
-      // }
       await Utility.launchUrlOnExternalBrowser(obj);
     } else {
       Navigator.push(

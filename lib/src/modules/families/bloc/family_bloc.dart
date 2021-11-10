@@ -2,10 +2,11 @@ import 'dart:async';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/families/modal/stafflist.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -66,7 +67,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     if (event is SDevent) {
       try {
         yield FamilyLoading();
-        List<SDlist> list = await getStaffList();
+        List<SDlist> list = await getStaffList(event.categoryId);
 
         if (list.length > 0) {
           list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
@@ -152,10 +153,12 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  Future<List<SDlist>> getStaffList() async {
+  Future<List<SDlist>> getStaffList(categoryId) async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+        categoryId == null
+          ? "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}"
+          : "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where About_App__c = '$categoryId'")}");
 
       if (response.statusCode == 200) {
         dataArray = response.data["records"];

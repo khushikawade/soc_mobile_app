@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/about/ui/about_sd_detail_page.dart';
 import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
@@ -13,21 +14,23 @@ import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
+  final obj;
+  int currentIndex;
+  bool? issocialpage;
+  bool? isAboutSDPage;
+  String date;
+  bool isbuttomsheet;
+  String? language;
+  bool isEvent;
   SliderWidget(
       {required this.obj,
       required this.currentIndex,
       this.issocialpage,
-      required this.iseventpage,
+      required this.isAboutSDPage,
       required this.date,
       required this.isbuttomsheet,
-      required this.language});
-  final obj;
-  int currentIndex;
-  bool? issocialpage;
-  bool? iseventpage;
-  String date;
-  bool isbuttomsheet;
-  String? language;
+      required this.language,
+      required this.isEvent});
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -69,32 +72,30 @@ class _SliderWidgetState extends State<SliderWidget> {
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
           leading: BackButtonWidget(),
-          title:
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppLogoWidget(marginLeft: 40,)
-            ],
+          title: //SizedBox(width: 100.0, height: 60.0, child:
+              AppLogoWidget(
+            marginLeft: 50,
           ),
           actions: <Widget>[
             IconButton(
-                  onPressed: () async {
-                    setState(() {});
-                    if (widget.currentIndex > 0) {
-                      _controller.previousPage(
-                          duration: _kDuration, curve: _kCurve);
-                    }
-                  },
-                  icon: Icon(
-                    const IconData(0xe80c,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: widget.currentIndex == 0
-                        ? AppTheme.kDecativeIconColor
-                        : null,
-                    size: Globals.deviceType == "phone" ? 18 : 26,
-                  ),
-                ),
+              onPressed: () async {
+                setState(() {});
+                if (widget.currentIndex > 0) {
+                  _controller.previousPage(
+                      duration: _kDuration, curve: _kCurve);
+                }
+              },
+              icon: Icon(
+                const IconData(0xe80c,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: widget.currentIndex == 0
+                    ? AppTheme.kDecativeIconColor
+                    : null,
+                size: Globals.deviceType == "phone" ? 18 : 26,
+              ),
+            ),
+            HorzitalSpacerWidget(_kPadding / 3),
             IconButton(
               onPressed: () async {
                 setState(() {});
@@ -144,13 +145,16 @@ class _SliderWidgetState extends State<SliderWidget> {
                       object: object[widget.currentIndex],
                       language: Globals.selectedLanguage,
                     )
-                  : widget.iseventpage!
+                  : widget.isAboutSDPage!
+                      ? AboutSDDetailPage(
+                          obj: object[widget.currentIndex],
+                        )
+                      : widget.isEvent
                       ? EventDescription(
                           obj: object[widget.currentIndex],
                           isbuttomsheet: true,
                           language: Globals.selectedLanguage,
-                        )
-                      : Newdescription(
+                        ):Newdescription(
                           obj: object[widget.currentIndex],
                           date: widget.date,
                           isbuttomsheet: true,
