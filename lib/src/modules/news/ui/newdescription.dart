@@ -7,6 +7,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/news_action.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -16,18 +17,22 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:share/share.dart';
 
 class Newdescription extends StatefulWidget {
-  Newdescription(
-      {Key? key,
-      required this.obj,
-      required this.date,
-      required this.isbuttomsheet,
-      required this.language})
-      : super(key: key);
+  Newdescription({
+    Key? key,
+    required this.obj,
+    required this.date,
+    required this.isbuttomsheet,
+    required this.language,
+    required this.icons,
+    required this.newsCountObj
+  }) : super(key: key);
 
+  final obj;
   final String date;
   final bool isbuttomsheet;
   final String? language;
-  final obj;
+  final List? icons;
+  final newsCountObj;
 
   _NewdescriptionState createState() => _NewdescriptionState();
 }
@@ -307,6 +312,7 @@ class _NewdescriptionState extends State<Newdescription> {
           ),
         ),
         SpacerWidget(AppTheme.kBodyPadding),
+        NewsActionButton(newsObj: widget.obj, icons: widget.icons,),//countObj:widget.newsCountObj),
         Row(
           children: [
             Container(

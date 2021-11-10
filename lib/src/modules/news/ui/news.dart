@@ -3,13 +3,13 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news_image.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
+import 'package:Soc/src/widgets/news_action.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
@@ -29,10 +29,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   static const double _kIconSize = 48.0;
   static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
+  NewsBloc _countBloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   List icons = [0xe823, 0xe824, 0xe825];
-
   final HomeBloc _homeBloc = new HomeBloc();
   var object;
   String newsTimeStamp = '';
@@ -42,20 +42,18 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     bloc.add(FetchNotificationList());
+    _countBloc.add(FetchAction());
     hideIndicator();
     WidgetsBinding.instance!.addObserver(this);
   }
 
-  // setindexvalue() async {
-  //   SharedPreferences pref = await SharedPreferences.getInstance();
-  //   pref.setInt(Strings.bottomNavigation, 0);
-  // }
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
       _notification = state;
     });
     if (_notification == AppLifecycleState.resumed)
       bloc.add(FetchNotificationList());
+    _countBloc.add(FetchAction());
   }
 
   hideIndicator() async {
@@ -71,6 +69,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       notification.complete(notification.notification);
       Globals.indicator.value = true;
       bloc.add(FetchNotificationList());
+      _countBloc.add(FetchAction());
     });
   }
 
@@ -95,6 +94,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 context,
                 MaterialPageRoute(
                     builder: (context) => SliderWidget(
+                          // newsCountObj : ,
+                          icons: icons,
                           obj: object,
                           currentIndex: index,
                           issocialpage: false,
@@ -179,54 +180,56 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     ),
             ),
             title: _buildnewsHeading(obj),
-            subtitle: _buildActionButton(),
+            subtitle: NewsActionButton(
+                newsObj: obj, icons: icons,) //countObj: obj)
+            // //actionButton(obj),
+            //NewActionButton(obj: obj, icons: icons), //_buildActionButton(),
           )),
     );
   }
 
-  Widget _buildActionButton() {
-    return Container(
-      height: 50,
-      child: ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        // padding: EdgeInsets.only(bottom: 40),
-        itemCount: icons.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Row(
-            children: [
-              Container(
-                child: IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      IconData(icons[index],
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      color: Colors.black,
-                      //Icons.favorite_outline_outlined,
-                      size: Globals.deviceType == "phone"
-                          ? (index == 0 ? 30 : 24)
-                          : (index == 0 ? 34 : 28),
-                    )),
+  Widget actionButton(obj) {
+
+
+   return BlocListener<NewsBloc, NewsState>(
+                              bloc: _countBloc,
+                              listener: (context, state) async {
+                                if (state is ActionCountSuccess) {
+            // return NewsActionButton(
+            //     newsObj: obj, icons: icons, countObj: state.obj);
+          } else if (state is NewsLoading) {
+             Expanded(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Center(child: CircularProgressIndicator()),
               ),
-              Text(
-                "129",
-                style: Theme.of(context).textTheme.headline4!,
-              ),
-              index < icons.length - 1
-                  ? Container(
-                      margin: EdgeInsets.only(left: 10),
-                      height: 5,
-                      width: 5,
-                      decoration: BoxDecoration(
-                          color: Colors.black, shape: BoxShape.circle),
-                    )
-                  : Container(),
-            ],
-          );
-        },
-      ),
-    );
+            );
+          } else if (state is NewsErrorReceived) {
+             ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+          } else {
+             Container();
+          }
+                              },
+                              child: EmptyContainer());
+    // return BlocListener(
+    //     bloc: _countBloc,
+    //     listener: (BuildContext context, NewsState state) {
+    //       if (state is ActionCountSuccess) {
+    //         return NewsActionButton(
+    //             newsObj: obj, icons: icons, countObj: state.obj);
+    //       } else if (state is NewsLoading) {
+    //         return Expanded(
+    //           child: Container(
+    //             height: MediaQuery.of(context).size.height * 0.8,
+    //             child: Center(child: CircularProgressIndicator()),
+    //           ),
+    //         );
+    //       } else if (state is NewsErrorReceived) {
+    //         return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+    //       } else {
+    //         return Container();
+          // }
+        // });
   }
 
   Widget _buildnewsHeading(obj) {
@@ -248,7 +251,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 fromLanguage: "en",
                 toLanguage: Globals.selectedLanguage,
                 builder: (translatedMessage) => Text(
-                  // obj.titleC.toString(),
                   translatedMessage.toString(),
                   style: Theme.of(context).textTheme.bodyText2!,
                 ),
@@ -309,6 +311,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               if (connected) {
                 if (iserrorstate == true) {
                   bloc.add(FetchNotificationList());
+                  _countBloc.add(FetchAction());
                   iserrorstate = false;
                 }
               } else if (!connected) {
@@ -360,15 +363,12 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             listener: (context, state) async {
                               if (state is NewsLoaded) {
                                 object = state.obj;
-                                // SharedPreferences prefs =
-                                //     await SharedPreferences.getInstance();
                                 SharedPreferences intPrefs =
                                     await SharedPreferences.getInstance();
                                 intPrefs.getInt("totalCount") == null
                                     ? intPrefs.setInt(
                                         "totalCount", Globals.notiCount!)
                                     : intPrefs.getInt("totalCount");
-                                // print(intPrefs.getInt("totalCount"));
                                 if (Globals.notiCount! >
                                     intPrefs.getInt("totalCount")!) {
                                   intPrefs.setInt(

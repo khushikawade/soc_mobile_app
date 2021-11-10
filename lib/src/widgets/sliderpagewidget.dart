@@ -5,8 +5,6 @@ import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
@@ -16,11 +14,13 @@ class SliderWidget extends StatefulWidget {
   SliderWidget(
       {required this.obj,
       required this.currentIndex,
-      this.issocialpage,
       required this.iseventpage,
       required this.date,
       required this.isbuttomsheet,
-      required this.language});
+      required this.language,
+      this.issocialpage,
+      this.icons,
+      this.newsCountObj});
   final obj;
   int currentIndex;
   bool? issocialpage;
@@ -28,6 +28,8 @@ class SliderWidget extends StatefulWidget {
   String date;
   bool isbuttomsheet;
   String? language;
+  final List? icons;
+  final newsCountObj;
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -69,32 +71,33 @@ class _SliderWidgetState extends State<SliderWidget> {
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
           leading: BackButtonWidget(),
-          title:
-          Row(
+          title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              AppLogoWidget(marginLeft: 40,)
+              AppLogoWidget(
+                marginLeft: 40,
+              )
             ],
           ),
           actions: <Widget>[
             IconButton(
-                  onPressed: () async {
-                    setState(() {});
-                    if (widget.currentIndex > 0) {
-                      _controller.previousPage(
-                          duration: _kDuration, curve: _kCurve);
-                    }
-                  },
-                  icon: Icon(
-                    const IconData(0xe80c,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: widget.currentIndex == 0
-                        ? AppTheme.kDecativeIconColor
-                        : null,
-                    size: Globals.deviceType == "phone" ? 18 : 26,
-                  ),
-                ),
+              onPressed: () async {
+                setState(() {});
+                if (widget.currentIndex > 0) {
+                  _controller.previousPage(
+                      duration: _kDuration, curve: _kCurve);
+                }
+              },
+              icon: Icon(
+                const IconData(0xe80c,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: widget.currentIndex == 0
+                    ? AppTheme.kDecativeIconColor
+                    : null,
+                size: Globals.deviceType == "phone" ? 18 : 26,
+              ),
+            ),
             IconButton(
               onPressed: () async {
                 setState(() {});
@@ -112,10 +115,9 @@ class _SliderWidgetState extends State<SliderWidget> {
                 size: Globals.deviceType == "phone" ? 18 : 26,
               )),
             ),
-            SizedBox(width :10)
+            SizedBox(width: 10)
           ]),
       body: Column(children: <Widget>[
-        
         Expanded(
           child: PageView.builder(
             controller: _controller,
@@ -151,6 +153,8 @@ class _SliderWidgetState extends State<SliderWidget> {
                           language: Globals.selectedLanguage,
                         )
                       : Newdescription(
+                        newsCountObj: widget.newsCountObj,
+                          icons: widget.icons!,
                           obj: object[widget.currentIndex],
                           date: widget.date,
                           isbuttomsheet: true,

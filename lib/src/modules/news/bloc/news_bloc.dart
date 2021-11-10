@@ -1,8 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:convert';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/news/model/action_count_list.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/db_service.dart';
+import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +19,8 @@ part 'news_state.dart';
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
   NewsBloc() : super(NewsInitial());
   NewsState get initialState => NewsInitial();
-
+  final DbServices _dbServices = DbServices();
+  var dataArray;
   @override
   Stream<NewsState> mapEventToState(
     NewsEvent event,
@@ -29,6 +32,35 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsLoaded(
           obj: _list,
         );
+      } catch (e) {
+        yield NewsErrorReceived(err: e);
+      }
+    }
+
+    if (event is NewsAction) {
+      try {
+        yield NewsLoading();
+        var data = await addNewsAction({
+          "Notification_ID__c": event.notificationId,
+          "School_App_ID__c": event.schoolId,
+          "Like__c": event.like,
+          "Thanks__c": event.thanks,
+          "Helpful__c": event.helpful,
+          "Shared__c": event.shared
+        });
+        yield NewsActionSuccess(
+          obj: data,
+        );
+      } catch (e) {
+        yield NewsErrorReceived(err: e);
+      }
+    }
+
+    if (event is FetchAction) {
+      try {
+        yield NewsLoading();
+        List<ActionCountList> list = await fetchNewsActionCount();
+        yield ActionCountSuccess(obj: list);
       } catch (e) {
         yield NewsErrorReceived(err: e);
       }
@@ -70,6 +102,38 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     }
   }
 
+  Future addNewsAction(body) async {
+    try {
+      final ResponseModel response = await _dbServices
+          .postapi("sobjects/News_Interactions__c", body: body);
+      if (response.statusCode == 200) {
+        var data = response.data["records"];
+        return data;
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<ActionCountList>> fetchNewsActionCount() async {
+    try {
+      final ResponseModel response = await _dbServices.getapi(
+          "query/?q=${Uri.encodeComponent("SELECT Name,School_App__c, Total_helpful__c, Total_Likes__c, Total_Thanks__c, Total__c FROM Total_News_Interaction__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+      if (response.statusCode == 200) {
+        dataArray = response.data["records"];
+        return response.data["records"]
+            .map<ActionCountList>((i) => ActionCountList.fromJson(i))
+            .toList();
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future<void> initPushState(context) async {
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
@@ -78,8 +142,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
       Globals.indicator.value = true;
-      // print(
-      //     "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
     });
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
@@ -87,15 +149,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     });
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
-
-    // if (Platform.isIOS) {
-    //   await OneSignal.shared
-    //       .promptUserForPushNotificationPermission(fallbackToSettings: true);
-    // }
-    // if (Platform.isAndroid) {
-    //   await OneSignal.shared
-    //       .promptUserForPushNotificationPermission(fallbackToSettings: true);
-    // }
     updateDeviceId();
   }
 
