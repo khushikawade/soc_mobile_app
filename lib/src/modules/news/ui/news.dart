@@ -39,13 +39,13 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   var object;
   String newsTimeStamp = '';
   late AppLifecycleState _notification;
-  List<ActionCountList> actionCountList = [];
+  List newsMainList = [];
 
   @override
   void initState() {
     super.initState();
     bloc.add(FetchNotificationList());
-    _countBloc.add(FetchActionCountList());
+    // _countBloc.add(FetchActionCountList());
     hideIndicator();
     WidgetsBinding.instance!.addObserver(this);
   }
@@ -56,7 +56,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     });
     if (_notification == AppLifecycleState.resumed)
       bloc.add(FetchNotificationList());
-    _countBloc.add(FetchActionCountList());
+    // _countBloc.add(FetchActionCountList());
   }
 
   hideIndicator() async {
@@ -72,7 +72,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       notification.complete(notification.notification);
       Globals.indicator.value = true;
       bloc.add(FetchNotificationList());
-      _countBloc.add(FetchActionCountList());
+      // _countBloc.add(FetchActionCountList());
     });
   }
 
@@ -96,16 +96,16 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               : Theme.of(context).colorScheme.secondary,
           child: InkWell(
               onTap: () {
+                print(newsMainList[index]);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => SliderWidget(
-                              newsCountObj:
-                                  obj.id == actionCountList[index].name
-                                      ? actionCountList[index]
-                                      : ActionCountList(),
                               icons: icons,
-                              obj: object,
+                              obj: newsMainList.length > 0 &&
+                                      newsMainList[index] != null
+                                  ? newsMainList
+                                  : obj,
                               currentIndex: index,
                               issocialpage: false,
                               iseventpage: false,
@@ -192,14 +192,17 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   ),
                   title: _buildnewsHeading(obj),
                   subtitle: NewsActionButton(
-                      newsObj: obj,
+                      newsObj:
+                          newsMainList.length > 0 && newsMainList[index] != null
+                              ? newsMainList[index]
+                              : obj,
                       icons: icons) //countObj: actionCountList[index])
                   // NewsActionButton(newsObj: obj, icons: icons,)//
 
                   //NewActionButton(obj: obj, icons: icons), //_buildActionButton(),
                   )),
         ),
-        // actionButton(list, obj, index),
+        actionButton(list, obj, index),
       ],
     );
   }
@@ -207,44 +210,60 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget actionButton(
       List<NotificationList> list, NotificationList obj, index) {
     return BlocListener(
-        bloc: _countBloc,
-        listener: (BuildContext context, NewsState state) {
-          if (state is ActionCountSuccess) {
-            for (int i = 0; i < list.length; i++) {
-              for (int j = 0; j < state.obj!.length; j++) {
-                if (list[i].id == state.obj[j].name) {
-                  list.add(NotificationList(
-                      likeCount: state.obj[j].likeCount,
-                      thanksCount: state.obj[j].thanksCount,
-                      helpfulCount: state.obj[j].helpfulCount,
-                      shareCount: state.obj[j].shareCount));
-                }
-                setState(() {
-                  
-                });
+      bloc: _countBloc,
+      listener: (BuildContext context, NewsState state) {
+        if (state is ActionCountSuccess) {
+          for (int i = 0; i < list.length; i++) {
+            for (int j = 0; j < state.obj!.length; j++) {
+              if (list[i].id == state.obj[j].name) {
+                newsMainList.add(NotificationList(
+                    id: obj.id,
+                    contents: obj.contents,
+                    headings: obj.headings,
+                    image: obj.image,
+                    url: obj.url,
+                    likeCount: state.obj[j].likeCount,
+                    thanksCount: state.obj[j].thanksCount,
+                    helpfulCount: state.obj[j].helpfulCount,
+                    shareCount: state.obj[j].shareCount));
+              } else {
+                newsMainList.add(NotificationList(
+                    id: obj.id,
+                    contents: obj.contents,
+                    headings: obj.headings,
+                    image: obj.image,
+                    url: obj.url,
+                    likeCount: 0,
+                    thanksCount: 0,
+                    helpfulCount: 0,
+                    shareCount: 0));
               }
             }
-
-             NewsActionButton(
-              newsObj: obj,
-              icons: icons,
-              // countObj: obj.id == state.obj[index].name
-              //     ? state.obj[index]
-              //     : ActionCountList()
-            );
-          } else if (state is NewsLoading) {
-             Expanded(
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Center(child: CircularProgressIndicator()),
-              ),
-            );
-          } else if (state is NewsErrorReceived) {
-             ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
-          } else {
-             Container();
           }
-        },child: Container(),);
+          setState(() {});
+
+          // NewsActionButton(
+          //   newsObj: obj,
+          //   icons: icons,
+          //   // countObj: obj.id == state.obj[index].name
+          //   //     ? state.obj[index]
+          //   //     : ActionCountList()
+          // );
+        } else if (state is NewsLoading) {
+          Expanded(
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          );
+        } else if (state is NewsErrorReceived) {
+          ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+        } else {
+          Container();
+        }
+      },
+      child: Container(),
+    );
     // return BlocListener(
     //     bloc: _countBloc,
     //     listener: (BuildContext context, NewsState state) {
@@ -396,6 +415,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             bloc: bloc,
                             listener: (context, state) async {
                               if (state is NewsLoaded) {
+                                _countBloc.add(FetchActionCountList());
                                 object = state.obj;
                                 SharedPreferences intPrefs =
                                     await SharedPreferences.getInstance();

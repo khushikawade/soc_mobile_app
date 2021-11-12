@@ -153,7 +153,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                           language: Globals.selectedLanguage,
                         )
                       : Newdescription(
-                        newsCountObj: widget.newsCountObj,
                           icons: widget.icons!,
                           obj: object[widget.currentIndex],
                           date: widget.date,

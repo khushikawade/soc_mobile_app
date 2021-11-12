@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/model/action_count_list.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +34,8 @@ class _NewsActionButtonState extends State<NewsActionButton> {
               Container(
                 child: IconButton(
                     onPressed: () {
+
+                      
                       bloc.add(NewsAction(
                           notificationId: widget.newsObj.id,
                           schoolId: Overrides.SCHOOL_ID,
@@ -55,10 +56,10 @@ class _NewsActionButtonState extends State<NewsActionButton> {
               ),
               Text(
                 index == 0
-                    ? widget.newsObj.likeCount.toString()
+                    ? widget.newsObj.likeCount.toString().split('.')[0]
                     : index == 1
-                        ? widget.newsObj.thanksCount.toString()
-                        : widget.newsObj.helpfulCount.toString(),
+                        ? widget.newsObj.thanksCount.toString().split('.')[0]
+                        : widget.newsObj.helpfulCount.toString().split('.')[0],
                 style: Theme.of(context).textTheme.headline4!,
               ),
             ],
