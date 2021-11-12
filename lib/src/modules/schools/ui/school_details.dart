@@ -144,6 +144,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
               fromLanguage: "en",
               builder: (translatedMessage) => Text(
                 translatedMessage.toString(),
+                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline2!.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -151,6 +152,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
             )
           : Text(
               widget.obj.titleC ?? "-",
+              textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headline2!.copyWith(
                     fontWeight: FontWeight.w500,
                   ),

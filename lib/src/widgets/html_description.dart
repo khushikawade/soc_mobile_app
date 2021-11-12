@@ -132,7 +132,7 @@ class _AboutusPageState extends State<AboutusPage> {
         language: Globals.selectedLanguage,
       ),
       body: ListView(children: [
-        _buildContent1(),
+        Container(padding: EdgeInsets.only(bottom: 20),child: _buildContent1()),
       ]),
     );
   }
