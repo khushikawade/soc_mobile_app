@@ -297,13 +297,14 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         title: widget.obj!.titleC ?? "",
         buttonTitle: "Share",
         obj: widget.obj,
-        body: "${widget.obj!.descriptionC ?? ""}" +
-            "\n" +
-            "${widget.obj!.imageUrlC ?? ""}" +
-            "\n" +
-            "${"Phone : " + widget.obj!.phoneC != "" ? widget.obj!.phoneC : "-"}" +
-            "\n" +
-            "${"Email : " + widget.obj!.emailC != "" ? widget.obj!.emailC : "-"}",
+        body:
+            "${widget.obj!.descriptionC != null ? widget.obj!.descriptionC.toString() : ""}" +
+                "\n" +
+                "${widget.obj!.imageUrlC ?? ""}" +
+                "\n" +
+                "${"Phone : " + widget.obj!.phoneC.toString()}" +
+                // "\n" +
+                "${"Email : " + widget.obj!.emailC.toString()}",
       )
     ]);
   }
