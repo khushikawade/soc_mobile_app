@@ -40,3 +40,19 @@ class AboutDataSucess extends AboutState {
   @override
   List<Object> get props => [];
 }
+
+
+class AboutSublistSucess extends AboutState {
+  List<AboutSubList>? obj;
+  AboutSublistSucess({
+    this.obj,
+  });
+  AboutSublistSucess copyWith({
+    final obj,
+  }) {
+    return AboutSublistSucess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}

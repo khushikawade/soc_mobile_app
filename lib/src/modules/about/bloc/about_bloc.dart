@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Soc/src/modules/about/modal/about_sublist.dart';
 import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
@@ -34,6 +35,21 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
         yield ErrorLoading(err: e);
       }
     }
+    if (event is AboutSublistEvent) {
+      try {
+        yield AboutLoading();
+        List<AboutSubList> list = await getAboutSubList(event.id);
+        if (list.length > 0) {
+          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+
+          yield AboutSublistSucess(obj: list);
+        } else {
+          yield AboutSublistSucess(obj: list);
+        }
+      } catch (e) {
+        yield ErrorLoading(err: e);
+      }
+    }
   }
 
   Future<List<AboutList>> getAboutSDList() async {
@@ -43,8 +59,24 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
       if (response.statusCode == 200) {
         dataArray = response.data["records"];
         return response.data["records"]
-            .map<AboutList>(
-                (i) => AboutList.fromJson(i))
+            .map<AboutList>((i) => AboutList.fromJson(i))
+            .toList();
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<AboutSubList>> getAboutSubList(id) async {
+    try {
+      final ResponseModel response = await _dbServices.getapi(
+          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,App_Icon_URL__c,Active_Status__c FROM About_Sub_Menu_App__c where About_App__c='$id'")}");
+
+      if (response.statusCode == 200) {
+        return response.data["records"]
+            .map<AboutSubList>((i) => AboutSubList.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');

@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
+import 'package:Soc/src/modules/about/modal/about_sublist.dart';
 import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
@@ -48,7 +49,7 @@ class _SubListPageState extends State<SubListPage> {
   List<FamiliesSubList> familyList = [];
   List<StaffSubList> staffList = [];
   List<ResourcesSubList> resourceList = [];
-  List<AboutList> aboutList = [];
+  List<AboutSubList> aboutList = [];
 
   @override
   void initState() {
@@ -60,7 +61,7 @@ class _SubListPageState extends State<SubListPage> {
     } else if (widget.module == "resources") {
       _resourceBloc.add(ResourcesSublistEvent(id: widget.obj.id));
     } else if (widget.module == "about") {
-      _aboutBloc.add(AboutStaffDirectoryEvent());
+      _aboutBloc.add(AboutSublistEvent(id: widget.obj.id));
     }
   }
 
@@ -294,7 +295,55 @@ class _SubListPageState extends State<SubListPage> {
                               return Container();
                             }
                           })
-                      : Container(),
+                      : widget.module == "about"
+                          ? BlocBuilder<AboutBloc, AboutState>(
+                              bloc: _aboutBloc,
+                              builder: (BuildContext contxt, AboutState state) {
+                                if (state is AboutInitial ||
+                                    state is AboutLoading) {
+                                  return Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.75,
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator());
+                                } else if (state is AboutSublistSucess) {
+                                  return aboutList.length > 0
+                                      ? Expanded(
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                            padding:
+                                                EdgeInsets.only(bottom: 45),
+                                            itemCount: aboutList.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return _buildList(aboutList,
+                                                  aboutList[index], index
+                                                  //   _buildFormName(index, resourceList[index]),
+                                                  //  resourceList[index]
+                                                  );
+                                            },
+                                          ),
+                                        )
+                                      : Expanded(
+                                          child: NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                            isEvents: false,
+                                          ),
+                                        );
+                                } else {
+                                  return Container();
+                                }
+                              })
+                          : Expanded(
+                              child: NoDataFoundErrorWidget(
+                                isResultNotFoundMsg: false,
+                                isNews: false,
+                                isEvents: false,
+                              ),
+                            ),
           BlocListener<FamilyBloc, FamilyState>(
               bloc: _bloc,
               listener: (context, state) async {
@@ -329,6 +378,19 @@ class _SubListPageState extends State<SubListPage> {
                   for (int i = 0; i < state.obj!.length; i++) {
                     if (state.obj![i].status != "Hide") {
                       resourceList.add(state.obj![i]);
+                    }
+                  }
+                }
+              },
+              child: EmptyContainer()),
+          BlocListener<AboutBloc, AboutState>(
+              bloc: _aboutBloc,
+              listener: (context, state) async {
+                if (state is AboutSublistSucess) {
+                  resourceList.clear();
+                  for (int i = 0; i < state.obj!.length; i++) {
+                    if (state.obj![i].status != "Hide") {
+                      aboutList.add(state.obj![i]);
                     }
                   }
                 }

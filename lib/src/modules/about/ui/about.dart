@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -109,6 +110,17 @@ class _AboutPageState extends State<AboutPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+    } else if (obj.typeC == "Sub-Menu") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SubListPage(
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    module: "about",
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }

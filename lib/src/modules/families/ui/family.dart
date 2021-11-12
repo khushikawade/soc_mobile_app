@@ -289,16 +289,15 @@ class _FamilyPageState extends State<FamilyPage> {
                                   return Center(
                                       child: CircularProgressIndicator());
                                 } else if (state is FamiliesDataSucess) {
-                                  return state.obj != null &&
-                                          state.obj!.length > 0
+                                  return newList.length > 0
                                       ? ListView.builder(
                                           padding: EdgeInsets.only(bottom: 45),
                                           scrollDirection: Axis.vertical,
-                                          itemCount: state.obj!.length,
+                                          itemCount: newList.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return _buildList(
-                                                state.obj![index], index);
+                                                newList[index], index);
                                           },
                                         )
                                       :
@@ -333,6 +332,19 @@ class _FamilyPageState extends State<FamilyPage> {
                               },
                               child: EmptyContainer()),
                         ),
+                        BlocListener<FamilyBloc, FamilyState>(
+                            bloc: _bloc,
+                            listener: (context, state) async {
+                              if (state is FamiliesDataSucess) {
+                                newList.clear();
+                                for (int i = 0; i < state.obj!.length; i++) {
+                                  if (state.obj![i].status != "Hide") {
+                                    newList.add(state.obj![i]);
+                                  }
+                                }
+                              }
+                            },
+                            child: EmptyContainer()),
                       ],
                     )
                   : NoInternetErrorWidget(
