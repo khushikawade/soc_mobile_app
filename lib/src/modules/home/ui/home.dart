@@ -6,7 +6,6 @@ import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/social/ui/social.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
-import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -36,9 +35,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   var item;
   var item2;
 
-  final ValueNotifier<String> languageChanged =
-      ValueNotifier<String>("English");
-  final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
+  // final ValueNotifier<String> languageChanged =
+  //     ValueNotifier<String>("English");
+  // final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;

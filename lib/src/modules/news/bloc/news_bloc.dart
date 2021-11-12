@@ -106,7 +106,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     try {
       final ResponseModel response = await _dbServices
           .postapi("sobjects/News_Interactions__c", body: body);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         var data = response.data["records"];
         return data;
       } else {

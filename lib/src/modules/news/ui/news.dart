@@ -239,8 +239,13 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     shareCount: 0));
               }
             }
+          if(i==list.length){
+            setState(() {
+              
+            });
           }
-          setState(() {});
+          }
+         
 
           // NewsActionButton(
           //   newsObj: obj,
@@ -364,7 +369,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               if (connected) {
                 if (iserrorstate == true) {
                   bloc.add(FetchNotificationList());
-                  _countBloc.add(FetchActionCountList());
+                  // _countBloc.add(FetchActionCountList());
                   iserrorstate = false;
                 }
               } else if (!connected) {
