@@ -60,10 +60,17 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget _buildLeading(obj) {
-    return CustomIconWidget(
-      iconUrl:
-          "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
-    );
+    if (obj.appIconUrlC != null) {
+      return CustomIconWidget(
+        iconUrl: obj.appIconUrlC ??
+            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+      );
+    } else {
+      return CustomIconWidget(
+        iconUrl:
+            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+      );
+    }
   }
 
   _aboutPageRoute(AboutList obj, List<AboutList> list, index) {
@@ -169,7 +176,7 @@ class _AboutPageState extends State<AboutPage> {
           //             )));
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        leading: _buildLeading(obj),
+        leading: _buildLeading(listData),
         title: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
