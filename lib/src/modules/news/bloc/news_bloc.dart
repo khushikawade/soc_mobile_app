@@ -56,7 +56,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       }
     }
 
-    if (event is FetchAction) {
+    if (event is FetchActionCountList) {
       try {
         yield NewsLoading();
         List<ActionCountList> list = await fetchNewsActionCount();

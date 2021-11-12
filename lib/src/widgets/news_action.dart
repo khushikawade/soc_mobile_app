@@ -10,11 +10,11 @@ class NewsActionButton extends StatefulWidget {
     Key? key,
     required this.newsObj,
     required this.icons,
-    required this.countObj,
+    // required this.countObj,
   }) : super(key: key);
 
   final NotificationList newsObj;
-  final ActionCountList countObj;
+  // final ActionCountList countObj;
   final List? icons;
 
   _NewsActionButtonState createState() => _NewsActionButtonState();
@@ -49,12 +49,16 @@ class _NewsActionButtonState extends State<NewsActionButton> {
                       color: Colors.black,
                       //Icons.favorite_outline_outlined,
                       size: Globals.deviceType == "phone"
-                          ? (index == 0 ? 30 : 24)
-                          : (index == 0 ? 34 : 28),
+                          ? (index == 0 ? 28 : 22)
+                          : (index == 0 ? 30 : 24),
                     )),
               ),
               Text(
-                "129",
+                index == 0
+                    ? widget.newsObj.likeCount.toString()
+                    : index == 1
+                        ? widget.newsObj.thanksCount.toString()
+                        : widget.newsObj.helpfulCount.toString(),
                 style: Theme.of(context).textTheme.headline4!,
               ),
             ],

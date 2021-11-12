@@ -31,6 +31,6 @@ class NewsAction extends NewsEvent {
       [notificationId!, schoolId!, like!, thanks!, helpful!, shared!];
 }
 
-class FetchAction extends NewsEvent {
+class FetchActionCountList extends NewsEvent {
   List<Object> get props => [];
 }

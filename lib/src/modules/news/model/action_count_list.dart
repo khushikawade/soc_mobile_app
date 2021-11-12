@@ -1,10 +1,10 @@
 class ActionCountList {
   String? name;
   String? schoolId;
-  int? likeCount;
-  int? thanksCount;
-  int? helpfulCount;
-  int? shareCount;
+  double? likeCount;
+  double? thanksCount;
+  double? helpfulCount;
+  double? shareCount;
 
   ActionCountList(
       {this.name,
@@ -18,10 +18,10 @@ class ActionCountList {
       ActionCountList(
         name: json['Name'] as String?,
         schoolId: json['School_App__c'] as String?,
-        likeCount: json['Total_Likes__c'] as int?,
-        thanksCount: json['Total_Thanks__c'] as int?,
-        helpfulCount: json['Total_helpful__c'] as int?,
-        shareCount: json['Total__c'] as int?,
+        likeCount: json['Total_Likes__c'] as double?,
+        thanksCount: json['Total_Thanks__c'] as double?,
+        helpfulCount: json['Total_helpful__c'] as double?,
+        shareCount: json['Total__c'] as double?,
       );
 
   Map<String, dynamic> toJson() => {
