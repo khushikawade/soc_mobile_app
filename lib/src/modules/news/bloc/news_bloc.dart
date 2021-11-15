@@ -46,7 +46,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           "Like__c": event.like,
           "Thanks__c": event.thanks,
           "Helpful__c": event.helpful,
-          "Shared__c": event.shared
+          "Shared__c": event.shared ?? 0
         });
         yield NewsActionSuccess(
           obj: data,
@@ -156,8 +156,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     try {
       final status = await OneSignal.shared.getDeviceState();
       final deviceId = status?.userId;
-
-      print(deviceId);
       if (deviceId == null) {
         await Future.delayed(Duration(milliseconds: 2000));
         updateDeviceId();

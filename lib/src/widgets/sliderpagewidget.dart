@@ -19,8 +19,7 @@ class SliderWidget extends StatefulWidget {
       required this.isbuttomsheet,
       required this.language,
       this.issocialpage,
-      this.icons,
-      this.newsCountObj});
+      this.icons,});
   final obj;
   int currentIndex;
   bool? issocialpage;
@@ -29,7 +28,6 @@ class SliderWidget extends StatefulWidget {
   bool isbuttomsheet;
   String? language;
   final List? icons;
-  final newsCountObj;
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -70,7 +68,7 @@ class _SliderWidgetState extends State<SliderWidget> {
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
-          leading: BackButtonWidget(),
+          leading: BackButtonWidget(isNewsPage: widget.iseventpage==false&&widget.issocialpage==false?true:false,),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

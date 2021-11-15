@@ -2,9 +2,9 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/model/action_count_list.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/news_image.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -28,6 +28,7 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   static const double _kIconSize = 48.0;
   static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
@@ -40,6 +41,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   String newsTimeStamp = '';
   late AppLifecycleState _notification;
   List newsMainList = [];
+  bool? isCountLoading = true;
 
   @override
   void initState() {
@@ -84,210 +86,220 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget _buildListItems(
       List<NotificationList> list, NotificationList obj, int index) {
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: _kLabelSpacing,
-            vertical: _kLabelSpacing / 2,
-          ),
-          color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
-          child: InkWell(
-              onTap: () {
-                print(newsMainList[index]);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SliderWidget(
-                              icons: icons,
-                              obj: newsMainList.length > 0 &&
-                                      newsMainList[index] != null
-                                  ? newsMainList
-                                  : obj,
-                              currentIndex: index,
-                              issocialpage: false,
-                              iseventpage: false,
-                              date: "$newsTimeStamp",
-                              isbuttomsheet: true,
-                              language: Globals.selectedLanguage,
-                            )));
-              },
-              child: ListTile(
-                  leading: Container(
-                    alignment: Alignment.center,
-                    width: Globals.deviceType == "phone"
-                        ? _kIconSize * 1.4
-                        : _kIconSize * 2,
-                    height: Globals.deviceType == "phone"
-                        ? _kIconSize * 1.5
-                        : _kIconSize * 2,
-                    child: obj.image != null
-                        ? ClipRRect(
-                            child: GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (_) =>
-                                        NewsImagePage(imageURL: obj.image!));
-                              },
-                              child: CachedNetworkImage(
-                                imageUrl: obj.image!,
-                                placeholder: (context, url) => Container(
-                                    alignment: Alignment.center,
-                                    child: ShimmerLoading(
-                                      isLoading: true,
-                                      child: Container(
-                                        width: _kIconSize * 1.4,
-                                        height: _kIconSize * 1.5,
-                                        color: Colors.white,
-                                      ),
-                                    )),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ),
-                            ),
-                          )
-                        : Container(
-                            width: Globals.deviceType == "phone"
-                                ? _kIconSize * 1.4
-                                : _kIconSize * 2,
-                            height: Globals.deviceType == "phone"
-                                ? _kIconSize * 1.5
-                                : _kIconSize * 2,
-                            alignment: Alignment.centerLeft,
-                            child: GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (_) => NewsImagePage(
-                                        imageURL:
-                                            Globals.splashImageUrl != null &&
-                                                    Globals.splashImageUrl != ""
-                                                ? Globals.splashImageUrl
-                                                : Globals
-                                                    .homeObjet["App_Logo__c"]));
-                              },
-                              child: CachedNetworkImage(
-                                imageUrl: Globals.splashImageUrl != null &&
-                                        Globals.splashImageUrl != ""
-                                    ? Globals.splashImageUrl
-                                    : Globals.homeObjet["App_Logo__c"],
-                                placeholder: (context, url) => Container(
-                                    alignment: Alignment.center,
-                                    child: ShimmerLoading(
-                                      isLoading: true,
-                                      child: Container(
-                                        width: _kIconSize * 1.4,
-                                        height: _kIconSize * 1.5,
-                                        color: Colors.white,
-                                      ),
-                                    )),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ),
-                            ),
-                          ),
-                  ),
-                  title: _buildnewsHeading(obj),
-                  subtitle: NewsActionButton(
-                      newsObj:
-                          newsMainList.length > 0 && newsMainList[index] != null
-                              ? newsMainList[index]
-                              : obj,
-                      icons: icons) //countObj: actionCountList[index])
-                  // NewsActionButton(newsObj: obj, icons: icons,)//
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+        vertical: _kLabelSpacing / 2,
+      ),
+      color: (index % 2 == 0)
+          ? Theme.of(context).colorScheme.background
+          : Theme.of(context).colorScheme.secondary,
+      child: InkWell(
+          onTap: () async {
+            if (isCountLoading == true) {
+              Utility.showSnackBar(
+                  _scaffoldKey, "Please wait while count is loading", context);
+            } else {
+              bool result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SliderWidget(
+                            icons: icons,
+                            obj: newsMainList.length > 0 &&
+                                    newsMainList[index] != null
+                                ? newsMainList
+                                : list,
+                            currentIndex: index,
+                            issocialpage: false,
+                            iseventpage: false,
+                            date: "$newsTimeStamp",
+                            isbuttomsheet: true,
+                            language: Globals.selectedLanguage,
+                          )));
 
-                  //NewActionButton(obj: obj, icons: icons), //_buildActionButton(),
-                  )),
-        ),
-        actionButton(list, obj, index),
-      ],
+              if (result == true) {
+                _countBloc.add(FetchActionCountList());
+              }
+            }
+          },
+          child: ListTile(
+            leading: Container(
+              alignment: Alignment.center,
+              width: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
+              height: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.5
+                  : _kIconSize * 2,
+              child: obj.image != null
+                  ? ClipRRect(
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (_) =>
+                                  NewsImagePage(imageURL: obj.image!));
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: obj.image!,
+                          placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width: _kIconSize * 1.4,
+                                  height: _kIconSize * 1.5,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: Globals.deviceType == "phone"
+                          ? _kIconSize * 1.4
+                          : _kIconSize * 2,
+                      height: Globals.deviceType == "phone"
+                          ? _kIconSize * 1.5
+                          : _kIconSize * 2,
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (_) => NewsImagePage(
+                                  imageURL: Globals.splashImageUrl != null &&
+                                          Globals.splashImageUrl != ""
+                                      ? Globals.splashImageUrl
+                                      : Globals.homeObjet["App_Logo__c"]));
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: Globals.splashImageUrl != null &&
+                                  Globals.splashImageUrl != ""
+                              ? Globals.splashImageUrl
+                              : Globals.homeObjet["App_Logo__c"],
+                          placeholder: (context, url) => Container(
+                              alignment: Alignment.center,
+                              child: ShimmerLoading(
+                                isLoading: true,
+                                child: Container(
+                                  width: _kIconSize * 1.4,
+                                  height: _kIconSize * 1.5,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
+                      ),
+                    ),
+            ),
+            title: _buildnewsHeading(obj),
+            subtitle: actionButton(list, obj, index),
+          )),
     );
   }
 
   Widget actionButton(
-      List<NotificationList> list, NotificationList obj, index) {
-    return BlocListener(
-      bloc: _countBloc,
-      listener: (BuildContext context, NewsState state) {
-        if (state is ActionCountSuccess) {
-          for (int i = 0; i < list.length; i++) {
-            for (int j = 0; j < state.obj!.length; j++) {
-              if (list[i].id == state.obj[j].name) {
-                newsMainList.add(NotificationList(
-                    id: obj.id,
-                    contents: obj.contents,
-                    headings: obj.headings,
-                    image: obj.image,
-                    url: obj.url,
-                    likeCount: state.obj[j].likeCount,
-                    thanksCount: state.obj[j].thanksCount,
-                    helpfulCount: state.obj[j].helpfulCount,
-                    shareCount: state.obj[j].shareCount));
-              } else {
-                newsMainList.add(NotificationList(
-                    id: obj.id,
-                    contents: obj.contents,
-                    headings: obj.headings,
-                    image: obj.image,
-                    url: obj.url,
-                    likeCount: 0,
-                    thanksCount: 0,
-                    helpfulCount: 0,
-                    shareCount: 0));
-              }
-            }
-          if(i==list.length){
-            setState(() {
-              
-            });
-          }
-          }
-         
+      List<NotificationList> list, NotificationList obj, int index) {
+    return Column(
+      children: [
+        newsMainList.length > 0
+            ? BlocBuilder(
+                bloc: _countBloc,
+                builder: (BuildContext context, NewsState state) {
+                  if (state is ActionCountSuccess) {
+                    return Container(
+                      alignment: Alignment.centerLeft,
+                      child: NewsActionButton(
+                          newsObj: newsMainList[index],
+                          icons: icons,
+                          isLoading: false),
+                    );
+                  } else if (state is NewsLoading) {
+                    return Container(
+                      alignment: Alignment.centerLeft,
+                      child: ShimmerLoading(
+                          isLoading: true,
+                          child: NewsActionButton(
+                              newsObj: newsMainList[index],
+                              icons: icons,
+                              isLoading: false)),
+                    );
+                  } else if (state is NewsErrorReceived) {
+                    return ListView(
+                        shrinkWrap: true, children: [ErrorMsgWidget()]);
+                  } else {
+                    return Container();
+                  }
+                })
+            : Container(
+                alignment: Alignment.centerLeft,
+                child: ShimmerLoading(
+                    isLoading: true,
+                    child: NewsActionButton(
+                        newsObj: obj, icons: icons, isLoading: true)),
+              ),
+        BlocListener(
+          bloc: _countBloc,
+          listener: (BuildContext context, NewsState state) {
+            if (state is ActionCountSuccess) {
+              isCountLoading = false;
+              newsMainList.clear();
+              for (int i = 0; i < list.length; i++) {
+                for (int j = 0; j < state.obj!.length; j++) {
+                  if (list[i].id == state.obj[j].name) {
+                    newsMainList.add(NotificationList(
+                        id: list[i].id,
+                        contents: obj.contents,
+                        headings: obj.headings,
+                        image: obj.image,
+                        url: obj.url,
+                        likeCount: state.obj[j].likeCount,
+                        thanksCount: state.obj[j].thanksCount,
+                        helpfulCount: state.obj[j].helpfulCount,
+                        shareCount: state.obj[j].shareCount));
+                    break;
+                  }
 
-          // NewsActionButton(
-          //   newsObj: obj,
-          //   icons: icons,
-          //   // countObj: obj.id == state.obj[index].name
-          //   //     ? state.obj[index]
-          //   //     : ActionCountList()
-          // );
-        } else if (state is NewsLoading) {
-          Expanded(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.8,
-              child: Center(child: CircularProgressIndicator()),
-            ),
-          );
-        } else if (state is NewsErrorReceived) {
-          ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
-        } else {
-          Container();
-        }
-      },
-      child: Container(),
+                  if (state.obj!.length - 1 == j) {
+                    newsMainList.add(NotificationList(
+                        id: list[i].id,
+                        contents: obj.contents,
+                        headings: obj.headings,
+                        image: obj.image,
+                        url: obj.url,
+                        likeCount: 0,
+                        thanksCount: 0,
+                        helpfulCount: 0,
+                        shareCount: 0));
+                  }
+                }
+
+                setState(() {});
+              }
+            } else if (state is NewsLoading) {
+              Container(
+                alignment: Alignment.centerLeft,
+                child: ShimmerLoading(
+                    isLoading: true,
+                    child: NewsActionButton(
+                        newsObj: newsMainList[index],
+                        icons: icons,
+                        isLoading: false)),
+              );
+            } else if (state is NewsErrorReceived) {
+              ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+            } else {
+              Container();
+            }
+          },
+          child: Container(),
+        ),
+      ],
     );
-    // return BlocListener(
-    //     bloc: _countBloc,
-    //     listener: (BuildContext context, NewsState state) {
-    //       if (state is ActionCountSuccess) {
-    //         return NewsActionButton(
-    //             newsObj: obj, icons: icons, countObj: state.obj);
-    //       } else if (state is NewsLoading) {
-    //         return Expanded(
-    //           child: Container(
-    //             height: MediaQuery.of(context).size.height * 0.8,
-    //             child: Center(child: CircularProgressIndicator()),
-    //           ),
-    //         );
-    //       } else if (state is NewsErrorReceived) {
-    //         return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
-    //       } else {
-    //         return Container();
-    // }
-    // });
   }
 
   Widget _buildnewsHeading(obj) {
@@ -350,6 +362,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBarWidget(
         marginLeft: 30,
         refresh: (v) {

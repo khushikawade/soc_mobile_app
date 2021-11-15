@@ -10,5 +10,13 @@ class NotificationList {
   double? shareCount;
 
   NotificationList(
-      {this.id, this.contents, this.headings, this.url, this.image, this.likeCount, this.thanksCount, this.helpfulCount, this.shareCount});
+      {this.id,
+      this.contents,
+      this.headings,
+      this.url,
+      this.image,
+      this.likeCount = 0,
+      this.thanksCount = 0,
+      this.helpfulCount = 0,
+      this.shareCount = 0});
 }
