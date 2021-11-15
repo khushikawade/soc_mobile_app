@@ -97,13 +97,21 @@ class _AboutPageState extends State<AboutPage> {
           ? Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => AboutusPage(
-                        htmlText: obj.rtfHTMLC.toString(),
-                        isbuttomsheet: true,
-                        ishtml: true,
-                        appbarTitle: obj.titleC!,
-                        language: Globals.selectedLanguage,
-                      )))
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                    isiFrame: true,
+                    title: obj.titleC,
+                    url: obj.rtfHTMLC.toString(),
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )
+                  // AboutusPage(
+                  //       htmlText: obj.rtfHTMLC.toString(),
+                  //       isbuttomsheet: true,
+                  //       ishtml: true,
+                  //       appbarTitle: obj.titleC!,
+                  //       language: Globals.selectedLanguage,
+                  //     )
+                      ))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
       obj.pdfURL != null
