@@ -37,7 +37,8 @@ class _AboutusPageState extends State<AboutusPage> {
 
   Widget _buildContent1() {
     String? htmlData;
-    if (widget.htmlText.toString().contains("src=") == true) {
+    if (widget.htmlText.toString().contains("img") == true &&
+        widget.htmlText.toString().contains("src=") == true) {
       String img = Utility.getHTMLImgSrc(widget.htmlText);
       htmlData = widget.htmlText.toString().replaceAll("$img ", " ");
     }
@@ -85,20 +86,10 @@ class _AboutusPageState extends State<AboutusPage> {
                     },
                   ),
                 )
-              :
-              // Linkify(text:Utility.htmlData(  htmlData ?? widget.htmlText), onOpen: (link) => link.url,
-              //               options: LinkifyOptions(humanize: false),
-              //                  ),
-            
-              Html(
-                  data:
-// '''<div style="width: 100%; margin-top: 50px;">
-// <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d2965.0824050173574!2d-93.63905729999999!3d41.998507000000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sWebFilings%2C+University+Boulevard%2C+Ames%2C+IA!5e0!3m2!1sen!2sus!4v1390839289319" width="100%" height="100%" frameborder="0" style="border:0"></iframe>
-// </div>''',
-htmlData ?? widget.htmlText,
+              : Html(
+                  data: htmlData ?? widget.htmlText,
                   onLinkTap: (String? url, RenderContext context,
                       Map<String, String> attributes, dom.Element? element) {
-                    // print(url);
                     _launchURL(url);
                   },
                   style: {
@@ -137,7 +128,8 @@ htmlData ?? widget.htmlText,
         language: Globals.selectedLanguage,
       ),
       body: ListView(children: [
-        Container(padding: EdgeInsets.only(bottom: 20),child: _buildContent1()),
+        Container(
+            padding: EdgeInsets.only(bottom: 20), child: _buildContent1()),
       ]),
     );
   }

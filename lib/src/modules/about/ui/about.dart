@@ -94,6 +94,18 @@ class _AboutPageState extends State<AboutPage> {
         obj.typeC == "HTML/RTF" ||
         obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
+          ? 
+                  AboutusPage(
+                        htmlText: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        ishtml: true,
+                        appbarTitle: obj.titleC!,
+                        language: Globals.selectedLanguage,
+                      
+                      )
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    }else if (obj.typeC == "Embed iFrame") {
+      obj.rtfHTMLC != null
           ? Navigator.push(
               context,
               MaterialPageRoute(
@@ -104,13 +116,7 @@ class _AboutPageState extends State<AboutPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )
-                  // AboutusPage(
-                  //       htmlText: obj.rtfHTMLC.toString(),
-                  //       isbuttomsheet: true,
-                  //       ishtml: true,
-                  //       appbarTitle: obj.titleC!,
-                  //       language: Globals.selectedLanguage,
-                  //     )
+                 
                       ))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {

@@ -86,6 +86,19 @@ class _ResourcesPageState extends State<ResourcesPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "Embed iFrame") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                        isiFrame: true,
+                        title: obj.titleC!,
+                        url: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
       obj.pdfURL != null
           ? Navigator.push(

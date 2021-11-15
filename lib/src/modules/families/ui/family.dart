@@ -89,16 +89,6 @@ class _FamilyPageState extends State<FamilyPage> {
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
           ?
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (BuildContext context) => InAppUrlLauncer(
-          //               title: obj.titleC!,
-          //               url: obj.appUrlC ?? '',
-          //               isbuttomsheet: true,
-          //               language: Globals.selectedLanguage,
-          //             ))):
-
           _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
@@ -140,6 +130,21 @@ class _FamilyPageState extends State<FamilyPage> {
                         appbarTitle: obj.titleC!,
                         language: Globals.selectedLanguage,
                       )))
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    }else if (obj.typeC == "Embed iFrame") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                    isiFrame: true,
+                    title: obj.titleC!,
+                    url: obj.rtfHTMLC.toString(),
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )
+                 
+                      ))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
       obj.pdfURL != null
