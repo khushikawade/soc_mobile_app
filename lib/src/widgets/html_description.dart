@@ -37,9 +37,9 @@ class _AboutusPageState extends State<AboutusPage> {
 
   Widget _buildContent1() {
     String? htmlData;
-    if (widget.htmlText.toString().contains("src=") == true) {
+    if (widget.htmlText.toString().contains("img") == true && widget.htmlText.toString().contains("src=") == true) {
       String img = Utility.getHTMLImgSrc(widget.htmlText);
-      htmlData = widget.htmlText.toString().replaceAll("$img", " ");
+      htmlData = widget.htmlText.toString().replaceAll("$img ", " ");
     }
 
     return Container(
@@ -86,14 +86,10 @@ class _AboutusPageState extends State<AboutusPage> {
                   ),
                 )
               :
-              // Linkify(text:Utility.htmlData(  htmlData ?? widget.htmlText), onOpen: (link) => link.url,
-              //               options: LinkifyOptions(humanize: false),
-              //                  ),
               Html(
                   data: htmlData ?? widget.htmlText,
                   onLinkTap: (String? url, RenderContext context,
                       Map<String, String> attributes, dom.Element? element) {
-                    // print(url);
                     _launchURL(url);
                   },
                   style: {
