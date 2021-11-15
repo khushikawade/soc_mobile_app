@@ -11,7 +11,7 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
-import 'package:Soc/src/widgets/news_action.dart';
+import 'package:Soc/src/modules/news/ui/news_action.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
@@ -211,12 +211,13 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 bloc: _countBloc,
                 builder: (BuildContext context, NewsState state) {
                   if (state is ActionCountSuccess) {
+                    isCountLoading = false;
                     return Container(
                       alignment: Alignment.centerLeft,
                       child: NewsActionButton(
                           newsObj: newsMainList[index],
                           icons: icons,
-                          isLoading: false),
+                          isLoading: isCountLoading),
                     );
                   } else if (state is NewsLoading) {
                     return Container(
@@ -226,7 +227,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           child: NewsActionButton(
                               newsObj: newsMainList[index],
                               icons: icons,
-                              isLoading: false)),
+                              isLoading: isCountLoading)),
                     );
                   } else if (state is NewsErrorReceived) {
                     return ListView(
@@ -240,7 +241,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 child: ShimmerLoading(
                     isLoading: true,
                     child: NewsActionButton(
-                        newsObj: obj, icons: icons, isLoading: true)),
+                        newsObj: obj, icons: icons, isLoading: isCountLoading)),
               ),
         BlocListener(
           bloc: _countBloc,
@@ -248,37 +249,42 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             if (state is ActionCountSuccess) {
               isCountLoading = false;
               newsMainList.clear();
-              for (int i = 0; i < list.length; i++) {
-                for (int j = 0; j < state.obj!.length; j++) {
-                  if (list[i].id == state.obj[j].name) {
-                    newsMainList.add(NotificationList(
-                        id: list[i].id,
-                        contents: obj.contents,
-                        headings: obj.headings,
-                        image: obj.image,
-                        url: obj.url,
-                        likeCount: state.obj[j].likeCount,
-                        thanksCount: state.obj[j].thanksCount,
-                        helpfulCount: state.obj[j].helpfulCount,
-                        shareCount: state.obj[j].shareCount));
-                    break;
-                  }
-
-                  if (state.obj!.length - 1 == j) {
-                    newsMainList.add(NotificationList(
-                        id: list[i].id,
-                        contents: obj.contents,
-                        headings: obj.headings,
-                        image: obj.image,
-                        url: obj.url,
-                        likeCount: 0,
-                        thanksCount: 0,
-                        helpfulCount: 0,
-                        shareCount: 0));
-                  }
-                }
-
+              if (state.obj!.length == 0) {
+                newsMainList.addAll(list);
                 setState(() {});
+              } else {
+                for (int i = 0; i < list.length; i++) {
+                  for (int j = 0; j < state.obj!.length; j++) {
+                    if (list[i].id == state.obj[j].name) {
+                      newsMainList.add(NotificationList(
+                          id: list[i].id,
+                          contents: obj.contents,
+                          headings: obj.headings,
+                          image: obj.image,
+                          url: obj.url,
+                          likeCount: state.obj[j].likeCount,
+                          thanksCount: state.obj[j].thanksCount,
+                          helpfulCount: state.obj[j].helpfulCount,
+                          shareCount: state.obj[j].shareCount));
+                      break;
+                    }
+
+                    if (state.obj!.length - 1 == j) {
+                      newsMainList.add(NotificationList(
+                          id: list[i].id,
+                          contents: obj.contents,
+                          headings: obj.headings,
+                          image: obj.image,
+                          url: obj.url,
+                          likeCount: 0,
+                          thanksCount: 0,
+                          helpfulCount: 0,
+                          shareCount: 0));
+                    }
+                  }
+
+                  setState(() {});
+                }
               }
             } else if (state is NewsLoading) {
               Container(
@@ -286,9 +292,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 child: ShimmerLoading(
                     isLoading: true,
                     child: NewsActionButton(
-                        newsObj: newsMainList[index],
-                        icons: icons,
-                        isLoading: false)),
+                        newsObj: obj, icons: icons, isLoading: isCountLoading)),
               );
             } else if (state is NewsErrorReceived) {
               ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
@@ -434,7 +438,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             listener: (context, state) async {
                               if (state is NewsLoaded) {
                                 _countBloc.add(FetchActionCountList());
-                                object = state.obj;
+                                // object = state.obj;
                                 SharedPreferences intPrefs =
                                     await SharedPreferences.getInstance();
                                 intPrefs.getInt("totalCount") == null
