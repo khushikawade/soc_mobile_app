@@ -18,6 +18,7 @@ class SliderWidget extends StatefulWidget {
       required this.date,
       required this.isbuttomsheet,
       required this.language,
+      required this.iconsName,
       this.issocialpage,
       this.icons,});
   final obj;
@@ -28,6 +29,7 @@ class SliderWidget extends StatefulWidget {
   bool isbuttomsheet;
   String? language;
   final List? icons;
+  final List?iconsName;
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -152,6 +154,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                         )
                       : Newdescription(
                           icons: widget.icons!,
+iconsName: widget.iconsName,
                           obj: object[widget.currentIndex],
                           date: widget.date,
                           isbuttomsheet: true,

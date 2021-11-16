@@ -35,7 +35,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   NewsBloc _countBloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
-  List icons = [0xe823, 0xe824, 0xe825];
+  List icons = [0xe823, 0xe824, 0xe825, 0xe800];
+  List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   final HomeBloc _homeBloc = new HomeBloc();
   var object;
   String newsTimeStamp = '';
@@ -74,7 +75,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       notification.complete(notification.notification);
       Globals.indicator.value = true;
       bloc.add(FetchNotificationList());
-      // _countBloc.add(FetchActionCountList());
     });
   }
 
@@ -105,6 +105,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   MaterialPageRoute(
                       builder: (context) => SliderWidget(
                             icons: icons,
+                            iconsName: iconsName,
                             obj: newsMainList.length > 0 &&
                                     newsMainList[index] != null
                                 ? newsMainList
@@ -217,6 +218,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                       child: NewsActionButton(
                           newsObj: newsMainList[index],
                           icons: icons,
+                          iconsName: iconsName,
                           isLoading: isCountLoading),
                     );
                   } else if (state is NewsLoading) {
@@ -227,6 +229,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           child: NewsActionButton(
                               newsObj: newsMainList[index],
                               icons: icons,
+                              iconsName: iconsName,
                               isLoading: isCountLoading)),
                     );
                   } else if (state is NewsErrorReceived) {
@@ -241,7 +244,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 child: ShimmerLoading(
                     isLoading: true,
                     child: NewsActionButton(
-                        newsObj: obj, icons: icons, isLoading: isCountLoading)),
+                        newsObj: obj,
+                        icons: icons,
+                        iconsName: iconsName,
+                        isLoading: isCountLoading)),
               ),
         BlocListener(
           bloc: _countBloc,
@@ -292,7 +298,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 child: ShimmerLoading(
                     isLoading: true,
                     child: NewsActionButton(
-                        newsObj: obj, icons: icons, isLoading: isCountLoading)),
+                        newsObj: obj,
+                        icons: icons,
+                        iconsName: iconsName,
+                        isLoading: isCountLoading)),
               );
             } else if (state is NewsErrorReceived) {
               ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);

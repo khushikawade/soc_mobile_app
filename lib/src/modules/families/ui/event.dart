@@ -62,6 +62,7 @@ class _EventPageState extends State<EventPage>
             MaterialPageRoute(
                 builder: (context) => SliderWidget(
                       obj: mainObj,
+                      iconsName: [],
                       issocialpage: false,
                       iseventpage: true,
                       currentIndex: index,
