@@ -49,7 +49,7 @@ class _StartupPageState extends State<StartupPage> {
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     bool? _flag = preferences.getBool('hasShowcaseInitialised');
-    if(_flag == true){
+    if (_flag == true) {
       Globals.hasShowcaseInitialised.value = true;
     }
     preferences.setBool('hasShowcaseInitialised', true);
@@ -120,6 +120,7 @@ class _StartupPageState extends State<StartupPage> {
             return new Stack(
               fit: StackFit.expand,
               children: [
+                //Will show the splash screen while the auto login is in the progress
                 connected
                     ? BlocBuilder<UserBloc, UserState>(
                         bloc: _loginBloc,
@@ -127,7 +128,6 @@ class _StartupPageState extends State<StartupPage> {
                           if (state is Loading) {
                             return _buildSplashScreen();
                           }
-
                           if (state is ErrorReceived) {
                             return ListView(children: [
                               ErrorMsgWidget(),
@@ -139,6 +139,27 @@ class _StartupPageState extends State<StartupPage> {
                         connected: connected,
                         issplashscreen: true,
                       ),
+                // Login End
+                // Showing spash screen while fetching App Settings(Bottom Nav items, colors etc.)
+                connected
+                    ? BlocBuilder<HomeBloc, HomeState>(
+                        bloc: _bloc,
+                        builder: (BuildContext contxt, HomeState state) {
+                          if (state is HomeLoading) {
+                            return _buildSplashScreen();
+                          }
+                          if (state is ErrorReceived) {
+                            return ListView(children: [
+                              ErrorMsgWidget(),
+                            ]);
+                          }
+                          return Container();
+                        })
+                    : NoInternetErrorWidget(
+                        connected: connected,
+                        issplashscreen: true,
+                      ),
+                // Fetching App Settings(Bottom Nav items, colors etc.) End.
                 Container(
                   height: 0,
                   width: 0,
