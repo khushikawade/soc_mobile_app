@@ -36,7 +36,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsErrorReceived(err: e);
       }
     }
-
+// 2218b20a-5e74-4e4e-8e90-286eb7051c58
     if (event is NewsAction) {
       try {
         yield NewsLoading();
@@ -46,7 +46,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           "Like__c": event.like,
           "Thanks__c": event.thanks,
           "Helpful__c": event.helpful,
-          "Shared__c": event.shared ?? 0
+          "Shared__c": event.shared,
         });
         yield NewsActionSuccess(
           obj: data,

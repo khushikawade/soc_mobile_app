@@ -20,7 +20,7 @@ class NewsImagePageState extends State<NewsImagePage>
     with SingleTickerProviderStateMixin {
   AnimationController? controller;
   Animation<double>? scaleAnimation;
-  static const double _kLableSpacing = 10.0;
+  // static const double _kLableSpacing = 10.0;
   static const double _kIconSize = 45.0;
 
   @override

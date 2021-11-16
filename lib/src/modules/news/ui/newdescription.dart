@@ -317,6 +317,7 @@ class _NewdescriptionState extends State<Newdescription> {
           icons: widget.icons,
             iconsName: widget.iconsName,
         ), //countObj:widget.newsCountObj),
+        SpacerWidget(20),
         Row(
           children: [
             Container(
