@@ -362,8 +362,6 @@ class _FamilyPageState extends State<FamilyPage> {
   // var _scrollController = ScrollController();
 
   Widget build(BuildContext context) {
-    print('-------------------------------');
-    print(Globals.homeObjet["Family_Banner_Image__c"]);
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
