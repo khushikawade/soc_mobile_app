@@ -37,7 +37,9 @@ class _AboutusPageState extends State<AboutusPage> {
 
   Widget _buildContent1() {
     String? htmlData;
-    if (widget.htmlText.toString().contains("src=") == true) {
+    if (widget.htmlText.toString().contains("img") == true ||
+        widget.htmlText.toString().contains("src=") == true ||
+        widget.htmlText.toString().contains("src =") == true) {
       String img = Utility.getHTMLImgSrc(widget.htmlText);
       htmlData = widget.htmlText.toString().replaceAll("$img", " ");
     }
@@ -85,8 +87,7 @@ class _AboutusPageState extends State<AboutusPage> {
                     },
                   ),
                 )
-              :
-              Html(
+              : Html(
                   data: htmlData ?? widget.htmlText,
                   onLinkTap: (String? url, RenderContext context,
                       Map<String, String> attributes, dom.Element? element) {

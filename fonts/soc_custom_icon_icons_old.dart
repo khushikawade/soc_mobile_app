@@ -56,4 +56,7 @@ class MyCustomIcon {
   static const IconData group_7_2x = IconData(0xe820, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData group_6_2x = IconData(0xe821, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData group_7_2x_1 = IconData(0xe822, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData group_2_copy_2_1x = IconData(0xe823, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData noun_like_70067_1x = IconData(0xe824, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData path_2x = IconData(0xe825, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

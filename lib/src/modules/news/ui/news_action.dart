@@ -6,11 +6,16 @@ import 'package:flutter/material.dart';
 
 class NewsActionButton extends StatefulWidget {
   NewsActionButton(
-      {Key? key, required this.newsObj, required this.icons, this.isLoading})
+      {Key? key,
+      required this.newsObj,
+      required this.icons,
+      this.isLoading,
+      required this.iconsName})
       : super(key: key);
 
   final NotificationList newsObj;
   final List? icons;
+  final List? iconsName;
   final bool? isLoading;
 
   _NewsActionButtonState createState() => _NewsActionButtonState();
@@ -30,48 +35,62 @@ class _NewsActionButtonState extends State<NewsActionButton> {
         scrollDirection: Axis.horizontal,
         itemCount: widget.icons!.length,
         itemBuilder: (BuildContext context, int index) {
-          return Row(
+          return Column(
             children: [
-              Container(
-                child: IconButton(
-                    onPressed: () {
-                      index == 0
-                          ? like.value = like.value != 0.0
-                              ? like.value + 1
-                              : widget.newsObj.likeCount! + 1
-                          : index == 1
-                              ? thanks.value = thanks.value != 0.0
-                                  ? thanks.value + 1
-                                  : widget.newsObj.thanksCount! + 1
-                              : helpful.value = helpful.value != 0.0
-                                  ? helpful.value + 1
-                                  : widget.newsObj.helpfulCount! + 1;
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    child: IconButton(
+                        padding: EdgeInsets.all(0),
+                        constraints: BoxConstraints(),
+                        onPressed: () {
+                          index == 0
+                              ? like.value = like.value != 0.0
+                                  ? like.value + 1
+                                  : widget.newsObj.likeCount! + 1
+                              : index == 1
+                                  ? thanks.value = thanks.value != 0.0
+                                      ? thanks.value + 1
+                                      : widget.newsObj.thanksCount! + 1
+                                  : helpful.value = helpful.value != 0.0
+                                      ? helpful.value + 1
+                                      : widget.newsObj.helpfulCount! + 1;
 
-                      index == 0
-                          ? widget.newsObj.likeCount = like.value
-                          : index == 1
-                              ? widget.newsObj.thanksCount = thanks.value
-                              : widget.newsObj.helpfulCount = helpful.value;
+                          index == 0
+                              ? widget.newsObj.likeCount = like.value
+                              : index == 1
+                                  ? widget.newsObj.thanksCount = thanks.value
+                                  : widget.newsObj.helpfulCount = helpful.value;
 
-                      bloc.add(NewsAction(
-                          notificationId: widget.newsObj.id,
-                          schoolId: Overrides.SCHOOL_ID,
-                          like: index == 0 ? "1" : "",
-                          thanks: index == 1 ? "1" : "",
-                          helpful: index == 2 ? "1" : ""));
-                    },
-                    icon: Icon(
-                      IconData(widget.icons![index],
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      color: Colors.black,
-                      //Icons.favorite_outline_outlined,
-                      size: Globals.deviceType == "phone"
-                          ? (index == 0 ? 28 : 22)
-                          : (index == 0 ? 30 : 24),
-                    )),
+                          bloc.add(NewsAction(
+                              notificationId: widget.newsObj.id,
+                              schoolId: Overrides.SCHOOL_ID,
+                              like: index == 0 ? "1" : "",
+                              thanks: index == 1 ? "1" : "",
+                              helpful: index == 2 ? "1" : ""));
+                        },
+                        icon: Icon(
+                          IconData(widget.icons![index],
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          color: Colors.black,
+                          //Icons.favorite_outline_outlined,
+                          size: Globals.deviceType == "phone"
+                              ? (index == 0
+                                  ? 23
+                                  : index == 2
+                                      ? 19
+                                      : 18)
+                              : (index == 0 ? 26 : 20),
+                        )),
+                  ),
+                  widget.isLoading == true ? Container() : _likeCount(index)
+                ],
               ),
-              widget.isLoading == true ? Container() : _likeCount(index)
+              Expanded(
+                child: Container( padding: EdgeInsets.all(0),child: Text(widget.iconsName![index] + "${index==3?" ":" | "}") ),
+              )
             ],
           );
         },
