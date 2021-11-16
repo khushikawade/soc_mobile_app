@@ -86,9 +86,6 @@ class _AboutusPageState extends State<AboutusPage> {
                   ),
                 )
               :
-              // Linkify(text:Utility.htmlData(  htmlData ?? widget.htmlText), onOpen: (link) => link.url,
-              //               options: LinkifyOptions(humanize: false),
-              //                  ),
               Html(
                   data: htmlData ?? widget.htmlText,
                   onLinkTap: (String? url, RenderContext context,
