@@ -362,6 +362,8 @@ class _FamilyPageState extends State<FamilyPage> {
   // var _scrollController = ScrollController();
 
   Widget build(BuildContext context) {
+    print('-------------------------------');
+    print(Globals.homeObjet["Family_Banner_Image__c"]);
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
@@ -379,7 +381,7 @@ class _FamilyPageState extends State<FamilyPage> {
                   return <Widget>[
                     Globals.homeObjet["Family_Banner_Image__c"] != null
                         ? SliverAppBar(
-                            expandedHeight: 80.0,
+                            expandedHeight: AppTheme.kBannerHeight,
                             floating: false,
                             // pinned: true,
                             flexibleSpace: FlexibleSpaceBar(

@@ -66,7 +66,7 @@ class AppTheme {
   static const double kTabIconSize = 55.0;
 
 //Banner Height
-  static const double kBannerHeight = 150;
+  static const double kBannerHeight = 100;
 
   //Borders
   static const double kBorderRadius = 0.0;
