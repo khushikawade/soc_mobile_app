@@ -348,8 +348,8 @@ class _NewdescriptionState extends State<Newdescription> {
       setState(() {
         _downloadingFile = true;
       });
-      String _title = widget.obj.headings["en"].toString();
-      String _description = widget.obj.contents["en"].toString();
+      String _title = widget.obj.headings["en"] ?? "";
+      String _description = widget.obj.contents["en"] ?? "";
       String _imageUrl = widget.obj.image != null
           ? widget.obj.image
           : Globals.splashImageUrl != null && Globals.splashImageUrl != ""

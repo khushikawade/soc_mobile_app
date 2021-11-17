@@ -164,7 +164,7 @@ class SocialDescription extends StatelessWidget {
                       "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}"
                               " " +
                           link;
-                  obj.callFunction(context, body, "");
+                  obj.callFunction(context, body, "Social Event");
                 },
                 child: Globals.selectedLanguage != null &&
                         Globals.selectedLanguage != "English" &&
