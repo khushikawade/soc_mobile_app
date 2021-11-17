@@ -21,7 +21,7 @@ class MyCustomIcon {
   static const _kFontFam = 'MyCustomIcon';
   static const String? _kFontPkg = null;
 
-  static const IconData language_icon = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData group_60 = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData news_iocn = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData nyc_icon = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData resource_icon = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -59,4 +59,7 @@ class MyCustomIcon {
   static const IconData group_2_copy_2_1x = IconData(0xe823, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData noun_like_70067_1x = IconData(0xe824, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData path_2x = IconData(0xe825, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData blue = IconData(0xe826, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData blue_1 = IconData(0xe827, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData blue_2 = IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

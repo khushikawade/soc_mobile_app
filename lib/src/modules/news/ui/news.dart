@@ -15,7 +15,6 @@ import 'package:Soc/src/modules/news/ui/news_action.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,7 +35,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   NewsBloc _countBloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
-  List icons = [0xe823, 0xe824, 0xe825, 0xe800];
+  List icons = [0xe823, 0xe824, 0xe825, 0xe829];
   List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   final HomeBloc _homeBloc = new HomeBloc();
   var object;

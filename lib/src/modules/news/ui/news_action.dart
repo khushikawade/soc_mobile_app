@@ -36,7 +36,7 @@ class _NewsActionButtonState extends State<NewsActionButton> {
   void initState() {
     super.initState();
     reactionCount(null);
-    
+
     totalReactions.value = (double.parse(widget.newsObj.likeCount.toString()) +
         double.parse(widget.newsObj.thanksCount.toString()) +
         double.parse(widget.newsObj.helpfulCount.toString()));
@@ -110,69 +110,117 @@ class _NewsActionButtonState extends State<NewsActionButton> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    child: IconButton(
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.11),
-                        constraints: BoxConstraints(),
-                        onPressed: () {
-                          reactionCount(index);
-                          // increamentValue(index);
-                           index == 0
-        ? like.value =
-            like.value != 0.0 ? like.value + 1 : widget.newsObj.likeCount! + 1
-        : index == 1
-            ? thanks.value = thanks.value != 0.0
-                ? thanks.value + 1
-                : widget.newsObj.thanksCount! + 1
-            : index == 2
-                ? helpful.value = helpful.value != 0.0
-                    ? helpful.value + 1
-                    : widget.newsObj.helpfulCount! + 1
-                : share.value = share.value != 0.0
-                    ? share.value + 1
-                    : widget.newsObj.shareCount! + 1;
+                  isCount == true
+                      ? Container(
+                          child: index < 3
+                              ? IconButton(
+                                  padding: EdgeInsets.only(
+                                      left: MediaQuery.of(context).size.width *
+                                          0.19),
+                                  constraints: BoxConstraints(),
+                                  onPressed: () {},
+                                  icon: iconListWidget(context, index, false))
+                              : null,
+                        )
+                      : Container(
+                          child: IconButton(
+                              padding: EdgeInsets.only(
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.11),
+                              constraints: BoxConstraints(),
+                              onPressed: () {
+                                reactionCount(index);
+                                // increamentValue(index);
+                                index == 0
+                                    ? like.value = like.value != 0.0
+                                        ? like.value + 1
+                                        : widget.newsObj.likeCount! + 1
+                                    : index == 1
+                                        ? thanks.value = thanks.value != 0.0
+                                            ? thanks.value + 1
+                                            : widget.newsObj.thanksCount! + 1
+                                        : index == 2
+                                            ? helpful.value = helpful.value !=
+                                                    0.0
+                                                ? helpful.value + 1
+                                                : widget.newsObj.helpfulCount! +
+                                                    1
+                                            : share.value = share.value != 0.0
+                                                ? share.value + 1
+                                                : widget.newsObj.shareCount! +
+                                                    1;
 
-    index == 0
-        ? widget.newsObj.likeCount = like.value
-        : index == 1
-            ? widget.newsObj.thanksCount = thanks.value
-            : index == 2
-                ? widget.newsObj.helpfulCount = helpful.value
-                : widget.newsObj.shareCount = share.value;
+                                index == 0
+                                    ? widget.newsObj.likeCount = like.value
+                                    : index == 1
+                                        ? widget.newsObj.thanksCount =
+                                            thanks.value
+                                        : index == 2
+                                            ? widget.newsObj.helpfulCount =
+                                                helpful.value
+                                            : widget.newsObj.shareCount =
+                                                share.value;
 
-                          bloc.add(NewsAction(
-                              notificationId: widget.newsObj.id,
-                              schoolId: Overrides.SCHOOL_ID,
-                              like: index == 0 ? "1" : "",
-                              thanks: index == 1 ? "1" : "",
-                              helpful: index == 2 ? "1" : "",
-                              shared: index == 3 ? "1" : ""));
-                        },
-                        icon: iconListWidget(context, index, false)),
-                  ),
+                                bloc.add(NewsAction(
+                                    notificationId: widget.newsObj.id,
+                                    schoolId: Overrides.SCHOOL_ID,
+                                    like: index == 0 ? "1" : "",
+                                    thanks: index == 1 ? "1" : "",
+                                    helpful: index == 2 ? "1" : "",
+                                    shared: index == 3 ? "1" : ""));
+                              },
+                              icon: iconListWidget(context, index, false)),
+                        ),
                   // widget.isLoading == true ? Container() : _likeCount(index)
                 ],
               ),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.only(
-                      left: isCount == true
-                          ? MediaQuery.of(context).size.width * 0.07
-                          : MediaQuery.of(context).size.width * 0.10),
-                  child: Row(
-                    // mainAxisSize: MainAxisSize.min,
-                    // mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      isCount == true ? _likeCount(index) : Container(),
-                      Container(
-                          padding:
-                              isCount == true ? EdgeInsets.only(left: 2) : null,
-                          child: Text(widget.iconsName![index])),
-                    ],
-                  ),
-                ),
-              )
+              isCount == true
+                  ? Expanded(
+                      child: index < 3
+                          ? Container(
+                              padding: EdgeInsets.only(
+                                  left:
+                                      // isCount == true
+                                      //     ?
+                                      MediaQuery.of(context).size.width * 0.15),
+                              // : MediaQuery.of(context).size.width * 0.10),
+                              child: Row(
+                                // mainAxisSize: MainAxisSize.min,
+                                // mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  isCount == true
+                                      ? _likeCount(index)
+                                      : Container(),
+                                  Container(
+                                      padding: isCount == true
+                                          ? EdgeInsets.only(left: 2)
+                                          : null,
+                                      child: Text(widget.iconsName![index])),
+                                ],
+                              ),
+                            )
+                          : Container(),
+                    )
+                  : Expanded(
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            left: isCount == true
+                                ? MediaQuery.of(context).size.width * 0.07
+                                : MediaQuery.of(context).size.width * 0.10),
+                        child: Row(
+                          // mainAxisSize: MainAxisSize.min,
+                          // mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            isCount == true ? _likeCount(index) : Container(),
+                            Container(
+                                padding: isCount == true
+                                    ? EdgeInsets.only(left: 2)
+                                    : null,
+                                child: Text(widget.iconsName![index])),
+                          ],
+                        ),
+                      ),
+                    )
             ],
           );
         },
@@ -359,9 +407,9 @@ class _NewsActionButtonState extends State<NewsActionButton> {
 
   void reactionCount(index) {
     setState(() {
-      if (index != 3){ totalReactions.value++;}
-
-     
+      if (index != 3) {
+        totalReactions.value++;
+      }
     });
   }
 
@@ -390,4 +438,3 @@ class _NewsActionButtonState extends State<NewsActionButton> {
   //               : widget.newsObj.shareCount = share.value;
   // }
 }
-

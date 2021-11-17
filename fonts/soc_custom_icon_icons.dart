@@ -62,4 +62,5 @@ class MyCustomIcon {
   static const IconData blue = IconData(0xe826, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData blue_1 = IconData(0xe827, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData blue_2 = IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData v1 = IconData(0xe829, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
