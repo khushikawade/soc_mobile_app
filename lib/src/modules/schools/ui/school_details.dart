@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -22,7 +23,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SchoolDetailPage extends StatefulWidget {
-  final obj;
+  final SchoolDirectoryList obj;
   SchoolDetailPage({
     Key? key,
     required this.obj,
@@ -61,82 +62,44 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
 
   Widget _buildIcon() {
     return Hero(
-      tag: widget.obj.imageUrlC ??
-          Globals.splashImageUrl ??
-          Globals.homeObjet["App_Logo__c"],
-      child: Container(
-        child: widget.obj.imageUrlC != null
-            ? Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-                child: CachedNetworkImage(
-                  imageUrl: widget.obj.imageUrlC,
-                  fit: BoxFit.fill,
-                  placeholder: (context, url) => Container(
-                    alignment: Alignment.center,
-                    child: ShimmerLoading(
-                      isLoading: true,
-                      child: Container(
-                        height: 200,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => CachedNetworkImage(
-                    imageUrl: Globals.splashImageUrl != null &&
-                            Globals.splashImageUrl != ""
-                        ? Globals.splashImageUrl
-                        : Globals.homeObjet["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                  ),
-                ),
-              )
-            : Container(
-                child: ClipRRect(
-                  child: CachedNetworkImage(
-                    imageUrl: Globals.splashImageUrl != null &&
-                            Globals.splashImageUrl != ""
-                        ? Globals.splashImageUrl
-                        : Globals.homeObjet["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            height: 200,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => CachedNetworkImage(
-                      imageUrl: Globals.splashImageUrl != null &&
-                              Globals.splashImageUrl != ""
-                          ? Globals.splashImageUrl
-                          : Globals.homeObjet["App_Logo__c"],
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                    ),
-                  ),
+        tag: widget.obj.imageUrlC ??
+            Globals.splashImageUrl ??
+            Globals.homeObjet["App_Logo__c"],
+        child: Container(
+            child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+          child: CachedNetworkImage(
+            imageUrl: widget.obj.imageUrlC ??
+                Globals.splashImageUrl ??
+                Globals.homeObjet["App_Logo__c"],
+            // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun_School_3390481+(2).png",
+            fit: BoxFit.fill,
+            placeholder: (context, url) => Container(
+              alignment: Alignment.center,
+              child: ShimmerLoading(
+                isLoading: true,
+                child: Container(
+                  height: 200,
+                  color: Colors.white,
                 ),
               ),
-      ),
-    );
+            ),
+            errorWidget: (context, url, error) => CachedNetworkImage(
+              imageUrl:
+                  Globals.splashImageUrl ?? Globals.homeObjet["App_Logo__c"],
+              placeholder: (context, url) => Container(
+                  alignment: Alignment.center,
+                  child: ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      width: _kIconSize * 1.4,
+                      height: _kIconSize * 1.5,
+                      color: Colors.white,
+                    ),
+                  )),
+            ),
+          ),
+        )));
   }
 
   Widget _buildTitleWidget() {
@@ -245,7 +208,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         padding: const EdgeInsets.only(bottom: 4.0),
         child: InkWell(
           onTap: () {
-            urlobj.callurlLaucher(context, "tel:" + widget.obj.phone);
+            urlobj.callurlLaucher(context, "tel:" + widget.obj.phoneC!);
           },
           child: Text(
             widget.obj.phoneC ?? '-',
@@ -273,7 +236,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
       child: Expanded(
           child: Linkify(
         onOpen: (link) => _launchURL(link.url),
-        text: widget.obj.urlC,
+        text: widget.obj.urlC!,
         style: TextStyle(
           decoration: TextDecoration.underline,
           decorationColor: Colors.blue,
@@ -298,7 +261,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: widget.obj.titleC ?? "",
-                    url: widget.obj.urlC,
+                    url: widget.obj.urlC!,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
@@ -314,7 +277,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
             urlobj.callurlLaucher(context, 'mailto:"${widget.obj.emailC}"');
           },
           child: Text(
-            widget.obj.emailC,
+            widget.obj.emailC!,
             style: TextStyle(
               decoration: TextDecoration.underline,
               decorationColor: Colors.blue,
@@ -340,7 +303,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         child: GestureDetector(
           onTap: _launchMapsUrl,
           child: Text(
-            widget.obj.address,
+            widget.obj.address!,
             style: TextStyle(
               decoration: TextDecoration.underline,
               decorationColor: Colors.blue,

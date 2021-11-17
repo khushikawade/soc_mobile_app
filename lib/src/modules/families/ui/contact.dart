@@ -318,11 +318,10 @@ class _ContactPageState extends State<ContactPage> {
                   fontSize: Globals.deviceType == "phone"
                       ? AppTheme.kBodyText1FontSize
                       : AppTheme.kBodyText1FontSize + AppTheme.kSize,
-                  color: Colors.blue,//AppTheme.kAccentColor,
+                  color: Colors.blue, //AppTheme.kAccentColor,
                   fontWeight: FontWeight.normal,
                   fontFamily: 'Roboto Regular',
                   height: 1.5,
-                  
                 ), //Theme.of(context).textTheme.bodyText1!,
                 textAlign: TextAlign.start,
               ),
