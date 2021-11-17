@@ -17,11 +17,7 @@ class Overrides {
   //'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
   static String SCHOOL_ID =
-<<<<<<< HEAD
-      "a1f4W00000194rVQAQ"; //"a1f4W000007DQZZQA4"; // "a1f4W000007DR8nQAG";//"a1f4W000007DRIAQA4"; //"a1f4W000007DR0xQAG"; //"a1f4W000007DQaNQAW";
-=======
       "a1f4W00000194rQQAQ"; //"a1f4W000007DQZZQA4"; // "a1f4W000007DR8nQAG";//"a1f4W000007DRIAQA4"; //"a1f4W000007DR0xQAG"; //"a1f4W000007DQaNQAW";
->>>>>>> 8369e4d0f1b1a12390d3d40aa78ce83e0eb79ddd
   //Sandbox School Id = 'a1T3J000000RcpLUAS';
   //Production School Id'a1f4W000007DR0xQAG';  //'a1T3J000000RHEKUA4'; // a1T3J000000RowRUAS //a1T3J000000RpXNUA0  //a1T3J000000RpNIUA0  //a1T3J000000RpxkUAC //a1T3J0000005DdVUAU
 }
