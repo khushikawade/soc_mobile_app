@@ -15,6 +15,7 @@ import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -146,48 +147,40 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   HorzitalSpacerWidget(_kLabelSpacing / 1.5),
-                  obj.imageUrlC != null
-                      ? CachedNetworkImage(
-                          imageUrl: obj.imageUrlC,
-                          fit: BoxFit.fill,
-                          width: 60,
-                          height: 60,
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: ShimmerLoading(
-                                isLoading: true,
-                                child: Container(
-                                  width: _kIconSize * 1.4,
-                                  height: _kIconSize * 1.5,
-                                  color: Colors.white,
-                                ),
-                              )),
-                        )
-                      : Container(
-                          child: ClipRRect(
-                            child: CachedNetworkImage(
-                              fit: BoxFit.fill,
-                              width: 60,
-                              height: 60,
-                              imageUrl: Globals.splashImageUrl != null &&
-                                      Globals.splashImageUrl != ""
-                                  ? Globals.splashImageUrl
-                                  : Globals.homeObjet["App_Logo__c"],
-                              placeholder: (context, url) => Container(
-                                  alignment: Alignment.center,
-                                  child: ShimmerLoading(
-                                    isLoading: true,
-                                    child: Container(
-                                      width: _kIconSize * 1.4,
-                                      height: _kIconSize * 1.5,
-                                      color: Colors.white,
-                                    ),
-                                  )),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
+                  // obj.imageUrlC != null && obj.imageUrlC != '' ?
+                  CachedNetworkImage(
+                    imageUrl: obj.imageUrlC ??
+                        Globals.splashImageUrl ??
+                        Globals.homeObjet["App_Logo__c"],
+                    fit: BoxFit.fill,
+                    width: 60,
+                    height: 60,
+                    placeholder: (context, url) => Container(
+                        alignment: Alignment.center,
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            width: _kIconSize * 1.4,
+                            height: _kIconSize * 1.5,
+                            color: Colors.white,
                           ),
-                        ),
+                        )),
+                    errorWidget: (context, url, error) => CachedNetworkImage(
+                      imageUrl: Globals.splashImageUrl ??
+                          Globals.homeObjet["App_Logo__c"],
+                      placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: ShimmerLoading(
+                            isLoading: true,
+                            child: Container(
+                              width: _kIconSize * 1.4,
+                              height: _kIconSize * 1.5,
+                              color: Colors.white,
+                            ),
+                          )),
+                    ),
+                  ),
+                  //: Icon(CupertinoIcons.person, size: 35, color: Colors.grey,),
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
                     child: Globals.selectedLanguage != null &&

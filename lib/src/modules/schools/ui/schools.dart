@@ -36,7 +36,7 @@ class _SchoolPageState extends State<SchoolPage> {
     bloc.add(SchoolDirectoryListEvent());
   }
 
-  Widget _buildnewsHeading(obj) {
+  Widget _buildnewsHeading(SchoolDirectoryList obj) {
     return Container(
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&
@@ -70,15 +70,6 @@ class _SchoolPageState extends State<SchoolPage> {
           : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () {
-          //       Navigator.push(
-          // context,
-          // PageRouteBuilder(
-          //   transitionDuration: Duration(milliseconds:90),
-          //   pageBuilder: (_, __, ___) => SchoolDetailPage(obj: obj),
-          //   settings: RouteSettings(
-          //     arguments: obj,
-          //   ),
-          // ));
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -86,11 +77,7 @@ class _SchoolPageState extends State<SchoolPage> {
         },
         child: Row(
           children: <Widget>[
-            Hero(
-              tag: obj.imageUrlC ??
-                  Globals.splashImageUrl ??
-                  Globals.homeObjet["App_Logo__c"],
-              child: Container(
+            Container(
                 alignment: Alignment.center,
                 width: Globals.deviceType == "phone"
                     ? _kIconSize * 1.4
@@ -98,53 +85,38 @@ class _SchoolPageState extends State<SchoolPage> {
                 height: Globals.deviceType == "phone"
                     ? _kIconSize * 1.5
                     : _kIconSize * 2,
-                child: obj.imageUrlC != null
-                    ? ClipRRect(
-                        child: CachedNetworkImage(
-                          imageUrl: obj.imageUrlC!,
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: ShimmerLoading(
-                                isLoading: true,
-                                child: Container(
-                                  width: _kIconSize * 1.4,
-                                  height: _kIconSize * 1.5,
-                                  color: Colors.white,
-                                ),
-                              )),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
-                      )
-                    : Container(
-                        width: Globals.deviceType == "phone"
-                            ? _kIconSize * 1.4
-                            : _kIconSize * 2,
-                        height: Globals.deviceType == "phone"
-                            ? _kIconSize * 1.5
-                            : _kIconSize * 2,
-                        alignment: Alignment.centerLeft,
-                        child: CachedNetworkImage(
-                          imageUrl: Globals.splashImageUrl != null &&
-                                  Globals.splashImageUrl != ""
-                              ? Globals.splashImageUrl
-                              : Globals.homeObjet["App_Logo__c"],
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: ShimmerLoading(
-                                isLoading: true,
-                                child: Container(
-                                  width: _kIconSize * 1.4,
-                                  height: _kIconSize * 1.5,
-                                  color: Colors.white,
-                                ),
-                              )),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
-                      ),
-              ),
-            ),
+                child: ClipRRect(
+                  child: CachedNetworkImage(
+                    imageUrl: obj.imageUrlC ??
+                        Globals.splashImageUrl ??
+                        Globals.homeObjet["App_Logo__c"],
+                    // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun-school.png",
+                    placeholder: (context, url) => Container(
+                        alignment: Alignment.center,
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            width: _kIconSize * 1.4,
+                            height: _kIconSize * 1.5,
+                            color: Colors.white,
+                          ),
+                        )),
+                    errorWidget: (context, url, error) => CachedNetworkImage(
+                      imageUrl: Globals.splashImageUrl ??
+                          Globals.homeObjet["App_Logo__c"],
+                      placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: ShimmerLoading(
+                            isLoading: true,
+                            child: Container(
+                              width: _kIconSize * 1.4,
+                              height: _kIconSize * 1.5,
+                              color: Colors.white,
+                            ),
+                          )),
+                    ),
+                  ),
+                )),
             SizedBox(
               width: _kLabelSpacing / 2,
             ),
