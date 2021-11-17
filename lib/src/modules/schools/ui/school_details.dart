@@ -61,45 +61,41 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   }
 
   Widget _buildIcon() {
-    return Hero(
-        tag: widget.obj.imageUrlC ??
+    return Container(
+        child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+      child: CachedNetworkImage(
+        imageUrl: widget.obj.imageUrlC ??
             Globals.splashImageUrl ??
             Globals.homeObjet["App_Logo__c"],
-        child: Container(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-          child: CachedNetworkImage(
-            imageUrl: widget.obj.imageUrlC ??
-                Globals.splashImageUrl ??
-                Globals.homeObjet["App_Logo__c"],
-            // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun_School_3390481+(2).png",
-            fit: BoxFit.fill,
-            placeholder: (context, url) => Container(
+        // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun_School_3390481+(2).png",
+        fit: BoxFit.fill,
+        placeholder: (context, url) => Container(
+          alignment: Alignment.center,
+          child: ShimmerLoading(
+            isLoading: true,
+            child: Container(
+              height: 200,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        errorWidget: (context, url, error) => CachedNetworkImage(
+          imageUrl:
+              Globals.splashImageUrl ?? Globals.homeObjet["App_Logo__c"],
+          placeholder: (context, url) => Container(
               alignment: Alignment.center,
               child: ShimmerLoading(
                 isLoading: true,
                 child: Container(
-                  height: 200,
+                  width: _kIconSize * 1.4,
+                  height: _kIconSize * 1.5,
                   color: Colors.white,
                 ),
-              ),
-            ),
-            errorWidget: (context, url, error) => CachedNetworkImage(
-              imageUrl:
-                  Globals.splashImageUrl ?? Globals.homeObjet["App_Logo__c"],
-              placeholder: (context, url) => Container(
-                  alignment: Alignment.center,
-                  child: ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      width: _kIconSize * 1.4,
-                      height: _kIconSize * 1.5,
-                      color: Colors.white,
-                    ),
-                  )),
-            ),
-          ),
-        )));
+              )),
+        ),
+      ),
+    ));
   }
 
   Widget _buildTitleWidget() {
