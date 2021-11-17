@@ -347,7 +347,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
       widget.obj.phoneC != null ? _buildPhoneWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
       ButtonWidget(
-        title: widget.obj!.titleC ?? "",
+        title: widget.obj.titleC ?? "",
         obj: widget.obj,
         body: Utility.parseHtml(widget.obj.rtfHTMLC ?? "") +
             "\n" +
