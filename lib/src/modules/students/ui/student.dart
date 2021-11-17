@@ -488,7 +488,7 @@ class _StudentPageState extends State<StudentPage> {
                   return <Widget>[
                     Globals.homeObjet["Student_Banner_Image__c"] != null
                         ? SliverAppBar(
-                            expandedHeight: 80.0,
+                            expandedHeight: AppTheme.kBannerHeight,
                             floating: false,
                             // pinned: true,
                             flexibleSpace: FlexibleSpaceBar(

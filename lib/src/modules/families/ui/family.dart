@@ -379,7 +379,7 @@ class _FamilyPageState extends State<FamilyPage> {
                   return <Widget>[
                     Globals.homeObjet["Family_Banner_Image__c"] != null
                         ? SliverAppBar(
-                            expandedHeight: 80.0,
+                            expandedHeight: AppTheme.kBannerHeight,
                             floating: false,
                             // pinned: true,
                             flexibleSpace: FlexibleSpaceBar(

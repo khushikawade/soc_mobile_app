@@ -94,30 +94,26 @@ class _AboutPageState extends State<AboutPage> {
         obj.typeC == "HTML/RTF" ||
         obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
-          ? 
-                  AboutusPage(
-                        htmlText: obj.rtfHTMLC.toString(),
-                        isbuttomsheet: true,
-                        ishtml: true,
-                        appbarTitle: obj.titleC!,
-                        language: Globals.selectedLanguage,
-                      
-                      )
+          ? AboutusPage(
+              htmlText: obj.rtfHTMLC.toString(),
+              isbuttomsheet: true,
+              ishtml: true,
+              appbarTitle: obj.titleC!,
+              language: Globals.selectedLanguage,
+            )
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    }else if (obj.typeC == "Embed iFrame") {
+    } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
-                    isiFrame: true,
-                    title: obj.titleC,
-                    url: obj.rtfHTMLC.toString(),
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )
-                 
-                      ))
+                        isiFrame: true,
+                        title: obj.titleC,
+                        url: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
       obj.pdfURL != null

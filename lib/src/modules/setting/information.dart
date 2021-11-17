@@ -145,7 +145,7 @@ class _InformationPageState extends State<InformationPage> {
         SizedBox(
           height: 100.0,
           child: ShareButtonWidget(
-            language: Globals.selectedLanguage,
+            isSettingPage: true,
           ),
         ),
       ],
@@ -234,13 +234,7 @@ class _InformationPageState extends State<InformationPage> {
 
   _launchURL(obj) async {
     if (obj.toString().split(":")[0] == 'http') {
-      // if (await canLaunch(obj)) {
-      //   await launch(obj);
-      // } else {
-      //   throw 'Could not launch ${obj!}';
-      // }
-        await Utility.launchUrlOnExternalBrowser(obj);
-
+      await Utility.launchUrlOnExternalBrowser(obj);
     } else {
       Navigator.push(
           context,

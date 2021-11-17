@@ -50,66 +50,38 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
     super.initState();
     homebloc.add(FetchBottomNavigationBar());
     Globals.callsnackbar = true;
-    if(widget.obj.geoLocation!=null) {_markers.add(Marker(
-        markerId: MarkerId("Location"),
-        draggable: true,
-        position: LatLng(widget.obj.geoLocation["latitude"],
-            widget.obj.geoLocation["longitude"])));}
+    if (widget.obj.geoLocation != null) {
+      _markers.add(Marker(
+          markerId: MarkerId("Location"),
+          draggable: true,
+          position: LatLng(widget.obj.geoLocation["latitude"],
+              widget.obj.geoLocation["longitude"])));
+    }
   }
 
   Widget _buildIcon() {
-    return Container(
-      child: widget.obj.imageUrlC != null
-          ? Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-              child: CachedNetworkImage(
-                imageUrl: widget.obj.imageUrlC,
-                fit: BoxFit.fill,
-                placeholder: (context, url) => Container(
-                  alignment: Alignment.center,
-                  child: ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      height: 200,
-                      color: Colors.white,
+    return Hero(
+      tag: widget.obj.imageUrlC ??
+          Globals.splashImageUrl ??
+          Globals.homeObjet["App_Logo__c"],
+      child: Container(
+        child: widget.obj.imageUrlC != null
+            ? Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+                child: CachedNetworkImage(
+                  imageUrl: widget.obj.imageUrlC,
+                  fit: BoxFit.fill,
+                  placeholder: (context, url) => Container(
+                    alignment: Alignment.center,
+                    child: ShimmerLoading(
+                      isLoading: true,
+                      child: Container(
+                        height: 200,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-                errorWidget: (context, url, error) => CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl != null &&
-                          Globals.splashImageUrl != ""
-                      ? Globals.splashImageUrl
-                      : Globals.homeObjet["App_Logo__c"],
-                  placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      child: ShimmerLoading(
-                        isLoading: true,
-                        child: Container(
-                          width: _kIconSize * 1.4,
-                          height: _kIconSize * 1.5,
-                          color: Colors.white,
-                        ),
-                      )),
-                ),
-              ),
-            )
-          : Container(
-              child: ClipRRect(
-                child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl != null &&
-                          Globals.splashImageUrl != ""
-                      ? Globals.splashImageUrl
-                      : Globals.homeObjet["App_Logo__c"],
-                  placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      child: ShimmerLoading(
-                        isLoading: true,
-                        child: Container(
-                          height: 200,
-                          color: Colors.white,
-                        ),
-                      )),
                   errorWidget: (context, url, error) => CachedNetworkImage(
                     imageUrl: Globals.splashImageUrl != null &&
                             Globals.splashImageUrl != ""
@@ -127,8 +99,43 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                         )),
                   ),
                 ),
+              )
+            : Container(
+                child: ClipRRect(
+                  child: CachedNetworkImage(
+                    imageUrl: Globals.splashImageUrl != null &&
+                            Globals.splashImageUrl != ""
+                        ? Globals.splashImageUrl
+                        : Globals.homeObjet["App_Logo__c"],
+                    placeholder: (context, url) => Container(
+                        alignment: Alignment.center,
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            height: 200,
+                            color: Colors.white,
+                          ),
+                        )),
+                    errorWidget: (context, url, error) => CachedNetworkImage(
+                      imageUrl: Globals.splashImageUrl != null &&
+                              Globals.splashImageUrl != ""
+                          ? Globals.splashImageUrl
+                          : Globals.homeObjet["App_Logo__c"],
+                      placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: ShimmerLoading(
+                            isLoading: true,
+                            child: Container(
+                              width: _kIconSize * 1.4,
+                              height: _kIconSize * 1.5,
+                              color: Colors.white,
+                            ),
+                          )),
+                    ),
+                  ),
+                ),
               ),
-            ),
+      ),
     );
   }
 
@@ -366,7 +373,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
       SpacerWidget(_kLabelSpacing),
       _buildDescriptionWidget(),
       SpacerWidget(_kLabelSpacing * 2),
-     widget.obj.geoLocation!=null? _buildMapWidget():Container(),
+      widget.obj.geoLocation != null ? _buildMapWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
       widget.obj.urlC != null ? _buildWebsiteWidget() : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
