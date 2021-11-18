@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/news/ui/news_action_basic.dart';
 import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/modules/news/ui/news_action.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -32,7 +32,7 @@ class Newdescription extends StatefulWidget {
   final bool isbuttomsheet;
   final String? language;
   final List? icons;
-  final List?iconsName;
+  final List? iconsName;
 
   _NewdescriptionState createState() => _NewdescriptionState();
 }
@@ -312,10 +312,10 @@ class _NewdescriptionState extends State<Newdescription> {
           ),
         ),
         SpacerWidget(AppTheme.kBodyPadding),
-        NewsActionButton(
+        NewsActionBasic(
           newsObj: widget.obj,
           icons: widget.icons,
-            iconsName: widget.iconsName,
+          iconsName: widget.iconsName,
         ), //countObj:widget.newsCountObj),
         SpacerWidget(20),
         Row(

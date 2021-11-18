@@ -72,6 +72,7 @@ dependencies:
   mailto: ^2.0.0
   marquee: ^2.2.0
   open_apps_settings: ^0.0.4
+  like_button: ^2.0.3
   # app_settings: ^4.1.1
   # bubble_showcase: ^1.1.0
   # bubble_showcase:

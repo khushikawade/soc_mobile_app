@@ -35,7 +35,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is GlobalSearchEvent) {
       try {
         yield SearchLoading();
-        List<SearchList> filteredList=[];
+        List<SearchList> filteredList = [];
         List<SearchList> list = await getGlobalSearch({
           "q": event.keyword,
           "sobjects": [
@@ -109,17 +109,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           "overallLimit": 100,
           "defaultLimit": 10
         });
-        for(int i=0;i<list.length;i++){
-          if(list[i].schoolId==Globals.homeObjet["Id"]){
+        for (int i = 0; i < list.length; i++) {
+          if (list[i].schoolId == Globals.homeObjet["Id"]) {
             filteredList.add(list[i]);
           }
         }
-       
+
         yield GlobalSearchSuccess(
           obj: filteredList,
         );
-        
-        
       } catch (e) {
         yield HomeErrorReceived(err: e);
       }

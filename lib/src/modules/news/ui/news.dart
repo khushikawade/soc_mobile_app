@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/modules/news/ui/news_action_basic.dart';
 import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -15,10 +16,12 @@ import 'package:Soc/src/modules/news/ui/news_action.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:marquee/marquee.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -131,86 +134,51 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 children: [
                   ListTile(
                     leading: Container(
-                      // alignment: Alignment.center,
-                      width: MediaQuery.of(context).size.width * 0.14,
+                        // color: Colors.green,
+                        alignment: Alignment.center,
+                        width: MediaQuery.of(context).size.width * 0.12,
 
-                      // Globals.deviceType == "phone"
-                      //     ? _kIconSize * 1.4
-                      //     : _kIconSize * 2,
-                      height: MediaQuery.of(context).size.width * 0.5,
+                        // Globals.deviceType == "phone"
+                        //     ? _kIconSize * 1.4
+                        //     : _kIconSize * 2,
+                        height: MediaQuery.of(context).size.width * 0.5,
 
-                      // Globals.deviceType == "phone"
-                      //     ? _kIconSize * 1.5
-                      //     : _kIconSize * 2,
-                      child: obj.image != null
-                          ? ClipRRect(
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (_) =>
-                                          NewsImagePage(imageURL: obj.image!));
-                                },
-                                child: CachedNetworkImage(
-                                  imageUrl: obj.image!,
-                                  placeholder: (context, url) => Container(
-                                      alignment: Alignment.center,
-                                      child: ShimmerLoading(
-                                        isLoading: true,
-                                        child: Container(
-                                          width: _kIconSize * 1.4,
-                                          height: _kIconSize * 1.5,
-                                          color: Colors.white,
-                                        ),
-                                      )),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                ),
-                              ),
-                            )
-                          : Container(
-                              width: Globals.deviceType == "phone"
-                                  ? _kIconSize * 1.4
-                                  : _kIconSize * 2,
-                              height: Globals.deviceType == "phone"
-                                  ? _kIconSize * 1.5
-                                  : _kIconSize * 2,
-                              alignment: Alignment.centerLeft,
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (_) => NewsImagePage(
-                                          imageURL: Globals.splashImageUrl !=
-                                                      null &&
-                                                  Globals.splashImageUrl != ""
-                                              ? Globals.splashImageUrl
-                                              : Globals
-                                                  .homeObjet["App_Logo__c"]));
-                                },
-                                child: CachedNetworkImage(
-                                  imageUrl: Globals.splashImageUrl != null &&
-                                          Globals.splashImageUrl != ""
-                                      ? Globals.splashImageUrl
-                                      : Globals.homeObjet["App_Logo__c"],
-                                  placeholder: (context, url) => Container(
-                                      alignment: Alignment.center,
-                                      child: ShimmerLoading(
-                                        isLoading: true,
-                                        child: Container(
-                                          width: _kIconSize * 1.4,
-                                          height: _kIconSize * 1.5,
-                                          color: Colors.white,
-                                        ),
-                                      )),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                ),
-                              ),
+                        // Globals.deviceType == "phone"
+                        //     ? _kIconSize * 1.5
+                        //     : _kIconSize * 2,
+                        child:
+                            //obj.image != null
+                            //     ?
+                            ClipRRect(
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (_) =>
+                                      NewsImagePage(imageURL: obj.image!));
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl: obj.image ??
+                                  Globals.splashImageUrl ??
+                                  Globals.homeObjet["App_Logo__c"],
+                              placeholder: (context, url) => Container(
+                                  alignment: Alignment.center,
+                                  child: ShimmerLoading(
+                                    isLoading: true,
+                                    child: Container(
+                                      width: _kIconSize * 1.4,
+                                      height: _kIconSize * 1.5,
+                                      color: Colors.white,
+                                    ),
+                                  )),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
                             ),
-                    ),
-                    title: _buildnewsHeading(obj),
-                    subtitle: _buildnewsSubtitle(obj),
+                          ),
+                        )),
+                    title: Container(
+                        // color: Colors.red,
+                        child: _buildnewsHeading(obj)),
                   ),
                   actionButton(list, obj, index),
                 ],
@@ -218,7 +186,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         ),
         Container(
           color: Colors.grey.withOpacity(0.5),
-          height: 5,
+          height: 8,
         )
       ],
     );
@@ -236,7 +204,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     isCountLoading = false;
                     return Container(
                       alignment: Alignment.centerLeft,
-                      child: NewsActionButton(
+                      child: NewsActionBasic(
                           newsObj: newsMainList[index],
                           icons: icons,
                           iconsName: iconsName,
@@ -247,7 +215,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                       alignment: Alignment.centerLeft,
                       child: ShimmerLoading(
                           isLoading: true,
-                          child: NewsActionButton(
+                          child: NewsActionBasic(
                               newsObj: newsMainList[index],
                               icons: icons,
                               iconsName: iconsName,
@@ -264,7 +232,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 alignment: Alignment.centerLeft,
                 child: ShimmerLoading(
                     isLoading: true,
-                    child: NewsActionButton(
+                    child: NewsActionBasic(
                         newsObj: obj,
                         icons: icons,
                         iconsName: iconsName,
@@ -318,7 +286,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 alignment: Alignment.centerLeft,
                 child: ShimmerLoading(
                     isLoading: true,
-                    child: NewsActionButton(
+                    child: NewsActionBasic(
                         newsObj: obj,
                         icons: icons,
                         iconsName: iconsName,
@@ -338,6 +306,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget _buildnewsHeading(obj) {
     return Container(
+        height: 50,
         // margin: EdgeInsets.only(
         //   left: 10,
         // ),
@@ -361,59 +330,44 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   style: Theme.of(context).textTheme.bodyText2!,
                 ),
               )
-            : Text(
+            : //Text("ih rfoirhfoirhfo rho hroht orhith 4th4gi",style: Theme.of(context).textTheme.headline4),
+            marqueesText(
+                // Text(
                 obj.headings!.length > 0 &&
                         obj.headings != "" &&
                         obj.headings != null
                     ? obj.headings["en"].toString()
-                    : obj.contents["en"] ?? '-',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4!
-                    .copyWith(fontWeight: FontWeight.bold),
+                    : obj.contents["en"].toString().split("\n")[0],
+                // overflow: TextOverflow.ellipsis,
+                // maxLines: 1,
+                // style: Theme.of(context)
+                //     .textTheme
+                //     .headline4!
+                // ,
               ));
   }
 
-  Widget _buildnewsSubtitle(obj) {
-    return Container(
-        // margin: EdgeInsets.only(
-        //   left: 10,
-        // ),
-        // color: Colors.red,
-        alignment: Alignment.centerLeft,
-        child: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: obj.contents["en"] ?? '-',
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.bodyText2!,
-                ),
-              )
-            : Text(
-                obj.contents["en"] ?? '-',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                style: Theme.of(context).textTheme.headline4!,
-              ));
+  marqueesText(String title) {
+    return title.length < 45
+        ? Text("$title", style: Theme.of(context).textTheme.headline4!)
+        : Marquee(
+            text: "$title",
+            style: Theme.of(context).textTheme.headline4!,
+            scrollAxis: Axis.horizontal,
+            velocity: 30.0,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            blankSpace: 50,
+            //MediaQuery.of(context).size.width
+            // velocity: 100.0,
+            pauseAfterRound: Duration(seconds: 5),
+            showFadingOnlyWhenScrolling: true,
+            startPadding: 10.0,
+            accelerationDuration: Duration(seconds: 1),
+            accelerationCurve: Curves.linear,
+            decelerationDuration: Duration(milliseconds: 500),
+            decelerationCurve: Curves.easeOut,
+          );
   }
-
-  // Widget _buildTimeStamp(NotificationList obj) {
-  //   DateTime now = DateTime.now(); //REPLACE WITH ACTUAL DATE
-  //   newsTimeStamp = DateFormat('yyyy/MM/dd').format(now);
-  //   return Container(
-  //       child: Text(
-  //     "${newsTimeStamp}",
-  //     style: Theme.of(context).textTheme.subtitle1,
-  //   ));
-  // }
 
   Widget _buildList(List<NotificationList> obj) {
     return Expanded(

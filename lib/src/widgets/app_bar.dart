@@ -44,7 +44,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
   static const double _kLabelSpacing = 15.0;
-  static const double _kIconSize = 50.0;
+  // static const double _kIconSize = 50.0;
   double lineProgress = 0.0;
   SharePopUp shareobj = new SharePopUp();
 
