@@ -44,7 +44,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
   static const double _kLabelSpacing = 15.0;
-  static const double _kIconSize = 50.0;
+  // static const double _kIconSize = 50.0;
   double lineProgress = 0.0;
   SharePopUp shareobj = new SharePopUp();
 
@@ -112,25 +112,6 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                 ),
               )
             : Container(),
-        // widget.ishtmlpage == true
-        //     ? IconButton(
-        //         onPressed: () {
-        //           widget.sharedpopBodytext != null &&
-        //                   widget.sharedpopUpheaderText != 'null' &&
-        //                   widget.sharedpopBodytext!.length > 1
-        //               ? shareobj.callFunction(
-        //                   context,
-        //                   widget.sharedpopBodytext.toString(),
-        //                   widget.sharedpopUpheaderText.toString())
-        //               : print("null");
-        //         },
-        //         icon: Icon(
-        //           Icons.share,
-        //           size: Globals.deviceType == "phone" ? 18 : 26,
-        //         ))
-        // : Container(
-        //     height: 0,
-        //   ),
         HorzitalSpacerWidget(_kLabelSpacing / 3)
       ],
     );
