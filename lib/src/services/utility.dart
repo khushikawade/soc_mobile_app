@@ -231,6 +231,13 @@ class Utility {
     }
   }
 
+  static String parseHtml(str) {
+    if (str == null) return "";
+    String htmlTxt = str.replaceAll("\n", "");
+    var document = parse(htmlTxt);
+    return document.body!.text;
+  }
+
   static launchUrlOnExternalBrowser(String url) async {
     // if (await canLaunch(url)) {
     //   await launch(url);
@@ -245,13 +252,15 @@ class Utility {
   }
 
   static Future<File> createFileFromUrl(_url) async {
-    String _fileExt = _url.split('.').last;
+    Uri _imgUrl = Uri.parse(_url);
+    String _fileExt = _imgUrl.path.split('.').last;
+    String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Response<List<int>> rs = await Dio().get<List<int>>(
       _url,
       options: Options(responseType: ResponseType.bytes),
     );
     String dir = (await getApplicationDocumentsDirectory()).path;
-    File file = new File('$dir/tempdoc.$_fileExt');
+    File file = new File('$dir/$_fileName.$_fileExt');
     await file.writeAsBytes(rs.data!);
     return file;
   }

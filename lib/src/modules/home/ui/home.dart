@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
+import 'package:Soc/src/modules/resources/resources.dart';
+import 'package:Soc/src/modules/schools/ui/schools.dart';
 import 'package:Soc/src/modules/social/ui/social.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
@@ -35,8 +38,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   var item;
   var item2;
 
-  // final ValueNotifier<String> languageChanged =
-  //     ValueNotifier<String>("English");
+  final ValueNotifier<String> languageChanged =
+      ValueNotifier<String>("English");
   // final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
@@ -95,7 +98,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       if (element.contains('news')) {
         _screens.add(NewsPage());
       } else if (element.contains('student')) {
-        _screens.add(StudentPage());
+        _screens.add(StudentPage(
+          homeObj: widget.homeObj,
+        ));
       } else if (element.contains('families')) {
         _screens.add(
           FamilyPage(
@@ -107,6 +112,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       } else if (element.contains('social')) {
         _screens.add(
           SocialPage(),
+        );
+      } else if (element.contains('about')) {
+        _screens.add(
+          AboutPage(),
+        );
+      } else if (element.contains('school')) {
+        _screens.add(
+          SchoolPage(),
+        );
+      } else if (element.contains('resource')) {
+        _screens.add(
+          ResourcesPage(),
         );
       }
     });
@@ -176,7 +193,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               Globals.selectedLanguage != ""
                           ? TranslationWidget(
                               shimmerHeight: 8,
-                              message: "${item.split("_")[0]}",
+                              message: item.split("_")[
+                                  0], //"${item.split("_")[0]=="Student"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
                               fromLanguage: "en",
                               toLanguage: Globals.selectedLanguage,
                               builder: (translatedMessage) => Expanded(
@@ -188,7 +206,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             )
                           : Expanded(
                               child: Text(
-                                "${item.split("_")[0]}",
+                                item.split("_")[
+                                    0], //"${item.split("_")[0]=="Students"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 style: Theme.of(context).textTheme.headline4!,

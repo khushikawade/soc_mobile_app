@@ -27,11 +27,15 @@ class FamiliesSublistEvent extends FamilyEvent {
 }
 
 class SDevent extends FamilyEvent {
+  final String? categoryId;
+  SDevent({
+    this.categoryId,
+  });
   @override
-  List<Object> get props => [];
+  List<Object> get props => [categoryId!];
 
   @override
-  String toString() => 'SocialButtonPressed';
+  String toString() => 'SDButtonPressed';
 }
 
 class CalendarListEvent extends FamilyEvent {

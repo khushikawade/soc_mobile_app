@@ -12,7 +12,6 @@ Future<void> initPlatformState(BuildContext context) async {
   try {
     if (Platform.isAndroid) {
       androidInfo = await DeviceInfoPlugin().androidInfo;
-
       Globals.manufacturer = androidInfo!.manufacturer;
       Globals.systemVersion = androidInfo!.version.release;
       Globals.model = androidInfo!.model;

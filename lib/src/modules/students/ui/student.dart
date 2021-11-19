@@ -88,6 +88,7 @@ class _StudentPageState extends State<StudentPage> {
     return list.length > 0
         ? new OrientationBuilder(builder: (context, orientation) {
             return GridView.count(
+              padding: const EdgeInsets.only(bottom: AppTheme.kBodyPadding * 3),
               childAspectRatio: orientation == Orientation.portrait ? 1 : 3 / 2,
               crossAxisCount: orientation == Orientation.portrait &&
                       Globals.deviceType == "phone"
@@ -425,13 +426,7 @@ class _StudentPageState extends State<StudentPage> {
                           return Center(child: CircularProgressIndicator());
                         } else if (state is StudentDataSucess) {
                           return state.obj != null && state.obj!.length > 0
-                              ? Container(
-                                  padding: const EdgeInsets.only(
-                                      top: _kLableSpacing * 1.2,
-                                      bottom: _kLableSpacing * 4),
-                                  child:
-                                      _buildGrid(state.obj!, state.subFolder!),
-                                )
+                              ? _buildGrid(state.obj!, state.subFolder!)
                               :
                               // ListView(children: [
                               NoDataFoundErrorWidget(
@@ -493,7 +488,7 @@ class _StudentPageState extends State<StudentPage> {
                   return <Widget>[
                     Globals.homeObjet["Student_Banner_Image__c"] != null
                         ? SliverAppBar(
-                            expandedHeight: 80.0,
+                            expandedHeight: AppTheme.kBannerHeight,
                             floating: false,
                             // pinned: true,
                             flexibleSpace: FlexibleSpaceBar(
@@ -509,7 +504,10 @@ class _StudentPageState extends State<StudentPage> {
                         : SliverAppBar(),
                   ];
                 },
-                body: _body())
+                body: Container(
+                    padding: const EdgeInsets.only(
+                        top: _kLableSpacing * 1.2, bottom: _kLableSpacing * 4),
+                    child: _body()))
             : _body());
   }
 }

@@ -70,11 +70,26 @@ class _StaffPageState extends State<StaffPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "Embed iFrame") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                        isiFrame: true,
+                        title: obj.titleC!,
+                        url: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    staffDirectoryCategoryId: null,
+                    isAbout: false,
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
@@ -332,14 +347,14 @@ class _StaffPageState extends State<StaffPage> {
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   SliverAppBar(
-                    expandedHeight: 80.0,
+                    expandedHeight: AppTheme.kBannerHeight,
                     floating: false,
                     // pinned: true,
                     flexibleSpace: FlexibleSpaceBar(
                       centerTitle: true,
                       background: Image.network(
                         Globals.homeObjet["Staff_Banner_Image__c"],
-                        fit: BoxFit.cover,
+                        fit: BoxFit.fill,
                       ),
                     ),
                   )

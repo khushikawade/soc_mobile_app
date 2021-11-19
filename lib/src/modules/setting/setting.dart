@@ -6,6 +6,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/i_need_support_button.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -50,9 +51,9 @@ class _SettingPageState extends State<SettingPage> {
     Globals.callsnackbar = true;
   }
 
-  void appversion()async{
-  packageInfo = await PackageInfo.fromPlatform();
-}
+  void appversion() async {
+    packageInfo = await PackageInfo.fromPlatform();
+  }
 
   pushState(data) async {
     SharedPreferences pushStatus = await SharedPreferences.getInstance();
@@ -195,14 +196,13 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-
   Widget _appVersion() {
     return Container(
         padding: EdgeInsets.all(16),
         child: Text(
-                packageInfo!.version,
-                style: Theme.of(context).textTheme.headline2!,
-              ));
+          packageInfo!.version,
+          style: Theme.of(context).textTheme.headline2!,
+        ));
   }
 
   Widget _buildItem() {
@@ -218,7 +218,7 @@ class _SettingPageState extends State<SettingPage> {
           width: MediaQuery.of(context).size.width * 1,
           height: 100.0,
           child: ShareButtonWidget(
-            language: Globals.selectedLanguage,
+            isSettingPage: true,
           ))
     ]);
   }

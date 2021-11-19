@@ -69,6 +69,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<NotificationList>> fetchNotificationList() async {
     try {
+      print(
+          "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}");
+      print('Basic ${Overrides.REST_API_KEY}');
       final response = await http.get(
           Uri.parse(
               "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}"),
@@ -79,9 +82,11 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         Globals.notiCount = data["total_count"];
-        final data1 = data["notifications"];
+        final _allNotifications = data["notifications"];
+        // Filtering the scheduled notifications. Only delivered notifications should display in the list.
+        final data1 =
+            _allNotifications.where((e) => e['completed_at'] != null).toList();
         final data2 = data1 as List;
-
         return data2.map((i) {
           return NotificationList(
               id: i["id"],
@@ -97,6 +102,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       if (e.toString().contains("Failed host lookup")) {
         throw ("No Internet Connection.");
       } else {
+        print(e);
         throw (e);
       }
     }

@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/about/ui/about_sd_detail_page.dart';
 import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
@@ -11,25 +12,27 @@ import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
-  SliderWidget(
-      {required this.obj,
-      required this.currentIndex,
-      required this.iseventpage,
-      required this.date,
-      required this.isbuttomsheet,
-      required this.language,
-      required this.iconsName,
-      this.issocialpage,
-      this.icons,});
+  SliderWidget({
+    required this.obj,
+    required this.currentIndex,
+    required this.iseventpage,
+    required this.date,
+    required this.isbuttomsheet,
+    required this.language,
+    required this.iconsName,
+    this.issocialpage,
+    this.icons,
+  });
   final obj;
   int currentIndex;
   bool? issocialpage;
-  bool? iseventpage;
+  bool? isAboutSDPage;
   String date;
   bool isbuttomsheet;
   String? language;
   final List? icons;
-  final List?iconsName;
+  final List? iconsName;
+  final iseventpage;
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -70,7 +73,12 @@ class _SliderWidgetState extends State<SliderWidget> {
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
-          leading: BackButtonWidget(isNewsPage: widget.iseventpage==false&&widget.issocialpage==false?true:false,),
+          leading: BackButtonWidget(
+            isNewsPage:
+                widget.iseventpage == false && widget.issocialpage == false
+                    ? true
+                    : false,
+          ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -146,20 +154,24 @@ class _SliderWidgetState extends State<SliderWidget> {
                       object: object[widget.currentIndex],
                       language: Globals.selectedLanguage,
                     )
-                  : widget.iseventpage!
-                      ? EventDescription(
+                  : widget.isAboutSDPage!
+                      ? AboutSDDetailPage(
                           obj: object[widget.currentIndex],
-                          isbuttomsheet: true,
-                          language: Globals.selectedLanguage,
                         )
-                      : Newdescription(
-                          icons: widget.icons!,
-iconsName: widget.iconsName,
-                          obj: object[widget.currentIndex],
-                          date: widget.date,
-                          isbuttomsheet: true,
-                          language: Globals.selectedLanguage,
-                        );
+                      : widget.iseventpage
+                          ? EventDescription(
+                              obj: object[widget.currentIndex],
+                              isbuttomsheet: true,
+                              language: Globals.selectedLanguage,
+                            )
+                          : Newdescription(
+                              icons: widget.icons!,
+                              iconsName: widget.iconsName,
+                              obj: object[widget.currentIndex],
+                              date: widget.date,
+                              isbuttomsheet: true,
+                              language: Globals.selectedLanguage,
+                            );
             },
           ),
         )

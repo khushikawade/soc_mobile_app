@@ -23,6 +23,7 @@ class Globals {
   static ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
   static final scaffoldKey = GlobalKey<ScaffoldState>();
+  static bool? isAndroid;
   static String? release = "";
   static String? manufacturer = "";
   static String? model = "";

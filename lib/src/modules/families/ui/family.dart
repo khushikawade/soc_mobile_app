@@ -86,19 +86,9 @@ class _FamilyPageState extends State<FamilyPage> {
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage ?? "English",
                   )));
-    } else if (obj.typeC == "URL" || obj.titleC == "Afterschool Consent 2") {
+    } else if (obj.typeC == "URL") {
       obj.appUrlC != null
           ?
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (BuildContext context) => InAppUrlLauncer(
-          //               title: obj.titleC!,
-          //               url: obj.appUrlC ?? '',
-          //               isbuttomsheet: true,
-          //               language: Globals.selectedLanguage,
-          //             ))):
-
           _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
@@ -106,6 +96,8 @@ class _FamilyPageState extends State<FamilyPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    staffDirectoryCategoryId: null,
+                    isAbout: false,
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
@@ -138,6 +130,21 @@ class _FamilyPageState extends State<FamilyPage> {
                         appbarTitle: obj.titleC!,
                         language: Globals.selectedLanguage,
                       )))
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    }else if (obj.typeC == "Embed iFrame") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                    isiFrame: true,
+                    title: obj.titleC!,
+                    url: obj.rtfHTMLC.toString(),
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )
+                 
+                      ))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
       obj.pdfURL != null
@@ -287,16 +294,15 @@ class _FamilyPageState extends State<FamilyPage> {
                                   return Center(
                                       child: CircularProgressIndicator());
                                 } else if (state is FamiliesDataSucess) {
-                                  return state.obj != null &&
-                                          state.obj!.length > 0
+                                  return newList.length > 0
                                       ? ListView.builder(
                                           padding: EdgeInsets.only(bottom: 45),
                                           scrollDirection: Axis.vertical,
-                                          itemCount: state.obj!.length,
+                                          itemCount: newList.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return _buildList(
-                                                state.obj![index], index);
+                                                newList[index], index);
                                           },
                                         )
                                       :
@@ -331,6 +337,19 @@ class _FamilyPageState extends State<FamilyPage> {
                               },
                               child: EmptyContainer()),
                         ),
+                        BlocListener<FamilyBloc, FamilyState>(
+                            bloc: _bloc,
+                            listener: (context, state) async {
+                              if (state is FamiliesDataSucess) {
+                                newList.clear();
+                                for (int i = 0; i < state.obj!.length; i++) {
+                                  if (state.obj![i].status != "Hide") {
+                                    newList.add(state.obj![i]);
+                                  }
+                                }
+                              }
+                            },
+                            child: EmptyContainer()),
                       ],
                     )
                   : NoInternetErrorWidget(
@@ -360,7 +379,7 @@ class _FamilyPageState extends State<FamilyPage> {
                   return <Widget>[
                     Globals.homeObjet["Family_Banner_Image__c"] != null
                         ? SliverAppBar(
-                            expandedHeight: 80.0,
+                            expandedHeight: AppTheme.kBannerHeight,
                             floating: false,
                             // pinned: true,
                             flexibleSpace: FlexibleSpaceBar(

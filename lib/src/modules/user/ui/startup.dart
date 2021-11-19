@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -34,9 +36,6 @@ class _StartupPageState extends State<StartupPage> {
   IosDeviceInfo? ios;
   bool? isnetworkisuue = false;
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
-  
-
-  
 
   void initState() {
     super.initState();
@@ -46,13 +45,19 @@ class _StartupPageState extends State<StartupPage> {
     _newsBloc.add(FetchNotificationList());
     getindexvalue();
     _showcase();
+
+    if (Platform.isAndroid) {
+      Globals.isAndroid = true;
+    } else if (Platform.isIOS) {
+      Globals.isAndroid = false;
+    }
   }
 
   Future<void> _showcase() async {
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     bool? _flag = preferences.getBool('hasShowcaseInitialised');
-    if(_flag == true){
+    if (_flag == true) {
       Globals.hasShowcaseInitialised.value = true;
     }
     preferences.setBool('hasShowcaseInitialised', true);
@@ -92,7 +97,7 @@ class _StartupPageState extends State<StartupPage> {
   Widget _buildSplashScreen() {
     return Center(
         child: Globals.splashImageUrl != null && Globals.splashImageUrl != " "
-            ?Padding(
+            ? Padding(
                 padding: const EdgeInsets.all(16),
                 child: CachedNetworkImage(
                   imageUrl: Globals.splashImageUrl!,
@@ -105,8 +110,7 @@ class _StartupPageState extends State<StartupPage> {
             : Text(
                 "Loading ...",
                 style: TextStyle(fontSize: 28, color: Colors.black),
-              )
-        );
+              ));
   }
 
   @override
@@ -124,6 +128,7 @@ class _StartupPageState extends State<StartupPage> {
             return new Stack(
               fit: StackFit.expand,
               children: [
+                //Will show the splash screen while the auto login is in the progress
                 connected
                     ? BlocBuilder<UserBloc, UserState>(
                         bloc: _loginBloc,
@@ -131,7 +136,6 @@ class _StartupPageState extends State<StartupPage> {
                           if (state is Loading) {
                             return _buildSplashScreen();
                           }
-
                           if (state is ErrorReceived) {
                             return ListView(children: [
                               ErrorMsgWidget(),
@@ -143,6 +147,27 @@ class _StartupPageState extends State<StartupPage> {
                         connected: connected,
                         issplashscreen: true,
                       ),
+                // Login End
+                // Showing spash screen while fetching App Settings(Bottom Nav items, colors etc.)
+                connected
+                    ? BlocBuilder<HomeBloc, HomeState>(
+                        bloc: _bloc,
+                        builder: (BuildContext contxt, HomeState state) {
+                          if (state is HomeLoading) {
+                            return _buildSplashScreen();
+                          }
+                          if (state is ErrorReceived) {
+                            return ListView(children: [
+                              ErrorMsgWidget(),
+                            ]);
+                          }
+                          return Container();
+                        })
+                    : NoInternetErrorWidget(
+                        connected: connected,
+                        issplashscreen: true,
+                      ),
+                // Fetching App Settings(Bottom Nav items, colors etc.) End.
                 Container(
                   height: 0,
                   width: 0,
@@ -150,7 +175,7 @@ class _StartupPageState extends State<StartupPage> {
                     bloc: _loginBloc,
                     listener: (context, state) async {
                       if (state is LoginSuccess) {
-                            Globals.token != null && Globals.token != " "
+                        Globals.token != null && Globals.token != " "
                             ? _bloc.add(FetchBottomNavigationBar())
                             : Container(
                                 child: Center(
@@ -178,8 +203,8 @@ class _StartupPageState extends State<StartupPage> {
                             state.obj["Splash_Screen__c"] ??
                                 state.obj["App_Logo__c"]);
                         state.obj != null
-                            ? 
-                            Navigator.of(context).pushReplacement(_createRoute(state))
+                            ? Navigator.of(context)
+                                .pushReplacement(_createRoute(state))
                             : NoDataFoundErrorWidget(
                                 isResultNotFoundMsg: false,
                                 isNews: false,
@@ -213,6 +238,7 @@ class _StartupPageState extends State<StartupPage> {
                           prefs.setBool("enableIndicator", true);
                           Globals.indicator.value = true;
                         }
+                        setState(() {});
                       }
                     },
                     child: Container(),
@@ -226,14 +252,14 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   Route _createRoute(state) {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => HomePage(
-                                    title: "SOC",
-                                    homeObj: state.obj,
-                                  ),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      return child;
-    },
-  );
-}
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => HomePage(
+        title: "SOC",
+        homeObj: state.obj,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return child;
+      },
+    );
+  }
 }
