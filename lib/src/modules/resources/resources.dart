@@ -293,6 +293,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     SliverAppBar(
+                      //  expandedHeight: Utility.displayHeight(context) * 0.25,
                       expandedHeight: AppTheme.kBannerHeight,
                       floating: false,
                       // pinned: true,
