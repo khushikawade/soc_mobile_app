@@ -68,6 +68,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
       Globals.indicator.value = true;
+      await Future.delayed(Duration(milliseconds: 1500));
       bloc.add(FetchNotificationList());
     });
   }
