@@ -173,4 +173,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       throw ("something went wrong");
     }
   }
+
+  
 }

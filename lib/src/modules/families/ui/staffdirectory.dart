@@ -128,11 +128,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => SliderWidget(
+                          iconsName: [],
                           obj: list,
                           currentIndex: index,
                           issocialpage: false,
                           isAboutSDPage: widget.isAbout,
-                          isEvent: false,
+                          iseventpage: false,
                           date: "",
                           isbuttomsheet: true,
                           language: Globals.selectedLanguage,

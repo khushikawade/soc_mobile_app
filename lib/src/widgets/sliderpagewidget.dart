@@ -21,6 +21,7 @@ class SliderWidget extends StatefulWidget {
     required this.language,
     required this.iconsName,
     this.issocialpage,
+    this.isAboutSDPage,
     this.icons,
   });
   final obj;

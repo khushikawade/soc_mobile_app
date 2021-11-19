@@ -65,7 +65,7 @@ class _EventPageState extends State<EventPage>
                       iconsName: [],
                       issocialpage: false,
                       isAboutSDPage: false,
-                      isEvent: true,
+                      iseventpage: true,
                       currentIndex: index,
                       date: '',
                       isbuttomsheet: true,

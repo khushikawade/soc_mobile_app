@@ -94,10 +94,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.symmetric(
-            // horizontal: _kLabelSpacing,
-            vertical: _kLabelSpacing / 2,
-          ),
+          // padding: EdgeInsets.symmetric(
+          //   // horizontal: _kLabelSpacing,
+          //   vertical: _kLabelSpacing / 1,
+          // ),
           // color: (index % 2 == 0)
           //     ? Theme.of(context).colorScheme.background
           //     : Theme.of(context).colorScheme.secondary,
@@ -119,6 +119,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                                     : list,
                                 currentIndex: index,
                                 issocialpage: false,
+                                isAboutSDPage: false,
                                 iseventpage: false,
                                 date: "$newsTimeStamp",
                                 isbuttomsheet: true,
@@ -133,20 +134,13 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SpacerWidget(20),
                   ListTile(
                     leading: Container(
                         // color: Colors.green,
                         alignment: Alignment.center,
                         width: MediaQuery.of(context).size.width * 0.12,
-
-                        // Globals.deviceType == "phone"
-                        //     ? _kIconSize * 1.4
-                        //     : _kIconSize * 2,
                         height: MediaQuery.of(context).size.width * 0.5,
-
-                        // Globals.deviceType == "phone"
-                        //     ? _kIconSize * 1.5
-                        //     : _kIconSize * 2,
                         child:
                             //obj.image != null
                             //     ?
@@ -155,8 +149,11 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             onTap: () {
                               showDialog(
                                   context: context,
-                                  builder: (_) =>
-                                      NewsImagePage(imageURL: obj.image!));
+                                  builder: (_) => NewsImagePage(
+                                        imageURL: obj.image ??
+                                            Globals.splashImageUrl ??
+                                            Globals.homeObjet["App_Logo__c"],
+                                      ));
                             },
                             child: CachedNetworkImage(
                               imageUrl: obj.image ??
@@ -181,13 +178,17 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                         // color: Colors.red,
                         child: _buildnewsHeading(obj)),
                   ),
-                  actionButton(list, obj, index),
+                  SpacerWidget(15),
+                  Container(
+                      padding: EdgeInsets.symmetric(horizontal: 2),
+                      child: actionButton(list, obj, index)),
+                  SpacerWidget(5),
                 ],
               )),
         ),
         Container(
-          color: Colors.grey.withOpacity(0.5),
-          height: 8,
+          color: Colors.black12,
+          height: 5,
         )
       ],
     );
@@ -204,7 +205,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   if (state is ActionCountSuccess) {
                     isCountLoading = false;
                     return Container(
-                      alignment: Alignment.centerLeft,
+                      // alignment: Alignment.centerLeft,
                       child: NewsActionBasic(
                           newsObj: newsMainList[index],
                           icons: icons,
@@ -349,7 +350,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   }
 
   marqueesText(String title) {
-    return title.length < 45
+    return title.length < 450
         ? Text("$title", style: Theme.of(context).textTheme.headline4!)
         : Marquee(
             text: "$title",
