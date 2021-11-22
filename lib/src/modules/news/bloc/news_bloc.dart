@@ -36,12 +36,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsErrorReceived(err: e);
       }
     }
-// 2218b20a-5e74-4e4e-8e90-286eb7051c58
+
     if (event is NewsAction) {
       try {
         yield NewsLoading();
         var data = await addNewsAction({
-          "Notification_ID__c": event.notificationId,
+          "Notification_ID__c": "${event.notificationId}${event.schoolId}",
           "School_App_ID__c": event.schoolId,
           "Like__c": event.like,
           "Thanks__c": event.thanks,
@@ -113,7 +113,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       final ResponseModel response = await _dbServices
           .postapi("sobjects/News_Interactions__c", body: body);
       if (response.statusCode == 201) {
-        var data = response.data["records"];
+        var data = response.data["success"];
         return data;
       } else {
         throw ('something_went_wrong');
@@ -173,6 +173,4 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       throw ("something went wrong");
     }
   }
-
-  
 }

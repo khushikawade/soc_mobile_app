@@ -12,7 +12,6 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
-import 'package:Soc/src/modules/news/ui/news_action.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
@@ -25,6 +24,8 @@ import 'package:marquee/marquee.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../overrides.dart';
+
 class NewsPage extends StatefulWidget {
   @override
   _NewsPageState createState() => _NewsPageState();
@@ -33,7 +34,7 @@ class NewsPage extends StatefulWidget {
 class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   static const double _kIconSize = 48.0;
-  static const double _kLabelSpacing = 16.0;
+  // static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
   NewsBloc _countBloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -98,9 +99,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           //   // horizontal: _kLabelSpacing,
           //   vertical: _kLabelSpacing / 1,
           // ),
-          // color: (index % 2 == 0)
-          //     ? Theme.of(context).colorScheme.background
-          //     : Theme.of(context).colorScheme.secondary,
+          color: (index % 2 == 0)
+              ? Theme.of(context).colorScheme.background
+              : Theme.of(context).colorScheme.secondary,
           child: InkWell(
               onTap: () async {
                 if (isCountLoading == true) {
@@ -177,19 +178,20 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     title: Container(
                         // color: Colors.red,
                         child: _buildnewsHeading(obj)),
+                    subtitle: actionButton(list, obj, index),
                   ),
-                  SpacerWidget(15),
-                  Container(
-                      padding: EdgeInsets.symmetric(horizontal: 2),
-                      child: actionButton(list, obj, index)),
-                  SpacerWidget(5),
+                  // SpacerWidget(15),
+                  // Container(
+                  //     padding: EdgeInsets.symmetric(horizontal: 2),
+                  //     child: actionButton(list, obj, index)),
+                  // SpacerWidget(5),
                 ],
               )),
         ),
-        Container(
-          color: Colors.black12,
-          height: 5,
-        )
+        // Container(
+        //   color: Colors.black12,
+        //   height: 5,
+        // )
       ],
     );
   }
@@ -252,13 +254,14 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               } else {
                 for (int i = 0; i < list.length; i++) {
                   for (int j = 0; j < state.obj!.length; j++) {
-                    if (list[i].id == state.obj[j].name) {
+                    if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
+                        state.obj[j].name) {
                       newsMainList.add(NotificationList(
                           id: list[i].id,
-                          contents: obj.contents,
-                          headings: obj.headings,
-                          image: obj.image,
-                          url: obj.url,
+                          contents: list[i].contents, //obj.contents,
+                          headings: list[i].headings, //obj.headings,
+                          image: list[i].image, //obj.image,
+                          url: list[i].url, //obj.url,
                           likeCount: state.obj[j].likeCount,
                           thanksCount: state.obj[j].thanksCount,
                           helpfulCount: state.obj[j].helpfulCount,
@@ -269,10 +272,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     if (state.obj!.length - 1 == j) {
                       newsMainList.add(NotificationList(
                           id: list[i].id,
-                          contents: obj.contents,
-                          headings: obj.headings,
-                          image: obj.image,
-                          url: obj.url,
+                          contents: list[i].contents, //obj.contents,
+                          headings: list[i].headings, //obj.headings,
+                          image: list[i].image, //obj.image,
+                          url: list[i].url, //obj.url,
                           likeCount: 0,
                           thanksCount: 0,
                           helpfulCount: 0,
@@ -309,10 +312,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildnewsHeading(obj) {
     return Container(
         height: 50,
-        // margin: EdgeInsets.only(
-        //   left: 10,
-        // ),
-        // color: Colors.red,
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
@@ -329,28 +328,20 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   translatedMessage.toString(),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: Theme.of(context).textTheme.bodyText2!,
+                  style: Theme.of(context).textTheme.headline4!,
                 ),
               )
-            : //Text("ih rfoirhfoirhfo rho hroht orhith 4th4gi",style: Theme.of(context).textTheme.headline4),
-            marqueesText(
-                // Text(
+            : marqueesText(
                 obj.headings!.length > 0 &&
                         obj.headings != "" &&
                         obj.headings != null
                     ? obj.headings["en"].toString()
                     : obj.contents["en"].toString().split("\n")[0],
-                // overflow: TextOverflow.ellipsis,
-                // maxLines: 1,
-                // style: Theme.of(context)
-                //     .textTheme
-                //     .headline4!
-                // ,
               ));
   }
 
   marqueesText(String title) {
-    return title.length < 450
+    return title.length < 45
         ? Text("$title", style: Theme.of(context).textTheme.headline4!)
         : Marquee(
             text: "$title",
@@ -358,12 +349,12 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             scrollAxis: Axis.horizontal,
             velocity: 30.0,
             crossAxisAlignment: CrossAxisAlignment.start,
-            blankSpace: 50,
-            //MediaQuery.of(context).size.width
+            blankSpace: //50,
+                MediaQuery.of(context).size.width * 0.5,
             // velocity: 100.0,
             pauseAfterRound: Duration(seconds: 5),
             showFadingOnlyWhenScrolling: true,
-            startPadding: 10.0,
+            startPadding: 0.0,
             accelerationDuration: Duration(seconds: 1),
             accelerationCurve: Curves.linear,
             decelerationDuration: Duration(milliseconds: 500),

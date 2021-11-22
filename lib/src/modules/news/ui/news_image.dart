@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class NewsImagePage extends StatefulWidget {
-  
   final String imageURL;
   @override
   NewsImagePage({
     Key? key,
-  
     required this.imageURL,
   }) : super(key: key);
   @override
@@ -42,8 +40,6 @@ class NewsImagePageState extends State<NewsImagePage>
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -60,27 +56,28 @@ class NewsImagePageState extends State<NewsImagePage>
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0))),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-              child:InteractiveViewer(panEnabled: true, // Set it to false
-              clipBehavior: Clip.none,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: InteractiveViewer(
+                panEnabled: true, // Set it to false
+                clipBehavior: Clip.none,
                 // boundaryMargin: EdgeInsets.all(100),
                 minScale: 0.5,
                 maxScale: 5,
                 child: CachedNetworkImage(
-                            imageUrl: widget.imageURL,
-                            // fit: BoxFit.fill,
-                            placeholder: (context, url) => Container(
-                                alignment: Alignment.center,
-                                child: ShimmerLoading(
-                                  isLoading: true,
-                                  child: Container(
-                                    width: _kIconSize * 1.4,
-                                    height: _kIconSize * 1.5,
-                                    color: Colors.white,
-                                  ),
-                                )),
-                            errorWidget: (context, url, error) => Icon(Icons.error),
-                          ),
+                  imageUrl: widget.imageURL,
+                  // fit: BoxFit.fill,
+                  placeholder: (context, url) => Container(
+                      alignment: Alignment.center,
+                      child: ShimmerLoading(
+                        isLoading: true,
+                        child: Container(
+                          width: _kIconSize * 1.4,
+                          height: _kIconSize * 1.5,
+                          color: Colors.white,
+                        ),
+                      )),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
               ),
             ),
           ),

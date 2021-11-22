@@ -317,70 +317,70 @@ class _NewdescriptionState extends State<Newdescription> {
           icons: widget.icons,
           iconsName: widget.iconsName,
         ), //countObj:widget.newsCountObj),
-        SpacerWidget(20),
-        Row(
-          children: [
-            Container(
-              constraints: BoxConstraints(
-                minWidth: _KButtonSize,
-                maxWidth: 130.0,
-              ),
-              child: ElevatedButton(
-                  onPressed: () async {
-                    _shareNews();
-                  },
-                  child: _downloadingFile == true
-                      ? SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: CircularProgressIndicator(
-                            valueColor: new AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).backgroundColor),
-                          ),
-                        )
-                      : TranslationWidget(
-                          message: "Share".toString(),
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                          ),
-                        )),
-            ),
-          ],
-        )
+        // SpacerWidget(20),
+        // Row(
+        //   children: [
+        //     Container(
+        //       constraints: BoxConstraints(
+        //         minWidth: _KButtonSize,
+        //         maxWidth: 130.0,
+        //       ),
+        //       child: ElevatedButton(
+        //           onPressed: () async {
+        //             _shareNews();
+        //           },
+        //           child: _downloadingFile == true
+        //               ? SizedBox(
+        //                   height: 30,
+        //                   width: 30,
+        //                   child: CircularProgressIndicator(
+        //                     valueColor: new AlwaysStoppedAnimation<Color>(
+        //                         Theme.of(context).backgroundColor),
+        //                   ),
+        //                 )
+        //               : TranslationWidget(
+        //                   message: "Share".toString(),
+        //                   toLanguage: Globals.selectedLanguage,
+        //                   fromLanguage: "en",
+        //                   builder: (translatedMessage) => Text(
+        //                     translatedMessage.toString(),
+        //                   ),
+        //                 )),
+        //     ),
+        //   ],
+        // )
       ],
     );
   }
 
-  _shareNews() async {
-    try {
-      if (_downloadingFile == true) return;
-      setState(() {
-        _downloadingFile = true;
-      });
-      String _title = widget.obj.headings["en"] ?? "";
-      String _description = widget.obj.contents["en"] ?? "";
-      String _imageUrl = widget.obj.image != null
-          ? widget.obj.image
-          : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-              ? Globals.splashImageUrl
-              : Globals.homeObjet["App_Logo__c"];
-      File _image = await Utility.createFileFromUrl(_imageUrl);
-      setState(() {
-        _downloadingFile = false;
-      });
-      Share.shareFiles(
-        [_image.path],
-        subject: '$_title',
-        text: '$_description',
-      );
-    } catch (e) {
-      setState(() {
-        _downloadingFile = false;
-      });
-    }
-  }
+  // _shareNews() async {
+  //   try {
+  //     if (_downloadingFile == true) return;
+  //     setState(() {
+  //       _downloadingFile = true;
+  //     });
+  //     String _title = widget.obj.headings["en"] ?? "";
+  //     String _description = widget.obj.contents["en"] ?? "";
+  //     String _imageUrl = widget.obj.image != null
+  //         ? widget.obj.image
+  //         : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+  //             ? Globals.splashImageUrl
+  //             : Globals.homeObjet["App_Logo__c"];
+  //     File _image = await Utility.createFileFromUrl(_imageUrl);
+  //     setState(() {
+  //       _downloadingFile = false;
+  //     });
+  //     Share.shareFiles(
+  //       [_image.path],
+  //       subject: '$_title',
+  //       text: '$_description',
+  //     );
+  //   } catch (e) {
+  //     setState(() {
+  //       _downloadingFile = false;
+  //     });
+  //   }
+  // }
 
   Widget build(BuildContext context) {
     return Scaffold(

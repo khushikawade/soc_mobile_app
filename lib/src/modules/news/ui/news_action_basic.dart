@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:share/share.dart';
 
@@ -32,14 +33,18 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   final ValueNotifier<double> thanks = ValueNotifier<double>(0);
   final ValueNotifier<double> helpful = ValueNotifier<double>(0);
   final ValueNotifier<double> share = ValueNotifier<double>(0);
-  int? iconnameindex;
+  int? iconNameIndex;
   bool _isDownloadingFile = false;
+  var f = NumberFormat.compact();
 
   Widget _iconButton(index) => Container(
+        alignment: Alignment.centerLeft,
         // width: MediaQuery.of(context).size.width * 0.25,
-        padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.05,
-            right: MediaQuery.of(context).size.width * 0.04),
+        padding: Globals.deviceType == "phone"
+            ? null
+            : EdgeInsets.only(
+                // left: MediaQuery.of(context).size.width * 0.04,
+                right: MediaQuery.of(context).size.width * 0.04),
         child: Column(
           children: [
             Center(
@@ -62,7 +67,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
               ),
             ),
             Expanded(
-                child: iconnameindex == index
+                child: iconNameIndex == index
                     ? Container(
                         padding: EdgeInsets.all(0),
                         child: Text(
@@ -81,6 +86,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.045,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: widget.icons!
             .map<Widget>(
@@ -142,7 +148,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         if (_start == 0) {
           setState(() {
             timer.cancel();
-            iconnameindex = -1;
+            iconNameIndex = -1;
           });
         } else {
           setState(() {
@@ -161,10 +167,11 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     bool? isliked = true;
 
     setState(() {
-      iconnameindex = index;
+      iconNameIndex = index;
     });
 
     startTimer();
+
     index == 0
         ? like.value =
             like.value != 0.0 ? like.value + 1 : widget.newsObj.likeCount! + 1
@@ -214,6 +221,9 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       setState(() {
         _isDownloadingFile = false;
       });
+      print(
+          "${widget.newsObj.headings["en"]},${widget.newsObj.contents["en"]}");
+      print("${[_image.path]},$_title,$_description");
       Share.shareFiles(
         [_image.path],
         subject: '$_title',
@@ -287,8 +297,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                             ? Colors.green
                             : Colors.black,
                 size: Globals.deviceType == "phone"
-                    ? (index == 0 ? 23 : 18)
-                    : (index == 0 ? 26 : 20),
+                    ? (index == 0 ? 26 : 21)
+                    : (index == 0 ? 30 : 25),
               );
       },
     );
@@ -300,32 +310,40 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         return Text(
           index == 0
               ? (like.value != 0.0
-                  ? like.value.toString().split('.')[0]
+                  ? f.format(like.value).toString().split('.')[0]
                   : widget.newsObj.likeCount == 0.0
                       ? ""
-                      : widget.newsObj.likeCount.toString().split('.')[0])
+                      : f
+                          .format(widget.newsObj.likeCount)
+                          .toString()
+                          .split('.')[0])
               : index == 1
                   ? (thanks.value != 0.0
-                      ? thanks.value.toString().split('.')[0]
+                      ? f.format(thanks.value).toString().split('.')[0]
                       : widget.newsObj.thanksCount == 0.0
                           ? ""
-                          : widget.newsObj.thanksCount.toString().split('.')[0])
+                          : f
+                              .format(widget.newsObj.thanksCount)
+                              .toString()
+                              .split('.')[0])
                   : index == 2
                       ? (helpful.value != 0.0
-                          ? helpful.value.toString().split('.')[0]
+                          ? f.format(helpful.value).toString().split('.')[0]
                           : widget.newsObj.helpfulCount == 0.0
                               ? ""
-                              : widget.newsObj.helpfulCount
+                              : f
+                                  .format(widget.newsObj.helpfulCount)
                                   .toString()
                                   .split('.')[0])
                       : share.value != 0.0
-                          ? share.value.toString().split('.')[0]
+                          ? f.format(share.value).toString().split('.')[0]
                           : widget.newsObj.shareCount == 0.0
                               ? ""
-                              : widget.newsObj.shareCount
+                              : f
+                                  .format(widget.newsObj.shareCount)
                                   .toString()
                                   .split('.')[0],
-          style: Theme.of(context).textTheme.headline4!,
+          style: Theme.of(context).textTheme.bodyText1!,
         );
       },
       valueListenable: index == 0
