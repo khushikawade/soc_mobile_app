@@ -173,7 +173,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           "defaultLimit": 10
         });
         for (int i = 0; i < list.length; i++) {
-          if (list[i].schoolId == Globals.homeObjet["Id"]) {
+          if (list[i].schoolId == Globals.homeObject["Id"]) {
             filteredList.add(list[i]);
           }
         }

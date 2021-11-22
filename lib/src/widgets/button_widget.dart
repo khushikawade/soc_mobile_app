@@ -51,18 +51,14 @@ class _ButtonWidgetState extends State<ButtonWidget> {
                 String body = widget.body!;
                 obj.callFunction(context, body, title);
               },
-              child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English" &&
-                      Globals.selectedLanguage != ""
-                  ? TranslationWidget(
-                      message: widget.buttonTitle.toString(),
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                      ),
-                    )
-                  : Text(widget.buttonTitle.toString()),
+              child: TranslationWidget(
+                message: widget.buttonTitle.toString(),
+                toLanguage: Globals.selectedLanguage,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                ),
+              ),
             ),
           ),
         ],

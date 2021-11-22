@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/resources/modal/resources_list.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
@@ -55,13 +56,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
   Widget _buildLeading(obj) {
     if (obj.appIconURLC != null) {
       return CustomIconWidget(
-        iconUrl: obj.appIconURLC ??
-            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+        iconUrl: obj.appIconURLC ?? Overrides.defaultIconUrl,
       );
     } else {
       return CustomIconWidget(
-        iconUrl:
-            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+        iconUrl: Overrides.defaultIconUrl,
       );
     }
   }
@@ -162,19 +161,14 @@ class _ResourcesPageState extends State<ResourcesPage> {
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         leading: _buildLeading(obj),
-        title: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: obj.titleC,
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) {
-                  return Text(translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText2!);
-                })
-            : Text(obj.titleC.toString(),
-                style: Theme.of(context).textTheme.bodyText1!),
+        title: TranslationWidget(
+            message: obj.titleC ?? "No title",
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) {
+              return Text(translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText1!);
+            }),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
@@ -219,7 +213,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                 } else if (state is ResourcesDataSucess) {
                                   return newList.length > 0
                                       ? ListView.builder(
-                                          padding: EdgeInsets.only(bottom: 45),
+                                          padding: EdgeInsets.only(
+                                              bottom: AppTheme.klistPadding),
                                           scrollDirection: Axis.vertical,
                                           itemCount: newList.length,
                                           itemBuilder: (BuildContext context,
@@ -249,7 +244,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
                                   setState(() {});
                                 }
                               },
@@ -286,8 +281,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObjet["Resources_Banner_Image__c"] != null &&
-                Globals.homeObjet["Resources_Banner_Image__c"] != ""
+        body: Globals.homeObject["Resources_Banner_Image__c"] != null &&
+                Globals.homeObject["Resources_Banner_Image__c"] != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
@@ -300,7 +295,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       flexibleSpace: FlexibleSpaceBar(
                         centerTitle: true,
                         background: Image.network(
-                          Globals.homeObjet["Resources_Banner_Image__c"],
+                          Globals.homeObject["Resources_Banner_Image__c"],
                           fit: BoxFit.fill,
                         ),
                       ),

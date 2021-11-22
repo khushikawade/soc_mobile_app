@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staffmodal.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -159,8 +160,7 @@ class _StaffPageState extends State<StaffPage> {
   Widget _buildLeading(StaffList obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconWidget(
-        iconUrl: obj.appIconUrlC ??
-            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+        iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else if (obj.appIconC != null) {
       return Icon(
@@ -173,10 +173,7 @@ class _StaffPageState extends State<StaffPage> {
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
     } else {
-      return CustomIconWidget(
-        iconUrl:
-            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
-      );
+      return Container();
     }
   }
 
@@ -202,28 +199,16 @@ class _StaffPageState extends State<StaffPage> {
                     },
                     visualDensity: VisualDensity(horizontal: 0, vertical: 0),
                     leading: _buildLeading(obj),
-                    title: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English" &&
-                            Globals.selectedLanguage != ""
-                        ? TranslationWidget(
-                            message: obj.titleC.toString(),
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2!
-                                  .copyWith(),
-                            ),
-                          )
-                        : Text(
-                            obj.titleC.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2!
-                                .copyWith(),
-                          ),
+                    title: TranslationWidget(
+                      message: obj.titleC ?? "No title",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style:
+                            Theme.of(context).textTheme.bodyText2!.copyWith(),
+                      ),
+                    ),
                     trailing: Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: Globals.deviceType == "phone" ? 12 : 20,
@@ -272,7 +257,8 @@ class _StaffPageState extends State<StaffPage> {
                                       child: ListView.builder(
                                         scrollDirection: Axis.vertical,
                                         itemCount: newList.length,
-                                        padding: EdgeInsets.only(bottom: 20),
+                                        padding: EdgeInsets.only(
+                                            bottom: AppTheme.klistPadding),
                                         itemBuilder:
                                             (BuildContext context, int index) {
                                           return _buildListItem(
@@ -303,7 +289,7 @@ class _StaffPageState extends State<StaffPage> {
                               if (state is BottomNavigationBarSuccess) {
                                 AppTheme.setDynamicTheme(
                                     Globals.appSetting, context);
-                                Globals.homeObjet = state.obj;
+                                Globals.homeObject = state.obj;
 
                                 setState(() {});
                               }
@@ -340,8 +326,8 @@ class _StaffPageState extends State<StaffPage> {
           setState(() {});
         },
       ),
-      body: Globals.homeObjet["Staff_Banner_Image__c"] != null &&
-              Globals.homeObjet["Staff_Banner_Image__c"] != ''
+      body: Globals.homeObject["Staff_Banner_Image__c"] != null &&
+              Globals.homeObject["Staff_Banner_Image__c"] != ''
           ? NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
@@ -353,7 +339,7 @@ class _StaffPageState extends State<StaffPage> {
                     flexibleSpace: FlexibleSpaceBar(
                       centerTitle: true,
                       background: Image.network(
-                        Globals.homeObjet["Staff_Banner_Image__c"],
+                        Globals.homeObject["Staff_Banner_Image__c"],
                         fit: BoxFit.fill,
                       ),
                     ),

@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   List<Widget> _buildScreens() {
     List<Widget> _screens = [];
-    Globals.homeObjet["Bottom_Navigation__c"]
+    Globals.homeObject["Bottom_Navigation__c"]
         .split(";")
         .forEach((String element) {
       element = element.toLowerCase();
@@ -131,12 +131,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
-    return Globals.homeObjet["Bottom_Navigation__c"]
+    return Globals.homeObject["Bottom_Navigation__c"]
         .split(";")
         .map<PersistentBottomNavBarItem>(
       (item) {
         if (item.split("_")[0].toString().toLowerCase().contains("news")) {
-          Globals.newsIndex = Globals.homeObjet["Bottom_Navigation__c"]
+          Globals.newsIndex = Globals.homeObject["Bottom_Navigation__c"]
               .split(";")
               .indexOf(item);
         }
@@ -188,31 +188,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         ],
                       ),
                       SpacerWidget(2),
-                      Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English" &&
-                              Globals.selectedLanguage != ""
-                          ? TranslationWidget(
-                              shimmerHeight: 8,
-                              message: item.split("_")[
-                                  0], //"${item.split("_")[0]=="Student"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
-                              fromLanguage: "en",
-                              toLanguage: Globals.selectedLanguage,
-                              builder: (translatedMessage) => Expanded(
-                                child: Text(
-                                  translatedMessage.toString(),
-                                  style: Theme.of(context).textTheme.bodyText2!,
-                                ),
-                              ),
-                            )
-                          : Expanded(
-                              child: Text(
-                                item.split("_")[
-                                    0], //"${item.split("_")[0]=="Students"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                style: Theme.of(context).textTheme.headline4!,
-                              ),
-                            ),
+                      TranslationWidget(
+                        shimmerHeight: 8,
+                        message: item.split("_")[
+                            0], //"${item.split("_")[0]=="Student"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) => Expanded(
+                          child: Text(
+                            translatedMessage.toString(),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: Theme.of(context).textTheme.headline4!,
+                          ),
+                        ),
+                      ),
                       callNotification()
                     ],
                   ),
@@ -250,7 +240,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         onItemSelected: (int i) {
           setState(() {
             // To make sure if the ShowCase is in the progress and user taps on bottom nav bar items so the Showcase should not apear on other pages/
-             Globals.hasShowcaseInitialised.value = true;
+            Globals.hasShowcaseInitialised.value = true;
             // New news item indicator
             if (i == Globals.newsIndex) {
               Globals.indicator.value = false;

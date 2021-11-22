@@ -58,8 +58,8 @@ class _ContactPageState extends State<ContactPage> {
         markerId: MarkerId("Your location"),
         draggable: false,
         position: LatLng(
-            Globals.homeObjet["Contact_Office_Location__Latitude__s"],
-            Globals.homeObjet["Contact_Office_Location__Longitude__s"])));
+            Globals.homeObject["Contact_Office_Location__Latitude__s"],
+            Globals.homeObject["Contact_Office_Location__Longitude__s"])));
   }
 
   @override
@@ -69,78 +69,38 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget _buildIcon() {
     return Container(
-      child: Globals.homeObjet != null &&
-              Globals.homeObjet["Contact_Image__c"] != null
-          ? Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-              child: CachedNetworkImage(
-                imageUrl: Globals.homeObjet["Contact_Image__c"],
-                fit: BoxFit.fill,
-                placeholder: (context, url) => Container(
-                  alignment: Alignment.center,
-                  child: ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      height: 200,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl != null &&
-                          Globals.splashImageUrl != ""
-                      ? Globals.splashImageUrl
-                      : Globals.homeObjet["App_Logo__c"],
-                  placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      child: ShimmerLoading(
-                        isLoading: true,
-                        child: Container(
-                          width: _kIconSize * 1.4,
-                          height: _kIconSize * 1.5,
-                          color: Colors.white,
-                        ),
-                      )),
-                ),
-              ),
-            )
-          : Container(
-              child: ClipRRect(
-                child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl != null &&
-                          Globals.splashImageUrl != ""
-                      ? Globals.splashImageUrl
-                      : Globals.homeObjet["App_Logo__c"],
-                  placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      child: ShimmerLoading(
-                        isLoading: true,
-                        child: Container(
-                          height: 200,
-                          color: Colors.white,
-                        ),
-                      )),
-                  errorWidget: (context, url, error) => CachedNetworkImage(
-                    imageUrl: Globals.splashImageUrl != null &&
-                            Globals.splashImageUrl != ""
-                        ? Globals.splashImageUrl
-                        : Globals.homeObjet["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                  ),
-                ),
-              ),
+        child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+      child: CachedNetworkImage(
+        imageUrl: Globals.homeObject["Contact_Image__c"] ??
+            Globals.splashImageUrl ??
+            Globals.homeObject["App_Logo__c"],
+        fit: BoxFit.fill,
+        placeholder: (context, url) => Container(
+          alignment: Alignment.center,
+          child: ShimmerLoading(
+            isLoading: true,
+            child: Container(
+              height: 200,
+              color: Colors.white,
             ),
-    );
+          ),
+        ),
+        errorWidget: (context, url, error) => CachedNetworkImage(
+          imageUrl: Globals.splashImageUrl ?? Globals.homeObject["App_Logo__c"],
+          placeholder: (context, url) => Container(
+              alignment: Alignment.center,
+              child: ShimmerLoading(
+                isLoading: true,
+                child: Container(
+                  width: _kIconSize * 1.4,
+                  height: _kIconSize * 1.5,
+                  color: Colors.white,
+                ),
+              )),
+        ),
+      ),
+    ));
   }
 
   Widget _buildTitleWidget() {
@@ -148,27 +108,17 @@ class _ContactPageState extends State<ContactPage> {
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
         ),
-        child: Globals.homeObjet["Contact_Name__c"] != null &&
-                Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: Globals.homeObjet["Contact_Name__c"] ?? "-",
-                toLanguage: Globals.selectedLanguage,
-                fromLanguage: "en",
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.headline2!.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
+        child: TranslationWidget(
+          message: Globals.homeObject["Contact_Name__c"] ?? "-",
+          toLanguage: Globals.selectedLanguage,
+          fromLanguage: "en",
+          builder: (translatedMessage) => Text(
+            translatedMessage.toString(),
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  fontWeight: FontWeight.w500,
                 ),
-              )
-            : Text(
-                Globals.homeObjet["Contact_Name__c"] ?? "-",
-                style: Theme.of(context).textTheme.headline2!.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-              ));
+          ),
+        ));
   }
 
   Widget _buildMapWidget() {
@@ -198,9 +148,9 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             color: AppTheme.kmapBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
-        child: Globals.homeObjet["Contact_Office_Location__Latitude__s"] !=
+        child: Globals.homeObject["Contact_Office_Location__Latitude__s"] !=
                     null &&
-                Globals.homeObjet["Contact_Office_Location__Longitude__s"] !=
+                Globals.homeObject["Contact_Office_Location__Longitude__s"] !=
                     null
             ? SizedBox(
                 height: _kboxheight * 2,
@@ -218,9 +168,9 @@ class _ContactPageState extends State<ContactPage> {
                     initialCameraPosition: CameraPosition(
                         // bearing: 192.8334901395799,
                         target: LatLng(
-                            Globals.homeObjet[
+                            Globals.homeObject[
                                 "Contact_Office_Location__Latitude__s"],
-                            Globals.homeObjet[
+                            Globals.homeObject[
                                 "Contact_Office_Location__Longitude__s"]),
                         zoom: 18,
                         tilt: 59.440717697143555),
@@ -267,7 +217,7 @@ class _ContactPageState extends State<ContactPage> {
 
   void _launchMapsUrl() async {
     final url =
-        'https://www.google.com/maps/search/?api=1&query=${Globals.homeObjet["Contact_Office_Location__Latitude__s"]},${Globals.homeObjet["Contact_Office_Location__Longitude__s"]}';
+        'https://www.google.com/maps/search/?api=1&query=${Globals.homeObject["Contact_Office_Location__Latitude__s"]},${Globals.homeObject["Contact_Office_Location__Longitude__s"]}';
     // if (await canLaunch(url)) {
     //   await launch(url);
     // } else {
@@ -284,34 +234,24 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: "Address:",
-                  toLanguage: Globals.selectedLanguage,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
-                    textAlign: TextAlign.center,
+          TranslationWidget(
+            message: "Address:",
+            toLanguage: Globals.selectedLanguage,
+            fromLanguage: "en",
+            builder: (translatedMessage) => Text(
+              translatedMessage.toString(),
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    fontWeight: FontWeight.w500,
                   ),
-                )
-              : Text(
-                  "Address : ",
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
+              textAlign: TextAlign.center,
+            ),
+          ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
             child: GestureDetector(
               onTap: _launchMapsUrl,
               child: Text(
-                Globals.homeObjet["Contact_Address__c"] ?? '-',
+                Globals.homeObject["Contact_Address__c"] ?? '-',
                 style: TextStyle(
                   decoration: TextDecoration.underline,
                   decorationColor: Colors.blue,
@@ -338,38 +278,29 @@ class _ContactPageState extends State<ContactPage> {
           horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
       child: Row(
         children: [
-          Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: "Phone :",
-                  toLanguage: Globals.selectedLanguage,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
+          TranslationWidget(
+            message: "Phone :",
+            toLanguage: Globals.selectedLanguage,
+            fromLanguage: "en",
+            builder: (translatedMessage) => Text(
+              translatedMessage.toString(),
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    fontWeight: FontWeight.w500,
                   ),
-                )
-              : Text(
-                  "Phone : ",
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                ),
+            ),
+          ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Padding(
             padding: const EdgeInsets.only(bottom: 4.0),
             child: InkWell(
               onTap: () {
-                if (Globals.homeObjet["Contact_Phone__c"] != null) {
+                if (Globals.homeObject["Contact_Phone__c"] != null) {
                   urlobj.callurlLaucher(
-                      context, "tel:" + Globals.homeObjet["Contact_Phone__c"]);
+                      context, "tel:" + Globals.homeObject["Contact_Phone__c"]);
                 }
               },
               child: Text(
-                Globals.homeObjet["Contact_Phone__c"] ?? '-',
+                Globals.homeObject["Contact_Phone__c"] ?? '-',
                 style: Theme.of(context).textTheme.bodyText1!,
                 textAlign: TextAlign.center,
               ),
@@ -405,38 +336,29 @@ class _ContactPageState extends State<ContactPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: "Email :",
-                  toLanguage: Globals.selectedLanguage,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
+          TranslationWidget(
+            message: "Email :",
+            toLanguage: Globals.selectedLanguage,
+            fromLanguage: "en",
+            builder: (translatedMessage) => Text(
+              translatedMessage.toString(),
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    fontWeight: FontWeight.w500,
                   ),
-                )
-              : Text(
-                  "Email : ",
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                ),
+            ),
+          ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Padding(
             padding: const EdgeInsets.only(bottom: 4.0),
             child: InkWell(
               onTap: () {
-                Globals.homeObjet["Contact_Email__c"] != null
+                Globals.homeObject["Contact_Email__c"] != null
                     ? urlobj.callurlLaucher(context,
-                        'mailto:"${Globals.homeObjet["Contact_Email__c"]}"')
+                        'mailto:"${Globals.homeObject["Contact_Email__c"]}"')
                     : print("null value");
               },
               child: Text(
-                Globals.homeObjet["Contact_Email__c"] ?? '-',
+                Globals.homeObject["Contact_Email__c"] ?? '-',
                 style: Theme.of(context).textTheme.bodyText1!,
               ),
             ),
@@ -455,11 +377,11 @@ class _ContactPageState extends State<ContactPage> {
       _buildMapWidget(),
       _buildAddressWidget(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      Globals.homeObjet["Contact_Phone__c"] != null
+      Globals.homeObject["Contact_Phone__c"] != null
           ? _buildPhoneWidget()
           : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      Globals.homeObjet["Contact_Email__c"] != null
+      Globals.homeObject["Contact_Email__c"] != null
           ? _buildEmailWidget()
           : Container(),
     ]);
@@ -517,7 +439,7 @@ class _ContactPageState extends State<ContactPage> {
                                     if (state is BottomNavigationBarSuccess) {
                                       AppTheme.setDynamicTheme(
                                           Globals.appSetting, context);
-                                      Globals.homeObjet = state.obj;
+                                      Globals.homeObject = state.obj;
                                       isloadingstate = false;
                                       setState(() {});
                                     }
@@ -536,7 +458,7 @@ class _ContactPageState extends State<ContactPage> {
                       listener: (context, state) async {
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObjet = state.obj;
+                          Globals.homeObject = state.obj;
                           setState(() {});
                         }
                       },

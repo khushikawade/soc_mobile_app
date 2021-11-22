@@ -11,7 +11,7 @@ class Globals {
   static String? deviceID;
   static int? outerBottombarIndex;
   static int? internalBottombarIndex;
-  static var homeObjet;
+  static var homeObject;
   static late AppSetting appSetting;
   static int? newsIndex;
   static Locale? myLocale;
@@ -34,7 +34,7 @@ class Globals {
   static String? versionRelease = "";
   static String? androidId = "";
   static String? countrycode = "";
-  static String? splashImageUrl = "";
+  static String? splashImageUrl;
   static int? homeIndex;
   static bool? isNetworkError = false;
   static bool? callsnackbar = true;

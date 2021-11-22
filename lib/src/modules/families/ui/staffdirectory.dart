@@ -78,19 +78,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: tittle,
-                  toLanguage: Globals.selectedLanguage,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline6!,
-                  ),
-                )
-              : Text(tittle, style: Theme.of(context).textTheme.headline6!),
+          TranslationWidget(
+            message: tittle,
+            toLanguage: Globals.selectedLanguage,
+            fromLanguage: "en",
+            builder: (translatedMessage) => Text(
+              translatedMessage.toString(),
+              style: Theme.of(context).textTheme.headline6!,
+            ),
+          ),
         ],
       ),
     );
@@ -151,7 +147,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   CachedNetworkImage(
                     imageUrl: obj.imageUrlC ??
                         Globals.splashImageUrl ??
-                        Globals.homeObjet["App_Logo__c"],
+                        Globals.homeObject["App_Logo__c"],
                     fit: BoxFit.fill,
                     width: 60,
                     height: 60,
@@ -167,7 +163,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         )),
                     errorWidget: (context, url, error) => CachedNetworkImage(
                       imageUrl: Globals.splashImageUrl ??
-                          Globals.homeObjet["App_Logo__c"],
+                          Globals.homeObject["App_Logo__c"],
                       placeholder: (context, url) => Container(
                           alignment: Alignment.center,
                           child: ShimmerLoading(
@@ -183,21 +179,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   //: Icon(CupertinoIcons.person, size: 35, color: Colors.grey,),
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
-                    child: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English" &&
-                            Globals.selectedLanguage != ""
-                        ? TranslationWidget(
-                            message: obj.name ?? "-",
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
-                                textAlign: TextAlign.start,
-                                style: Theme.of(context).textTheme.headline2!),
-                          )
-                        : Text(obj.name ?? "-",
-                            textAlign: TextAlign.start,
-                            style: Theme.of(context).textTheme.headline2!),
+                    child: TranslationWidget(
+                      message: obj.name ?? "-",
+                      toLanguage: Globals.selectedLanguage,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.headline2!),
+                    ),
                   ),
                   obj.phoneC.toString().isNotEmpty
                       ? Container(
@@ -249,21 +239,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 : Column(
                     children: [
                       SpacerWidget(_kLabelSpacing / 1.2),
-                      Globals.selectedLanguage != null &&
-                              Globals.selectedLanguage != "English" &&
-                              Globals.selectedLanguage != ""
-                          ? TranslationWidget(
-                              message: obj.descriptionC ?? "-",
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  textAlign: TextAlign.start,
-                                  style:
-                                      Theme.of(context).textTheme.bodyText1!))
-                          : Text(obj.descriptionC ?? "",
+                      TranslationWidget(
+                          message: obj.descriptionC ?? "-",
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
                               textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.bodyText1!),
+                              style: Theme.of(context).textTheme.bodyText1!)),
                     ],
                   ),
           ],
@@ -336,8 +319,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                               SpacerWidget(_kLabelSpacing / 4),
                                               Expanded(
                                                 child: ListView.builder(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 25.0),
+                                                  // padding: EdgeInsets.only(
+                                                  //     bottom: 25.0),
                                                   scrollDirection:
                                                       Axis.vertical,
                                                   itemCount: state.obj!.length,
@@ -374,7 +357,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   if (state is BottomNavigationBarSuccess) {
                                     AppTheme.setDynamicTheme(
                                         Globals.appSetting, context);
-                                    Globals.homeObjet = state.obj;
+                                    Globals.homeObject = state.obj;
                                     setState(() {});
                                   } else if (state is HomeErrorReceived) {
                                     ErrorMsgWidget();

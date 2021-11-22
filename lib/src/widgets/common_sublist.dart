@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/resources/modal/resources_sublist.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staff_sublist.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -151,32 +152,19 @@ class _SubListPageState extends State<SubListPage> {
                 child: Container(
                   child: ListTile(
                     leading: CustomIconWidget(
-                        iconUrl: obj.appIconUrlC ??
-                            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png"),
-                    title: Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English" &&
-                            Globals.selectedLanguage != ""
-                        ? TranslationWidget(
-                            message: obj.titleC.toString(),
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                      iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
+                    ),
+                    title: TranslationWidget(
+                      message: obj.titleC.toString(),
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                              fontWeight: FontWeight.w400,
                             ),
-                          )
-                        : Text(
-                            obj.titleC.toString(),
-                            style:
-                                Theme.of(context).textTheme.bodyText1!.copyWith(
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                          ),
+                      ),
+                    ),
                   ),
                 ))) //ListWidget(index, _buildFormName(index, obj), obj))
         : Container();

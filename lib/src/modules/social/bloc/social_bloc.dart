@@ -33,7 +33,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future getEventDetails() async {
     try {
-      final link = Uri.parse("${Globals.homeObjet["Social_API_URL__c"]}");
+      final link = Uri.parse("${Globals.homeObject["Social_API_URL__c"]}");
       Xml2Json xml2json = new Xml2Json();
       http.Response response = await http.get(link);
       if (response.statusCode == 200) {
@@ -51,8 +51,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             creator: i['dc\$creator'] ?? '',
             pubDate: i['pubDate'] ?? '',
             content: i['content'] ?? '',
-            enclosure : i['enclosure']??'',
-            mediaContent : i['media\$content']??'',
+            enclosure: i['enclosure'] ?? '',
+            mediaContent: i['media\$content'] ?? '',
           );
         }).toList();
       } else {

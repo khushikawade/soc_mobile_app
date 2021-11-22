@@ -89,7 +89,7 @@ class _SchoolPageState extends State<SchoolPage> {
                   child: CachedNetworkImage(
                     imageUrl: obj.imageUrlC ??
                         Globals.splashImageUrl ??
-                        Globals.homeObjet["App_Logo__c"],
+                        Globals.homeObject["App_Logo__c"],
                     // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun-school.png",
                     placeholder: (context, url) => Container(
                         alignment: Alignment.center,
@@ -103,7 +103,7 @@ class _SchoolPageState extends State<SchoolPage> {
                         )),
                     errorWidget: (context, url, error) => CachedNetworkImage(
                       imageUrl: Globals.splashImageUrl ??
-                          Globals.homeObjet["App_Logo__c"],
+                          Globals.homeObject["App_Logo__c"],
                       placeholder: (context, url) => Container(
                           alignment: Alignment.center,
                           child: ShimmerLoading(
@@ -168,7 +168,7 @@ class _SchoolPageState extends State<SchoolPage> {
                                 } else if (state is SchoolDirectoryDataSucess) {
                                   return newList.length > 0
                                       ? ListView.builder(
-                                          padding: EdgeInsets.only(bottom: 45),
+                                          padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
                                           scrollDirection: Axis.vertical,
                                           itemCount: newList.length,
                                           itemBuilder: (BuildContext context,
@@ -199,7 +199,7 @@ class _SchoolPageState extends State<SchoolPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
                                   setState(() {});
                                 } else if (state is HomeErrorReceived) {
                                   ErrorMsgWidget();
@@ -237,8 +237,8 @@ class _SchoolPageState extends State<SchoolPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObjet["School_Banner_Image__c"] != null &&
-                Globals.homeObjet["School_Banner_Image__c"] != ""
+        body: Globals.homeObject["School_Banner_Image__c"] != null &&
+                Globals.homeObject["School_Banner_Image__c"] != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
@@ -250,7 +250,7 @@ class _SchoolPageState extends State<SchoolPage> {
                       flexibleSpace: FlexibleSpaceBar(
                         centerTitle: true,
                         background: Image.network(
-                          Globals.homeObjet["School_Banner_Image__c"],
+                          Globals.homeObject["School_Banner_Image__c"],
                           fit: BoxFit.fill,
                         ),
                       ),

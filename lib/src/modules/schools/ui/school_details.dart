@@ -21,6 +21,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:html/dom.dart' as dom;
 
 class SchoolDetailPage extends StatefulWidget {
   final SchoolDirectoryList obj;
@@ -61,13 +62,12 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   }
 
   Widget _buildIcon() {
-    return Container(
-        child: Padding(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
       child: CachedNetworkImage(
         imageUrl: widget.obj.imageUrlC ??
             Globals.splashImageUrl ??
-            Globals.homeObjet["App_Logo__c"],
+            Globals.homeObject["App_Logo__c"],
         // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun_School_3390481+(2).png",
         fit: BoxFit.fill,
         placeholder: (context, url) => Container(
@@ -81,8 +81,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           ),
         ),
         errorWidget: (context, url, error) => CachedNetworkImage(
-          imageUrl:
-              Globals.splashImageUrl ?? Globals.homeObjet["App_Logo__c"],
+          imageUrl: Globals.splashImageUrl ?? Globals.homeObject["App_Logo__c"],
           placeholder: (context, url) => Container(
               alignment: Alignment.center,
               child: ShimmerLoading(
@@ -95,34 +94,24 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
               )),
         ),
       ),
-    ));
+    );
   }
 
   Widget _buildTitleWidget() {
-    return Center(
-      child: widget.obj.titleC != null &&
-              Globals.selectedLanguage != null &&
-              Globals.selectedLanguage != "English" &&
-              Globals.selectedLanguage != ""
-          ? TranslationWidget(
-              message: widget.obj.titleC ?? "-",
-              toLanguage: Globals.selectedLanguage,
-              fromLanguage: "en",
-              builder: (translatedMessage) => Text(
-                translatedMessage.toString(),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline2!.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5),
+      child: TranslationWidget(
+        message: widget.obj.titleC ?? "-",
+        toLanguage: Globals.selectedLanguage,
+        fromLanguage: "en",
+        builder: (translatedMessage) => Text(
+          translatedMessage.toString(),
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline2!.copyWith(
+                fontWeight: FontWeight.w500,
               ),
-            )
-          : Text(
-              widget.obj.titleC ?? "-",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline2!.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-            ),
+        ),
+      ),
     );
   }
 
@@ -132,18 +121,18 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
             margin: const EdgeInsets.symmetric(
               horizontal: _kLabelSpacing,
             ),
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English" &&
-                    Globals.selectedLanguage != ""
-                ? TranslationWidget(
-                    message: widget.obj.rtfHTMLC,
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Html(
-                      data: translatedMessage.toString(),
-                    ),
-                  )
-                : Html(data: widget.obj.rtfHTMLC),
+            child: TranslationWidget(
+              message: widget.obj.rtfHTMLC,
+              toLanguage: Globals.selectedLanguage,
+              fromLanguage: "en",
+              builder: (translatedMessage) => Html(
+                data: translatedMessage.toString(),
+                onLinkTap: (String? url, RenderContext context,
+                    Map<String, String> attributes, dom.Element? element) {
+                  _launchURL(url);
+                },
+              ),
+            ),
           )
         : Container();
   }
@@ -217,7 +206,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
               color: Colors.blue,
               fontWeight: FontWeight.normal,
               fontFamily: 'Roboto Regular',
-              height: 1.5,
             ), //Theme.of(context).textTheme.bodyText1!,
             textAlign: TextAlign.center,
           ),
@@ -242,7 +230,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           color: Colors.blue,
           fontWeight: FontWeight.normal,
           fontFamily: 'Roboto Regular',
-          height: 1.5,
         ),
       )),
     );
@@ -283,7 +270,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
               color: Colors.blue,
               fontWeight: FontWeight.normal,
               fontFamily: 'Roboto Regular',
-              height: 1.5,
             ),
             textAlign: TextAlign.start,
           ),
@@ -309,7 +295,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
               color: Colors.blue,
               fontWeight: FontWeight.normal,
               fontFamily: 'Roboto Regular',
-              height: 1.5,
             ),
             textAlign: TextAlign.start,
           ),
@@ -325,38 +310,41 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   }
 
   Widget _buildItem() {
-    return ListView(padding: const EdgeInsets.only(bottom: 35.0), children: [
-      _buildTitleWidget(),
-      SpacerWidget(_kLabelSpacing / 1.5),
-      _buildIcon(),
-      SpacerWidget(_kLabelSpacing),
-      _buildDescriptionWidget(),
-      SpacerWidget(_kLabelSpacing * 2),
-      widget.obj.geoLocation != null ? _buildMapWidget() : Container(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj.urlC != null ? _buildWebsiteWidget() : Container(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj.emailC != null ? _buildEmailWidget() : Container(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj.address != null ? _buildAddressWidget() : Container(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj.phoneC != null ? _buildPhoneWidget() : Container(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      ButtonWidget(
-        title: widget.obj.titleC ?? "",
-        obj: widget.obj,
-        body: Utility.parseHtml(widget.obj.rtfHTMLC ?? "") +
-            "\n" +
-            "${widget.obj.urlC ?? ""}" +
-            "\n"
-                "${widget.obj.emailC ?? ""}" +
-            "\n" +
-            "${widget.obj.address ?? ""}" +
-            "\n" +
-            "${widget.obj.phoneC ?? ""}",
-        buttonTitle: "Share",
-      ),
-    ]);
+    return SingleChildScrollView(
+      child: Column(children: [
+        _buildTitleWidget(),
+        SpacerWidget(_kLabelSpacing / 1.5),
+        _buildIcon(),
+        // SpacerWidget(_kLabelSpacing),
+        _buildDescriptionWidget(),
+        SpacerWidget(_kLabelSpacing * 2),
+        widget.obj.geoLocation != null ? _buildMapWidget() : Container(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        widget.obj.urlC != null ? _buildWebsiteWidget() : Container(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        widget.obj.emailC != null ? _buildEmailWidget() : Container(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        widget.obj.address != null ? _buildAddressWidget() : Container(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        widget.obj.phoneC != null ? _buildPhoneWidget() : Container(),
+        SpacerWidget(_kLabelSpacing / 1.25),
+        ButtonWidget(
+          title: widget.obj.titleC ?? "",
+          obj: widget.obj,
+          body: Utility.parseHtml(widget.obj.rtfHTMLC ?? "") +
+              "\n" +
+              "${widget.obj.urlC ?? ""}" +
+              "\n"
+                  "${widget.obj.emailC ?? ""}" +
+              "\n" +
+              "${widget.obj.address ?? ""}" +
+              "\n" +
+              "${widget.obj.phoneC ?? ""}",
+          buttonTitle: "Share",
+        ),
+        SpacerWidget(_kLabelSpacing * 3),
+      ]),
+    );
   }
 
   Widget build(BuildContext context) {
@@ -364,6 +352,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         appBar: CustomAppBarWidget(
           isSearch: true,
           isShare: false,
+          isCenterIcon: true,
           appBarTitle: "",
           sharedpopBodytext: '',
           sharedpopUpheaderText: '',
@@ -400,8 +389,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                                         isLoading: true, child: _buildItem())
                                     : _buildItem()),
                             Container(
-                              height: 0,
-                              width: 0,
                               child: BlocListener<HomeBloc, HomeState>(
                                   bloc: homebloc,
                                   listener: (context, state) async {
@@ -411,7 +398,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                                     if (state is BottomNavigationBarSuccess) {
                                       AppTheme.setDynamicTheme(
                                           Globals.appSetting, context);
-                                      Globals.homeObjet = state.obj;
+                                      Globals.homeObject = state.obj;
                                       isloadingstate = false;
                                       setState(() {});
                                     }
@@ -423,14 +410,12 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                       : NoInternetErrorWidget(
                           connected: connected, issplashscreen: false),
                   Container(
-                    height: 0,
-                    width: 0,
                     child: BlocListener<HomeBloc, HomeState>(
                       bloc: homebloc,
                       listener: (context, state) async {
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObjet = state.obj;
+                          Globals.homeObject = state.obj;
                           setState(() {});
                         }
                       },

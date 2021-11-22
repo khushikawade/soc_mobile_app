@@ -122,9 +122,12 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                   height: 65,
                                                   width: 65,
                                                   child: CachedNetworkImage(
-                                                    imageUrl:
-                                                        apps[index].appIconC ??
-                                                            '',
+                                                    imageUrl: apps[index]
+                                                            .appIconC ??
+                                                        Globals
+                                                            .splashImageUrl ??
+                                                        Globals.homeObject[
+                                                            "App_Logo__c"],
                                                     placeholder: (context,
                                                             url) =>
                                                         Container(
@@ -144,25 +147,18 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                   ),
                                                 )
                                               : Container(),
-                                          Globals.selectedLanguage != null &&
-                                                  Globals.selectedLanguage !=
-                                                      "English" &&
-                                                  Globals.selectedLanguage != ""
-                                              ? TranslationWidget(
-                                                  message: apps[index]
-                                                                  .appFolderc !=
-                                                              null &&
-                                                          widget.folderName ==
-                                                              apps[index]
-                                                                  .appFolderc
-                                                      ? "${apps[index].titleC}"
-                                                      : '',
-                                                  fromLanguage: "en",
-                                                  toLanguage:
-                                                      Globals.selectedLanguage,
-                                                  builder:
-                                                      (translatedMessage) =>
-                                                          Container(
+                                          TranslationWidget(
+                                              message: apps[index].appFolderc !=
+                                                          null &&
+                                                      widget.folderName ==
+                                                          apps[index].appFolderc
+                                                  ? "${apps[index].titleC}"
+                                                  : '',
+                                              fromLanguage: "en",
+                                              toLanguage:
+                                                  Globals.selectedLanguage,
+                                              builder: (translatedMessage) =>
+                                                  Container(
                                                     alignment: Alignment.center,
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -177,46 +173,20 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                       scrollDirection:
                                                           Axis.horizontal,
                                                       child: Text(
-                                                          translatedMessage
-                                                              .toString(),
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodyText2!),
+                                                        translatedMessage
+                                                            .toString(),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText2!
+                                                            .copyWith(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primaryVariant,
+                                                            ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                )
-                                              : Container(
-                                                  alignment: Alignment.center,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.3,
-                                                  child: SingleChildScrollView(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    child: Text(
-                                                      apps[index].appFolderc !=
-                                                                  null &&
-                                                              widget.folderName ==
-                                                                  apps[index]
-                                                                      .appFolderc
-                                                          ? "${apps[index].titleC}"
-                                                          : '',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText2!
-                                                          .copyWith(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .primaryVariant,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
+                                                  ))
                                         ],
                                       ))
                                   : Container();
@@ -225,18 +195,14 @@ class AppsFolderPageState extends State<AppsFolderPage>
                         )
                       : Center(
                           child: Container(
-                              child: Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English" &&
-                                      Globals.selectedLanguage != ""
-                                  ? TranslationWidget(
-                                      message: "No apps available here",
-                                      fromLanguage: "en",
-                                      toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Text(
-                                        translatedMessage.toString(),
-                                      ),
-                                    )
-                                  : Text("No apps available here"))),
+                              child: TranslationWidget(
+                          message: "No apps available here",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                          ),
+                        ))),
                 ),
               ),
             ),

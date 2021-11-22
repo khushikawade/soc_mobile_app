@@ -3,8 +3,6 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
@@ -70,47 +68,36 @@ class _AboutusPageState extends State<AboutusPage> {
           //         ),
           //       )
           //     : Container(),
-          Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: widget.htmlText,
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => Html(
-                    data: translatedMessage,
-                    onLinkTap: (String? url, RenderContext context,
-                        Map<String, String> attributes, dom.Element? element) {
-                      // print(url);
-                      _launchURL(url);
-                    },
-                  ),
-                )
-              : Html(
-                  data: widget.htmlText,
-                  onLinkTap: (String? url, RenderContext context,
-                      Map<String, String> attributes, dom.Element? element) {
-                    _launchURL(url);
-                  },
-                  style: {
-                    "table": Style(
-                      backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                    ),
-                    "tr": Style(
-                      border: Border(bottom: BorderSide(color: Colors.grey)),
-                    ),
-                    "th": Style(
-                      padding: EdgeInsets.all(6),
-                      backgroundColor: Colors.grey,
-                    ),
-                    "td": Style(
-                      padding: EdgeInsets.all(6),
-                      alignment: Alignment.topLeft,
-                    ),
-                    'h5':
-                        Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                  },
+          TranslationWidget(
+            message: widget.htmlText,
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) => Html(
+              data: translatedMessage,
+              onLinkTap: (String? url, RenderContext context,
+                  Map<String, String> attributes, dom.Element? element) {
+                // print(url);
+                _launchURL(url);
+              },
+              style: {
+                "table": Style(
+                  backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
                 ),
+                "tr": Style(
+                  border: Border(bottom: BorderSide(color: Colors.grey)),
+                ),
+                "th": Style(
+                  padding: EdgeInsets.all(6),
+                  backgroundColor: Colors.grey,
+                ),
+                "td": Style(
+                  padding: EdgeInsets.all(6),
+                  alignment: Alignment.topLeft,
+                ),
+                'h5': Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+              },
+            ),
+          ),
         ],
       ),
     );

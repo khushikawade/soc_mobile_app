@@ -17,7 +17,7 @@
 //       backgroundColor: Theme.of(context).backgroundColor,
 //       type: BottomNavigationBarType.fixed,
 //       // currentIndex: _selectedIndex,
-//       items: Globals.homeObjet["Bottom_Navigation__c"]
+//       items: Globals.homeObject["Bottom_Navigation__c"]
 //           .split(";")
 //           .map<BottomNavigationBarItem>((e) => BottomNavigationBarItem(
 //                 icon: Column(children: [

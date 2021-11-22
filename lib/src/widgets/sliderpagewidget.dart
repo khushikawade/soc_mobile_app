@@ -74,7 +74,7 @@ class _SliderWidgetState extends State<SliderWidget> {
           leading: BackButtonWidget(),
           title: //SizedBox(width: 100.0, height: 60.0, child:
               AppLogoWidget(
-            marginLeft: 50,
+            marginLeft: 57,
           ),
           actions: <Widget>[
             IconButton(
@@ -113,10 +113,9 @@ class _SliderWidgetState extends State<SliderWidget> {
                 size: Globals.deviceType == "phone" ? 18 : 26,
               )),
             ),
-            SizedBox(width :10)
+            SizedBox(width: 10)
           ]),
       body: Column(children: <Widget>[
-        
         Expanded(
           child: PageView.builder(
             controller: _controller,
@@ -150,16 +149,17 @@ class _SliderWidgetState extends State<SliderWidget> {
                           obj: object[widget.currentIndex],
                         )
                       : widget.isEvent
-                      ? EventDescription(
-                          obj: object[widget.currentIndex],
-                          isbuttomsheet: true,
-                          language: Globals.selectedLanguage,
-                        ):Newdescription(
-                          obj: object[widget.currentIndex],
-                          date: widget.date,
-                          isbuttomsheet: true,
-                          language: Globals.selectedLanguage,
-                        );
+                          ? EventDescription(
+                              obj: object[widget.currentIndex],
+                              isbuttomsheet: true,
+                              language: Globals.selectedLanguage,
+                            )
+                          : Newdescription(
+                              obj: object[widget.currentIndex],
+                              date: widget.date,
+                              isbuttomsheet: true,
+                              language: Globals.selectedLanguage,
+                            );
             },
           ),
         )

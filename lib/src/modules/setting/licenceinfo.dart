@@ -61,23 +61,16 @@ class _LicenceinfoState extends State<Licenceinfo> {
             child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: _kLabelSpacing * 1, vertical: _kLabelSpacing),
-          child: Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: list[index]["name"] ?? '-',
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => Text(
-                    translatedMessage,
-                    style: Theme.of(context).textTheme.headline2!,
-                    textAlign: TextAlign.start,
-                  ),
-                )
-              : Text(
-                  list[index]["name"] ?? '-',
-                  style: Theme.of(context).textTheme.headline2!,
-                ),
+          child: TranslationWidget(
+            message: list[index]["name"] ?? '-',
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) => Text(
+              translatedMessage,
+              style: Theme.of(context).textTheme.headline2!,
+              textAlign: TextAlign.start,
+            ),
+          ),
         )),
       ),
     );
@@ -124,7 +117,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
                   listener: (context, state) async {
                     if (state is BottomNavigationBarSuccess) {
                       AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      Globals.homeObjet = state.obj;
+                      Globals.homeObject = state.obj;
                       setState(() {});
                     }
                   },
