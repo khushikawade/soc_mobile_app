@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -30,8 +31,7 @@ class CustomIconWidget extends StatelessWidget {
                   ),
                 )),
             errorWidget: (context, url, error) => CachedNetworkImage(
-                  imageUrl:
-                      "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+                  imageUrl: Overrides.defaultIconUrl,
                   height: Globals.deviceType == "phone"
                       ? AppTheme.kIconSize
                       : AppTheme.kTabIconSize,

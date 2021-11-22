@@ -82,168 +82,104 @@ class _NewdescriptionState extends State<Newdescription> {
               alignment: Alignment.center,
               // height: MediaQuery.of(context).size.width * 0.5,
               child: ClipRRect(
-                child: widget.obj.image != null && widget.obj.image != ""
-                    ? GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (_) =>
-                                  NewsImagePage(imageURL: widget.obj.image));
-                        },
-                        child: CachedNetworkImage(
-                          imageUrl: widget.obj.image,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: ShimmerLoading(
-                                isLoading: true,
-                                child: Container(
-                                  width: _kIconSize * 1.4,
-                                  height: _kIconSize * 1.5,
-                                  color: Colors.white,
-                                ),
-                              )),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
+                  child: GestureDetector(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => NewsImagePage(
+                          imageURL: widget.obj.image ??
+                              Globals.splashImageUrl ??
+                              Globals.homeObject["App_Logo__c"]));
+                },
+                child: CachedNetworkImage(
+                  imageUrl: widget.obj.image ??
+                      Globals.splashImageUrl ??
+                      Globals.homeObject["App_Logo__c"],
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                      alignment: Alignment.center,
+                      child: ShimmerLoading(
+                        isLoading: true,
+                        child: Container(
+                          width: _kIconSize * 1.4,
+                          height: _kIconSize * 1.5,
+                          color: Colors.white,
                         ),
-                      )
-                    : Container(
+                      )),
+                  errorWidget: (context, url, error) => CachedNetworkImage(
+                    fit: BoxFit.fill,
+                    imageUrl: Globals.splashImageUrl ??
+                        Globals.homeObject["App_Logo__c"],
+                    placeholder: (context, url) => Container(
                         alignment: Alignment.center,
-                        child: GestureDetector(
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: (_) => NewsImagePage(
-                                    imageURL: Globals.splashImageUrl != null &&
-                                            Globals.splashImageUrl != ""
-                                        ? Globals.splashImageUrl
-                                        : Globals.homeObjet["App_Logo__c"]));
-                          },
-                          child: CachedNetworkImage(
-                            fit: BoxFit.fill,
-                            imageUrl: Globals.splashImageUrl != null &&
-                                    Globals.splashImageUrl != ""
-                                ? Globals.splashImageUrl
-                                : Globals.homeObjet["App_Logo__c"],
-                            placeholder: (context, url) => Container(
-                                alignment: Alignment.center,
-                                child: ShimmerLoading(
-                                  isLoading: true,
-                                  child: Container(
-                                    width: _kIconSize * 1.4,
-                                    height: _kIconSize * 1.5,
-                                    color: Colors.white,
-                                  ),
-                                )),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            width: _kIconSize * 1.4,
+                            height: _kIconSize * 1.5,
+                            color: Colors.white,
                           ),
-                        ),
-                      ),
-              ),
+                        )),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
+              )),
             ),
             SpacerWidget(_kLabelSpacing),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Expanded(
-                  child: Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English" &&
-                          Globals.selectedLanguage != ""
-                      ? TranslationWidget(
-                          message: widget.obj.headings != "" &&
-                                  widget.obj.headings != null &&
-                                  widget.obj.headings.length > 0
-                              ? widget.obj.headings["en"].toString()
-                              : widget.obj.contents["en"]
-                                          .toString()
-                                          .split(" ")
-                                          .length >
-                                      1
-                                  ? widget.obj.contents["en"]
-                                          .toString()
-                                          .replaceAll("\n", " ")
-                                          .split(" ")[0] +
-                                      " " +
-                                      widget.obj.contents["en"]
-                                          .toString()
-                                          .replaceAll("\n", " ")
-                                          .split(" ")[1]
-                                          .split("\n")[0] +
-                                      "..."
-                                  : widget.obj.contents["en"],
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Linkify(
-                            onOpen: (link) => _launchURL(link.url),
-                            options: LinkifyOptions(humanize: false),
-                            text: translatedMessage.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(fontWeight: FontWeight.w500),
-                          ),
-                        )
-                      : Linkify(
-                          onOpen: (link) => _launchURL(link.url),
-                          options: LinkifyOptions(humanize: false),
-                          linkStyle: TextStyle(color: Colors.blue),
-                          text: widget.obj.headings != "" &&
-                                  widget.obj.headings != null &&
-                                  widget.obj.headings.length > 0
-                              ? widget.obj.headings["en"].toString()
-                              : widget.obj.contents["en"]
-                                          .toString()
-                                          .split(" ")
-                                          .length >
-                                      1
-                                  ? widget.obj.contents["en"]
-                                          .toString()
-                                          .replaceAll("\n", " ")
-                                          .split(" ")[0] +
-                                      " " +
-                                      widget.obj.contents["en"]
-                                          .toString()
-                                          .replaceAll("\n", " ")
-                                          .split(" ")[1]
-                                          .split("\n")[0] +
-                                      "..."
-                                  : widget.obj.contents["en"],
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline2!
-                              .copyWith(fontWeight: FontWeight.w500),
-                        ),
-                ),
+                    child: TranslationWidget(
+                  message: widget.obj.headings != "" &&
+                          widget.obj.headings != null &&
+                          widget.obj.headings.length > 0
+                      ? widget.obj.headings["en"].toString()
+                      : widget.obj.contents["en"].toString().split(" ").length >
+                              1
+                          ? widget.obj.contents["en"]
+                                  .toString()
+                                  .replaceAll("\n", " ")
+                                  .split(" ")[0] +
+                              " " +
+                              widget.obj.contents["en"]
+                                  .toString()
+                                  .replaceAll("\n", " ")
+                                  .split(" ")[1]
+                                  .split("\n")[0] +
+                              "..."
+                          : widget.obj.contents["en"],
+                  toLanguage: Globals.selectedLanguage,
+                  fromLanguage: "en",
+                  builder: (translatedMessage) => Linkify(
+                    onOpen: (link) => _launchURL(link.url),
+                    options: LinkifyOptions(humanize: false),
+                    linkStyle: TextStyle(color: Colors.blue),
+                    text: translatedMessage.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(fontWeight: FontWeight.w500),
+                  ),
+                )),
               ],
             ),
             Container(
               child: Wrap(
                 children: [
-                  Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English" &&
-                          Globals.selectedLanguage != ""
-                      ? TranslationWidget(
-                          message: widget.obj.contents["en"].toString(),
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Linkify(
-                            onOpen: (link) => _launchURL(link.url),
-                            options: LinkifyOptions(humanize: false),
-                            linkStyle: TextStyle(color: Colors.blue),
-                            text: translatedMessage.toString(),
-                            style: Theme.of(context).textTheme.bodyText1!,
-                            textAlign: TextAlign.left,
-                          ),
-                        )
-                      : Linkify(
-                          onOpen: (link) => _launchURL(link.url),
-                          options: LinkifyOptions(humanize: false),
-                          linkStyle: TextStyle(color: Colors.blue),
-                          text: widget.obj.contents["en"].toString(),
-                          style: Theme.of(context).textTheme.bodyText1!,
-                          textAlign: TextAlign.left,
-                        ),
+                  TranslationWidget(
+                    message: widget.obj.contents["en"].toString(),
+                    toLanguage: Globals.selectedLanguage,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Linkify(
+                      onOpen: (link) => _launchURL(link.url),
+                      options: LinkifyOptions(humanize: false),
+                      linkStyle: TextStyle(color: Colors.blue),
+                      text: translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.bodyText1!,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -251,41 +187,26 @@ class _NewdescriptionState extends State<Newdescription> {
               child: widget.obj.url != null
                   ? Wrap(
                       children: [
-                        Globals.selectedLanguage != null &&
-                                Globals.selectedLanguage != "English" &&
-                                Globals.selectedLanguage != ""
-                            ? TranslationWidget(
-                                message: widget.obj.url.toString(),
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Linkify(
-                                  onOpen: (link) => _launchURL(link.url),
-                                  linkStyle: TextStyle(color: Colors.blue),
-                                  options: LinkifyOptions(humanize: false),
-                                  text: translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(
-                                          decoration: TextDecoration.underline,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant),
-                                  textAlign: TextAlign.justify,
-                                ),
-                              )
-                            : Linkify(
-                                onOpen: (link) => _launchURL(link.url),
-                                linkStyle: TextStyle(color: Colors.blue),
-                                text: widget.obj.url.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    ?.copyWith(
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                textAlign: TextAlign.justify,
-                              ),
+                        TranslationWidget(
+                          message: widget.obj.url.toString(),
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Linkify(
+                            onOpen: (link) => _launchURL(link.url),
+                            linkStyle: TextStyle(color: Colors.blue),
+                            options: LinkifyOptions(humanize: false),
+                            text: translatedMessage.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1
+                                ?.copyWith(
+                                    decoration: TextDecoration.underline,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant),
+                            textAlign: TextAlign.justify,
+                          ),
+                        ),
                       ],
                     )
                   : Container(),
@@ -300,7 +221,7 @@ class _NewdescriptionState extends State<Newdescription> {
             listener: (context, state) async {
               if (state is BottomNavigationBarSuccess) {
                 AppTheme.setDynamicTheme(Globals.appSetting, context);
-                Globals.homeObjet = state.obj;
+                Globals.homeObject = state.obj;
               }
             },
             child: Container(),
@@ -354,7 +275,7 @@ class _NewdescriptionState extends State<Newdescription> {
           ? widget.obj.image
           : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
               ? Globals.splashImageUrl
-              : Globals.homeObjet["App_Logo__c"];
+              : Globals.homeObject["App_Logo__c"];
       File _image = await Utility.createFileFromUrl(_imageUrl);
       setState(() {
         _downloadingFile = false;

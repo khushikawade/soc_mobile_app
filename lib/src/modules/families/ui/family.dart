@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_sublist.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -88,8 +89,7 @@ class _FamilyPageState extends State<FamilyPage> {
                   )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
-          ?
-          _launchURL(obj)
+          ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
@@ -131,20 +131,18 @@ class _FamilyPageState extends State<FamilyPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    }else if (obj.typeC == "Embed iFrame") {
+    } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
           ? Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
-                    isiFrame: true,
-                    title: obj.titleC!,
-                    url: obj.rtfHTMLC.toString(),
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )
-                 
-                      ))
+                        isiFrame: true,
+                        title: obj.titleC!,
+                        url: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL") {
       obj.pdfURL != null
@@ -177,8 +175,7 @@ class _FamilyPageState extends State<FamilyPage> {
   Widget _buildLeading(FamiliesList obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconWidget(
-        iconUrl: obj.appIconUrlC ??
-            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+        iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else if (obj.appIconC != null) {
       return Icon(
@@ -192,8 +189,7 @@ class _FamilyPageState extends State<FamilyPage> {
       );
     } else {
       return CustomIconWidget(
-        iconUrl:
-            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+        iconUrl: Overrides.defaultIconUrl,
       );
     }
   }
@@ -239,19 +235,14 @@ class _FamilyPageState extends State<FamilyPage> {
         // contentPadding:
         //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: _buildLeading(obj),
-        title: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: obj.titleC,
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) {
-                  return Text(translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText2!);
-                })
-            : Text(obj.titleC.toString(),
-                style: Theme.of(context).textTheme.bodyText1!),
+        title: TranslationWidget(
+            message: obj.titleC ?? "No title",
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) {
+              return Text(translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText1!);
+            }),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
@@ -296,7 +287,8 @@ class _FamilyPageState extends State<FamilyPage> {
                                 } else if (state is FamiliesDataSucess) {
                                   return newList.length > 0
                                       ? ListView.builder(
-                                          padding: EdgeInsets.only(bottom: 45),
+                                          padding: EdgeInsets.only(
+                                              bottom: AppTheme.klistPadding),
                                           scrollDirection: Axis.vertical,
                                           itemCount: newList.length,
                                           itemBuilder: (BuildContext context,
@@ -330,7 +322,7 @@ class _FamilyPageState extends State<FamilyPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
 
                                   setState(() {});
                                 }
@@ -370,14 +362,14 @@ class _FamilyPageState extends State<FamilyPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObjet["Family_Banner_Image__c"] != null &&
-                Globals.homeObjet["Family_Banner_Image__c"] != ''
+        body: Globals.homeObject["Family_Banner_Image__c"] != null &&
+                Globals.homeObject["Family_Banner_Image__c"] != ''
             ? NestedScrollView(
                 // controller: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    Globals.homeObjet["Family_Banner_Image__c"] != null
+                    Globals.homeObject["Family_Banner_Image__c"] != null
                         ? SliverAppBar(
                             expandedHeight: AppTheme.kBannerHeight,
                             floating: false,
@@ -386,7 +378,8 @@ class _FamilyPageState extends State<FamilyPage> {
                                 centerTitle: true,
                                 background: Container(
                                   child: Image.network(
-                                    Globals.homeObjet["Family_Banner_Image__c"],
+                                    Globals
+                                        .homeObject["Family_Banner_Image__c"],
                                     fit: BoxFit.cover,
                                   ),
                                 )),

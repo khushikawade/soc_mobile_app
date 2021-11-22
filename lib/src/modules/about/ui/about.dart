@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
@@ -62,13 +63,11 @@ class _AboutPageState extends State<AboutPage> {
   Widget _buildLeading(obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconWidget(
-        iconUrl: obj.appIconUrlC ??
-            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+        iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else {
       return CustomIconWidget(
-        iconUrl:
-            "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
+        iconUrl: Overrides.defaultIconUrl,
       );
     }
   }
@@ -190,19 +189,14 @@ class _AboutPageState extends State<AboutPage> {
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         leading: _buildLeading(listData),
-        title: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: listData.titleC ?? "-",
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) {
-                  return Text(translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText2!);
-                })
-            : Text(listData.titleC ?? "-",
-                style: Theme.of(context).textTheme.bodyText1!),
+        title: TranslationWidget(
+            message: listData.titleC ?? "-",
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) {
+              return Text(translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText1!);
+            }),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
@@ -247,7 +241,8 @@ class _AboutPageState extends State<AboutPage> {
                                 } else if (state is AboutDataSucess) {
                                   return newList.length > 0
                                       ? ListView.builder(
-                                          padding: EdgeInsets.only(bottom: 45),
+                                          padding: EdgeInsets.only(
+                                              bottom: AppTheme.klistPadding),
                                           scrollDirection: Axis.vertical,
                                           itemCount: newList.length,
                                           itemBuilder: (BuildContext context,
@@ -277,7 +272,7 @@ class _AboutPageState extends State<AboutPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
                                   setState(() {});
                                 }
                               },
@@ -314,8 +309,8 @@ class _AboutPageState extends State<AboutPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObjet["About_Banner_Image__c"] != null &&
-                Globals.homeObjet["About_Banner_Image__c"] != ""
+        body: Globals.homeObject["About_Banner_Image__c"] != null &&
+                Globals.homeObject["About_Banner_Image__c"] != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
@@ -327,7 +322,7 @@ class _AboutPageState extends State<AboutPage> {
                       flexibleSpace: FlexibleSpaceBar(
                         centerTitle: true,
                         background: Image.network(
-                          Globals.homeObjet["About_Banner_Image__c"],
+                          Globals.homeObject["About_Banner_Image__c"],
                           fit: BoxFit.fill,
                         ),
                       ),

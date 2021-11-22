@@ -82,11 +82,20 @@ class LanguageSelector {
                     ? InkWell(
                         onTap: () {
                           final scaffoldKey = Scaffold.of(context);
+                          // ignore: deprecated_member_use
                           scaffoldKey.showSnackBar(
                             SnackBar(
-                              content: const Text(
-                                'Language already selected',
+                              content: Container(
+                                alignment: Alignment.centerLeft,
+                                height: 40,
+                                child: Text(
+                                  '$selectedLanguage language is already selected',
+                                  textAlign: TextAlign.left,
+                                ),
                               ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
                               behavior: SnackBarBehavior.floating,
                               margin: EdgeInsets.only(
                                   left: 16,

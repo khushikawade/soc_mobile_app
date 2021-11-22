@@ -75,6 +75,9 @@ class AppTheme {
 
   //Paddings
   static const double kBodyPadding = 16.0;
+  
+  //List bottom pading
+  static const double klistPadding = 45.0;
 
   static final ThemeData lightTheme = ThemeData(
       // fontFamily: 'Roboto',

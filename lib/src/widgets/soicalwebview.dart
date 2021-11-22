@@ -54,7 +54,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
           leading: BackButtonWidget(),
           title: //SizedBox(width: 100.0, height: 60.0, child:
               AppLogoWidget(
-            marginLeft: 50,
+            marginLeft: 55,
           ),
           //),
           actions: [

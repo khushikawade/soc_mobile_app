@@ -85,7 +85,7 @@ class _SearchPageState extends State<SearchPage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => ContactPage(
-                        obj: Globals.homeObjet,
+                        obj: Globals.homeObject,
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC!,
                         language: Globals.selectedLanguage!,
@@ -335,29 +335,19 @@ class _SearchPageState extends State<SearchPage> {
                   size: Globals.deviceType == "phone" ? 14 : 22,
                 ),
                 HorzitalSpacerWidget(_kLabelSpacing),
-                Globals.selectedLanguage != null &&
-                        Globals.selectedLanguage != "English" &&
-                        Globals.selectedLanguage != ""
-                    ? TranslationWidget(
-                        message: items[index].titleC != null &&
-                                items[index].titleC.isNotEmpty
-                            ? '${items[index].titleC} '
-                            : '',
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            style: Theme.of(context).textTheme.bodyText1),
-                      )
-                    : Text(
-                        items[index].titleC != null &&
-                                items[index].titleC.isNotEmpty
-                            ? '${items[index].titleC} '
-                            : '',
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.primaryVariant),
-                      )
+                TranslationWidget(
+                  message: items[index].titleC != null &&
+                          items[index].titleC.isNotEmpty
+                      ? '${items[index].titleC} '
+                      : '',
+                  toLanguage: Globals.selectedLanguage,
+                  fromLanguage: "en",
+                  builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                        color: Theme.of(context).colorScheme.primaryVariant),
+                  ),
+                )
               ])),
     );
   }
@@ -393,30 +383,20 @@ class _SearchPageState extends State<SearchPage> {
                                   : Theme.of(context).colorScheme.secondary,
                             ),
                             child: ListTile(
-                                title: Globals.selectedLanguage != null &&
-                                        Globals.selectedLanguage != "English" &&
-                                        Globals.selectedLanguage != ""
-                                    ? TranslationWidget(
-                                        message: data.titleC,
-                                        toLanguage: Globals.selectedLanguage,
-                                        fromLanguage: "en",
-                                        builder: (translatedMessage) => Text(
-                                          translatedMessage.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1!,
-                                        ),
-                                      )
-                                    : Text(
-                                        data.titleC ?? '-',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1!
-                                            .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primaryVariant),
-                                      ),
+                                title: TranslationWidget(
+                                  message: data.titleC ?? "-",
+                                  toLanguage: Globals.selectedLanguage,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) => Text(
+                                      translatedMessage.toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant)),
+                                ),
                                 onTap: () async {
                                   _route(data);
                                   if (data != null) {
@@ -469,28 +449,18 @@ class _SearchPageState extends State<SearchPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
-        Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: "Search",
-                toLanguage: Globals.selectedLanguage,
-                fromLanguage: "en",
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                      fontWeight: FontWeight.w500),
-                  textAlign: TextAlign.left,
-                ),
-              )
-            : Text(
-                "Search",
-                style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                    color: Theme.of(context).colorScheme.primaryVariant,
-                    fontWeight: FontWeight.w500),
-                textAlign: TextAlign.left,
-              ),
+        TranslationWidget(
+          message: "Search",
+          toLanguage: Globals.selectedLanguage,
+          fromLanguage: "en",
+          builder: (translatedMessage) => Text(
+            translatedMessage.toString(),
+            style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
+                color: Theme.of(context).colorScheme.primaryVariant,
+                fontWeight: FontWeight.w500),
+            textAlign: TextAlign.left,
+          ),
+        ),
       ],
     );
   }
@@ -500,30 +470,19 @@ class _SearchPageState extends State<SearchPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         HorzitalSpacerWidget(_kLabelSpacing / 2),
-        Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: "Recent Search",
-                toLanguage: Globals.selectedLanguage,
-                fromLanguage: "en",
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                      fontSize: 18,
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                      fontWeight: FontWeight.w500),
-                  textAlign: TextAlign.left,
-                ),
-              )
-            : Text(
-                "Recent Search",
-                style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
-                    fontSize: 18,
-                    color: Theme.of(context).colorScheme.primaryVariant,
-                    fontWeight: FontWeight.w500),
-                textAlign: TextAlign.left,
-              ),
+        TranslationWidget(
+          message: "Recent Search",
+          toLanguage: Globals.selectedLanguage,
+          fromLanguage: "en",
+          builder: (translatedMessage) => Text(
+            translatedMessage.toString(),
+            style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(
+                fontSize: 18,
+                color: Theme.of(context).colorScheme.primaryVariant,
+                fontWeight: FontWeight.w500),
+            textAlign: TextAlign.left,
+          ),
+        ),
       ],
     );
   }
@@ -599,7 +558,7 @@ class _SearchPageState extends State<SearchPage> {
                                   if (state is BottomNavigationBarSuccess) {
                                     AppTheme.setDynamicTheme(
                                         Globals.appSetting, context);
-                                    Globals.homeObjet = state.obj;
+                                    Globals.homeObject = state.obj;
                                     setState(() {});
                                   } else if (state is HomeErrorReceived) {}
                                 },

@@ -98,47 +98,36 @@ class _InformationPageState extends State<InformationPage> {
                       ),
                     )
                   : Container(),
-              Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English" &&
-                      Globals.selectedLanguage != ""
-                  ? TranslationWidget(
-                      message: htmlData ?? Globals.appSetting.appInformationC,
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) => Html(
-                        data: translatedMessage.toString(),
-                      ),
-                    )
-                  : Html(
-                      data: htmlData ?? Globals.appSetting.appInformationC,
-                      onLinkTap: (String? url,
-                          RenderContext context,
-                          Map<String, String> attributes,
-                          dom.Element? element) {
-                        print(url);
-                        _launchURL(url);
-                      },
-                      style: {
-                        "table": Style(
-                          backgroundColor:
-                              Color.fromARGB(0x50, 0xee, 0xee, 0xee),
-                        ),
-                        "tr": Style(
-                          border:
-                              Border(bottom: BorderSide(color: Colors.grey)),
-                        ),
-                        "th": Style(
-                          padding: EdgeInsets.all(6),
-                          backgroundColor: Colors.grey,
-                        ),
-                        "td": Style(
-                          padding: EdgeInsets.all(6),
-                          alignment: Alignment.topLeft,
-                        ),
-                        'h5': Style(
-                            maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                      },
+              TranslationWidget(
+                message: htmlData ?? Globals.appSetting.appInformationC,
+                fromLanguage: "en",
+                toLanguage: Globals.selectedLanguage,
+                builder: (translatedMessage) => Html(
+                  data: translatedMessage.toString(),
+                  onLinkTap: (String? url, RenderContext context,
+                      Map<String, String> attributes, dom.Element? element) {
+                    _launchURL(url);
+                  },
+                  style: {
+                    "table": Style(
+                      backgroundColor: Color.fromARGB(0x50, 0xee, 0xee, 0xee),
                     ),
+                    "tr": Style(
+                      border: Border(bottom: BorderSide(color: Colors.grey)),
+                    ),
+                    "th": Style(
+                      padding: EdgeInsets.all(6),
+                      backgroundColor: Colors.grey,
+                    ),
+                    "td": Style(
+                      padding: EdgeInsets.all(6),
+                      alignment: Alignment.topLeft,
+                    ),
+                    'h5':
+                        Style(maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                  },
+                ),
+              )
             ],
           ),
         ),
@@ -209,7 +198,7 @@ class _InformationPageState extends State<InformationPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
                                   setState(() {});
                                   isloadingstate = false;
                                 }

@@ -45,9 +45,9 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
       child: CachedNetworkImage(
         imageUrl: widget.obj!.imageUrlC ??
-                        Globals.splashImageUrl ??
-                        Globals.homeObjet["App_Logo__c"],
-            // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun_profile_3824723.png",
+            Globals.splashImageUrl ??
+            Globals.homeObject["App_Logo__c"],
+        // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun_profile_3824723.png",
         fit: BoxFit.fill,
         placeholder: (context, url) => Container(
           alignment: Alignment.center,
@@ -60,7 +60,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
           ),
         ),
         errorWidget: (context, url, error) => CachedNetworkImage(
-          imageUrl: Globals.splashImageUrl ?? Globals.homeObjet["App_Logo__c"],
+          imageUrl: Globals.splashImageUrl ?? Globals.homeObject["App_Logo__c"],
           placeholder: (context, url) => Container(
               alignment: Alignment.center,
               child: ShimmerLoading(
@@ -121,26 +121,17 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
               horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
           child: Row(
             children: [
-              Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English" &&
-                      Globals.selectedLanguage != ""
-                  ? TranslationWidget(
-                      message: "Phone :",
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
+              TranslationWidget(
+                message: "Phone :",
+                toLanguage: Globals.selectedLanguage,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        fontWeight: FontWeight.w500,
                       ),
-                    )
-                  : Text(
-                      "Phone : ",
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                    ),
+                ),
+              ),
               HorzitalSpacerWidget(_kLabelSpacing / 2),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
@@ -314,7 +305,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
                                   isloadingstate = false;
                                   setState(() {});
                                 }
@@ -333,7 +324,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   listener: (context, state) async {
                     if (state is BottomNavigationBarSuccess) {
                       AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      Globals.homeObjet = state.obj;
+                      Globals.homeObject = state.obj;
                       setState(() {});
                     }
                   },

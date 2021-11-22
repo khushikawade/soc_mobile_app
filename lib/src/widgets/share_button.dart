@@ -26,12 +26,13 @@ class ShareButtonWidget extends StatelessWidget {
         children: <Widget>[
           isSettingPage
               ? Globals.isAndroid == true &&
-                      Globals.homeObjet["Play_Store_URL__c"] != null
-                  ? shareButton(context, Globals.homeObjet["Play_Store_URL__c"])
+                      Globals.homeObject["Play_Store_URL__c"] != null
+                  ? shareButton(
+                      context, Globals.homeObject["Play_Store_URL__c"])
                   : Globals.isAndroid == false &&
-                          Globals.homeObjet["App_Store_URL__c"] != null
+                          Globals.homeObject["App_Store_URL__c"] != null
                       ? shareButton(
-                          context, Globals.homeObjet["App_Store_URL__c"])
+                          context, Globals.homeObject["App_Store_URL__c"])
                       : Container()
               : Container(),
           SizedBox(
@@ -41,8 +42,8 @@ class ShareButtonWidget extends StatelessWidget {
             // flex: 1,
             child: NeedSupportWidget(),
           ),
-          Globals.homeObjet["Play_Store_URL__c"] == null &&
-                  Globals.homeObjet["App_Store_URL__c"] == null
+          Globals.homeObject["Play_Store_URL__c"] == null &&
+                  Globals.homeObject["App_Store_URL__c"] == null
               ? Container(
                   width: MediaQuery.of(context).size.width * 0.5,
                 )
@@ -58,25 +59,21 @@ class ShareButtonWidget extends StatelessWidget {
         onPressed: () {
           obj.callFunction(
               context,
-              "Hi, I downloaded the ${Globals.homeObjet["Contact_Name__c"] ?? ""}app. You should check it out! Download the app now at $url",
-              Globals.homeObjet["Contact_Name__c"] != null
-                  ? "Love the ${Globals.homeObjet["Contact_Name__c"]} app!"
+              "Hi, I downloaded the ${Globals.homeObject["Contact_Name__c"] ?? ""}app. You should check it out! Download the app now at $url",
+              Globals.homeObject["Contact_Name__c"] != null
+                  ? "Love the ${Globals.homeObject["Contact_Name__c"]} app!"
                   : "");
         },
-        child: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? Container(
-                child: TranslationWidget(
-                  message: "Share this app",
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                  ),
-                ),
-              )
-            : Text("Share this app"),
+        child: Container(
+          child: TranslationWidget(
+            message: "Share this app",
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) => Text(
+              translatedMessage.toString(),
+            ),
+          ),
+        ),
       ),
     );
   }

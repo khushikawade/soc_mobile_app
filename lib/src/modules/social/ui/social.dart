@@ -16,8 +16,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
-import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:showcaseview/showcaseview.dart';
 
 class SocialPage extends StatefulWidget {
   SocialPage({
@@ -107,7 +105,8 @@ class _SocialPageState extends State<SocialPage> {
                       child: CachedNetworkImage(
                         imageUrl: obj.enclosure['url'] ??
                             imageLink ??
-                            Globals.homeObjet["App_Logo__c"],
+                            Globals.splashImageUrl ??
+                            Globals.homeObject["App_Logo__c"],
                         placeholder: (context, url) => Container(
                             alignment: Alignment.center,
                             child: ShimmerLoading(
@@ -120,10 +119,8 @@ class _SocialPageState extends State<SocialPage> {
                             )),
                         errorWidget: (context, url, error) =>
                             CachedNetworkImage(
-                          imageUrl: Globals.splashImageUrl != null &&
-                                  Globals.splashImageUrl != ""
-                              ? Globals.splashImageUrl
-                              : Globals.homeObjet["App_Logo__c"],
+                          imageUrl: Globals.splashImageUrl ??
+                              Globals.homeObject["App_Logo__c"],
                           placeholder: (context, url) => Container(
                               alignment: Alignment.center,
                               child: ShimmerLoading(
@@ -147,10 +144,8 @@ class _SocialPageState extends State<SocialPage> {
                       alignment: Alignment.centerLeft,
                       child: ClipRRect(
                         child: CachedNetworkImage(
-                          imageUrl: Globals.splashImageUrl != null &&
-                                  Globals.splashImageUrl != ""
-                              ? Globals.splashImageUrl
-                              : Globals.homeObjet["App_Logo__c"],
+                          imageUrl: Globals.splashImageUrl ??
+                              Globals.homeObject["App_Logo__c"],
                           placeholder: (context, url) => Container(
                               alignment: Alignment.center,
                               child: ShimmerLoading(
@@ -166,7 +161,7 @@ class _SocialPageState extends State<SocialPage> {
                             imageUrl: Globals.splashImageUrl != null &&
                                     Globals.splashImageUrl != ""
                                 ? Globals.splashImageUrl
-                                : Globals.homeObjet["App_Logo__c"],
+                                : Globals.homeObject["App_Logo__c"],
                             placeholder: (context, url) => Container(
                                 alignment: Alignment.center,
                                 child: ShimmerLoading(
@@ -195,36 +190,24 @@ class _SocialPageState extends State<SocialPage> {
                               obj.title["__cdata"].length > 1
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.69,
-                              child: Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English" &&
-                                      Globals.selectedLanguage != ""
-                                  ? TranslationWidget(
-                                      message:
-                                          "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                                      fromLanguage: "en",
-                                      toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) {
-                                        return Text(
-                                            translatedMessage.toString(),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline2!);
-                                      })
-                                  : Text(
+                              child: TranslationWidget(
+                                  message:
                                       "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline2!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                          ),
-                                    ),
+                                  fromLanguage: "en",
+                                  toLanguage: Globals.selectedLanguage,
+                                  builder: (translatedMessage) {
+                                    return Text(translatedMessage.toString(),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline2!
+                                            .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                            ));
+                                  }),
                             )
                           : Container()
                     ],
@@ -238,32 +221,22 @@ class _SocialPageState extends State<SocialPage> {
                       obj.pubDate != null && obj.pubDate.length > 1
                           ? Container(
                               width: MediaQuery.of(context).size.width * 0.40,
-                              child: Globals.selectedLanguage != null &&
-                                      Globals.selectedLanguage != "English" &&
-                                      Globals.selectedLanguage != ""
-                                  ? TranslationWidget(
-                                      message: Utility.convertDate(obj.pubDate)
-                                          .toString(),
-                                      fromLanguage: "en",
-                                      toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Text(
-                                          translatedMessage.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle1!),
-                                    )
-                                  : Text(
-                                      Utility.convertDate(obj.pubDate)
-                                          .toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                          ),
-                                    ))
+                              child: TranslationWidget(
+                                message:
+                                    Utility.convertDate(obj.pubDate).toString(),
+                                fromLanguage: "en",
+                                toLanguage: Globals.selectedLanguage,
+                                builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                        )),
+                              ))
                           : Container()
                     ],
                   ),
@@ -279,7 +252,7 @@ class _SocialPageState extends State<SocialPage> {
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       itemCount: obj.length,
-      padding: EdgeInsets.only(bottom: 30),
+      padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
       itemBuilder: (BuildContext context, int index) {
         return _buildlist(obj[index], index, obj!);
       },
@@ -363,7 +336,7 @@ class _SocialPageState extends State<SocialPage> {
                                       Globals.appSetting, context);
 
                                   setState(() {
-                                    Globals.homeObjet = state.obj;
+                                    Globals.homeObject = state.obj;
                                   });
                                 }
                               },

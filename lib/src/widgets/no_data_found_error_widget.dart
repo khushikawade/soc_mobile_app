@@ -31,34 +31,20 @@ class NoDataFoundErrorWidget extends StatelessWidget {
             )),
         SpacerWidget(12),
         Container(
-          alignment: Alignment.center,
-          child: Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: isNews!
-                      ? "No Message Yet"
-                      : isEvents!
-                          ? "No Event Found"
-                          : isResultNotFoundMsg
-                              ? "No result found"
-                              : "No data found",
-                  toLanguage: Globals.selectedLanguage,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText1!),
-                )
-              : Text(
-                  isNews!
-                      ? "No Message Yet"
-                      : isEvents!
-                          ? "No Event Found"
-                          : isResultNotFoundMsg
-                              ? "No result found"
-                              : "No data found",
+            alignment: Alignment.center,
+            child: TranslationWidget(
+              message: isNews!
+                  ? "No Message Yet"
+                  : isEvents!
+                      ? "No Event Found"
+                      : isResultNotFoundMsg
+                          ? "No result found"
+                          : "No data found",
+              toLanguage: Globals.selectedLanguage,
+              fromLanguage: "en",
+              builder: (translatedMessage) => Text(translatedMessage.toString(),
                   style: Theme.of(context).textTheme.bodyText1!),
-        ),
+            )),
       ],
     );
   }
