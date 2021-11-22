@@ -238,6 +238,7 @@ class _StartupPageState extends State<StartupPage> {
                           prefs.setBool("enableIndicator", true);
                           Globals.indicator.value = true;
                         }
+                        setState(() {});
                       }
                     },
                     child: Container(),
