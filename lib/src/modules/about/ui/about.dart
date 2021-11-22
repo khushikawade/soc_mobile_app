@@ -90,17 +90,20 @@ class _AboutPageState extends State<AboutPage> {
                     isAbout: true,
                     language: Globals.selectedLanguage,
                   )));
-    } else if (obj.typeC == "RFT_HTML" ||
+    } else if (obj.typeC == "RTF_HTML" ||
         obj.typeC == "HTML/RTF" ||
         obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
-          ? AboutusPage(
-              htmlText: obj.rtfHTMLC.toString(),
-              isbuttomsheet: true,
-              ishtml: true,
-              appbarTitle: obj.titleC!,
-              language: Globals.selectedLanguage,
-            )
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AboutusPage(
+                        htmlText: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        ishtml: true,
+                        appbarTitle: obj.titleC!,
+                        language: Globals.selectedLanguage,
+                      )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
