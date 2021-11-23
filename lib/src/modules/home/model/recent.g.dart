@@ -43,6 +43,7 @@ class RecentAdapter extends TypeAdapter<Recent> {
       fields[18],
       fields[19],
       fields[20],
+      fields[21] as String?,
     );
   }
 
@@ -91,7 +92,9 @@ class RecentAdapter extends TypeAdapter<Recent> {
       ..writeByte(19)
       ..write(obj.statusC)
       ..writeByte(20)
-      ..write(obj.sortOrder);
+      ..write(obj.sortOrder)
+      ..writeByte(21)
+      ..write(obj.calendarId);
   }
 
   @override

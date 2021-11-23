@@ -46,6 +46,9 @@ class Recent {
   final statusC;
   @HiveField(20)
   final sortOrder;
+  @HiveField(20)
+  String? calendarId;
+
 
   Recent(
       this.hiveobjid,
@@ -68,5 +71,5 @@ class Recent {
       this.address,
       this.geoLocation,
       this.statusC,
-      this.sortOrder);
+      this.sortOrder,this.calendarId);
 }

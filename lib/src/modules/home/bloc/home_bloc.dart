@@ -49,7 +49,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "Name",
                 "RTF_HTML__c",
                 "Type__c",
-                "School_App__c"
+                "School_App__c",
+                "Calendar_Id__c"
               ],
               "name": "Families_App__c"
             },
@@ -78,7 +79,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "Name",
                 "RTF_HTML__c",
                 "Type__c",
-                "School_App__c"
+                "School_App__c",
+                "Calendar_Id__c"
               ]
             },
             {

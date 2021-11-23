@@ -23,6 +23,8 @@ class SearchList {
   String? typeC;
   String? pdfURL;
   String? deepLink;
+  String? calendarId;
+
 
   SearchList(
       {this.attributes,
@@ -46,7 +48,9 @@ class SearchList {
       this.name,
       this.typeC,
       this.pdfURL,
-      this.deepLink});
+      this.deepLink,
+      this.calendarId
+      });
 
   factory SearchList.fromJson(Map<String, dynamic> json) => SearchList(
         attributes: json['attributes'] == null
@@ -74,6 +78,7 @@ class SearchList {
         typeC: json['Type__c'] as String?,
         pdfURL: json['PDF_URL__c'] as String?,
         deepLink: json['Deep_Link__c'] as String?,
+        calendarId: json['Calendar_Id__c'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -99,5 +104,6 @@ class SearchList {
         'PDF_URL__c': pdfURL,
         'Type__c': typeC,
         'Deep_Link__c': deepLink,
+        'Calendar_Id__c': calendarId,
       };
 }

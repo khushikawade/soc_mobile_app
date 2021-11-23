@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
+import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/model/recent.dart';
@@ -163,7 +164,7 @@ class _SearchPageState extends State<SearchPage> {
                         appbarTitle: obj.titleC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (obj.typeC == "PDF URL") {
+    } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
           ? Navigator.push(
               context,
@@ -175,6 +176,19 @@ class _SearchPageState extends State<SearchPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+    } else if (obj.typeC == "Calendar/Events") {
+      obj.calendarId != null && obj.calendarId != ""
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => EventPage(
+                        isbuttomsheet: true,
+                        appBarTitle: obj.titleC,
+                        language: Globals.selectedLanguage,
+                        // calendarId: obj.calendarId.toString(),
+                      )))
+          : Utility.showSnackBar(
+              _scaffoldKey, "No calendar/events available", context);
     } else if (obj.typeC == "Sub-Menu") {
       Navigator.push(
           context,
@@ -429,7 +443,8 @@ class _SearchPageState extends State<SearchPage> {
                                     data.address,
                                     data.geoLocation,
                                     data.statusC,
-                                    data.sortOrder);
+                                    data.sortOrder,
+                                    data.calendarId);
 
                                 addtoDataBase(recentitem);
                               }
