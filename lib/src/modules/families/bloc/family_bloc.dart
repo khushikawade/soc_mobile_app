@@ -155,8 +155,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<SDlist>> getStaffList(categoryId) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-        categoryId == null
+      final ResponseModel response = await _dbServices.getapi(categoryId == null
           ? "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}"
           : "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c FROM Staff_Directory_App__c where About_App__c = '$categoryId'")}");
 

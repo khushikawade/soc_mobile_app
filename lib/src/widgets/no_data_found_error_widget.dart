@@ -10,11 +10,12 @@ class NoDataFoundErrorWidget extends StatelessWidget {
   bool isResultNotFoundMsg;
   bool? isNews;
   bool? isEvents;
+  double?marginTop;
   NoDataFoundErrorWidget(
       {Key? key,
       required this.isResultNotFoundMsg,
       required this.isNews,
-      required this.isEvents})
+      required this.isEvents,this.marginTop})
       : super(key: key);
 
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class NoDataFoundErrorWidget extends StatelessWidget {
       children: [
         Container(
             margin: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.25,
+              top:marginTop?? MediaQuery.of(context).size.height * 0.25,
             ),
             alignment: Alignment.center,
             child: SvgPicture.asset(

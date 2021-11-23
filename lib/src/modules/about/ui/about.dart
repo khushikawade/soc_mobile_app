@@ -1,5 +1,5 @@
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
-import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
+import 'package:Soc/src/modules/about/modal/about_list.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
@@ -89,17 +89,20 @@ class _AboutPageState extends State<AboutPage> {
                     isAbout: true,
                     language: Globals.selectedLanguage,
                   )));
-    } else if (obj.typeC == "RFT_HTML" ||
+    } else if (obj.typeC == "RTF_HTML" ||
         obj.typeC == "HTML/RTF" ||
         obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
-          ? AboutusPage(
-              htmlText: obj.rtfHTMLC.toString(),
-              isbuttomsheet: true,
-              ishtml: true,
-              appbarTitle: obj.titleC!,
-              language: Globals.selectedLanguage,
-            )
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AboutusPage(
+                        htmlText: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        ishtml: true,
+                        appbarTitle: obj.titleC!,
+                        language: Globals.selectedLanguage,
+                      )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null

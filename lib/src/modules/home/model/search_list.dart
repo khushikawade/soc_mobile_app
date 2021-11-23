@@ -18,7 +18,7 @@ class SearchList {
   String? address;
   final geoLocation;
   final statusC;
-  final sortOredr;
+  final sortOrder;
   String? name;
   String? typeC;
   String? pdfURL;
@@ -42,7 +42,7 @@ class SearchList {
       this.address,
       this.geoLocation,
       this.statusC,
-      this.sortOredr,
+      this.sortOrder,
       this.name,
       this.typeC,
       this.pdfURL,
@@ -69,7 +69,7 @@ class SearchList {
         address: json['Contact_Address__c'] as String?,
         geoLocation: json['Contact_Office_Location__c'],
         statusC: json['Active_Status__c'],
-        sortOredr: json['Sort_Order__c'],
+        sortOrder: json['Sort_Order__c'],
         name: json['Name'] as String?,
         typeC: json['Type__c'] as String?,
         pdfURL: json['PDF_URL__c'] as String?,
@@ -94,7 +94,7 @@ class SearchList {
         'Contact_Address__c': address,
         'Contact_Office_Location__c': geoLocation,
         'Active_Status__c': statusC,
-        'Sort_Order__c': sortOredr,
+        'Sort_Order__c': sortOrder,
         'Name': name,
         'PDF_URL__c': pdfURL,
         'Type__c': typeC,

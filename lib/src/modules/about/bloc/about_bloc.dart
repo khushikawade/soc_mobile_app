@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:Soc/src/modules/about/modal/about_sublist.dart';
-import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
+import 'package:Soc/src/modules/about/modal/about_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
