@@ -148,7 +148,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     imageUrl: obj.imageUrlC ??
                         Globals.splashImageUrl ??
                         Globals.homeObject["App_Logo__c"],
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                     width: 60,
                     height: 60,
                     placeholder: (context, url) => Container(
