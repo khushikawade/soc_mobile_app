@@ -232,7 +232,15 @@ class SocialDescription extends StatelessWidget {
                     fitMethod: BoxFit.cover,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100)))
-            : Container(),
+            : Container(
+                alignment: Alignment.center,
+                child: CommonImageWidget(
+                    isOnTap: true,
+                    iconUrl: Globals.splashImageUrl ??
+                        Globals.homeObject["App_Logo__c"],
+                    fitMethod: BoxFit.cover,
+                    height: Utility.displayHeight(context) *
+                        (AppTheme.kDetailPageImageHeightFactor / 100))),
         TranslationWidget(
           message:
               "${object.description["__cdata"].replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "")}",
