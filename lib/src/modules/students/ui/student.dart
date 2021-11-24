@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/students/ui/apps_folder.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
@@ -352,19 +353,15 @@ class _StudentPageState extends State<StudentPage> {
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     Globals.homeObject["Student_Banner_Image__c"] != null
-                        ? SliverAppBar(
-                            expandedHeight: AppTheme.kBannerHeight,
-                            floating: false,
-                            // pinned: true,
-                            flexibleSpace: FlexibleSpaceBar(
-                                centerTitle: true,
-                                background: Container(
-                                  child: Image.network(
-                                    Globals
-                                        .homeObject["Student_Banner_Image__c"],
-                                    fit: BoxFit.cover,
-                                  ),
-                                )),
+                        ? BannerImageWidget(
+                            imageUrl:
+                                Globals.homeObject["Student_Banner_Image__c"],
+                            bgColor:
+                                Globals.homeObject["Student_Banner_Color__c"] !=
+                                        null
+                                    ? Utility.getColorFromHex(Globals
+                                        .homeObject["Student_Banner_Color__c"])
+                                    : null,
                           )
                         : SliverAppBar(),
                   ];

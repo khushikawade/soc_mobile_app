@@ -27,8 +27,8 @@ class ErrorInStaffLoading extends StaffState {
 
 // ignore: must_be_immutable
 class StaffDataSucess extends StaffState {
-  List<StaffList>? obj;
-  List<StaffList>? subFolder;
+  List<SharedList>? obj;
+  List<SharedList>? subFolder;
 
   StaffDataSucess({this.obj, this.subFolder});
 
@@ -43,8 +43,8 @@ class StaffDataSucess extends StaffState {
 
 // ignore: must_be_immutable
 class StaffSubListSucess extends StaffState {
-  List<StaffSubList>? obj;
-  List<StaffSubList>? subFolder;
+  List<SharedList>? obj;
+  List<SharedList>? subFolder;
 
   StaffSubListSucess({this.obj, this.subFolder});
 

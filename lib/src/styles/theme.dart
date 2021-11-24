@@ -66,7 +66,7 @@ class AppTheme {
   static const double kTabIconSize = 55.0;
 
   // Banner Height
-  static const double kBannerHeight = 100;
+  static const double kBannerHeight = 15;
 
   // Setting Height Factor For School & Staff Discription Images 
   static const double kDetailPageImageHeightFactor = 30; 

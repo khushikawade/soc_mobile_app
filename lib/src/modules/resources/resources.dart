@@ -5,8 +5,9 @@ import 'package:Soc/src/modules/resources/modal/resources_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
-import 'package:Soc/src/widgets/common_sublist.dart';
+import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -287,18 +288,14 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    SliverAppBar(
-                      //  expandedHeight: Utility.displayHeight(context) * 0.25,
-                      expandedHeight: AppTheme.kBannerHeight,
-                      floating: false,
-                      // pinned: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true,
-                        background: Image.network(
-                          Globals.homeObject["Resources_Banner_Image__c"],
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+                    BannerImageWidget(
+                      imageUrl: Globals.homeObject["Resources_Banner_Image__c"],
+                      bgColor: Globals
+                                  .homeObject["Resources_Banner_Color__c"] !=
+                              null
+                          ? Utility.getColorFromHex(
+                              Globals.homeObject["Resources_Banner_Color__c"])
+                          : null,
                     )
                   ];
                 },
