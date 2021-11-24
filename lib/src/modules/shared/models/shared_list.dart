@@ -1,47 +1,40 @@
-import 'attributes.dart';
 
-class StaffList {
-  Attributes? attributes;
+class SharedList {
+  // Attributes? attributes;
   String? titleC;
-  dynamic appIconC;
+  String? appIconC; //
   String? appIconUrlC;
-  dynamic urlC;
   String? appUrlC;
+  String? pdfURL;
   String? id;
   String? name;
-  String? typeC;
   String? rtfHTMLC;
-  String? pdfURL;
+  String? typeC;
   String? calendarId;
-  String? bannerimagec;
+
   final sortOredr;
   final status;
 
-  StaffList(
-      {this.attributes,
+  SharedList(
+      {
+      // this.attributes,
       this.titleC,
       this.appIconC,
-      this.urlC,
-      this.id,
-      this.appIconUrlC,
-      this.name,
-      this.pdfURL,
-      this.rtfHTMLC,
-      this.typeC,
-      this.sortOredr,
-      this.calendarId,
-      this.status,
       this.appUrlC,
-      this.bannerimagec});
+      this.pdfURL,
+      this.id,
+      this.name,
+      this.rtfHTMLC,
+      this.appIconUrlC,
+      this.typeC,
+      this.calendarId,
+      this.sortOredr,
+      this.status});
 
-  factory StaffList.fromJson(Map<String, dynamic> json) => StaffList(
-      attributes: json['attributes'] == null
-          ? null
-          : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
+  factory SharedList.fromJson(Map<String, dynamic> json) => SharedList(
       titleC: json['Title__c'] as String?,
-      appIconUrlC: json['App_Icon_URL__c'] as String?,
       appIconC: json['App_Icon__c'] as String?,
-      urlC: json['URL__c'] as String?,
+      appIconUrlC: json['App_Icon_URL__c'] as String?,
       appUrlC: json['URL__c'] as String?,
       pdfURL: json['PDF_URL__c'] as String?,
       id: json['Id'] as String?,
@@ -50,14 +43,13 @@ class StaffList {
       typeC: json['Type__c'] as String?,
       calendarId: json['Calendar_Id__c'] as String?,
       sortOredr: json['Sort_Order__c'],
-      status: json['Active_Status__c'],
-      bannerimagec: json['Banner_Image_c']);
+      status: json['Active_Status__c']);
 
   Map<String, dynamic> toJson() => {
-        'attributes': attributes?.toJson(),
+        // 'attributes': attributes?.toJson(),
         'Title__c': titleC,
         'App_Icon__c': appIconC,
-        'URL__c': urlC,
+        'URL__c': appUrlC,
         'PDF_URL__c': pdfURL,
         'Id': id,
         'Name': name,

@@ -1,18 +1,15 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -226,14 +223,14 @@ class SocialDescription extends StatelessWidget {
                         "")
             ? Container(
                 alignment: Alignment.center,
-                child: CustomIconWidget(
-                  iconUrl: object.enclosure['url'] ??
-                      Utility.getHTMLImgSrc(
-                          object.description["__cdata"]) ??
-                      Globals.splashImageUrl ??
-                      Globals.homeObject["App_Logo__c"],
-                  fitMethod: BoxFit.cover,
-                ))
+                child: CommonImageWidget(
+                    iconUrl: object.enclosure['url'] ??
+                        Utility.getHTMLImgSrc(object.description["__cdata"]) ??
+                        Globals.splashImageUrl ??
+                        Globals.homeObject["App_Logo__c"],
+                    fitMethod: BoxFit.cover,
+                    height: Utility.displayHeight(context) *
+                        (AppTheme.kDetailPageImageHeightFactor / 100)))
             : Container(),
         TranslationWidget(
           message:

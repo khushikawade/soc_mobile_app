@@ -4,15 +4,15 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
 import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/schools/ui/school_details.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/banner_image_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -87,7 +87,7 @@ class _SchoolPageState extends State<SchoolPage> {
                     ? _kIconSize * 1.5
                     : _kIconSize * 2,
                 child: ClipRRect(
-                    child: CustomIconWidget(
+                    child: CommonImageWidget(
                   iconUrl: obj.imageUrlC ??
                       Globals.splashImageUrl ??
                       Globals.homeObject["App_Logo__c"],
@@ -220,17 +220,13 @@ class _SchoolPageState extends State<SchoolPage> {
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    SliverAppBar(
-                      expandedHeight: AppTheme.kBannerHeight,
-                      floating: false,
-                      // pinned: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true,
-                        background: Image.network(
-                          Globals.homeObject["School_Banner_Image__c"],
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+                    BannerImageWidget(
+                      imageUrl: Globals.homeObject["School_Banner_Image__c"],
+                      bgColor:
+                          Globals.homeObject["School_Banner_Color__c"] != null
+                              ? Utility.getColorFromHex(
+                                  Globals.homeObject["School_Banner_Color__c"])
+                              : null,
                     )
                   ];
                 },

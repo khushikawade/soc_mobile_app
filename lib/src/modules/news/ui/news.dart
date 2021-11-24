@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -104,7 +104,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         },
         child: Row(
           children: <Widget>[
-            CustomIconWidget(
+            CommonImageWidget(
               iconUrl: obj.image ??
                   Globals.splashImageUrl ??
                   Globals.homeObject["App_Logo__c"],

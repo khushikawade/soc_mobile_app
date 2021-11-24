@@ -1,7 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -70,7 +70,7 @@ class ImagePopupState extends State<ImagePopup>
                     // boundaryMargin: EdgeInsets.all(100),
                     minScale: 0.5,
                     maxScale: 5,
-                    child: CustomIconWidget(
+                    child: CommonImageWidget(
                       iconUrl: widget.imageURL,
                       height: Utility.displayHeight(context) *
                           (AppTheme.kDetailPageImageHeightFactor / 100),

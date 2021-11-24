@@ -1,6 +1,6 @@
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
 
 // ignore: must_be_immutable
 class ListWidget extends StatelessWidget {
@@ -23,7 +23,7 @@ class ListWidget extends StatelessWidget {
         ),
         child: Container(
           child: ListTile(
-            leading: CustomIconWidget(
+            leading: CommonImageWidget(
               iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
             ),
             title: listItem!,

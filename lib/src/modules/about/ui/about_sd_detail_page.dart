@@ -4,14 +4,13 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/button_widget.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +43,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _sdImage() {
     return Container(
-        child: CustomIconWidget(
+        child: CommonImageWidget(
       iconUrl: widget.obj!.imageUrlC ??
           Globals.splashImageUrl ??
           Globals.homeObject["App_Logo__c"],

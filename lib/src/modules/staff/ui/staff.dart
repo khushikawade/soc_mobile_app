@@ -1,27 +1,19 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/families/ui/event.dart';
-import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staffmodal.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
-import 'package:Soc/src/widgets/common_sublist.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/banner_image_widget.dart';
+import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
-import 'package:Soc/src/widgets/html_description.dart';
-import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
-import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class StaffPage extends StatefulWidget {
   StaffPage({Key? key, this.title, this.language}) : super(key: key);
@@ -41,7 +33,7 @@ class _StaffPageState extends State<StaffPage> {
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
   var obj;
-  List<StaffList> newList = [];
+  List<SharedList> newList = [];
   StaffList list = StaffList();
 
   @override
@@ -50,176 +42,176 @@ class _StaffPageState extends State<StaffPage> {
     _bloc.add(StaffPageEvent());
   }
 
-  _route(StaffList obj, index) {
-    if (obj.typeC == "URL") {
-      obj.urlC != null
-          ? _launchURL(obj)
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML" ||
-        obj.typeC == "HTML/RTF" ||
-        obj.typeC == "RTF/HTML") {
-      obj.rtfHTMLC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => AboutusPage(
-                        htmlText: obj.rtfHTMLC.toString(),
-                        // url: obj.urlC.toString(),
-                        isbuttomsheet: true,
-                        ishtml: true,
-                        appbarTitle: obj.titleC!,
-                        language: Globals.selectedLanguage,
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (obj.typeC == "Embed iFrame") {
-      obj.rtfHTMLC != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => InAppUrlLauncer(
-                        isiFrame: true,
-                        title: obj.titleC!,
-                        url: obj.rtfHTMLC.toString(),
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (obj.typeC == "Form") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => StaffDirectory(
-                    staffDirectoryCategoryId: null,
-                    isAbout: false,
-                    appBarTitle: obj.titleC!,
-                    obj: obj,
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )));
-    } else if (obj.typeC == "Calendar/Events") {
-      obj.calendarId != null && obj.calendarId != ""
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => EventPage(
-                        isbuttomsheet: true,
-                        appBarTitle: obj.titleC,
-                        language: Globals.selectedLanguage,
-                        // calendarId: obj.calendarId.toString(),
-                      )))
-          : Utility.showSnackBar(
-              _scaffoldKey, "No calendar/events available", context);
-    } else if (obj.typeC == "Sub-Menu") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => SubListPage(
-                    obj: obj,
-                    module: "staff",
-                    isbuttomsheet: true,
-                    appBarTitle: obj.titleC!,
-                    language: Globals.selectedLanguage,
-                  )));
-    } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
-      obj.pdfURL != null
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => CommonPdfViewerPage(
-                        url: obj.pdfURL,
-                        tittle: obj.titleC,
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )))
-          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-    } else {
-      Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    }
-  }
+  // _route(StaffList obj, index) {
+  //   if (obj.typeC == "URL") {
+  //     obj.urlC != null
+  //         ? _launchURL(obj)
+  //         : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+  //   } else if (obj.typeC == "RFT_HTML" ||
+  //       obj.typeC == "HTML/RTF" ||
+  //       obj.typeC == "RTF/HTML") {
+  //     obj.rtfHTMLC != null
+  //         ? Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (BuildContext context) => AboutusPage(
+  //                       htmlText: obj.rtfHTMLC.toString(),
+  //                       // url: obj.urlC.toString(),
+  //                       isbuttomsheet: true,
+  //                       ishtml: true,
+  //                       appbarTitle: obj.titleC!,
+  //                       language: Globals.selectedLanguage,
+  //                     )))
+  //         : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+  //   } else if (obj.typeC == "Embed iFrame") {
+  //     obj.rtfHTMLC != null
+  //         ? Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (BuildContext context) => InAppUrlLauncer(
+  //                       isiFrame: true,
+  //                       title: obj.titleC!,
+  //                       url: obj.rtfHTMLC.toString(),
+  //                       isbuttomsheet: true,
+  //                       language: Globals.selectedLanguage,
+  //                     )))
+  //         : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+  //   } else if (obj.typeC == "Form") {
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (BuildContext context) => StaffDirectory(
+  //                   staffDirectoryCategoryId: null,
+  //                   isAbout: false,
+  //                   appBarTitle: obj.titleC!,
+  //                   obj: obj,
+  //                   isbuttomsheet: true,
+  //                   language: Globals.selectedLanguage,
+  //                 )));
+  //   } else if (obj.typeC == "Calendar/Events") {
+  //     obj.calendarId != null && obj.calendarId != ""
+  //         ? Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (BuildContext context) => EventPage(
+  //                       isbuttomsheet: true,
+  //                       appBarTitle: obj.titleC,
+  //                       language: Globals.selectedLanguage,
+  //                       // calendarId: obj.calendarId.toString(),
+  //                     )))
+  //         : Utility.showSnackBar(
+  //             _scaffoldKey, "No calendar/events available", context);
+  //   } else if (obj.typeC == "Sub-Menu") {
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (BuildContext context) => SubListPage(
+  //                   obj: obj,
+  //                   module: "staff",
+  //                   isbuttomsheet: true,
+  //                   appBarTitle: obj.titleC!,
+  //                   language: Globals.selectedLanguage,
+  //                 )));
+  //   } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
+  //     obj.pdfURL != null
+  //         ? Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (BuildContext context) => CommonPdfViewerPage(
+  //                       url: obj.pdfURL,
+  //                       tittle: obj.titleC,
+  //                       isbuttomsheet: true,
+  //                       language: Globals.selectedLanguage,
+  //                     )))
+  //         : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+  //   } else {
+  //     Utility.showSnackBar(_scaffoldKey, "No data available", context);
+  //   }
+  // }
 
-  _launchURL(obj) async {
-    if (obj.urlC.toString().split(":")[0] == 'http') {
-      if (await canLaunch(obj.urlC)) {
-        await launch(obj.urlC);
-      } else {
-        throw 'Could not launch ${obj.urlC!}';
-      }
-    } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.titleC,
-                    url: obj.urlC,
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )));
-    }
-  }
+  // _launchURL(obj) async {
+  //   if (obj.urlC.toString().split(":")[0] == 'http') {
+  //     if (await canLaunch(obj.urlC)) {
+  //       await launch(obj.urlC);
+  //     } else {
+  //       throw 'Could not launch ${obj.urlC!}';
+  //     }
+  //   } else {
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (BuildContext context) => InAppUrlLauncer(
+  //                   title: obj.titleC,
+  //                   url: obj.urlC,
+  //                   isbuttomsheet: true,
+  //                   language: Globals.selectedLanguage,
+  //                 )));
+  //   }
+  // }
 
-  Widget _buildLeading(StaffList obj) {
-    if (obj.appIconUrlC != null) {
-      return CustomIconWidget(
-        iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
-      );
-    } else if (obj.appIconC != null) {
-      return Icon(
-        IconData(
-          int.parse('0x${obj.appIconC!}'),
-          fontFamily: 'FontAwesomeSolid',
-          fontPackage: 'font_awesome_flutter',
-        ),
-        color: Theme.of(context).colorScheme.primary,
-        size: Globals.deviceType == "phone" ? 24 : 32,
-      );
-    } else {
-      return Container();
-    }
-  }
+  // Widget _buildLeading(StaffList obj) {
+  //   if (obj.appIconUrlC != null) {
+  //     return CustomIconWidget(
+  //       iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
+  //     );
+  //   } else if (obj.appIconC != null) {
+  //     return Icon(
+  //       IconData(
+  //         int.parse('0x${obj.appIconC!}'),
+  //         fontFamily: 'FontAwesomeSolid',
+  //         fontPackage: 'font_awesome_flutter',
+  //       ),
+  //       color: Theme.of(context).colorScheme.primary,
+  //       size: Globals.deviceType == "phone" ? 24 : 32,
+  //     );
+  //   } else {
+  //     return Container();
+  //   }
+  // }
 
-  Widget _buildListItem(StaffList obj, int index) {
-    return Column(
-      children: [
-        // buildImageBanner(),
-        Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: AppTheme.kDividerColor2,
-                width: 0.65,
-              ),
-              borderRadius: BorderRadius.circular(0.0),
-              color: (index % 2 == 0)
-                  ? Theme.of(context).colorScheme.background
-                  : Theme.of(context).colorScheme.secondary,
-            ),
-            child: obj.titleC != null //&& obj.titleC!.length > 0
-                ? ListTile(
-                    onTap: () {
-                      _route(obj, index);
-                    },
-                    visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-                    leading: _buildLeading(obj),
-                    title: TranslationWidget(
-                      message: obj.titleC ?? "No title",
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style:
-                            Theme.of(context).textTheme.bodyText2!.copyWith(),
-                      ),
-                    ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: Globals.deviceType == "phone" ? 12 : 20,
-                      color: Theme.of(context).colorScheme.primary,
-                      // color: AppTheme.kButtonbackColor,
-                    ),
-                  )
-                : Container()),
-      ],
-    );
-  }
+  // Widget _buildListItem(StaffList obj, int index) {
+  //   return Column(
+  //     children: [
+  //       // buildImageBanner(),
+  //       Container(
+  //           decoration: BoxDecoration(
+  //             border: Border.all(
+  //               color: AppTheme.kDividerColor2,
+  //               width: 0.65,
+  //             ),
+  //             borderRadius: BorderRadius.circular(0.0),
+  //             color: (index % 2 == 0)
+  //                 ? Theme.of(context).colorScheme.background
+  //                 : Theme.of(context).colorScheme.secondary,
+  //           ),
+  //           child: obj.titleC != null //&& obj.titleC!.length > 0
+  //               ? ListTile(
+  //                   onTap: () {
+  //                     _route(obj, index);
+  //                   },
+  //                   visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+  //                   leading: _buildLeading(obj),
+  //                   title: TranslationWidget(
+  //                     message: obj.titleC ?? "No title",
+  //                     fromLanguage: "en",
+  //                     toLanguage: Globals.selectedLanguage,
+  //                     builder: (translatedMessage) => Text(
+  //                       translatedMessage.toString(),
+  //                       style:
+  //                           Theme.of(context).textTheme.bodyText2!.copyWith(),
+  //                     ),
+  //                   ),
+  //                   trailing: Icon(
+  //                     Icons.arrow_forward_ios_rounded,
+  //                     size: Globals.deviceType == "phone" ? 12 : 20,
+  //                     color: Theme.of(context).colorScheme.primary,
+  //                     // color: AppTheme.kButtonbackColor,
+  //                   ),
+  //                 )
+  //               : Container()),
+  //     ],
+  //   );
+  // }
 
   Widget _body() => RefreshIndicator(
       key: refreshKey,
@@ -242,45 +234,44 @@ class _StaffPageState extends State<StaffPage> {
             return connected
                 ? Container(
                     child: Column(mainAxisSize: MainAxisSize.max, children: [
-                      BlocBuilder<StaffBloc, StaffState>(
-                          bloc: _bloc,
-                          builder: (BuildContext contxt, StaffState state) {
-                            if (state is StaffInitial ||
-                                state is StaffLoading) {
-                              return Expanded(
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              );
-                            } else if (state is StaffDataSucess) {
-                              return newList.length > 0
-                                  ? Expanded(
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.vertical,
-                                        itemCount: newList.length,
-                                        padding: EdgeInsets.only(
-                                            bottom: AppTheme.klistPadding),
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return _buildListItem(
-                                              newList[index], index);
-                                        },
-                                      ),
-                                    )
-                                  : Expanded(
-                                      child: NoDataFoundErrorWidget(
-                                      isResultNotFoundMsg: false,
-                                      isNews: false,
-                                      isEvents: false,
-                                    ));
-                            } else if (state is ErrorInStaffLoading) {
-                              return Placeholder();
-                            } else {
-                              return Expanded(
-                                child: ListView(children: [ErrorMsgWidget()]),
-                              );
-                            }
-                          }),
+                      Expanded(
+                        child: BlocBuilder<StaffBloc, StaffState>(
+                            bloc: _bloc,
+                            builder: (BuildContext contxt, StaffState state) {
+                              if (state is StaffInitial ||
+                                  state is StaffLoading) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else if (state is StaffDataSucess) {
+                                return CommonListWidget(
+                                    data: newList, sectionName: "staff");
+                                // return newList.length > 0
+                                //     ? Expanded(
+                                //         child: ListView.builder(
+                                //           scrollDirection: Axis.vertical,
+                                //           itemCount: newList.length,
+                                //           padding: EdgeInsets.only(
+                                //               bottom: AppTheme.klistPadding),
+                                //           itemBuilder:
+                                //               (BuildContext context, int index) {
+                                //             return _buildListItem(
+                                //                 newList[index], index);
+                                //           },
+                                //         ),
+                                //       )
+                                //     : Expanded(
+                                //         child: NoDataFoundErrorWidget(
+                                //         isResultNotFoundMsg: false,
+                                //         isNews: false,
+                                //         isEvents: false,
+                                //       ));
+                              } else if (state is ErrorInStaffLoading) {
+                                return Placeholder();
+                              } else {
+                                return ListView(children: [ErrorMsgWidget()]);
+                              }
+                            }),
+                      ),
                       Container(
                         height: 0,
                         width: 0,
@@ -303,7 +294,7 @@ class _StaffPageState extends State<StaffPage> {
                             if (state is StaffDataSucess) {
                               newList.clear();
                               for (int i = 0; i < state.obj!.length; i++) {
-                                if (state.obj![i].status!= "Hide") {
+                                if (state.obj![i].status != "Hide") {
                                   newList.add(state.obj![i]);
                                 }
                               }
@@ -333,17 +324,12 @@ class _StaffPageState extends State<StaffPage> {
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
-                  SliverAppBar(
-                    expandedHeight: AppTheme.kBannerHeight,
-                    floating: false,
-                    // pinned: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      centerTitle: true,
-                      background: Image.network(
-                        Globals.homeObject["Staff_Banner_Image__c"],
-                        fit: BoxFit.fill,
-                      ),
-                    ),
+                  BannerImageWidget(
+                    imageUrl: Globals.homeObject["Staff_Banner_Image__c"],
+                    bgColor: Globals.homeObject["Staff_Banner_Color__c"] != null
+                        ? Utility.getColorFromHex(
+                            Globals.homeObject["Staff_Banner_Color__c"])
+                        : null,
                   )
                 ];
               },
@@ -354,8 +340,6 @@ class _StaffPageState extends State<StaffPage> {
   }
 
   Future refreshPage() async {
-    await Future.delayed(Duration(seconds: 5));
-
     refreshKey.currentState?.show(atTop: false);
     _bloc.add(StaffPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());

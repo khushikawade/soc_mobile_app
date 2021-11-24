@@ -4,7 +4,8 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
+
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -70,7 +71,7 @@ class _ContactPageState extends State<ContactPage> {
     return Container(
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-            child: CustomIconWidget(
+            child: CommonImageWidget(
               iconUrl: Globals.homeObject["Contact_Image__c"] ??
                   Globals.splashImageUrl ??
                   Globals.homeObject["App_Logo__c"],

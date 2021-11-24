@@ -27,7 +27,7 @@ class ErrorLoading extends FamilyState {
 
 // ignore: must_be_immutable
 class FamiliesDataSucess extends FamilyState {
-  List<FamiliesList>? obj;
+  List<SharedList>? obj;
   FamiliesDataSucess({
     this.obj,
   });
@@ -42,7 +42,7 @@ class FamiliesDataSucess extends FamilyState {
 }
 
 class FamiliesSublistSucess extends FamilyState {
-  List<FamiliesSubList>? obj;
+  List<SharedList>? obj;
 
   FamiliesSublistSucess({
     this.obj,

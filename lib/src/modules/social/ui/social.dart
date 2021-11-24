@@ -4,13 +4,11 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -97,7 +95,7 @@ class _SocialPageState extends State<SocialPage> {
                 height: Globals.deviceType == "phone"
                     ? _kIconSize * 1.5
                     : _kIconSize * 2,
-                child: (CustomIconWidget(
+                child: (CommonImageWidget(
                   iconUrl: (obj.enclosure != null &&
                           obj.enclosure != '' &&
                           obj.enclosure['url'] != null &&

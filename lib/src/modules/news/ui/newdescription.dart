@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/widgets/image_popup.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +80,7 @@ class _NewdescriptionState extends State<Newdescription> {
               alignment: Alignment.center,
               // height: MediaQuery.of(context).size.width * 0.5,
               child: ClipRRect(
-                  child: CustomIconWidget(
+                  child: CommonImageWidget(
                     iconUrl: widget.obj.image ??
                         Globals.splashImageUrl ??
                         Globals.homeObject["App_Logo__c"],

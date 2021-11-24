@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/families/modal/stafflist.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -32,7 +33,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     if (event is FamiliesEvent) {
       try {
         yield FamilyLoading();
-        List<FamiliesList> list = await getFamilyList();
+        List<SharedList> list = await getFamilyList();
 
         getCalendarId(list);
 
@@ -51,7 +52,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     if (event is FamiliesSublistEvent) {
       try {
         yield FamilyLoading();
-        List<FamiliesSubList> list = await getFamilySubList(event.id);
+        List<SharedList> list = await getFamilySubList(event.id);
         if (list.length > 0) {
           list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
 
@@ -119,14 +120,14 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  Future<List<FamiliesList>> getFamilyList() async {
+  Future<List<SharedList>> getFamilyList() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
           "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,App_Icon_URL__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,Calendar_Id__c,Active_Status__c FROM Families_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       if (response.statusCode == 200) {
         dataArray = response.data["records"];
         return response.data["records"]
-            .map<FamiliesList>((i) => FamiliesList.fromJson(i))
+            .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');
@@ -136,14 +137,14 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  Future<List<FamiliesSubList>> getFamilySubList(id) async {
+  Future<List<SharedList>> getFamilySubList(id) async {
     try {
       final ResponseModel response = await _dbServices.getapi(
           "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,App_Icon_URL__c,Active_Status__c FROM Family_Sub_Menu_App__c where Families_App__c='$id'")}");
 
       if (response.statusCode == 200) {
         return response.data["records"]
-            .map<FamiliesSubList>((i) => FamiliesSubList.fromJson(i))
+            .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');
