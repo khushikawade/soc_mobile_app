@@ -4,6 +4,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/button_widget.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -43,37 +44,14 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _sdImage() {
     return Container(
-        child: CachedNetworkImage(
-      height: Utility.displayHeight(context) *
-          (AppTheme.kDetailPageImageHeightFactor / 100),
-      imageUrl: widget.obj!.imageUrlC ??
+        child: CustomIconWidget(
+      iconUrl: widget.obj!.imageUrlC ??
           Globals.splashImageUrl ??
           Globals.homeObject["App_Logo__c"],
-      fit: BoxFit.fitHeight,
-      placeholder: (context, url) => Container(
-        alignment: Alignment.center,
-        child: ShimmerLoading(
-          isLoading: true,
-          child: Container(
-            height: Utility.displayHeight(context) *
-                (AppTheme.kDetailPageImageHeightFactor / 100),
-            color: Colors.white,
-          ),
-        ),
-      ),
-      errorWidget: (context, url, error) => CachedNetworkImage(
-        imageUrl: Globals.splashImageUrl ?? Globals.homeObject["App_Logo__c"],
-        placeholder: (context, url) => Container(
-            alignment: Alignment.center,
-            child: ShimmerLoading(
-              isLoading: true,
-              child: Container(
-                width: _kIconSize * 1.4,
-                height: _kIconSize * 1.5,
-                color: Colors.white,
-              ),
-            )),
-      ),
+      height: Utility.displayHeight(context) *
+          (AppTheme.kDetailPageImageHeightFactor / 100),
+      fitMethod: BoxFit.fitHeight,
+      isOnTap: true,
     ));
   }
 

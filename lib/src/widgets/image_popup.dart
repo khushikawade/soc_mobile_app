@@ -1,23 +1,23 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class NewsImagePage extends StatefulWidget {
+class ImagePopup extends StatefulWidget {
   final String imageURL;
   @override
-  NewsImagePage({
+  ImagePopup({
     Key? key,
     required this.imageURL,
   }) : super(key: key);
   @override
-  State<StatefulWidget> createState() => NewsImagePageState();
+  State<StatefulWidget> createState() => ImagePopupState();
 }
 
-class NewsImagePageState extends State<NewsImagePage>
+class ImagePopupState extends State<ImagePopup>
     with SingleTickerProviderStateMixin {
   AnimationController? controller;
   Animation<double>? scaleAnimation;
@@ -70,23 +70,11 @@ class NewsImagePageState extends State<NewsImagePage>
                     // boundaryMargin: EdgeInsets.all(100),
                     minScale: 0.5,
                     maxScale: 5,
-                    child: 
-                    CustomIconWidget(iconUrl: widget.imageURL,),
-                    // CachedNetworkImage(
-                    //   imageUrl: widget.imageURL,
-                    //   // fit: BoxFit.fill,
-                    //   placeholder: (context, url) => Container(
-                    //       alignment: Alignment.center,
-                    //       child: ShimmerLoading(
-                    //         isLoading: true,
-                    //         child: Container(
-                    //           width: _kIconSize * 1.4,
-                    //           height: _kIconSize * 1.5,
-                    //           color: Colors.white,
-                    //         ),
-                    //       )),
-                    //   errorWidget: (context, url, error) => Icon(Icons.error),
-                    // ),
+                    child: CustomIconWidget(
+                      iconUrl: widget.imageURL,
+                      height: Utility.displayHeight(context) *
+                          (AppTheme.kDetailPageImageHeightFactor / 100),
+                    ),
                   ),
                   SpacerWidget(40),
                   Container(
@@ -98,7 +86,6 @@ class NewsImagePageState extends State<NewsImagePage>
                           border: Border.all(width: 2, color: Colors.white)),
                       child: IconButton(
                         onPressed: () {
-                          
                           Navigator.pop(context);
                         },
                         icon: Icon(

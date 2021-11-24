@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -144,39 +145,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 children: [
                   HorzitalSpacerWidget(_kLabelSpacing / 1.5),
                   // obj.imageUrlC != null && obj.imageUrlC != '' ?
-                  CachedNetworkImage(
-                    imageUrl: obj.imageUrlC ??
+                  CustomIconWidget(iconUrl: obj.imageUrlC ??
                         Globals.splashImageUrl ??
-                        Globals.homeObject["App_Logo__c"],
-                    fit: BoxFit.cover,
-                    width: 60,
-                    height: 60,
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => CachedNetworkImage(
-                      imageUrl: Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"],
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                    ),
-                  ),
-                  //: Icon(CupertinoIcons.person, size: 35, color: Colors.grey,),
+                        Globals.homeObject["App_Logo__c"]),
+                  
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
                     child: TranslationWidget(
@@ -232,11 +204,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 ]),
             widget.isAbout
                 ? Container()
-                : Column(
+                :  obj.descriptionC!=null?Column(
                     children: [
                       SpacerWidget(_kLabelSpacing / 1.2),
-                      TranslationWidget(
-                          message: obj.descriptionC ?? "-",
+                     TranslationWidget(
+                          message: obj.descriptionC ,
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
@@ -244,7 +216,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               textAlign: TextAlign.start,
                               style: Theme.of(context).textTheme.bodyText1!)),
                     ],
-                  ),
+                  ):Container(),
           ],
         ),
       ),
@@ -317,6 +289,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                                 child: ListView.builder(
                                                   // padding: EdgeInsets.only(
                                                   //     bottom: 25.0),
+                                                  shrinkWrap: true,
                                                   scrollDirection:
                                                       Axis.vertical,
                                                   itemCount: state.obj!.length,

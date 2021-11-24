@@ -4,9 +4,11 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
@@ -120,21 +122,9 @@ class _StudentPageState extends State<StudentPage> {
                                   ? Container(
                                       height: 85,
                                       width: 85,
-                                      child: CachedNetworkImage(
-                                        imageUrl: list[index].appIconC ?? '',
-                                        placeholder: (context, url) =>
-                                            Container(
-                                                alignment: Alignment.center,
-                                                child: ShimmerLoading(
-                                                  isLoading: true,
-                                                  child: Container(
-                                                    color: Colors.white,
-                                                  ),
-                                                )),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      ),
-                                    )
+                                      child: CustomIconWidget(
+                                          iconUrl: list[index].appIconC ??
+                                              Overrides.folderDefaultImage))
                                   : EmptyContainer(),
                               Container(
                                   child: TranslationWidget(

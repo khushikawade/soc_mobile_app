@@ -1,10 +1,11 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/news/ui/news_image.dart';
+import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
@@ -21,8 +22,8 @@ import 'package:html/dom.dart' as dom;
 class SocialDescription extends StatelessWidget {
   Item object;
   String? language;
-  int ?index;
-  SocialDescription({required this.object, this.language,this.index});
+  int? index;
+  SocialDescription({required this.object, this.language, this.index});
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
   static const double _kIconSize = 45.0;
@@ -223,71 +224,17 @@ class SocialDescription extends StatelessWidget {
                         .contains("<img src=") &&
                     object.description["__cdata"].toString().split('"')[1] !=
                         "")
-            ? GestureDetector(
-              onTap: (){ 
-                Globals.socialImageIndex=index;
-                       showDialog(
-                          context: context,
-                          builder: (_) => NewsImagePage(
-                              imageURL:  object.enclosure['url'] ??
-                          Utility.getHTMLImgSrc(object.description["__cdata"]) ??
-                          Globals.homeObject["App_Logo__c"],));},
-              child: Container(
+            ? Container(
                 alignment: Alignment.center,
-                child: CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: object.enclosure['url'] ??
-                        Utility.getHTMLImgSrc(object.description["__cdata"]) ??
-                        Globals.homeObject["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => CachedNetworkImage(
-                      imageUrl: Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"],
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                    ),
-                  ),
-              ),
-            )
-            : Container(
-                alignment: Alignment.center,
-                child: ClipRRect(
-                  child: CachedNetworkImage(
-                    imageUrl: Globals.splashImageUrl != null &&
-                            Globals.splashImageUrl != ""
-                        ? Globals.splashImageUrl
-                        : Globals.homeObject["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                ),
-              ),
+                child: CustomIconWidget(
+                  iconUrl: object.enclosure['url'] ??
+                      Utility.getHTMLImgSrc(
+                          object.description["__cdata"]) ??
+                      Globals.splashImageUrl ??
+                      Globals.homeObject["App_Logo__c"],
+                  fitMethod: BoxFit.cover,
+                ))
+            : Container(),
         TranslationWidget(
           message:
               "${object.description["__cdata"].replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "")}",

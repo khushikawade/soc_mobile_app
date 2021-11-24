@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -99,13 +100,8 @@ class _StartupPageState extends State<StartupPage> {
         child: Globals.splashImageUrl != null && Globals.splashImageUrl != " "
             ? Padding(
                 padding: const EdgeInsets.all(16),
-                child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl!,
-                  fit: BoxFit.fill,
-                  errorWidget: (context, url, error) => Icon(
-                    Icons.error,
-                  ),
-                ),
+                child: 
+                CustomIconWidget(iconUrl: Globals.splashImageUrl!,fitMethod: BoxFit.fill,)
               )
             : Text(
                 "Loading ...",

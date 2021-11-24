@@ -5,6 +5,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/button_widget.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/list_border_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -61,40 +62,15 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
 
   Widget _buildIcon() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-      child: CachedNetworkImage(
-        height: Utility.displayHeight(context) *
-            (AppTheme.kDetailPageImageHeightFactor / 100),
-        imageUrl: widget.obj.imageUrlC ??
-            Globals.splashImageUrl ??
-            Globals.homeObject["App_Logo__c"],
-        fit: BoxFit.fitHeight,
-        placeholder: (context, url) => Container(
-          alignment: Alignment.center,
-          child: ShimmerLoading(
-            isLoading: true,
-            child: Container(
-              height: Utility.displayHeight(context) *
-                  (AppTheme.kDetailPageImageHeightFactor / 100),
-              color: Colors.white,
-            ),
-          ),
-        ),
-        errorWidget: (context, url, error) => CachedNetworkImage(
-          imageUrl: Globals.splashImageUrl ?? Globals.homeObject["App_Logo__c"],
-          placeholder: (context, url) => Container(
-              alignment: Alignment.center,
-              child: ShimmerLoading(
-                isLoading: true,
-                child: Container(
-                  width: _kIconSize * 1.4,
-                  height: _kIconSize * 1.5,
-                  color: Colors.white,
-                ),
-              )),
-        ),
-      ),
-    );
+        padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+        child: CustomIconWidget(
+          iconUrl: widget.obj.imageUrlC ??
+              Globals.splashImageUrl ??
+              Globals.homeObject["App_Logo__c"],
+          height: Utility.displayHeight(context) *
+              (AppTheme.kDetailPageImageHeightFactor / 100),
+          fitMethod: BoxFit.fitHeight,isOnTap: true,
+        ));
   }
 
   Widget _buildTitleWidget() {

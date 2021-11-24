@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/schools/ui/school_details.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -86,38 +87,12 @@ class _SchoolPageState extends State<SchoolPage> {
                     ? _kIconSize * 1.5
                     : _kIconSize * 2,
                 child: ClipRRect(
-                  child: CachedNetworkImage(
-                    imageUrl: obj.imageUrlC ??
-                        Globals.splashImageUrl ??
-                        Globals.homeObject["App_Logo__c"],
-                    fit: BoxFit.cover,
-                    // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun-school.png",
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => CachedNetworkImage(
-                      imageUrl: Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"],
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                    ),
-                  ),
-                )),
+                    child: CustomIconWidget(
+                  iconUrl: obj.imageUrlC ??
+                      Globals.splashImageUrl ??
+                      Globals.homeObject["App_Logo__c"],
+                  fitMethod: BoxFit.cover,
+                ))),
             SizedBox(
               width: _kLabelSpacing / 2,
             ),

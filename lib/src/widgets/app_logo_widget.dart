@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -30,21 +31,8 @@ class AppLogoWidget extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: ClipRRect(
-                    child: CachedNetworkImage(
-                        imageUrl: Globals.homeObject["App_Logo__c"],
-                        placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            child: ShimmerLoading(
-                              isLoading: true,
-                              child: Container(
-                                width: _kIconSize * 1.4,
-                                height: _kIconSize * 1.5,
-                                color: Colors.white,
-                              ),
-                            )),
-                        errorWidget: (context, url, error) =>
-                            Text("Loading...") //Icon(Icons.error),
-                        ),
+                    child: 
+                    CustomIconWidget(iconUrl: Globals.homeObject["App_Logo__c"])
                   ))),
         ],
       ),

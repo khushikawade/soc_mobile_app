@@ -188,7 +188,7 @@ class _AboutPageState extends State<AboutPage> {
           //             )));
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        leading: _buildLeading(listData),
+        // leading: _buildLeading(listData),
         title: TranslationWidget(
             message: listData.titleC ?? "-",
             fromLanguage: "en",

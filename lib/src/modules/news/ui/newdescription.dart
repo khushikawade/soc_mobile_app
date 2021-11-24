@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/news/ui/news_image.dart';
+import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -81,22 +81,13 @@ class _NewdescriptionState extends State<Newdescription> {
               alignment: Alignment.center,
               // height: MediaQuery.of(context).size.width * 0.5,
               child: ClipRRect(
-                  child: GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (_) => NewsImagePage(
-                                imageURL: widget.obj.image ??
-                                    Globals.splashImageUrl ??
-                                    Globals.homeObject["App_Logo__c"]));
-                      },
-                      child: CustomIconWidget(
-                        iconUrl: widget.obj.image ??
-                            Globals.splashImageUrl ??
-                            Globals.homeObject["App_Logo__c"],
-                        height: Utility.displayHeight(context) *
-                            (AppTheme.kDetailPageImageHeightFactor / 100),
-                      ))
+                  child: CustomIconWidget(
+                    iconUrl: widget.obj.image ??
+                        Globals.splashImageUrl ??
+                        Globals.homeObject["App_Logo__c"],
+                    height: Utility.displayHeight(context) *
+                        (AppTheme.kDetailPageImageHeightFactor / 100),isOnTap: true,
+                  )
                   ),
             ),
             SpacerWidget(_kLabelSpacing),
