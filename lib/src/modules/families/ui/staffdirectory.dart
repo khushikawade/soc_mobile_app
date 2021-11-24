@@ -5,16 +5,16 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
+
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -144,39 +144,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 children: [
                   HorzitalSpacerWidget(_kLabelSpacing / 1.5),
                   // obj.imageUrlC != null && obj.imageUrlC != '' ?
-                  CachedNetworkImage(
-                    imageUrl: obj.imageUrlC ??
-                        Globals.splashImageUrl ??
-                        Globals.homeObject["App_Logo__c"],
-                    fit: BoxFit.cover,
-                    width: 60,
-                    height: 60,
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => CachedNetworkImage(
-                      imageUrl: Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"],
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                    ),
-                  ),
-                  //: Icon(CupertinoIcons.person, size: 35, color: Colors.grey,),
+                  CommonImageWidget(
+                      iconUrl: obj.imageUrlC ??
+                          Globals.splashImageUrl ??
+                          Globals.homeObject["App_Logo__c"]),
+
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
                     child: TranslationWidget(
@@ -189,7 +161,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           style: Theme.of(context).textTheme.headline2!),
                     ),
                   ),
-                  obj.phoneC.toString().isNotEmpty
+                  obj.phoneC != null
                       ? Container(
                           height: _KButtonMinSize,
                           width: _KButtonMinSize,
@@ -199,10 +171,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               padding: EdgeInsets.all(8),
                             ),
                             onPressed: () {
-                              if (obj.phoneC != null) {
-                                objurl.callurlLaucher(
-                                    context, "tel:" + obj.phoneC);
-                              }
+                              objurl.callurlLaucher(
+                                  context, "tel:" + obj.phoneC);
                             },
                             child: Icon(
                               Icons.local_phone_outlined,
@@ -212,7 +182,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         )
                       : EmptyContainer(),
                   HorzitalSpacerWidget(_kLabelSpacing / 2),
-                  obj.emailC.toString().isNotEmpty
+                  obj.emailC != null
                       ? Container(
                           height: _KButtonMinSize,
                           width: _KButtonMinSize,
@@ -222,10 +192,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 padding: EdgeInsets.all(6),
                               ),
                               onPressed: () {
-                                if (obj.emailC != null) {
-                                  objurl.callurlLaucher(
-                                      context, 'mailto:"${obj.emailC}"');
-                                }
+                                objurl.callurlLaucher(
+                                    context, 'mailto:"${obj.emailC}"');
                               },
                               child: Icon(
                                 Icons.email_outlined,
@@ -236,19 +204,22 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 ]),
             widget.isAbout
                 ? Container()
-                : Column(
-                    children: [
-                      SpacerWidget(_kLabelSpacing / 1.2),
-                      TranslationWidget(
-                          message: obj.descriptionC ?? "-",
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.bodyText1!)),
-                    ],
-                  ),
+                : obj.descriptionC != null
+                    ? Column(
+                        children: [
+                          SpacerWidget(_kLabelSpacing / 1.2),
+                          TranslationWidget(
+                              message: obj.descriptionC,
+                              toLanguage: Globals.selectedLanguage,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Text(
+                                  translatedMessage.toString(),
+                                  textAlign: TextAlign.start,
+                                  style:
+                                      Theme.of(context).textTheme.bodyText1!)),
+                        ],
+                      )
+                    : Container(),
           ],
         ),
       ),
@@ -321,6 +292,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                                 child: ListView.builder(
                                                   // padding: EdgeInsets.only(
                                                   //     bottom: 25.0),
+                                                  shrinkWrap: true,
                                                   scrollDirection:
                                                       Axis.vertical,
                                                   itemCount: state.obj!.length,

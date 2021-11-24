@@ -2,14 +2,12 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/news/ui/news_image.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -82,48 +80,14 @@ class _NewdescriptionState extends State<Newdescription> {
               alignment: Alignment.center,
               // height: MediaQuery.of(context).size.width * 0.5,
               child: ClipRRect(
-                  child: GestureDetector(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => NewsImagePage(
-                          imageURL: widget.obj.image ??
-                              Globals.splashImageUrl ??
-                              Globals.homeObject["App_Logo__c"]));
-                },
-                child: CachedNetworkImage(
-                  imageUrl: widget.obj.image ??
-                      Globals.splashImageUrl ??
-                      Globals.homeObject["App_Logo__c"],
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      child: ShimmerLoading(
-                        isLoading: true,
-                        child: Container(
-                          width: _kIconSize * 1.4,
-                          height: _kIconSize * 1.5,
-                          color: Colors.white,
-                        ),
-                      )),
-                  errorWidget: (context, url, error) => CachedNetworkImage(
-                    fit: BoxFit.fill,
-                    imageUrl: Globals.splashImageUrl ??
+                  child: CommonImageWidget(
+                    iconUrl: widget.obj.image ??
+                        Globals.splashImageUrl ??
                         Globals.homeObject["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    height: Utility.displayHeight(context) *
+                        (AppTheme.kDetailPageImageHeightFactor / 100),isOnTap: true,
+                  )
                   ),
-                ),
-              )),
             ),
             SpacerWidget(_kLabelSpacing),
             Row(

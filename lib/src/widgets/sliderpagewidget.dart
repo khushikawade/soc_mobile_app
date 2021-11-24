@@ -7,7 +7,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
@@ -143,6 +142,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                   ? SocialDescription(
                       object: object[widget.currentIndex],
                       language: Globals.selectedLanguage,
+                      index: widget.currentIndex,
                     )
                   : widget.isAboutSDPage!
                       ? AboutSDDetailPage(

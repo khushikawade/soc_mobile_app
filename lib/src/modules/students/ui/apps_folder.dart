@@ -1,9 +1,9 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -121,31 +121,11 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                               ? Container(
                                                   height: 65,
                                                   width: 65,
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: apps[index]
-                                                            .appIconC ??
-                                                        Globals
-                                                            .splashImageUrl ??
-                                                        Globals.homeObject[
-                                                            "App_Logo__c"],
-                                                    placeholder: (context,
-                                                            url) =>
-                                                        Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            child:
-                                                                ShimmerLoading(
-                                                              isLoading: true,
-                                                              child: Container(
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            )),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            Icon(Icons.error),
-                                                  ),
-                                                )
+                                                  child: CommonImageWidget(
+                                                      iconUrl: apps[index]
+                                                              .appIconC ??
+                                                          Overrides
+                                                              .folderDefaultImage))
                                               : Container(),
                                           TranslationWidget(
                                               message: apps[index].appFolderc !=

@@ -1,26 +1,27 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class NewsImagePage extends StatefulWidget {
+class ImagePopup extends StatefulWidget {
   final String imageURL;
   @override
-  NewsImagePage({
+  ImagePopup({
     Key? key,
     required this.imageURL,
   }) : super(key: key);
   @override
-  State<StatefulWidget> createState() => NewsImagePageState();
+  State<StatefulWidget> createState() => ImagePopupState();
 }
 
-class NewsImagePageState extends State<NewsImagePage>
+class ImagePopupState extends State<ImagePopup>
     with SingleTickerProviderStateMixin {
   AnimationController? controller;
   Animation<double>? scaleAnimation;
-  static const double _kLableSpacing = 10.0;
+  // static const double _kLableSpacing = 10.0;
   static const double _kIconSize = 45.0;
 
   @override
@@ -50,9 +51,9 @@ class NewsImagePageState extends State<NewsImagePage>
         child: ScaleTransition(
           scale: scaleAnimation!,
           child: Container(
-            margin: const EdgeInsets.only(
-                top: 20, left: 20.0, right: 20, bottom: 20),
-            height: MediaQuery.of(context).size.height * 0.6,
+            // margin: const EdgeInsets.only(
+            //     top: 20, left: 20.0, right: 20, bottom: 20),
+            // height: MediaQuery.of(context).size.height * 0.6,
             decoration: ShapeDecoration(
                 // color: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -69,20 +70,10 @@ class NewsImagePageState extends State<NewsImagePage>
                     // boundaryMargin: EdgeInsets.all(100),
                     minScale: 0.5,
                     maxScale: 5,
-                    child: CachedNetworkImage(
-                      imageUrl: widget.imageURL,
-                      // fit: BoxFit.fill,
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    child: CommonImageWidget(
+                      iconUrl: widget.imageURL,
+                      height: Utility.displayHeight(context) *
+                          (AppTheme.kDetailPageImageHeightFactor / 100),
                     ),
                   ),
                   SpacerWidget(40),
@@ -94,9 +85,6 @@ class NewsImagePageState extends State<NewsImagePage>
                           color: Colors.transparent,
                           border: Border.all(width: 2, color: Colors.white)),
                       child: IconButton(
-                        //  constraints: BoxConstraints(
-
-                        // ),
                         onPressed: () {
                           Navigator.pop(context);
                         },

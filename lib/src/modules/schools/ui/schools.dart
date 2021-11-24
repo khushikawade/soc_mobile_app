@@ -8,12 +8,11 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -88,38 +87,12 @@ class _SchoolPageState extends State<SchoolPage> {
                     ? _kIconSize * 1.5
                     : _kIconSize * 2,
                 child: ClipRRect(
-                  child: CachedNetworkImage(
-                    imageUrl: obj.imageUrlC ??
-                        Globals.splashImageUrl ??
-                        Globals.homeObject["App_Logo__c"],
-                    fit: BoxFit.cover,
-                    // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun-school.png",
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => CachedNetworkImage(
-                      imageUrl: Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"],
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                    ),
-                  ),
-                )),
+                    child: CommonImageWidget(
+                  iconUrl: obj.imageUrlC ??
+                      Globals.splashImageUrl ??
+                      Globals.homeObject["App_Logo__c"],
+                  fitMethod: BoxFit.cover,
+                ))),
             SizedBox(
               width: _kLabelSpacing / 2,
             ),

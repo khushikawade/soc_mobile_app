@@ -2,17 +2,15 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -106,56 +104,17 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         },
         child: Row(
           children: <Widget>[
-            Container(
-                alignment: Alignment.center,
-                width: Globals.deviceType == "phone"
-                    ? _kIconSize * 1.4
-                    : _kIconSize * 2,
-                height: Globals.deviceType == "phone"
-                    ? _kIconSize * 1.5
-                    : _kIconSize * 2,
-                child: ClipRRect(
-                  child: GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (_) => NewsImagePage(
-                              imageURL: obj.image ??
-                                  Globals.splashImageUrl ??
-                                  Globals.homeObject["App_Logo__c"]));
-                    },
-                    child: CachedNetworkImage(
-                      imageUrl: obj.image ??
-                          Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"],
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                      errorWidget: (context, url, error) => CachedNetworkImage(
-                        imageUrl: Globals.splashImageUrl ??
-                            Globals.homeObject["App_Logo__c"],
-                        placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            child: ShimmerLoading(
-                              isLoading: true,
-                              child: Container(
-                                width: _kIconSize * 1.4,
-                                height: _kIconSize * 1.5,
-                                color: Colors.white,
-                              ),
-                            )),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ),
-                    ),
-                  ),
-                )),
+            CommonImageWidget(
+              iconUrl: obj.image ??
+                  Globals.splashImageUrl ??
+                  Globals.homeObject["App_Logo__c"],
+              height: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
+              width: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
+            ),
             SizedBox(
               width: _kLabelSpacing / 2,
             ),

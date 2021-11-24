@@ -4,13 +4,12 @@ import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -20,7 +19,8 @@ import 'package:html/dom.dart' as dom;
 class SocialDescription extends StatelessWidget {
   Item object;
   String? language;
-  SocialDescription({required this.object, this.language});
+  int? index;
+  SocialDescription({required this.object, this.language, this.index});
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
   static const double _kIconSize = 45.0;
@@ -223,61 +223,15 @@ class SocialDescription extends StatelessWidget {
                         "")
             ? Container(
                 alignment: Alignment.center,
-                child: ClipRRect(
-                  child: CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: object.enclosure['url'] ??
+                child: CommonImageWidget(
+                    iconUrl: object.enclosure['url'] ??
                         Utility.getHTMLImgSrc(object.description["__cdata"]) ??
+                        Globals.splashImageUrl ??
                         Globals.homeObject["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => CachedNetworkImage(
-                      imageUrl: Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"],
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                    ),
-                  ),
-                ),
-              )
-            : Container(
-                alignment: Alignment.center,
-                child: ClipRRect(
-                  child: CachedNetworkImage(
-                    imageUrl: Globals.splashImageUrl != null &&
-                            Globals.splashImageUrl != ""
-                        ? Globals.splashImageUrl
-                        : Globals.homeObject["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                ),
-              ),
+                    fitMethod: BoxFit.cover,
+                    height: Utility.displayHeight(context) *
+                        (AppTheme.kDetailPageImageHeightFactor / 100)))
+            : Container(),
         TranslationWidget(
           message:
               "${object.description["__cdata"].replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "")}",

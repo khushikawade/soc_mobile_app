@@ -1,19 +1,18 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/button_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
-import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/list_border_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,40 +62,15 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
 
   Widget _buildIcon() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-      child: CachedNetworkImage(
-        height: Utility.displayHeight(context) *
-            (AppTheme.kDetailPageImageHeightFactor / 100),
-        imageUrl: widget.obj.imageUrlC ??
-            Globals.splashImageUrl ??
-            Globals.homeObject["App_Logo__c"],
-        fit: BoxFit.fitHeight,
-        placeholder: (context, url) => Container(
-          alignment: Alignment.center,
-          child: ShimmerLoading(
-            isLoading: true,
-            child: Container(
-              height: Utility.displayHeight(context) *
-                  (AppTheme.kDetailPageImageHeightFactor / 100),
-              color: Colors.white,
-            ),
-          ),
-        ),
-        errorWidget: (context, url, error) => CachedNetworkImage(
-          imageUrl: Globals.splashImageUrl ?? Globals.homeObject["App_Logo__c"],
-          placeholder: (context, url) => Container(
-              alignment: Alignment.center,
-              child: ShimmerLoading(
-                isLoading: true,
-                child: Container(
-                  width: _kIconSize * 1.4,
-                  height: _kIconSize * 1.5,
-                  color: Colors.white,
-                ),
-              )),
-        ),
-      ),
-    );
+        padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+        child: CommonImageWidget(
+          iconUrl: widget.obj.imageUrlC ??
+              Globals.splashImageUrl ??
+              Globals.homeObject["App_Logo__c"],
+          height: Utility.displayHeight(context) *
+              (AppTheme.kDetailPageImageHeightFactor / 100),
+          fitMethod: BoxFit.fitHeight,isOnTap: true,
+        ));
   }
 
   Widget _buildTitleWidget() {
@@ -131,7 +105,8 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                 data: translatedMessage.toString(),
                 onLinkTap: (String? url, RenderContext context,
                     Map<String, String> attributes, dom.Element? element) {
-                  _launchURL(url);
+                  // _launchURL(url);
+                  Utility.launchUrlOnExternalBrowser(url!);
                 },
               ),
             ),
@@ -221,7 +196,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
       title: "Website",
       child: Expanded(
           child: Linkify(
-        onOpen: (link) => _launchURL(link.url),
+        onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
         text: widget.obj.urlC!,
         style: TextStyle(
           decoration: TextDecoration.underline,
@@ -235,22 +210,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         ),
       )),
     );
-  }
-
-  _launchURL(obj) async {
-    if (obj.toString().split(":")[0] == 'http') {
-      await Utility.launchUrlOnExternalBrowser(obj);
-    } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: widget.obj.titleC ?? "",
-                    url: widget.obj.urlC!,
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )));
-    }
   }
 
   Widget _buildEmailWidget() {

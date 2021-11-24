@@ -4,14 +4,14 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
+
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,37 +70,12 @@ class _ContactPageState extends State<ContactPage> {
   Widget _buildIcon() {
     return Container(
         child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-      child: CachedNetworkImage(
-        imageUrl: Globals.homeObject["Contact_Image__c"] ??
-            Globals.splashImageUrl ??
-            Globals.homeObject["App_Logo__c"],
-        fit: BoxFit.fill,
-        placeholder: (context, url) => Container(
-          alignment: Alignment.center,
-          child: ShimmerLoading(
-            isLoading: true,
-            child: Container(
-              height: 200,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        errorWidget: (context, url, error) => CachedNetworkImage(
-          imageUrl: Globals.splashImageUrl ?? Globals.homeObject["App_Logo__c"],
-          placeholder: (context, url) => Container(
-              alignment: Alignment.center,
-              child: ShimmerLoading(
-                isLoading: true,
-                child: Container(
-                  width: _kIconSize * 1.4,
-                  height: _kIconSize * 1.5,
-                  color: Colors.white,
-                ),
-              )),
-        ),
-      ),
-    ));
+            padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
+            child: CommonImageWidget(
+              iconUrl: Globals.homeObject["Contact_Image__c"] ??
+                  Globals.splashImageUrl ??
+                  Globals.homeObject["App_Logo__c"],
+            )));
   }
 
   Widget _buildTitleWidget() {

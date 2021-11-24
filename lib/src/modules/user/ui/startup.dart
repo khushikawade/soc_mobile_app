@@ -7,11 +7,11 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,13 +99,8 @@ class _StartupPageState extends State<StartupPage> {
         child: Globals.splashImageUrl != null && Globals.splashImageUrl != " "
             ? Padding(
                 padding: const EdgeInsets.all(16),
-                child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl!,
-                  fit: BoxFit.fill,
-                  errorWidget: (context, url, error) => Icon(
-                    Icons.error,
-                  ),
-                ),
+                child: 
+                CommonImageWidget(iconUrl: Globals.splashImageUrl!,fitMethod: BoxFit.fill,)
               )
             : Text(
                 "Loading ...",

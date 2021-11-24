@@ -44,4 +44,5 @@ class Globals {
   static final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   static int? navIndex = 0;
+  static int? socialImageIndex=0;
 }
