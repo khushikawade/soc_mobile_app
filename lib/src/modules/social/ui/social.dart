@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -89,94 +90,30 @@ class _SocialPageState extends State<SocialPage> {
         child: Row(
           children: <Widget>[
             Container(
-              alignment: Alignment.center,
-              width: Globals.deviceType == "phone"
-                  ? _kIconSize * 1.4
-                  : _kIconSize * 2,
-              height: Globals.deviceType == "phone"
-                  ? _kIconSize * 1.5
-                  : _kIconSize * 2,
-              child: (obj.enclosure != null &&
-                          obj.enclosure != "" &&
+                alignment: Alignment.center,
+                width: Globals.deviceType == "phone"
+                    ? _kIconSize * 1.4
+                    : _kIconSize * 2,
+                height: Globals.deviceType == "phone"
+                    ? _kIconSize * 1.5
+                    : _kIconSize * 2,
+                child: (CustomIconWidget(
+                  iconUrl: (obj.enclosure != null &&
+                          obj.enclosure != '' &&
                           obj.enclosure['url'] != null &&
-                          obj.enclosure['url'] != "") ||
-                      (imageLink != null && imageLink != "")
-                  ? ClipRRect(
-                      child: CachedNetworkImage(
-                        imageUrl: obj.enclosure['url'] ??
-                            imageLink ??
-                            Globals.splashImageUrl ??
-                            Globals.homeObject["App_Logo__c"],
-                        placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            child: ShimmerLoading(
-                              isLoading: true,
-                              child: Container(
-                                width: _kIconSize * 1.4,
-                                height: _kIconSize * 1.5,
-                                color: Colors.white,
-                              ),
-                            )),
-                        errorWidget: (context, url, error) =>
-                            CachedNetworkImage(
-                          imageUrl: Globals.splashImageUrl ??
+                          obj.enclosure['url'] != "")
+                      ? obj.enclosure['url']
+                      : (imageLink != null && imageLink != "")
+                          ? imageLink
+                          : Globals.splashImageUrl ??
                               Globals.homeObject["App_Logo__c"],
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: ShimmerLoading(
-                                isLoading: true,
-                                child: Container(
-                                  width: _kIconSize * 1.4,
-                                  height: _kIconSize * 1.5,
-                                  color: Colors.white,
-                                ),
-                              )),
-                        ), // Icon(Icons.error),
-                      ),
-                    )
-                  : Container(
-                      width: Globals.deviceType == "phone"
-                          ? _kIconSize * 1.4
-                          : _kIconSize * 2,
-                      height: Globals.deviceType == "phone"
-                          ? _kIconSize * 1.5
-                          : _kIconSize * 2,
-                      alignment: Alignment.centerLeft,
-                      child: ClipRRect(
-                        child: CachedNetworkImage(
-                          imageUrl: Globals.splashImageUrl ??
-                              Globals.homeObject["App_Logo__c"],
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: ShimmerLoading(
-                                isLoading: true,
-                                child: Container(
-                                  width: _kIconSize * 1.4,
-                                  height: _kIconSize * 1.5,
-                                  color: Colors.white,
-                                ),
-                              )),
-                          errorWidget: (context, url, error) =>
-                              CachedNetworkImage(
-                            imageUrl: Globals.splashImageUrl != null &&
-                                    Globals.splashImageUrl != ""
-                                ? Globals.splashImageUrl
-                                : Globals.homeObject["App_Logo__c"],
-                            placeholder: (context, url) => Container(
-                                alignment: Alignment.center,
-                                child: ShimmerLoading(
-                                  isLoading: true,
-                                  child: Container(
-                                    width: _kIconSize * 1.4,
-                                    height: _kIconSize * 1.5,
-                                    color: Colors.white,
-                                  ),
-                                )),
-                          ),
-                        ),
-                      ),
-                    ),
-            ),
+                  width: Globals.deviceType == "phone"
+                      ? _kIconSize * 1.4
+                      : _kIconSize * 2,
+                  height: Globals.deviceType == "phone"
+                      ? _kIconSize * 1.5
+                      : _kIconSize * 2,
+                ))),
             SizedBox(
               width: _kLabelSpacing / 2,
             ),

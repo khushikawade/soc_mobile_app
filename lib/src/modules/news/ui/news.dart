@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -106,46 +107,17 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         },
         child: Row(
           children: <Widget>[
-            Container(
-                alignment: Alignment.center,
-                width: Globals.deviceType == "phone"
-                    ? _kIconSize * 1.4
-                    : _kIconSize * 2,
-                height: Globals.deviceType == "phone"
-                    ? _kIconSize * 1.5
-                    : _kIconSize * 2,
-                child: ClipRRect(
-                  child: CachedNetworkImage(
-                    imageUrl: obj.image ??
-                        Globals.splashImageUrl ??
-                        Globals.homeObject["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                    errorWidget: (context, url, error) => CachedNetworkImage(
-                      imageUrl: Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"],
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                  ),
-                )),
+            CustomIconWidget(
+              iconUrl: obj.image ??
+                  Globals.splashImageUrl ??
+                  Globals.homeObject["App_Logo__c"],
+              height: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
+              width: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.5
+                  : _kIconSize * 2,
+            ),
             SizedBox(
               width: _kLabelSpacing / 2,
             ),

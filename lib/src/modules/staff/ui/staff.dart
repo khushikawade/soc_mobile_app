@@ -255,6 +255,7 @@ class _StaffPageState extends State<StaffPage> {
                               return newList.length > 0
                                   ? Expanded(
                                       child: ListView.builder(
+                                        shrinkWrap: true,
                                         scrollDirection: Axis.vertical,
                                         itemCount: newList.length,
                                         padding: EdgeInsets.only(

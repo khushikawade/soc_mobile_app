@@ -7,19 +7,22 @@ import 'package:flutter/material.dart';
 
 class CustomIconWidget extends StatelessWidget {
   late final String? iconUrl;
-  CustomIconWidget({Key? key, @required this.iconUrl}) : super(key: key);
+  final double? height;
+  final double? width;
+  CustomIconWidget({Key? key, @required this.iconUrl, this.height, this.width}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
       child: ClipRRect(
         child: CachedNetworkImage(
             imageUrl: iconUrl!,
-            height: Globals.deviceType == "phone"
+            fit: BoxFit.cover,
+            height: height??(Globals.deviceType == "phone"
                 ? AppTheme.kIconSize
-                : AppTheme.kTabIconSize,
-            width: Globals.deviceType == "phone"
+                : AppTheme.kTabIconSize),
+            width: width!=0?width:(Globals.deviceType == "phone"
                 ? AppTheme.kIconSize
-                : AppTheme.kTabIconSize,
+                : AppTheme.kTabIconSize),
             placeholder: (context, url) => Container(
                 alignment: Alignment.center,
                 child: ShimmerLoading(
@@ -31,7 +34,8 @@ class CustomIconWidget extends StatelessWidget {
                   ),
                 )),
             errorWidget: (context, url, error) => CachedNetworkImage(
-                  imageUrl: Overrides.defaultIconUrl,
+                  imageUrl: Globals.splashImageUrl ??
+                              Globals.homeObject["App_Logo__c"],
                   height: Globals.deviceType == "phone"
                       ? AppTheme.kIconSize
                       : AppTheme.kTabIconSize,

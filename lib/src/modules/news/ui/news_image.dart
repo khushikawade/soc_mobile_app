@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -69,21 +70,23 @@ class NewsImagePageState extends State<NewsImagePage>
                     // boundaryMargin: EdgeInsets.all(100),
                     minScale: 0.5,
                     maxScale: 5,
-                    child: CachedNetworkImage(
-                      imageUrl: widget.imageURL,
-                      // fit: BoxFit.fill,
-                      placeholder: (context, url) => Container(
-                          alignment: Alignment.center,
-                          child: ShimmerLoading(
-                            isLoading: true,
-                            child: Container(
-                              width: _kIconSize * 1.4,
-                              height: _kIconSize * 1.5,
-                              color: Colors.white,
-                            ),
-                          )),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
+                    child: 
+                    CustomIconWidget(iconUrl: widget.imageURL,),
+                    // CachedNetworkImage(
+                    //   imageUrl: widget.imageURL,
+                    //   // fit: BoxFit.fill,
+                    //   placeholder: (context, url) => Container(
+                    //       alignment: Alignment.center,
+                    //       child: ShimmerLoading(
+                    //         isLoading: true,
+                    //         child: Container(
+                    //           width: _kIconSize * 1.4,
+                    //           height: _kIconSize * 1.5,
+                    //           color: Colors.white,
+                    //         ),
+                    //       )),
+                    //   errorWidget: (context, url, error) => Icon(Icons.error),
+                    // ),
                   ),
                   SpacerWidget(40),
                   Container(
