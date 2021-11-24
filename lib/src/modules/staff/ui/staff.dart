@@ -303,7 +303,7 @@ class _StaffPageState extends State<StaffPage> {
                             if (state is StaffDataSucess) {
                               newList.clear();
                               for (int i = 0; i < state.obj!.length; i++) {
-                                if (state.obj![i].status = "Hide") {
+                                if (state.obj![i].status!= "Hide") {
                                   newList.add(state.obj![i]);
                                 }
                               }
