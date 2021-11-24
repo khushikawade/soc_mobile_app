@@ -20,7 +20,7 @@ class NewsImagePageState extends State<NewsImagePage>
     with SingleTickerProviderStateMixin {
   AnimationController? controller;
   Animation<double>? scaleAnimation;
-  static const double _kLableSpacing = 10.0;
+  // static const double _kLableSpacing = 10.0;
   static const double _kIconSize = 45.0;
 
   @override
@@ -50,9 +50,9 @@ class NewsImagePageState extends State<NewsImagePage>
         child: ScaleTransition(
           scale: scaleAnimation!,
           child: Container(
-            margin: const EdgeInsets.only(
-                top: 20, left: 20.0, right: 20, bottom: 20),
-            height: MediaQuery.of(context).size.height * 0.6,
+            // margin: const EdgeInsets.only(
+            //     top: 20, left: 20.0, right: 20, bottom: 20),
+            // height: MediaQuery.of(context).size.height * 0.6,
             decoration: ShapeDecoration(
                 // color: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -94,10 +94,8 @@ class NewsImagePageState extends State<NewsImagePage>
                           color: Colors.transparent,
                           border: Border.all(width: 2, color: Colors.white)),
                       child: IconButton(
-                        //  constraints: BoxConstraints(
-
-                        // ),
                         onPressed: () {
+                          
                           Navigator.pop(context);
                         },
                         icon: Icon(

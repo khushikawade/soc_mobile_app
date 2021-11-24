@@ -115,18 +115,22 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     ? _kIconSize * 1.5
                     : _kIconSize * 2,
                 child: ClipRRect(
-                  child: GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (_) => NewsImagePage(
-                              imageURL: obj.image ??
-                                  Globals.splashImageUrl ??
-                                  Globals.homeObject["App_Logo__c"]));
-                    },
-                    child: CachedNetworkImage(
-                      imageUrl: obj.image ??
-                          Globals.splashImageUrl ??
+                  child: CachedNetworkImage(
+                    imageUrl: obj.image ??
+                        Globals.splashImageUrl ??
+                        Globals.homeObject["App_Logo__c"],
+                    placeholder: (context, url) => Container(
+                        alignment: Alignment.center,
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            width: _kIconSize * 1.4,
+                            height: _kIconSize * 1.5,
+                            color: Colors.white,
+                          ),
+                        )),
+                    errorWidget: (context, url, error) => CachedNetworkImage(
+                      imageUrl: Globals.splashImageUrl ??
                           Globals.homeObject["App_Logo__c"],
                       placeholder: (context, url) => Container(
                           alignment: Alignment.center,
@@ -138,21 +142,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                               color: Colors.white,
                             ),
                           )),
-                      errorWidget: (context, url, error) => CachedNetworkImage(
-                        imageUrl: Globals.splashImageUrl ??
-                            Globals.homeObject["App_Logo__c"],
-                        placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            child: ShimmerLoading(
-                              isLoading: true,
-                              child: Container(
-                                width: _kIconSize * 1.4,
-                                height: _kIconSize * 1.5,
-                                color: Colors.white,
-                              ),
-                            )),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
                 )),

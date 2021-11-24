@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -20,7 +21,8 @@ import 'package:html/dom.dart' as dom;
 class SocialDescription extends StatelessWidget {
   Item object;
   String? language;
-  SocialDescription({required this.object, this.language});
+  int ?index;
+  SocialDescription({required this.object, this.language,this.index});
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
   static const double _kIconSize = 45.0;
@@ -221,10 +223,18 @@ class SocialDescription extends StatelessWidget {
                         .contains("<img src=") &&
                     object.description["__cdata"].toString().split('"')[1] !=
                         "")
-            ? Container(
+            ? GestureDetector(
+              onTap: (){ 
+                Globals.socialImageIndex=index;
+                       showDialog(
+                          context: context,
+                          builder: (_) => NewsImagePage(
+                              imageURL:  object.enclosure['url'] ??
+                          Utility.getHTMLImgSrc(object.description["__cdata"]) ??
+                          Globals.homeObject["App_Logo__c"],));},
+              child: Container(
                 alignment: Alignment.center,
-                child: ClipRRect(
-                  child: CachedNetworkImage(
+                child: CachedNetworkImage(
                     fit: BoxFit.cover,
                     imageUrl: object.enclosure['url'] ??
                         Utility.getHTMLImgSrc(object.description["__cdata"]) ??
@@ -254,8 +264,8 @@ class SocialDescription extends StatelessWidget {
                           )),
                     ),
                   ),
-                ),
-              )
+              ),
+            )
             : Container(
                 alignment: Alignment.center,
                 child: ClipRRect(

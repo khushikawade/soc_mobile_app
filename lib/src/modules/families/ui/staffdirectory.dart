@@ -189,7 +189,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           style: Theme.of(context).textTheme.headline2!),
                     ),
                   ),
-                  obj.phoneC.toString().isNotEmpty
+                  obj.phoneC != null
                       ? Container(
                           height: _KButtonMinSize,
                           width: _KButtonMinSize,
@@ -199,10 +199,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               padding: EdgeInsets.all(8),
                             ),
                             onPressed: () {
-                              if (obj.phoneC != null) {
-                                objurl.callurlLaucher(
-                                    context, "tel:" + obj.phoneC);
-                              }
+                              objurl.callurlLaucher(
+                                  context, "tel:" + obj.phoneC);
                             },
                             child: Icon(
                               Icons.local_phone_outlined,
@@ -212,7 +210,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         )
                       : EmptyContainer(),
                   HorzitalSpacerWidget(_kLabelSpacing / 2),
-                  obj.emailC.toString().isNotEmpty
+                  obj.emailC != null
                       ? Container(
                           height: _KButtonMinSize,
                           width: _KButtonMinSize,
@@ -222,10 +220,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 padding: EdgeInsets.all(6),
                               ),
                               onPressed: () {
-                                if (obj.emailC != null) {
-                                  objurl.callurlLaucher(
-                                      context, 'mailto:"${obj.emailC}"');
-                                }
+                                objurl.callurlLaucher(
+                                    context, 'mailto:"${obj.emailC}"');
                               },
                               child: Icon(
                                 Icons.email_outlined,

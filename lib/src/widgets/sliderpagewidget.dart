@@ -143,6 +143,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                   ? SocialDescription(
                       object: object[widget.currentIndex],
                       language: Globals.selectedLanguage,
+                      index: widget.currentIndex,
                     )
                   : widget.isAboutSDPage!
                       ? AboutSDDetailPage(
