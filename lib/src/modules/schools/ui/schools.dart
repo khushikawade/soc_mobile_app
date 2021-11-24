@@ -90,6 +90,7 @@ class _SchoolPageState extends State<SchoolPage> {
                     imageUrl: obj.imageUrlC ??
                         Globals.splashImageUrl ??
                         Globals.homeObject["App_Logo__c"],
+                    fit: BoxFit.cover,
                     // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun-school.png",
                     placeholder: (context, url) => Container(
                         alignment: Alignment.center,
@@ -168,7 +169,8 @@ class _SchoolPageState extends State<SchoolPage> {
                                 } else if (state is SchoolDirectoryDataSucess) {
                                   return newList.length > 0
                                       ? ListView.builder(
-                                          padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+                                          padding: EdgeInsets.only(
+                                              bottom: AppTheme.klistPadding),
                                           scrollDirection: Axis.vertical,
                                           itemCount: newList.length,
                                           itemBuilder: (BuildContext context,

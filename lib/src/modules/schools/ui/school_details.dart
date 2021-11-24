@@ -65,17 +65,19 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
       child: CachedNetworkImage(
+        height: Utility.displayHeight(context) *
+            (AppTheme.kDetailPageImageHeightFactor / 100),
         imageUrl: widget.obj.imageUrlC ??
             Globals.splashImageUrl ??
             Globals.homeObject["App_Logo__c"],
-        // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun_School_3390481+(2).png",
-        fit: BoxFit.fill,
+        fit: BoxFit.fitHeight,
         placeholder: (context, url) => Container(
           alignment: Alignment.center,
           child: ShimmerLoading(
             isLoading: true,
             child: Container(
-              height: 200,
+              height: Utility.displayHeight(context) *
+                  (AppTheme.kDetailPageImageHeightFactor / 100),
               color: Colors.white,
             ),
           ),
@@ -348,6 +350,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   }
 
   Widget build(BuildContext context) {
+    print(widget.obj.imageUrlC);
     return Scaffold(
         appBar: CustomAppBarWidget(
           isSearch: true,

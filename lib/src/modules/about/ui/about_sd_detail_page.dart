@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/button_widget.dart';
@@ -13,6 +14,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
@@ -41,37 +43,36 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _sdImage() {
     return Container(
-        child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-      child: CachedNetworkImage(
-        imageUrl: widget.obj!.imageUrlC ??
-            Globals.splashImageUrl ??
-            Globals.homeObject["App_Logo__c"],
-        // "https://the-noun-project-icons.s3.us-east-2.amazonaws.com/noun_profile_3824723.png",
-        fit: BoxFit.fill,
-        placeholder: (context, url) => Container(
-          alignment: Alignment.center,
-          child: ShimmerLoading(
-            isLoading: true,
-            child: Container(
-              height: 200,
-              color: Colors.white,
-            ),
+        child: CachedNetworkImage(
+      height: Utility.displayHeight(context) *
+          (AppTheme.kDetailPageImageHeightFactor / 100),
+      imageUrl: widget.obj!.imageUrlC ??
+          Globals.splashImageUrl ??
+          Globals.homeObject["App_Logo__c"],
+      fit: BoxFit.fitHeight,
+      placeholder: (context, url) => Container(
+        alignment: Alignment.center,
+        child: ShimmerLoading(
+          isLoading: true,
+          child: Container(
+            height: Utility.displayHeight(context) *
+                (AppTheme.kDetailPageImageHeightFactor / 100),
+            color: Colors.white,
           ),
         ),
-        errorWidget: (context, url, error) => CachedNetworkImage(
-          imageUrl: Globals.splashImageUrl ?? Globals.homeObject["App_Logo__c"],
-          placeholder: (context, url) => Container(
-              alignment: Alignment.center,
-              child: ShimmerLoading(
-                isLoading: true,
-                child: Container(
-                  width: _kIconSize * 1.4,
-                  height: _kIconSize * 1.5,
-                  color: Colors.white,
-                ),
-              )),
-        ),
+      ),
+      errorWidget: (context, url, error) => CachedNetworkImage(
+        imageUrl: Globals.splashImageUrl ?? Globals.homeObject["App_Logo__c"],
+        placeholder: (context, url) => Container(
+            alignment: Alignment.center,
+            child: ShimmerLoading(
+              isLoading: true,
+              child: Container(
+                width: _kIconSize * 1.4,
+                height: _kIconSize * 1.5,
+                color: Colors.white,
+              ),
+            )),
       ),
     ));
   }
@@ -83,6 +84,20 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         ),
         child: Text(
           widget.obj!.titleC ?? "",
+          textAlign: TextAlign.left,
+          style: Theme.of(context).textTheme.headline2!.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+        ));
+  }
+
+  Widget _buildNameWidget() {
+    return Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing,
+        ),
+        child: Text(
+          widget.obj!.name ?? "",
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline2!.copyWith(
                 fontWeight: FontWeight.w500,
@@ -95,11 +110,13 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
         ),
-        child: Text(
-          widget.obj!.descriptionC ?? "",
-          style: Theme.of(context).textTheme.headline2!.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+        // TODO: Replace text with HTML // text: widget.obj!.descriptionC ?? "",
+        child: Linkify(
+          onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
+          options: LinkifyOptions(humanize: false),
+          linkStyle: TextStyle(color: Colors.blue),
+          text: widget.obj!.descriptionC ?? "",
+          style: Theme.of(context).textTheme.bodyText1!.copyWith(),
         ));
   }
 
@@ -236,16 +253,29 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _buildItem() {
     return ListView(padding: const EdgeInsets.only(bottom: 35.0), children: [
-      _buildTitleWidget(),
+      SpacerWidget(_kLabelSpacing / 1.5),
+      _buildNameWidget(),
       SpacerWidget(_kLabelSpacing),
       _sdImage(),
       SpacerWidget(_kLabelSpacing),
+      _buildTitleWidget(),
+      SpacerWidget(_kLabelSpacing),
       _buildDescriptionWidget(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj!.phoneC != null ? _buildPhoneWidget() : Container(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj!.emailC != null ? _buildEmailWidget() : Container(),
-      SpacerWidget(_kLabelSpacing / 1.25),
+      // SpacerWidget(_kLabelSpacing / 1.25),
+      widget.obj!.phoneC != null
+          ? Padding(
+              padding: const EdgeInsets.only(top: _kLabelSpacing / 1.25),
+              child: _buildPhoneWidget(),
+            )
+          : Container(),
+      // SpacerWidget(_kLabelSpacing / 1.25),
+      widget.obj!.emailC != null
+          ? Padding(
+              padding: const EdgeInsets.only(top: _kLabelSpacing / 1.25),
+              child: _buildEmailWidget(),
+            )
+          : Container(),
+      SpacerWidget(_kLabelSpacing),
       ButtonWidget(
         title: widget.obj!.titleC ?? "",
         buttonTitle: "Share",
@@ -258,7 +288,8 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                 "${"Phone : " + widget.obj!.phoneC.toString()}" +
                 // "\n" +
                 "${"Email : " + widget.obj!.emailC.toString()}",
-      )
+      ),
+      SpacerWidget(_kLabelSpacing / 2),
     ]);
   }
 
