@@ -224,6 +224,7 @@ class SocialDescription extends StatelessWidget {
             ? Container(
                 alignment: Alignment.center,
                 child: CommonImageWidget(
+                    isOnTap: true,
                     iconUrl: object.enclosure['url'] ??
                         Utility.getHTMLImgSrc(object.description["__cdata"]) ??
                         Globals.splashImageUrl ??

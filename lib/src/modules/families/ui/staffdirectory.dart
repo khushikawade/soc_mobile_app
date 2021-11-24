@@ -145,6 +145,13 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   HorzitalSpacerWidget(_kLabelSpacing / 1.5),
                   // obj.imageUrlC != null && obj.imageUrlC != '' ?
                   CommonImageWidget(
+                      height: Globals.deviceType == "phone"
+                          ? _kIconSize * 1.4
+                          : _kIconSize * 2,
+                      width: Globals.deviceType == "phone"
+                          ? _kIconSize * 1.4
+                          : _kIconSize * 2,
+                      fitMethod: BoxFit.cover,
                       iconUrl: obj.imageUrlC ??
                           Globals.splashImageUrl ??
                           Globals.homeObject["App_Logo__c"]),

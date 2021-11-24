@@ -88,6 +88,12 @@ class _SchoolPageState extends State<SchoolPage> {
                     : _kIconSize * 2,
                 child: ClipRRect(
                     child: CommonImageWidget(
+                  height: Globals.deviceType == "phone"
+                      ? _kIconSize * 1.4
+                      : _kIconSize * 2,
+                  width: Globals.deviceType == "phone"
+                      ? _kIconSize * 1.4
+                      : _kIconSize * 2,
                   iconUrl: obj.imageUrlC ??
                       Globals.splashImageUrl ??
                       Globals.homeObject["App_Logo__c"],
