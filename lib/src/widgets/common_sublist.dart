@@ -1,7 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/about/modal/about_sublist.dart';
-import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
@@ -99,7 +98,7 @@ class _SubListPageState extends State<SubListPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (obj.typeC == "PDF") {
+    } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
           ? Navigator.push(
               context,
@@ -388,7 +387,7 @@ class _SubListPageState extends State<SubListPage> {
               bloc: _aboutBloc,
               listener: (context, state) async {
                 if (state is AboutSublistSucess) {
-                  resourceList.clear();
+                  aboutList.clear();
                   for (int i = 0; i < state.obj!.length; i++) {
                     if (state.obj![i].status != "Hide") {
                       aboutList.add(state.obj![i]);

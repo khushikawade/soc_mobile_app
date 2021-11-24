@@ -24,7 +24,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:html/dom.dart' as dom;
 
 class SchoolDetailPage extends StatefulWidget {
-  final SchoolDirectoryList obj;
+  final obj;
   SchoolDetailPage({
     Key? key,
     required this.obj,

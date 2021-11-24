@@ -41,6 +41,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           "sobjects": [
             {
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
@@ -48,13 +49,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "Name",
                 "RTF_HTML__c",
                 "Type__c",
-                "School_App__c"
+                "School_App__c",
+                "Calendar_Id__c"
               ],
               "name": "Families_App__c"
             },
             {
               "name": "Family_Sub_Menu_App__c",
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
@@ -68,6 +71,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             {
               "name": "Staff_App__c",
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
@@ -75,11 +79,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "Name",
                 "RTF_HTML__c",
                 "Type__c",
-                "School_App__c"
+                "School_App__c",
+                "Calendar_Id__c"
               ]
             },
             {
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
@@ -93,6 +99,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             },
             {
               "fields": [
+                "Active_Status__c",
                 "Title__c",
                 "App_URL__c",
                 "App_Icon_URL__c",
@@ -172,15 +179,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           "overallLimit": 100,
           "defaultLimit": 10
         });
-        for (int i = 0; i < list.length; i++) {
-          if (list[i].schoolId == Globals.homeObject["Id"]) {
-            filteredList.add(list[i]);
+        if (list.length > 0) {
+          for (int i = 0; i < list.length; i++) {
+            if (list[i].schoolId == Globals.homeObject["Id"]) {
+              filteredList.add(list[i]);
+            }
+            yield GlobalSearchSuccess(
+              obj: filteredList,
+            );
           }
+        } else {
+          yield GlobalSearchSuccess(
+            obj: list,
+          );
         }
-
-        yield GlobalSearchSuccess(
-          obj: filteredList,
-        );
       } catch (e) {
         yield HomeErrorReceived(err: e);
       }
