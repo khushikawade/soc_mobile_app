@@ -50,8 +50,15 @@ class CommonImageWidget extends StatelessWidget {
                 child: ShimmerLoading(
                   isLoading: true,
                   child: Container(
-                    height: 20,
-                    width: 20,
+                    height: height ??
+                        (Globals.deviceType == "phone"
+                            ? AppTheme.kIconSize
+                            : AppTheme.kTabIconSize),
+                    width: width != 0
+                        ? width
+                        : (Globals.deviceType == "phone"
+                            ? AppTheme.kIconSize
+                            : AppTheme.kTabIconSize),
                     color: Colors.white,
                   ),
                 )),
@@ -72,8 +79,15 @@ class CommonImageWidget extends StatelessWidget {
                       child: ShimmerLoading(
                         isLoading: true,
                         child: Container(
-                          height: 20,
-                          width: 20,
+                          height: height ??
+                              (Globals.deviceType == "phone"
+                                  ? AppTheme.kIconSize
+                                  : AppTheme.kTabIconSize),
+                          width: width != 0
+                              ? width
+                              : (Globals.deviceType == "phone"
+                                  ? AppTheme.kIconSize
+                                  : AppTheme.kTabIconSize),
                           color: Colors.white,
                         ),
                       )),

@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -99,7 +100,8 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                     padding: EdgeInsets.zero,
                     constraints: BoxConstraints(),
                     onPressed: () {
-                      urlobj.callurlLaucher(context, url);
+                      // urlobj.callurlLaucher(context, url);
+                      Utility.launchUrlOnExternalBrowser(url);
                     },
                     icon: Icon(
                       IconData(0xe80e,

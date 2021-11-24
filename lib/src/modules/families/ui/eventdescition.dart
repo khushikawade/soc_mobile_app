@@ -101,7 +101,8 @@ class _EventDescriptionState extends State<EventDescription> {
     return InkWell(
       onTap: () {
         UrlLauncherWidget obj = new UrlLauncherWidget();
-        obj.callurlLaucher(context, list.htmlLink);
+        // obj.callurlLaucher(context, list.htmlLink);
+        Utility.launchUrlOnExternalBrowser(list.htmlLink);
       },
       child: Text(
         list.htmlLink ?? '-',

@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -178,8 +179,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               padding: EdgeInsets.all(8),
                             ),
                             onPressed: () {
-                              objurl.callurlLaucher(
-                                  context, "tel:" + obj.phoneC);
+                              // objurl.callurlLaucher(
+                              //     context, "tel:" + obj.phoneC);
+                              Utility.launchUrlOnExternalBrowser("tel:" + obj.phoneC);
                             },
                             child: Icon(
                               Icons.local_phone_outlined,
@@ -199,8 +201,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 padding: EdgeInsets.all(6),
                               ),
                               onPressed: () {
-                                objurl.callurlLaucher(
-                                    context, 'mailto:"${obj.emailC}"');
+                                // objurl.callurlLaucher(
+                                //     context, 'mailto:"${obj.emailC}"');
+                                 Utility.launchUrlOnExternalBrowser("mailto:" + obj.phoneC);
                               },
                               child: Icon(
                                 Icons.email_outlined,

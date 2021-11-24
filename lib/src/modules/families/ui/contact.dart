@@ -270,8 +270,10 @@ class _ContactPageState extends State<ContactPage> {
             child: InkWell(
               onTap: () {
                 if (Globals.homeObject["Contact_Phone__c"] != null) {
-                  urlobj.callurlLaucher(
-                      context, "tel:" + Globals.homeObject["Contact_Phone__c"]);
+                  // urlobj.callurlLaucher(
+                  //     context, "tel:" + Globals.homeObject["Contact_Phone__c"]);
+                  Utility.launchUrlOnExternalBrowser(
+                      "tel:" + Globals.homeObject["Contact_Phone__c"]);
                 }
               },
               child: Text(
@@ -328,8 +330,11 @@ class _ContactPageState extends State<ContactPage> {
             child: InkWell(
               onTap: () {
                 Globals.homeObject["Contact_Email__c"] != null
-                    ? urlobj.callurlLaucher(context,
-                        'mailto:"${Globals.homeObject["Contact_Email__c"]}"')
+                    ?
+                    // urlobj.callurlLaucher(context,
+                    //     'mailto:"${Globals.homeObject["Contact_Email__c"]}"')
+                    Utility.launchUrlOnExternalBrowser(
+                        "mailto:" + Globals.homeObject["Contact_Email__c"])
                     : print("null value");
               },
               child: Text(
