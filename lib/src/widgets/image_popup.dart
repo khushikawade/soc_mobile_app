@@ -66,7 +66,7 @@ class ImagePopupState extends State<ImagePopup>
                   // SpacerWidget(30),
                   InteractiveViewer(
                     panEnabled: false, // Set it to false
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    clipBehavior: Clip.none, //Clip.antiAliasWithSaveLayer,
                     // boundaryMargin: EdgeInsets.all(100),
                     minScale: 0.5,
                     maxScale: 10,

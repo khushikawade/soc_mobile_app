@@ -159,14 +159,29 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
-                    child: TranslationWidget(
-                      message: obj.name ?? "-",
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                          textAlign: TextAlign.start,
-                          style: Theme.of(context).textTheme.headline2!),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TranslationWidget(
+                          message: obj.name ?? "-",
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context).textTheme.headline2!),
+                        ),
+                      obj.titleC!=null?  TranslationWidget(
+                          message: obj.titleC,
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context).textTheme.headline2!),
+                        ):Container(),
+                      ],
                     ),
                   ),
                   obj.phoneC != null

@@ -6,7 +6,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -23,7 +22,7 @@ class SocialDescription extends StatelessWidget {
   SocialDescription({required this.object, this.language, this.index});
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
-  static const double _kIconSize = 45.0;
+  // static const double _kIconSize = 45.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
 
@@ -53,21 +52,26 @@ class SocialDescription extends StatelessWidget {
   void htmlparser() {
     List<String> data = [];
 
-    data.add(object.description["__cdata"]
-        .getElementsByClassName("time")[0]
-        .innerHtml);
+    data.add(object.description != null && object.description != ""
+        ? object.description["__cdata"]
+            .getElementsByClassName("time")[0]
+            .innerHtml
+        : "");
 
-    final temp =
-        object.description["__cdata"].getElementsByClassName("temp")[0];
+    final temp = object.description != null && object.description != ""
+        ? object.description["__cdata"].getElementsByClassName("temp")[0]
+        : "";
     data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<span>")));
     data.add(temp
         .getElementsByTagName("small")[0]
         .innerHtml
         .replaceAll(RegExp("[(|)|℃]"), ""));
 
-    final rows = object.description["__cdata"]
-        .getElementsByTagName("table")[0]
-        .getElementsByTagName("td");
+    final rows = object.description != null && object.description != ""
+        ? object.description["__cdata"]
+            .getElementsByTagName("table")[0]
+            .getElementsByTagName("td")
+        : "";
 
     rows.map((e) => e.innerHtml).forEach((element) {
       if (element != "-") {
@@ -215,6 +219,7 @@ class SocialDescription extends StatelessWidget {
                     object.enclosure['url'] != null &&
                     object.enclosure['url'] != "") ||
                 (object.description != null &&
+                    object.description != "" &&
                     object.description["__cdata"] != null &&
                     object.description["__cdata"]
                         .toString()
@@ -243,7 +248,7 @@ class SocialDescription extends StatelessWidget {
                         (AppTheme.kDetailPageImageHeightFactor / 100))),
         TranslationWidget(
           message:
-              "${object.description["__cdata"].replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "")}",
+              "${object.description != null && object.description != "" ? object.description["__cdata"].replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "") : ""}",
           // "${data + "#" + data2}",
           fromLanguage: "en",
           toLanguage: language,

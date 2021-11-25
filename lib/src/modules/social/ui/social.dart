@@ -53,7 +53,9 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget _buildlist(obj, int index, mainObj) {
-    final document = parse(obj.description["__cdata"]);
+    final document = obj.description != null && obj.description != ""
+        ? parse(obj.description["__cdata"])
+        : parse("");
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
     // print(index);
@@ -104,7 +106,7 @@ class _SocialPageState extends State<SocialPage> {
               width: Globals.deviceType == "phone"
                   ? _kIconSize * 1.4
                   : _kIconSize * 2,
-                  fitMethod: BoxFit.cover,
+              fitMethod: BoxFit.cover,
             ))),
             SizedBox(
               width: _kLabelSpacing / 2,

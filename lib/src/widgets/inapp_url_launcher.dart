@@ -37,10 +37,10 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,18 +70,23 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
               }
 
               return connected
-                  ? WebView(
-                      gestureNavigationEnabled:
-                          widget.isiFrame == true ? true : false,
-                      initialUrl: widget.isiFrame == true
-                          ? Uri.dataFromString('${widget.url}',
-                                  mimeType: 'text/html')
-                              .toString()
-                          : '${widget.url}',
-                      javascriptMode: JavascriptMode.unrestricted,
-                      onWebViewCreated: (WebViewController webViewController) {
-                        _controller.complete(webViewController);
-                      },
+                  ? Container(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.032),
+                      child: WebView(
+                        gestureNavigationEnabled:
+                            widget.isiFrame == true ? true : false,
+                        initialUrl: widget.isiFrame == true
+                            ? Uri.dataFromString('${widget.url}',
+                                    mimeType: 'text/html')
+                                .toString()
+                            : '${widget.url}',
+                        javascriptMode: JavascriptMode.unrestricted,
+                        onWebViewCreated:
+                            (WebViewController webViewController) {
+                          _controller.complete(webViewController);
+                        },
+                      ),
                     )
                   : NoInternetErrorWidget(
                       connected: connected, issplashscreen: false);

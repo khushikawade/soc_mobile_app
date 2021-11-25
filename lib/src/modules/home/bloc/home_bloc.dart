@@ -108,7 +108,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "Id",
                 "Name",
                 "App_Folder__c",
-                "School_App__c"
+                "School_App__c",
+                "Is_Folder__c",
+                "Sort_Order__c"
               ],
               "name": "Student_App__c"
             },
