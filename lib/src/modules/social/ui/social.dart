@@ -104,6 +104,7 @@ class _SocialPageState extends State<SocialPage> {
               width: Globals.deviceType == "phone"
                   ? _kIconSize * 1.4
                   : _kIconSize * 2,
+                  fitMethod: BoxFit.cover,
             ))),
             SizedBox(
               width: _kLabelSpacing / 2,

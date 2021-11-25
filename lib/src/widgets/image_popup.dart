@@ -65,12 +65,13 @@ class ImagePopupState extends State<ImagePopup>
                 children: [
                   // SpacerWidget(30),
                   InteractiveViewer(
-                    panEnabled: true, // Set it to false
-                    clipBehavior: Clip.none,
+                    panEnabled: false, // Set it to false
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
                     // boundaryMargin: EdgeInsets.all(100),
                     minScale: 0.5,
-                    maxScale: 5,
+                    maxScale: 10,
                     child: CommonImageWidget(
+                      fitMethod: BoxFit.cover,
                       iconUrl: widget.imageURL,
                       height: Utility.displayHeight(context) *
                           (AppTheme.kDetailPageImageHeightFactor / 100),

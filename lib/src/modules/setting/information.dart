@@ -80,7 +80,10 @@ class _InformationPageState extends State<InformationPage> {
                       child: ClipRRect(
                           child: CommonImageWidget(
                               iconUrl: Utility.getHTMLImgSrc(
-                                  Globals.appSetting.appInformationC))),
+                                  Globals.appSetting.appInformationC),
+                              height: Utility.displayHeight(context) *
+                                  (AppTheme.kDetailPageImageHeightFactor /
+                                      100))),
                     )
                   : Container(),
               TranslationWidget(

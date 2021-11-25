@@ -375,8 +375,10 @@ class _SearchPageState extends State<SearchPage> {
           if (state is GlobalSearchSuccess) {
             searchList.clear();
             for (int i = 0; i < state.obj!.length; i++) {
-              if (state.obj![i].statusC != "Hide" &&
-                  state.obj![i].typeC != null) {
+              if (state.obj![i].statusC != "Hide") {
+                if(state.obj![i].typeC==null && state.obj![i].appURLC!=null){
+                  state.obj![i].typeC="URL";
+                }
                 searchList.add(state.obj![i]);
               }
             }

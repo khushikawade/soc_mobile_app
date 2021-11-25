@@ -229,7 +229,7 @@ class SocialDescription extends StatelessWidget {
                         Utility.getHTMLImgSrc(object.description["__cdata"]) ??
                         Globals.splashImageUrl ??
                         Globals.homeObject["App_Logo__c"],
-                    fitMethod: BoxFit.cover,
+                    fitMethod: BoxFit.contain,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100)))
             : Container(
@@ -273,19 +273,7 @@ class SocialDescription extends StatelessWidget {
   }
 
   _launchURL(obj, context) async {
-    if (obj.toString().split(":")[0] == 'http') {
-      await Utility.launchUrlOnExternalBrowser(obj);
-    } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: object.title.toString(),
-                    url: obj,
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )));
-    }
+    await Utility.launchUrlOnExternalBrowser(obj);
   }
 
   Widget _buildnews(BuildContext context) {
