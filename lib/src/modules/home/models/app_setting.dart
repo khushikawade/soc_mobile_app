@@ -33,6 +33,7 @@ class AppSetting {
   String? socialapiurlc;
   double? contactOfficeLocationLatitudeS;
   double? contactOfficeLocationLongitudeS;
+  dynamic bannerHeightFactor;
 
   AppSetting({
     this.attributes,
@@ -67,6 +68,7 @@ class AppSetting {
     this.socialapiurlc,
     this.contactOfficeLocationLatitudeS,
     this.contactOfficeLocationLongitudeS,
+    this.bannerHeightFactor,
   });
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
@@ -106,6 +108,7 @@ class AppSetting {
             json['Contact_Office_Location__Latitude__s'] as double?,
         contactOfficeLocationLongitudeS:
             json['Contact_Office_Location__Longitude__s'] as double?,
+        bannerHeightFactor: json['Banner_Height_Factor__c'],
       );
 
   Map<String, dynamic> toJson() => {
