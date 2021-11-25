@@ -357,7 +357,7 @@ class _FamilyPageState extends State<FamilyPage> {
           },
         ),
         body: Globals.homeObject["Family_Banner_Image__c"] != null &&
-                Globals.homeObject["Family_Banner_Image__c"] != ''
+                Globals.homeObject["Family_Banner_Image__c"] != '' 
             ? NestedScrollView(
                 // controller: _scrollController,
                 headerSliverBuilder:

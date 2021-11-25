@@ -319,7 +319,7 @@ class _StaffPageState extends State<StaffPage> {
         },
       ),
       body: Globals.homeObject["Staff_Banner_Image__c"] != null &&
-              Globals.homeObject["Staff_Banner_Image__c"] != ''
+              Globals.homeObject["Staff_Banner_Image__c"] != ''  
           ? NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {

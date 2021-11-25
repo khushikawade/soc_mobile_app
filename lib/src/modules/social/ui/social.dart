@@ -88,30 +88,23 @@ class _SocialPageState extends State<SocialPage> {
         child: Row(
           children: <Widget>[
             Container(
-                alignment: Alignment.center,
-                width: Globals.deviceType == "phone"
-                    ? _kIconSize * 1.4
-                    : _kIconSize * 2,
-                height: Globals.deviceType == "phone"
-                    ? _kIconSize * 1.5
-                    : _kIconSize * 2,
                 child: (CommonImageWidget(
-                  iconUrl: (obj.enclosure != null &&
-                          obj.enclosure != '' &&
-                          obj.enclosure['url'] != null &&
-                          obj.enclosure['url'] != "")
-                      ? obj.enclosure['url']
-                      : (imageLink != null && imageLink != "")
-                          ? imageLink
-                          : Globals.splashImageUrl ??
-                              Globals.homeObject["App_Logo__c"],
-                  width: Globals.deviceType == "phone"
-                      ? _kIconSize * 1.4
-                      : _kIconSize * 2,
-                  height: Globals.deviceType == "phone"
-                      ? _kIconSize * 1.5
-                      : _kIconSize * 2,
-                ))),
+              iconUrl: (obj.enclosure != null &&
+                      obj.enclosure != '' &&
+                      obj.enclosure['url'] != null &&
+                      obj.enclosure['url'] != "")
+                  ? obj.enclosure['url']
+                  : (imageLink != null && imageLink != "")
+                      ? imageLink
+                      : Globals.splashImageUrl ??
+                          Globals.homeObject["App_Logo__c"],
+              height: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
+              width: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
+            ))),
             SizedBox(
               width: _kLabelSpacing / 2,
             ),
