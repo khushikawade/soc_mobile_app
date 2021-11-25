@@ -172,23 +172,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               textAlign: TextAlign.start,
                               style: Theme.of(context).textTheme.headline2!),
                         ),
-                        SpacerWidget(1.5),
-                        obj.titleC != null
-                            ? TranslationWidget(
-                                message: obj.titleC,
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                    textAlign: TextAlign.start,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1!
-                                        .copyWith(
-                                          fontSize: 14,
-                                        )),
-                              )
-                            : Container(),
+                      obj.designation!=null?  TranslationWidget(
+                          message: obj.designation,
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                              translatedMessage.toString(),
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context).textTheme.headline2!),
+                        ):Container(),
                       ],
                     ),
                   ),

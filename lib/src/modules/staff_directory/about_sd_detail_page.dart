@@ -60,7 +60,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
           horizontal: _kLabelSpacing,
         ),
         child: Text(
-          widget.obj!.titleC ?? "",
+          widget.obj!.designation ?? "",
           textAlign: TextAlign.left,
           style: Theme.of(context).textTheme.headline2!.copyWith(
                 fontWeight: FontWeight.w500,
@@ -258,7 +258,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
           : Container(),
       SpacerWidget(_kLabelSpacing),
       ButtonWidget(
-        title: widget.obj!.titleC ?? "",
+        title: widget.obj!.designation ?? "",
         buttonTitle: "Share",
         obj: widget.obj,
         body:
