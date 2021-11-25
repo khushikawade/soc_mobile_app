@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -208,6 +209,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (response.statusCode == 200) {
         final data = response.data;
         Globals.appSetting = AppSetting.fromJson(data);
+        if (Globals.appSetting.bannerHeightFactor != null) {
+          AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
+        }
         return data;
       }
     } catch (e) {
