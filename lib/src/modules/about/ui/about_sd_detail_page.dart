@@ -131,7 +131,9 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: InkWell(
                   onTap: () {
-                    urlobj.callurlLaucher(context, "tel:" + widget.obj!.phoneC);
+                    // urlobj.callurlLaucher(context, "tel:" + widget.obj!.phoneC);
+                    Utility.launchUrlOnExternalBrowser(
+                          "tel:" + widget.obj!.phoneC);
                   },
                   child: Text(
                     widget.obj!.phoneC ?? "",
@@ -203,8 +205,10 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: InkWell(
                     onTap: () {
-                      urlobj.callurlLaucher(
-                          context, 'mailto:"${widget.obj!.emailC}"');
+                      // urlobj.callurlLaucher(
+                      //     context, 'mailto:"${widget.obj!.emailC}"');
+                      Utility.launchUrlOnExternalBrowser(
+                          "mailto:" + widget.obj!.emailC);
                     },
                     child: Text(
                       widget.obj!.emailC ?? '-',

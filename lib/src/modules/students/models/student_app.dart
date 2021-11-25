@@ -9,7 +9,7 @@ class StudentApp {
   String? id;
   String? name;
   String? appFolderc;
-  final sortOredr;
+  final sortOrder;
   final status;
   final isFolder;
 
@@ -22,7 +22,7 @@ class StudentApp {
       this.id,
       this.name,
       this.appFolderc,
-      this.sortOredr,
+      this.sortOrder,
       this.status,
       this.isFolder
       });
@@ -38,7 +38,7 @@ class StudentApp {
         id: json['Id'] as String?,
         name: json['Name'] as String?,
         appFolderc: json['App_Folder__c'] as String?,
-        sortOredr: json['Sort_Order__c'],
+        sortOrder: json['Sort_Order__c'],
         status:json['Active_Status__c'],
         isFolder:json['Is_Folder__c']
       );
@@ -52,7 +52,7 @@ class StudentApp {
         'Id': id,
         'Name': name,
         'App_Folder__c': appFolderc,
-        'Sort_Order__c': sortOredr,
+        'Sort_Order__c': sortOrder,
         'Active_Status__c':status,
         'Is_Folder__c':isFolder
       };

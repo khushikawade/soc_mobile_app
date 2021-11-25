@@ -72,6 +72,10 @@ class _ContactPageState extends State<ContactPage> {
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
             child: CommonImageWidget(
+              fitMethod: BoxFit.fitHeight,
+              isOnTap: true,
+              height: Utility.displayHeight(context) *
+                  (AppTheme.kDetailPageImageHeightFactor / 100),
               iconUrl: Globals.homeObject["Contact_Image__c"] ??
                   Globals.splashImageUrl ??
                   Globals.homeObject["App_Logo__c"],
@@ -227,17 +231,8 @@ class _ContactPageState extends State<ContactPage> {
               onTap: _launchMapsUrl,
               child: Text(
                 Globals.homeObject["Contact_Address__c"] ?? '-',
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  decorationColor: Colors.blue,
-                  fontSize: Globals.deviceType == "phone"
-                      ? AppTheme.kBodyText1FontSize
-                      : AppTheme.kBodyText1FontSize + AppTheme.kSize,
-                  color: Colors.blue, //AppTheme.kAccentColor,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: 'Roboto Regular',
-                  height: 1.5,
-                ), //Theme.of(context).textTheme.bodyText1!,
+                style: AppTheme
+                    .linkStyle, //Theme.of(context).textTheme.bodyText1!,
                 textAlign: TextAlign.start,
               ),
             ),
@@ -270,13 +265,15 @@ class _ContactPageState extends State<ContactPage> {
             child: InkWell(
               onTap: () {
                 if (Globals.homeObject["Contact_Phone__c"] != null) {
-                  urlobj.callurlLaucher(
-                      context, "tel:" + Globals.homeObject["Contact_Phone__c"]);
+                  // urlobj.callurlLaucher(
+                  //     context, "tel:" + Globals.homeObject["Contact_Phone__c"]);
+                  Utility.launchUrlOnExternalBrowser(
+                      "tel:" + Globals.homeObject["Contact_Phone__c"]);
                 }
               },
               child: Text(
                 Globals.homeObject["Contact_Phone__c"] ?? '-',
-                style: Theme.of(context).textTheme.bodyText1!,
+                style: AppTheme.linkStyle,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -328,8 +325,11 @@ class _ContactPageState extends State<ContactPage> {
             child: InkWell(
               onTap: () {
                 Globals.homeObject["Contact_Email__c"] != null
-                    ? urlobj.callurlLaucher(context,
-                        'mailto:"${Globals.homeObject["Contact_Email__c"]}"')
+                    ?
+                    // urlobj.callurlLaucher(context,
+                    //     'mailto:"${Globals.homeObject["Contact_Email__c"]}"')
+                    Utility.launchUrlOnExternalBrowser(
+                        "mailto:" + Globals.homeObject["Contact_Email__c"])
                     : print("null value");
               },
               child: Text(

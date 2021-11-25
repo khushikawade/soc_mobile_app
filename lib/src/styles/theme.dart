@@ -68,8 +68,8 @@ class AppTheme {
   // Banner Height
   static const double kBannerHeight = 15;
 
-  // Setting Height Factor For School & Staff Discription Images 
-  static const double kDetailPageImageHeightFactor = 30; 
+  // Setting Height Factor For School & Staff Discription Images
+  static const double kDetailPageImageHeightFactor = 30;
 
   //Borders
   static const double kBorderRadius = 0.0;
@@ -78,9 +78,23 @@ class AppTheme {
 
   //Paddings
   static const double kBodyPadding = 16.0;
-  
+
   //List bottom pading
   static const double klistPadding = 45.0;
+
+  //Hyperlink / External Link Style
+
+  static final linkStyle = TextStyle(
+    decoration: TextDecoration.underline,
+    decorationColor: Colors.blue,
+    fontSize: Globals.deviceType == "phone"
+        ? AppTheme.kBodyText1FontSize
+        : AppTheme.kBodyText1FontSize + AppTheme.kSize,
+    color: Colors.blue, //AppTheme.kAccentColor,
+    fontWeight: FontWeight.normal,
+    fontFamily: 'Roboto Regular',
+    height: 1.5,
+  );
 
   static final ThemeData lightTheme = ThemeData(
       // fontFamily: 'Roboto',

@@ -26,7 +26,7 @@ class SchoolDirectoryBloc
         yield SchoolDirectoryLoading();
         List<SchoolDirectoryList> list = await getSchoolDirectorySDList();
         if (list.length > 0) {
-          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
           yield SchoolDirectoryDataSucess(obj: list);
         } else {
           yield SchoolDirectoryDataSucess(obj: list);

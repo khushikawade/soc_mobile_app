@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/about/modal/about_list.dart';
 import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -41,7 +42,7 @@ class _AboutPageState extends State<AboutPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
-  List<AboutList> newList = [];
+  List<SharedList> newList = [];
   List<String?> department = [];
 
   @override
@@ -73,9 +74,9 @@ class _AboutPageState extends State<AboutPage> {
     }
   }
 
-  _aboutPageRoute(AboutList obj, List<AboutList> list, index) {
+  _aboutPageRoute(SharedList obj, List<SharedList> list, index) {
     if (obj.typeC == "URL") {
-      obj.urlC != null
+      obj.appUrlC != null
           ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Staff_Directory") {
@@ -112,7 +113,7 @@ class _AboutPageState extends State<AboutPage> {
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
                         isiFrame: true,
-                        title: obj.titleC,
+                        title: obj.titleC!,
                         url: obj.rtfHTMLC.toString(),
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
@@ -146,23 +147,23 @@ class _AboutPageState extends State<AboutPage> {
     }
   }
 
-  _launchURL(AboutList obj) async {
-    if (obj.urlC.toString().split(":")[0] == 'http') {
-      await Utility.launchUrlOnExternalBrowser(obj.urlC!);
+  _launchURL(SharedList obj) async {
+    if (obj.appUrlC.toString().split(":")[0] == 'http') {
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.titleC,
-                    url: obj.urlC!,
+                    title: obj.titleC!,
+                    url: obj.appUrlC!,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
   }
 
-  Widget _buildList(AboutList listData, List<AboutList> obj, int index) {
+  Widget _buildList(SharedList listData, List<SharedList> obj, int index) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -285,7 +286,7 @@ class _AboutPageState extends State<AboutPage> {
                               if (state is AboutDataSucess) {
                                 newList.clear();
                                 for (int i = 0; i < state.obj!.length; i++) {
-                                  if (state.obj![i].statusC != "Hide") {
+                                  if (state.obj![i].status != "Hide") {
                                     newList.add(state.obj![i]);
                                   }
                                 }

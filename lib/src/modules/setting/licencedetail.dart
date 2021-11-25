@@ -1,6 +1,7 @@
 import 'package:Soc/oss_licenses.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -106,7 +107,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           Expanded(
             child: InkWell(
               onTap: () {
-                urlobj.callurlLaucher(context, "${list["homepage"]}");
+                // urlobj.callurlLaucher(context, "${list["homepage"]}");
+                Utility.launchUrlOnExternalBrowser(list["homepage"]);
               },
               child: TranslationWidget(
                 message: list["homepage"].toString(),

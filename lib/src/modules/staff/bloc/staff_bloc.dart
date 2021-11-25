@@ -30,7 +30,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         getCalendarId(list);
         if (list.length > 0) {
           for (int i = 0; i < list.length; i++) {
-            list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+            list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
           }
           yield StaffDataSucess(
             obj: list,
@@ -51,7 +51,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         yield StaffLoading();
         List<SharedList> list = await getStaffSubList(event.id);
         if (list.length > 0) {
-          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
           yield StaffSubListSucess(
             obj: list,

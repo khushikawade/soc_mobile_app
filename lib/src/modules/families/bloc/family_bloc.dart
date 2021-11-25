@@ -3,7 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
 import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/modules/families/modal/family_sublist.dart';
-import 'package:Soc/src/modules/families/modal/stafflist.dart';
+import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
@@ -38,7 +38,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         getCalendarId(list);
 
         if (list.length > 0) {
-          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
           yield FamiliesDataSucess(obj: list);
         } else {
@@ -54,7 +54,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         yield FamilyLoading();
         List<SharedList> list = await getFamilySubList(event.id);
         if (list.length > 0) {
-          list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+          list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
           yield FamiliesSublistSucess(obj: list);
         } else {

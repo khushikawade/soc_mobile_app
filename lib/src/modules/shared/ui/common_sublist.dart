@@ -46,10 +46,10 @@ class _SubListPageState extends State<SubListPage> {
   FamilyBloc _bloc = FamilyBloc();
   StaffBloc _staffBloc = StaffBloc();
   AboutBloc _aboutBloc = AboutBloc();
-  List<SharedList> familyList = [];
-  List<SharedList> staffList = [];
-  List<ResourcesSubList> resourceList = [];
-  List<AboutSubList> aboutList = [];
+  List<SharedList> mainSubList = [];
+  // List<SharedList> staffList = [];
+  // List<SharedList> resourceList = [];
+  // List<SharedList> aboutList = [];
 
   final refreshKey = GlobalKey<RefreshIndicatorState>();
 
@@ -198,17 +198,17 @@ class _SubListPageState extends State<SubListPage> {
                             alignment: Alignment.center,
                             child: CircularProgressIndicator());
                       } else if (state is FamiliesSublistSucess) {
-                        return familyList.length > 0
+                        return mainSubList.length > 0
                             ? Expanded(
                                 child: ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
                                   padding: EdgeInsets.only(bottom: 45),
-                                  itemCount: familyList.length,
+                                  itemCount: mainSubList.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return _buildList(
-                                        familyList, familyList[index], index
+                                        mainSubList, mainSubList[index], index
                                         //   _buildFormName(index, resourceList[index]),
                                         //  resourceList[index]
                                         );
@@ -237,16 +237,16 @@ class _SubListPageState extends State<SubListPage> {
                                 alignment: Alignment.center,
                                 child: CircularProgressIndicator());
                           } else if (state is StaffSubListSucess) {
-                            return staffList.length > 0
+                            return mainSubList.length > 0
                                 ? Expanded(
                                     child: ListView.builder(
                                       scrollDirection: Axis.vertical,
                                       padding: EdgeInsets.only(bottom: 45),
-                                      itemCount: staffList.length,
+                                      itemCount: mainSubList.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        return _buildList(
-                                            staffList, staffList[index], index
+                                        return _buildList(mainSubList,
+                                            mainSubList[index], index
                                             //   _buildFormName(index, resourceList[index]),
                                             //  resourceList[index]
                                             );
@@ -275,17 +275,17 @@ class _SubListPageState extends State<SubListPage> {
                                     alignment: Alignment.center,
                                     child: CircularProgressIndicator());
                               } else if (state is ResourcesSubListSucess) {
-                                return resourceList.length > 0
+                                return mainSubList.length > 0
                                     ? Expanded(
                                         child: ListView.builder(
                                           scrollDirection: Axis.vertical,
                                           shrinkWrap: true,
                                           padding: EdgeInsets.only(bottom: 45),
-                                          itemCount: resourceList.length,
+                                          itemCount: mainSubList.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
-                                            return _buildList(resourceList,
-                                                resourceList[index], index
+                                            return _buildList(mainSubList,
+                                                mainSubList[index], index
                                                 //   _buildFormName(index, resourceList[index]),
                                                 //  resourceList[index]
                                                 );
@@ -317,19 +317,19 @@ class _SubListPageState extends State<SubListPage> {
                                         alignment: Alignment.center,
                                         child: CircularProgressIndicator());
                                   } else if (state is AboutSublistSucess) {
-                                    return aboutList.length > 0
+                                    return mainSubList.length > 0
                                         ? Expanded(
                                             child: ListView.builder(
                                               scrollDirection: Axis.vertical,
                                               shrinkWrap: true,
                                               padding:
                                                   EdgeInsets.only(bottom: 45),
-                                              itemCount: aboutList.length,
+                                              itemCount: mainSubList.length,
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index) {
-                                                return _buildList(aboutList,
-                                                    aboutList[index], index
+                                                return _buildList(mainSubList,
+                                                    mainSubList[index], index
                                                     //   _buildFormName(index, resourceList[index]),
                                                     //  resourceList[index]
                                                     );
@@ -358,10 +358,10 @@ class _SubListPageState extends State<SubListPage> {
                 bloc: _bloc,
                 listener: (context, state) async {
                   if (state is FamiliesSublistSucess) {
-                    familyList.clear();
+                    mainSubList.clear();
                     for (int i = 0; i < state.obj!.length; i++) {
                       if (state.obj![i].status != "Hide") {
-                        familyList.add(state.obj![i]);
+                        mainSubList.add(state.obj![i]);
                       }
                     }
                   }
@@ -371,10 +371,10 @@ class _SubListPageState extends State<SubListPage> {
                 bloc: _staffBloc,
                 listener: (context, state) async {
                   if (state is StaffSubListSucess) {
-                    staffList.clear();
+                    mainSubList.clear();
                     for (int i = 0; i < state.obj!.length; i++) {
                       if (state.obj![i].status != "Hide") {
-                        staffList.add(state.obj![i]);
+                        mainSubList.add(state.obj![i]);
                       }
                     }
                   }
@@ -384,10 +384,10 @@ class _SubListPageState extends State<SubListPage> {
                 bloc: _resourceBloc,
                 listener: (context, state) async {
                   if (state is ResourcesSubListSucess) {
-                    resourceList.clear();
+                    mainSubList.clear();
                     for (int i = 0; i < state.obj!.length; i++) {
                       if (state.obj![i].status != "Hide") {
-                        resourceList.add(state.obj![i]);
+                        mainSubList.add(state.obj![i]);
                       }
                     }
                   }
@@ -397,10 +397,10 @@ class _SubListPageState extends State<SubListPage> {
                 bloc: _aboutBloc,
                 listener: (context, state) async {
                   if (state is AboutSublistSucess) {
-                    aboutList.clear();
+                    mainSubList.clear();
                     for (int i = 0; i < state.obj!.length; i++) {
                       if (state.obj![i].status != "Hide") {
-                        aboutList.add(state.obj![i]);
+                        mainSubList.add(state.obj![i]);
                       }
                     }
                   }

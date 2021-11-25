@@ -9,7 +9,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
-import 'package:Soc/src/widgets/common_image_widget.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
@@ -121,7 +121,7 @@ class _StudentPageState extends State<StudentPage> {
                                   ? Container(
                                       height: 85,
                                       width: 85,
-                                      child: CommonImageWidget(
+                                      child: CustomIconWidget(
                                           iconUrl: list[index].appIconC ??
                                               Overrides.folderDefaultImage))
                                   : EmptyContainer(),

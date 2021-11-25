@@ -7,7 +7,6 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
-import 'package:Soc/src/modules/families/modal/family_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -29,15 +28,14 @@ class FamilyPage extends StatefulWidget {
 }
 
 class _FamilyPageState extends State<FamilyPage> {
-  static const double _kLabelSpacing = 10.0;
+  // static const double _kLabelSpacing = 10.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
   List<SharedList> newList = [];
-  FamiliesList list = FamiliesList();
-  bool _atBottom = false;
+  // bool _atBottom = false;
 
   @override
   void initState() {
@@ -357,7 +355,7 @@ class _FamilyPageState extends State<FamilyPage> {
           },
         ),
         body: Globals.homeObject["Family_Banner_Image__c"] != null &&
-                Globals.homeObject["Family_Banner_Image__c"] != '' 
+                Globals.homeObject["Family_Banner_Image__c"] != ''
             ? NestedScrollView(
                 // controller: _scrollController,
                 headerSliverBuilder:

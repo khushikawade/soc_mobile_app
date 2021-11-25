@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
-import 'package:Soc/src/modules/staff/models/staffmodal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
@@ -34,7 +33,7 @@ class _StaffPageState extends State<StaffPage> {
   bool? iserrorstate = false;
   var obj;
   List<SharedList> newList = [];
-  StaffList list = StaffList();
+  // StaffList list = StaffList();
 
   @override
   void initState() {
@@ -319,7 +318,7 @@ class _StaffPageState extends State<StaffPage> {
         },
       ),
       body: Globals.homeObject["Staff_Banner_Image__c"] != null &&
-              Globals.homeObject["Staff_Banner_Image__c"] != ''  
+              Globals.homeObject["Staff_Banner_Image__c"] != ''
           ? NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
