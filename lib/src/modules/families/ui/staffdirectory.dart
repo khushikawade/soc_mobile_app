@@ -228,7 +228,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 // objurl.callurlLaucher(
                                 //     context, 'mailto:"${obj.emailC}"');
                                 Utility.launchUrlOnExternalBrowser(
-                                    "mailto:" + obj.phoneC);
+                                    "mailto:" + obj.emailC);
                               },
                               child: Icon(
                                 Icons.email_outlined,
