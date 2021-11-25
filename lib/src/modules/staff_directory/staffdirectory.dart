@@ -172,8 +172,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               textAlign: TextAlign.start,
                               style: Theme.of(context).textTheme.headline2!),
                         ),
-                      obj.titleC!=null?  TranslationWidget(
-                          message: obj.titleC,
+                      obj.designation!=null?  TranslationWidget(
+                          message: obj.designation,
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
@@ -220,7 +220,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 // objurl.callurlLaucher(
                                 //     context, 'mailto:"${obj.emailC}"');
                                 Utility.launchUrlOnExternalBrowser(
-                                    "mailto:" + obj.phoneC);
+                                    "mailto:" + obj.emailC);
                               },
                               child: Icon(
                                 Icons.email_outlined,

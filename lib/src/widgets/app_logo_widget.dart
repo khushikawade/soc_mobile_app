@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/widgets/common_image_widget.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:flutter/material.dart';
 
 class AppLogoWidget extends StatelessWidget {
@@ -29,9 +29,8 @@ class AppLogoWidget extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: ClipRRect(
-                    child: 
-                    CommonImageWidget(iconUrl: Globals.homeObject["App_Logo__c"])
-                  ))),
+                      child: CustomIconWidget(
+                          iconUrl: Globals.homeObject["App_Logo__c"])))),
         ],
       ),
     );

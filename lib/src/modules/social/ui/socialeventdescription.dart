@@ -290,8 +290,14 @@ class SocialDescription extends StatelessWidget {
               "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => Text(translatedMessage.toString(),
-              style: Theme.of(context).textTheme.subtitle1!),
+          builder: (translatedMessage) => Html(
+            data: translatedMessage.toString(),
+            // style: Theme.of(context).textTheme.subtitle1!,
+            onLinkTap: (String? url, RenderContext context,
+                Map<String, String> attributes, dom.Element? element) {
+              _launchURL(url, context);
+            },
+          ),
         ),
       ),
       SpacerWidget(_kPadding),

@@ -9,15 +9,14 @@ class Item {
   final mediaContent;
   final enclosure;
 
-  Item({
-    this.title,
-    this.description,
-    this.link,
-    this.guid,
-    this.creator,
-    this.pubDate,
-    this.content,
-    this.mediaContent,
-    this.enclosure
-  });
+  Item(
+      {this.title,
+      this.description,
+      this.link,
+      this.guid,
+      this.creator,
+      this.pubDate,
+      this.content,
+      this.mediaContent,
+      this.enclosure});
 }
