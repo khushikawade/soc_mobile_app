@@ -12,6 +12,7 @@ class FetchBottomNavigationBar extends HomeEvent {
 
 class GlobalSearchEvent extends HomeEvent {
   final String? keyword;
+  // final String? objectName;
 
   GlobalSearchEvent({
     @required this.keyword,
