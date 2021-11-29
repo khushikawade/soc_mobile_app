@@ -1,9 +1,6 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/common_image_widget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 // ignore: must_be_immutable
 class ImagePopup extends StatefulWidget {
@@ -22,7 +19,7 @@ class ImagePopupState extends State<ImagePopup>
   AnimationController? controller;
   Animation<double>? scaleAnimation;
   // static const double _kLableSpacing = 10.0;
-  static const double _kIconSize = 45.0;
+  // static const double _kIconSize = 45.0;
 
   @override
   void initState() {
@@ -51,50 +48,89 @@ class ImagePopupState extends State<ImagePopup>
         child: ScaleTransition(
           scale: scaleAnimation!,
           child: Container(
-            // margin: const EdgeInsets.only(
-            //     top: 20, left: 20.0, right: 20, bottom: 20),
-            // height: MediaQuery.of(context).size.height * 0.6,
             decoration: ShapeDecoration(
-                // color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0))),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Stack(
+                // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // SpacerWidget(30),
-                  InteractiveViewer(
-                    panEnabled: false, // Set it to false
-                    clipBehavior: Clip.none, //Clip.antiAliasWithSaveLayer,
-                    // boundaryMargin: EdgeInsets.all(100),
-                    minScale: 0.5,
-                    maxScale: 10,
-                    child: CommonImageWidget(
-                      fitMethod: BoxFit.cover,
-                      iconUrl: widget.imageURL,
-                      height: Utility.displayHeight(context) *
-                          (AppTheme.kDetailPageImageHeightFactor / 100),
+                  Container(
+                      color: Colors.transparent,
+                      child: PhotoView(
+                        errorBuilder: (_, __, ___) {
+                          return Center(
+                              child: PhotoView(
+                            backgroundDecoration: BoxDecoration(
+                              color: Colors.transparent,
+                            ),
+                            initialScale: 0.0,
+                            minScale: 0.3,
+                            maxScale: 10.0,
+                            imageProvider: NetworkImage(
+                              Globals.splashImageUrl ??
+                                  Globals.homeObject["App_Logo__c"],
+                            ),
+                          ));
+                        },
+                        backgroundDecoration: BoxDecoration(
+                          color: Colors.transparent,
+                        ),
+                        // enablePanAlways: true,
+                        // onScaleEnd:(context, ScaleEndDetails, PhotoViewControllerValue){ScaleEndDetails==0.2? Navigator.pop(context):null;},
+                        initialScale: 0.0,
+                        minScale: 0.3,
+                        maxScale: 10.0,
+                        imageProvider: NetworkImage(
+                          widget.imageURL,
+                        ),
+                      )
+                      //   child: InteractiveViewer(
+                      //     panEnabled: false, // Set it to false
+                      //     clipBehavior: Clip.none,
+                      //     // boundaryMargin: EdgeInsets.all(100),
+                      //     scaleEnabled: true,
+                      //     minScale: 1,
+                      //     maxScale: 10,
+                      //     child:
+                      //     CommonImageWidget(
+                      //       fitMethod: BoxFit.contain,
+                      //       iconUrl:  widget.imageURL,
+
+                      //       // height: Utility.displayHeight(context) *
+                      //       //     (AppTheme.kDetailPageImageHeightFactor / 100),
+                      //     ),
+                      //   ),
+                      // ),
+                      ),
+                  // SpacerWidget(40),
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.width * 0.2),
+                      child: Container(
+                          // margin: EdgeInsets.all(20),
+                          padding: EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: Colors.transparent,
+                              border:
+                                  Border.all(width: 2, color: Colors.white)),
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.white,
+                              size: Globals.deviceType == "phone" ? 28 : 36,
+                            ),
+                          )),
                     ),
                   ),
-                  SpacerWidget(40),
-                  Container(
-                      // margin: EdgeInsets.all(20),
-                      padding: EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.transparent,
-                          border: Border.all(width: 2, color: Colors.white)),
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
-                          Icons.clear,
-                          color: Colors.white,
-                          size: Globals.deviceType == "phone" ? 28 : 36,
-                        ),
-                      )),
                 ],
               ),
             ),

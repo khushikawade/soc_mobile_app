@@ -33,23 +33,39 @@ class CommonImageWidget extends StatelessWidget {
         }
       },
       child: ClipRRect(
-        child: CachedNetworkImage(
-            imageUrl: iconUrl!,
-            fit: fitMethod ?? BoxFit.cover,
-            height: height ??
-                (Globals.deviceType == "phone"
-                    ? AppTheme.kIconSize
-                    : AppTheme.kTabIconSize),
-            width: width != 0
-                ? width
-                : (Globals.deviceType == "phone"
-                    ? AppTheme.kIconSize
-                    : AppTheme.kTabIconSize),
-            placeholder: (context, url) => Container(
-                alignment: Alignment.center,
-                child: ShimmerLoading(
-                  isLoading: true,
-                  child: Container(
+        child: Container(
+          child: CachedNetworkImage(
+              imageUrl: iconUrl!,
+              fit: fitMethod ?? BoxFit.cover,
+              height: height ??
+                  (Globals.deviceType == "phone"
+                      ? AppTheme.kIconSize
+                      : AppTheme.kTabIconSize),
+              width: width != 0
+                  ? width
+                  : (Globals.deviceType == "phone"
+                      ? AppTheme.kIconSize
+                      : AppTheme.kTabIconSize),
+              placeholder: (context, url) => Container(
+                  alignment: Alignment.center,
+                  child: ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      height: height ??
+                          (Globals.deviceType == "phone"
+                              ? AppTheme.kIconSize
+                              : AppTheme.kTabIconSize),
+                      width: width != 0
+                          ? width
+                          : (Globals.deviceType == "phone"
+                              ? AppTheme.kIconSize
+                              : AppTheme.kTabIconSize),
+                      color: Colors.white,
+                    ),
+                  )),
+              errorWidget: (context, url, error) => CachedNetworkImage(
+                    imageUrl: Globals.splashImageUrl ??
+                        Globals.homeObject["App_Logo__c"],
                     height: height ??
                         (Globals.deviceType == "phone"
                             ? AppTheme.kIconSize
@@ -59,39 +75,25 @@ class CommonImageWidget extends StatelessWidget {
                         : (Globals.deviceType == "phone"
                             ? AppTheme.kIconSize
                             : AppTheme.kTabIconSize),
-                    color: Colors.white,
-                  ),
-                )),
-            errorWidget: (context, url, error) => CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl ??
-                      Globals.homeObject["App_Logo__c"],
-                  height: height ??
-                      (Globals.deviceType == "phone"
-                          ? AppTheme.kIconSize
-                          : AppTheme.kTabIconSize),
-                  width: width != 0
-                      ? width
-                      : (Globals.deviceType == "phone"
-                          ? AppTheme.kIconSize
-                          : AppTheme.kTabIconSize),
-                  placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      child: ShimmerLoading(
-                        isLoading: true,
-                        child: Container(
-                          height: height ??
-                              (Globals.deviceType == "phone"
-                                  ? AppTheme.kIconSize
-                                  : AppTheme.kTabIconSize),
-                          width: width != 0
-                              ? width
-                              : (Globals.deviceType == "phone"
-                                  ? AppTheme.kIconSize
-                                  : AppTheme.kTabIconSize),
-                          color: Colors.white,
-                        ),
-                      )),
-                )),
+                    placeholder: (context, url) => Container(
+                        alignment: Alignment.center,
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            height: height ??
+                                (Globals.deviceType == "phone"
+                                    ? AppTheme.kIconSize
+                                    : AppTheme.kTabIconSize),
+                            width: width != 0
+                                ? width
+                                : (Globals.deviceType == "phone"
+                                    ? AppTheme.kIconSize
+                                    : AppTheme.kTabIconSize),
+                            color: Colors.white,
+                          ),
+                        )),
+                  )),
+        ),
       ),
     );
   }

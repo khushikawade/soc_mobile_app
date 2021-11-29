@@ -80,7 +80,7 @@ dependencies:
     git:
       url: https://github.com/piyushrathodIn/BubbleShowcase.git
       ref: onfinished_callback
-    
+  photo_view: ^0.13.0  
   speech_bubble: ^0.0.9
   firebase_analytics: ^8.3.3 
   path_provider: ^2.0.6
