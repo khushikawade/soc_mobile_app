@@ -105,8 +105,8 @@ class DbServices {
             "3MVG9eMnfmfDO5NC3QXoYv8SGxm3vUnduHs0xb5BwEiLHNXr46uKkiRFMIydXPVwcQG.T2uQ_4.uHRHnDL_tg",
         "client_secret":
             "9881213BBC5BA4A71BD3A5A1048815EE6775BC872A86203DA818A51AC7CCA624",
-        "username": "scott.walker@solvedconsulting.com", //"mahendra.patidar@zehntech.com.flutter",
-        "password": "Windows2020?" //"Solved123."
+        "username": "scott.walker@solvedconsulting.com",
+        "password": "Windows2020?"
       });
       Response response = await dio.post(
          "https://login.salesforce.com/services/oauth2/token",
