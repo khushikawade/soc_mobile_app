@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
-import 'package:translator/translator.dart';
+// import 'package:translator/translator.dart';
 
 class TranslationAPI {
   static final _apiKey = 'AIzaSyC4k5dqrfVndHy9vwBDjJf0l29mOb1J9Mk';

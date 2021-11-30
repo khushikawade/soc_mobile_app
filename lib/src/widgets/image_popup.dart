@@ -58,53 +58,62 @@ class ImagePopupState extends State<ImagePopup>
                 children: [
                   // SpacerWidget(30),
                   Container(
-                      color: Colors.transparent,
-                      child: PhotoView(
-                        errorBuilder: (_, __, ___) {
-                          return Center(
-                              child: PhotoView(
-                            backgroundDecoration: BoxDecoration(
-                              color: Colors.transparent,
-                            ),
-                            initialScale: 0.0,
-                            minScale: 0.3,
-                            maxScale: 10.0,
-                            imageProvider: NetworkImage(
-                              Globals.splashImageUrl ??
-                                  Globals.homeObject["App_Logo__c"],
-                            ),
-                          ));
-                        },
-                        backgroundDecoration: BoxDecoration(
-                          color: Colors.transparent,
-                        ),
-                        // enablePanAlways: true,
-                        // onScaleEnd:(context, ScaleEndDetails, PhotoViewControllerValue){ScaleEndDetails==0.2? Navigator.pop(context):null;},
-                        initialScale: 0.0,
-                        minScale: 0.3,
-                        maxScale: 10.0,
-                        imageProvider: NetworkImage(
-                          widget.imageURL,
-                        ),
-                      )
-                      //   child: InteractiveViewer(
-                      //     panEnabled: false, // Set it to false
-                      //     clipBehavior: Clip.none,
-                      //     // boundaryMargin: EdgeInsets.all(100),
-                      //     scaleEnabled: true,
-                      //     minScale: 1,
-                      //     maxScale: 10,
-                      //     child:
-                      //     CommonImageWidget(
-                      //       fitMethod: BoxFit.contain,
-                      //       iconUrl:  widget.imageURL,
-
-                      //       // height: Utility.displayHeight(context) *
-                      //       //     (AppTheme.kDetailPageImageHeightFactor / 100),
-                      //     ),
-                      //   ),
-                      // ),
+                    color: Colors.transparent,
+                    child: PhotoView(
+                      backgroundDecoration: BoxDecoration(
+                        color: Colors.transparent,
                       ),
+                      // enablePanAlways: true,
+                      // onScaleEnd:(context, ScaleEndDetails, PhotoViewControllerValue){ScaleEndDetails==0.2? Navigator.pop(context):null;},
+                      // initialScale: 0.0,
+                      // minScale: 0.3,
+                      // maxScale: 10.0,
+                      imageProvider: NetworkImage(widget.imageURL),
+                      maxScale: PhotoViewComputedScale.covered,
+                      initialScale: PhotoViewComputedScale.contained * 0.8,
+                      minScale: PhotoViewComputedScale.contained * 0.8,
+                      loadingBuilder: (context, event) {
+                        if (event == null) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return Container();
+                      },
+                      errorBuilder: (_, __, ___) {
+                        return Center(
+                            child: PhotoView(
+                          backgroundDecoration: BoxDecoration(
+                            color: Colors.transparent,
+                          ),
+                          initialScale: 0.0,
+                          minScale: 0.3,
+                          maxScale: 10.0,
+                          imageProvider: NetworkImage(
+                            Globals.splashImageUrl ??
+                                Globals.homeObject["App_Logo__c"],
+                          ),
+                        ));
+                      },
+                    ),
+                    //   child: InteractiveViewer(
+                    //     panEnabled: false, // Set it to false
+                    //     clipBehavior: Clip.none,
+                    //     // boundaryMargin: EdgeInsets.all(100),
+                    //     scaleEnabled: true,
+                    //     minScale: 1,
+                    //     maxScale: 10,
+                    //     child:
+                    //     CommonImageWidget(
+                    //       fitMethod: BoxFit.contain,
+                    //       iconUrl:  widget.imageURL,
+
+                    //       // height: Utility.displayHeight(context) *
+                    //       //     (AppTheme.kDetailPageImageHeightFactor / 100),
+                    //     ),
+                    //   ),
+                    // ),
+                  ),
                   // SpacerWidget(40),
                   Container(
                     alignment: Alignment.bottomCenter,

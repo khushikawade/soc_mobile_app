@@ -7,6 +7,7 @@ import 'package:Soc/src/widgets/button_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -14,7 +15,8 @@ import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:html/dom.dart' as dom;
 import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
@@ -84,17 +86,34 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _buildDescriptionWidget() {
     return Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing,
-        ),
-        // TODO: Replace text with HTML // text: widget.obj!.descriptionC ?? "",
-        child: Linkify(
-          onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
-          options: LinkifyOptions(humanize: false),
-          linkStyle: TextStyle(color: Colors.blue),
-          text: widget.obj!.descriptionC ?? "",
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-        ));
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: Html(
+        data: widget.obj!.descriptionC ?? "",
+        onLinkTap: (String? url, RenderContext context,
+            Map<String, String> attributes, dom.Element? element) {
+          // print(url);
+          _launchURL(url);
+        },
+      ),
+    );
+  }
+
+  _launchURL(obj) async {
+    if (obj.toString().split(":")[0] == 'http') {
+      await Utility.launchUrlOnExternalBrowser(obj);
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: widget.obj!.name ?? "",
+                    url: obj,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    }
   }
 
   Widget _buildPhoneWidget() {
@@ -133,7 +152,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   onTap: () {
                     // urlobj.callurlLaucher(context, "tel:" + widget.obj!.phoneC);
                     Utility.launchUrlOnExternalBrowser(
-                          "tel:" + widget.obj!.phoneC);
+                        "tel:" + widget.obj!.phoneC);
                   },
                   child: Text(
                     widget.obj!.phoneC ?? "",
