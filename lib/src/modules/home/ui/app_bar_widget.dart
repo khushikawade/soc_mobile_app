@@ -125,7 +125,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return Container(
-        height: 80,
+        height: Globals.isAndroid == true ? 80 : 102,
         child: AppBar(
             // automaticallyImplyLeading: true,
             leadingWidth: _kIconSize,

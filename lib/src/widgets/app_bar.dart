@@ -49,7 +49,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80,
+      height: Globals.isAndroid == true ? 80 : 102,
       child: AppBar(
         elevation: 0.0,
         leading: BackButtonWidget(),
