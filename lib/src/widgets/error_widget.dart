@@ -28,19 +28,13 @@ class ErrorMsgWidget extends StatelessWidget {
           SpacerWidget(12),
           Container(
             alignment: Alignment.center,
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English" &&
-                    Globals.selectedLanguage != ""
-                ? TranslationWidget(
-                    message: "Something went wrong",
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.bodyText1!),
-                  )
-                : Text("Something went wrong",
-                    style: Theme.of(context).textTheme.bodyText1!),
+            child: TranslationWidget(
+              message: "Something went wrong",
+              toLanguage: Globals.selectedLanguage,
+              fromLanguage: "en",
+              builder: (translatedMessage) => Text(translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText1!),
+            ),
           ),
         ],
       ),

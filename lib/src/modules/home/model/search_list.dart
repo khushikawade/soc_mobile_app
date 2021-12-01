@@ -18,11 +18,13 @@ class SearchList {
   String? address;
   final geoLocation;
   final statusC;
-  final sortOredr;
+  final sortOrder;
   String? name;
   String? typeC;
   String? pdfURL;
   String? deepLink;
+  String? calendarId;
+
 
   SearchList(
       {this.attributes,
@@ -42,11 +44,13 @@ class SearchList {
       this.address,
       this.geoLocation,
       this.statusC,
-      this.sortOredr,
+      this.sortOrder,
       this.name,
       this.typeC,
       this.pdfURL,
-      this.deepLink});
+      this.deepLink,
+      this.calendarId
+      });
 
   factory SearchList.fromJson(Map<String, dynamic> json) => SearchList(
         attributes: json['attributes'] == null
@@ -69,11 +73,12 @@ class SearchList {
         address: json['Contact_Address__c'] as String?,
         geoLocation: json['Contact_Office_Location__c'],
         statusC: json['Active_Status__c'],
-        sortOredr: json['Sort_Order__c'],
+        sortOrder: json['Sort_Order__c'],
         name: json['Name'] as String?,
         typeC: json['Type__c'] as String?,
         pdfURL: json['PDF_URL__c'] as String?,
         deepLink: json['Deep_Link__c'] as String?,
+        calendarId: json['Calendar_Id__c'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -94,10 +99,11 @@ class SearchList {
         'Contact_Address__c': address,
         'Contact_Office_Location__c': geoLocation,
         'Active_Status__c': statusC,
-        'Sort_Order__c': sortOredr,
+        'Sort_Order__c': sortOrder,
         'Name': name,
         'PDF_URL__c': pdfURL,
         'Type__c': typeC,
         'Deep_Link__c': deepLink,
+        'Calendar_Id__c': calendarId,
       };
 }

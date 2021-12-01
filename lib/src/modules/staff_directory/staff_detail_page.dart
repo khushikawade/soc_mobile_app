@@ -1,18 +1,20 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/button_widget.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 // ignore: must_be_immutable
@@ -41,77 +43,15 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _sdImage() {
     return Container(
-      child: widget.obj!.imageUrlC != null
-          ? Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
-              child: CachedNetworkImage(
-                imageUrl: widget.obj!.imageUrlC,
-                fit: BoxFit.fill,
-                placeholder: (context, url) => Container(
-                  alignment: Alignment.center,
-                  child: ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      height: 200,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl != null &&
-                          Globals.splashImageUrl != ""
-                      ? Globals.splashImageUrl
-                      : Globals.homeObjet["App_Logo__c"],
-                  placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      child: ShimmerLoading(
-                        isLoading: true,
-                        child: Container(
-                          width: _kIconSize * 1.4,
-                          height: _kIconSize * 1.5,
-                          color: Colors.white,
-                        ),
-                      )),
-                ),
-              ),
-            )
-          : Container(
-              child: ClipRRect(
-                child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl != null &&
-                          Globals.splashImageUrl != ""
-                      ? Globals.splashImageUrl
-                      : Globals.homeObjet["App_Logo__c"],
-                  placeholder: (context, url) => Container(
-                      alignment: Alignment.center,
-                      child: ShimmerLoading(
-                        isLoading: true,
-                        child: Container(
-                          height: 200,
-                          color: Colors.white,
-                        ),
-                      )),
-                  errorWidget: (context, url, error) => CachedNetworkImage(
-                    imageUrl: Globals.splashImageUrl != null &&
-                            Globals.splashImageUrl != ""
-                        ? Globals.splashImageUrl
-                        : Globals.homeObjet["App_Logo__c"],
-                    placeholder: (context, url) => Container(
-                        alignment: Alignment.center,
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            width: _kIconSize * 1.4,
-                            height: _kIconSize * 1.5,
-                            color: Colors.white,
-                          ),
-                        )),
-                  ),
-                ),
-              ),
-            ),
-    );
+        child: CommonImageWidget(
+      iconUrl: widget.obj!.imageUrlC ??
+          Globals.splashImageUrl ??
+          Globals.homeObject["App_Logo__c"],
+      height: Utility.displayHeight(context) *
+          (AppTheme.kDetailPageImageHeightFactor / 100),
+      fitMethod: BoxFit.fitHeight,
+      isOnTap: true,
+    ));
   }
 
   Widget _buildTitleWidget() {
@@ -120,7 +60,21 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
           horizontal: _kLabelSpacing,
         ),
         child: Text(
-          widget.obj!.titleC ?? "",
+          widget.obj!.designation ?? "",
+          textAlign: TextAlign.left,
+          style: Theme.of(context).textTheme.headline2!.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+        ));
+  }
+
+  Widget _buildNameWidget() {
+    return Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing,
+        ),
+        child: Text(
+          widget.obj!.name ?? "",
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline2!.copyWith(
                 fontWeight: FontWeight.w500,
@@ -133,11 +87,13 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
         ),
-        child: Text(
-          widget.obj!.descriptionC ?? "",
-          style: Theme.of(context).textTheme.headline2!.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+        // TODO: Replace text with HTML // text: widget.obj!.descriptionC ?? "",
+        child: Linkify(
+          onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
+          options: LinkifyOptions(humanize: false),
+          linkStyle: TextStyle(color: Colors.blue),
+          text: widget.obj!.descriptionC ?? "",
+          style: Theme.of(context).textTheme.bodyText1!.copyWith(),
         ));
   }
 
@@ -159,32 +115,25 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
               horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
           child: Row(
             children: [
-              Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English" &&
-                      Globals.selectedLanguage != ""
-                  ? TranslationWidget(
-                      message: "Phone :",
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
+              TranslationWidget(
+                message: "Phone :",
+                toLanguage: Globals.selectedLanguage,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        fontWeight: FontWeight.w500,
                       ),
-                    )
-                  : Text(
-                      "Phone : ",
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                    ),
+                ),
+              ),
               HorzitalSpacerWidget(_kLabelSpacing / 2),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: InkWell(
                   onTap: () {
-                    urlobj.callurlLaucher(context, "tel:" + widget.obj!.phoneC);
+                    // urlobj.callurlLaucher(context, "tel:" + widget.obj!.phoneC);
+                    Utility.launchUrlOnExternalBrowser(
+                        "tel:" + widget.obj!.phoneC);
                   },
                   child: Text(
                     widget.obj!.phoneC ?? "",
@@ -256,8 +205,10 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: InkWell(
                     onTap: () {
-                      urlobj.callurlLaucher(
-                          context, 'mailto:"${widget.obj!.emailC}"');
+                      // urlobj.callurlLaucher(
+                      //     context, 'mailto:"${widget.obj!.emailC}"');
+                      Utility.launchUrlOnExternalBrowser(
+                          "mailto:" + widget.obj!.emailC);
                     },
                     child: Text(
                       widget.obj!.emailC ?? '-',
@@ -283,28 +234,43 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _buildItem() {
     return ListView(padding: const EdgeInsets.only(bottom: 35.0), children: [
-      _buildTitleWidget(),
+      SpacerWidget(_kLabelSpacing / 1.5),
+      _buildNameWidget(),
       SpacerWidget(_kLabelSpacing),
       _sdImage(),
       SpacerWidget(_kLabelSpacing),
+      _buildTitleWidget(),
+      SpacerWidget(_kLabelSpacing),
       _buildDescriptionWidget(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj!.phoneC != null ? _buildPhoneWidget() : Container(),
-      SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj!.emailC != null ? _buildEmailWidget() : Container(),
-      SpacerWidget(_kLabelSpacing / 1.25),
+      // SpacerWidget(_kLabelSpacing / 1.25),
+      widget.obj!.phoneC != null
+          ? Padding(
+              padding: const EdgeInsets.only(top: _kLabelSpacing / 1.25),
+              child: _buildPhoneWidget(),
+            )
+          : Container(),
+      // SpacerWidget(_kLabelSpacing / 1.25),
+      widget.obj!.emailC != null
+          ? Padding(
+              padding: const EdgeInsets.only(top: _kLabelSpacing / 1.25),
+              child: _buildEmailWidget(),
+            )
+          : Container(),
+      SpacerWidget(_kLabelSpacing),
       ButtonWidget(
-        title: widget.obj!.titleC ?? "",
+        title: widget.obj!.designation ?? "",
         buttonTitle: "Share",
         obj: widget.obj,
-        body: "${widget.obj!.descriptionC ?? ""}" +
-            "\n" +
-            "${widget.obj!.imageUrlC ?? ""}" +
-            "\n" +
-            "${"Phone : " + widget.obj!.phoneC != "" ? widget.obj!.phoneC : "-"}" +
-            "\n" +
-            "${"Email : " + widget.obj!.emailC != "" ? widget.obj!.emailC : "-"}",
-      )
+        body:
+            "${widget.obj!.descriptionC != null ? widget.obj!.descriptionC.toString() : ""}" +
+                "\n" +
+                "${widget.obj!.imageUrlC ?? ""}" +
+                "\n" +
+                "${"Phone : " + widget.obj!.phoneC.toString()}" +
+                // "\n" +
+                "${"Email : " + widget.obj!.emailC.toString()}",
+      ),
+      SpacerWidget(_kLabelSpacing / 2),
     ]);
   }
 
@@ -351,7 +317,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
                                   isloadingstate = false;
                                   setState(() {});
                                 }
@@ -370,7 +336,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   listener: (context, state) async {
                     if (state is BottomNavigationBarSuccess) {
                       AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      Globals.homeObjet = state.obj;
+                      Globals.homeObject = state.obj;
                       setState(() {});
                     }
                   },

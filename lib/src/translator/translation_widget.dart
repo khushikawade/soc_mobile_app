@@ -35,7 +35,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
 
-    if (toLanguageCode == 'en') {
+    if (toLanguageCode == 'en'||toLanguageCode == '') {
       return widget.builder!(widget.message!);
     }
 

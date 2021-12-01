@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -41,6 +42,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           "sobjects": [
             {
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
@@ -48,13 +50,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "Name",
                 "RTF_HTML__c",
                 "Type__c",
-                "School_App__c"
+                "School_App__c",
+                "Calendar_Id__c"
               ],
               "name": "Families_App__c"
             },
             {
               "name": "Family_Sub_Menu_App__c",
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
@@ -68,6 +72,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             {
               "name": "Staff_App__c",
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
@@ -75,11 +80,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "Name",
                 "RTF_HTML__c",
                 "Type__c",
-                "School_App__c"
+                "School_App__c",
+                "Calendar_Id__c"
               ]
             },
             {
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
@@ -93,6 +100,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             },
             {
               "fields": [
+                "Active_Status__c",
                 "Title__c",
                 "App_URL__c",
                 "App_Icon_URL__c",
@@ -100,7 +108,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 "Id",
                 "Name",
                 "App_Folder__c",
-                "School_App__c"
+                "School_App__c",
+                "Is_Folder__c",
+                "Sort_Order__c"
               ],
               "name": "Student_App__c"
             },
@@ -172,15 +182,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           "overallLimit": 100,
           "defaultLimit": 10
         });
-        for (int i = 0; i < list.length; i++) {
-          if (list[i].schoolId == Globals.homeObjet["Id"]) {
-            filteredList.add(list[i]);
+        if (list.length > 0) {
+          for (int i = 0; i < list.length; i++) {
+            if (list[i].schoolId == Globals.homeObject["Id"]) {
+              filteredList.add(list[i]);
+            }
+            yield GlobalSearchSuccess(
+              obj: filteredList,
+            );
           }
+        } else {
+          yield GlobalSearchSuccess(
+            obj: list,
+          );
         }
-
-        yield GlobalSearchSuccess(
-          obj: filteredList,
-        );
       } catch (e) {
         yield HomeErrorReceived(err: e);
       }
@@ -196,6 +211,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (response.statusCode == 200) {
         final data = response.data;
         Globals.appSetting = AppSetting.fromJson(data);
+        if (Globals.appSetting.bannerHeightFactor != null) {
+          AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
+        }
         return data;
       }
     } catch (e) {

@@ -26,7 +26,7 @@ class ResourcesErrorLoading extends ResourcesState {
 }
 
 class ResourcesDataSucess extends ResourcesState {
-  final List<ResourcesList>? obj;
+  final List<SharedList>? obj;
   ResourcesDataSucess({
     this.obj,
   });
@@ -41,8 +41,8 @@ class ResourcesDataSucess extends ResourcesState {
 }
 
 class ResourcesSubListSucess extends ResourcesState {
-  final List<ResourcesSubList>? obj;
-  final List<ResourcesSubList>? subFolder;
+  final List<SharedList>? obj;
+  final List<SharedList>? subFolder;
   ResourcesSubListSucess({this.obj, this.subFolder});
   ResourcesSubListSucess copyWith({final obj, final subFolder}) {
     return ResourcesSubListSucess(

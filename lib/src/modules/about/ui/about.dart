@@ -1,11 +1,15 @@
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
-import 'package:Soc/src/modules/about/modal/aboutstafflist.dart';
-import 'package:Soc/src/modules/families/ui/staffdirectory.dart';
+import 'package:Soc/src/modules/about/modal/about_list.dart';
+import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -38,7 +42,7 @@ class _AboutPageState extends State<AboutPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
-  List<AboutList> newList = [];
+  List<SharedList> newList = [];
   List<String?> department = [];
 
   @override
@@ -59,15 +63,20 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget _buildLeading(obj) {
-    return CustomIconWidget(
-      iconUrl:
-          "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Miscellaneous/default_icon.png",
-    );
+    if (obj.appIconUrlC != null) {
+      return CustomIconWidget(
+        iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
+      );
+    } else {
+      return CustomIconWidget(
+        iconUrl: Overrides.defaultIconUrl,
+      );
+    }
   }
 
-  _aboutPageRoute(AboutList obj, List<AboutList> list, index) {
+  _aboutPageRoute(SharedList obj, List<SharedList> list, index) {
     if (obj.typeC == "URL") {
-      obj.urlC != null
+      obj.appUrlC != null
           ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Staff_Directory") {
@@ -82,7 +91,7 @@ class _AboutPageState extends State<AboutPage> {
                     isAbout: true,
                     language: Globals.selectedLanguage,
                   )));
-    } else if (obj.typeC == "RFT_HTML" ||
+    } else if (obj.typeC == "RTF_HTML" ||
         obj.typeC == "HTML/RTF" ||
         obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
@@ -97,7 +106,20 @@ class _AboutPageState extends State<AboutPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (obj.typeC == "PDF URL") {
+    } else if (obj.typeC == "Embed iFrame") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                        isiFrame: true,
+                        title: obj.titleC!,
+                        url: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
           ? Navigator.push(
               context,
@@ -109,28 +131,39 @@ class _AboutPageState extends State<AboutPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+    } else if (obj.typeC == "Sub-Menu") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SubListPage(
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    module: "about",
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
     } else {
       Utility.showSnackBar(_scaffoldKey, "No data available", context);
     }
   }
 
-  _launchURL(AboutList obj) async {
-    if (obj.urlC.toString().split(":")[0] == 'http') {
-      await Utility.launchUrlOnExternalBrowser(obj.urlC!);
+  _launchURL(SharedList obj) async {
+    if (obj.appUrlC.toString().split(":")[0] == 'http') {
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.titleC,
-                    url: obj.urlC!,
+                    title: obj.titleC!,
+                    url: obj.appUrlC!,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
   }
 
-  Widget _buildList(AboutList listData, List<AboutList> obj, int index) {
+  Widget _buildList(SharedList listData, List<SharedList> obj, int index) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -157,20 +190,15 @@ class _AboutPageState extends State<AboutPage> {
           //             )));
         },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        leading: _buildLeading(obj),
-        title: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: listData.titleC ?? "-",
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) {
-                  return Text(translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText2!);
-                })
-            : Text(listData.titleC ?? "-",
-                style: Theme.of(context).textTheme.bodyText1!),
+        leading: _buildLeading(listData),
+        title: TranslationWidget(
+            message: listData.titleC ?? "-",
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) {
+              return Text(translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText1!);
+            }),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
@@ -215,7 +243,8 @@ class _AboutPageState extends State<AboutPage> {
                                 } else if (state is AboutDataSucess) {
                                   return newList.length > 0
                                       ? ListView.builder(
-                                          padding: EdgeInsets.only(bottom: 45),
+                                          padding: EdgeInsets.only(
+                                              bottom: AppTheme.klistPadding),
                                           scrollDirection: Axis.vertical,
                                           itemCount: newList.length,
                                           itemBuilder: (BuildContext context,
@@ -245,7 +274,7 @@ class _AboutPageState extends State<AboutPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
                                   setState(() {});
                                 }
                               },
@@ -257,7 +286,7 @@ class _AboutPageState extends State<AboutPage> {
                               if (state is AboutDataSucess) {
                                 newList.clear();
                                 for (int i = 0; i < state.obj!.length; i++) {
-                                  if (state.obj![i].statusC != "Hide") {
+                                  if (state.obj![i].status != "Hide") {
                                     newList.add(state.obj![i]);
                                   }
                                 }
@@ -282,23 +311,19 @@ class _AboutPageState extends State<AboutPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObjet["About_Banner_Image__c"] != null &&
-                Globals.homeObjet["About_Banner_Image__c"] != ""
+        body: Globals.homeObject["About_Banner_Image__c"] != null &&
+                Globals.homeObject["About_Banner_Image__c"] != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    SliverAppBar(
-                      expandedHeight: AppTheme.kBannerHeight,
-                      floating: false,
-                      // pinned: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true,
-                        background: Image.network(
-                          Globals.homeObjet["About_Banner_Image__c"],
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+                    BannerImageWidget(
+                      imageUrl: Globals.homeObject["About_Banner_Image__c"],
+                      bgColor:
+                          Globals.homeObject["About_Banner_Color__c"] != null
+                              ? Utility.getColorFromHex(
+                                  Globals.homeObject["About_Banner_Color__c"])
+                              : null,
                     )
                   ];
                 },

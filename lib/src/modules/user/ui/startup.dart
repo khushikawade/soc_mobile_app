@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -43,13 +45,19 @@ class _StartupPageState extends State<StartupPage> {
     _newsBloc.add(FetchNotificationList());
     getindexvalue();
     _showcase();
+
+    if (Platform.isAndroid) {
+      Globals.isAndroid = true;
+    } else if (Platform.isIOS) {
+      Globals.isAndroid = false;
+    }
   }
 
   Future<void> _showcase() async {
     WidgetsFlutterBinding.ensureInitialized();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     bool? _flag = preferences.getBool('hasShowcaseInitialised');
-    if(_flag == true){
+    if (_flag == true) {
       Globals.hasShowcaseInitialised.value = true;
     }
     preferences.setBool('hasShowcaseInitialised', true);
@@ -93,7 +101,7 @@ class _StartupPageState extends State<StartupPage> {
                 padding: const EdgeInsets.all(16),
                 child: CachedNetworkImage(
                   imageUrl: Globals.splashImageUrl!,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                   errorWidget: (context, url, error) => Icon(
                     Icons.error,
                   ),
@@ -120,6 +128,7 @@ class _StartupPageState extends State<StartupPage> {
             return new Stack(
               fit: StackFit.expand,
               children: [
+                //Will show the splash screen while the auto login is in the progress
                 connected
                     ? BlocBuilder<UserBloc, UserState>(
                         bloc: _loginBloc,
@@ -127,7 +136,6 @@ class _StartupPageState extends State<StartupPage> {
                           if (state is Loading) {
                             return _buildSplashScreen();
                           }
-
                           if (state is ErrorReceived) {
                             return ListView(children: [
                               ErrorMsgWidget(),
@@ -139,6 +147,27 @@ class _StartupPageState extends State<StartupPage> {
                         connected: connected,
                         issplashscreen: true,
                       ),
+                // Login End
+                // Showing spash screen while fetching App Settings(Bottom Nav items, colors etc.)
+                connected
+                    ? BlocBuilder<HomeBloc, HomeState>(
+                        bloc: _bloc,
+                        builder: (BuildContext contxt, HomeState state) {
+                          if (state is HomeLoading) {
+                            return _buildSplashScreen();
+                          }
+                          if (state is ErrorReceived) {
+                            return ListView(children: [
+                              ErrorMsgWidget(),
+                            ]);
+                          }
+                          return Container();
+                        })
+                    : NoInternetErrorWidget(
+                        connected: connected,
+                        issplashscreen: true,
+                      ),
+                // Fetching App Settings(Bottom Nav items, colors etc.) End.
                 Container(
                   height: 0,
                   width: 0,
@@ -166,7 +195,7 @@ class _StartupPageState extends State<StartupPage> {
                     listener: (context, state) async {
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        Globals.homeObjet = state.obj;
+                        Globals.homeObject = state.obj;
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
                         prefs.setString(
@@ -209,6 +238,7 @@ class _StartupPageState extends State<StartupPage> {
                           prefs.setBool("enableIndicator", true);
                           Globals.indicator.value = true;
                         }
+                        setState(() {});
                       }
                     },
                     child: Container(),

@@ -1,6 +1,7 @@
 import 'package:Soc/oss_licenses.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -48,30 +49,19 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
       child: Row(
         children: [
           Expanded(
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English" &&
-                    Globals.selectedLanguage != ""
-                ? TranslationWidget(
-                    message: list["description"].toString(),
-                    fromLanguage: "en",
-                    toLanguage: Globals.selectedLanguage,
-                    builder: (translatedMessage) => Text(
-                      translatedMessage,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(color: Colors.black),
-                      textAlign: TextAlign.justify,
-                    ),
-                  )
-                : Text(
-                    list["description"].toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: Colors.black),
-                    textAlign: TextAlign.justify,
-                  ),
+            child: TranslationWidget(
+              message: list["description"].toString(),
+              fromLanguage: "en",
+              toLanguage: Globals.selectedLanguage,
+              builder: (translatedMessage) => Text(
+                translatedMessage,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline3!
+                    .copyWith(color: Colors.black),
+                textAlign: TextAlign.justify,
+              ),
+            ),
           ),
         ],
       ),
@@ -88,30 +78,19 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English" &&
-                    Globals.selectedLanguage != ""
-                ? TranslationWidget(
-                    message: list["name"].toString(),
-                    fromLanguage: "en",
-                    toLanguage: Globals.selectedLanguage,
-                    builder: (translatedMessage) => Text(
-                      translatedMessage,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(color: Colors.black),
-                      textAlign: TextAlign.start,
-                    ),
-                  )
-                : Text(
-                    list["name"].toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(color: Colors.black),
-                    textAlign: TextAlign.start,
-                  ),
+            child: TranslationWidget(
+              message: list["name"].toString(),
+              fromLanguage: "en",
+              toLanguage: Globals.selectedLanguage,
+              builder: (translatedMessage) => Text(
+                translatedMessage,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(color: Colors.black),
+                textAlign: TextAlign.start,
+              ),
+            ),
           )
         ],
       ),
@@ -128,30 +107,21 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           Expanded(
             child: InkWell(
               onTap: () {
-                urlobj.callurlLaucher(context, "${list["homepage"]}");
+                // urlobj.callurlLaucher(context, "${list["homepage"]}");
+                Utility.launchUrlOnExternalBrowser(list["homepage"]);
               },
-              child: Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English" &&
-                      Globals.selectedLanguage != ""
-                  ? TranslationWidget(
-                      message: list["homepage"].toString(),
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) => Text(
-                        translatedMessage,
-                        style: Theme.of(context).textTheme.headline3!.copyWith(
-                            decoration: TextDecoration.underline,
-                            color: AppTheme.kAccentColor),
-                        textAlign: TextAlign.start,
-                      ),
-                    )
-                  : Text(
-                      list["homepage"].toString(),
-                      style: Theme.of(context).textTheme.headline3!.copyWith(
-                          decoration: TextDecoration.underline,
-                          color: AppTheme.kAccentColor),
-                      textAlign: TextAlign.start,
-                    ),
+              child: TranslationWidget(
+                message: list["homepage"].toString(),
+                fromLanguage: "en",
+                toLanguage: Globals.selectedLanguage,
+                builder: (translatedMessage) => Text(
+                  translatedMessage,
+                  style: Theme.of(context).textTheme.headline3!.copyWith(
+                      decoration: TextDecoration.underline,
+                      color: AppTheme.kAccentColor),
+                  textAlign: TextAlign.start,
+                ),
+              ),
             ),
           ),
         ],
@@ -168,54 +138,34 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: "Version:",
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => Text(
-                    translatedMessage,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: Colors.black),
-                    textAlign: TextAlign.start,
-                  ),
-                )
-              : Text(
-                  "Version:",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3!
-                      .copyWith(color: Colors.black),
-                ),
+          TranslationWidget(
+            message: "Version:",
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) => Text(
+              translatedMessage,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline3!
+                  .copyWith(color: Colors.black),
+              // textAlign: TextAlign.start,
+            ),
+          ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English" &&
-                    Globals.selectedLanguage != ""
-                ? TranslationWidget(
-                    message: list["version"].toString(),
-                    fromLanguage: "en",
-                    toLanguage: Globals.selectedLanguage,
-                    builder: (translatedMessage) => Text(
-                      translatedMessage,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(color: Colors.black),
-                    ),
-                  )
-                : Text(
-                    list["version"].toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: Colors.black),
-                    textAlign: TextAlign.start,
-                  ),
+            child: TranslationWidget(
+              message: list["version"].toString(),
+              fromLanguage: "en",
+              toLanguage: Globals.selectedLanguage,
+              builder: (translatedMessage) => Text(
+                translatedMessage,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline3!
+                    .copyWith(color: Colors.black),
+                textAlign: TextAlign.start,
+              ),
+            ),
           )
         ],
       ),
@@ -227,30 +177,19 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
       padding: const EdgeInsets.symmetric(
         horizontal: _kLabelSpacing,
       ),
-      child: Globals.selectedLanguage != null &&
-              Globals.selectedLanguage != "English" &&
-              Globals.selectedLanguage != ""
-          ? TranslationWidget(
-              message: "Authors:",
-              fromLanguage: "en",
-              toLanguage: Globals.selectedLanguage,
-              builder: (translatedMessage) => Text(
-                translatedMessage,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline3!
-                    .copyWith(color: Colors.black),
-                textAlign: TextAlign.start,
-              ),
-            )
-          : Text(
-              "Authors:",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline3!
-                  .copyWith(color: Colors.black),
-              textAlign: TextAlign.start,
-            ),
+      child: TranslationWidget(
+        message: "Authors:",
+        fromLanguage: "en",
+        toLanguage: Globals.selectedLanguage,
+        builder: (translatedMessage) => Text(
+          translatedMessage,
+          style: Theme.of(context)
+              .textTheme
+              .headline3!
+              .copyWith(color: Colors.black),
+          textAlign: TextAlign.start,
+        ),
+      ),
     );
   }
 
@@ -264,31 +203,20 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English" &&
-                    Globals.selectedLanguage != ""
-                ? TranslationWidget(
-                    message:
-                        "${list["authors"].toString().replaceAll('[', '').replaceAll(']', '')}",
-                    fromLanguage: "en",
-                    toLanguage: Globals.selectedLanguage,
-                    builder: (translatedMessage) => Text(
-                      translatedMessage,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(color: Colors.black),
-                      textAlign: TextAlign.left,
-                    ),
-                  )
-                : Text(
-                    "${list["authors"].toString().replaceAll('[', '').replaceAll(']', '')}",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: Colors.black),
-                    textAlign: TextAlign.left,
-                  ),
+            child: TranslationWidget(
+              message:
+                  "${list["authors"].toString().replaceAll('[', '').replaceAll(']', '')}",
+              fromLanguage: "en",
+              toLanguage: Globals.selectedLanguage,
+              builder: (translatedMessage) => Text(
+                translatedMessage,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline3!
+                    .copyWith(color: Colors.black),
+                textAlign: TextAlign.left,
+              ),
+            ),
           )
         ],
       ),
@@ -300,30 +228,19 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
         ),
-        child: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: "License:",
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3!
-                      .copyWith(color: Colors.black),
-                  textAlign: TextAlign.start,
-                ),
-              )
-            : Text(
-                "License:",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline3!
-                    .copyWith(color: Colors.black),
-                textAlign: TextAlign.start,
-              ));
+        child: TranslationWidget(
+          message: "License:",
+          fromLanguage: "en",
+          toLanguage: Globals.selectedLanguage,
+          builder: (translatedMessage) => Text(
+            translatedMessage.toString(),
+            style: Theme.of(context)
+                .textTheme
+                .headline3!
+                .copyWith(color: Colors.black),
+            textAlign: TextAlign.start,
+          ),
+        ));
   }
 
   Widget _buildlicenseInfo(list) {
@@ -334,31 +251,20 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           padding: const EdgeInsets.symmetric(
             horizontal: _kLabelSpacing,
           ),
-          child: Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message:
-                      "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "\n").replaceAll("*", "").replaceAll("     ", "").toLowerCase()}",
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => Text(
-                    translatedMessage,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: Colors.black, height: 1.5),
-                    textAlign: TextAlign.start,
-                  ),
-                )
-              : Text(
-                  "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "").replaceAll("*", "").replaceAll("     ", "")}",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3!
-                      .copyWith(color: Colors.black, height: 1.5),
-                  textAlign: TextAlign.start,
-                ),
+          child: TranslationWidget(
+            message:
+                "${list["license"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("\n", "").replaceAll("\n\n ", "\n").replaceAll("*", "").replaceAll("     ", "").toLowerCase()}",
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) => Text(
+              translatedMessage,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline3!
+                  .copyWith(color: Colors.black, height: 1.5),
+              textAlign: TextAlign.start,
+            ),
+          ),
         )),
       ],
     );
@@ -404,7 +310,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
                                   setState(() {});
                                 }
                               },

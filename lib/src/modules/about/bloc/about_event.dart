@@ -9,3 +9,16 @@ class AboutStaffDirectoryEvent extends AboutEvent {
   List<Object> get props => [];
 }
 
+class AboutSublistEvent extends AboutEvent {
+  final String? id;
+
+  AboutSublistEvent({
+    required this.id,
+  });
+
+  @override
+  List<Object> get props => [id!];
+
+  @override
+  String toString() => 'GlobalSearchEvent { keyword: $id}';
+}

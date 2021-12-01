@@ -31,14 +31,12 @@ class _AppState extends State<App> {
       light: AppTheme.lightTheme,
       initial: AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
-        title: 'Solved',
-        theme: theme,
-        darkTheme: darkTheme,
-        home: StartupPage()
-      ),
+          debugShowCheckedModeBanner: false,
+          scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
+          title: 'Solved',
+          theme: theme,
+          darkTheme: darkTheme,
+          home: StartupPage()),
     );
   }
 }
-

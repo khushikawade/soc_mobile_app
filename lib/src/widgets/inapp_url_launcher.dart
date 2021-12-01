@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 class InAppUrlLauncer extends StatefulWidget {
+  final bool? isiFrame;
   final String title;
   final String url;
   final bool? hideHeader;
@@ -18,9 +19,10 @@ class InAppUrlLauncer extends StatefulWidget {
       {Key? key,
       required this.title,
       required this.url,
-      this.hideHeader,
       required this.isbuttomsheet,
-      required this.language})
+      required this.language,
+      this.hideHeader,
+      this.isiFrame})
       : super(key: key);
   _InAppUrlLauncerState createState() => new _InAppUrlLauncerState();
 }
@@ -68,12 +70,23 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
               }
 
               return connected
-                  ? WebView(
-                      initialUrl: '${widget.url}',
-                      javascriptMode: JavascriptMode.unrestricted,
-                      onWebViewCreated: (WebViewController webViewController) {
-                        _controller.complete(webViewController);
-                      },
+                  ? Container(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.032),
+                      child: WebView(
+                        gestureNavigationEnabled:
+                            widget.isiFrame == true ? true : false,
+                        initialUrl: widget.isiFrame == true
+                            ? Uri.dataFromString('${widget.url}',
+                                    mimeType: 'text/html')
+                                .toString()
+                            : '${widget.url}',
+                        javascriptMode: JavascriptMode.unrestricted,
+                        onWebViewCreated:
+                            (WebViewController webViewController) {
+                          _controller.complete(webViewController);
+                        },
+                      ),
                     )
                   : NoInternetErrorWidget(
                       connected: connected, issplashscreen: false);

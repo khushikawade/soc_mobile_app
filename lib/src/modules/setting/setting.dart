@@ -50,9 +50,9 @@ class _SettingPageState extends State<SettingPage> {
     Globals.callsnackbar = true;
   }
 
-  void appversion()async{
-  packageInfo = await PackageInfo.fromPlatform();
-}
+  void appversion() async {
+    packageInfo = await PackageInfo.fromPlatform();
+  }
 
   pushState(data) async {
     SharedPreferences pushStatus = await SharedPreferences.getInstance();
@@ -79,25 +79,16 @@ class _SettingPageState extends State<SettingPage> {
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: _kLabelSpacing),
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English" &&
-                    Globals.selectedLanguage != ""
-                ? TranslationWidget(
-                    message: tittle,
-                    fromLanguage: "en",
-                    toLanguage: Globals.selectedLanguage,
-                    builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                          style:
-                              Theme.of(context).textTheme.headline2!.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                        ))
-                : Text(tittle,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(fontWeight: FontWeight.w500)),
+            child: TranslationWidget(
+                message: tittle,
+                fromLanguage: "en",
+                toLanguage: Globals.selectedLanguage,
+                builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.headline2!.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                    )),
           ),
         ),
       ],
@@ -139,29 +130,21 @@ class _SettingPageState extends State<SettingPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 0, vertical: _kLabelSpacing / 2),
-                child: TranslationWidget(
-                  message: "Enable Notification",
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => Padding(
-                    padding: const EdgeInsets.only(left: _kLabelSpacing),
-                    child: Text(translatedMessage.toString(),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline2!),
-                  ),
-                ),
-              )
-            : Padding(
-                padding: const EdgeInsets.only(left: _kLabelSpacing),
-                child: Text("Enable Notification",
-                    style: Theme.of(context).textTheme.headline2!),
-              ),
+        Container(
+          padding:
+              EdgeInsets.symmetric(horizontal: 0, vertical: _kLabelSpacing / 2),
+          child: TranslationWidget(
+            message: "Enable Notification",
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) => Padding(
+              padding: const EdgeInsets.only(left: _kLabelSpacing),
+              child: Text(translatedMessage.toString(),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline2!),
+            ),
+          ),
+        ),
         _buildSwitch(),
       ],
     );
@@ -177,32 +160,24 @@ class _SettingPageState extends State<SettingPage> {
       },
       child: Container(
           padding: EdgeInsets.all(16),
-          child: Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: "Open Source licences",
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.headline2!,
-                      ))
-              : Text(
-                  "Open Source licences",
-                  style: Theme.of(context).textTheme.headline2!,
-                )),
+          child: TranslationWidget(
+              message: "Open Source licences",
+              fromLanguage: "en",
+              toLanguage: Globals.selectedLanguage,
+              builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.headline2!,
+                  ))),
     );
   }
-
 
   Widget _appVersion() {
     return Container(
         padding: EdgeInsets.all(16),
         child: Text(
-                packageInfo!.version,
-                style: Theme.of(context).textTheme.headline2!,
-              ));
+          packageInfo!.version,
+          style: Theme.of(context).textTheme.headline2!,
+        ));
   }
 
   Widget _buildItem() {
@@ -218,7 +193,7 @@ class _SettingPageState extends State<SettingPage> {
           width: MediaQuery.of(context).size.width * 1,
           height: 100.0,
           child: ShareButtonWidget(
-            language: Globals.selectedLanguage,
+            isSettingPage: true,
           ))
     ]);
   }
@@ -275,7 +250,7 @@ class _SettingPageState extends State<SettingPage> {
                                       if (state is BottomNavigationBarSuccess) {
                                         AppTheme.setDynamicTheme(
                                             Globals.appSetting, context);
-                                        Globals.homeObjet = state.obj;
+                                        Globals.homeObject = state.obj;
                                         isloadingstate = false;
                                         setState(() {});
                                       }

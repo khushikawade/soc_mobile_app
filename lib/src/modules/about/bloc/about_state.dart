@@ -27,7 +27,7 @@ class ErrorLoading extends AboutState {
 
 // ignore: must_be_immutable
 class AboutDataSucess extends AboutState {
-  List<AboutList>? obj;
+  List<SharedList>? obj;
   AboutDataSucess({
     this.obj,
   });
@@ -35,6 +35,21 @@ class AboutDataSucess extends AboutState {
     final obj,
   }) {
     return AboutDataSucess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class AboutSublistSucess extends AboutState {
+  List<SharedList>? obj;
+  AboutSublistSucess({
+    this.obj,
+  });
+  AboutSublistSucess copyWith({
+    final obj,
+  }) {
+    return AboutSublistSucess(obj: obj ?? this.obj);
   }
 
   @override

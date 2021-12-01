@@ -2,17 +2,15 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -68,6 +66,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
       Globals.indicator.value = true;
+      await Future.delayed(Duration(milliseconds: 1500));
       bloc.add(FetchNotificationList());
     });
   }
@@ -105,78 +104,16 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         },
         child: Row(
           children: <Widget>[
-            Container(
-              alignment: Alignment.center,
+            CommonImageWidget(
+              iconUrl: obj.image ??
+                  Globals.splashImageUrl ??
+                  Globals.homeObject["App_Logo__c"],
+              height: Globals.deviceType == "phone"
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
               width: Globals.deviceType == "phone"
                   ? _kIconSize * 1.4
                   : _kIconSize * 2,
-              height: Globals.deviceType == "phone"
-                  ? _kIconSize * 1.5
-                  : _kIconSize * 2,
-              child: obj.image != null
-                  ? ClipRRect(
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (_) =>
-                                  NewsImagePage(imageURL: obj.image!));
-                        },
-                        child: CachedNetworkImage(
-                          imageUrl: obj.image!,
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: ShimmerLoading(
-                                isLoading: true,
-                                child: Container(
-                                  width: _kIconSize * 1.4,
-                                  height: _kIconSize * 1.5,
-                                  color: Colors.white,
-                                ),
-                              )),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
-                      ),
-                    )
-                  : Container(
-                      width: Globals.deviceType == "phone"
-                          ? _kIconSize * 1.4
-                          : _kIconSize * 2,
-                      height: Globals.deviceType == "phone"
-                          ? _kIconSize * 1.5
-                          : _kIconSize * 2,
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (_) => NewsImagePage(
-                                  imageURL: Globals.splashImageUrl != null &&
-                                          Globals.splashImageUrl != ""
-                                      ? Globals.splashImageUrl
-                                      : Globals.homeObjet["App_Logo__c"]));
-                        },
-                        child: CachedNetworkImage(
-                          imageUrl: Globals.splashImageUrl != null &&
-                                  Globals.splashImageUrl != ""
-                              ? Globals.splashImageUrl
-                              : Globals.homeObjet["App_Logo__c"],
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: ShimmerLoading(
-                                isLoading: true,
-                                child: Container(
-                                  width: _kIconSize * 1.4,
-                                  height: _kIconSize * 1.5,
-                                  color: Colors.white,
-                                ),
-                              )),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
-                      ),
-                    ),
             ),
             SizedBox(
               width: _kLabelSpacing / 2,
@@ -195,33 +132,22 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildnewsHeading(obj) {
     return Container(
         alignment: Alignment.centerLeft,
-        child: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: obj.headings!.length > 0 &&
-                        obj.headings != "" &&
-                        obj.headings != null
-                    ? obj.headings["en"].toString()
-                    : obj.contents["en"] ?? '-',
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Text(
-                  // obj.titleC.toString(),
-                  translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.bodyText2!,
-                ),
-              )
-            : Text(
-                obj.headings!.length > 0 &&
-                        obj.headings != "" &&
-                        obj.headings != null
-                    ? obj.headings["en"].toString()
-                    : obj.contents["en"] ?? '-',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                style: Theme.of(context).textTheme.headline4!,
-              ));
+        child: TranslationWidget(
+          message: obj.headings!.length > 0 &&
+                  obj.headings != "" &&
+                  obj.headings != null
+              ? obj.headings["en"].toString()
+              : obj.contents["en"] ?? '-',
+          fromLanguage: "en",
+          toLanguage: Globals.selectedLanguage,
+          builder: (translatedMessage) => Text(
+            // obj.titleC.toString(),
+            translatedMessage.toString(),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            style: Theme.of(context).textTheme.headline4!,
+          ),
+        ));
   }
 
   // Widget _buildTimeStamp(NotificationList obj) {
@@ -237,7 +163,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildList(obj) {
     return Expanded(
       child: ListView.builder(
-        padding: EdgeInsets.only(bottom: 40),
+        padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
         itemCount: obj.length,
         itemBuilder: (BuildContext context, int index) {
@@ -347,7 +273,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
                                   setState(() {});
                                 } else if (state is HomeErrorReceived) {
                                   ErrorMsgWidget();

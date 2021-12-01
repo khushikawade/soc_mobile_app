@@ -1,5 +1,5 @@
-import 'dart:async';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -32,8 +32,8 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   final flutterWebviewPlugin = new FlutterWebviewPlugin();
   WebViewController? _webViewController;
   bool? iserrorstate = false;
-  StreamSubscription<WebViewStateChanged>?
-      _onchanged; // here we checked the url state if it loaded or start Load or abort Load
+  // StreamSubscription<WebViewStateChanged>?
+  //     _onchanged; // here we checked the url state if it loaded or start Load or abort Load
 
   @override
   void initState() {
@@ -53,7 +53,11 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
         appBar: AppBar(
           elevation: 0.0,
           leading: BackButtonWidget(),
-          title: SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget(marginLeft: 0,)),
+          title: //SizedBox(width: 100.0, height: 60.0, child:
+              AppLogoWidget(
+            marginLeft: 55,
+          ),
+          //),
           actions: [
             widget.isSocialpage
                 ? IconButton(
@@ -96,7 +100,8 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
                     padding: EdgeInsets.zero,
                     constraints: BoxConstraints(),
                     onPressed: () {
-                      urlobj.callurlLaucher(context, url);
+                      // urlobj.callurlLaucher(context, url);
+                      Utility.launchUrlOnExternalBrowser(url);
                     },
                     icon: Icon(
                       IconData(0xe80e,
@@ -122,44 +127,5 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
 
   void reloadWebView() {
     _webViewController?.reload();
-  }
-
-  Widget buttomButtonsWidget() {
-    return SafeArea(
-        child: Container(
-            padding: EdgeInsets.all(_kPadding / 2),
-            color: Theme.of(context).colorScheme.background,
-            child: Column(
-              // mainAxisSize: MainAxisSize.max,
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                //   Icon(
-                //     Icons.arrow_back_ios_new,
-                //     color: AppTheme.kBlackColor,
-                //     size: 20,
-                //   ),
-                //   SizedBox(width: _kPadding / 2),
-                //   Icon(
-                //     Icons.arrow_forward_ios_rounded,
-                //     color: AppTheme.kBlackColor,
-                //     size: 20,
-                //   ),
-                // ]),
-                SizedBox(
-                  width: _kPadding / 2,
-                ),
-                IconButton(
-                    onPressed: () {
-                      flutterWebviewPlugin.reload();
-                    },
-                    icon: Icon(
-                      IconData(0xe80f,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      size: Globals.deviceType == "phone" ? 20 : 28,
-                    )),
-              ],
-            )));
   }
 }

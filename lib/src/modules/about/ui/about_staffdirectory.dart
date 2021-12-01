@@ -305,7 +305,7 @@
 //                                   if (state is BottomNavigationBarSuccess) {
 //                                     AppTheme.setDynamicTheme(
 //                                         Globals.appSetting, context);
-//                                     Globals.homeObjet = state.obj;
+//                                     Globals.homeObject = state.obj;
 //                                     setState(() {});
 //                                   } else if (state is HomeErrorReceived) {
 //                                     ErrorMsgWidget();

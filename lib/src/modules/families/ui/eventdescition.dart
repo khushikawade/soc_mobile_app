@@ -45,83 +45,48 @@ class _EventDescriptionState extends State<EventDescription> {
         padding: const EdgeInsets.only(bottom: 30.0),
         children: [
           SpacerWidget(_kPadding / 2),
-          Globals.selectedLanguage != null &&
-                  Globals.selectedLanguage != "English" &&
-                  Globals.selectedLanguage != ""
-              ? TranslationWidget(
-                  message: list.summary!, // titleC!,
-                  toLanguage: Globals.selectedLanguage,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headline2!),
-                )
-              : Text(list.summary ?? '-',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline2!),
+          TranslationWidget(
+            message: list.summary!, // titleC!,
+            toLanguage: Globals.selectedLanguage,
+            fromLanguage: "en",
+            builder: (translatedMessage) => Text(translatedMessage.toString(),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline2!),
+          ),
           SpacerWidget(_kPadding / 4),
           divider(),
           SpacerWidget(_kPadding / 2),
           Container(
             alignment: Alignment.centerLeft,
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English" &&
-                    Globals.selectedLanguage != ""
-                ? TranslationWidget(
-                    message: Utility.convertDateFormat2(list.start
-                                .toString()
-                                .contains('dateTime')
-                            ? list.start['dateTime'].toString().substring(0, 10)
-                            : list.start['date'].toString().substring(0, 10)) +
-                        " - " +
-                        Utility.convertDateFormat2(list.end
-                                .toString()
-                                .contains('dateTime')
-                            ? list.end['dateTime'].toString().substring(0, 10)
-                            : list.end['date'].toString().substring(0, 10)),
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.subtitle1!,
-                    ),
-                  )
-                : Text(
-                    Utility.convertDateFormat2(list.start
-                                .toString()
-                                .contains('dateTime')
-                            ? list.start['dateTime'].toString().substring(0, 10)
-                            : list.start['date'].toString().substring(0, 10)) +
-                        " - " +
-                        Utility.convertDateFormat2(list.end
-                                .toString()
-                                .contains('dateTime')
-                            ? list.start['dateTime'].toString().substring(0, 10)
-                            : list.start['date'].toString().substring(0, 10)),
-                    style: Theme.of(context).textTheme.subtitle1!,
-                  ),
+            child: TranslationWidget(
+              message: Utility.convertDateFormat2(
+                      list.start.toString().contains('dateTime')
+                          ? list.start['dateTime'].toString().substring(0, 10)
+                          : list.start['date'].toString().substring(0, 10)) +
+                  " - " +
+                  Utility.convertDateFormat2(
+                      list.end.toString().contains('dateTime')
+                          ? list.end['dateTime'].toString().substring(0, 10)
+                          : list.end['date'].toString().substring(0, 10)),
+              toLanguage: Globals.selectedLanguage,
+              fromLanguage: "en",
+              builder: (translatedMessage) => Text(
+                translatedMessage.toString(),
+                style: Theme.of(context).textTheme.subtitle1!,
+              ),
+            ),
           ),
           SpacerWidget(_kPadding / 2),
           Container(
             alignment: Alignment.centerLeft,
-            child: Globals.selectedLanguage != null &&
-                    Globals.selectedLanguage != "English" &&
-                    Globals.selectedLanguage != ""
-                ? TranslationWidget(
-                    message: list.description ?? "",
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.subtitle1!),
-                  )
-                : Text(
-                    list.description ?? "",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.subtitle1!,
-                  ),
+            child: TranslationWidget(
+              message: list.description ?? "",
+              toLanguage: Globals.selectedLanguage,
+              fromLanguage: "en",
+              builder: (translatedMessage) => Text(translatedMessage.toString(),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.subtitle1!),
+            ),
           ),
           SpacerWidget(_kPadding / 2),
           list.htmlLink != null ? _buildEventLink(list) : Container(),
@@ -136,7 +101,8 @@ class _EventDescriptionState extends State<EventDescription> {
     return InkWell(
       onTap: () {
         UrlLauncherWidget obj = new UrlLauncherWidget();
-        obj.callurlLaucher(context, list.htmlLink);
+        // obj.callurlLaucher(context, list.htmlLink);
+        Utility.launchUrlOnExternalBrowser(list.htmlLink);
       },
       child: Text(
         list.htmlLink ?? '-',
