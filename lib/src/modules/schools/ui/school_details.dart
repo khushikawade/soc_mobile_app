@@ -12,7 +12,6 @@ import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,7 +35,7 @@ class SchoolDetailPage extends StatefulWidget {
 class _SchoolDetailPageState extends State<SchoolDetailPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
-  static const double _kIconSize = 48.0;
+  // static const double _kIconSize = 48.0;
   bool issuccesstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();

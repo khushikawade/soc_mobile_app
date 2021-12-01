@@ -18,8 +18,6 @@ class ImagePopupState extends State<ImagePopup>
     with SingleTickerProviderStateMixin {
   AnimationController? controller;
   Animation<double>? scaleAnimation;
-  // static const double _kLableSpacing = 10.0;
-  // static const double _kIconSize = 45.0;
 
   @override
   void initState() {
@@ -54,20 +52,13 @@ class ImagePopupState extends State<ImagePopup>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Stack(
-                // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // SpacerWidget(30),
                   Container(
                     color: Colors.transparent,
                     child: PhotoView(
                       backgroundDecoration: BoxDecoration(
                         color: Colors.transparent,
                       ),
-                      // enablePanAlways: true,
-                      // onScaleEnd:(context, ScaleEndDetails, PhotoViewControllerValue){ScaleEndDetails==0.2? Navigator.pop(context):null;},
-                      // initialScale: 0.0,
-                      // minScale: 0.3,
-                      // maxScale: 10.0,
                       imageProvider: NetworkImage(widget.imageURL),
                       maxScale: PhotoViewComputedScale.covered,
                       initialScale: PhotoViewComputedScale.contained * 0.8,
@@ -96,25 +87,7 @@ class ImagePopupState extends State<ImagePopup>
                         ));
                       },
                     ),
-                    //   child: InteractiveViewer(
-                    //     panEnabled: false, // Set it to false
-                    //     clipBehavior: Clip.none,
-                    //     // boundaryMargin: EdgeInsets.all(100),
-                    //     scaleEnabled: true,
-                    //     minScale: 1,
-                    //     maxScale: 10,
-                    //     child:
-                    //     CommonImageWidget(
-                    //       fitMethod: BoxFit.contain,
-                    //       iconUrl:  widget.imageURL,
-
-                    //       // height: Utility.displayHeight(context) *
-                    //       //     (AppTheme.kDetailPageImageHeightFactor / 100),
-                    //     ),
-                    //   ),
-                    // ),
                   ),
-                  // SpacerWidget(40),
                   Container(
                     alignment: Alignment.bottomCenter,
                     child: Padding(

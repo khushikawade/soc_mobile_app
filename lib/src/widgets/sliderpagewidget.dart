@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/staff_directory/about_sd_detail_page.dart';
+import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
