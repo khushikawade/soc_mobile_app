@@ -9,7 +9,7 @@ class SchoolDirectoryList {
   final geoLocation;
   String? urlC;
   String? id;
-  final sortOredr;
+  final sortOrder;
   final statusC;
 
   SchoolDirectoryList(
@@ -22,7 +22,7 @@ class SchoolDirectoryList {
       this.geoLocation,
       this.urlC,
       this.id,
-      this.sortOredr,
+      this.sortOrder,
       this.statusC});
 
   factory SchoolDirectoryList.fromJson(Map<String, dynamic> json) =>
@@ -36,7 +36,7 @@ class SchoolDirectoryList {
           geoLocation: json['Contact_Office_Location__c'],
           urlC: json['Website_URL__c'] as String?,
           id: json['Id'] as String?,
-          sortOredr: json['Sort_Order__c'],
+          sortOrder: json['Sort_Order__c'],
           statusC: json['Active_Status__c']);
 
   Map<String, dynamic> toJson() => {
@@ -49,7 +49,7 @@ class SchoolDirectoryList {
         'Contact_Office_Location__c': geoLocation,
         'Website_URL__c': urlC,
         'Id': id,
-        'Sort_Order__c': sortOredr,
+        'Sort_Order__c': sortOrder,
         'Active_Status__c': statusC
       };
 }

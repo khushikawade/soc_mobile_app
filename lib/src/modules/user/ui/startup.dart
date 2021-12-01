@@ -101,7 +101,7 @@ class _StartupPageState extends State<StartupPage> {
                 padding: const EdgeInsets.all(16),
                 child: CachedNetworkImage(
                   imageUrl: Globals.splashImageUrl!,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                   errorWidget: (context, url, error) => Icon(
                     Icons.error,
                   ),
@@ -195,7 +195,7 @@ class _StartupPageState extends State<StartupPage> {
                     listener: (context, state) async {
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        Globals.homeObjet = state.obj;
+                        Globals.homeObject = state.obj;
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
                         prefs.setString(

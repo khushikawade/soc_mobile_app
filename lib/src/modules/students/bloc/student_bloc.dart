@@ -27,7 +27,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         if (list.length > 0) {
           for (int i = 0; i < list.length; i++) {
             if (list[i].status == "Show"||list[i].status ==null) {
-              list.sort((a, b) => a.sortOredr.compareTo(b.sortOredr));
+              list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
               if (list[i].appFolderc == null || list[i].appFolderc == "") {
                 appList.add(list[i]);
               }

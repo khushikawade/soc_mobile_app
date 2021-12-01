@@ -47,26 +47,17 @@ class _ListBorderWidgetState extends State<ListBorderWidget> {
               horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
           child: Row(
             children: [
-              Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English" &&
-                      Globals.selectedLanguage != ""
-                  ? TranslationWidget(
-                      message: "${widget.title} :",
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
+              TranslationWidget(
+                message: "${widget.title} :",
+                toLanguage: Globals.selectedLanguage,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        fontWeight: FontWeight.w500,
                       ),
-                    )
-                  : Text(
-                      "${widget.title} :",
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                    ),
+                ),
+              ),
               HorzitalSpacerWidget(_kLabelSpacing / 2),
               Container(
                 child: widget.child,

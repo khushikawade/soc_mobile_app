@@ -1,17 +1,18 @@
 import 'dart:io';
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/home/model/recent.dart';
+
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'src/modules/home/model/recent.g.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   if (!kIsWeb) {
     // Not running on the web!
     final appDocumentDirectory =

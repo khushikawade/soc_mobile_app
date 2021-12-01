@@ -2,7 +2,6 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
-import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
@@ -19,7 +18,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
     required this.sharedpopBodytext,
     this.isCenterIcon,
     this.ishtmlpage,
-     this.marginLeft,
+    this.marginLeft,
     required this.language,
   })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
@@ -33,7 +32,6 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   bool? ishtmlpage;
   bool? isCenterIcon;
   String? language;
-  
 
   @override
   final Size preferredSize;
@@ -50,89 +48,58 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      elevation: 0.0,
-      leading: BackButtonWidget(),
-      title: widget.isCenterIcon != null && widget.isCenterIcon == true
-          ? 
-          // SizedBox(width: 100.0, height: 60.0, child: 
-          AppLogoWidget(marginLeft: widget.marginLeft,)
-          // )
-          : widget.appBarTitle != ""
-              ? Globals.selectedLanguage != null &&
-                      Globals.selectedLanguage != "English" &&
-                      Globals.selectedLanguage != ""
-                  ? TranslationWidget(
-                      message: widget.appBarTitle,
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.headline2!.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.w400),
-                        textAlign: TextAlign.center,
-                      ),
-                    )
-                  : Text(
-                      widget.appBarTitle,
-                      style: Theme.of(context).textTheme.headline2!.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.w400),
-                      textAlign: TextAlign.center,
-                    )
-              : AppLogoWidget(
-            marginLeft: 20,
-          ),
-      actions: [
-        widget.isSearch == true
-            ? SearchButtonWidget(
-                language: Globals.selectedLanguage,
+    return Container(
+      height: 80,
+      child: AppBar(
+        elevation: 0.0,
+        leading: BackButtonWidget(),
+        title: widget.isCenterIcon != null && widget.isCenterIcon == true
+            ? AppLogoWidget(
+                marginLeft: widget.marginLeft,
               )
-            : Container(
-                height: 0,
-              ),
-        widget.isShare == true &&
-                widget.isShare == true &&
-                widget.sharedpopBodytext != 'null'
-            ? IconButton(
-                onPressed: () {
-                  widget.sharedpopBodytext != null &&
-                          widget.sharedpopUpheaderText != 'null' &&
-                          widget.sharedpopBodytext!.length > 1
-                      ? shareobj.callFunction(
-                          context,
-                          widget.sharedpopBodytext.toString(),
-                          widget.sharedpopUpheaderText.toString())
-                      : print("null");
-                },
-                icon: Icon(
-                  Icons.share,
-                  size: Globals.deviceType == "phone" ? 20 : 28,
+            : TranslationWidget(
+                message: widget.appBarTitle,
+                fromLanguage: "en",
+                toLanguage: Globals.selectedLanguage,
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w400),
+                  textAlign: TextAlign.center,
                 ),
-              )
-            : Container(),
-        // widget.ishtmlpage == true
-        //     ? IconButton(
-        //         onPressed: () {
-        //           widget.sharedpopBodytext != null &&
-        //                   widget.sharedpopUpheaderText != 'null' &&
-        //                   widget.sharedpopBodytext!.length > 1
-        //               ? shareobj.callFunction(
-        //                   context,
-        //                   widget.sharedpopBodytext.toString(),
-        //                   widget.sharedpopUpheaderText.toString())
-        //               : print("null");
-        //         },
-        //         icon: Icon(
-        //           Icons.share,
-        //           size: Globals.deviceType == "phone" ? 18 : 26,
-        //         ))
-        // : Container(
-        //     height: 0,
-        //   ),
-        HorzitalSpacerWidget(_kLabelSpacing / 3)
-      ],
+              ),
+        actions: [
+          widget.isSearch == true
+              ? SearchButtonWidget(
+                  language: Globals.selectedLanguage,
+                )
+              : Container(
+                  height: 0,
+                ),
+          widget.isShare == true &&
+                  widget.isShare == true &&
+                  widget.sharedpopBodytext != 'null'
+              ? IconButton(
+                  onPressed: () {
+                    widget.sharedpopBodytext != null &&
+                            widget.sharedpopUpheaderText != 'null' &&
+                            widget.sharedpopBodytext!.length > 1
+                        ? shareobj.callFunction(
+                            context,
+                            widget.sharedpopBodytext.toString(),
+                            widget.sharedpopUpheaderText.toString())
+                        : print("null");
+                  },
+                  icon: Icon(
+                    Icons.share,
+                    size: Globals.deviceType == "phone" ? 20 : 28,
+                  ),
+                )
+              : Container(),
+          HorzitalSpacerWidget(_kLabelSpacing / 3)
+        ],
+      ),
     );
   }
 

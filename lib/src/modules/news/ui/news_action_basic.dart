@@ -216,7 +216,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
           ? widget.newsObj.image
           : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
               ? Globals.splashImageUrl
-              : Globals.homeObjet["App_Logo__c"];
+              : Globals.homeObject["App_Logo__c"];
       File _image = await Utility.createFileFromUrl(_imageUrl);
       setState(() {
         _isDownloadingFile = false;

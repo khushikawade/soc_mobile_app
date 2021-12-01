@@ -12,20 +12,16 @@ class NeedSupportWidget extends StatelessWidget {
       onPressed: () {
         iNeedSupport(context);
       },
-      child: Globals.selectedLanguage != null &&
-              Globals.selectedLanguage != "English" &&
-              Globals.selectedLanguage != ""
-          ? Container(
-              child: TranslationWidget(
-                message: "I Need Support",
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                ),
-              ),
-            )
-          : Text("I Need Support"),
+      child: Container(
+        child: TranslationWidget(
+          message: "I Need Support",
+          fromLanguage: "en",
+          toLanguage: Globals.selectedLanguage,
+          builder: (translatedMessage) => Text(
+            translatedMessage.toString(),
+          ),
+        ),
+      ),
     );
   }
 

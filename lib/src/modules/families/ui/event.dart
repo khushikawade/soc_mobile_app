@@ -104,48 +104,26 @@ class _EventPageState extends State<EventPage>
                             .toString()
                             .split("/")[0],
                         style: Theme.of(context).textTheme.headline5!),
-                    Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English" &&
-                            Globals.selectedLanguage != ""
-                        ? TranslationWidget(
-                            message: Utility.getMonthFromDate(
-                                    list.start.toString().contains('dateTime')
-                                        ? list.start['dateTime']
-                                            .toString()
-                                            .substring(0, 10)
-                                        : list.start['date']
-                                            .toString()
-                                            .substring(0, 10))
-                                .toString()
-                                .split("/")[1],
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                                translatedMessage.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                      height: 1.5,
-                                    ),
-                                textAlign: TextAlign.center),
-                          )
-                        : Text(
-                            Utility.getMonthFromDate(
-                                    list.start.toString().contains('dateTime')
-                                        ? list.start['dateTime']
-                                            .toString()
-                                            .substring(0, 10)
-                                        : list.start['date']
-                                            .toString()
-                                            .substring(0, 10))
-                                .toString()
-                                .split("/")[1],
-                            style:
-                                Theme.of(context).textTheme.headline2!.copyWith(
-                                      height: 1.5,
-                                    ),
-                          ),
+                    TranslationWidget(
+                      message: Utility.getMonthFromDate(list.start
+                                  .toString()
+                                  .contains('dateTime')
+                              ? list.start['dateTime']
+                                  .toString()
+                                  .substring(0, 10)
+                              : list.start['date'].toString().substring(0, 10))
+                          .toString()
+                          .split("/")[1],
+                      toLanguage: Globals.selectedLanguage,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    height: 1.5,
+                                  ),
+                          textAlign: TextAlign.center),
+                    )
                   ]),
                 ),
                 HorzitalSpacerWidget(_kLabelSpacing),
@@ -153,95 +131,47 @@ class _EventPageState extends State<EventPage>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English" &&
-                            Globals.selectedLanguage != ""
-                        ? TranslationWidget(
-                            message: list.summary!,
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.70,
-                                  child: Text(
-                                    translatedMessage.toString(),
-                                    style:
-                                        Theme.of(context).textTheme.headline2!
-                                    // .copyWith(
-                                    //   fontWeight: FontWeight.w500,
-                                    // )
-                                    ,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ))
-                        : Container(
-                            width: MediaQuery.of(context).size.width * 0.70,
-                            child: Text(
-                              list.summary ?? '-',
-                              style: Theme.of(context).textTheme.headline5!
-                              // .copyWith(
-                              //   fontWeight: FontWeight.w500,
-                              // )
-                              ,
-                              overflow: TextOverflow.ellipsis,
+                    TranslationWidget(
+                        message: list.summary ?? "",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Container(
+                              width: MediaQuery.of(context).size.width * 0.70,
+                              child: Text(
+                                translatedMessage.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2! //headline5
+                                // .copyWith(
+                                //   fontWeight: FontWeight.w500,
+                                // )
+                                ,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             )),
-                    Globals.selectedLanguage != null &&
-                            Globals.selectedLanguage != "English" &&
-                            Globals.selectedLanguage != ""
-                        ? TranslationWidget(
-                            message: Utility.convertDateFormat2(
-                                    list.start.toString().contains('dateTime')
-                                        ? list.start['dateTime']
-                                            .toString()
-                                            .substring(0, 10)
-                                        : list.start['date']
-                                            .toString()
-                                            .substring(0, 10)) +
-                                " - " +
-                                Utility.convertDateFormat2(
-                                    list.end.toString().contains('dateTime')
-                                        ? list.end['dateTime']
-                                            .toString()
-                                            .substring(0, 10)
-                                        : list.end['date']
-                                            .toString()
-                                            .substring(0, 10)),
-                            toLanguage: Globals.selectedLanguage,
-                            fromLanguage: "en",
-                            builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(
-                                      fontWeight: FontWeight.normal,
-                                      height: 1.5),
-                            ),
-                          )
-                        : Text(
-                            Utility.convertDateFormat2(
-                                    list.start.toString().contains('dateTime')
-                                        ? list.start['dateTime']
-                                            .toString()
-                                            .substring(0, 10)
-                                        : list.start['date']
-                                            .toString()
-                                            .substring(0, 10)) +
-                                " - " +
-                                Utility.convertDateFormat2(
-                                    list.end.toString().contains('dateTime')
-                                        ? list.end['dateTime']
-                                            .toString()
-                                            .substring(0, 10)
-                                        : list.end['date']
-                                            .toString()
-                                            .substring(0, 10)),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(
-                                    fontWeight: FontWeight.normal, height: 1.5),
-                          ),
+                    TranslationWidget(
+                      message: Utility.convertDateFormat2(
+                              list.start.toString().contains('dateTime')
+                                  ? list.start['dateTime']
+                                      .toString()
+                                      .substring(0, 10)
+                                  : list.start['date']
+                                      .toString()
+                                      .substring(0, 10)) +
+                          " - " +
+                          Utility.convertDateFormat2(list.end
+                                  .toString()
+                                  .contains('dateTime')
+                              ? list.end['dateTime'].toString().substring(0, 10)
+                              : list.end['date'].toString().substring(0, 10)),
+                      toLanguage: Globals.selectedLanguage,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline2!.copyWith(
+                            fontWeight: FontWeight.normal, height: 1.5),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -276,30 +206,22 @@ class _EventPageState extends State<EventPage>
                   color: Theme.of(context).colorScheme.primaryVariant,
                 ),
                 tabs: [
-                  Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English" &&
-                          Globals.selectedLanguage != ""
-                      ? TranslationWidget(
-                          message: "Upcoming",
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Tab(
-                            text: translatedMessage.toString(),
-                          ),
-                        )
-                      : Tab(text: 'Upcoming'),
-                  Globals.selectedLanguage != null &&
-                          Globals.selectedLanguage != "English" &&
-                          Globals.selectedLanguage != ""
-                      ? TranslationWidget(
-                          message: "Past",
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Tab(
-                            text: translatedMessage.toString(),
-                          ),
-                        )
-                      : Tab(text: 'Past'),
+                  TranslationWidget(
+                    message: "Upcoming",
+                    toLanguage: Globals.selectedLanguage,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Tab(
+                      text: translatedMessage.toString(),
+                    ),
+                  ),
+                  TranslationWidget(
+                    message: "Past",
+                    toLanguage: Globals.selectedLanguage,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Tab(
+                      text: translatedMessage.toString(),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -429,7 +351,7 @@ class _EventPageState extends State<EventPage>
                                   if (state is BottomNavigationBarSuccess) {
                                     AppTheme.setDynamicTheme(
                                         Globals.appSetting, context);
-                                    Globals.homeObjet = state.obj;
+                                    Globals.homeObject = state.obj;
                                     setState(() {});
                                   }
                                 },

@@ -1,7 +1,7 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/about/ui/about_sd_detail_page.dart';
 import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
+import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
@@ -65,11 +65,11 @@ class _SliderWidgetState extends State<SliderWidget> {
   @override
   void dispose() {
     _controller.dispose();
-
     super.dispose();
   }
 
   Widget build(BuildContext context) {
+    print(widget.obj.length);
     return Scaffold(
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
@@ -80,19 +80,20 @@ class _SliderWidgetState extends State<SliderWidget> {
                     ? true
                     : false,
           ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppLogoWidget(
-                marginLeft: 40,
-              )
-            ],
-          ),
+          title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            AppLogoWidget(
+              marginLeft: 57,
+            ),
+          ]),
           actions: <Widget>[
             IconButton(
               onPressed: () async {
-                setState(() {});
-                if (widget.currentIndex > 0) {
+                // setState(() {});
+                // if (widget.currentIndex > 0) {
+                //   _controller.previousPage(
+                //       duration: _kDuration, curve: _kCurve);
+                // }
+                if (pageinitialIndex > 0) {
                   _controller.previousPage(
                       duration: _kDuration, curve: _kCurve);
                 }
@@ -101,16 +102,18 @@ class _SliderWidgetState extends State<SliderWidget> {
                 const IconData(0xe80c,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
-                color: widget.currentIndex == 0
-                    ? AppTheme.kDecativeIconColor
-                    : null,
+                color:
+                    pageinitialIndex > 0 ? null : AppTheme.kDecativeIconColor,
                 size: Globals.deviceType == "phone" ? 18 : 26,
               ),
             ),
             IconButton(
               onPressed: () async {
-                setState(() {});
-                if (widget.currentIndex < object.length - 1) {
+                // setState(() {});
+                // if (widget.currentIndex < object.length - 1) {
+                //   _controller.nextPage(duration: _kDuration, curve: _kCurve);
+                // }
+                if (pageinitialIndex < widget.obj.length) {
                   _controller.nextPage(duration: _kDuration, curve: _kCurve);
                 }
               },
@@ -118,9 +121,9 @@ class _SliderWidgetState extends State<SliderWidget> {
                 const IconData(0xe815,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
-                color: widget.currentIndex == widget.obj.length - 1
-                    ? AppTheme.kDecativeIconColor
-                    : null,
+                color: pageinitialIndex < (widget.obj.length - 1)
+                    ? null
+                    : AppTheme.kDecativeIconColor,
                 size: Globals.deviceType == "phone" ? 18 : 26,
               )),
             ),
@@ -132,36 +135,38 @@ class _SliderWidgetState extends State<SliderWidget> {
             controller: _controller,
             itemCount: widget.obj.length,
             onPageChanged: (sliderIndex) {
-              if (first) {
-                pageinitialIndex < sliderIndex
-                    ? ++widget.currentIndex
-                    : --widget.currentIndex;
-                pageViewCurrentIndex = sliderIndex;
-                first = false;
-              } else {
-                if (sliderIndex > widget.currentIndex &&
-                    widget.currentIndex < object.length - 1) {
-                  ++widget.currentIndex;
-                } else if (sliderIndex <= widget.currentIndex &&
-                    widget.currentIndex > 0) {
-                  --widget.currentIndex;
-                }
-              }
+              pageinitialIndex = sliderIndex;
               setState(() {});
+              // if (first) {
+              //   pageinitialIndex < sliderIndex
+              //       ? ++widget.currentIndex
+              //       : --widget.currentIndex;
+              //   pageViewCurrentIndex = sliderIndex;
+              //   first = false;
+              // } else {
+              //   if (sliderIndex > widget.currentIndex &&
+              //       widget.currentIndex < object.length - 1) {
+              //     ++widget.currentIndex;
+              //   } else if (sliderIndex <= widget.currentIndex &&
+              //       widget.currentIndex > 0) {
+              //     --widget.currentIndex;
+              //   }
+              // }
             },
             itemBuilder: (BuildContext context, int index) {
               return widget.issocialpage!
                   ? SocialDescription(
-                      object: object[widget.currentIndex],
+                      object: object[pageinitialIndex],
                       language: Globals.selectedLanguage,
+                      index: pageinitialIndex,
                     )
                   : widget.isAboutSDPage!
                       ? AboutSDDetailPage(
-                          obj: object[widget.currentIndex],
+                          obj: object[pageinitialIndex],
                         )
                       : widget.iseventpage
                           ? EventDescription(
-                              obj: object[widget.currentIndex],
+                              obj: object[pageinitialIndex],
                               isbuttomsheet: true,
                               language: Globals.selectedLanguage,
                             )

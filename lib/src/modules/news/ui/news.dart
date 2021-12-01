@@ -153,13 +153,13 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                                   builder: (_) => NewsImagePage(
                                         imageURL: obj.image ??
                                             Globals.splashImageUrl ??
-                                            Globals.homeObjet["App_Logo__c"],
+                                            Globals.homeObject["App_Logo__c"],
                                       ));
                             },
                             child: CachedNetworkImage(
                               imageUrl: obj.image ??
                                   Globals.splashImageUrl ??
-                                  Globals.homeObjet["App_Logo__c"],
+                                  Globals.homeObject["App_Logo__c"],
                               placeholder: (context, url) => Container(
                                   alignment: Alignment.center,
                                   child: ShimmerLoading(
@@ -365,7 +365,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildList(List<NotificationList> obj) {
     return Expanded(
       child: ListView.builder(
-        padding: EdgeInsets.only(bottom: 40),
+        padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
         itemCount: obj.length,
         itemBuilder: (BuildContext context, int index) {
@@ -475,7 +475,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObjet = state.obj;
+                                  Globals.homeObject = state.obj;
                                   setState(() {});
                                 } else if (state is HomeErrorReceived) {
                                   ErrorMsgWidget();

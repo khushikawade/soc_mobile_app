@@ -2,7 +2,7 @@ import '../../staff_directory/modal/../../families/modal/sd_attributes.dart';
 
 class SDlist {
   SDAttributes? attributes;
-  dynamic titleC;
+  dynamic designation;
   String? imageUrlC;
   String? id;
   String? name;
@@ -13,7 +13,7 @@ class SDlist {
 
   SDlist({
     this.attributes,
-    this.titleC,
+    this.designation,
     this.imageUrlC,
     this.id,
     this.name,
@@ -27,7 +27,7 @@ class SDlist {
         attributes: json['attributes'] == null
             ? null
             : SDAttributes.fromJson(json['attributes'] as Map<String, dynamic>),
-        titleC: json['Title__c'],
+        designation: json['Title__c'],
         imageUrlC: json['Image_URL__c'] as String?,
         id: json['Id'] as String?,
         name: json['Name__c'] as String?,
@@ -39,7 +39,7 @@ class SDlist {
 
   Map<String, dynamic> toJson() => {
         'attributes': attributes?.toJson(),
-        'Title__c': titleC,
+        'Title__c': designation,
         'Image_URL__c': imageUrlC,
         'Id': id,
         'Name__c': name,
