@@ -1,15 +1,10 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// part of 'recent.dart';
+part of 'recent.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
-//  part of 'package:Soc/src/modules/home/model/recent.dart';
-//  'package:hive/hive.dart';
-
-import 'package:hive/hive.dart';
-import 'package:Soc/src/modules/home/model/recent.dart';
 
 class RecentAdapter extends TypeAdapter<Recent> {
   @override
@@ -28,21 +23,21 @@ class RecentAdapter extends TypeAdapter<Recent> {
       fields[3] as String?,
       fields[4] as String?,
       fields[5] as String?,
-      fields[6] as String?,
-      fields[7] as String?,
       fields[8] as String?,
+      fields[7] as String?,
+      fields[6] as String?,
       fields[9] as String?,
       fields[10] as String?,
       fields[11] as String?,
-      fields[12],
+      fields[12] as dynamic,
       fields[13] as String?,
       fields[14] as String?,
       fields[15] as String?,
       fields[16] as String?,
       fields[17] as String?,
-      fields[18],
-      fields[19],
-      fields[20],
+      fields[18] as dynamic,
+      fields[19] as dynamic,
+      fields[20] as dynamic,
       fields[21] as String?,
     );
   }
@@ -50,7 +45,7 @@ class RecentAdapter extends TypeAdapter<Recent> {
   @override
   void write(BinaryWriter writer, Recent obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(22)
       ..writeByte(0)
       ..write(obj.hiveobjid)
       ..writeByte(1)

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/home/model/search_list.dart';
+import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
