@@ -1,6 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -29,7 +29,7 @@ class ErrorMsgWidget extends StatelessWidget {
           Container(
             alignment: Alignment.center,
             child: TranslationWidget(
-              message: "Something went wrong",
+              message: "Something Went Wrong",
               toLanguage: Globals.selectedLanguage,
               fromLanguage: "en",
               builder: (translatedMessage) => Text(translatedMessage.toString(),

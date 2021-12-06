@@ -1,7 +1,11 @@
 import 'dart:io';
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/families/modal/sd_list.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +23,11 @@ void main() async {
         await path_provider.getApplicationDocumentsDirectory();
     Hive
       ..init(appDocumentDirectory.path)
-      ..registerAdapter(RecentAdapter());
+      ..registerAdapter(RecentAdapter())
+      ..registerAdapter(AttributesAdapter())
+      ..registerAdapter(SharedListAdapter())
+      ..registerAdapter(SDlistAdapter())
+      ..registerAdapter(AppSettingAdapter());
   }
 
   SystemChrome.setPreferredOrientations([

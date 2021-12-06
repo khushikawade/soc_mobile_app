@@ -1,5 +1,11 @@
+import 'package:hive/hive.dart';
+part 'attributes.g.dart';
+
+@HiveType(typeId: 1)
 class Attributes {
+  @HiveField(0)
 	String? type;
+  @HiveField(1)
 	String? url;
 
 	Attributes({this.type, this.url});

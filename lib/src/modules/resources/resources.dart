@@ -3,18 +3,11 @@ import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
-import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
-import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
-import 'package:Soc/src/widgets/html_description.dart';
-import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +34,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
-  List<SharedList> newList = [];
 
   @override
   void initState() {
@@ -88,15 +80,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                       alignment: Alignment.center,
                                       child: CircularProgressIndicator());
                                 } else if (state is ResourcesDataSucess) {
-                                  return newList.length > 0
-                                      ? CommonListWidget(
-                                          data: newList,
-                                          sectionName: "resources")
-                                      : NoDataFoundErrorWidget(
-                                          isResultNotFoundMsg: false,
-                                          isNews: false,
-                                          isEvents: false,
-                                        );
+                                  return CommonListWidget(
+                                      data: state.obj!,
+                                      sectionName: "resources");
                                 } else if (state is ResourcesErrorLoading) {
                                   return ListView(children: [ErrorMsgWidget()]);
                                 } else {
@@ -119,19 +105,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
                               },
                               child: EmptyContainer()),
                         ),
-                        BlocListener<ResourcesBloc, ResourcesState>(
-                            bloc: _bloc,
-                            listener: (context, state) async {
-                              if (state is ResourcesDataSucess) {
-                                newList.clear();
-                                for (int i = 0; i < state.obj!.length; i++) {
-                                  if (state.obj![i].status != "Hide") {
-                                    newList.add(state.obj![i]);
-                                  }
-                                }
-                              }
-                            },
-                            child: EmptyContainer()),
                       ],
                     )
                   : NoInternetErrorWidget(

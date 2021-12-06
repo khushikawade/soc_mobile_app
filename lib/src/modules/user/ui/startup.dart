@@ -6,7 +6,7 @@ import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -137,9 +137,10 @@ class _StartupPageState extends State<StartupPage> {
                             return _buildSplashScreen();
                           }
                           if (state is ErrorReceived) {
-                            return ListView(children: [
-                              ErrorMsgWidget(),
-                            ]);
+                            // return ListView(children: [
+                            //   ErrorMsgWidget(),
+                            // ]);
+                            return _buildSplashScreen();
                           }
                           return Container();
                         })
@@ -182,6 +183,10 @@ class _StartupPageState extends State<StartupPage> {
                                     child: Text(
                                         "Please refresh your application")),
                               );
+                      } else {
+                        // Local DB Integration
+                        // Should fetch data even if there's any issue with the SF login.
+                        _bloc.add(FetchBottomNavigationBar());
                       }
                     },
                     child: Container(),

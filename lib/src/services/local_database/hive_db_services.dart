@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:hive/hive.dart';
 
 class HiveDbServices {
@@ -9,14 +8,30 @@ class HiveDbServices {
     try {
       final hiveBox = await Hive.openBox(tableName);
       hiveBox.add(model);
+      return true;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<bool> putData(String tableName, dynamic data,
+      {String key = 'data'}) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
+      hiveBox.put(key, data);
+      return true;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<bool> addLocalData(String tableName, dynamic data) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
 
       return true;
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("NO_CONNECTION");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 
@@ -27,11 +42,7 @@ class HiveDbServices {
       final list = hiveBox.values.toList();
       return list;
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("NO_CONNECTION");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 
@@ -41,11 +52,7 @@ class HiveDbServices {
       final listCount = hiveBox.values.toList();
       return listCount.length;
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("NO_CONNECTION");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 
@@ -57,11 +64,7 @@ class HiveDbServices {
 
       return true;
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("NO_CONNECTION");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 
@@ -69,14 +72,19 @@ class HiveDbServices {
     try {
       final hiveBox = await Hive.openBox(tableName);
       hiveBox.deleteAt(index);
-
       return true;
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("NO_CONNECTION");
-      } else {
-        throw (e);
-      }
+      throw (e);
+    }
+  }
+
+   Future<bool> clearAll(String tableName) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
+      await hiveBox.clear();
+      return true;
+    } catch (e) {
+      throw (e);
     }
   }
 }
