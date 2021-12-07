@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/home/model/search_attributes.dart';
+import 'package:Soc/src/modules/home/models/search_attributes.dart';
 
 class SearchList {
   SearchAttributes? attributes;
