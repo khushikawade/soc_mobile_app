@@ -39,6 +39,7 @@ class _StartupPageState extends State<StartupPage> {
 
   void initState() {
     super.initState();
+    print("${Globals.deviceToken}, ${Globals.deviceToken}");
     getindicatorValue();
     initPlatformState(context);
     _loginBloc.add(PerfomLogin());
