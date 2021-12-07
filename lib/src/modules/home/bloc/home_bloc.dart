@@ -51,7 +51,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             LocalDatabase(Strings.schoolObjectName);
         List<AppSetting>? _appSettings = await _appSettingDb.getData();
         await _appSettingDb.close();
-        if (_appSettings!.length > 0) {
+        if (_appSettings.length > 0) {
           Globals.appSetting = _appSettings.last;
           Globals.homeObject = Globals.appSetting.toJson();
           yield BottomNavigationBarSuccess(obj: Globals.appSetting.toJson());

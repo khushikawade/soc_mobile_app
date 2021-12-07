@@ -42,7 +42,7 @@ class _StartupPageState extends State<StartupPage> {
     getindicatorValue();
     initPlatformState(context);
     _loginBloc.add(PerfomLogin());
-    _newsBloc.add(FetchNotificationList());
+    _newsBloc.add(FetchNotificationCount());
     getindexvalue();
     _showcase();
 
@@ -237,7 +237,7 @@ class _StartupPageState extends State<StartupPage> {
                             ? intPrefs.setInt("totalCount", Globals.notiCount!)
                             : intPrefs.getInt("totalCount");
                         // print(intPrefs.getInt("totalCount"));
-                        if (Globals.notiCount! >
+                        if (Globals.notiCount != null && Globals.notiCount! >
                             intPrefs.getInt("totalCount")!) {
                           intPrefs.setInt("totalCount", Globals.notiCount!);
                           prefs.setBool("enableIndicator", true);

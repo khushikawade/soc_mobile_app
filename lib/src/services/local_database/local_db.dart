@@ -20,12 +20,12 @@ class LocalDatabase<T> extends IRepository<T> {
   }
 
   @override
-  Future<List<T>>? getData() async {
+  Future<List<T>> getData() async {
     if (boxIsClosed) {
       await openBox(this.tableName);
     }
     final list = box?.values.toList();
-    return list!;
+    return list ?? [];
   }
 
   @override

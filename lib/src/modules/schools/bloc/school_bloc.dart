@@ -31,7 +31,7 @@ class SchoolDirectoryBloc
             LocalDatabase(Strings.schoolDirectoryObjectName);
 
         List<SchoolDirectoryList>? _localData = await _localDb.getData();
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
           yield SchoolDirectoryLoading();
@@ -60,7 +60,7 @@ class SchoolDirectoryBloc
         List<SchoolDirectoryList>? _localData = await _localDb.getData();
         _localDb.close();
 
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         yield SchoolDirectoryLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
         yield SchoolDirectoryDataSucess(obj: _localData);

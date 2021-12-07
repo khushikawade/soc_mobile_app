@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/strings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -22,11 +24,34 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   ) async* {
     if (event is SocialPageEvent) {
       try {
-        yield Loading();
+        // yield Loading(); Should not show loading, instead fetch the data from the Local database and return the list instantly.
+        String? _objectName = "${Strings.socialObjectName}";
+        LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
+        List<Item> _localData = await _localDb.getData();
+
+        if (_localData.isEmpty) {
+          yield Loading();
+        } else {
+          yield SocialDataSucess(obj: _localData);
+        }
+        // Local database end.
+
         List<Item> list = await getEventDetails();
+        // Syncing to local database
+        await _localDb.clear();
+        list.forEach((Item e) {
+          _localDb.addData(e);
+        });
+        // Syncing end.
+        yield Loading(); // Mimic state change
         yield SocialDataSucess(obj: list);
       } catch (e) {
-        yield SocialError(err: e);
+        // Fetching from the local database instead.
+        String? _objectName = "${Strings.socialObjectName}";
+        LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
+        List<Item> _localData = await _localDb.getData();
+        yield SocialDataSucess(obj: _localData);
+        // yield SocialError(err: e);
       }
     }
   }

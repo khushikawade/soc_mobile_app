@@ -33,7 +33,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
             LocalDatabase(Strings.staffObjectName);
 
         List<SharedList>? _localData = await _localDb.getData();
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
           yield StaffLoading();
@@ -64,7 +64,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
 
         List<SharedList>? _localData = await _localDb.getData();
 
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         _localDb.close();
         getCalendarId(_localData);
         yield StaffLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
@@ -81,7 +81,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
 
         List<SharedList>? _localData = await _localDb.getData();
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
           yield StaffLoading();
@@ -109,7 +109,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
 
         List<SharedList>? _localData = await _localDb.getData();
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         _localDb.close();
 
         yield StaffLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.

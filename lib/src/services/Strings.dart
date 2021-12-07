@@ -17,4 +17,7 @@ class Strings {
   static final String aboutObjectName = 'about';
   static final String aboutSubListObjectName = 'about_sub_list';
   static final String schoolDirectoryObjectName = 'school_directory';
+  static final String studentsObjectName = 'students';
+  static final String newsObjectName = 'news';
+  static final String socialObjectName = 'social';
 }

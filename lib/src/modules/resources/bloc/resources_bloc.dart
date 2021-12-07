@@ -29,7 +29,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
             LocalDatabase(Strings.resourcesObjectName);
 
         List<SharedList>? _localData = await _localDb.getData();
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
           yield ResourcesLoading();
@@ -57,7 +57,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
         List<SharedList>? _localData = await _localDb.getData();
         _localDb.close();
 
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         yield ResourcesLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
         yield ResourcesDataSucess(obj: _localData);
@@ -74,7 +74,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
         List<SharedList>? _localData = await _localDb.getData();
 
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
           yield ResourcesLoading();
@@ -101,7 +101,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
 
         List<SharedList>? _localData = await _localDb.getData();
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         _localDb.close();
 
         yield ResourcesLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.

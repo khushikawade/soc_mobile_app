@@ -37,7 +37,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             LocalDatabase(Strings.familiesObjectName);
 
         List<SharedList>? _localData = await _localDb.getData();
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
           yield FamilyLoading();
@@ -65,7 +65,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         List<SharedList>? _localData = await _localDb.getData();
         _localDb.close();
 
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         getCalendarId(_localData);
 
         yield FamilyLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
@@ -82,7 +82,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         List<SharedList>? _localData = await _localDb.getData();
 
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
           yield FamilyLoading();
@@ -105,7 +105,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
 
         List<SharedList>? _localData = await _localDb.getData();
-        _localData!.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         _localDb.close();
 
         yield FamilyLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
@@ -123,7 +123,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         List<SDlist>? _localData = await _localDb.getData();
 
-        _localData!.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
+        _localData.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
 
         if (_localData.isEmpty) {
           yield FamilyLoading();
@@ -151,7 +151,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         LocalDatabase<SDlist> _localDb = LocalDatabase(_objectName);
 
         List<SDlist>? _localData = await _localDb.getData();
-        _localData!.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
+        _localData.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
         _localDb.close();
 
         yield FamilyLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.

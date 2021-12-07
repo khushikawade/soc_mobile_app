@@ -229,14 +229,23 @@ class _SocialPageState extends State<SocialPage> {
                                           state.obj!.length > 0
                                       ? Expanded(child: makeList(state.obj))
                                       : Expanded(
-                                          child: ListView(children: [
-                                            NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false,
-                                              isNews: false,
-                                              isEvents: false,
-                                            )
-                                          ]),
-                                        );
+                                        child: NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: true,
+                                            isNews: false,
+                                            isEvents: false,
+                                          ),
+                                      );
+                                  // Expanded(
+                                  //     child: ListView(
+                                  //       shrinkWrap: true,
+                                  //       children: [
+                                  //       NoDataFoundErrorWidget(
+                                  //         isResultNotFoundMsg: true,
+                                  //         isNews: false,
+                                  //         isEvents: false,
+                                  //       )
+                                  //     ]),
+                                  //   );
                                 } else if (state is Loading) {
                                   return Expanded(
                                     child: Container(
@@ -247,13 +256,11 @@ class _SocialPageState extends State<SocialPage> {
                                           child: CircularProgressIndicator()),
                                     ),
                                   );
-                                }
-                                if (state is SocialError) {
+                                } else if (state is SocialError) {
                                   return ListView(
                                       shrinkWrap: true,
                                       children: [ErrorMsgWidget()]);
                                 }
-
                                 return Container();
                               }),
                           Container(
