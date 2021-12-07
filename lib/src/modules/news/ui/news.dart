@@ -30,7 +30,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   bool iserrorstate = false;
 
   final HomeBloc _homeBloc = new HomeBloc();
-  var object;
   String newsTimeStamp = '';
   late AppLifecycleState _notification;
 
@@ -77,7 +76,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  Widget _buildListItems(obj, int index) {
+  Widget _buildListItems(obj, int index, object) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: _kLabelSpacing,
@@ -167,7 +166,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         scrollDirection: Axis.vertical,
         itemCount: obj.length,
         itemBuilder: (BuildContext context, int index) {
-          return _buildListItems(obj[index], index);
+          return _buildListItems(obj[index], index, obj);
         },
       ),
     );
@@ -246,7 +245,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             bloc: bloc,
                             listener: (context, state) async {
                               if (state is NewsLoaded) {
-                                object = state.obj;
+                                // setState(() {
+                                //    object = state.obj;
+                                // });
+                               
                                 // SharedPreferences prefs =
                                 //     await SharedPreferences.getInstance();
                                 SharedPreferences intPrefs =

@@ -325,70 +325,43 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         ),
         body: RefreshIndicator(
           key: refreshKey,
-          child: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final bool connected = connectivity != ConnectivityResult.none;
-                Globals.isNetworkError = !connected;
-
-                if (connected) {
-                  if (iserrorstate == true) {
-                    homebloc.add(FetchBottomNavigationBar());
-                    iserrorstate = false;
-                  }
-                } else if (!connected) {
-                  iserrorstate = true;
-                }
-
-                return new Stack(fit: StackFit.expand, children: [
-                  connected
-                      ? Column(
-                          children: [
-                            Expanded(
-                                child: isloadingstate!
-                                    ? ShimmerLoading(
-                                        isLoading: true, child: _buildItem())
-                                    : _buildItem()),
-                            Container(
-                              child: BlocListener<HomeBloc, HomeState>(
-                                  bloc: homebloc,
-                                  listener: (context, state) async {
-                                    if (state is HomeLoading) {
-                                      isloadingstate = true;
-                                    }
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObject = state.obj;
-                                      isloadingstate = false;
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: EmptyContainer()),
-                            ),
-                          ],
-                        )
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false),
-                  Container(
-                    child: BlocListener<HomeBloc, HomeState>(
-                      bloc: homebloc,
-                      listener: (context, state) async {
-                        if (state is BottomNavigationBarSuccess) {
-                          AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObject = state.obj;
-                          setState(() {});
-                        }
-                      },
-                      child: EmptyContainer(),
-                    ),
-                  ),
-                ]);
-              },
-              child: EmptyContainer()),
+          child: Column(
+            children: [
+              Expanded(
+                  child: isloadingstate!
+                      ? ShimmerLoading(isLoading: true, child: _buildItem())
+                      : _buildItem()),
+              Container(
+                child: BlocListener<HomeBloc, HomeState>(
+                    bloc: homebloc,
+                    listener: (context, state) async {
+                      if (state is HomeLoading) {
+                        isloadingstate = true;
+                      }
+                      if (state is BottomNavigationBarSuccess) {
+                        AppTheme.setDynamicTheme(Globals.appSetting, context);
+                        Globals.homeObject = state.obj;
+                        isloadingstate = false;
+                        setState(() {});
+                      }
+                    },
+                    child: EmptyContainer()),
+              ),
+              Container(
+                child: BlocListener<HomeBloc, HomeState>(
+                  bloc: homebloc,
+                  listener: (context, state) async {
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.homeObject = state.obj;
+                      setState(() {});
+                    }
+                  },
+                  child: EmptyContainer(),
+                ),
+              ),
+            ],
+          ),
           onRefresh: refreshPage,
         ));
   }

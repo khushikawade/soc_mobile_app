@@ -65,7 +65,6 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   Widget build(BuildContext context) {
-    print(widget.obj.length);
     return Scaffold(
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
