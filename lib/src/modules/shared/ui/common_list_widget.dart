@@ -26,7 +26,6 @@ class CommonListWidget extends StatefulWidget {
 
 class _CommonListWidgetState extends State<CommonListWidget> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
- 
 
   _launchURL(obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http') {
@@ -84,7 +83,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                       )))
           : Utility.showSnackBar(
               _scaffoldKey, "No calendar/events available", context);
-    } else if (obj.typeC == "RFT_HTML" ||
+    } else if (obj.typeC == "RTF_HTML" ||
+        obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
         obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
@@ -133,6 +133,18 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     obj: obj,
                     module: widget.sectionName,
                     isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "Staff_Directory") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    staffDirectoryCategoryId: obj.id,
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    isbuttomsheet: true,
+                    isAbout: true,
                     language: Globals.selectedLanguage,
                   )));
     } else {

@@ -1,15 +1,30 @@
+import 'package:hive/hive.dart';
+part 'school_directory_list.g.dart';
+
+@HiveType(typeId: 4)
 class SchoolDirectoryList {
   // SubAttributes? attributes;
+  @HiveField(0)
   String? titleC;
+  @HiveField(1)
   String? imageUrlC;
+  @HiveField(2)
   String? address;
+  @HiveField(3)
   String? phoneC;
+  @HiveField(4)
   String? rtfHTMLC;
+  @HiveField(5)
   String? emailC;
+  @HiveField(6)
   final geoLocation;
+  @HiveField(7)
   String? urlC;
+  @HiveField(8)
   String? id;
+  @HiveField(9)
   final sortOrder;
+  @HiveField(10)
   final statusC;
 
   SchoolDirectoryList(

@@ -14,4 +14,7 @@ class Strings {
   static final String staffDirectoryObjectName = 'staff_directory';
   static final String resourcesObjectName = 'resources';
   static final String resourcesSubListObjectName = 'resources_sub_list';
+  static final String aboutObjectName = 'about';
+  static final String aboutSubListObjectName = 'about_sub_list';
+  static final String schoolDirectoryObjectName = 'school_directory';
 }

@@ -8,6 +8,12 @@ import 'db_service_response.model.dart';
 class DbServices {
   getapi(api, {headers}) async {
     try {
+      if (Globals.token == null || Globals.token == '') {
+        // In case of no access token, calling the login API to reset it.
+        try {
+          await login();
+        } catch (e) {}
+      }
       final response =
           await httpClient.get(Uri.parse('${Overrides.API_BASE_URL}$api'),
               headers: headers != null
@@ -105,8 +111,8 @@ class DbServices {
             "3MVG9l2zHsylwlpTLc7YpeVR4xdkRtQUC2dlLre5eF36oxcfvNls5uurApC9_yNNM7whHlgTrTrrT1thrzYi4",
         "client_secret":
             "BF5C7D4FEA3092A9F11A6A572A9B23DECE61241EE3ADC88912EF628CBFF7BCD3",
-        "username": "scott.walker@solvedconsulting.com",
-        "password": "Windows2020?"
+        // "username": "scott.walker@solvedconsulting.com",
+        // "password": "Windows2020?"
       });
       Response response = await dio.post(
         "https://login.salesforce.com/services/oauth2/token",

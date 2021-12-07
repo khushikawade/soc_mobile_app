@@ -29,7 +29,7 @@ class _SchoolPageState extends State<SchoolPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   final HomeBloc _homeBloc = new HomeBloc();
-  List<SchoolDirectoryList> newList = [];
+  // List<SchoolDirectoryList> newList = [];
 
   @override
   void initState() {
@@ -148,16 +148,16 @@ class _SchoolPageState extends State<SchoolPage> {
                                       alignment: Alignment.center,
                                       child: CircularProgressIndicator());
                                 } else if (state is SchoolDirectoryDataSucess) {
-                                  return newList.length > 0
+                                  return state.obj!.length > 0
                                       ? ListView.builder(
                                           padding: EdgeInsets.only(
                                               bottom: AppTheme.klistPadding),
                                           scrollDirection: Axis.vertical,
-                                          itemCount: newList.length,
+                                          itemCount: state.obj!.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return _buildList(
-                                                newList[index], index);
+                                                state.obj![index], index);
                                           },
                                         )
                                       : NoDataFoundErrorWidget(
@@ -190,19 +190,19 @@ class _SchoolPageState extends State<SchoolPage> {
                               },
                               child: EmptyContainer()),
                         ),
-                        BlocListener<SchoolDirectoryBloc, SchoolDirectoryState>(
-                            bloc: bloc,
-                            listener: (context, state) async {
-                              if (state is SchoolDirectoryDataSucess) {
-                                newList.clear();
-                                for (int i = 0; i < state.obj!.length; i++) {
-                                  if (state.obj![i].statusC != "Hide") {
-                                    newList.add(state.obj![i]);
-                                  }
-                                }
-                              }
-                            },
-                            child: EmptyContainer()),
+                        // BlocListener<SchoolDirectoryBloc, SchoolDirectoryState>(
+                        //     bloc: bloc,
+                        //     listener: (context, state) async {
+                        //       if (state is SchoolDirectoryDataSucess) {
+                        //         newList.clear();
+                        //         for (int i = 0; i < state.obj!.length; i++) {
+                        //           if (state.obj![i].statusC != "Hide") {
+                        //             newList.add(state.obj![i]);
+                        //           }
+                        //         }
+                        //       }
+                        //     },
+                        //     child: EmptyContainer()),
                       ],
                     )
                   : NoInternetErrorWidget(
