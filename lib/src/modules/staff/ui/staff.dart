@@ -56,60 +56,60 @@ class _StaffPageState extends State<StaffPage> {
               iserrorstate = true;
             }
 
-            return connected
-                ? Container(
-                    child: Column(mainAxisSize: MainAxisSize.max, children: [
-                      Expanded(
-                        child: BlocBuilder<StaffBloc, StaffState>(
-                            bloc: _bloc,
-                            builder: (BuildContext contxt, StaffState state) {
-                              if (state is StaffInitial ||
-                                  state is StaffLoading) {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              } else if (state is StaffDataSucess) {
-                                return CommonListWidget(
-                                    data: state.obj!, sectionName: "staff");
-                              } else if (state is ErrorInStaffLoading) {
-                                return ListView(children: [ErrorMsgWidget()]);
-                              } else {
-                                return ErrorMsgWidget();
-                              }
-                            }),
-                      ),
-                      Container(
-                        height: 0,
-                        width: 0,
-                        child: BlocListener<HomeBloc, HomeState>(
-                            bloc: _homeBloc,
-                            listener: (context, state) async {
-                              if (state is BottomNavigationBarSuccess) {
-                                AppTheme.setDynamicTheme(
-                                    Globals.appSetting, context);
-                                Globals.homeObject = state.obj;
+            return
+                // connected?
+                Container(
+              child: Column(mainAxisSize: MainAxisSize.max, children: [
+                Expanded(
+                  child: BlocBuilder<StaffBloc, StaffState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, StaffState state) {
+                        if (state is StaffInitial || state is StaffLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (state is StaffDataSucess) {
+                          return CommonListWidget(
+                              connected: connected,
+                              data: state.obj!,
+                              sectionName: "staff");
+                        } else if (state is ErrorInStaffLoading) {
+                          return ListView(children: [ErrorMsgWidget()]);
+                        } else {
+                          return ErrorMsgWidget();
+                        }
+                      }),
+                ),
+                Container(
+                  height: 0,
+                  width: 0,
+                  child: BlocListener<HomeBloc, HomeState>(
+                      bloc: _homeBloc,
+                      listener: (context, state) async {
+                        if (state is BottomNavigationBarSuccess) {
+                          AppTheme.setDynamicTheme(Globals.appSetting, context);
+                          Globals.homeObject = state.obj;
 
-                                setState(() {});
-                              }
-                            },
-                            child: EmptyContainer()),
-                      ),
-                      // BlocListener<StaffBloc, StaffState>(
-                      //     bloc: _bloc,
-                      //     listener: (context, state) async {
-                      //       if (state is StaffDataSucess) {
-                      //         newList.clear();
-                      //         for (int i = 0; i < state.obj!.length; i++) {
-                      //           if (state.obj![i].status != "Hide") {
-                      //             newList.add(state.obj![i]);
-                      //           }
-                      //         }
-                      //       }
-                      //     },
-                      //     child: EmptyContainer()),
-                    ]),
-                  )
-                : NoInternetErrorWidget(
-                    connected: connected, issplashscreen: false);
+                          setState(() {});
+                        }
+                      },
+                      child: EmptyContainer()),
+                ),
+                // BlocListener<StaffBloc, StaffState>(
+                //     bloc: _bloc,
+                //     listener: (context, state) async {
+                //       if (state is StaffDataSucess) {
+                //         newList.clear();
+                //         for (int i = 0; i < state.obj!.length; i++) {
+                //           if (state.obj![i].status != "Hide") {
+                //             newList.add(state.obj![i]);
+                //           }
+                //         }
+                //       }
+                //     },
+                //     child: EmptyContainer()),
+              ]),
+            );
+            // : NoInternetErrorWidget(
+            //     connected: connected, issplashscreen: false);
           },
           child: Container()),
       onRefresh: refreshPage);

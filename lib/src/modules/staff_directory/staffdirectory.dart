@@ -172,15 +172,18 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               textAlign: TextAlign.start,
                               style: Theme.of(context).textTheme.headline2!),
                         ),
-                      obj.designation!=null?  TranslationWidget(
-                          message: obj.designation,
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                              translatedMessage.toString(),
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.headline2!),
-                        ):Container(),
+                        obj.designation != null
+                            ? TranslationWidget(
+                                message: obj.designation,
+                                toLanguage: Globals.selectedLanguage,
+                                fromLanguage: "en",
+                                builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                    textAlign: TextAlign.start,
+                                    style:
+                                        Theme.of(context).textTheme.headline2!),
+                              )
+                            : Container(),
                       ],
                     ),
                   ),
@@ -292,86 +295,80 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                   iserrorstate = true;
                 }
 
-                return connected
-                    ? Column(
-                        children: [
-                          Expanded(
-                            child: BlocBuilder<FamilyBloc, FamilyState>(
-                                bloc: _bloc,
-                                builder:
-                                    (BuildContext contxt, FamilyState state) {
-                                  if (state is FamilyInitial ||
-                                      state is FamilyLoading) {
-                                    return Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.8,
-                                        alignment: Alignment.center,
-                                        child: CircularProgressIndicator());
-                                  } else if (state is SDDataSucess) {
-                                    return state.obj != null &&
-                                            state.obj!.length > 0
-                                        ? Column(
-                                            children: [
-                                              // widget.isAbout == true
-                                              //     ? Container()
-                                              //     : _buildHeading(
-                                              //         "STAFF DIRECTORY"),
-                                              // SpacerWidget(_kLabelSpacing / 4),
-                                              Expanded(
-                                                child: ListView.builder(
-                                                  // padding: EdgeInsets.only(
-                                                  //     bottom: 25.0),
-                                                  shrinkWrap: true,
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  itemCount: state.obj!.length,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return listItem(
-                                                        state.obj,
-                                                        state.obj![index],
-                                                        index);
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                            isEvents: false,
-                                          );
-                                  } else if (state is ErrorLoading) {
-                                    return ListView(
-                                        children: [ErrorMsgWidget()]);
-                                  }
-                                  return Container();
-                                }),
-                          ),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    Globals.homeObject = state.obj;
-                                    setState(() {});
-                                  } else if (state is HomeErrorReceived) {
-                                    ErrorMsgWidget();
-                                  }
-                                },
-                                child: EmptyContainer()),
-                          ),
-                          SpacerWidget(_kLabelSpacing * 2),
-                        ],
-                      )
-                    : NoInternetErrorWidget(
-                        connected: connected, issplashscreen: false);
+                return
+                    // connected  ?
+                    Column(
+                  children: [
+                    Expanded(
+                      child: BlocBuilder<FamilyBloc, FamilyState>(
+                          bloc: _bloc,
+                          builder: (BuildContext contxt, FamilyState state) {
+                            if (state is FamilyInitial ||
+                                state is FamilyLoading) {
+                              return Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  alignment: Alignment.center,
+                                  child: CircularProgressIndicator());
+                            } else if (state is SDDataSucess) {
+                              return state.obj != null && state.obj!.length > 0
+                                  ? Column(
+                                      children: [
+                                        // widget.isAbout == true
+                                        //     ? Container()
+                                        //     : _buildHeading(
+                                        //         "STAFF DIRECTORY"),
+                                        // SpacerWidget(_kLabelSpacing / 4),
+                                        Expanded(
+                                          child: ListView.builder(
+                                            // padding: EdgeInsets.only(
+                                            //     bottom: 25.0),
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.vertical,
+                                            itemCount: state.obj!.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return listItem(state.obj,
+                                                  state.obj![index], index);
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : NoDataFoundErrorWidget(
+                                      isResultNotFoundMsg: false,
+                                      isNews: false,
+                                      isEvents: false,
+                                      connected: connected,
+                                    );
+                            } else if (state is ErrorLoading) {
+                              return ListView(children: [ErrorMsgWidget()]);
+                            }
+                            return Container();
+                          }),
+                    ),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                          bloc: _homeBloc,
+                          listener: (context, state) async {
+                            if (state is BottomNavigationBarSuccess) {
+                              AppTheme.setDynamicTheme(
+                                  Globals.appSetting, context);
+                              Globals.homeObject = state.obj;
+                              setState(() {});
+                            } else if (state is HomeErrorReceived) {
+                              ErrorMsgWidget();
+                            }
+                          },
+                          child: EmptyContainer()),
+                    ),
+                    SpacerWidget(_kLabelSpacing * 2),
+                  ],
+                );
+                // : NoInternetErrorWidget(
+                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

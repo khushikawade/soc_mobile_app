@@ -19,7 +19,8 @@ import '../../../widgets/no_data_found_error_widget.dart';
 class CommonListWidget extends StatefulWidget {
   final List<SharedList> data;
   final String sectionName;
-  CommonListWidget({required this.data, required this.sectionName});
+  final bool? connected;
+  CommonListWidget({required this.data, required this.sectionName, this.connected});
   @override
   _CommonListWidgetState createState() => _CommonListWidgetState();
 }
@@ -229,6 +230,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                 isResultNotFoundMsg: false,
                 isNews: false,
                 isEvents: false,
+                connected : widget.connected
               )));
   }
 }

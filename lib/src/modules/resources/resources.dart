@@ -63,8 +63,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 iserrorstate = true;
               }
 
-              return connected
-                  ? Column(
+              return 
+              // connected ?
+               Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Expanded(
@@ -80,6 +81,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                 } else if (state is ResourcesDataSucess) {
                                   return CommonListWidget(
                                       data: state.obj!,
+                                      connected: connected,
                                       sectionName: "resources");
                                 } else if (state is ResourcesErrorLoading) {
                                   return ListView(children: [ErrorMsgWidget()]);
@@ -104,9 +106,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
                               child: EmptyContainer()),
                         ),
                       ],
-                    )
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
+                    );
+                  // : NoInternetErrorWidget(
+                  //     connected: connected, issplashscreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,

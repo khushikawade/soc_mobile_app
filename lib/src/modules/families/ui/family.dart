@@ -71,64 +71,65 @@ class _FamilyPageState extends State<FamilyPage> {
                 iserrorstate = true;
               }
 
-              return connected
-                  ? Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: BlocBuilder<FamilyBloc, FamilyState>(
-                              bloc: _bloc,
-                              builder:
-                                  (BuildContext contxt, FamilyState state) {
-                                if (state is FamilyInitial ||
-                                    state is FamilyLoading) {
-                                  return Center(
-                                      child: CircularProgressIndicator());
-                                } else if (state is FamiliesDataSucess) {
-                                  print('List data......');
-                                  print(state.obj);
-                                  return CommonListWidget(
-                                      data: state.obj!, sectionName: "family");
-                                } else if (state is ErrorLoading) {
-                                  return ListView(children: [ErrorMsgWidget()]);
-                                } else {
-                                  return Container();
-                                }
-                              }),
-                        ),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObject = state.obj;
+              return
+                  // connected?
+                  Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: BlocBuilder<FamilyBloc, FamilyState>(
+                        bloc: _bloc,
+                        builder: (BuildContext contxt, FamilyState state) {
+                          if (state is FamilyInitial ||
+                              state is FamilyLoading) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (state is FamiliesDataSucess) {
+                            print('List data......');
+                            print(state.obj);
+                            return CommonListWidget(
+                                connected: connected,
+                                data: state.obj!,
+                                sectionName: "family");
+                          } else if (state is ErrorLoading) {
+                            return ListView(children: [ErrorMsgWidget()]);
+                          } else {
+                            return Container();
+                          }
+                        }),
+                  ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.homeObject = state.obj;
 
-                                  setState(() {});
-                                }
-                              },
-                              child: EmptyContainer()),
-                        ),
-                        // BlocListener<FamilyBloc, FamilyState>(
-                        //     bloc: _bloc,
-                        //     listener: (context, state) async {
-                        //       // if (state is FamiliesDataSucess) {
-                        //       //   newList.clear();
-                        //       //   for (int i = 0; i < state.obj!.length; i++) {
-                        //       //     if (state.obj![i].status != "Hide") {
-                        //       //       newList.add(state.obj![i]);
-                        //       //     }
-                        //       //   }
-                        //       // }
-                        //     },
-                        //     child: EmptyContainer()),
-                      ],
-                    )
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
+                            setState(() {});
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                  // BlocListener<FamilyBloc, FamilyState>(
+                  //     bloc: _bloc,
+                  //     listener: (context, state) async {
+                  //       // if (state is FamiliesDataSucess) {
+                  //       //   newList.clear();
+                  //       //   for (int i = 0; i < state.obj!.length; i++) {
+                  //       //     if (state.obj![i].status != "Hide") {
+                  //       //       newList.add(state.obj![i]);
+                  //       //     }
+                  //       //   }
+                  //       // }
+                  //     },
+                  //     child: EmptyContainer()),
+                ],
+              );
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,

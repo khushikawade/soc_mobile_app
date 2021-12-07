@@ -217,77 +217,75 @@ class _SocialPageState extends State<SocialPage> {
                   iserrorstate = true;
                 }
 
-                return connected
-                    ? Column(
-                        children: <Widget>[
-                          BlocBuilder<SocialBloc, SocialState>(
-                              bloc: bloc,
-                              builder:
-                                  (BuildContext context, SocialState state) {
-                                if (state is SocialDataSucess) {
-                                  return state.obj != null &&
-                                          state.obj!.length > 0
-                                      ? Expanded(child: makeList(state.obj))
-                                      : Expanded(
-                                        child: NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: true,
-                                            isNews: false,
-                                            isEvents: false,
-                                          ),
-                                      );
-                                  // Expanded(
-                                  //     child: ListView(
-                                  //       shrinkWrap: true,
-                                  //       children: [
-                                  //       NoDataFoundErrorWidget(
-                                  //         isResultNotFoundMsg: true,
-                                  //         isNews: false,
-                                  //         isEvents: false,
-                                  //       )
-                                  //     ]),
-                                  //   );
-                                } else if (state is Loading) {
-                                  return Expanded(
-                                    child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.8,
-                                      child: Center(
-                                          child: CircularProgressIndicator()),
+                return
+                    // connected ?
+                    Column(
+                  children: <Widget>[
+                    BlocBuilder<SocialBloc, SocialState>(
+                        bloc: bloc,
+                        builder: (BuildContext context, SocialState state) {
+                          if (state is SocialDataSucess) {
+                            return state.obj != null && state.obj!.length > 0
+                                ? Expanded(child: makeList(state.obj))
+                                : Expanded(
+                                    child: NoDataFoundErrorWidget(
+                                      isResultNotFoundMsg: true,
+                                      isNews: false,
+                                      isEvents: false,
+                                      connected: connected,
                                     ),
                                   );
-                                } else if (state is SocialError) {
-                                  return ListView(
-                                      shrinkWrap: true,
-                                      children: [ErrorMsgWidget()]);
-                                }
-                                return Container();
-                              }),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-
-                                  setState(() {
-                                    Globals.homeObject = state.obj;
-                                  });
-                                }
-                              },
+                            // Expanded(
+                            //     child: ListView(
+                            //       shrinkWrap: true,
+                            //       children: [
+                            //       NoDataFoundErrorWidget(
+                            //         isResultNotFoundMsg: true,
+                            //         isNews: false,
+                            //         isEvents: false,
+                            //       )
+                            //     ]),
+                            //   );
+                          } else if (state is Loading) {
+                            return Expanded(
                               child: Container(
-                                height: 0,
-                                width: 0,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                child:
+                                    Center(child: CircularProgressIndicator()),
                               ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : NoInternetErrorWidget(
-                        connected: connected, issplashscreen: false);
+                            );
+                          } else if (state is SocialError) {
+                            return ListView(
+                                shrinkWrap: true, children: [ErrorMsgWidget()]);
+                          }
+                          return Container();
+                        }),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+
+                            setState(() {
+                              Globals.homeObject = state.obj;
+                            });
+                          }
+                        },
+                        child: Container(
+                          height: 0,
+                          width: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+                // : NoInternetErrorWidget(
+                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

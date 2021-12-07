@@ -216,8 +216,9 @@ class _AboutPageState extends State<AboutPage> {
                 iserrorstate = true;
               }
 
-              return connected
-                  ? Column(
+              return 
+              // connected ? 
+                  Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Expanded(
@@ -231,6 +232,7 @@ class _AboutPageState extends State<AboutPage> {
                                       child: CircularProgressIndicator());
                                 } else if (state is AboutDataSucess) {
                                   return CommonListWidget(
+                                      connected: connected,
                                       data: state.obj!, sectionName: 'about');
                                   // return newList.length > 0
                                   //     ? ListView.builder(
@@ -285,9 +287,9 @@ class _AboutPageState extends State<AboutPage> {
                         //     },
                         //     child: EmptyContainer()),
                       ],
-                    )
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
+                    );
+                  // : NoInternetErrorWidget(
+                  //     connected: connected, issplashscreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,

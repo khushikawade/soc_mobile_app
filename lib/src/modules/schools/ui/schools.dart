@@ -130,83 +130,84 @@ class _SchoolPageState extends State<SchoolPage> {
               } else if (!connected) {
                 iserrorstate = true;
               }
-              return connected
-                  ? Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: BlocBuilder<SchoolDirectoryBloc,
-                                  SchoolDirectoryState>(
-                              bloc: bloc,
-                              builder: (BuildContext contxt,
-                                  SchoolDirectoryState state) {
-                                if (state is SchoolDirectoryInitial ||
-                                    state is SchoolDirectoryLoading) {
-                                  return Container(
-                                      alignment: Alignment.center,
-                                      child: CircularProgressIndicator());
-                                } else if (state is SchoolDirectoryDataSucess) {
-                                  return state.obj!.length > 0
-                                      ? ListView.builder(
-                                          padding: EdgeInsets.only(
-                                              bottom: AppTheme.klistPadding),
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: state.obj!.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return _buildList(
-                                                state.obj![index], index);
-                                          },
-                                        )
-                                      : NoDataFoundErrorWidget(
-                                          isResultNotFoundMsg: false,
-                                          isNews: false,
-                                          isEvents: false,
-                                        );
-                                } else if (state
-                                    is SchoolDirectoryErrorLoading) {
-                                  return ListView(children: [ErrorMsgWidget()]);
-                                } else {
-                                  return Container();
-                                }
-                              }),
-                        ),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObject = state.obj;
-                                  setState(() {});
-                                } else if (state is HomeErrorReceived) {
-                                  ErrorMsgWidget();
-                                }
-                              },
-                              child: EmptyContainer()),
-                        ),
-                        // BlocListener<SchoolDirectoryBloc, SchoolDirectoryState>(
-                        //     bloc: bloc,
-                        //     listener: (context, state) async {
-                        //       if (state is SchoolDirectoryDataSucess) {
-                        //         newList.clear();
-                        //         for (int i = 0; i < state.obj!.length; i++) {
-                        //           if (state.obj![i].statusC != "Hide") {
-                        //             newList.add(state.obj![i]);
-                        //           }
-                        //         }
-                        //       }
-                        //     },
-                        //     child: EmptyContainer()),
-                      ],
-                    )
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
+              return
+                  // connected ?
+                  Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child:
+                        BlocBuilder<SchoolDirectoryBloc, SchoolDirectoryState>(
+                            bloc: bloc,
+                            builder: (BuildContext contxt,
+                                SchoolDirectoryState state) {
+                              if (state is SchoolDirectoryInitial ||
+                                  state is SchoolDirectoryLoading) {
+                                return Container(
+                                    alignment: Alignment.center,
+                                    child: CircularProgressIndicator());
+                              } else if (state is SchoolDirectoryDataSucess) {
+                                return state.obj!.length > 0
+                                    ? ListView.builder(
+                                        padding: EdgeInsets.only(
+                                            bottom: AppTheme.klistPadding),
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: state.obj!.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return _buildList(
+                                              state.obj![index], index);
+                                        },
+                                      )
+                                    : NoDataFoundErrorWidget(
+                                        isResultNotFoundMsg: false,
+                                        isNews: false,
+                                        isEvents: false,
+                                        connected: connected,
+                                      );
+                              } else if (state is SchoolDirectoryErrorLoading) {
+                                return ListView(children: [ErrorMsgWidget()]);
+                              } else {
+                                return Container();
+                              }
+                            }),
+                  ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.homeObject = state.obj;
+                            setState(() {});
+                          } else if (state is HomeErrorReceived) {
+                            ErrorMsgWidget();
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                  // BlocListener<SchoolDirectoryBloc, SchoolDirectoryState>(
+                  //     bloc: bloc,
+                  //     listener: (context, state) async {
+                  //       if (state is SchoolDirectoryDataSucess) {
+                  //         newList.clear();
+                  //         for (int i = 0; i < state.obj!.length; i++) {
+                  //           if (state.obj![i].statusC != "Hide") {
+                  //             newList.add(state.obj![i]);
+                  //           }
+                  //         }
+                  //       }
+                  //     },
+                  //     child: EmptyContainer()),
+                ],
+              );
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,

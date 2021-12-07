@@ -272,30 +272,35 @@ class _StudentPageState extends State<StudentPage> {
             }
 
             return new Stack(fit: StackFit.expand, children: [
-              connected
-                  ? BlocBuilder<StudentBloc, StudentState>(
-                      bloc: _bloc,
-                      builder: (BuildContext contxt, StudentState state) {
-                        if (state is StudentInitial || state is Loading) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (state is StudentDataSucess) {
-                          return state.obj != null && state.obj!.length > 0
-                              ? _buildGrid(state.obj!, state.subFolder!)
-                              :
-                              // ListView(children: [
-                              NoDataFoundErrorWidget(
-                                  isResultNotFoundMsg: false,
-                                  isNews: false,
-                                  isEvents: false,
-                                );
-                          // ]);
-                        } else if (state is StudentError) {
-                          return ListView(children: [ErrorMsgWidget()]);
-                        }
-                        return Container();
-                      })
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false),
+              // connected
+              //     ?
+              BlocBuilder<StudentBloc, StudentState>(
+                  bloc: _bloc,
+                  builder: (BuildContext contxt, StudentState state) {
+                    if (state is StudentInitial || state is Loading) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (state is StudentDataSucess) {
+                      return state.obj != null && state.obj!.length > 0
+                          ? Padding(
+                            padding: const EdgeInsets.only(top : AppTheme.kBodyPadding),
+                            child: _buildGrid(state.obj!, state.subFolder!),
+                          )
+                          :
+                          // ListView(children: [
+                          NoDataFoundErrorWidget(
+                              isResultNotFoundMsg: false,
+                              isNews: false,
+                              isEvents: false,
+                              connected: connected,
+                            );
+                      // ]);
+                    } else if (state is StudentError) {
+                      return ListView(children: [ErrorMsgWidget()]);
+                    }
+                    return Container();
+                  }),
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false),
               Container(
                 height: 0,
                 width: 0,
@@ -355,8 +360,7 @@ class _StudentPageState extends State<StudentPage> {
                   ];
                 },
                 body: Container(
-                    padding: const EdgeInsets.only(
-                        top: _kLableSpacing * 1.2, bottom: _kLableSpacing * 4),
+                    padding: const EdgeInsets.only(bottom: _kLableSpacing * 4),
                     child: _body()))
             : _body());
   }

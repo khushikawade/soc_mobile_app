@@ -44,7 +44,6 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
               }
             }
           }
-
           yield StudentDataSucess(obj: appList, subFolder: _localData);
         }
         // Local Database End

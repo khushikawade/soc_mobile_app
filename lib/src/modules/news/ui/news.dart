@@ -200,8 +200,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 iserrorstate = true;
               }
 
-              return connected
-                  ? Column(
+              return 
+              // connected ? 
+                  Column(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,6 +219,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                                           isResultNotFoundMsg: false,
                                           isNews: true,
                                           isEvents: false,
+                                          connected: connected,
                                         ),
                                       );
                               } else if (state is NewsLoading) {
@@ -282,9 +284,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                               child: EmptyContainer()),
                         ),
                       ],
-                    )
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
+                    );
+                  // : NoInternetErrorWidget(
+                  //     connected: connected, issplashscreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,

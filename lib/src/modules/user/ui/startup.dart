@@ -116,144 +116,161 @@ class _StartupPageState extends State<StartupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: OfflineBuilder(
-          connectivityBuilder: (
-            BuildContext context,
-            ConnectivityResult connectivity,
-            Widget child,
-          ) {
-            final bool connected = connectivity != ConnectivityResult.none;
-            // final call = connected ? _loginBloc.add(PerfomLogin()) : null;
-            return new Stack(
-              fit: StackFit.expand,
-              children: [
-                //Will show the splash screen while the auto login is in the progress
-                connected
-                    ? BlocBuilder<UserBloc, UserState>(
-                        bloc: _loginBloc,
-                        builder: (BuildContext contxt, UserState state) {
-                          if (state is Loading) {
-                            return _buildSplashScreen();
-                          }
-                          if (state is ErrorReceived) {
-                            // return ListView(children: [
-                            //   ErrorMsgWidget(),
-                            // ]);
-                            return _buildSplashScreen();
-                          }
-                          return Container();
-                        })
-                    : NoInternetErrorWidget(
-                        connected: connected,
-                        issplashscreen: true,
-                      ),
-                // Login End
-                // Showing spash screen while fetching App Settings(Bottom Nav items, colors etc.)
-                connected
-                    ? BlocBuilder<HomeBloc, HomeState>(
-                        bloc: _bloc,
-                        builder: (BuildContext contxt, HomeState state) {
-                          if (state is HomeLoading) {
-                            return _buildSplashScreen();
-                          }
-                          if (state is ErrorReceived) {
-                            return ListView(children: [
-                              ErrorMsgWidget(),
-                            ]);
-                          }
-                          return Container();
-                        })
-                    : NoInternetErrorWidget(
-                        connected: connected,
-                        issplashscreen: true,
-                      ),
-                // Fetching App Settings(Bottom Nav items, colors etc.) End.
-                Container(
-                  height: 0,
-                  width: 0,
-                  child: BlocListener<UserBloc, UserState>(
-                    bloc: _loginBloc,
-                    listener: (context, state) async {
-                      if (state is LoginSuccess) {
-                        Globals.token != null && Globals.token != " "
-                            ? _bloc.add(FetchBottomNavigationBar())
-                            : Container(
-                                child: Center(
-                                    child: Text(
-                                        "Please refresh your application")),
-                              );
-                      } else {
-                        // Local DB Integration
-                        // Should fetch data even if there's any issue with the SF login.
-                        _bloc.add(FetchBottomNavigationBar());
-                      }
-                    },
-                    child: Container(),
-                  ),
-                ),
-                Container(
-                  height: 0,
-                  width: 0,
-                  child: BlocListener<HomeBloc, HomeState>(
-                    bloc: _bloc,
-                    listener: (context, state) async {
-                      if (state is BottomNavigationBarSuccess) {
-                        AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        Globals.homeObject = state.obj;
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        prefs.setString(
-                            Strings.SplashUrl,
-                            state.obj["Splash_Screen__c"] ??
-                                state.obj["App_Logo__c"]);
-                        state.obj != null
-                            ? Navigator.of(context)
-                                .pushReplacement(_createRoute(state))
-                            : NoDataFoundErrorWidget(
-                                isResultNotFoundMsg: false,
-                                isNews: false,
-                                isEvents: false,
-                              );
-                      } else if (state is HomeErrorReceived) {
-                        ErrorMsgWidget();
-                      }
-                    },
-                    child: Container(),
-                  ),
-                ),
-                Container(
-                  height: 0,
-                  width: 0,
-                  child: BlocListener<NewsBloc, NewsState>(
-                    bloc: _newsBloc,
-                    listener: (context, state) async {
-                      if (state is NewsLoaded) {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        SharedPreferences intPrefs =
-                            await SharedPreferences.getInstance();
-                        intPrefs.getInt("totalCount") == null
-                            ? intPrefs.setInt("totalCount", Globals.notiCount!)
-                            : intPrefs.getInt("totalCount");
-                        // print(intPrefs.getInt("totalCount"));
-                        if (Globals.notiCount != null && Globals.notiCount! >
-                            intPrefs.getInt("totalCount")!) {
-                          intPrefs.setInt("totalCount", Globals.notiCount!);
-                          prefs.setBool("enableIndicator", true);
-                          Globals.indicator.value = true;
-                        }
-                        setState(() {});
-                      }
-                    },
-                    child: Container(),
-                  ),
-                ),
-              ],
-            );
-          },
-          child: Container()),
-    );
+        backgroundColor: Colors.white,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Will show the splash screen while the auto login is in the progress
+            // connected
+            //     ?
+            BlocBuilder<UserBloc, UserState>(
+                bloc: _loginBloc,
+                builder: (BuildContext contxt, UserState state) {
+                  if (state is Loading) {
+                    return _buildSplashScreen();
+                  }
+                  if (state is ErrorReceived) {
+                    // return ListView(children: [
+                    //   ErrorMsgWidget(),
+                    // ]);
+                    return flag ? _buildSplashScreen() : Container();
+                  }
+                  return Container();
+                }),
+            // : NoInternetErrorWidget(
+            //     connected: connected,
+            //     issplashscreen: true,
+            //   ),
+
+            // Login End
+            // Showing spash screen while fetching App Settings(Bottom Nav items, colors etc.)
+            // connected ?
+            BlocBuilder<HomeBloc, HomeState>(
+                bloc: _bloc,
+                builder: (BuildContext contxt, HomeState state) {
+                  if (state is HomeLoading) {
+                    return _buildSplashScreen();
+                  } else if (state is HomeErrorReceived) {
+                    return Container(
+                      child: state.err != 'NO_CONNECTION'
+                          ? ListView(
+                              children: [ErrorMsgWidget()],
+                            )
+                          : SafeArea(
+                              child: NoInternetErrorWidget(
+                                connected: false,
+                                issplashscreen: false,
+                                onRefresh: () {
+                                  _bloc.add(FetchBottomNavigationBar());
+                                },
+                              ),
+                            ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
+            BlocListener<HomeBloc, HomeState>(
+                bloc: _bloc,
+                child: Container(),
+                listener: (BuildContext contxt, HomeState state) {
+                  if (state is HomeErrorReceived) {
+                    setState(() {
+                      flag = false;
+                    });
+                    // if (!connected) {
+                    //   setState(() {
+                    //     flag = false;
+                    //   });
+                    // }
+                  }
+                }),
+            // : NoInternetErrorWidget(
+            //     connected: connected,
+            //     issplashscreen: true,
+            //   ),
+            // Fetching App Settings(Bottom Nav items, colors etc.) End.
+            Container(
+              height: 0,
+              width: 0,
+              child: BlocListener<UserBloc, UserState>(
+                bloc: _loginBloc,
+                listener: (context, state) async {
+                  if (state is LoginSuccess) {
+                    Globals.token != null && Globals.token != " "
+                        ? _bloc.add(FetchBottomNavigationBar())
+                        : Container(
+                            child: Center(
+                                child: Text("Please refresh your application")),
+                          );
+                  } else {
+                    // Local DB Integration
+                    // Should fetch data even if there's any issue with the SF login.
+                    _bloc.add(FetchBottomNavigationBar());
+                  }
+                },
+                child: Container(),
+              ),
+            ),
+            Container(
+              height: 0,
+              width: 0,
+              child: BlocListener<HomeBloc, HomeState>(
+                bloc: _bloc,
+                listener: (context, state) async {
+                  if (state is BottomNavigationBarSuccess) {
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+                    Globals.homeObject = state.obj;
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.setString(
+                        Strings.SplashUrl,
+                        state.obj["Splash_Screen__c"] ??
+                            state.obj["App_Logo__c"]);
+                    state.obj != null
+                        ? Navigator.of(context)
+                            .pushReplacement(_createRoute(state))
+                        : NoDataFoundErrorWidget(
+                            isResultNotFoundMsg: false,
+                            isNews: false,
+                            isEvents: false,
+                          );
+                  } else if (state is HomeErrorReceived) {
+                    ErrorMsgWidget();
+                  }
+                },
+                child: Container(),
+              ),
+            ),
+            Container(
+              height: 0,
+              width: 0,
+              child: BlocListener<NewsBloc, NewsState>(
+                bloc: _newsBloc,
+                listener: (context, state) async {
+                  if (state is NewsLoaded) {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    SharedPreferences intPrefs =
+                        await SharedPreferences.getInstance();
+                    intPrefs.getInt("totalCount") == null
+                        ? intPrefs.setInt("totalCount", Globals.notiCount!)
+                        : intPrefs.getInt("totalCount");
+                    // print(intPrefs.getInt("totalCount"));
+                    if (Globals.notiCount != null &&
+                        Globals.notiCount! > intPrefs.getInt("totalCount")!) {
+                      intPrefs.setInt("totalCount", Globals.notiCount!);
+                      prefs.setBool("enableIndicator", true);
+                      Globals.indicator.value = true;
+                    }
+                    setState(() {});
+                  }
+                },
+                child: Container(),
+              ),
+            ),
+          ],
+        ));
   }
 
   Route _createRoute(state) {

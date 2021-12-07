@@ -20,6 +20,7 @@ import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 class SubListPage extends StatefulWidget {
   final obj;
@@ -47,6 +48,7 @@ class _SubListPageState extends State<SubListPage> {
   FamilyBloc _bloc = FamilyBloc();
   StaffBloc _staffBloc = StaffBloc();
   AboutBloc _aboutBloc = AboutBloc();
+  bool? iserrorstate = false;
   // List<SharedList> mainSubList = [];
   // List<SharedList> staffList = [];
   // List<SharedList> resourceList = [];
@@ -172,18 +174,7 @@ class _SubListPageState extends State<SubListPage> {
   //       : Container();
   // }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: CustomAppBarWidget(
-        isSearch: true,
-        isShare: false,
-        appBarTitle: widget.appBarTitle,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-        language: Globals.selectedLanguage,
-      ),
-      body: RefreshIndicator(
+  _body(bool connected) => RefreshIndicator(
         key: refreshKey,
         onRefresh: refreshPage,
         child: Column(
@@ -203,7 +194,9 @@ class _SubListPageState extends State<SubListPage> {
                                 child: CircularProgressIndicator());
                           } else if (state is FamiliesSublistSucess) {
                             return CommonListWidget(
-                                data: state.obj!, sectionName: 'family');
+                                connected: connected,
+                                data: state.obj!,
+                                sectionName: 'family');
                             // return state.obj!.length > 0
                             //     ? Expanded(
                             //         child: ListView.builder(
@@ -247,7 +240,9 @@ class _SubListPageState extends State<SubListPage> {
                                     child: CircularProgressIndicator());
                               } else if (state is StaffSubListSucess) {
                                 return CommonListWidget(
-                                    data: state.obj!, sectionName: 'staff');
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: 'staff');
                                 // return state.obj!.length > 0
                                 //     ? Expanded(
                                 //         child: ListView.builder(
@@ -291,6 +286,7 @@ class _SubListPageState extends State<SubListPage> {
                                         child: CircularProgressIndicator());
                                   } else if (state is ResourcesSubListSucess) {
                                     return CommonListWidget(
+                                        connected: connected,
                                         data: state.obj!,
                                         sectionName: 'resources');
                                     // return state.obj!.length > 0
@@ -339,6 +335,7 @@ class _SubListPageState extends State<SubListPage> {
                                             child: CircularProgressIndicator());
                                       } else if (state is AboutSublistSucess) {
                                         return CommonListWidget(
+                                            connected: connected,
                                             data: state.obj!,
                                             sectionName: 'about');
                                         // return state.obj!.length > 0
@@ -433,8 +430,38 @@ class _SubListPageState extends State<SubListPage> {
             //     child: EmptyContainer()),
           ],
         ),
-      ),
-    );
+      );
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+        key: _scaffoldKey,
+        appBar: CustomAppBarWidget(
+          isSearch: true,
+          isShare: false,
+          appBarTitle: widget.appBarTitle,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+          language: Globals.selectedLanguage,
+        ),
+        body: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
+              if (connected) {
+                if (iserrorstate == true) {
+                  refreshPage();
+                  iserrorstate = false;
+                }
+              } else if (!connected) {
+                iserrorstate = true;
+              }
+
+              return _body(connected);
+            },
+            child: Container()));
   }
 
   Future refreshPage() async {
