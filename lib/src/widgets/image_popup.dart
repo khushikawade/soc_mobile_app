@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -59,7 +60,7 @@ class ImagePopupState extends State<ImagePopup>
                       backgroundDecoration: BoxDecoration(
                         color: Colors.transparent,
                       ),
-                      imageProvider: NetworkImage(widget.imageURL),
+                      imageProvider: CachedNetworkImageProvider(widget.imageURL),//NetworkImage(widget.imageURL),
                       maxScale: PhotoViewComputedScale.covered,
                       initialScale: PhotoViewComputedScale.contained * 0.8,
                       minScale: PhotoViewComputedScale.contained * 0.8,
@@ -80,7 +81,7 @@ class ImagePopupState extends State<ImagePopup>
                           initialScale: 0.0,
                           minScale: 0.3,
                           maxScale: 10.0,
-                          imageProvider: NetworkImage(
+                          imageProvider: CachedNetworkImageProvider(
                             Globals.splashImageUrl ??
                                 Globals.homeObject["App_Logo__c"],
                           ),

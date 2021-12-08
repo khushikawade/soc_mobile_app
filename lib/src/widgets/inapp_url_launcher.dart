@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -71,9 +72,9 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
 
               return connected
                   ? Container(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height * 0.032),
-                      child: WebView(
+                      // padding: EdgeInsets.only(
+                      //     bottom: AppTheme.klistPadding),
+                      child: WebView(                        
                         gestureNavigationEnabled:
                             widget.isiFrame == true ? true : false,
                         initialUrl: widget.isiFrame == true
