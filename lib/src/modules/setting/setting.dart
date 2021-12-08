@@ -211,26 +211,29 @@ class _SettingPageState extends State<SettingPage> {
         body: RefreshIndicator(
           key: refreshKey,
           child: Container(
-              child: OfflineBuilder(
-                  connectivityBuilder: (
-                    BuildContext context,
-                    ConnectivityResult connectivity,
-                    Widget child,
-                  ) {
-                    final bool connected =
-                        connectivity != ConnectivityResult.none;
+              child: 
+              // OfflineBuilder(
+              //     connectivityBuilder: (
+              //       BuildContext context,
+              //       ConnectivityResult connectivity,
+              //       Widget child,
+              //     ) {
+              //       final bool connected =
+              //           connectivity != ConnectivityResult.none;
 
-                    if (connected) {
-                      if (iserrorstate == true) {
-                        _homeBloc.add(FetchBottomNavigationBar());
-                        iserrorstate = false;
-                      }
-                    } else if (!connected) {
-                      iserrorstate = true;
-                    }
+              //       if (connected) {
+              //         if (iserrorstate == true) {
+              //           _homeBloc.add(FetchBottomNavigationBar());
+              //           iserrorstate = false;
+              //         }
+              //       } else if (!connected) {
+              //         iserrorstate = true;
+              //       }
 
-                    return connected
-                        ? Column(
+                    // return
+                    //  connected
+                    //     ? 
+                        Column(
                             children: [
                               Expanded(
                                   child: isloadingstate!
@@ -258,11 +261,11 @@ class _SettingPageState extends State<SettingPage> {
                                     child: EmptyContainer()),
                               ),
                             ],
-                          )
-                        : NoInternetErrorWidget(
-                            connected: connected, issplashscreen: false);
-                  },
-                  child: Container())),
+          )),
+                        // : NoInternetErrorWidget(
+                        //     connected: connected, issplashscreen: false);
+                  // },
+                  // child: Container())),
           onRefresh: refreshPage,
         ));
   }
