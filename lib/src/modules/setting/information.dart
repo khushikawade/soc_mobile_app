@@ -6,14 +6,12 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:html/dom.dart' as dom;
 
 // ignore: must_be_immutable
@@ -144,62 +142,63 @@ class _InformationPageState extends State<InformationPage> {
         ),
         body: RefreshIndicator(
           key: refreshKey,
-          child: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final bool connected = connectivity != ConnectivityResult.none;
+          child:
+              // OfflineBuilder(
+              //     connectivityBuilder: (
+              //       BuildContext context,
+              //       ConnectivityResult connectivity,
+              //       Widget child,
+              //     ) {
+              //       final bool connected = connectivity != ConnectivityResult.none;
 
-                if (connected) {
-                  if (iserrorstate == true) {
-                    iserrorstate = false;
-                    _bloc.add(FetchBottomNavigationBar());
-                  }
-                } else if (!connected) {
-                  iserrorstate = true;
-                }
+              //       if (connected) {
+              //         if (iserrorstate == true) {
+              //           iserrorstate = false;
+              //           _bloc.add(FetchBottomNavigationBar());
+              //         }
+              //       } else if (!connected) {
+              //         iserrorstate = true;
+              //       }
 
-                return connected
-                    ? Column(
-                        children: [
-                          Expanded(
-                            child: isloadingstate!
-                                ? ShimmerLoading(
-                                    isLoading: true,
-                                    child: _buildContent1(),
-                                  )
-                                : _buildContent1(),
-                          ),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _bloc,
-                              listener: (context, state) async {
-                                if (state is HomeLoading) {
-                                  isloadingstate = true;
-                                  // print('inloading state :${isloadingstate!}');
-                                }
-
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObject = state.obj;
-                                  setState(() {});
-                                  isloadingstate = false;
-                                }
-                              },
-                              child: Container(),
-                            ),
-                          ),
-                        ],
+              //       return connected
+              //           ?
+              Column(
+            children: [
+              Expanded(
+                child: isloadingstate!
+                    ? ShimmerLoading(
+                        isLoading: true,
+                        child: _buildContent1(),
                       )
-                    : NoInternetErrorWidget(
-                        connected: connected, issplashscreen: false);
-              },
-              child: Container()),
+                    : _buildContent1(),
+              ),
+              Container(
+                height: 0,
+                width: 0,
+                child: BlocListener<HomeBloc, HomeState>(
+                  bloc: _bloc,
+                  listener: (context, state) async {
+                    if (state is HomeLoading) {
+                      isloadingstate = true;
+                      // print('inloading state :${isloadingstate!}');
+                    }
+
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.homeObject = state.obj;
+                      setState(() {});
+                      isloadingstate = false;
+                    }
+                  },
+                  child: Container(),
+                ),
+              ),
+            ],
+          ),
+          // : NoInternetErrorWidget(
+          //     connected: connected, issplashscreen: false);
+          // },
+          // child: Container()),
           onRefresh: refreshPage,
         ));
   }

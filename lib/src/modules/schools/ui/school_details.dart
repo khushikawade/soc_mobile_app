@@ -8,7 +8,6 @@ import 'package:Soc/src/widgets/button_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/list_border_widget.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
@@ -17,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:html/dom.dart' as dom;
 
@@ -311,7 +309,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   }
 
   Widget build(BuildContext context) {
-    print(widget.obj.imageUrlC);
+    // print(widget.obj.imageUrlC);
     return Scaffold(
         appBar: CustomAppBarWidget(
           isSearch: true,

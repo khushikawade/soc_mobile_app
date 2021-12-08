@@ -15,7 +15,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
 import '../bloc/user_bloc.dart';
@@ -39,7 +38,7 @@ class _StartupPageState extends State<StartupPage> {
 
   void initState() {
     super.initState();
-    print("${Globals.deviceToken}, ${Globals.deviceToken}");
+    // print("${Globals.deviceToken}, ${Globals.deviceToken}");
     getindicatorValue();
     initPlatformState(context);
     _loginBloc.add(PerfomLogin());
@@ -70,7 +69,7 @@ class _StartupPageState extends State<StartupPage> {
     setState(() {
       _notification = state;
     });
-    print(_notification);
+    // print(_notification);
   }
 
   getindexvalue() async {

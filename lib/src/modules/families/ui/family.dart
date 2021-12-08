@@ -84,8 +84,8 @@ class _FamilyPageState extends State<FamilyPage> {
                               state is FamilyLoading) {
                             return Center(child: CircularProgressIndicator());
                           } else if (state is FamiliesDataSucess) {
-                            print('List data......');
-                            print(state.obj);
+                            // print('List data......');
+                            // print(state.obj);
                             return CommonListWidget(
                                 connected: connected,
                                 data: state.obj!,

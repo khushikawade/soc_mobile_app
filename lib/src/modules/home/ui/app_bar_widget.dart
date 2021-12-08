@@ -197,8 +197,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       child: GestureDetector(
         key: _bshowcase,
         child: Image(
-          width: Globals.deviceType == "phone" ? 24 : 32,
-          height: Globals.deviceType == "phone" ? 24 : 32,
+          width: Globals.deviceType == "phone" ? 26 : 32,
+          height: Globals.deviceType == "phone" ? 26 : 32,
           image: AssetImage("assets/images/gtranslate.png"),
         ),
         onTap: () {
@@ -240,7 +240,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             child: Icon(
               FontAwesomeIcons.universalAccess,
               color: Colors.blue,
-              size: Globals.deviceType == "phone" ? 26 : 32,
+              size: Globals.deviceType == "phone" ? 25 : 32,
             ),
           ),
         ));
