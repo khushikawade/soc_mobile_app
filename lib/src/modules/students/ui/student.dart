@@ -13,6 +13,7 @@ import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -120,7 +121,9 @@ class _StudentPageState extends State<StudentPage> {
                         list[index].status == 'Show'
                     ? Container(
                         padding: EdgeInsets.only(
-                          top: 10,
+                          top: Globals.deviceType == "phone"
+                              ? MediaQuery.of(context).size.height * 0.001
+                              : MediaQuery.of(context).size.height * 0.01,
                         ),
                         child: GestureDetector(
                             onTap: () => _launchURL(list[index], subList),
@@ -295,33 +298,33 @@ class _StudentPageState extends State<StudentPage> {
             }
 
             return new Stack(fit: StackFit.expand, children: [
-              // connected ?
-              BlocBuilder<StudentBloc, StudentState>(
-                  bloc: _bloc,
-                  builder: (BuildContext contxt, StudentState state) {
-                    if (state is StudentInitial || state is Loading) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (state is StudentDataSucess) {
-                      return state.obj != null && state.obj!.length > 0
-                          ? Container(
-                              padding: EdgeInsets.symmetric(horizontal: 5),
-                              child: _buildGrid(state.obj!, state.subFolder!))
-                          :
-                          // ListView(children: [
-                          NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: false,
-                              connected: connected,
-                            );
-                      // ]);
-                    } else if (state is StudentError) {
-                      return ListView(children: [ErrorMsgWidget()]);
-                    }
-                    return Container();
-                  }),
-              // : NoInternetErrorWidget(
-              //     connected: connected, issplashscreen: false),
+              connected
+                  ? BlocBuilder<StudentBloc, StudentState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, StudentState state) {
+                        if (state is StudentInitial || state is Loading) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (state is StudentDataSucess) {
+                          return state.obj != null && state.obj!.length > 0
+                              ? Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  child:
+                                      _buildGrid(state.obj!, state.subFolder!))
+                              :
+                              // ListView(children: [
+                              NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: false,
+                                );
+                          // ]);
+                        } else if (state is StudentError) {
+                          return ListView(children: [ErrorMsgWidget()]);
+                        }
+                        return Container();
+                      })
+                  : NoInternetErrorWidget(
+                      connected: connected, issplashscreen: false),
               Container(
                 height: 0,
                 width: 0,
@@ -359,25 +362,29 @@ class _StudentPageState extends State<StudentPage> {
             setState(() {});
           },
         ),
-        body: NestedScrollView(
+        body: Globals.homeObject["Student_Banner_Image__c"] != null &&
+                Globals.homeObject["Student_Banner_Image__c"] != ''
+            ? NestedScrollView(
 
-            // controller: _scrollController,
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                Globals.homeObject["Student_Banner_Image__c"] != null
-                    ? BannerImageWidget(
-                        imageUrl: Globals.homeObject["Student_Banner_Image__c"],
-                        bgColor: Globals
-                                    .homeObject["Student_Banner_Color__c"] !=
-                                null
-                            ? Utility.getColorFromHex(
-                                Globals.homeObject["Student_Banner_Color__c"])
-                            : null,
-                      )
-                    : SliverAppBar(),
-              ];
-            },
-            body: _body()));
+                // controller: _scrollController,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    Globals.homeObject["Student_Banner_Image__c"] != null
+                        ? BannerImageWidget(
+                            imageUrl:
+                                Globals.homeObject["Student_Banner_Image__c"],
+                            bgColor:
+                                Globals.homeObject["Student_Banner_Color__c"] !=
+                                        null
+                                    ? Utility.getColorFromHex(Globals
+                                        .homeObject["Student_Banner_Color__c"])
+                                    : null,
+                          )
+                        : SliverAppBar(),
+                  ];
+                },
+                body: _body())
+            : _body());
   }
 }

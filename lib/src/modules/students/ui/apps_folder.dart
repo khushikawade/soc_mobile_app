@@ -105,23 +105,22 @@ class AppsFolderPageState extends State<AppsFolderPage>
                       top: 20, left: 20.0, right: 20, bottom: 20),
                   child: apps.length > 0
                       ? GridView.count(
-                          crossAxisCount: MediaQuery.of(context).orientation ==
-                                      Orientation.portrait &&
-                                  Globals.deviceType == "phone"
-                              ? 3
-                              : (MediaQuery.of(context).orientation ==
-                                          Orientation.landscape &&
-                                      Globals.deviceType == "phone")
-                                  ? 4
-                                  : MediaQuery.of(context).orientation ==
-                                              Orientation.portrait &&
-                                          Globals.deviceType != "phone"
-                                      ? 4
-                                      : MediaQuery.of(context).orientation ==
-                                                  Orientation.landscape &&
-                                              Globals.deviceType != "phone"
-                                          ? 5
-                                          : 3,
+                          crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait &&
+                        Globals.deviceType == "phone"
+                    ? 3
+                    : (MediaQuery.of(context).orientation ==
+                                Orientation.landscape &&
+                            Globals.deviceType == "phone")
+                        ? 4
+                        : MediaQuery.of(context).orientation ==
+                                    Orientation.portrait &&
+                                Globals.deviceType != "phone"
+                            ? 4
+                            : MediaQuery.of(context).orientation ==
+                                        Orientation.landscape &&
+                                    Globals.deviceType != "phone"
+                                ? 5
+                                : 3,
                           crossAxisSpacing: _kLableSpacing,
                           mainAxisSpacing: _kLableSpacing,
                           children: List.generate(
