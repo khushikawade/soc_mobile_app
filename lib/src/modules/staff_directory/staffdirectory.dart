@@ -94,32 +94,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   // }
 
   Widget listItem(list, obj, index) {
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
-      padding: EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing / 2, vertical: _kLabelSpacing / 1.5),
-      decoration: BoxDecoration(
-        border: (index % 2 == 0)
-            ? Border.all(
-                color: Theme.of(context).colorScheme.background,
-              )
-            : Border.all(color: Theme.of(context).colorScheme.secondary),
-        borderRadius: BorderRadius.circular(0.0),
-        color: (index % 2 == 0)
-            ? Theme.of(context).colorScheme.background
-            : Theme.of(context).colorScheme.secondary,
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.2),
-            spreadRadius: 0,
-            blurRadius: 1,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
-      child: GestureDetector(
-        onTap: () {
+    return GestureDetector(
+       onTap: () {
           // if (widget.isAbout == true) {
           Navigator.push(
               context,
@@ -136,6 +112,30 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       )));
           // }
         },
+      child: Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
+        padding: EdgeInsets.symmetric(
+            horizontal: _kLabelSpacing / 2, vertical: _kLabelSpacing / 1.5),
+        decoration: BoxDecoration(
+          border: (index % 2 == 0)
+              ? Border.all(
+                  color: Theme.of(context).colorScheme.background,
+                )
+              : Border.all(color: Theme.of(context).colorScheme.secondary),
+          borderRadius: BorderRadius.circular(0.0),
+          color: (index % 2 == 0)
+              ? Theme.of(context).colorScheme.background
+              : Theme.of(context).colorScheme.secondary,
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.2),
+              spreadRadius: 0,
+              blurRadius: 1,
+              offset: Offset(0, 1),
+            ),
+          ],
+        ),
         child: Column(
           children: [
             Row(
@@ -312,29 +312,18 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   child: CircularProgressIndicator());
                             } else if (state is SDDataSucess) {
                               return state.obj != null && state.obj!.length > 0
-                                  ? Column(
-                                      children: [
-                                        // widget.isAbout == true
-                                        //     ? Container()
-                                        //     : _buildHeading(
-                                        //         "STAFF DIRECTORY"),
-                                        // SpacerWidget(_kLabelSpacing / 4),
-                                        Expanded(
-                                          child: ListView.builder(
-                                            // padding: EdgeInsets.only(
-                                            //     bottom: 25.0),
-                                            shrinkWrap: true,
-                                            scrollDirection: Axis.vertical,
-                                            itemCount: state.obj!.length,
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return listItem(state.obj,
-                                                  state.obj![index], index);
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    )
+                                  ? ListView.builder(
+                                    // padding: EdgeInsets.only(
+                                    //     bottom: 25.0),
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: state.obj!.length,
+                                    itemBuilder: (BuildContext context,
+                                        int index) {
+                                      return listItem(state.obj,
+                                          state.obj![index], index);
+                                    },
+                                  )
                                   : NoDataFoundErrorWidget(
                                       isResultNotFoundMsg: false,
                                       isNews: false,

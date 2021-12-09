@@ -194,6 +194,7 @@ class _SubListPageState extends State<SubListPage> {
                                 child: CircularProgressIndicator());
                           } else if (state is FamiliesSublistSucess) {
                             return CommonListWidget(
+                                scaffoldKey: _scaffoldKey,
                                 connected: connected,
                                 data: state.obj!,
                                 sectionName: 'family');
@@ -240,6 +241,7 @@ class _SubListPageState extends State<SubListPage> {
                                     child: CircularProgressIndicator());
                               } else if (state is StaffSubListSucess) {
                                 return CommonListWidget(
+                                    scaffoldKey: _scaffoldKey,
                                     connected: connected,
                                     data: state.obj!,
                                     sectionName: 'staff');
@@ -286,6 +288,7 @@ class _SubListPageState extends State<SubListPage> {
                                         child: CircularProgressIndicator());
                                   } else if (state is ResourcesSubListSucess) {
                                     return CommonListWidget(
+                                        scaffoldKey: _scaffoldKey,
                                         connected: connected,
                                         data: state.obj!,
                                         sectionName: 'resources');
@@ -335,6 +338,7 @@ class _SubListPageState extends State<SubListPage> {
                                             child: CircularProgressIndicator());
                                       } else if (state is AboutSublistSucess) {
                                         return CommonListWidget(
+                                            scaffoldKey: _scaffoldKey,
                                             connected: connected,
                                             data: state.obj!,
                                             sectionName: 'about');

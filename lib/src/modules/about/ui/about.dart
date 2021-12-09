@@ -232,6 +232,7 @@ class _AboutPageState extends State<AboutPage> {
                                       child: CircularProgressIndicator());
                                 } else if (state is AboutDataSucess) {
                                   return CommonListWidget(
+                                     scaffoldKey: _scaffoldKey,
                                       connected: connected,
                                       data: state.obj!, sectionName: 'about');
                                   // return newList.length > 0

@@ -1,6 +1,5 @@
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
-import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -8,7 +7,6 @@ import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
@@ -52,87 +50,90 @@ class _FamilyPageState extends State<FamilyPage> {
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
-  Widget _body() => RefreshIndicator(
-        key: refreshKey,
-        child: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final bool connected = connectivity != ConnectivityResult.none;
+  Widget _body() => Container(
+        child: RefreshIndicator(
+          key: refreshKey,
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
 
-              if (connected) {
-                if (iserrorstate == true) {
-                  _bloc.add(FamiliesEvent());
-                  iserrorstate = false;
+                if (connected) {
+                  if (iserrorstate == true) {
+                    _bloc.add(FamiliesEvent());
+                    iserrorstate = false;
+                  }
+                } else if (!connected) {
+                  iserrorstate = true;
                 }
-              } else if (!connected) {
-                iserrorstate = true;
-              }
 
-              return
-                  // connected?
-                  Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    child: BlocBuilder<FamilyBloc, FamilyState>(
-                        bloc: _bloc,
-                        builder: (BuildContext contxt, FamilyState state) {
-                          if (state is FamilyInitial ||
-                              state is FamilyLoading) {
-                            return Center(child: CircularProgressIndicator());
-                          } else if (state is FamiliesDataSucess) {
-                            // print('List data......');
-                            // print(state.obj);
-                            return CommonListWidget(
-                                connected: connected,
-                                data: state.obj!,
-                                sectionName: "family");
-                          } else if (state is ErrorLoading) {
-                            return ListView(children: [ErrorMsgWidget()]);
-                          } else {
-                            return Container();
-                          }
-                        }),
-                  ),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                        bloc: _homeBloc,
-                        listener: (context, state) async {
-                          if (state is BottomNavigationBarSuccess) {
-                            AppTheme.setDynamicTheme(
-                                Globals.appSetting, context);
-                            Globals.homeObject = state.obj;
+                return
+                    // connected?
+                    Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: BlocBuilder<FamilyBloc, FamilyState>(
+                          bloc: _bloc,
+                          builder: (BuildContext contxt, FamilyState state) {
+                            if (state is FamilyInitial ||
+                                state is FamilyLoading) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (state is FamiliesDataSucess) {
+                              // print('List data......');
+                              // print(state.obj);
+                              return CommonListWidget(
+                                  scaffoldKey: _scaffoldKey,
+                                  connected: connected,
+                                  data: state.obj!,
+                                  sectionName: "family");
+                            } else if (state is ErrorLoading) {
+                              return ListView(children: [ErrorMsgWidget()]);
+                            } else {
+                              return Container();
+                            }
+                          }),
+                    ),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                          bloc: _homeBloc,
+                          listener: (context, state) async {
+                            if (state is BottomNavigationBarSuccess) {
+                              AppTheme.setDynamicTheme(
+                                  Globals.appSetting, context);
+                              Globals.homeObject = state.obj;
 
-                            setState(() {});
-                          }
-                        },
-                        child: EmptyContainer()),
-                  ),
-                  // BlocListener<FamilyBloc, FamilyState>(
-                  //     bloc: _bloc,
-                  //     listener: (context, state) async {
-                  //       // if (state is FamiliesDataSucess) {
-                  //       //   newList.clear();
-                  //       //   for (int i = 0; i < state.obj!.length; i++) {
-                  //       //     if (state.obj![i].status != "Hide") {
-                  //       //       newList.add(state.obj![i]);
-                  //       //     }
-                  //       //   }
-                  //       // }
-                  //     },
-                  //     child: EmptyContainer()),
-                ],
-              );
-              // : NoInternetErrorWidget(
-              //     connected: connected, issplashscreen: false);
-            },
-            child: Container()),
-        onRefresh: refreshPage,
+                              setState(() {});
+                            }
+                          },
+                          child: EmptyContainer()),
+                    ),
+                    // BlocListener<FamilyBloc, FamilyState>(
+                    //     bloc: _bloc,
+                    //     listener: (context, state) async {
+                    //       // if (state is FamiliesDataSucess) {
+                    //       //   newList.clear();
+                    //       //   for (int i = 0; i < state.obj!.length; i++) {
+                    //       //     if (state.obj![i].status != "Hide") {
+                    //       //       newList.add(state.obj![i]);
+                    //       //     }
+                    //       //   }
+                    //       // }
+                    //     },
+                    //     child: EmptyContainer()),
+                  ],
+                );
+                // : NoInternetErrorWidget(
+                //     connected: connected, issplashscreen: false);
+              },
+              child: Container()),
+          onRefresh: refreshPage,
+        ),
       );
 
   // var _scrollController = ScrollController();

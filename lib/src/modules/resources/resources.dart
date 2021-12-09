@@ -63,52 +63,52 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 iserrorstate = true;
               }
 
-              return 
-              // connected ?
-               Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: BlocBuilder<ResourcesBloc, ResourcesState>(
-                              bloc: _bloc,
-                              builder:
-                                  (BuildContext contxt, ResourcesState state) {
-                                if (state is ResourcesInitial ||
-                                    state is ResourcesLoading) {
-                                  return Container(
-                                      alignment: Alignment.center,
-                                      child: CircularProgressIndicator());
-                                } else if (state is ResourcesDataSucess) {
-                                  return CommonListWidget(
-                                      data: state.obj!,
-                                      connected: connected,
-                                      sectionName: "resources");
-                                } else if (state is ResourcesErrorLoading) {
-                                  return ListView(children: [ErrorMsgWidget()]);
-                                } else {
-                                  return Container();
-                                }
-                              }),
-                        ),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObject = state.obj;
-                                  setState(() {});
-                                }
-                              },
-                              child: EmptyContainer()),
-                        ),
-                      ],
-                    );
-                  // : NoInternetErrorWidget(
-                  //     connected: connected, issplashscreen: false);
+              return
+                  // connected ?
+                  Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: BlocBuilder<ResourcesBloc, ResourcesState>(
+                        bloc: _bloc,
+                        builder: (BuildContext contxt, ResourcesState state) {
+                          if (state is ResourcesInitial ||
+                              state is ResourcesLoading) {
+                            return Container(
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator());
+                          } else if (state is ResourcesDataSucess) {
+                            return CommonListWidget(
+                                scaffoldKey: _scaffoldKey,
+                                data: state.obj!,
+                                connected: connected,
+                                sectionName: "resources");
+                          } else if (state is ResourcesErrorLoading) {
+                            return ListView(children: [ErrorMsgWidget()]);
+                          } else {
+                            return Container();
+                          }
+                        }),
+                  ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.homeObject = state.obj;
+                            setState(() {});
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                ],
+              );
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,

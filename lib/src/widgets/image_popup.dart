@@ -60,7 +60,8 @@ class ImagePopupState extends State<ImagePopup>
                       backgroundDecoration: BoxDecoration(
                         color: Colors.transparent,
                       ),
-                      imageProvider: CachedNetworkImageProvider(widget.imageURL),//NetworkImage(widget.imageURL),
+                      imageProvider: CachedNetworkImageProvider(
+                          widget.imageURL), //NetworkImage(widget.imageURL),
                       maxScale: PhotoViewComputedScale.covered,
                       initialScale: PhotoViewComputedScale.contained * 0.8,
                       minScale: PhotoViewComputedScale.contained * 0.8,
@@ -78,9 +79,12 @@ class ImagePopupState extends State<ImagePopup>
                           backgroundDecoration: BoxDecoration(
                             color: Colors.transparent,
                           ),
-                          initialScale: 0.0,
-                          minScale: 0.3,
-                          maxScale: 10.0,
+                          // initialScale: 0.0,
+                          // minScale: 0.3,
+                          // maxScale: 10.0,
+                          maxScale: PhotoViewComputedScale.covered,
+                          initialScale: PhotoViewComputedScale.contained * 0.8,
+                          minScale: PhotoViewComputedScale.contained * 0.8,
                           imageProvider: CachedNetworkImageProvider(
                             Globals.splashImageUrl ??
                                 Globals.homeObject["App_Logo__c"],
@@ -90,29 +94,27 @@ class ImagePopupState extends State<ImagePopup>
                     ),
                   ),
                   Container(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.width * 0.2),
-                      child: Container(
-                          // margin: EdgeInsets.all(20),
-                          padding: EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: Colors.transparent,
-                              border:
-                                  Border.all(width: 2, color: Colors.white)),
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(
-                              Icons.clear,
-                              color: Colors.white,
-                              size: Globals.deviceType == "phone" ? 28 : 36,
-                            ),
-                          )),
-                    ),
+                    alignment: Alignment.topRight,
+                    child: Container(
+                        height: Globals.deviceType == "phone" ? 40 : null,
+                        width: Globals.deviceType == "phone" ? 40 : null,
+                        // margin: EdgeInsets.all(20),
+                        // padding: EdgeInsets.all(1),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: Colors.transparent,
+                            border: Border.all(width: 2, color: Colors.white)),
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          padding: EdgeInsets.zero,
+                          icon: Icon(
+                            Icons.clear,
+                            color: Colors.white,
+                            size: Globals.deviceType == "phone" ? 25 : 30,
+                          ),
+                        )),
                   ),
                 ],
               ),

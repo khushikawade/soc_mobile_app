@@ -13,6 +13,7 @@ import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../widgets/no_data_found_error_widget.dart';
 
@@ -20,13 +21,18 @@ class CommonListWidget extends StatefulWidget {
   final List<SharedList> data;
   final String sectionName;
   final bool? connected;
-  CommonListWidget({required this.data, required this.sectionName, this.connected});
+  final scaffoldKey;
+  CommonListWidget(
+      {required this.data,
+      required this.sectionName,
+      required this.scaffoldKey,
+      this.connected});
   @override
   _CommonListWidgetState createState() => _CommonListWidgetState();
 }
 
 class _CommonListWidgetState extends State<CommonListWidget> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final widget.scaffoldKey = GlobalKey<ScaffoldState>();
 
   _launchURL(obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http') {
@@ -58,7 +64,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null
           ? _launchURL(obj)
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
           context,
@@ -83,7 +90,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         // calendarId: obj.calendarId.toString(),
                       )))
           : Utility.showSnackBar(
-              _scaffoldKey, "No calendar/events available", context);
+              widget.scaffoldKey, "No calendar/events available", context);
     } else if (obj.typeC == "RTF_HTML" ||
         obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
@@ -99,7 +106,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         appbarTitle: obj.titleC!,
                         language: Globals.selectedLanguage,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No data available", context);
     } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
           ? Navigator.push(
@@ -112,7 +120,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
           ? Navigator.push(
@@ -124,7 +133,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
       Navigator.push(
           context,
@@ -149,7 +159,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     language: Globals.selectedLanguage,
                   )));
     } else {
-      Utility.showSnackBar(_scaffoldKey, "No data available", context);
+      Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }
   }
 
@@ -214,23 +224,21 @@ class _CommonListWidgetState extends State<CommonListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        body: widget.data.length > 0
-            ? ListView.builder(
-                padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
-                scrollDirection: Axis.vertical,
-                itemCount: widget.data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildList(widget.data[index], index);
-                },
-              )
-            : Container(
-                child: NoDataFoundErrorWidget(
+    return widget.data.length > 0
+        ? ListView.builder(
+            // shrinkWrap: true,
+            padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+            scrollDirection: Axis.vertical,
+            itemCount: widget.data.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _buildList(widget.data[index], index);
+            },
+          )
+        : Container(
+            child: NoDataFoundErrorWidget(
                 isResultNotFoundMsg: false,
                 isNews: false,
                 isEvents: false,
-                connected : widget.connected
-              )));
+                connected: widget.connected));
   }
 }
