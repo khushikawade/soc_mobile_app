@@ -23,10 +23,12 @@ class CommonListWidget extends StatefulWidget {
   final bool? connected;
   final scaffoldKey;
   CommonListWidget(
-      {required this.data,
+      {Key? key,
+      required this.data,
       required this.sectionName,
       required this.scaffoldKey,
-      this.connected});
+      this.connected})
+      : super(key: key);
   @override
   _CommonListWidgetState createState() => _CommonListWidgetState();
 }

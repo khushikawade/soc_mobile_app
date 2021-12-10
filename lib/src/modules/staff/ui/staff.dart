@@ -36,7 +36,7 @@ class _StaffPageState extends State<StaffPage> {
     _bloc.add(StaffPageEvent());
   }
 
-  Widget _body() => RefreshIndicator(
+  Widget _body(String key) => RefreshIndicator(
       key: refreshKey,
       child: OfflineBuilder(
           connectivityBuilder: (
@@ -66,6 +66,7 @@ class _StaffPageState extends State<StaffPage> {
                           return Center(child: CircularProgressIndicator());
                         } else if (state is StaffDataSucess) {
                           return CommonListWidget(
+                              key: ValueKey(key),
                               scaffoldKey: _scaffoldKey,
                               connected: connected,
                               data: state.obj!,
@@ -137,9 +138,9 @@ class _StaffPageState extends State<StaffPage> {
                   )
                 ];
               },
-              body: _body(),
+              body: _body('body1'),
             )
-          : _body(),
+          : _body('body2'),
     );
   }
 

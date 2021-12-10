@@ -197,7 +197,7 @@ class _AboutPageState extends State<AboutPage> {
   //   );
   // }
 
-  Widget _body() => RefreshIndicator(
+  Widget _body(String key) => RefreshIndicator(
         key: refreshKey,
         child: OfflineBuilder(
             connectivityBuilder: (
@@ -232,6 +232,7 @@ class _AboutPageState extends State<AboutPage> {
                                       child: CircularProgressIndicator());
                                 } else if (state is AboutDataSucess) {
                                   return CommonListWidget(
+                                     key: ValueKey(key),
                                      scaffoldKey: _scaffoldKey,
                                       connected: connected,
                                       data: state.obj!, sectionName: 'about');
@@ -321,7 +322,7 @@ class _AboutPageState extends State<AboutPage> {
                     )
                   ];
                 },
-                body: _body())
-            : _body());
+                body: _body('body1'))
+            : _body('body2'));
   }
 }

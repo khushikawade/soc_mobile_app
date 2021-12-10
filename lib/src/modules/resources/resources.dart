@@ -45,7 +45,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
-  Widget _body() => RefreshIndicator(
+  Widget _body(String key) => RefreshIndicator(
         key: refreshKey,
         child: OfflineBuilder(
             connectivityBuilder: (
@@ -79,6 +79,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                 child: CircularProgressIndicator());
                           } else if (state is ResourcesDataSucess) {
                             return CommonListWidget(
+                                key: ValueKey(key),
                                 scaffoldKey: _scaffoldKey,
                                 data: state.obj!,
                                 connected: connected,
@@ -140,7 +141,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     )
                   ];
                 },
-                body: _body())
-            : _body());
+                body: _body('body1'))
+            : _body('body2'));
   }
 }

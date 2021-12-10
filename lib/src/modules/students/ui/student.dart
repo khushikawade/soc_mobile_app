@@ -85,11 +85,12 @@ class _StudentPageState extends State<StudentPage> {
     }
   }
 
-  Widget _buildGrid(List<StudentApp> list, List<StudentApp> subList) {
+  Widget _buildGrid(List<StudentApp> list, List<StudentApp> subList, String key) {
     return list.length > 0
         ? //new OrientationBuilder(builder: (context, orientation) {
         //  print(orientation);
         GridView.count(
+           key: ValueKey(key),
             padding: const EdgeInsets.only(bottom: AppTheme.klistPadding),
             childAspectRatio:
                 MediaQuery.of(context).orientation == Orientation.portrait
@@ -277,7 +278,7 @@ class _StudentPageState extends State<StudentPage> {
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
-  Widget _body() {
+  Widget _body(String key) {
     return RefreshIndicator(
       key: refreshKey,
       child: OfflineBuilder(
@@ -309,7 +310,7 @@ class _StudentPageState extends State<StudentPage> {
                               ? Container(
                                   padding: EdgeInsets.symmetric(horizontal: 5),
                                   child:
-                                      _buildGrid(state.obj!, state.subFolder!))
+                                      _buildGrid(state.obj!, state.subFolder!, key))
                               :
                               // ListView(children: [
                               NoDataFoundErrorWidget(
@@ -384,7 +385,7 @@ class _StudentPageState extends State<StudentPage> {
                         : SliverAppBar(),
                   ];
                 },
-                body: _body())
-            : _body());
+                body: _body('body1'))
+            : _body('body2'));
   }
 }

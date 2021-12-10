@@ -50,7 +50,7 @@ class _FamilyPageState extends State<FamilyPage> {
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
-  Widget _body() => Container(
+  Widget _body(String key) => Container(
         child: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(
@@ -86,6 +86,7 @@ class _FamilyPageState extends State<FamilyPage> {
                               // print('List data......');
                               // print(state.obj);
                               return CommonListWidget(
+                                  key: ValueKey(key),
                                   scaffoldKey: _scaffoldKey,
                                   connected: connected,
                                   data: state.obj!,
@@ -113,19 +114,6 @@ class _FamilyPageState extends State<FamilyPage> {
                           },
                           child: EmptyContainer()),
                     ),
-                    // BlocListener<FamilyBloc, FamilyState>(
-                    //     bloc: _bloc,
-                    //     listener: (context, state) async {
-                    //       // if (state is FamiliesDataSucess) {
-                    //       //   newList.clear();
-                    //       //   for (int i = 0; i < state.obj!.length; i++) {
-                    //       //     if (state.obj![i].status != "Hide") {
-                    //       //       newList.add(state.obj![i]);
-                    //       //     }
-                    //       //   }
-                    //       // }
-                    //     },
-                    //     child: EmptyContainer()),
                   ],
                 );
                 // : NoInternetErrorWidget(
@@ -135,8 +123,6 @@ class _FamilyPageState extends State<FamilyPage> {
           onRefresh: refreshPage,
         ),
       );
-
-  // var _scrollController = ScrollController();
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,7 +154,7 @@ class _FamilyPageState extends State<FamilyPage> {
                         : SliverAppBar(),
                   ];
                 },
-                body: _body())
-            : _body());
+                body: _body('body1'))
+            : _body('body2'));
   }
 }
