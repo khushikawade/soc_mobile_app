@@ -13,7 +13,9 @@ class NotificationList {
   final url;
   @HiveField(4)
   String? image;
+  @HiveField(5)
+  dynamic completedAt; 
 
   NotificationList(
-      {this.id, this.contents, this.headings, this.url, this.image});
+      {this.id, this.contents, this.headings, this.url, this.image, this.completedAt});
 }

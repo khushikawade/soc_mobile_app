@@ -32,6 +32,17 @@ class Utility {
     }
   }
 
+  static String convetTimestampToDate(dynamic timestamp) {
+    try {
+      DateTime date =
+          DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
+      String dateFormat = DateFormat("MM/dd/yy").format(date);
+      return dateFormat;
+    } catch (e) {
+      return '';
+    }
+  }
+
   static selectDate(context, callback) {
     showModalBottomSheet(
         context: context,

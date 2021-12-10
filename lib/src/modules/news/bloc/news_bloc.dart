@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,7 +97,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
               contents: i["contents"],
               headings: i["headings"],
               url: i["url"],
-              image: i["global_image"]);
+              image: i["global_image"],
+              completedAt: Utility.convetTimestampToDate(i["completed_at"]));
         }).toList();
       } else {
         throw ('something_went_wrong');

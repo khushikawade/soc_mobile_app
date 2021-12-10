@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/strings.dart';
@@ -128,24 +129,36 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildnewsHeading(obj) {
+  Widget _buildnewsHeading(NotificationList obj) {
+    // return Text(obj.completedAt);
     return Container(
         alignment: Alignment.centerLeft,
-        child: TranslationWidget(
-          message: obj.headings!.length > 0 &&
-                  obj.headings != "" &&
-                  obj.headings != null
-              ? obj.headings["en"].toString()
-              : obj.contents["en"] ?? '-',
-          fromLanguage: "en",
-          toLanguage: Globals.selectedLanguage,
-          builder: (translatedMessage) => Text(
-            // obj.titleC.toString(),
-            translatedMessage.toString(),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-            style: Theme.of(context).textTheme.headline4!,
-          ),
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TranslationWidget(
+              message: obj.headings!.length > 0 &&
+                      obj.headings != "" &&
+                      obj.headings != null
+                  ? obj.headings["en"].toString()
+                  : obj.contents["en"] ?? '-',
+              fromLanguage: "en",
+              toLanguage: Globals.selectedLanguage,
+              builder: (translatedMessage) => Text(
+                // obj.titleC.toString(),
+                translatedMessage.toString(),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: Theme.of(context).textTheme.headline4!,
+              ),
+            ),
+           
+            Text(obj.completedAt, style: Theme.of(context).textTheme.subtitle1!.copyWith(
+              fontSize: 12.5,
+              fontStyle: FontStyle.italic
+            ),)
+          ],
         ));
   }
 
@@ -199,96 +212,91 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 iserrorstate = true;
               }
 
-              return 
-              // connected ? 
+              return
+                  // connected ?
                   Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BlocBuilder(
-                            bloc: bloc,
-                            builder: (BuildContext context, NewsState state) {
-                              if (state is NewsLoaded) {
-                                return state.obj != null &&
-                                        state.obj!.length > 0
-                                    ? _buildList(state.obj)
-                                    : Expanded(
-                                        child: NoDataFoundErrorWidget(
-                                          isResultNotFoundMsg: false,
-                                          isNews: true,
-                                          isEvents: false,
-                                          connected: connected,
-                                        ),
-                                      );
-                              } else if (state is NewsLoading) {
-                                return Expanded(
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.8,
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BlocBuilder(
+                      bloc: bloc,
+                      builder: (BuildContext context, NewsState state) {
+                        if (state is NewsLoaded) {
+                          return state.obj != null && state.obj!.length > 0
+                              ? _buildList(state.obj)
+                              : Expanded(
+                                  child: NoDataFoundErrorWidget(
+                                    isResultNotFoundMsg: false,
+                                    isNews: true,
+                                    isEvents: false,
+                                    connected: connected,
                                   ),
                                 );
-                              } else if (state is NewsErrorReceived) {
-                                return ListView(
-                                    shrinkWrap: true,
-                                    children: [ErrorMsgWidget()]);
-                              } else {
-                                return Container();
-                              }
-                            }),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<NewsBloc, NewsState>(
-                            bloc: bloc,
-                            listener: (context, state) async {
-                              if (state is NewsLoaded) {
-                                // setState(() {
-                                //    object = state.obj;
-                                // });
-                               
-                                // SharedPreferences prefs =
-                                //     await SharedPreferences.getInstance();
-                                SharedPreferences intPrefs =
-                                    await SharedPreferences.getInstance();
-                                intPrefs.getInt("totalCount") == null
-                                    ? intPrefs.setInt(
-                                        "totalCount", Globals.notiCount!)
-                                    : intPrefs.getInt("totalCount");
-                                // print(intPrefs.getInt("totalCount"));
-                                if (Globals.notiCount! >
-                                    intPrefs.getInt("totalCount")!) {
-                                  intPrefs.setInt(
-                                      "totalCount", Globals.notiCount!);
-                                }
-                              }
-                            },
-                            child: Container(),
-                          ),
-                        ),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObject = state.obj;
-                                  setState(() {});
-                                } else if (state is HomeErrorReceived) {
-                                  ErrorMsgWidget();
-                                }
-                              },
-                              child: EmptyContainer()),
-                        ),
-                      ],
-                    );
-                  // : NoInternetErrorWidget(
-                  //     connected: connected, issplashscreen: false);
+                        } else if (state is NewsLoading) {
+                          return Expanded(
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          );
+                        } else if (state is NewsErrorReceived) {
+                          return ListView(
+                              shrinkWrap: true, children: [ErrorMsgWidget()]);
+                        } else {
+                          return Container();
+                        }
+                      }),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<NewsBloc, NewsState>(
+                      bloc: bloc,
+                      listener: (context, state) async {
+                        if (state is NewsLoaded) {
+                          // setState(() {
+                          //    object = state.obj;
+                          // });
+
+                          // SharedPreferences prefs =
+                          //     await SharedPreferences.getInstance();
+                          SharedPreferences intPrefs =
+                              await SharedPreferences.getInstance();
+                          intPrefs.getInt("totalCount") == null
+                              ? intPrefs.setInt(
+                                  "totalCount", Globals.notiCount!)
+                              : intPrefs.getInt("totalCount");
+                          // print(intPrefs.getInt("totalCount"));
+                          if (Globals.notiCount! >
+                              intPrefs.getInt("totalCount")!) {
+                            intPrefs.setInt("totalCount", Globals.notiCount!);
+                          }
+                        }
+                      },
+                      child: Container(),
+                    ),
+                  ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.homeObject = state.obj;
+                            setState(() {});
+                          } else if (state is HomeErrorReceived) {
+                            ErrorMsgWidget();
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                ],
+              );
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,
