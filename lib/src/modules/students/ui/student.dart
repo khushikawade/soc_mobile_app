@@ -299,8 +299,9 @@ class _StudentPageState extends State<StudentPage> {
             }
 
             return new Stack(fit: StackFit.expand, children: [
-              connected
-                  ? BlocBuilder<StudentBloc, StudentState>(
+              // connected
+              //     ? 
+                  BlocBuilder<StudentBloc, StudentState>(
                       bloc: _bloc,
                       builder: (BuildContext contxt, StudentState state) {
                         if (state is StudentInitial || state is Loading) {
@@ -317,15 +318,16 @@ class _StudentPageState extends State<StudentPage> {
                                   isResultNotFoundMsg: false,
                                   isNews: false,
                                   isEvents: false,
+                                  connected: connected,
                                 );
                           // ]);
                         } else if (state is StudentError) {
                           return ListView(children: [ErrorMsgWidget()]);
                         }
                         return Container();
-                      })
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false),
+                      }),
+                  // : NoInternetErrorWidget(
+                  //     connected: connected, issplashscreen: false),
               Container(
                 height: 0,
                 width: 0,
