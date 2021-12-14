@@ -81,13 +81,13 @@ class _NewdescriptionState extends State<Newdescription> {
               // height: MediaQuery.of(context).size.width * 0.5,
               child: ClipRRect(
                   child: CommonImageWidget(
-                    iconUrl: widget.obj.image ??
-                        Globals.splashImageUrl ??
-                        Globals.homeObject["App_Logo__c"],
-                    height: Utility.displayHeight(context) *
-                        (AppTheme.kDetailPageImageHeightFactor / 100),isOnTap: true,
-                  )
-                  ),
+                iconUrl: widget.obj.image ??
+                    Globals.splashImageUrl ??
+                    Globals.homeObject["App_Logo__c"],
+                height: Utility.displayHeight(context) *
+                    (AppTheme.kDetailPageImageHeightFactor / 100),
+                isOnTap: true,
+              )),
             ),
             SpacerWidget(_kLabelSpacing),
             Row(
@@ -120,14 +120,27 @@ class _NewdescriptionState extends State<Newdescription> {
                     options: LinkifyOptions(humanize: false),
                     linkStyle: TextStyle(color: Colors.blue),
                     text: translatedMessage.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(fontWeight: FontWeight.w500),
+                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
                   ),
                 )),
               ],
             ),
+            //
+            Text(
+              widget.obj.completedAt ?? '',
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    fontSize: 14,
+                    color: Colors.grey,
+                    // fontWeight: FontWeight.bold
+                    // fontStyle: FontStyle.italic
+                  ),
+            ),
+
+            SpacerWidget(AppTheme.kBodyPadding / 2),
+            //
             Container(
               child: Wrap(
                 children: [
@@ -140,7 +153,9 @@ class _NewdescriptionState extends State<Newdescription> {
                       options: LinkifyOptions(humanize: false),
                       linkStyle: TextStyle(color: Colors.blue),
                       text: translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText1!,
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                       
+                      ),
                       textAlign: TextAlign.left,
                     ),
                   ),
