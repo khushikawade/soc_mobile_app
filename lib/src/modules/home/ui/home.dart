@@ -15,8 +15,11 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:new_version/new_version.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:upgrader/upgrader.dart';
 import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
@@ -75,12 +78,41 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
   }
 
+  void _checkNewVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    print(packageInfo);
+    String _packageName = packageInfo.packageName;
+    final newVersion = NewVersion(
+      iOSId:
+          //  _packageName,
+          'com.jhs151hh6432q',
+      androidId: _packageName,
+    );
+    // You can let the plugin handle fetching the status and showing a dialog,
+    // or you can fetch the status and display your own dialog, or no dialog.
+    _checkVersionUpdateStatus(newVersion);
+  }
+
   @override
   void initState() {
     super.initState();
     _bloc.initPushState(context);
     _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
     WidgetsBinding.instance!.addObserver(this);
+    _checkNewVersion();
+  }
+
+  _checkVersionUpdateStatus(NewVersion newVersion) async {
+    final status = await newVersion.getVersionStatus();
+    if (status != null) {
+      newVersion.showUpdateDialog(
+          context: context,
+          versionStatus: status,
+          dialogTitle: 'Update Available',
+          dialogText: 'Please Update with newer version',
+          dismissButtonText: 'Skip',
+          updateButtonText: 'Update Now');
+    }
   }
 
   @override
@@ -289,21 +321,36 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final appcastURL =
+        'https://raw.githubusercontent.com/larryaasen/upgrader/master/test/testappcast.xml';
+    final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android']);
+
+    Upgrader().clearSavedSettings();
     return Scaffold(
-        body: Stack(
-      children: [
-        _tabBarBody(),
-        ValueListenableBuilder<bool>(
-            valueListenable: Globals.hasShowcaseInitialised,
-            builder: (context, value, _) {
-              if (Globals.hasShowcaseInitialised.value == true)
-                return Container();
-              return Center(
-                  child: _continueShowCaseInstructions(
-                      'Tap anywhere on the screen to continue.'));
-            }),
-      ],
-    ));
+      body:
+
+          //   UpgradeAlert(
+          // // appcastConfig: cfg,
+
+          // debugLogging: true,
+          // child:
+
+          Stack(
+        children: [
+          _tabBarBody(),
+          ValueListenableBuilder<bool>(
+              valueListenable: Globals.hasShowcaseInitialised,
+              builder: (context, value, _) {
+                if (Globals.hasShowcaseInitialised.value == true)
+                  return Container();
+                return Center(
+                    child: _continueShowCaseInstructions(
+                        'Tap anywhere on the screen to continue.'));
+              }),
+        ],
+      ),
+    );
+    // );
   }
 
   _onBackPressed() {
