@@ -8,6 +8,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
@@ -113,10 +114,22 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: _kLabelSpacing / 4, vertical: 0),
-                child: Text(
-                  item.text,
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-                ),
+                child: TranslationWidget(
+                    message: item.text,
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) {
+                      return Text(
+                        translatedMessage.toString(),
+                        style:
+                            Theme.of(context).textTheme.bodyText1!.copyWith(),
+                      );
+                    }),
+
+                //  Text(
+                //   item.text,
+                //   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                // ),
               )))
           .toList(),
     );
@@ -151,16 +164,15 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 showClosebutton == true
                     ? Container(
-                      child: IconButton(
-                        
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.close,
-                            size: Globals.deviceType == "phone" ? 30 : 34,
-                          )),
-                    )
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              size: Globals.deviceType == "phone" ? 30 : 34,
+                            )),
+                      )
                     : Container(),
                 _translateButton(setState, context),
                 hideAccessibilityButton == true

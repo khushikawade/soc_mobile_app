@@ -234,52 +234,104 @@ class _SearchPageState extends State<SearchPage> {
     return SizedBox(
       height: 55,
       child: Container(
-          width: MediaQuery.of(context).size.width * 1,
-          padding: EdgeInsets.symmetric(
-              vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
-          child: TextFormField(
-            style:
-                TextStyle(color: Theme.of(context).colorScheme.primaryVariant),
-            focusNode: myFocusNode,
-            controller: _controller,
-            cursorColor: Colors.black,
-            decoration: InputDecoration(
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary, width: 2),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.secondary, width: 2),
-              ),
-              hintText: 'Search',
-              fillColor: Theme.of(context).colorScheme.secondary,
-              prefixIcon: Icon(
-                const IconData(0xe805,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                size: Globals.deviceType == "phone" ? 20 : 28,
-              ),
-              suffixIcon: _controller.text.isEmpty
-                  ? null
-                  : InkWell(
-                      onTap: () {
-                        setState(() {
-                          _controller.clear();
-                          issuggestionList = false;
-                          FocusScope.of(context).requestFocus(FocusNode());
-                        });
-                      },
-                      child: Icon(
-                        Icons.clear,
-                        size: Globals.deviceType == "phone" ? 20 : 28,
-                      ),
-                    ),
-            ),
-            onChanged: onItemChanged,
-          )),
+        width: MediaQuery.of(context).size.width * 1,
+        padding: EdgeInsets.symmetric(
+            vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
+        child: TranslationWidget(
+            message: 'Search',
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) {
+              return TextFormField(
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.primaryVariant),
+                focusNode: myFocusNode,
+                controller: _controller,
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary, width: 2),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: 2),
+                  ),
+                  hintText: translatedMessage.toString(),
+                  fillColor: Theme.of(context).colorScheme.secondary,
+                  prefixIcon: Icon(
+                    const IconData(0xe805,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    size: Globals.deviceType == "phone" ? 20 : 28,
+                  ),
+                  suffixIcon: _controller.text.isEmpty
+                      ? null
+                      : InkWell(
+                          onTap: () {
+                            setState(() {
+                              _controller.clear();
+                              issuggestionList = false;
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            });
+                          },
+                          child: Icon(
+                            Icons.clear,
+                            size: Globals.deviceType == "phone" ? 20 : 28,
+                          ),
+                        ),
+                ),
+                onChanged: onItemChanged,
+              );
+            }),
+
+        //  TextFormField(
+        //   style:
+        //       TextStyle(color: Theme.of(context).colorScheme.primaryVariant),
+        //   focusNode: myFocusNode,
+        //   controller: _controller,
+        //   cursorColor: Colors.black,
+        //   decoration: InputDecoration(
+        //     focusedBorder: OutlineInputBorder(
+        //       borderRadius: BorderRadius.all(Radius.circular(30.0)),
+        //       borderSide: BorderSide(
+        //           color: Theme.of(context).colorScheme.primary, width: 2),
+        //     ),
+        //     enabledBorder: OutlineInputBorder(
+        //       borderRadius: BorderRadius.all(Radius.circular(30.0)),
+        //       borderSide: BorderSide(
+        //           color: Theme.of(context).colorScheme.secondary, width: 2),
+        //     ),
+        //     hintText: 'Search',
+        //     fillColor: Theme.of(context).colorScheme.secondary,
+        //     prefixIcon: Icon(
+        //       const IconData(0xe805,
+        //           fontFamily: Overrides.kFontFam,
+        //           fontPackage: Overrides.kFontPkg),
+        //       size: Globals.deviceType == "phone" ? 20 : 28,
+        //     ),
+        //     suffixIcon: _controller.text.isEmpty
+        //         ? null
+        //         : InkWell(
+        //             onTap: () {
+        //               setState(() {
+        //                 _controller.clear();
+        //                 issuggestionList = false;
+        //                 FocusScope.of(context).requestFocus(FocusNode());
+        //               });
+        //             },
+        //             child: Icon(
+        //               Icons.clear,
+        //               size: Globals.deviceType == "phone" ? 20 : 28,
+        //             ),
+        //           ),
+        //   ),
+        //   onChanged: onItemChanged,
+        // )
+      ),
     );
   }
 
