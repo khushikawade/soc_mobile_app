@@ -32,11 +32,11 @@ class Newdescription extends StatefulWidget {
 
 class _NewdescriptionState extends State<Newdescription> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  static const double _kIconSize = 45.0;
   static const double _kLabelSpacing = 20.0;
   final HomeBloc _homeBloc = new HomeBloc();
   bool _downloadingFile = false;
   static const double _KButtonSize = 110.0;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -153,9 +153,7 @@ class _NewdescriptionState extends State<Newdescription> {
                       options: LinkifyOptions(humanize: false),
                       linkStyle: TextStyle(color: Colors.blue),
                       text: translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                       
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(),
                       textAlign: TextAlign.left,
                     ),
                   ),
@@ -242,7 +240,8 @@ class _NewdescriptionState extends State<Newdescription> {
     );
   }
 
-  _shareNews() async {
+  int _totalRetry = 0; // To maintain total no of retries.
+  _shareNews({String? fallBackImageUrl}) async {
     try {
       if (_downloadingFile == true) return;
       setState(() {
@@ -250,11 +249,17 @@ class _NewdescriptionState extends State<Newdescription> {
       });
       String _title = widget.obj.headings["en"] ?? "";
       String _description = widget.obj.contents["en"] ?? "";
-      String _imageUrl = widget.obj.image != null
-          ? widget.obj.image
-          : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-              ? Globals.splashImageUrl
-              : Globals.homeObject["App_Logo__c"];
+      String _imageUrl;
+      if (fallBackImageUrl != null) {
+        _imageUrl = fallBackImageUrl;
+      } else {
+        _imageUrl = widget.obj.image != null
+            ? widget.obj.image
+            : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+                ? Globals.splashImageUrl
+                : Globals.homeObject["App_Logo__c"];
+      }
+
       File _image = await Utility.createFileFromUrl(_imageUrl);
       setState(() {
         _downloadingFile = false;
@@ -264,23 +269,37 @@ class _NewdescriptionState extends State<Newdescription> {
         subject: '$_title',
         text: '$_description',
       );
+      _totalRetry = 0; 
     } catch (e) {
+      print(e);
       setState(() {
         _downloadingFile = false;
       });
+      // It should only call the fallback function if there's error with the hosted image and it should not run idefinately. Just 3 retries only.
+      if (e.toString().contains('403') && _totalRetry < 3) {
+        print('Current retry :: $_totalRetry');
+        _totalRetry++;
+        String _fallBackImageUrl = Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+                ? Globals.splashImageUrl
+                : Globals.homeObject["App_Logo__c"];
+        _shareNews(fallBackImageUrl: _fallBackImageUrl);
+      } else {
+        Utility.showSnackBar(_scaffoldKey, 'Something went wrong.', context);
+      }
     }
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         body: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
-      child: RefreshIndicator(
-        key: refreshKey,
-        child: _buildNewsDescription(),
-        onRefresh: refreshPage,
-      ),
-    ));
+          padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
+          child: RefreshIndicator(
+            key: refreshKey,
+            child: _buildNewsDescription(),
+            onRefresh: refreshPage,
+          ),
+        ));
   }
 
   Future refreshPage() async {
