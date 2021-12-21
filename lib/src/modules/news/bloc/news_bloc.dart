@@ -73,9 +73,22 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     }
   }
 
+  String? getImageUrl(dynamic obj) {
+    try {
+      String _image;
+      if (Platform.isIOS) {
+        _image = obj["ios_attachments"]["id1"];
+      } else {
+        _image = obj["big_picture"];
+      }
+      return _image;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<List<NotificationList>> fetchNotificationList() async {
     try {
-     
       final response = await http.get(
           Uri.parse(
               "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}"),
@@ -97,7 +110,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
               contents: i["contents"],
               headings: i["headings"],
               url: i["url"],
-              image: i["global_image"],
+              image: i["global_image"] ?? getImageUrl(i),
               completedAt: Utility.convetTimestampToDate(i["completed_at"]));
         }).toList();
       } else {
