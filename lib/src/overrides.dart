@@ -3,8 +3,7 @@ class Overrides {
   static const String privacyPolicyUrl =
       'https:/www.solvedconsulting.com/privacy';
   static String PUSH_APP_ID = "4d63eb69-bd08-4e3d-9a75-3d66f44e92c6";
-  static String REST_API_KEY =
-      "NjY1YzEwY2ItN2UxNS00MzRkLWJkM2EtZTY1OTkyNDRlNDBj";
+  static String REST_API_KEY ="NjY1YzEwY2ItN2UxNS00MzRkLWJkM2EtZTY1OTkyNDRlNDBj";
   static const String privacyPolicyUrl2 =
       'https://solvedapps.webnode.com/ps-456-bronx-bears/';
   static const defaultIconUrl =
@@ -20,5 +19,5 @@ class Overrides {
 //Sandbox : 'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
   static String SCHOOL_ID =
-      "a1f4W000007DQvyQAG"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
+     "a1f4W000007DQvyQAG"; //"a1f4W000007DQvyQAG"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
 }

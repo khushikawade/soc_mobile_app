@@ -253,7 +253,7 @@ class _NewdescriptionState extends State<Newdescription> {
       if (fallBackImageUrl != null) {
         _imageUrl = fallBackImageUrl;
       } else {
-        _imageUrl = widget.obj.image != null
+        _imageUrl = widget.obj.image != null || widget.obj.image != ""
             ? widget.obj.image
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
@@ -276,7 +276,8 @@ class _NewdescriptionState extends State<Newdescription> {
         _downloadingFile = false;
       });
       // It should only call the fallback function if there's error with the hosted image and it should not run idefinately. Just 3 retries only.
-      if (e.toString().contains('403') && _totalRetry < 3) {
+      // if (e.toString().contains('403') && _totalRetry < 3) {
+        if (e.toString().contains('403') || _totalRetry < 3) {
         print('Current retry :: $_totalRetry');
         _totalRetry++;
         String _fallBackImageUrl = Globals.splashImageUrl != null && Globals.splashImageUrl != ""
