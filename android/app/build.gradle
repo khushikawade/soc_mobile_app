@@ -43,7 +43,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.district.school"
+        applicationId "com.app.p2346HH"
         minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion 30

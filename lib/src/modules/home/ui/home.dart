@@ -80,12 +80,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   void _checkNewVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    print(packageInfo);
     String _packageName = packageInfo.packageName;
     final newVersion = NewVersion(
-      iOSId:
-          //  _packageName,
-          'com.jhs151hh6432q',
+      iOSId: _packageName,
       androidId: _packageName,
     );
     // You can let the plugin handle fetching the status and showing a dialog,
@@ -103,16 +100,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   _checkVersionUpdateStatus(NewVersion newVersion) async {
-    final status = await newVersion.getVersionStatus();
-    if (status != null) {
-      newVersion.showUpdateDialog(
-          context: context,
-          versionStatus: status,
-          dialogTitle: 'Update Available',
-          dialogText: 'Please Update with newer version',
-          dismissButtonText: 'Skip',
-          updateButtonText: 'Update Now');
-    }
+    newVersion.showAlertIfNecessary(context: context);
   }
 
   @override
