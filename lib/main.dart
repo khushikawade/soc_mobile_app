@@ -1,6 +1,15 @@
 import 'dart:io';
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/families/modal/sd_list.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/home/models/attributes.dart';
+import 'package:Soc/src/modules/home/models/recent.dart';
+import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/modules/students/models/student_app.dart';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +17,6 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'src/modules/home/model/recent.g.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +27,15 @@ void main() async {
         await path_provider.getApplicationDocumentsDirectory();
     Hive
       ..init(appDocumentDirectory.path)
-      ..registerAdapter(RecentAdapter());
+      ..registerAdapter(RecentAdapter())
+      ..registerAdapter(AttributesAdapter())
+      ..registerAdapter(SharedListAdapter())
+      ..registerAdapter(SDlistAdapter())
+      ..registerAdapter(SchoolDirectoryListAdapter())
+      ..registerAdapter(StudentAppAdapter())
+      ..registerAdapter(NotificationListAdapter())
+      ..registerAdapter(ItemAdapter())
+      ..registerAdapter(AppSettingAdapter());
   }
 
   SystemChrome.setPreferredOrientations([

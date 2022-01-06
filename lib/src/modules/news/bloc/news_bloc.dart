@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +24,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Stream<NewsState> mapEventToState(
     NewsEvent event,
   ) async* {
-    if (event is FetchNotificationList) {
+    if (event is FetchNotificationCount) {
       try {
         yield NewsLoading();
         List<NotificationList> _list = await fetchNotificationList();
@@ -33,13 +35,60 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsErrorReceived(err: e);
       }
     }
+    if (event is FetchNotificationList) {
+      try {
+        // yield NewsLoading();// Should not show loading, instead fetch the data from the Local database and return the list instantly.
+        String? _objectName = "${Strings.newsObjectName}";
+        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        List<NotificationList> _localData = await _localDb.getData();
+
+        if (_localData.isEmpty) {
+          yield NewsLoading();
+        } else {
+          yield NewsLoaded(obj: _localData);
+        }
+
+        // Local database end.
+
+        List<NotificationList> _list = await fetchNotificationList();
+        // Syncing to local database
+        await _localDb.clear();
+        _list.forEach((NotificationList e) {
+          _localDb.addData(e);
+        });
+        // Syncing end.
+
+        yield NewsLoading(); // Mimic state change
+        yield NewsLoaded(
+          obj: _list,
+        );
+      } catch (e) {
+        String? _objectName = "${Strings.newsObjectName}";
+        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        List<NotificationList> _localData = await _localDb.getData();
+
+        yield NewsLoaded(obj: _localData);
+        // yield NewsErrorReceived(err: e);
+      }
+    }
+  }
+
+  String? getImageUrl(dynamic obj) {
+    try {
+      String _image;
+      if (Platform.isIOS) {
+        _image = obj["ios_attachments"]["id1"];
+      } else {
+        _image = obj["big_picture"];
+      }
+      return _image;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<List<NotificationList>> fetchNotificationList() async {
     try {
-      print(
-          "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}");
-      print('Basic ${Overrides.REST_API_KEY}');
       final response = await http.get(
           Uri.parse(
               "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}"),
@@ -61,7 +110,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
               contents: i["contents"],
               headings: i["headings"],
               url: i["url"],
-              image: i["global_image"]);
+              image: i["global_image"] ?? getImageUrl(i),
+              completedAt: Utility.convetTimestampToDate(i["completed_at"]));
         }).toList();
       } else {
         throw ('something_went_wrong');

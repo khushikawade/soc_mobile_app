@@ -48,58 +48,55 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      child: AppBar(
-        elevation: 0.0,
-        leading: BackButtonWidget(),
-        title: widget.isCenterIcon != null && widget.isCenterIcon == true
-            ? AppLogoWidget(
-                marginLeft: widget.marginLeft,
-              )
-            : TranslationWidget(
-                message: widget.appBarTitle,
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.w400),
-                  textAlign: TextAlign.center,
-                ),
+    return AppBar(
+      elevation: 0.0,
+      leading: BackButtonWidget(),
+      title: widget.isCenterIcon != null && widget.isCenterIcon == true
+          ? AppLogoWidget(
+              marginLeft: widget.marginLeft,
+            )
+          : TranslationWidget(
+              message: widget.appBarTitle,
+              fromLanguage: "en",
+              toLanguage: Globals.selectedLanguage,
+              builder: (translatedMessage) => Text(
+                translatedMessage.toString(),
+                style: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.w400),
+                textAlign: TextAlign.center,
               ),
-        actions: [
-          widget.isSearch == true
-              ? SearchButtonWidget(
-                  language: Globals.selectedLanguage,
-                )
-              : Container(
-                  height: 0,
+            ),
+      actions: [
+        widget.isSearch == true
+            ? SearchButtonWidget(
+                language: Globals.selectedLanguage,
+              )
+            : Container(
+                height: 0,
+              ),
+        widget.isShare == true &&
+                widget.isShare == true &&
+                widget.sharedpopBodytext != 'null'
+            ? IconButton(
+                onPressed: () {
+                  widget.sharedpopBodytext != null &&
+                          widget.sharedpopUpheaderText != 'null' &&
+                          widget.sharedpopBodytext!.length > 1
+                      ? shareobj.callFunction(
+                          context,
+                          widget.sharedpopBodytext.toString(),
+                          widget.sharedpopUpheaderText.toString())
+                      : print("null");
+                },
+                icon: Icon(
+                  Icons.share,
+                  size: Globals.deviceType == "phone" ? 20 : 28,
                 ),
-          widget.isShare == true &&
-                  widget.isShare == true &&
-                  widget.sharedpopBodytext != 'null'
-              ? IconButton(
-                  onPressed: () {
-                    widget.sharedpopBodytext != null &&
-                            widget.sharedpopUpheaderText != 'null' &&
-                            widget.sharedpopBodytext!.length > 1
-                        ? shareobj.callFunction(
-                            context,
-                            widget.sharedpopBodytext.toString(),
-                            widget.sharedpopUpheaderText.toString())
-                        : print("null");
-                  },
-                  icon: Icon(
-                    Icons.share,
-                    size: Globals.deviceType == "phone" ? 20 : 28,
-                  ),
-                )
-              : Container(),
-          HorzitalSpacerWidget(_kLabelSpacing / 3)
-        ],
-      ),
+              )
+            : Container(),
+        HorzitalSpacerWidget(_kLabelSpacing / 3)
+      ],
     );
   }
 

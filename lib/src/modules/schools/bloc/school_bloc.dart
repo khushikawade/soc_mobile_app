@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -23,16 +26,45 @@ class SchoolDirectoryBloc
   ) async* {
     if (event is SchoolDirectoryListEvent) {
       try {
-        yield SchoolDirectoryLoading();
-        List<SchoolDirectoryList> list = await getSchoolDirectorySDList();
-        if (list.length > 0) {
-          list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
-          yield SchoolDirectoryDataSucess(obj: list);
+        // yield SchoolDirectoryLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
+        LocalDatabase<SchoolDirectoryList> _localDb =
+            LocalDatabase(Strings.schoolDirectoryObjectName);
+
+        List<SchoolDirectoryList>? _localData = await _localDb.getData();
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+
+        if (_localData.isEmpty) {
+          yield SchoolDirectoryLoading();
         } else {
-          yield SchoolDirectoryDataSucess(obj: list);
+          yield SchoolDirectoryDataSucess(obj: _localData);
         }
+        //Local database end.
+
+        List<SchoolDirectoryList> list = await getSchoolDirectorySDList();
+
+        // Syncing the Local database with remote data
+        await _localDb.clear();
+        list.forEach((SchoolDirectoryList e) {
+          _localDb.addData(e);
+        });
+        // Sync end
+
+        list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+
+        yield SchoolDirectoryLoading(); // Mimic state change
+        yield SchoolDirectoryDataSucess(obj: list);
       } catch (e) {
-        yield SchoolDirectoryErrorLoading(err: e);
+        LocalDatabase<SchoolDirectoryList> _localDb =
+            LocalDatabase(Strings.schoolDirectoryObjectName);
+
+        List<SchoolDirectoryList>? _localData = await _localDb.getData();
+        _localDb.close();
+
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+
+        yield SchoolDirectoryLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
+        yield SchoolDirectoryDataSucess(obj: _localData);
+        // yield SchoolDirectoryErrorLoading(err: e);
       }
     }
   }
@@ -43,9 +75,12 @@ class SchoolDirectoryBloc
           "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id, Email__c,Phone__c,Website_URL__c,RTF_HTML__c,Contact_Address__c,Contact_Office_Location__c,Active_Status__c,Sort_Order__c FROM School_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       if (response.statusCode == 200) {
         dataArray = response.data["records"];
-        return response.data["records"]
+        List<SchoolDirectoryList> _list = response.data["records"]
             .map<SchoolDirectoryList>((i) => SchoolDirectoryList.fromJson(i))
             .toList();
+        _list.removeWhere(
+            (SchoolDirectoryList element) => element.statusC == 'Hide');
+        return _list;
       } else {
         throw ('something_went_wrong');
       }

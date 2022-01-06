@@ -32,7 +32,7 @@ class FamiliesDataSucess extends FamilyState {
     this.obj,
   });
   FamiliesDataSucess copyWith({
-    final obj,
+    obj,
   }) {
     return FamiliesDataSucess(obj: obj ?? this.obj);
   }

@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-// part 'recent.g.dart';
+part 'recent.g.dart';
 
 @HiveType(typeId: 6)
 class Recent {
@@ -46,7 +46,7 @@ class Recent {
   final statusC;
   @HiveField(20)
   final sortOrder;
-  @HiveField(20)
+  @HiveField(21)
   String? calendarId;
 
 

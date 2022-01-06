@@ -1,39 +1,105 @@
 import 'attributes.dart';
+import 'package:hive/hive.dart';
+part 'app_setting.g.dart';
 
+@HiveType(typeId: 0)
 class AppSetting {
+  @HiveField(0)
   Attributes? attributes;
+  @HiveField(1)
   String? id;
+  @HiveField(2)
   String? ownerId;
+  @HiveField(3)
   bool? isDeleted;
+  @HiveField(4)
   String? name;
+  @HiveField(5)
   String? createdDate;
+  @HiveField(6)
   String? createdById;
+  @HiveField(7)
   String? lastModifiedDate;
+  @HiveField(8)
   String? lastModifiedById;
+  @HiveField(9)
   String? systemModstamp;
+  @HiveField(10)
   dynamic lastActivityDate;
+  @HiveField(11)
   String? lastViewedDate;
+  @HiveField(12)
   String? lastReferencedDate;
+  @HiveField(13)
   String? schoolNameC;
+  @HiveField(14)
   String? contactNameC;
+  @HiveField(15)
   String? appIconC;
+  @HiveField(16)
   dynamic splashScreenC;
+  @HiveField(17)
   String? primaryColorC;
+  @HiveField(18)
   String? backgroundColorC;
+  @HiveField(19)
   String? secondaryColorC;
+  @HiveField(20)
   String? fontColorC;
+  @HiveField(21)
   dynamic appLogoC;
+  @HiveField(22)
   dynamic fullLogoC;
+  @HiveField(23)
   String? bottomNavigationC;
+  @HiveField(24)
   String? appBuildStatusC;
+  @HiveField(25)
   String? appInformationC;
+  @HiveField(26)
   String? contactEmailC;
+  @HiveField(27)
   String? contactPhoneC;
+  @HiveField(28)
   String? contactAddressC;
+  @HiveField(29)
   String? socialapiurlc;
+  @HiveField(30)
   double? contactOfficeLocationLatitudeS;
+  @HiveField(31)
   double? contactOfficeLocationLongitudeS;
+  @HiveField(32)
   dynamic bannerHeightFactor;
+  @HiveField(33)
+  final String? familyBannerImageC;
+  @HiveField(34)
+  final String? staffBannerImageC;
+  @HiveField(35)
+  final String? studentBannerImageC;
+  @HiveField(36)
+  final String? aboutBannerImageC;
+  @HiveField(37)
+  final String? schoolBannerImageC;
+  @HiveField(38)
+  final String? resourcesBannerImageC;
+  @HiveField(39)
+  final dynamic playStoreUrlC;
+  @HiveField(40)
+  final dynamic appStoreUrlC;
+  @HiveField(41)
+  final dynamic bannerHeightFactorC;
+  @HiveField(42)
+  final String? familyBannerColorC;
+  @HiveField(43)
+  final String? staffBannerColorC;
+  @HiveField(44)
+  final String? studentBannerColorC;
+  @HiveField(45)
+  final String? aboutBannerColorC;
+  @HiveField(46)
+  final String? schoolBannerColorC;
+  @HiveField(47)
+  final String? resourcesBannerColorC;
 
   AppSetting({
     this.attributes,
@@ -69,6 +135,21 @@ class AppSetting {
     this.contactOfficeLocationLatitudeS,
     this.contactOfficeLocationLongitudeS,
     this.bannerHeightFactor,
+    this.familyBannerImageC,
+    this.staffBannerImageC,
+    this.studentBannerImageC,
+    this.aboutBannerImageC,
+    this.schoolBannerImageC,
+    this.resourcesBannerImageC,
+    this.playStoreUrlC,
+    this.appStoreUrlC,
+    this.bannerHeightFactorC,
+    this.familyBannerColorC,
+    this.staffBannerColorC,
+    this.studentBannerColorC,
+    this.aboutBannerColorC,
+    this.schoolBannerColorC,
+    this.resourcesBannerColorC,
   });
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
@@ -109,6 +190,21 @@ class AppSetting {
         contactOfficeLocationLongitudeS:
             json['Contact_Office_Location__Longitude__s'] as double?,
         bannerHeightFactor: json['Banner_Height_Factor__c'],
+        familyBannerImageC: json['Family_Banner_Image__c'] as String?,
+        staffBannerImageC: json['Staff_Banner_Image__c'] as String?,
+        studentBannerImageC: json['Student_Banner_Image__c'] as String?,
+        aboutBannerImageC: json['About_Banner_Image__c'] as String?,
+        schoolBannerImageC: json['School_Banner_Image__c'] as String?,
+        resourcesBannerImageC: json['Resources_Banner_Image__c'] as String?,
+        playStoreUrlC: json['Play_Store_URL__c'] as String?,
+        appStoreUrlC: json['App_Store_URL__c'] as String?,
+        bannerHeightFactorC: json['Banner_Height_Factor__c'],
+        familyBannerColorC: json['Family_Banner_Color__c'] as String?,
+        staffBannerColorC: json['Staff_Banner_Color__c'] as String?,
+        studentBannerColorC: json['Student_Banner_Color__c'] as String?,
+        aboutBannerColorC: json['About_Banner_Color__c'] as String?,
+        schoolBannerColorC: json['School_Banner_Color__c'] as String?,
+        resourcesBannerColorC: json['Resources_Banner_Color__c'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -145,6 +241,21 @@ class AppSetting {
         'Contact_Office_Location__Latitude__s': contactOfficeLocationLatitudeS,
         'Contact_Office_Location__Longitude__s':
             contactOfficeLocationLongitudeS,
+        'Family_Banner_Image__c': familyBannerImageC,
+        'Staff_Banner_Image__c': staffBannerImageC,
+        'Student_Banner_Image__c': studentBannerImageC,
+        'About_Banner_Image__c': aboutBannerImageC,
+        'School_Banner_Image__c': schoolBannerImageC,
+        'Resources_Banner_Image__c': resourcesBannerImageC,
+        'Play_Store_URL__c': playStoreUrlC,
+        'App_Store_URL__c': appStoreUrlC,
+        'Banner_Height_Factor__c': bannerHeightFactorC,
+        'Family_Banner_Color__c': familyBannerColorC,
+        'Staff_Banner_Color__c': staffBannerColorC,
+        'Student_Banner_Color__c': studentBannerColorC,
+        'About_Banner_Color__c': aboutBannerColorC,
+        'School_Banner_Color__c': schoolBannerColorC,
+        'Resources_Banner_Color__c': resourcesBannerColorC,
       };
 
   AppSetting copyWith({
@@ -180,6 +291,21 @@ class AppSetting {
     String? socialapiurlc,
     double? contactOfficeLocationLatitudeS,
     double? contactOfficeLocationLongitudeS,
+    String? familyBannerImageC,
+    String? staffBannerImageC,
+    String? studentBannerImageC,
+    String? aboutBannerImageC,
+    String? schoolBannerImageC,
+    String? resourcesBannerImageC,
+    dynamic playStoreUrlC,
+    dynamic appStoreUrlC,
+    dynamic bannerHeightFactorC,
+    String? familyBannerColorC,
+    String? staffBannerColorC,
+    String? studentBannerColorC,
+    String? aboutBannerColorC,
+    String? schoolBannerColorC,
+    String? resourcesBannerColorC,
   }) {
     return AppSetting(
       attributes: attributes ?? this.attributes,
@@ -216,6 +342,23 @@ class AppSetting {
           contactOfficeLocationLatitudeS ?? this.contactOfficeLocationLatitudeS,
       contactOfficeLocationLongitudeS: contactOfficeLocationLongitudeS ??
           this.contactOfficeLocationLongitudeS,
+      familyBannerImageC: familyBannerImageC ?? this.familyBannerImageC,
+      staffBannerImageC: staffBannerImageC ?? this.staffBannerImageC,
+      studentBannerImageC: studentBannerImageC ?? this.studentBannerImageC,
+      aboutBannerImageC: aboutBannerImageC ?? this.aboutBannerImageC,
+      schoolBannerImageC: schoolBannerImageC ?? this.schoolBannerImageC,
+      resourcesBannerImageC:
+          resourcesBannerImageC ?? this.resourcesBannerImageC,
+      playStoreUrlC: playStoreUrlC ?? this.playStoreUrlC,
+      appStoreUrlC: appStoreUrlC ?? this.appStoreUrlC,
+      bannerHeightFactorC: bannerHeightFactorC ?? this.bannerHeightFactorC,
+      familyBannerColorC: familyBannerColorC ?? this.familyBannerColorC,
+      staffBannerColorC: staffBannerColorC ?? this.staffBannerColorC,
+      studentBannerColorC: studentBannerColorC ?? this.studentBannerColorC,
+      aboutBannerColorC: aboutBannerColorC ?? this.aboutBannerColorC,
+      schoolBannerColorC: schoolBannerColorC ?? this.schoolBannerColorC,
+      resourcesBannerColorC:
+          resourcesBannerColorC ?? this.resourcesBannerColorC,
     );
   }
 }

@@ -1,13 +1,14 @@
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
@@ -72,22 +73,24 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                               isbuttomsheet: true,
                               ishtml: true,
                             )))
-                : scaffoldKey.showSnackBar(
-                    SnackBar(
-                      content: const Text(
-                        'No Information Available',
-                      ),
-                      behavior: SnackBarBehavior.floating,
-                      margin: EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          bottom: MediaQuery.of(context).size.height * 0.04),
-                      padding: EdgeInsets.only(
-                        left: 16,
-                      ),
-                      backgroundColor: Colors.black.withOpacity(0.8),
-                    ),
-                  );
+                : Utility.showSnackBar(
+                    scaffoldKey, 'No Information Available', context);
+            // scaffoldKey.showSnackBar(
+            //     SnackBar(
+            //       content: const Text(
+            //         'No Information Available',
+            //       ),
+            //       behavior: SnackBarBehavior.floating,
+            //       margin: EdgeInsets.only(
+            //           left: 16,
+            //           right: 16,
+            //           bottom: MediaQuery.of(context).size.height * 0.04),
+            //       padding: EdgeInsets.only(
+            //         left: 16,
+            //       ),
+            //       backgroundColor: Colors.black.withOpacity(0.8),
+            //     ),
+            //   );
             break;
           case IconsMenu.Setting:
             Navigator.push(
@@ -111,10 +114,22 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: _kLabelSpacing / 4, vertical: 0),
-                child: Text(
-                  item.text,
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-                ),
+                child: TranslationWidget(
+                    message: item.text,
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) {
+                      return Text(
+                        translatedMessage.toString(),
+                        style:
+                            Theme.of(context).textTheme.bodyText1!.copyWith(),
+                      );
+                    }),
+
+                //  Text(
+                //   item.text,
+                //   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                // ),
               )))
           .toList(),
     );
@@ -124,59 +139,58 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-      return Container(
-        height: 80,
-        child: AppBar(
-            // automaticallyImplyLeading: true,
-            leadingWidth: _kIconSize,
-            elevation: 0.0,
-            leading: BubbleShowcase(
-              enabled: !Globals.hasShowcaseInitialised.value,
-              showCloseButton: false,
-              bubbleShowcaseId: 'my_bubble_showcase',
-              // doNotReopenOnClose: true,
-              bubbleSlides: [
-                _firstSlide(context),
-                _openSettingsButtonSlide(context)
+      return AppBar(
+          // automaticallyImplyLeading: true,
+          leadingWidth: _kIconSize,
+          elevation: 0.0,
+          leading: BubbleShowcase(
+            enabled: !Globals.hasShowcaseInitialised.value,
+            showCloseButton: false,
+            bubbleShowcaseId: 'my_bubble_showcase',
+            // doNotReopenOnClose: true,
+            bubbleSlides: [
+              _firstSlide(context),
+              _openSettingsButtonSlide(context)
+            ],
+            bubbleShowcaseVersion: 1,
+            onFinished: () {
+              setState(() {
+                Globals.hasShowcaseInitialised.value = true;
+              });
+              _promtPushNotificationPermission();
+              if (refresh != null) refresh!(true);
+            },
+            child: Row(
+              children: [
+                showClosebutton == true
+                    ? Container(
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              size: Globals.deviceType == "phone" ? 30 : 34,
+                            )),
+                      )
+                    : Container(),
+                _translateButton(setState, context),
+                hideAccessibilityButton == true
+                    ? //To adjust Accessibility button apearance in the AppBar, since we are using the smae common widget in the Accessibility page and we don't wnat to show this "Accessibility Button" on the "Accessibility Page" itself.
+                    Container()
+                    : _openSettingsButton(context)
               ],
-              bubbleShowcaseVersion: 1,
-              onFinished: () {
-                setState(() {
-                  Globals.hasShowcaseInitialised.value = true;
-                });
-                _promtPushNotificationPermission();
-                if (refresh != null) refresh!(true);
-              },
-              child: Row(
-                children: [
-                  showClosebutton == true
-                      ? IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.close,
-                            size: Globals.deviceType == "phone" ? 30 : 34,
-                          ))
-                      : Container(),
-                  _translateButton(setState, context),
-                  hideAccessibilityButton == true
-                      ? //To adjust Accessibility button apearance in the AppBar, since we are using the smae common widget in the Accessibility page and we don't wnat to show this "Accessibility Button" on the "Accessibility Page" itself.
-                      Container()
-                      : _openSettingsButton(context)
-                ],
-              ),
             ),
-            title: AppLogoWidget(
-              marginLeft: marginLeft,
-            ), //SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
-            actions: <Widget>[
-              SearchButtonWidget(
-                language: 'English',
-              ),
-              _buildPopupMenuWidget(context),
-            ]),
-      );
+          ),
+          title: AppLogoWidget(
+            marginLeft: marginLeft,
+          ), //SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          actions: <Widget>[
+            SearchButtonWidget(
+              language: 'English',
+            ),
+            _buildPopupMenuWidget(context),
+          ]);
     });
   }
 
@@ -197,8 +211,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       child: GestureDetector(
         key: _bshowcase,
         child: Image(
-          width: Globals.deviceType == "phone" ? 24 : 32,
-          height: Globals.deviceType == "phone" ? 24 : 32,
+          width: Globals.deviceType == "phone" ? 26 : 32,
+          height: Globals.deviceType == "phone" ? 26 : 32,
           image: AssetImage("assets/images/gtranslate.png"),
         ),
         onTap: () {
@@ -240,7 +254,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             child: Icon(
               FontAwesomeIcons.universalAccess,
               color: Colors.blue,
-              size: Globals.deviceType == "phone" ? 26 : 32,
+              size: Globals.deviceType == "phone" ? 25 : 32,
             ),
           ),
         ));

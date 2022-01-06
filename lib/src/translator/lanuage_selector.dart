@@ -3,6 +3,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -173,13 +174,29 @@ class LanguageSelector {
                         ),
                       ),
                       Center(
-                        child: Text(
-                          "Select language",
-                          style:
-                              Theme.of(context).textTheme.headline6!.copyWith(
-                                    fontSize: AppTheme.kBottomSheetTitleSize,
-                                  ),
-                        ),
+                        child: TranslationWidget(
+                            message: "Select language",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(
+                                translatedMessage.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6!
+                                    .copyWith(
+                                      fontSize: AppTheme.kBottomSheetTitleSize,
+                                    ),
+                              );
+                            }),
+
+                        //  Text(
+                        //   "Select language",
+                        //   style:
+                        //  Theme.of(context).textTheme.headline6!.copyWith(
+                        //        fontSize: AppTheme.kBottomSheetTitleSize,
+                        //     ),
+                        // ),
                       ),
                       SpacerWidget(_kLabelSpacing * 1.5),
                       Padding(
@@ -189,60 +206,125 @@ class LanguageSelector {
                           height: 51,
                           child: Container(
                             width: MediaQuery.of(context).size.width * 1,
-                            child: TextFormField(
-                                focusNode: myFocusNode,
-                                controller: _controller,
-                                decoration: InputDecoration(
-                                  hintText: 'Search',
-                                  filled: true,
-                                  fillColor:
-                                      Theme.of(context).colorScheme.secondary,
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(30.0)),
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        width: 2),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(30.0)),
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context)
+                            child: TranslationWidget(
+                                message: 'Search',
+                                fromLanguage: "en",
+                                toLanguage: Globals.selectedLanguage,
+                                builder: (translatedMessage) {
+                                  return TextFormField(
+                                      focusNode: myFocusNode,
+                                      controller: _controller,
+                                      decoration: InputDecoration(
+                                        hintText: translatedMessage.toString(),
+                                        filled: true,
+                                        fillColor: Theme.of(context)
                                             .colorScheme
                                             .secondary,
-                                        width: 2),
-                                  ),
-                                  prefixIcon: Icon(
-                                    const IconData(0xe805,
-                                        fontFamily: Overrides.kFontFam,
-                                        fontPackage: Overrides.kFontPkg),
-                                    size:
-                                        Globals.deviceType == "phone" ? 20 : 28,
-                                  ),
-                                  suffixIcon: _controller.text.isEmpty
-                                      ? null
-                                      : InkWell(
-                                          onTap: () {
-                                            _controller.clear();
-                                            issuggestionList = false;
-                                            FocusScope.of(context)
-                                                .requestFocus(FocusNode());
-                                            setState(() {});
-                                          },
-                                          child: Icon(
-                                            Icons.clear,
-                                            size: Globals.deviceType == "phone"
-                                                ? 20
-                                                : 28,
-                                          ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(30.0)),
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              width: 2),
                                         ),
-                                ),
-                                onChanged: (value) {
-                                  onItemChanged(value, setState);
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(30.0)),
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              width: 2),
+                                        ),
+                                        prefixIcon: Icon(
+                                          const IconData(0xe805,
+                                              fontFamily: Overrides.kFontFam,
+                                              fontPackage: Overrides.kFontPkg),
+                                          size: Globals.deviceType == "phone"
+                                              ? 20
+                                              : 28,
+                                        ),
+                                        suffixIcon: _controller.text.isEmpty
+                                            ? null
+                                            : InkWell(
+                                                onTap: () {
+                                                  _controller.clear();
+                                                  issuggestionList = false;
+                                                  FocusScope.of(context)
+                                                      .requestFocus(
+                                                          FocusNode());
+                                                  setState(() {});
+                                                },
+                                                child: Icon(
+                                                  Icons.clear,
+                                                  size: Globals.deviceType ==
+                                                          "phone"
+                                                      ? 20
+                                                      : 28,
+                                                ),
+                                              ),
+                                      ),
+                                      onChanged: (value) {
+                                        onItemChanged(value, setState);
+                                      });
                                 }),
+
+                            // TextFormField(
+                            //     focusNode: myFocusNode,
+                            //     controller: _controller,
+                            //     decoration: InputDecoration(
+                            //       hintText: 'Search',
+                            //       filled: true,
+                            //       fillColor:
+                            //           Theme.of(context).colorScheme.secondary,
+                            //       focusedBorder: OutlineInputBorder(
+                            //         borderRadius:
+                            //             BorderRadius.all(Radius.circular(30.0)),
+                            //         borderSide: BorderSide(
+                            //             color: Theme.of(context)
+                            //                 .colorScheme
+                            //                 .primary,
+                            //             width: 2),
+                            //       ),
+                            //       enabledBorder: OutlineInputBorder(
+                            //         borderRadius:
+                            //             BorderRadius.all(Radius.circular(30.0)),
+                            //         borderSide: BorderSide(
+                            //             color: Theme.of(context)
+                            //                 .colorScheme
+                            //                 .secondary,
+                            //             width: 2),
+                            //       ),
+                            //       prefixIcon: Icon(
+                            //         const IconData(0xe805,
+                            //             fontFamily: Overrides.kFontFam,
+                            //             fontPackage: Overrides.kFontPkg),
+                            //         size:
+                            //             Globals.deviceType == "phone" ? 20 : 28,
+                            //       ),
+                            //       suffixIcon: _controller.text.isEmpty
+                            //           ? null
+                            //           : InkWell(
+                            //               onTap: () {
+                            //                 _controller.clear();
+                            //                 issuggestionList = false;
+                            //                 FocusScope.of(context)
+                            //                     .requestFocus(FocusNode());
+                            //                 setState(() {});
+                            //               },
+                            //               child: Icon(
+                            //                 Icons.clear,
+                            //                 size: Globals.deviceType == "phone"
+                            //                     ? 20
+                            //                     : 28,
+                            //               ),
+                            //             ),
+                            //     ),
+                            //     onChanged: (value) {
+                            //       onItemChanged(value, setState);
+                            //     }),
                           ),
                         ),
                       ),

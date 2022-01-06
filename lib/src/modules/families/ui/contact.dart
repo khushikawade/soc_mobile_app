@@ -5,17 +5,14 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
-
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // ignore: must_be_immutable
@@ -375,74 +372,75 @@ class _ContactPageState extends State<ContactPage> {
         ),
         body: RefreshIndicator(
           key: refreshKey,
-          child: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final bool connected = connectivity != ConnectivityResult.none;
-                Globals.isNetworkError = !connected;
+          child:
+              // OfflineBuilder(
+              //     connectivityBuilder: (
+              //       BuildContext context,
+              //       ConnectivityResult connectivity,
+              //       Widget child,
+              //     ) {
+              //       final bool connected = connectivity != ConnectivityResult.none;
+              //       Globals.isNetworkError = !connected;
 
-                if (connected) {
-                  if (iserrorstate == true) {
-                    homebloc.add(FetchBottomNavigationBar());
-                    iserrorstate = false;
-                  }
-                } else if (!connected) {
-                  iserrorstate = true;
-                }
+              //       if (connected) {
+              //         if (iserrorstate == true) {
+              //           homebloc.add(FetchBottomNavigationBar());
+              //           iserrorstate = false;
+              //         }
+              //       } else if (!connected) {
+              //         iserrorstate = true;
+              //       }
 
-                return new Stack(fit: StackFit.expand, children: [
-                  connected
-                      ? Column(
-                          children: [
-                            Expanded(
-                                child: isloadingstate!
-                                    ? ShimmerLoading(
-                                        isLoading: true, child: _buildItem())
-                                    : _buildItem()),
-                            Container(
-                              height: 0,
-                              width: 0,
-                              child: BlocListener<HomeBloc, HomeState>(
-                                  bloc: homebloc,
-                                  listener: (context, state) async {
-                                    if (state is HomeLoading) {
-                                      isloadingstate = true;
-                                    }
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObject = state.obj;
-                                      isloadingstate = false;
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: EmptyContainer()),
-                            ),
-                          ],
-                        )
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
+              //       return new
+              Stack(fit: StackFit.expand, children: [
+            //         connected
+            //             ?
+            Column(
+              children: [
+                Expanded(
+                    child: isloadingstate!
+                        ? ShimmerLoading(isLoading: true, child: _buildItem())
+                        : _buildItem()),
+                Container(
+                  height: 0,
+                  width: 0,
+                  child: BlocListener<HomeBloc, HomeState>(
                       bloc: homebloc,
                       listener: (context, state) async {
+                        if (state is HomeLoading) {
+                          isloadingstate = true;
+                        }
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
                           Globals.homeObject = state.obj;
+                          isloadingstate = false;
                           setState(() {});
                         }
                       },
-                      child: EmptyContainer(),
-                    ),
-                  ),
-                ]);
-              },
-              child: EmptyContainer()),
+                      child: EmptyContainer()),
+                ),
+              ],
+            ),
+            // : NoInternetErrorWidget(
+            //     connected: connected, issplashscreen: false),
+            Container(
+              height: 0,
+              width: 0,
+              child: BlocListener<HomeBloc, HomeState>(
+                bloc: homebloc,
+                listener: (context, state) async {
+                  if (state is BottomNavigationBarSuccess) {
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+                    Globals.homeObject = state.obj;
+                    setState(() {});
+                  }
+                },
+                child: EmptyContainer(),
+              ),
+            ),
+          ]),
+          // },
+          // child: EmptyContainer()),
           onRefresh: refreshPage,
         ));
   }

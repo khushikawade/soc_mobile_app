@@ -1,6 +1,6 @@
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'modules/home/models/app_setting.dart';
 
 class Globals {
   static var iosInfo;

@@ -70,24 +70,23 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
               }
 
               return connected
-                  ? Container(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height * 0.032),
-                      child: WebView(
-                        gestureNavigationEnabled:
-                            widget.isiFrame == true ? true : false,
-                        initialUrl: widget.isiFrame == true
-                            ? Uri.dataFromString('${widget.url}',
-                                    mimeType: 'text/html')
-                                .toString()
-                            : '${widget.url}',
-                        javascriptMode: JavascriptMode.unrestricted,
-                        onWebViewCreated:
-                            (WebViewController webViewController) {
-                          _controller.complete(webViewController);
-                        },
-                      ),
-                    )
+                  ? Padding(
+                    padding: const EdgeInsets.only(bottom : 30.0), // To manage web page crop issue together with bottom nav bar.
+                    child: WebView(           
+                      gestureNavigationEnabled:
+                          widget.isiFrame == true ? true : false,
+                      initialUrl: widget.isiFrame == true
+                          ? Uri.dataFromString('${widget.url}',
+                                  mimeType: 'text/html')
+                              .toString()
+                          : '${widget.url}',
+                      javascriptMode: JavascriptMode.unrestricted,
+                      onWebViewCreated:
+                          (WebViewController webViewController) {
+                        _controller.complete(webViewController);
+                      },
+                    ),
+                  )
                   : NoInternetErrorWidget(
                       connected: connected, issplashscreen: false);
             },

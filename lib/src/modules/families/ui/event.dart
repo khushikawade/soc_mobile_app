@@ -185,105 +185,111 @@ class _EventPageState extends State<EventPage>
       DefaultTabController(
           length: 2,
           initialIndex: 0,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
-                  Widget>[
-            Container(
-              child: TabBar(
-                indicatorSize: TabBarIndicatorSize.label,
-                labelColor: Theme.of(context).colorScheme.primaryVariant,
-                indicatorColor: Theme.of(context).colorScheme.primary,
-                unselectedLabelColor: Colors.black,
-                unselectedLabelStyle: TextStyle(
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.normal,
-                  color: Theme.of(context).colorScheme.primaryVariant,
-                ),
-                labelStyle: TextStyle(
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.primaryVariant,
-                ),
-                tabs: [
-                  TranslationWidget(
-                    message: "Upcoming",
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Tab(
-                      text: translatedMessage.toString(),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.label,
+                    labelColor: Theme.of(context).colorScheme.primaryVariant,
+                    indicatorColor: Theme.of(context).colorScheme.primary,
+                    unselectedLabelColor: Colors.black,
+                    unselectedLabelStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.primaryVariant,
                     ),
-                  ),
-                  TranslationWidget(
-                    message: "Past",
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Tab(
-                      text: translatedMessage.toString(),
+                    labelStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primaryVariant,
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-                height: Globals.deviceType == "phone"
-                    ? MediaQuery.of(context).size.height * 0.75
-                    : MediaQuery.of(context).size.height * 0.85,
-                decoration: BoxDecoration(
-                    border: Border(
-                        top: BorderSide(color: Colors.grey, width: 0.5))),
-                child: TabBarView(children: <Widget>[
-                  state.futureListobj!.length > 0
-                      ? Tab(
-                          child: new RefreshIndicator(
-                          child: new ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              padding: Platform.isAndroid
-                                  ? EdgeInsets.only(bottom: 20)
-                                  : EdgeInsets.only(bottom: 60),
-                              itemCount: state.futureListobj!.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return state.futureListobj!.length > 0
-                                    ? _buildList(state.futureListobj![index],
-                                        index, state.futureListobj)
-                                    : NoDataFoundErrorWidget(
-                                        isResultNotFoundMsg: false,
-                                        isNews: false,
-                                        isEvents: true,
-                                      );
-                              }),
-                          onRefresh: refreshPage,
-                        ))
-                      : NoDataFoundErrorWidget(
-                          isResultNotFoundMsg: false,
-                          isNews: false,
-                          isEvents: true,
+                    tabs: [
+                      TranslationWidget(
+                        message: "Upcoming",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Tab(
+                          text: translatedMessage.toString(),
                         ),
-                  state.pastListobj!.length > 0
-                      ? Tab(
-                          child: new RefreshIndicator(
-                          child: new ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              padding: EdgeInsets.only(bottom: 20),
-                              itemCount: state.pastListobj!.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return state.pastListobj!.length > 0
-                                    ? _buildList(state.pastListobj![index],
-                                        index, state.pastListobj)
-                                    : NoDataFoundErrorWidget(
-                                        isResultNotFoundMsg: false,
-                                        isNews: false,
-                                        isEvents: true,
-                                      );
-                              }),
-                          onRefresh: refreshPage,
-                        ))
-                      : NoDataFoundErrorWidget(
-                          isResultNotFoundMsg: false,
-                          isNews: false,
-                          isEvents: true,
-                        )
-                ])),
-          ]))
+                      ),
+                      TranslationWidget(
+                        message: "Past",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Tab(
+                          text: translatedMessage.toString(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                    height: Globals.deviceType == "phone"
+                        ? MediaQuery.of(context).size.height * 0.75
+                        : MediaQuery.of(context).size.height * 0.85,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(color: Colors.grey, width: 0.5))),
+                    child: TabBarView(children: <Widget>[
+                      state.futureListobj!.length > 0
+                          ? Tab(
+                              child: new RefreshIndicator(
+                              child: new ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  padding: Platform.isAndroid
+                                      ? EdgeInsets.only(bottom: 20)
+                                      : EdgeInsets.only(bottom: 60),
+                                  itemCount: state.futureListobj!.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return state.futureListobj!.length > 0
+                                        ? _buildList(
+                                            state.futureListobj![index],
+                                            index,
+                                            state.futureListobj)
+                                        : NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                            isEvents: true,
+                                          );
+                                  }),
+                              onRefresh: refreshPage,
+                            ))
+                          : NoDataFoundErrorWidget(
+                              isResultNotFoundMsg: false,
+                              isNews: false,
+                              isEvents: true,
+                            ),
+                      state.pastListobj!.length > 0
+                          ? Tab(
+                              child: new RefreshIndicator(
+                              child: new ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  padding: Platform.isAndroid
+                                      ? EdgeInsets.only(bottom: 20)
+                                      : EdgeInsets.only(bottom: 60),
+                                  itemCount: state.pastListobj!.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return state.pastListobj!.length > 0
+                                        ? _buildList(state.pastListobj![index],
+                                            index, state.pastListobj)
+                                        : NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                            isEvents: true,
+                                          );
+                                  }),
+                              onRefresh: refreshPage,
+                            ))
+                          : NoDataFoundErrorWidget(
+                              isResultNotFoundMsg: false,
+                              isNews: false,
+                              isEvents: true,
+                            )
+                    ])),
+              ]))
     ]);
   }
 
