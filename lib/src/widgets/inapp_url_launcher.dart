@@ -1,32 +1,40 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
-import 'package:Soc/src/widgets/internalbuttomnavigation.dart';
+import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 class InAppUrlLauncer extends StatefulWidget {
+  final bool? isiFrame;
   final String title;
   final String url;
   final bool? hideHeader;
-  bool isbuttomsheet;
-  String? language;
+  final bool isbuttomsheet;
+  final String? language;
   @override
   InAppUrlLauncer(
       {Key? key,
       required this.title,
       required this.url,
-      this.hideHeader,
       required this.isbuttomsheet,
-      required this.language})
+      required this.language,
+      this.hideHeader,
+      this.isiFrame})
       : super(key: key);
   _InAppUrlLauncerState createState() => new _InAppUrlLauncerState();
 }
 
 class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
+  bool? iserrorstate = false;
+  final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
   @override
   void initState() {
     super.initState();
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
   @override
@@ -37,20 +45,52 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: CustomAppBarWidget(
-        isSearch: false,
-        isShare: true,
-        appBarTitle: widget.title,
-        sharedpopBodytext: widget.url.toString(),
-        sharedpopUpheaderText: "Please checkout this link",
-        language: Globals.selectedLanguage,
-      ),
-      body: WebView(
-        initialUrl: '${widget.url}',
-      ),
-      // bottomNavigationBar: widget.isbuttomsheet && Globals.homeObjet != null
-      //     ? InternalButtomNavigationBar()
-      //     : null
-    );
+        appBar: CustomAppBarWidget(
+          isSearch: false,
+          isShare: true,
+          appBarTitle: widget.title,
+          sharedpopBodytext: widget.url.toString(),
+          sharedpopUpheaderText: "Please checkout this link",
+          language: Globals.selectedLanguage,
+        ),
+        body: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
+
+              if (connected) {
+                if (iserrorstate == true) {
+                  iserrorstate = false;
+                }
+              } else if (!connected) {
+                iserrorstate = true;
+              }
+
+              return connected
+                  ? Container(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.032),
+                      child: WebView(
+                        gestureNavigationEnabled:
+                            widget.isiFrame == true ? true : false,
+                        initialUrl: widget.isiFrame == true
+                            ? Uri.dataFromString('${widget.url}',
+                                    mimeType: 'text/html')
+                                .toString()
+                            : '${widget.url}',
+                        javascriptMode: JavascriptMode.unrestricted,
+                        onWebViewCreated:
+                            (WebViewController webViewController) {
+                          _controller.complete(webViewController);
+                        },
+                      ),
+                    )
+                  : NoInternetErrorWidget(
+                      connected: connected, issplashscreen: false);
+            },
+            child: Container()));
   }
 }

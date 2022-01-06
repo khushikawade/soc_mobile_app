@@ -17,7 +17,7 @@ class StaffLoading extends StaffState {
 class ErrorInStaffLoading extends StaffState {
   final err;
   ErrorInStaffLoading({this.err});
-  ErrorInStaffLoading copyWith({var err}) {
+  ErrorInStaffLoading copyWith({final err}) {
     return ErrorInStaffLoading(err: err ?? this.err);
   }
 
@@ -27,12 +27,12 @@ class ErrorInStaffLoading extends StaffState {
 
 // ignore: must_be_immutable
 class StaffDataSucess extends StaffState {
-  List<StaffList>? obj;
-  List<StaffList>? subFolder;
+  List<SharedList>? obj;
+  List<SharedList>? subFolder;
 
   StaffDataSucess({this.obj, this.subFolder});
 
-  StaffDataSucess copyWith({var obj, var subFolder}) {
+  StaffDataSucess copyWith({final obj, final subFolder}) {
     return StaffDataSucess(
         obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }
@@ -41,13 +41,14 @@ class StaffDataSucess extends StaffState {
   List<Object> get props => [];
 }
 
+// ignore: must_be_immutable
 class StaffSubListSucess extends StaffState {
-  List<StaffSubList>? obj;
-  List<StaffSubList>? subFolder;
+  List<SharedList>? obj;
+  List<SharedList>? subFolder;
 
   StaffSubListSucess({this.obj, this.subFolder});
 
-  StaffSubListSucess copyWith({var obj, var subFolder}) {
+  StaffSubListSucess copyWith({final obj, final subFolder}) {
     return StaffSubListSucess(
         obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }

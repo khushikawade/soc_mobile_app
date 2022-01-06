@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +15,6 @@ part 'news_event.dart';
 part 'news_state.dart';
 
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
-  var data;
   NewsBloc() : super(NewsInitial());
   NewsState get initialState => NewsInitial();
 
@@ -37,6 +37,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<NotificationList>> fetchNotificationList() async {
     try {
+      print(
+          "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}");
+      print('Basic ${Overrides.REST_API_KEY}');
       final response = await http.get(
           Uri.parse(
               "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}"),
@@ -47,9 +50,11 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         Globals.notiCount = data["total_count"];
-        final data1 = data["notifications"];
+        final _allNotifications = data["notifications"];
+        // Filtering the scheduled notifications. Only delivered notifications should display in the list.
+        final data1 =
+            _allNotifications.where((e) => e['completed_at'] != null).toList();
         final data2 = data1 as List;
-
         return data2.map((i) {
           return NotificationList(
               id: i["id"],
@@ -65,6 +70,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       if (e.toString().contains("Failed host lookup")) {
         throw ("No Internet Connection.");
       } else {
+        print(e);
         throw (e);
       }
     }
@@ -73,52 +79,29 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Future<void> initPushState(context) async {
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
-
+    SharedPreferences pref = await SharedPreferences.getInstance();
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
-      print(
-          "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool("enableIndicator", true);
+      Globals.indicator.value = true;
+      // print(
+      //     "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}");
     });
-
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      print(
-          "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-
-      // Globals.appNavigator!.currentState!
-      //     .push(MaterialPageRoute(builder: (context) => NewsPage()));
+      pref.setInt(Strings.bottomNavigation, 1);
     });
-
-    OneSignal.shared
-        .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
-      print("SUBSCRIPTION STATE CHANGED: ${changes.jsonRepresentation()}");
-    });
-
-    OneSignal.shared.setPermissionObserver((OSPermissionStateChanges changes) {
-      print("PERMISSION STATE CHANGED: ${changes.jsonRepresentation()}");
-    });
-
-    OneSignal.shared.setEmailSubscriptionObserver(
-        (OSEmailSubscriptionStateChanges emailChanges) {});
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
 
-    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-      print("Accepted permission: $accepted");
-    });
-
-    if (Platform.isIOS) {
-      await OneSignal.shared
-          .promptUserForPushNotificationPermission(fallbackToSettings: true);
-    }
-    if (Platform.isAndroid) {
-      await OneSignal.shared
-          .promptUserForPushNotificationPermission(fallbackToSettings: true);
-    }
-
+    // if (Platform.isIOS) {
+    //   await OneSignal.shared
+    //       .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    // }
+    // if (Platform.isAndroid) {
+    //   await OneSignal.shared
+    //       .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    // }
     updateDeviceId();
   }
 

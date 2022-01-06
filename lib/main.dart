@@ -1,20 +1,26 @@
 import 'dart:io';
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/home/model/recent.dart';
+
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'src/modules/home/model/recent.g.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final appDocumentDirectory =
-      await path_provider.getApplicationDocumentsDirectory();
-  Hive
-    ..init(appDocumentDirectory.path)
-    ..registerAdapter(RecentAdapter());
+
+  if (!kIsWeb) {
+    // Not running on the web!
+    final appDocumentDirectory =
+        await path_provider.getApplicationDocumentsDirectory();
+    Hive
+      ..init(appDocumentDirectory.path)
+      ..registerAdapter(RecentAdapter());
+  }
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -42,68 +48,3 @@ getDeviceType() async {
     Globals.deviceType = deviceType == "ipad" ? "tablet" : "phone";
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter_offline/flutter_offline.dart';
-
-// void main() async {
-//   runApp(DemoPage());
-// }
-
-// class DemoPage extends StatefulWidget {
-//   State<DemoPage> createState() => DemoPageState();
-// }
-
-// class DemoPageState extends State<DemoPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: new Scaffold(
-//         appBar: new AppBar(
-//           title: new Text("Offline Demo"),
-//         ),
-//         body: OfflineBuilder(
-//           connectivityBuilder: (
-//             BuildContext context,
-//             ConnectivityResult connectivity,
-//             Widget child,
-//           ) {
-//             final bool connected = connectivity != ConnectivityResult.none;
-//             return new Stack(
-//               fit: StackFit.expand,
-//               children: [
-//                 Positioned(
-//                   height: 24.0,
-//                   left: 0.0,
-//                   right: 0.0,
-//                   child: Container(
-//                     color: connected ? Color(0xFF00EE44) : Color(0xFFEE4400),
-//                     child: Center(
-//                       child: Text("${connected ? 'ONLINE' : 'OFFLINE'}"),
-//                     ),
-//                   ),
-//                 ),
-//                 Center(
-//                   child: new Text(
-//                     'Yay!',
-//                   ),
-//                 ),
-//               ],
-//             );
-//           },
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: <Widget>[
-//               new Text(
-//                 'There are no bottons to push :)',
-//               ),
-//               new Text(
-//                 'Just turn off your internet.',
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:hive/hive.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as httpClient;
@@ -61,7 +60,7 @@ class DbServices {
       }
     } catch (e) {
       if (e.toString().contains('Failed host lookup')) {
-        throw ('No Internet connection');
+        throw ('NO_CONNECTION');
       } else {
         throw (e);
       }
@@ -90,24 +89,6 @@ class DbServices {
       }
     } catch (e) {
       if (e.toString().contains("Failed host lookup")) {
-        throw ("No Internet Connection.");
-      } else {
-        throw (e);
-      }
-    }
-  }
-
-  // Local DB operations.
-
-  // add Data in data base using this method
-  Future<bool> addData(model, tableName) async {
-    try {
-      final hiveBox = await Hive.openBox(tableName);
-      hiveBox.add(model);
-
-      return true;
-    } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
         throw ("NO_CONNECTION");
       } else {
         throw (e);
@@ -116,92 +97,44 @@ class DbServices {
   }
 
   Future login() async {
-    final dio = Dio();
-    FormData formData = FormData.fromMap({
-      "grant_type": "password",
-      "client_id":
-          "3MVG9eMnfmfDO5NC3QXoYv8SGxm3vUnduHs0xb5BwEiLHNXr46uKkiRFMIydXPVwcQG.T2uQ_4.uHRHnDL_tg",
-      "client_secret":
-          "9881213BBC5BA4A71BD3A5A1048815EE6775BC872A86203DA818A51AC7CCA624",
-      "username": "mahendra.patidar@zehntech.com.flutter",
-      "password": "YIB7tewn9joct*voghdVBvxNULlHjFmoQVqseNq1Iz"
-    });
-    Response response = await dio.post(
-      "https://test.salesforce.com/services/oauth2/token",
-      data: formData,
-      options: Options(
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Accept': 'application/json',
-        },
-      ),
-    );
-    if (response.statusCode == 200) {
-      final data = response.data;
-      Globals.token = data["access_token"];
-      return data;
-    } else {
-      throw ("Something went wrong.");
+    try {
+      final dio = Dio();
+      FormData formData = FormData.fromMap({
+        "grant_type": "password",
+        "client_id":
+            "3MVG9l2zHsylwlpTLc7YpeVR4xdkRtQUC2dlLre5eF36oxcfvNls5uurApC9_yNNM7whHlgTrTrrT1thrzYi4",
+        "client_secret":
+            "BF5C7D4FEA3092A9F11A6A572A9B23DECE61241EE3ADC88912EF628CBFF7BCD3",
+        "username": "scott.walker@solvedconsulting.com",
+        "password": "Windows2020?"
+      });
+      Response response = await dio.post(
+        "https://login.salesforce.com/services/oauth2/token",
+        // "https://test.salesforce.com/services/oauth2/token",
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        final data = response.data;
+        Globals.token = data["access_token"];
+        return data;
+      } else {
+        throw ("Something went wrong.");
+      }
+    } catch (e) {
+      if (e.toString().contains("Failed host lookup")) {
+        throw ("NO_CONNECTION");
+      } else {
+        throw (e);
+      }
     }
   }
 
   // get List Object using this method
-  Future<List> getListData(tableName) async {
-    try {
-      final hiveBox = await Hive.openBox(tableName);
-      final list = hiveBox.values.toList();
-      return list;
-    } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("NO_CONNECTION");
-      } else {
-        throw (e);
-      }
-    }
-  }
 
-  Future<int> getListLength(tableName) async {
-    try {
-      final hiveBox = await Hive.openBox(tableName);
-      final listCount = hiveBox.values.toList();
-      return listCount.length;
-    } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("NO_CONNECTION");
-      } else {
-        throw (e);
-      }
-    }
-  }
-
-  Future<bool> updateListData(tableName, index, value) async {
-    try {
-      final hiveBox = await Hive.openBox(tableName);
-
-      hiveBox.putAt(index, value);
-
-      return true;
-    } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("NO_CONNECTION");
-      } else {
-        throw (e);
-      }
-    }
-  }
-
-  Future<bool> deleteData(tableName, index) async {
-    try {
-      final hiveBox = await Hive.openBox(tableName);
-      hiveBox.deleteAt(index);
-
-      return true;
-    } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("NO_CONNECTION");
-      } else {
-        throw (e);
-      }
-    }
-  }
 }

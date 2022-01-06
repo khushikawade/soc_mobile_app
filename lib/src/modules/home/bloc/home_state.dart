@@ -14,11 +14,11 @@ class HomeLoading extends HomeState {}
 class SearchLoading extends HomeState {}
 
 class BottomNavigationBarSuccess extends HomeState {
-  var obj;
+  final obj;
 
   BottomNavigationBarSuccess({this.obj});
 
-  BottomNavigationBarSuccess copyWith({var obj}) {
+  BottomNavigationBarSuccess copyWith({final obj}) {
     return BottomNavigationBarSuccess(obj: obj ?? this.obj);
   }
 
@@ -27,11 +27,11 @@ class BottomNavigationBarSuccess extends HomeState {
 }
 
 class GlobalSearchSuccess extends HomeState {
-  var obj;
+  final obj;
 
   GlobalSearchSuccess({this.obj});
 
-  GlobalSearchSuccess copyWith({var obj}) {
+  GlobalSearchSuccess copyWith({final obj}) {
     return GlobalSearchSuccess(obj: obj ?? this.obj);
   }
 
@@ -42,7 +42,7 @@ class GlobalSearchSuccess extends HomeState {
 class HomeErrorReceived extends HomeState {
   final err;
   HomeErrorReceived({this.err});
-  HomeErrorReceived copyWith({var err}) {
+  HomeErrorReceived copyWith({final err}) {
     return HomeErrorReceived(err: err ?? this.err);
   }
 

@@ -1,5 +1,5 @@
+import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class UrlLauncherWidget extends StatefulWidget {
   @override
@@ -11,11 +11,13 @@ class UrlLauncherWidget extends StatefulWidget {
 
 class UrlLauncherState extends State<UrlLauncherWidget> {
   static _launchURL(url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
+    await Utility.launchUrlOnExternalBrowser(url);
+    // if (await canLaunch(url)) {
+    //   String str = url.replaceAll("+", " ");
+    //   await launch(str);
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
   }
 
   @override

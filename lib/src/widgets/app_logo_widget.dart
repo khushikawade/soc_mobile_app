@@ -1,34 +1,38 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:flutter/material.dart';
 
 class AppLogoWidget extends StatelessWidget {
-  static const double _kIconSize = 45.0;
+  final double? marginLeft;
+  AppLogoWidget({
+    Key? key,
+    required this.marginLeft,
+  }) : super(key: key);
+
+  static const double _kIconSize = 50;
 
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        SizedBox(
-            height:
-                Globals.deviceType == "phone" ? _kIconSize : _kIconSize * 1.2,
-            width: Globals.deviceType == "phone"
-                ? _kIconSize * 1.75
-                : _kIconSize * 1.95,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 7.0),
-              child: Image.asset(
-                'assets/images/bear.png',
-                fit: BoxFit.fill,
-                height: Globals.deviceType == "phone"
-                    ? _kIconSize * 1.2
-                    : _kIconSize * 1.4,
-                width: Globals.deviceType == "phone"
-                    ? _kIconSize * 2
-                    : _kIconSize * 2.2,
-              ),
-            )),
-      ],
+    print(Globals.homeObject["App_Logo__c"]);
+    return Container(
+      padding: EdgeInsets.only(right: 35),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+              padding: EdgeInsets.only(left: marginLeft ?? 0),
+              height:
+                  Globals.deviceType == "phone" ? _kIconSize : _kIconSize * 1.2,
+              // width: Globals.deviceType == "phone"
+              //     ? _kIconSize * 1.75
+              //     : _kIconSize * 1.95,
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 0.0),
+                  child: ClipRRect(
+                      child: CustomIconWidget(
+                          iconUrl: Globals.homeObject["App_Logo__c"])))),
+        ],
+      ),
     );
   }
 }

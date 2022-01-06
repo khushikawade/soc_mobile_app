@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:html/parser.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -58,10 +63,27 @@ class Utility {
 
   static void showSnackBar(_scaffoldKey, msg, context) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("$msg",
-          style: TextStyle(
+      content: Container(
+        alignment: Alignment.centerLeft,
+        height: 40,
+        child: Text("$msg",
+            textAlign: TextAlign.left,
+            style: TextStyle(
               color: Theme.of(context).backgroundColor,
-              fontWeight: FontWeight.w600)),
+              fontWeight: FontWeight.w600,
+            )),
+      ),
+      backgroundColor: Colors.black.withOpacity(0.8),
+      padding: EdgeInsets.only(
+        left: 16,
+      ),
+      margin: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: MediaQuery.of(context).size.height * 0.04),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      behavior: SnackBarBehavior.floating,
       duration: Duration(seconds: 3),
     ));
   }
@@ -71,7 +93,7 @@ class Utility {
   }
 
   static void upliftPage(context, _scrollController) {
-    var d = MediaQuery.of(context).viewInsets.bottom;
+    final d = MediaQuery.of(context).viewInsets.bottom;
     if (d > 0) {
       Timer(
           Duration(milliseconds: 50),
@@ -82,16 +104,25 @@ class Utility {
 
   static showBottomSheet(body, context) {
     return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.circular(AppTheme.kBottomSheetModalUpperRadius),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      context: context,
-      builder: (context) => Material(
-        child: body,
-      ),
-    );
+        // isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.only(
+                topLeft: Radius.circular(AppTheme.kBottomSheetModalUpperRadius),
+                topRight:
+                    Radius.circular(AppTheme.kBottomSheetModalUpperRadius))),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        context: context,
+        builder: (context) {
+          {
+            return StatefulBuilder(
+              builder: (BuildContext context,
+                      StateSetter setState /*You can rename this!*/) =>
+                  Material(
+                child: body,
+              ),
+            );
+          }
+        });
   }
 
   static void printWrapped(String text) {
@@ -119,24 +150,68 @@ class Utility {
   }
 
   static convertDateFormat(date) {
-    String dateNew = date;
+    try {
+      String dateNew = date;
+      final string = dateNew.toString();
+      final formatter = DateFormat('yyyy-MM-dd');
+      final dateTime = formatter.parse(string);
+      final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
+      final String formatted = formatNew.format(dateTime);
+      // return DateTime.parse((dateNew));
+      // print(formatted);
+      return formatted;
+    } catch (e) {
+      print(e);
+    }
+  }
 
-    final string = dateNew.toString();
-    final formatter = DateFormat('yyyy-MM-dd');
-    var dateTime = formatter.parse(string);
-    final DateFormat formatNew = DateFormat('dd/MM/yyyy');
-    final String formatted = formatNew.format(dateTime);
-    return formatted;
+  static convertDateFormat2(date) {
+    try {
+      String dateNew = date;
+      final string = dateNew.toString();
+      final formatter = DateFormat('yyyy-MM-dd');
+      final dateTime = formatter.parse(string);
+      final DateFormat formatNew = DateFormat('dd/MM/yyyy');
+      final String formatted = formatNew.format(dateTime);
+      // return DateTime.parse((dateNew));
+      // print(formatted);
+      return formatted;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static getDate(date) {
+    try {
+      DateTime parseDate =
+          new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(date).toLocal();
+      var inputDate = DateTime.parse(parseDate.toString());
+      var outputFormat = DateFormat('MM/dd/yyyy hh:mm a');
+      // var outputDate = outputFormat.format(inputDate);
+      // print(outputDate);
+      // String dateNew = date;
+      // final string = dateNew.toString();
+      // final formatter = DateFormat('yyyy-MM-dd');
+      // final dateTime = formatter.parse(string);
+      // final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
+      // final String formatted = dateTime.day.toString();
+      // return DateTime.parse((dateNew));
+
+      // print(formatted);
+      return outputFormat;
+    } catch (e) {
+      print(e);
+    }
   }
 
   static getMonthFromDate(date) {
     String dateNew = date;
-
     final string = dateNew.toString();
     final formatter = DateFormat('yyyy-MM-dd');
-    var dateTime = formatter.parse(string);
+    final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
     final String formatted = formatNew.format(dateTime);
+    // print(formatted);
     return formatted;
   }
 
@@ -146,5 +221,54 @@ class Utility {
     } catch (e) {
       return Colors.blue;
     }
+  }
+
+  static String getHTMLImgSrc(str) {
+    try {
+      String htmlTxt = str.replaceAll("\n", "");
+      var document = parse(htmlTxt);
+      var img = document.getElementsByTagName('img');
+      if (img.length > 0) {
+        return img[0].attributes['src']!;
+      } else {
+        return '';
+      }
+    } catch (e) {
+      return '';
+    }
+  }
+
+  static String parseHtml(str) {
+    if (str == null) return "";
+    String htmlTxt = str.replaceAll("\n", "");
+    var document = parse(htmlTxt);
+    return document.body!.text;
+  }
+
+  static launchUrlOnExternalBrowser(String url) async {
+    // if (await canLaunch(url)) {
+    //   await launch(url);
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
+    try {
+      await launch(url);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<File> createFileFromUrl(_url) async {
+    Uri _imgUrl = Uri.parse(_url);
+    String _fileExt = _imgUrl.path.split('.').last;
+    String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Response<List<int>> rs = await Dio().get<List<int>>(
+      _url,
+      options: Options(responseType: ResponseType.bytes),
+    );
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File file = new File('$dir/$_fileName.$_fileExt');
+    await file.writeAsBytes(rs.data!);
+    return file;
   }
 }

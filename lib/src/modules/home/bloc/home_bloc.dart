@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/model/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -14,7 +14,6 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  var data;
   HomeBloc() : super(HomeInitial());
   final DbServices _dbServices = DbServices();
 
@@ -28,6 +27,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try {
         yield HomeLoading();
         final data = await fetchBottomNavigationBar();
+
         yield BottomNavigationBarSuccess(obj: data);
       } catch (e) {
         yield HomeErrorReceived(err: e);
@@ -36,77 +36,166 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is GlobalSearchEvent) {
       try {
         yield SearchLoading();
+        List<SearchList> filteredList = [];
         List<SearchList> list = await getGlobalSearch({
           "q": event.keyword,
           "sobjects": [
             {
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
                 "PDF_URL__c",
                 "Name",
                 "RTF_HTML__c",
-                "Type__c"
+                "Type__c",
+                "School_App__c",
+                "Calendar_Id__c"
               ],
               "name": "Families_App__c"
             },
             {
               "name": "Family_Sub_Menu_App__c",
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
                 "PDF_URL__c",
                 "Name",
                 "RTF_HTML__c",
-                "Type__c"
+                "Type__c",
+                "School_App__c"
               ]
             },
             {
               "name": "Staff_App__c",
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
                 "PDF_URL__c",
                 "Name",
                 "RTF_HTML__c",
-                "Type__c"
+                "Type__c",
+                "School_App__c",
+                "Calendar_Id__c"
               ]
             },
             {
               "fields": [
+                "Active_Status__c",
                 "Id",
                 "Title__c",
                 "URL__c",
                 "PDF_URL__c",
                 "Name",
                 "RTF_HTML__c",
-                "Type__c"
+                "Type__c",
+                "School_App__c"
               ],
               "name": "Staff_Sub_Menu_App__c"
             },
             {
               "fields": [
+                "Active_Status__c",
                 "Title__c",
-                "App_Icon__c",
                 "App_URL__c",
+                "App_Icon_URL__c",
                 "Deep_Link__c",
                 "Id",
                 "Name",
-                "App_Folder__c"
+                "App_Folder__c",
+                "School_App__c",
+                "Is_Folder__c",
+                "Sort_Order__c"
               ],
               "name": "Student_App__c"
+            },
+            {
+              "fields": [
+                "Id",
+                "Title__c",
+                "Active_Status__c",
+                "Website_URL__c",
+                "Sort_Order__c",
+                "RTF_HTML__c",
+                "Phone__c",
+                "Image_URL__c",
+                "Email__c",
+                "Type__c",
+                "Contact_Office_Location__c",
+                "Contact_Address__c",
+                "School_App__c"
+              ],
+              "name": "School_Directory_App__c"
+            },
+            {
+              "fields": [
+                "Id",
+                "Active_Status__c",
+                "Description__c",
+                "Email__c",
+                "Image_URL__c",
+                "Phone__c",
+                "School_App__c",
+                "Sort_Order__c",
+                "Title__c"
+              ],
+              "name": "Staff_Directory_App__c"
+            },
+            {
+              "fields": [
+                "Active_Status__c",
+                "App_Icon_URL__c",
+                "Sort_Order__c",
+                "Title__c",
+                "Id",
+                "Name",
+                "URL__c",
+                "Type__c",
+                "RTF_HTML__c",
+                "PDF_URL__c",
+                "School_App__c"
+              ],
+              "name": "Resources_App__c"
+            },
+            {
+              "fields": [
+                "Active_Status__c",
+                "App_Icon_URL__c",
+                "Sort_Order__c",
+                "Title__c",
+                "Id",
+                "URL__c",
+                "School_App__c",
+                "PDF_URL__c",
+                "RTF_HTML__c",
+                "Type__c"
+              ],
+              "name": "About_App__c"
             }
           ],
           "in": "ALL",
           "overallLimit": 100,
           "defaultLimit": 10
         });
-        yield GlobalSearchSuccess(
-          obj: list,
-        );
+        if (list.length > 0) {
+          for (int i = 0; i < list.length; i++) {
+            if (list[i].schoolId == Globals.homeObject["Id"]) {
+              filteredList.add(list[i]);
+            }
+            yield GlobalSearchSuccess(
+              obj: filteredList,
+            );
+          }
+        } else {
+          yield GlobalSearchSuccess(
+            obj: list,
+          );
+        }
       } catch (e) {
         yield HomeErrorReceived(err: e);
       }
@@ -116,20 +205,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future fetchBottomNavigationBar() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-        Uri.encodeFull('sobjects/School_App__c/a1T3J000000RHEKUA4'),
+        Uri.encodeFull('sobjects/School_App__c/${Overrides.SCHOOL_ID}'),
       );
 
       if (response.statusCode == 200) {
         final data = response.data;
         Globals.appSetting = AppSetting.fromJson(data);
+        if (Globals.appSetting.bannerHeightFactor != null) {
+          AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
+        }
         return data;
       }
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("Please check your Internet Connection.");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 
@@ -144,11 +232,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             .toList();
       }
     } catch (e) {
-      if (e.toString().contains("Failed host lookup")) {
-        throw ("Please check your Internet Connection.");
-      } else {
-        throw (e);
-      }
+      throw (e);
     }
   }
 }
