@@ -130,7 +130,7 @@ class _NewdescriptionState extends State<Newdescription> {
             ),
             //
             Text(
-              widget.obj.completedAt ?? '',
+              widget.obj.completedAt.toString().split(" ")[0],
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     fontSize: 14,
                     color: Colors.grey,
@@ -253,7 +253,8 @@ class _NewdescriptionState extends State<Newdescription> {
       if (fallBackImageUrl != null) {
         _imageUrl = fallBackImageUrl;
       } else {
-        _imageUrl = widget.obj.image != null || widget.obj.image != ""
+        _imageUrl = (widget.obj.image != null || widget.obj.image != "") &&
+                widget.obj.image.toString().contains("http")
             ? widget.obj.image
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
@@ -269,7 +270,7 @@ class _NewdescriptionState extends State<Newdescription> {
         subject: '$_title',
         text: '$_description',
       );
-      _totalRetry = 0; 
+      _totalRetry = 0;
     } catch (e) {
       print(e);
       setState(() {
@@ -277,10 +278,11 @@ class _NewdescriptionState extends State<Newdescription> {
       });
       // It should only call the fallback function if there's error with the hosted image and it should not run idefinately. Just 3 retries only.
       // if (e.toString().contains('403') && _totalRetry < 3) {
-        if (_totalRetry < 3 && e.toString().contains('403')) {
+      if (_totalRetry < 3 && e.toString().contains('403')) {
         print('Current retry :: $_totalRetry');
         _totalRetry++;
-        String _fallBackImageUrl = Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+        String _fallBackImageUrl =
+            Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
                 : Globals.homeObject["App_Logo__c"];
         _shareNews(fallBackImageUrl: _fallBackImageUrl);

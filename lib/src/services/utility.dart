@@ -32,11 +32,11 @@ class Utility {
     }
   }
 
-  static String convetTimestampToDate(dynamic timestamp) {
+  static String convertTimestampToDate(dynamic timestamp) {
     try {
       DateTime date =
           DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
-      String dateFormat = DateFormat("MM/dd/yy").format(date);
+      String dateFormat = DateFormat("MM/dd/yy hh:mm:ss").format(date);
       return dateFormat;
     } catch (e) {
       return '';

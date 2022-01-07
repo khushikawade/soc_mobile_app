@@ -41,7 +41,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-
+        _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+  
         if (_localData.isEmpty) {
           yield NewsLoading();
         } else {
@@ -56,6 +57,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         _list.forEach((NotificationList e) {
           _localDb.addData(e);
         });
+        _list.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
         // Syncing end.
 
         yield NewsLoading(); // Mimic state change
@@ -111,7 +113,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
               headings: i["headings"],
               url: i["url"],
               image: i["global_image"] ?? getImageUrl(i),
-              completedAt: Utility.convetTimestampToDate(i["completed_at"]));
+              completedAt: Utility.convertTimestampToDate(i["completed_at"]));
         }).toList();
       } else {
         throw ('something_went_wrong');
