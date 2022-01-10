@@ -36,7 +36,7 @@ class Utility {
     try {
       DateTime date =
           DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
-      String dateFormat = DateFormat("MM/dd/yy hh:mm:ss").format(date);
+      String dateFormat = DateFormat("MM/dd/yy HH:mm:ss").format(date);
       return dateFormat;
     } catch (e) {
       return '';

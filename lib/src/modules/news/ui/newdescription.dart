@@ -42,6 +42,7 @@ class _NewdescriptionState extends State<Newdescription> {
   void initState() {
     super.initState();
     Globals.callsnackbar = true;
+    print(widget.obj.completedAt);
   }
 
   void _launchURL(obj) async {
