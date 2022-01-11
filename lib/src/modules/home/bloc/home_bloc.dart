@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
@@ -16,7 +14,6 @@ import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -240,16 +237,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future fetchBottomNavigationBar() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
-        Uri.encodeFull('sobjects/School_App__c/${Overrides.SCHOOL_ID}'),
+        Uri.encodeFull(
+            'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
       );
 
       if (response.statusCode == 200) {
-        final data = response.data;
+        final data = response.data['body']['Items'][0];
         Globals.appSetting = AppSetting.fromJson(data);
-        _backupAppData(); // To take the backup for all the sections.
+        // To take the backup for all the sections.
+        _backupAppData();
         if (Globals.appSetting.bannerHeightFactor != null) {
           AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
+          print(AppTheme.kBannerHeight);
         }
+
         return data;
       }
     } catch (e) {

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -17,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
-import '../bloc/user_bloc.dart';
+// import '../bloc/user_bloc.dart';
 
 class StartupPage extends StatefulWidget {
   @override
@@ -28,7 +27,7 @@ class _StartupPageState extends State<StartupPage> {
   bool flag = true;
   bool showlogin = true;
   final HomeBloc _bloc = new HomeBloc();
-  UserBloc _loginBloc = new UserBloc();
+  // UserBloc _loginBloc = new UserBloc();
   final NewsBloc _newsBloc = new NewsBloc();
   // static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   AndroidDeviceInfo? androidInfo;
@@ -41,7 +40,8 @@ class _StartupPageState extends State<StartupPage> {
     // print("${Globals.deviceToken}, ${Globals.deviceToken}");
     getindicatorValue();
     initPlatformState(context);
-    _loginBloc.add(PerfomLogin());
+    // _loginBloc.add(PerfomLogin());
+    _bloc.add(FetchBottomNavigationBar());
     _newsBloc.add(FetchNotificationCount());
     getindexvalue();
     _showcase();
@@ -81,7 +81,7 @@ class _StartupPageState extends State<StartupPage> {
   @override
   void dispose() {
     _bloc.close();
-    _loginBloc.close();
+    // _loginBloc.close();
     super.dispose();
   }
 
@@ -123,20 +123,20 @@ class _StartupPageState extends State<StartupPage> {
             // Will show the splash screen while the auto login is in the progress
             // connected
             //     ?
-            BlocBuilder<UserBloc, UserState>(
-                bloc: _loginBloc,
-                builder: (BuildContext contxt, UserState state) {
-                  if (state is Loading) {
-                    return _buildSplashScreen();
-                  }
-                  if (state is ErrorReceived) {
-                    // return ListView(children: [
-                    //   ErrorMsgWidget(),
-                    // ]);
-                    return flag ? _buildSplashScreen() : Container();
-                  }
-                  return Container();
-                }),
+            // BlocBuilder<UserBloc, UserState>(
+            //     bloc: _loginBloc,
+            //     builder: (BuildContext contxt, UserState state) {
+            //       if (state is Loading) {
+            //         return _buildSplashScreen();
+            //       }
+            //       if (state is ErrorReceived) {
+            //         // return ListView(children: [
+            //         //   ErrorMsgWidget(),
+            //         // ]);
+            //         return flag ? _buildSplashScreen() : Container();
+            //       }
+            //       return Container();
+            //     }),
             // : NoInternetErrorWidget(
             //     connected: connected,
             //     issplashscreen: true,
@@ -190,28 +190,28 @@ class _StartupPageState extends State<StartupPage> {
             //     issplashscreen: true,
             //   ),
             // Fetching App Settings(Bottom Nav items, colors etc.) End.
-            Container(
-              height: 0,
-              width: 0,
-              child: BlocListener<UserBloc, UserState>(
-                bloc: _loginBloc,
-                listener: (context, state) async {
-                  if (state is LoginSuccess) {
-                    Globals.token != null && Globals.token != " "
-                        ? _bloc.add(FetchBottomNavigationBar())
-                        : Container(
-                            child: Center(
-                                child: Text("Please refresh your application")),
-                          );
-                  } else {
-                    // Local DB Integration
-                    // Should fetch data even if there's any issue with the SF login.
-                    _bloc.add(FetchBottomNavigationBar());
-                  }
-                },
-                child: Container(),
-              ),
-            ),
+            // Container(
+            //   height: 0,
+            //   width: 0,
+            //   child: BlocListener<UserBloc, UserState>(
+            //     bloc: _loginBloc,
+            //     listener: (context, state) async {
+            //       if (state is LoginSuccess) {
+            //         Globals.token != null && Globals.token != " "
+            //             ? _bloc.add(FetchBottomNavigationBar())
+            //             : Container(
+            //                 child: Center(
+            //                     child: Text("Please refresh your application")),
+            //               );
+            //       } else {
+            //         // Local DB Integration
+            //         // Should fetch data even if there's any issue with the SF login.
+            //         _bloc.add(FetchBottomNavigationBar());
+            //       }
+            //     },
+            //     child: Container(),
+            //   ),
+            // ),
             Container(
               height: 0,
               width: 0,
