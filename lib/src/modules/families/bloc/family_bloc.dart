@@ -200,11 +200,11 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<SharedList>> getFamilyList() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon__c,App_Icon_URL__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,Calendar_Id__c,Active_Status__c FROM Families_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+          'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Families_App__c'));
       if (response.statusCode == 200) {
-        // dataArray = response.data["records"];
-        List<SharedList> _list = response.data["records"]
+        //   var dataArray = response.data["records"];
+        List<SharedList> _list = response.data['body']["Items"]
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
