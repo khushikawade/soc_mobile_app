@@ -15,7 +15,9 @@ class NotificationList {
   String? image;
   @HiveField(5)
   dynamic completedAt; 
+  @HiveField(6)
+  dynamic completedAtTimestamp; 
 
   NotificationList(
-      {this.id, this.contents, this.headings, this.url, this.image, this.completedAt});
+      {this.id, this.contents, this.headings, this.url, this.image, this.completedAt, this.completedAtTimestamp});
 }

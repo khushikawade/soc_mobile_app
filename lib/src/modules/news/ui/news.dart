@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/strings.dart';
@@ -153,7 +154,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               ),
             ),
             Text(
-              obj.completedAt.toString().split(" ")[0],
+              Utility.convertTimestampToDateFormat(obj.completedAtTimestamp, "MM/dd/yy"),
+              // obj.completedAt.toString().split(" ")[0],
               style: Theme.of(context)
                   .textTheme
                   .subtitle1!

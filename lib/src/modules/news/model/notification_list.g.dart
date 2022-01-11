@@ -23,13 +23,14 @@ class NotificationListAdapter extends TypeAdapter<NotificationList> {
       url: fields[3] as dynamic,
       image: fields[4] as String?,
       completedAt: fields[5] as dynamic,
+      completedAtTimestamp: fields[6] as dynamic,
     );
   }
 
   @override
   void write(BinaryWriter writer, NotificationList obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class NotificationListAdapter extends TypeAdapter<NotificationList> {
       ..writeByte(4)
       ..write(obj.image)
       ..writeByte(5)
-      ..write(obj.completedAt);
+      ..write(obj.completedAt)
+      ..writeByte(6)
+      ..write(obj.completedAtTimestamp);
   }
 
   @override
