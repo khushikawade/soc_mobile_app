@@ -97,10 +97,10 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
 
   Future<List<StudentApp>> getStudentDetails() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon_URL__c,App_URL__c,Deep_Link__c,Id,Name,App_Folder__c,Sort_Order__c,Active_Status__c,Is_Folder__c FROM Student_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+          "getRecords?schoolId=${Overrides.SCHOOL_ID}&keyword=e&objectName=Student_App__c"));
       if (response.statusCode == 200) {
-        return response.data["records"]
+        return response.data['body']["Items"]
             .map<StudentApp>((i) => StudentApp.fromJson(i))
             .toList();
       } else {
