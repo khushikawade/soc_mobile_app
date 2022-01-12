@@ -98,7 +98,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   Future<List<StudentApp>> getStudentDetails() async {
     try {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
-          "getRecords?schoolId=${Overrides.SCHOOL_ID}&keyword=e&objectName=Student_App__c"));
+          "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Student_App__c"));
       if (response.statusCode == 200) {
         return response.data['body']["Items"]
             .map<StudentApp>((i) => StudentApp.fromJson(i))
