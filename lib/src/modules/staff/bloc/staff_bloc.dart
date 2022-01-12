@@ -148,10 +148,10 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
 
   Future<List<SharedList>> getStaffSubList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name,PDF_URL__c,Type__c,RTF_HTML__c,Sort_Order__c,App_Icon_URL__c,Active_Status__c  FROM Staff_Sub_Menu_App__c where   Staff_App__c ='$id'")}");
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+          "getSubRecords?parentId=$id&parentName=Staff_App__c&objectName=Staff_Sub_Menu_App__c"));
       if (response.statusCode == 200) {
-        List<SharedList> _list = response.data["records"]
+        List<SharedList> _list = response.data['body']["Items"]
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
