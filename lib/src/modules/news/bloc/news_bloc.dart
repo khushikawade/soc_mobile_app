@@ -35,28 +35,34 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsErrorReceived(err: e);
       }
     }
-    
+
     if (event is FetchNotificationList) {
       try {
         // yield NewsLoading();// Should not show loading, instead fetch the data from the Local database and return the list instantly.
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-        _localData.sort((a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
-  
+        _localData.forEach((element) {
+          if (element.completedAtTimestamp != null) {
+            _localData.sort((a, b) =>
+                b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+          }
+        });
+
         if (_localData.isEmpty) {
           yield NewsLoading();
         } else {
           yield NewsLoaded(obj: _localData);
         }
         // Local database end.
-        List<NotificationList> _list = await fetchNotificationList();        
+        List<NotificationList> _list = await fetchNotificationList();
         // Syncing to local database
         await _localDb.clear();
         _list.forEach((NotificationList e) {
           _localDb.addData(e);
         });
-        _list.sort((a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+        _list.sort(
+            (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
         // Syncing end.
 
         yield NewsLoading(); // Mimic state change

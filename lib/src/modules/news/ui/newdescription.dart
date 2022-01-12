@@ -42,7 +42,6 @@ class _NewdescriptionState extends State<Newdescription> {
   void initState() {
     super.initState();
     Globals.callsnackbar = true;
-    print(widget.obj.completedAt);
   }
 
   void _launchURL(obj) async {
@@ -131,7 +130,8 @@ class _NewdescriptionState extends State<Newdescription> {
             ),
             //
             Text(
-              widget.obj.completedAt.toString().split(" ")[0],
+              Utility.convertTimestampToDateFormat(
+                  widget.obj.completedAtTimestamp, "MM/dd/yy"),
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     fontSize: 14,
                     color: Colors.grey,

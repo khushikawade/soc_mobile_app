@@ -32,7 +32,7 @@ class Utility {
     }
   }
 
-static DateTime? convertTimestampToDate(dynamic timestamp) {
+  static DateTime? convertTimestampToDate(dynamic timestamp) {
     try {
       DateTime date =
           DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
@@ -41,7 +41,7 @@ static DateTime? convertTimestampToDate(dynamic timestamp) {
       return null;
     }
   }
-  
+
   static String convertTimestampToDateFormat(dynamic timestamp, String format) {
     try {
       DateTime date =

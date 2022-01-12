@@ -130,7 +130,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   }
 
   Widget _buildnewsHeading(NotificationList obj) {
-    // return Text(obj.completedAt);
     return Container(
         alignment: Alignment.centerLeft,
         child: Column(
@@ -154,7 +153,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               ),
             ),
             Text(
-              Utility.convertTimestampToDateFormat(obj.completedAtTimestamp, "MM/dd/yy"),
+              Utility.convertTimestampToDateFormat(
+                  obj.completedAtTimestamp, "MM/dd/yy"),
               // obj.completedAt.toString().split(" ")[0],
               style: Theme.of(context)
                   .textTheme
