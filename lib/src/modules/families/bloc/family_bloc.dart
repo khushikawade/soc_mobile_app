@@ -239,11 +239,12 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Future<List<SDlist>> getStaffList(categoryId) async {
     try {
       final ResponseModel response = await _dbServices.getapi(categoryId == null
-          ? "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c,Active_Status__c FROM Staff_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}"
+          ? Uri.encodeFull(
+              'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c')
           : "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c,Active_Status__c FROM Staff_Directory_App__c where About_App__c = '$categoryId'")}");
 
       if (response.statusCode == 200) {
-        List<SDlist> _list = response.data["records"]
+        List<SDlist> _list = response.data['body']["Items"]
             .map<SDlist>((i) => SDlist.fromJson(i))
             .toList();
         _list.removeWhere((SDlist element) => element.status == 'Hide');
