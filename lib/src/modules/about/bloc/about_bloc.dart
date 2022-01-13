@@ -133,7 +133,6 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
     try {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=About_App__c&objectName=About_Sub_Menu_App__c"));
-
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']["Items"]
             .map<SharedList>((i) => SharedList.fromJson(i))
