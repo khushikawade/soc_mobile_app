@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
-import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
