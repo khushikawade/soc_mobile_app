@@ -242,7 +242,7 @@ class _AboutPageState extends State<AboutPage> {
                                       child: CircularProgressIndicator());
                                 } else if (state is AboutDataSucess) {
                                   return newList.length > 0
-                                      ? ListView.builder(
+                                      ? ListView.builder(                                  
                                           padding: EdgeInsets.only(
                                               bottom: AppTheme.klistPadding),
                                           scrollDirection: Axis.vertical,
