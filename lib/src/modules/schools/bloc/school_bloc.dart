@@ -71,11 +71,11 @@ class SchoolDirectoryBloc
 
   Future<List<SchoolDirectoryList>> getSchoolDirectorySDList() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id, Email__c,Phone__c,Website_URL__c,RTF_HTML__c,Contact_Address__c,Contact_Office_Location__c,Active_Status__c,Sort_Order__c FROM School_Directory_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+          "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c"));
       if (response.statusCode == 200) {
-        dataArray = response.data["records"];
-        List<SchoolDirectoryList> _list = response.data["records"]
+        //  dataArray = response.data["records"];
+        List<SchoolDirectoryList> _list = response.data['body']["Items"]
             .map<SchoolDirectoryList>((i) => SchoolDirectoryList.fromJson(i))
             .toList();
         _list.removeWhere(

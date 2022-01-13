@@ -112,11 +112,11 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
 
   Future<List<SharedList>> getAboutSDList() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Type__c,Id,Name,Sort_Order__c,URL__c,RTF_HTML__c,PDF_URL__c,App_Icon_URL__c,Active_Status__c FROM About_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+          "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=About_App__c"));
       if (response.statusCode == 200) {
-        dataArray = response.data["records"];
-        List<SharedList> _list = response.data["records"]
+        //  dataArray = response.data["records"];
+        List<SharedList> _list = response.data['body']["Items"]
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
@@ -131,11 +131,11 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
 
   Future<List<SharedList>> getAboutSubList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,App_Icon_URL__c,Active_Status__c FROM About_Sub_Menu_App__c where About_App__c='$id'")}");
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+          "getSubRecords?parentId=$id&parentName=About_App__c&objectName=About_Sub_Menu_App__c"));
 
       if (response.statusCode == 200) {
-        List<SharedList> _list = response.data["records"]
+        List<SharedList> _list = response.data['body']["Items"]
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
