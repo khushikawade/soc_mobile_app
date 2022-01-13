@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/news/model/action_count_list.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -93,6 +94,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
               contents: i["contents"],
               headings: i["headings"],
               url: i["url"],
+              completedAt: Utility.convetTimestampToDate(i["completed_at"]),
               image: i["global_image"]);
         }).toList();
       } else {

@@ -316,7 +316,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         child: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
-            ? TranslationWidget(
+            ? 
+            TranslationWidget(
                 message: obj.headings!.length > 0 &&
                         obj.headings != "" &&
                         obj.headings != null
