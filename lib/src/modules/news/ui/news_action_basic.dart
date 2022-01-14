@@ -202,10 +202,10 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     bloc.add(NewsAction(
         notificationId: widget.newsObj.id,
         schoolId: Overrides.SCHOOL_ID,
-        like: index == 0 ? "1" : "",
-        thanks: index == 1 ? "1" : "",
-        helpful: index == 2 ? "1" : "",
-        shared: index == 3 ? "1" : ""));
+        like: index == 0 ? 1 : 0,
+        thanks: index == 1 ? 1 : 0,
+        helpful: index == 2 ? 1 : 0,
+        shared: index == 3 ? 1 : 0));
     return isliked;
   }
 

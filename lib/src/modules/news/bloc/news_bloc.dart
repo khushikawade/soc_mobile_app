@@ -42,12 +42,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       try {
         yield NewsLoading();
         var data = await addNewsAction({
-          "Notification_ID__c": "${event.notificationId}${event.schoolId}",
-          "School_App_ID__c": event.schoolId,
-          "Like__c": event.like,
-          "Thanks__c": event.thanks,
-          "Helpful__c": event.helpful,
-          "Shared__c": event.shared,
+          "notificationId": "${event.notificationId}${event.schoolId}",
+          // "School_App_ID__c": event.schoolId,
+          "like": event.like,
+          "thanks": event.thanks,
+          "helpful": event.helpful,
+          "share": event.shared,
         });
         yield NewsActionSuccess(
           obj: data,
@@ -112,10 +112,22 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future addNewsAction(body) async {
     try {
-      final ResponseModel response = await _dbServices
-          .postapi("sobjects/News_Interactions__c", body: body);
-      if (response.statusCode == 201) {
-        var data = response.data["success"];
+      // final ResponseModel response = await _dbServices
+      //     .postapi("sobjects/News_Interactions__c", body: body);
+      
+      final response = await http.post(
+          Uri.parse('https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/addNewsAction?schoolId=${Overrides.SCHOOL_ID}'),
+           body: json.encode(body),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept-Language': 'Accept-Language',
+          },
+            
+          );    
+
+      if (response.statusCode == 200) {
+        var res = json.decode(response.body);
+        var data = res["statusCode"];
         return data;
       } else {
         throw ('something_went_wrong');

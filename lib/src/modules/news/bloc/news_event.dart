@@ -13,10 +13,10 @@ class FetchNotificationList extends NewsEvent {
 class NewsAction extends NewsEvent {
   final String? notificationId;
   final String? schoolId;
-  final String? like;
-  final String? thanks;
-  final String? helpful;
-  final String? shared;
+  final int? like;
+  final int? thanks;
+  final int? helpful;
+  final int? shared;
 
   NewsAction(
       {required this.notificationId,
