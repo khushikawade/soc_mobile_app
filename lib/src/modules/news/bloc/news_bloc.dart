@@ -5,8 +5,8 @@ import 'package:Soc/src/modules/news/model/action_count_list.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -94,7 +94,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
               contents: i["contents"],
               headings: i["headings"],
               url: i["url"],
-              completedAt: Utility.convetTimestampToDate(i["completed_at"]),
               image: i["global_image"]);
         }).toList();
       } else {
@@ -127,13 +126,25 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<ActionCountList>> fetchNewsActionCount() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Name,School_App__c, Total_helpful__c, Total_Likes__c, Total_Thanks__c, Total__c FROM Total_News_Interaction__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+     
+      // final ResponseModel response = await _dbServices.getapi(
+      //     "query/?q=${Uri.encodeComponent("SELECT Name,School_App__c, Total_helpful__c, Total_Likes__c, Total_Thanks__c, Total__c FROM Total_News_Interaction__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+      
+      
+      final response =
+          await http.get(Uri.parse('https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/getNewsAction?schoolId='),
+              );
+
+      
       if (response.statusCode == 200) {
-        dataArray = response.data["records"];
-        return response.data["records"]
-            .map<ActionCountList>((i) => ActionCountList.fromJson(i))
-            .toList();
+        dataArray = response.body;
+        print(dataArray);
+         //data["records"];
+        // return response.data["records"]
+        //     .map<ActionCountList>((i) => ActionCountList.fromJson(i))
+        //     .toList();
+        
+        return dataArray;
       } else {
         throw ('something_went_wrong');
       }
