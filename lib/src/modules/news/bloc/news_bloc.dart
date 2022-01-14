@@ -63,6 +63,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         List<ActionCountList> list = await fetchNewsActionCount();
         yield ActionCountSuccess(obj: list);
       } catch (e) {
+        print(e);
         yield NewsErrorReceived(err: e);
       }
     }
@@ -131,20 +132,17 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       //     "query/?q=${Uri.encodeComponent("SELECT Name,School_App__c, Total_helpful__c, Total_Likes__c, Total_Thanks__c, Total__c FROM Total_News_Interaction__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
       
       
-      final response =
-          await http.get(Uri.parse('https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/getNewsAction?schoolId='),
-              );
-
-      
-      if (response.statusCode == 200) {
-        dataArray = response.body;
-        print(dataArray);
+      var response =
+          await http.get(Uri.parse('https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/getNewsAction?schoolId=${Overrides.SCHOOL_ID}'),
+              );      
+      if (response.statusCode == 200) {        
+        var data = json.decode(response.body);
          //data["records"];
-        // return response.data["records"]
-        //     .map<ActionCountList>((i) => ActionCountList.fromJson(i))
-        //     .toList();
+
+        return data["body"]["Items"]
+            .map<ActionCountList>((i) => ActionCountList.fromJson(i))
+            .toList();
         
-        return dataArray;
       } else {
         throw ('something_went_wrong');
       }

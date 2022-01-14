@@ -255,7 +255,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 for (int i = 0; i < list.length; i++) {
                   for (int j = 0; j < state.obj!.length; j++) {
                     if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
-                        state.obj[j].name) {
+                        state.obj[j].notificationId) {
                       newsMainList.add(NotificationList(
                           id: list[i].id,
                           contents: list[i].contents, //obj.contents,

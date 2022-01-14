@@ -4,10 +4,14 @@ class NotificationList {
   final headings;
   final url;
   String? image;
-  double? likeCount;
-  double? thanksCount;
-  double? helpfulCount;
-  double? shareCount;
+  // double? likeCount;
+  // double? thanksCount;
+  // double? helpfulCount;
+  // double? shareCount;
+  int? likeCount;
+  int? thanksCount;
+  int? helpfulCount;
+  int? shareCount;
   dynamic completedAt;
 
   NotificationList(

@@ -29,10 +29,14 @@ class NewsActionBasic extends StatefulWidget {
 
 class _NewsActionBasicState extends State<NewsActionBasic> {
   NewsBloc bloc = new NewsBloc();
-  final ValueNotifier<double> like = ValueNotifier<double>(0);
-  final ValueNotifier<double> thanks = ValueNotifier<double>(0);
-  final ValueNotifier<double> helpful = ValueNotifier<double>(0);
-  final ValueNotifier<double> share = ValueNotifier<double>(0);
+  final ValueNotifier<int> like = ValueNotifier<int>(0);
+  final ValueNotifier<int> thanks = ValueNotifier<int>(0);
+  final ValueNotifier<int> helpful = ValueNotifier<int>(0);
+  final ValueNotifier<int> share = ValueNotifier<int>(0);
+  // final ValueNotifier<double> like = ValueNotifier<double>(0);
+  // final ValueNotifier<double> thanks = ValueNotifier<double>(0);
+  // final ValueNotifier<double> helpful = ValueNotifier<double>(0);
+  // final ValueNotifier<double> share = ValueNotifier<double>(0);
   int? iconNameIndex;
   bool _isDownloadingFile = false;
   var f = NumberFormat.compact();
