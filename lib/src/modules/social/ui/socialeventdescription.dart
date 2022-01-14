@@ -246,7 +246,6 @@ class SocialDescription extends StatelessWidget {
                     fitMethod: BoxFit.cover,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100))),
-        SpacerWidget(_kPadding / 2),
         TranslationWidget(
           message:
               "${object.description != null && object.description != "" ? object.description["__cdata"].replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "") : ""}",
@@ -254,7 +253,7 @@ class SocialDescription extends StatelessWidget {
           fromLanguage: "en",
           toLanguage: language,
           builder: (translatedMessage) => SelectableHtml(
-            //     onImageError: (m, d) {},
+            // onImageError: (m, d) {},
             onLinkTap: (String? url, RenderContext context,
                 Map<String, String> attributes, dom.Element? element) {
               _launchURL(url, context);
@@ -291,7 +290,7 @@ class SocialDescription extends StatelessWidget {
               "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => SelectableHtml(
+          builder: (translatedMessage) => Html(
             data: translatedMessage.toString(),
             // style: Theme.of(context).textTheme.subtitle1!,
             onLinkTap: (String? url, RenderContext context,
