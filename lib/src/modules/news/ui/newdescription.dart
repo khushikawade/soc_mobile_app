@@ -10,6 +10,7 @@ import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:share/share.dart';
 
@@ -115,7 +116,7 @@ class _NewdescriptionState extends State<Newdescription> {
                           : widget.obj.contents["en"],
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
-                  builder: (translatedMessage) => Linkify(
+                  builder: (translatedMessage) => SelectableLinkify(
                     onOpen: (link) => _launchURL(link.url),
                     options: LinkifyOptions(humanize: false),
                     linkStyle: TextStyle(color: Colors.blue),
@@ -129,7 +130,7 @@ class _NewdescriptionState extends State<Newdescription> {
               ],
             ),
             //
-            Text(
+            SelectableText(
               widget.obj.completedAt ?? '',
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     fontSize: 14,
@@ -148,7 +149,7 @@ class _NewdescriptionState extends State<Newdescription> {
                     message: widget.obj.contents["en"].toString(),
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
-                    builder: (translatedMessage) => Linkify(
+                    builder: (translatedMessage) => SelectableLinkify(
                       onOpen: (link) => _launchURL(link.url),
                       options: LinkifyOptions(humanize: false),
                       linkStyle: TextStyle(color: Colors.blue),
