@@ -50,7 +50,7 @@ PODS:
     - Flutter
   - wakelock (0.0.1):
     - Flutter
-  - webview_flutter (0.0.1):
+  - webview_flutter_wkwebview (0.0.1):
     - Flutter
   - wifi_info_flutter (0.0.1):
     - Flutter
@@ -75,7 +75,7 @@ DEPENDENCIES:
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
-  - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
   - wifi_info_flutter (from `.symlinks/plugins/wifi_info_flutter/ios`)
 
 SPEC REPOS:
@@ -124,8 +124,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_player/ios"
   wakelock:
     :path: ".symlinks/plugins/wakelock/ios"
-  webview_flutter:
-    :path: ".symlinks/plugins/webview_flutter/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
   wifi_info_flutter:
     :path: ".symlinks/plugins/wifi_info_flutter/ios"
 
@@ -153,7 +153,7 @@ SPEC CHECKSUMS:
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
-  webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
+  webview_flutter_wkwebview: 005fbd90c888a42c5690919a1527ecc6649e1162
   wifi_info_flutter: 55d4c2469034f5b5c38063ccefa62f708a503a2b
 
 PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea

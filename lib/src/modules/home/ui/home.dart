@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               .split(";")
               .indexOf(item);
         }
-        // print(Globals.newsIndex);
+        // print(Globals.newsIndex);F
         setState(() {});
         return PersistentBottomNavBarItem(
           icon: Row(

@@ -286,19 +286,28 @@ class SocialDescription extends StatelessWidget {
       Container(
         alignment: Alignment.centerLeft,
         child: TranslationWidget(
-          message:
-              "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
-          fromLanguage: "en",
-          toLanguage: language,
-          builder: (translatedMessage) => Html(
-            data: translatedMessage.toString(),
-            // style: Theme.of(context).textTheme.subtitle1!,
-            onLinkTap: (String? url, RenderContext context,
-                Map<String, String> attributes, dom.Element? element) {
-              _launchURL(url, context);
-            },
-          ),
-        ),
+            message:
+                "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+            fromLanguage: "en",
+            toLanguage: language,
+            builder: (translatedMessage) => SelectableHtml(
+                  data: translatedMessage.toString(),
+                  // style: Theme.of(context).textTheme.subtitle1!,
+                  onLinkTap: (String? url, RenderContext context,
+                      Map<String, String> attributes, dom.Element? element) {
+                    _launchURL(url, context);
+                  },
+                )
+
+            // Html(
+            //   data: translatedMessage.toString(),
+            //   // style: Theme.of(context).textTheme.subtitle1!,
+            //   onLinkTap: (String? url, RenderContext context,
+            //       Map<String, String> attributes, dom.Element? element) {
+            //     _launchURL(url, context);
+            //   },
+            // ),
+            ),
       ),
       SpacerWidget(_kPadding),
     ]);

@@ -33,7 +33,7 @@ dependencies:
   flutter_bloc: ^7.0.1
   http:
   equatable: ^2.0.3
-  webview_flutter: 
+  webview_flutter: ^2.5.0
   modal_bottom_sheet: ^2.0.0
   cached_network_image: ^3.0.0
   device_info: ^2.0.2
@@ -52,7 +52,7 @@ dependencies:
   table_calendar: ^3.0.1
   flutter_datetime_picker: ^1.5.1
   html: ^0.15.0
-  flutter_html: ^2.1.5
+  flutter_html: ^2.2.1
   flutter_linkify: ^5.0.2
   advance_pdf_viewer: ^2.0.0
   hive: ^2.0.4
@@ -85,6 +85,7 @@ dependencies:
   # firebase_analytics: ^8.3.3 
   path_provider: ^2.0.6
   flutter_math_fork : ^0.4.2+1
+  invert_colors: ^0.0.4
 
 dev_dependencies:
   flutter_test:

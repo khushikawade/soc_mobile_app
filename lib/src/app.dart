@@ -1,4 +1,3 @@
-import 'package:Soc/school_id_login.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/user/ui/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -30,16 +29,17 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return AdaptiveTheme(
       light: AppTheme.lightTheme,
+      dark: AppTheme.darkTheme,
       initial: AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
-          title: 'Solved',
-          theme: theme,
-          darkTheme: darkTheme,
-          home: StartupPage(),
-          // home: SchoolIDLogin(),
-          ),
+        debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
+        title: 'Solved',
+        theme: theme,
+        darkTheme: darkTheme,
+        home: StartupPage(),
+        // home: SchoolIDLogin(),
+      ),
     );
   }
 }

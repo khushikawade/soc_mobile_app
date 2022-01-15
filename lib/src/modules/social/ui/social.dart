@@ -197,6 +197,7 @@ class _SocialPageState extends State<SocialPage> {
             setState(() {});
           },
         ),
+        
         body: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(

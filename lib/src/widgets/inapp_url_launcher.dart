@@ -29,6 +29,7 @@ class InAppUrlLauncer extends StatefulWidget {
 
 class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   bool? iserrorstate = false;
+  bool isLoading = true;
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
   @override
@@ -71,22 +72,49 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
 
               return connected
                   ? Padding(
-                    padding: const EdgeInsets.only(bottom : 30.0), // To manage web page crop issue together with bottom nav bar.
-                    child: WebView(           
-                      gestureNavigationEnabled:
-                          widget.isiFrame == true ? true : false,
-                      initialUrl: widget.isiFrame == true
-                          ? Uri.dataFromString('${widget.url}',
-                                  mimeType: 'text/html')
-                              .toString()
-                          : '${widget.url}',
-                      javascriptMode: JavascriptMode.unrestricted,
-                      onWebViewCreated:
-                          (WebViewController webViewController) {
-                        _controller.complete(webViewController);
-                      },
-                    ),
-                  )
+                      padding: const EdgeInsets.only(
+                          bottom:
+                              30.0), // To manage web page crop issue together with bottom nav bar.
+                      child: Stack(
+
+                        children: [
+                          WebView(
+                           
+                            backgroundColor: Theme.of(context).backgroundColor,
+                            onProgress: (progress) {
+                              if (progress >= 50) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              }
+                            },
+
+                            // onPageFinished: (finish) {
+                            //   setState(() {
+                            //     isLoading = false;
+                            //   });
+                            // },
+                            gestureNavigationEnabled:
+                                widget.isiFrame == true ? true : false,
+                            initialUrl: widget.isiFrame == true
+                                ? Uri.dataFromString('${widget.url}',
+                                        mimeType: 'text/html')
+                                    .toString()
+                                : '${widget.url}',
+                            javascriptMode: JavascriptMode.unrestricted,
+                            onWebViewCreated:
+                                (WebViewController webViewController) {
+                              _controller.complete(webViewController);
+                            },
+                          ),
+                          isLoading
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Stack(),
+                        ],
+                      ),
+                    )
                   : NoInternetErrorWidget(
                       connected: connected, issplashscreen: false);
             },

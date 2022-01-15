@@ -73,6 +73,7 @@ class _FamilyPageState extends State<FamilyPage> {
                 return
                     // connected?
                     Column(
+                      
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(

@@ -59,7 +59,7 @@ class LanguageSelector {
               left: 10,
               right: 10,
             ),
-            color: Colors.white,
+            // color: Colors.white,
             // (languagesList.indexOf(language) % 2 == 0)
             //     ? Theme.of(context).colorScheme.background
             //     : Theme.of(context).colorScheme.secondary,
@@ -156,6 +156,7 @@ class LanguageSelector {
                 //           SystemUiOverlay.values);
                 return SafeArea(
                     child: Container(
+                  color: Theme.of(context).backgroundColor,
                   height: orientation == Orientation.landscape
                       ? MediaQuery.of(context).size.width * 0.965
                       : MediaQuery.of(context).size.height * 0.60,

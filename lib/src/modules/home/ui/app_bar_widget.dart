@@ -53,6 +53,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget _buildPopupMenuWidget(BuildContext context) {
     final scaffoldKey = Scaffold.of(context);
     return PopupMenuButton<IconMenu>(
+      color: Theme.of(context).backgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
       ),
