@@ -77,10 +77,11 @@ class _SocialPageState extends State<SocialPage> {
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
                         obj: mainObj,
+                        iconsName: [],
                         currentIndex: index,
                         issocialpage: true,
                         isAboutSDPage: false,
-                        isEvent: false,
+                        iseventpage: false,
                         date: '1',
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,

@@ -10,6 +10,27 @@ class FetchNotificationList extends NewsEvent {
   List<Object> get props => [];
 }
 
-class FetchNotificationCount extends NewsEvent {
+class NewsAction extends NewsEvent {
+  final String? notificationId;
+  final String? schoolId;
+  final int? like;
+  final int? thanks;
+  final int? helpful;
+  final int? shared;
+
+  NewsAction(
+      {required this.notificationId,
+      required this.schoolId,
+      this.like,
+      this.thanks,
+      this.helpful,
+      this.shared});
+
+  @override
+  List<Object> get props =>
+      [notificationId!, schoolId!, like!, thanks!, helpful!, shared!];
+}
+
+class FetchActionCountList extends NewsEvent {
   List<Object> get props => [];
 }

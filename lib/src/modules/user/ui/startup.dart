@@ -42,7 +42,7 @@ class _StartupPageState extends State<StartupPage> {
     initPlatformState(context);
     // _loginBloc.add(PerfomLogin());
     _bloc.add(FetchBottomNavigationBar());
-    _newsBloc.add(FetchNotificationCount());
+    // _newsBloc.add(FetchNotificationCount());
     getindexvalue();
     _showcase();
 

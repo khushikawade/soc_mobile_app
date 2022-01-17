@@ -13,9 +13,25 @@ class NotificationList {
   final url;
   @HiveField(4)
   String? image;
-  @HiveField(5)
-  dynamic completedAt; 
+  // double? likeCount;
+  // double? thanksCount;
+  // double? helpfulCount;
+  // double? shareCount;
+  int? likeCount;
+  int? thanksCount;
+  int? helpfulCount;
+  int? shareCount;
+  dynamic completedAt;
 
   NotificationList(
-      {this.id, this.contents, this.headings, this.url, this.image, this.completedAt});
+      {this.id,
+      this.contents,
+      this.headings,
+      this.url,
+      this.image,
+      this.likeCount = 0,
+      this.completedAt,
+      this.thanksCount = 0,
+      this.helpfulCount = 0,
+      this.shareCount = 0});
 }

@@ -49,8 +49,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     setState(() {
       _notification = state;
     });
-    if (_notification == AppLifecycleState.resumed)
-      _newsBloc.add(FetchNotificationCount());
+    // if (_notification == AppLifecycleState.resumed)
+      // _newsBloc.add(FetchNotificationCount());
   }
 
   Widget callNotification() {

@@ -1,18 +1,29 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
+import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
+  SliderWidget({
+    required this.obj,
+    required this.currentIndex,
+    required this.iseventpage,
+    required this.date,
+    required this.isbuttomsheet,
+    required this.language,
+    required this.iconsName,
+    this.issocialpage,
+    this.isAboutSDPage,
+    this.icons,
+  });
   final obj;
   int currentIndex;
   bool? issocialpage;
@@ -20,16 +31,9 @@ class SliderWidget extends StatefulWidget {
   String date;
   bool isbuttomsheet;
   String? language;
-  bool isEvent;
-  SliderWidget(
-      {required this.obj,
-      required this.currentIndex,
-      this.issocialpage,
-      required this.isAboutSDPage,
-      required this.date,
-      required this.isbuttomsheet,
-      required this.language,
-      required this.isEvent});
+  final List? icons;
+  final List? iconsName;
+  final iseventpage;
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -69,11 +73,17 @@ class _SliderWidgetState extends State<SliderWidget> {
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
-          leading: BackButtonWidget(),
-          title: //SizedBox(width: 100.0, height: 60.0, child:
-              AppLogoWidget(
-            marginLeft: 57,
+          leading: BackButtonWidget(
+            isNewsPage:
+                widget.iseventpage == false && widget.issocialpage == false
+                    ? true
+                    : false,
           ),
+          title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            AppLogoWidget(
+              marginLeft: 57,
+            ),
+          ]),
           actions: <Widget>[
             IconButton(
               onPressed: () async {
@@ -96,7 +106,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                 size: Globals.deviceType == "phone" ? 18 : 26,
               ),
             ),
-            HorzitalSpacerWidget(_kPadding / 3),
             IconButton(
               onPressed: () async {
                 // setState(() {});
@@ -154,14 +163,16 @@ class _SliderWidgetState extends State<SliderWidget> {
                       ? AboutSDDetailPage(
                           obj: object[pageinitialIndex],
                         )
-                      : widget.isEvent
+                      : widget.iseventpage
                           ? EventDescription(
                               obj: object[pageinitialIndex],
                               isbuttomsheet: true,
                               language: Globals.selectedLanguage,
                             )
                           : Newdescription(
-                              obj: object[pageinitialIndex],
+                              icons: widget.icons!,
+                              iconsName: widget.iconsName,
+                              obj: object[widget.currentIndex],
                               date: widget.date,
                               isbuttomsheet: true,
                               language: Globals.selectedLanguage,

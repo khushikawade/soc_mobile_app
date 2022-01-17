@@ -7,7 +7,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
-
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -97,19 +96,19 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     return GestureDetector(
        onTap: () {
           // if (widget.isAbout == true) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SliderWidget(
-                        obj: list,
-                        currentIndex: index,
-                        issocialpage: false,
-                        isAboutSDPage: true,
-                        isEvent: false,
-                        date: "",
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )));
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => SliderWidget(
+          //               obj: list,
+          //               currentIndex: index,
+          //               issocialpage: false,
+          //               isAboutSDPage: true,
+          //               iseventpage: false,
+          //               date: "",
+          //               isbuttomsheet: true,
+          //               language: Globals.selectedLanguage,
+          //             )));
           // }
         },
       child: Container(

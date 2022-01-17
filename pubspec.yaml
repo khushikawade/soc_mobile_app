@@ -68,10 +68,11 @@ dependencies:
   shimmer: ^2.0.0
   adaptive_theme: ^2.2.0
   flutter_offline: ^2.0.0
-  flutter_svg: ^0.22.0
+  flutter_svg: ^0.23.0+1
   mailto: ^2.0.0
   marquee: ^2.2.0
   open_apps_settings: ^0.0.4
+  like_button: ^2.0.3
   # app_settings: ^4.1.1
   # bubble_showcase: ^1.1.0
   # bubble_showcase:
@@ -84,7 +85,7 @@ dependencies:
   speech_bubble: ^0.0.9
   # firebase_analytics: ^8.3.3 
   path_provider: ^2.0.6
-  flutter_math_fork : ^0.4.2+1
+  flutter_math_fork: ^0.5.0
 
 dev_dependencies:
   flutter_test:
@@ -111,8 +112,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/locale/localization_en.json
-    - assets/locale/localization_nl.json
+    # - assets/locale/localization_en.json
+    # - assets/locale/localization_nl.json
     - assets/images/
     
 
