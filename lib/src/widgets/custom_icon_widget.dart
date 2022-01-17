@@ -16,7 +16,7 @@ class CustomIconWidget extends StatelessWidget {
                   iconUrl!.contains('the-noun-project-icons') ||
                   iconUrl!.contains('Staff') ||
                   iconUrl!.contains('default_icon')
-              ? Globals.darkTheme == true
+              ? Globals.darkTheme == true || Globals.systemTheme == true
                   ? InvertColors(
                       child: cachedNetworkImage(),
                     )
