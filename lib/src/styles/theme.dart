@@ -413,9 +413,9 @@ class AppTheme {
         ? Utility.getColorFromHex(appSetting.fontColorC!)
         : kBlackColor;
     // Dark colors are define here
-    Color _darkBackground = Color(0xff808080);
-    Color _darkSecondary = Color(0xff4d4d4d);
-    Color _darkBackgroundColor = Color(0xff808080);
+    Color _darkBackground = Color(0xff000000);
+    Color _darkSecondary = Color(0xff181A1C);
+    Color _darkBackgroundColor = Color(0xff000000);
     //4d4d4d
 
     AdaptiveTheme.of(context).setTheme(
@@ -423,11 +423,12 @@ class AppTheme {
               //Primary color
               primaryColor: _primaryColor,
               colorScheme: ColorScheme.light(
-                  onPrimary: _primaryColor,
-                  primary: _primaryColor,
-                  secondary: _secondaryColor,
-                  background: _backgroundColor,
-                  primaryVariant: _fontColor,),
+                onPrimary: _primaryColor,
+                primary: _primaryColor,
+                secondary: _secondaryColor,
+                background: _backgroundColor,
+                primaryVariant: _fontColor,
+              ),
               //Background color
               backgroundColor: _backgroundColor,
               scaffoldBackgroundColor: _backgroundColor,
@@ -582,6 +583,13 @@ class AppTheme {
                   height: 1.2,
                 ),
               ),
+              checkboxTheme: Theme.of(context).checkboxTheme.copyWith(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  side: BorderSide(
+                      width: 1.5, color: Theme.of(context).primaryColor),
+                  splashRadius: 0),
 
               //Text theme ends
             ),
@@ -748,6 +756,13 @@ class AppTheme {
                   height: 1.2,
                 ),
               ),
+              checkboxTheme: Theme.of(context).checkboxTheme.copyWith(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  side: BorderSide(
+                      width: 1.5, color: Theme.of(context).primaryColor),
+                  splashRadius: 0),
 
               //Text theme ends
             ));

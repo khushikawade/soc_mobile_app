@@ -30,7 +30,7 @@ class _AppState extends State<App> {
     return AdaptiveTheme(
       light: AppTheme.lightTheme,
       dark: AppTheme.darkTheme,
-      initial: AdaptiveThemeMode.light,
+      initial: AdaptiveThemeMode.system,
       builder: (theme, darkTheme) => MaterialApp(
         debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,

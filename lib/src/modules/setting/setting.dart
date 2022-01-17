@@ -21,6 +21,7 @@ import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../globals.dart';
+import 'select_theme.dart';
 
 class SettingPage extends StatefulWidget {
   final bool isbuttomsheet;
@@ -261,30 +262,30 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Widget _buildThemeMode() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          padding:
-              EdgeInsets.symmetric(horizontal: 0, vertical: _kLabelSpacing / 2),
-          child: TranslationWidget(
-            message: "Enable Dark Theme",
-            fromLanguage: "en",
-            toLanguage: Globals.selectedLanguage,
-            builder: (translatedMessage) => Padding(
-              padding: const EdgeInsets.only(left: _kLabelSpacing),
-              child: Text(translatedMessage.toString(),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline2!),
-            ),
-          ),
-        ),
-        _buildSwitchTheme(),
-      ],
-    );
-  }
+  // Widget _buildThemeMode() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     children: [
+  //       Container(
+  //         padding:
+  //             EdgeInsets.symmetric(horizontal: 0, vertical: _kLabelSpacing / 2),
+  //         child: TranslationWidget(
+  //           message: "Enable Dark Theme",
+  //           fromLanguage: "en",
+  //           toLanguage: Globals.selectedLanguage,
+  //           builder: (translatedMessage) => Padding(
+  //             padding: const EdgeInsets.only(left: _kLabelSpacing),
+  //             child: Text(translatedMessage.toString(),
+  //                 textAlign: TextAlign.center,
+  //                 style: Theme.of(context).textTheme.headline2!),
+  //           ),
+  //         ),
+  //       ),
+  //       _buildSwitchTheme(),
+  //     ],
+  //   );
+  // }
 
   Widget _buildLicence() {
     return InkWell(
@@ -307,6 +308,28 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
+  Widget _buildThemeMode() {
+    return InkWell(
+      onTap: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return SelectTheme();
+            });
+      },
+      child: Container(
+          padding: EdgeInsets.all(16),
+          child: TranslationWidget(
+              message: "Theme",
+              fromLanguage: "en",
+              toLanguage: Globals.selectedLanguage,
+              builder: (translatedMessage) => Text(
+                    translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.headline2!,
+                  ))),
+    );
+  }
+
   Widget _appVersion() {
     return Container(
         padding: EdgeInsets.all(16),
@@ -320,9 +343,10 @@ class _SettingPageState extends State<SettingPage> {
     return ListView(padding: const EdgeInsets.only(bottom: 25.0), children: [
       _buildHeading("Push Notifcation"),
       _buildNotification(),
-      _buildHeading('Theme setting'),
-      _buildSystemThemeMode(),
+      _buildHeading('Display Setting'),
       _buildThemeMode(),
+      // _buildSystemThemeMode(),
+      // _buildThemeMode(),
       _buildHeading("Acknowledgements"),
       _buildLicence(),
       _buildHeading("App Version"),
