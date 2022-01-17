@@ -95,21 +95,22 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   Widget listItem(list, obj, index) {
     return GestureDetector(
        onTap: () {
-          // if (widget.isAbout == true) {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => SliderWidget(
-          //               obj: list,
-          //               currentIndex: index,
-          //               issocialpage: false,
-          //               isAboutSDPage: true,
-          //               iseventpage: false,
-          //               date: "",
-          //               isbuttomsheet: true,
-          //               language: Globals.selectedLanguage,
-          //             )));
-          // }
+          if (widget.isAbout == true) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SliderWidget(
+                        iconsName: [],
+                        obj: list,
+                        currentIndex: index,
+                        issocialpage: false,
+                        isAboutSDPage: true,
+                        iseventpage: false,
+                        date: "",
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )));
+          }
         },
       child: Container(
         margin: EdgeInsets.symmetric(

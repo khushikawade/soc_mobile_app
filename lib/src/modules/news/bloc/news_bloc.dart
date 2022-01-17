@@ -27,17 +27,17 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Stream<NewsState> mapEventToState(
     NewsEvent event,
   ) async* {
-    // if (event is FetchNotificationCount) {
-    //   try {
-    //     yield NewsLoading();
-    //     List<NotificationList> _list = await fetchNotificationList();
-    //     yield NewsLoaded(
-    //       obj: _list,
-    //     );
-    //   } catch (e) {
-    //     yield NewsErrorReceived(err: e);
-    //   }
-    // }
+    if (event is FetchNotificationList) {
+      try {
+        yield NewsLoading();
+        List<NotificationList> _list = await fetchNotificationList();
+        yield NewsLoaded(
+          obj: _list,
+        );
+      } catch (e) {
+        yield NewsErrorReceived(err: e);
+      }
+    }
     
     if (event is FetchNotificationList) {
       try {
