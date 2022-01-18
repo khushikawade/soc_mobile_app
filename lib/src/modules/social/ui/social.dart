@@ -144,43 +144,44 @@ class _SocialPageState extends State<SocialPage> {
                             }),
                       )
                     : Container(),
-                subtitle: BlocListener<NewsBloc, NewsState>(
-                    bloc: _newsBloc,
-                    listener: (context, state) async {
-                      if (state is NewsLoaded) {
-                        isCountLoading = false;
-                        newsMainList.clear();
-                        // if (state.obj!.length == 0) {
-                        newsMainList.addAll(state.obj!);
-                        // setState(() {});
-                        // } else {
-                        for (int i = 0; i < state.obj!.length; i++) {
-                          //   for (int j = 0; j < state.obj!.length; j++) {
-                          //     if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
-                          //         state.obj[j].notificationId) {
-                          newsMainList.add(NotificationList(
-                              id: state.obj![0].id,
-                              contents: state.obj![0].contents, //obj.contents,
-                              headings: state.obj![0].headings, //obj.headings,
-                              image: state.obj![0].image, //obj.image,
-                              url: state.obj![0].url, //obj.url,
-                              likeCount: 0, //state.obj[j].likeCount,
-                              thanksCount: 0, //state.obj[j].thanksCount,
-                              helpfulCount: 0, //state.obj[j].helpfulCount,
-                              shareCount: 0)); //state.obj[j].shareCount));
-                          setState(() {});
-                        }
-                      }
-                    },
-                    // }
-                    child: Container(
-                      padding: EdgeInsets.only(top: 16),
-                      child: NewsActionBasic(
-                          newsObj: newsMainList[index],
-                          icons: icons,
-                          iconsName: iconsName,
-                          isLoading: isCountLoading),
-                    )))));
+                // subtitle: BlocListener<NewsBloc, NewsState>(
+                //     bloc: _newsBloc,
+                //     listener: (context, state) async {
+                //       if (state is NewsLoaded) {
+                //         isCountLoading = false;
+                //         newsMainList.clear();
+                //         // if (state.obj!.length == 0) {
+                //         newsMainList.addAll(state.obj!);
+                //         // setState(() {});
+                //         // } else {
+                //         for (int i = 0; i < state.obj!.length; i++) {
+                //           //   for (int j = 0; j < state.obj!.length; j++) {
+                //           //     if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
+                //           //         state.obj[j].notificationId) {
+                //           newsMainList.add(NotificationList(
+                //               id: state.obj![0].id,
+                //               contents: state.obj![0].contents, //obj.contents,
+                //               headings: state.obj![0].headings, //obj.headings,
+                //               image: state.obj![0].image, //obj.image,
+                //               url: state.obj![0].url, //obj.url,
+                //               likeCount: 0, //state.obj[j].likeCount,
+                //               thanksCount: 0, //state.obj[j].thanksCount,
+                //               helpfulCount: 0, //state.obj[j].helpfulCount,
+                //               shareCount: 0)); //state.obj[j].shareCount));
+                //           setState(() {});
+                //         }
+                //       }
+                //     },
+                //     // }
+                //     child: Container(
+                //       padding: EdgeInsets.only(top: 16),
+                //       child: NewsActionBasic(
+                //           newsObj: newsMainList[index],
+                //           icons: icons,
+                //           iconsName: iconsName,
+                //           isLoading: isCountLoading),
+                //     ))
+                )));
   }
 
   Widget makeList(obj) {
