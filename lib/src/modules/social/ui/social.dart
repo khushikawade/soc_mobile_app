@@ -168,7 +168,6 @@ class _SocialPageState extends State<SocialPage> {
                               thanksCount: 0, //state.obj[j].thanksCount,
                               helpfulCount: 0, //state.obj[j].helpfulCount,
                               shareCount: 0)); //state.obj[j].shareCount));
-
                           setState(() {});
                         }
                       }
