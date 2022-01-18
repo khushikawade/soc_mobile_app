@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ class SelectTheme extends StatefulWidget {
   State<StatefulWidget> createState() => SelectThemeState();
 }
 
+HiveDbServices _hiveDbServices = HiveDbServices();
+
 bool _systemDefault = true;
 bool _light = false;
 bool _dark = false;
@@ -22,6 +25,21 @@ class SelectThemeState extends State<SelectTheme>
   @override
   void initState() {
     super.initState();
+    if (Globals.themeType == 'System') {
+      _systemDefault = true;
+      _light = false;
+      _dark = false;
+    }
+    if (Globals.themeType == 'Light') {
+      _systemDefault = false;
+      _light = true;
+      _dark = false;
+    }
+    if (Globals.themeType == 'Dark') {
+      _systemDefault = false;
+      _light = false;
+      _dark = true;
+    }
   }
 
   @override
@@ -103,9 +121,9 @@ class SelectThemeState extends State<SelectTheme>
                                   AdaptiveTheme.of(context).setSystem();
                                 } else if (_light == true || _dark == true) {
                                   _systemDefault = value!;
-                                } else {
-                                  errorSnakbar();
                                 }
+
+                                Globals.themeType = 'System';
                               });
                             },
                           ),
@@ -119,7 +137,6 @@ class SelectThemeState extends State<SelectTheme>
                             isThreeLine: false,
                             title: headingText('Light'),
                             value: _light,
-                            
                             onChanged: (value) {
                               setState(() {
                                 if (value == true) {
@@ -130,38 +147,9 @@ class SelectThemeState extends State<SelectTheme>
                                 } else if (_systemDefault == true ||
                                     _dark == true) {
                                   _light = value!;
-                                } else {
-                                  final scaffoldKey = Scaffold.of(context);
-                                  // ignore: deprecated_member_use
-                                  scaffoldKey.showSnackBar(
-                                    SnackBar(
-                                      content: Container(
-                                        alignment: Alignment.centerLeft,
-                                        height: 40,
-                                        child: Text(
-                                          'Mode is already selected',
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                      behavior: SnackBarBehavior.floating,
-                                      margin: EdgeInsets.only(
-                                          left: 16,
-                                          right: 16,
-                                          bottom: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.08),
-                                      padding: EdgeInsets.only(
-                                        left: 16,
-                                      ),
-                                      backgroundColor:
-                                          Colors.black.withOpacity(0.8),
-                                    ),
-                                  );
-                                }
+                                } else {}
+
+                                Globals.themeType = 'Light';
                               });
                             },
                           ),
@@ -190,6 +178,8 @@ class SelectThemeState extends State<SelectTheme>
                                       _light == true) {
                                     _dark = value!;
                                   }
+
+                                  Globals.themeType = 'Dark';
                                 });
                               },
                             ),

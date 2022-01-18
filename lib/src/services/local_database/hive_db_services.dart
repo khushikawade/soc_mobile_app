@@ -78,7 +78,7 @@ class HiveDbServices {
     }
   }
 
-   Future<bool> clearAll(String tableName) async {
+  Future<bool> clearAll(String tableName) async {
     try {
       final hiveBox = await Hive.openBox(tableName);
       await hiveBox.clear();
@@ -87,4 +87,5 @@ class HiveDbServices {
       throw (e);
     }
   }
+
 }

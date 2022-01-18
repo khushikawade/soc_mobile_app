@@ -48,4 +48,5 @@ class Globals {
   static int? socialImageIndex = 0;
   static bool? darkTheme;
   static bool? systemTheme;
+  static String? themeType;
 }

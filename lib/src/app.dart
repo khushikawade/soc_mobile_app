@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/user/ui/startup.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,10 +14,12 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
+  HiveDbServices _hiveDbServices = HiveDbServices();
 
   @override
-  void initState() {
+  initState() {
     super.initState();
+    
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -42,4 +45,6 @@ class _AppState extends State<App> {
       ),
     );
   }
+
+ 
 }
