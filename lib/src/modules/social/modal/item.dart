@@ -23,6 +23,19 @@ class Item {
   @HiveField(8)
   final enclosure;
 
+
+  int? likeCount;
+  int? thanksCount;
+  int? helpfulCount;
+  int? shareCount;
+  dynamic completedAt;
+
+
+
+
+
+
+
   Item(
       {this.title,
       this.description,
@@ -32,5 +45,11 @@ class Item {
       this.pubDate,
       this.content,
       this.mediaContent,
-      this.enclosure});
+      this.enclosure,
+       this.likeCount = 0,
+      this.completedAt,
+      this.thanksCount = 0,
+      this.helpfulCount = 0,
+      this.shareCount = 0
+      });
 }

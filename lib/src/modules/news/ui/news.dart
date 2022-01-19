@@ -127,6 +127,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                               )));
 
                   if (result == true) {
+
                     _countBloc.add(FetchActionCountList());
                   }
                 }
@@ -208,6 +209,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     return Container(
                       // alignment: Alignment.centerLeft,
                       child: NewsActionBasic(
+                          page: "news",
                           newsObj: newsMainList[index],
                           icons: icons,
                           iconsName: iconsName,
@@ -219,6 +221,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                       child: ShimmerLoading(
                           isLoading: true,
                           child: NewsActionBasic(
+                              page: "news",
                               newsObj: newsMainList[index],
                               icons: icons,
                               iconsName: iconsName,
@@ -236,6 +239,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 child: ShimmerLoading(
                     isLoading: true,
                     child: NewsActionBasic(
+                          page: "news",
                         newsObj: obj,
                         icons: icons,
                         iconsName: iconsName,
@@ -291,6 +295,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 child: ShimmerLoading(
                     isLoading: true,
                     child: NewsActionBasic(
+                          page: "news",
                         newsObj: obj,
                         icons: icons,
                         iconsName: iconsName,
@@ -316,8 +321,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         child: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
-            ? 
-            TranslationWidget(
+            ? TranslationWidget(
                 message: obj.headings!.length > 0 &&
                         obj.headings != "" &&
                         obj.headings != null

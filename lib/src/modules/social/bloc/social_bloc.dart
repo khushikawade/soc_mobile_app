@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/modules/social/modal/social_action_count_list.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,6 +56,37 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         // yield SocialError(err: e);
       }
     }
+    if (event is FetchActionSocailCountList) {
+      try {
+        yield Loading();
+        List<SocialActionCountList> list = await fetchSocialActionCount();
+        yield SocialActionCountSuccess(obj: list);
+      } catch (e) {
+        print(e);
+        yield SocialErrorReceived(err: e);
+      }
+    }
+
+    if (event is SocialAction) {
+      try {
+        yield Loading();
+
+        var data = await addSocailAction({
+          "id": "${event.guid}${event.pubDate}",
+
+          // "School_App_ID__c": event.schoolId,
+          "like": event.like,
+          "thanks": event.thanks,
+          "helpful": event.helpful,
+          "share": event.shared,
+        });
+        yield SocialActionSuccess(
+          obj: data,
+        );
+      } catch (e) {
+        yield SocialErrorReceived(err: e);
+      }
+    }
   }
 
   Future getEventDetails() async {
@@ -80,6 +113,58 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             mediaContent: i['media\$content'] ?? '',
           );
         }).toList();
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<SocialActionCountList>> fetchSocialActionCount() async {
+    try {
+      // final ResponseModel response = await _dbServices.getapi(
+      //     "query/?q=${Uri.encodeComponent("SELECT Name,School_App__c, Total_helpful__c, Total_Likes__c, Total_Thanks__c, Total__c FROM Total_News_Interaction__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+
+      var response = await http.get(
+        Uri.parse(
+            'https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/getSocialAction?schoolId=${Overrides.SCHOOL_ID}'),
+      );
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        //data["records"];
+
+        return data["body"]["Items"]
+            .map<SocialActionCountList>(
+                (i) => SocialActionCountList.fromJson(i))
+            .toList();
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future addSocailAction(body) async {
+    try {
+      // final ResponseModel response = await _dbServices
+      //     .postapi("sobjects/News_Interactions__c", body: body);
+
+      final response = await http.post(
+        Uri.parse(
+            'https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/addSocialAction?schoolId=${Overrides.SCHOOL_ID}'),
+        body: json.encode(body),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept-Language': 'Accept-Language',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var res = json.decode(response.body);
+        var data = res["statusCode"];
+        return data;
       } else {
         throw ('something_went_wrong');
       }

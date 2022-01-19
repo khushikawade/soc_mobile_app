@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
@@ -16,19 +17,22 @@ class NewsActionBasic extends StatefulWidget {
       required this.newsObj,
       required this.icons,
       this.isLoading,
+      required this.page,
       required this.iconsName})
       : super(key: key);
 
-  final NotificationList newsObj;
+  final newsObj;
   final List? icons;
   final List? iconsName;
   final bool? isLoading;
+  String page;
 
   _NewsActionBasicState createState() => _NewsActionBasicState();
 }
 
 class _NewsActionBasicState extends State<NewsActionBasic> {
-  NewsBloc bloc = new NewsBloc();
+  NewsBloc _newsBloc = new NewsBloc();
+  SocialBloc _socialbBloc = SocialBloc();
   final ValueNotifier<int> like = ValueNotifier<int>(0);
   final ValueNotifier<int> thanks = ValueNotifier<int>(0);
   final ValueNotifier<int> helpful = ValueNotifier<int>(0);
@@ -198,14 +202,26 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
             : index == 2
                 ? widget.newsObj.helpfulCount = helpful.value
                 : widget.newsObj.shareCount = share.value;
+    if (widget.page == "news") {
+      _newsBloc.add(NewsAction(
+          notificationId: widget.newsObj.id,
+          schoolId: Overrides.SCHOOL_ID,
+          like: index == 0 ? 1 : 0,
+          thanks: index == 1 ? 1 : 0,
+          helpful: index == 2 ? 1 : 0,
+          shared: index == 3 ? 1 : 0));
+    } else if (widget.page == "social") {
+      print(widget.newsObj.guid["\$t"]);
+      print(widget.newsObj.pubDate["\$t"]);
+      _socialbBloc.add(SocialAction(
+          guid: widget.newsObj.guid["\$t"],
+          pubDate: widget.newsObj.pubDate["\$t"],
+          like: index == 0 ? 1 : 0,
+          thanks: index == 1 ? 1 : 0,
+          helpful: index == 2 ? 1 : 0,
+          shared: index == 3 ? 1 : 0));
+    }
 
-    bloc.add(NewsAction(
-        notificationId: widget.newsObj.id,
-        schoolId: Overrides.SCHOOL_ID,
-        like: index == 0 ? 1 : 0,
-        thanks: index == 1 ? 1 : 0,
-        helpful: index == 2 ? 1 : 0,
-        shared: index == 3 ? 1 : 0));
     return isliked;
   }
 
@@ -311,7 +327,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   Widget _likeCount(index) {
     return ValueListenableBuilder(
       builder: (BuildContext context, dynamic value, Widget? child) {
-        return Text(
+        return //Text("");
+            Text(
           index == 0
               ? (like.value != 0.0
                   ? f.format(like.value).toString().split('.')[0]

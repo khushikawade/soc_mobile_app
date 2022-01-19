@@ -1,10 +1,11 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
-import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+//import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/news_action_basic.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -40,8 +41,8 @@ class _SocialPageState extends State<SocialPage> {
   SocialBloc bloc = SocialBloc();
   List newsMainList = [];
   bool? isCountLoading = true;
-  NewsBloc _countBloc = new NewsBloc();
-  NewsBloc _newsBloc = new NewsBloc();
+  SocialBloc _countSocialBloc = new SocialBloc();
+//  NewsBloc _newsBloc = new NewsBloc();
   List icons = [0xe823, 0xe824, 0xe825, 0xe829];
   List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   // GlobalKey _imgkey = GlobalKey();
@@ -49,7 +50,7 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
-    _newsBloc.add(FetchNotificationList());
+    _countSocialBloc.add(FetchActionSocailCountList());
   }
 
   @override
@@ -61,6 +62,7 @@ class _SocialPageState extends State<SocialPage> {
     refreshKey.currentState?.show(atTop: false);
     bloc.add(SocialPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());
+      _countSocialBloc.add(FetchActionSocailCountList());
   }
 
   Widget _buildlist(obj, int index, mainObj) {
@@ -98,89 +100,95 @@ class _SocialPageState extends State<SocialPage> {
                             isbuttomsheet: true,
                             language: Globals.selectedLanguage,
                           )));
+              _countSocialBloc.add(FetchActionSocailCountList());
             },
             child: ListTile(
-                contentPadding: EdgeInsets.only(left: 0),
-                leading: Container(
-                    child: (CommonImageWidget(
-                  iconUrl: (obj.enclosure != null &&
-                          obj.enclosure != '' &&
-                          obj.enclosure['url'] != null &&
-                          obj.enclosure['url'] != "")
-                      ? obj.enclosure['url']
-                      : (imageLink != null && imageLink != "")
-                          ? imageLink
-                          : Globals.splashImageUrl ??
-                              Globals.homeObject["App_Logo__c"],
-                  height: Globals.deviceType == "phone"
-                      ? _kIconSize * 1.4
-                      : _kIconSize * 2,
-                  width: Globals.deviceType == "phone"
-                      ? _kIconSize * 1.4
-                      : _kIconSize * 2,
-                  fitMethod: BoxFit.cover,
-                ))),
-                title: obj.title["__cdata"] != null &&
-                        obj.title["__cdata"].length > 1
-                    ? Container(
-                        width: MediaQuery.of(context).size.width * 0.69,
-                        child: TranslationWidget(
-                            message:
-                                "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) {
-                              return Text(translatedMessage.toString(),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline2!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant,
-                                      ));
-                            }),
-                      )
-                    : Container(),
-                subtitle: BlocListener<NewsBloc, NewsState>(
-                    bloc: _newsBloc,
-                    listener: (context, state) async {
-                      if (state is NewsLoaded) {
-                        isCountLoading = false;
-                        newsMainList.clear();
-                        // if (state.obj!.length == 0) {
-                        newsMainList.addAll(state.obj!);
-                        // setState(() {});
-                        // } else {
-                        for (int i = 0; i < state.obj!.length; i++) {
-                          //   for (int j = 0; j < state.obj!.length; j++) {
-                          //     if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
-                          //         state.obj[j].notificationId) {
-                          newsMainList.add(NotificationList(
-                              id: state.obj![0].id,
-                              contents: state.obj![0].contents, //obj.contents,
-                              headings: state.obj![0].headings, //obj.headings,
-                              image: state.obj![0].image, //obj.image,
-                              url: state.obj![0].url, //obj.url,
-                              likeCount: 0, //state.obj[j].likeCount,
-                              thanksCount: 0, //state.obj[j].thanksCount,
-                              helpfulCount: 0, //state.obj[j].helpfulCount,
-                              shareCount: 0)); //state.obj[j].shareCount));
-                          setState(() {});
-                        }
-                      }
-                    },
-                    // }
-                    child: Container(
-                      padding: EdgeInsets.only(top: 16),
-                      child: NewsActionBasic(
-                          newsObj: newsMainList[index],
-                          icons: icons,
-                          iconsName: iconsName,
-                          isLoading: isCountLoading),
-                    )))));
+              contentPadding: EdgeInsets.only(left: 0),
+              leading: Container(
+                  child: (CommonImageWidget(
+                iconUrl: (obj.enclosure != null &&
+                        obj.enclosure != '' &&
+                        obj.enclosure['url'] != null &&
+                        obj.enclosure['url'] != "")
+                    ? obj.enclosure['url']
+                    : (imageLink != null && imageLink != "")
+                        ? imageLink
+                        : Globals.splashImageUrl ??
+                            Globals.homeObject["App_Logo__c"],
+                height: Globals.deviceType == "phone"
+                    ? _kIconSize * 1.4
+                    : _kIconSize * 2,
+                width: Globals.deviceType == "phone"
+                    ? _kIconSize * 1.4
+                    : _kIconSize * 2,
+                fitMethod: BoxFit.cover,
+              ))),
+              title: obj.title["__cdata"] != null &&
+                      obj.title["__cdata"].length > 1
+                  ? Container(
+                      width: MediaQuery.of(context).size.width * 0.69,
+                      child: TranslationWidget(
+                          message:
+                              "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage.toString(),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    ));
+                          }),
+                    )
+                  : Container(),
+              subtitle: actionButton(mainObj, obj, index),
+              // subtitle: BlocListener<NewsBloc, NewsState>(
+              //     bloc: _newsBloc,
+              //     listener: (context, state) async {
+              //       if (state is NewsLoaded) {
+              //         isCountLoading = false;
+              //         newsMainList.clear();
+              //         // if (state.obj!.length == 0) {
+              //           print(state.obj!);
+              //         newsMainList.addAll(state.obj!);
+              //         // setState(() {});
+              //         // } else {
+              //         for (int i = 0; i < state.obj!.length; i++) {
+              //           //   for (int j = 0; j < state.obj!.length; j++) {
+              //           //     if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
+              //           //         state.obj[j].notificationId) {
+              //           newsMainList.add(NotificationList(
+              //               id: state.obj![0].id,
+              //               contents: state.obj![0].contents, //obj.contents,
+              //               headings: state.obj![0].headings, //obj.headings,
+              //               image: state.obj![0].image, //obj.image,
+              //               url: state.obj![0].url, //obj.url,
+              //               likeCount: 0, //state.obj[j].likeCount,
+              //               thanksCount: 0, //state.obj[j].thanksCount,
+              //               helpfulCount: 0, //state.obj[j].helpfulCount,
+              //               shareCount: 0)); //state.obj[j].shareCount));
+              //           setState(() {});
+              //         }
+              //       }
+              //     },
+              //     // }
+              //     child: Container()
+              //     //  Container(
+              //     //   padding: EdgeInsets.only(top: 16),
+              //     //   child: NewsActionBasic(
+              //     //       newsObj: newsMainList[index],
+              //     //       icons: icons,
+              //     //       iconsName: iconsName,
+              //     //       isLoading: isCountLoading),
+              //     // )
+              //     )
+            )));
   }
 
   Widget makeList(obj) {
@@ -295,5 +303,147 @@ class _SocialPageState extends State<SocialPage> {
               child: Container()),
           onRefresh: refreshPage,
         ));
+  }
+
+  Widget actionButton(List<Item> list, obj, int index) {
+    return Column(
+      children: [
+        newsMainList.length > 0
+            ? BlocBuilder(
+                bloc: _countSocialBloc,
+                builder: (BuildContext context, SocialState state) {
+                  if (state is SocialActionCountSuccess) {
+                    isCountLoading = false;
+                    return Container(
+                      // alignment: Alignment.centerLeft,
+                      child: NewsActionBasic(
+                          page: "social",
+                          newsObj: newsMainList[index],
+                          icons: icons,
+                          iconsName: iconsName,
+                          isLoading: isCountLoading),
+                    );
+                  } else if (state is Loading) {
+                    return Container(
+                      alignment: Alignment.centerLeft,
+                      child: ShimmerLoading(
+                          isLoading: true,
+                          child: NewsActionBasic(
+                              page: "social",
+                              newsObj: newsMainList[index],
+                              icons: icons,
+                              iconsName: iconsName,
+                              isLoading: isCountLoading)),
+                    );
+                  } else if (state is SocialErrorReceived) {
+                    return ListView(
+                        shrinkWrap: true, children: [ErrorMsgWidget()]);
+                  } else {
+                    return Container();
+                  }
+                })
+            : Container(
+                alignment: Alignment.centerLeft,
+                child: ShimmerLoading(
+                    isLoading: true,
+                    child: NewsActionBasic(
+                        newsObj: obj,
+                        page: "social",
+                        icons: icons,
+                        iconsName: iconsName,
+                        isLoading: isCountLoading)),
+              ),
+        BlocListener(
+          bloc: _countSocialBloc,
+          listener: (BuildContext context, SocialState state) {
+            if (state is SocialActionCountSuccess) {
+              isCountLoading = false;
+              newsMainList.clear();
+              if (state.obj!.length == 0) {
+                newsMainList.addAll(list);
+                setState(() {});
+              } else {
+                for (int i = 0; i < list.length; i++) {
+                  for (int j = 0; j < state.obj!.length; j++) {
+                    if ("${list[i].guid["\$t"]}${list[i].pubDate["\$t"]}" ==
+                        state.obj[j].socialId) {
+                      newsMainList.add(Item(
+                        title: list[i].title,
+                        description: list[i].description,
+                        link: list[i].link,
+                        guid: list[i].guid,
+                        creator: list[i].creator,
+                        pubDate: list[i].pubDate,
+                        content: list[i].content,
+                        mediaContent: list[i].mediaContent,
+                        enclosure: list[i].enclosure,
+                      )
+
+                          // NotificationList(
+                          //   id: list[i].id,
+                          //   contents: list[i].contents, //obj.contents,
+                          //   headings: list[i].headings, //obj.headings,
+                          //   image: list[i].image, //obj.image,
+                          //   url: list[i].url, //obj.url,
+                          //   likeCount: state.obj[j].likeCount,
+                          //   thanksCount: state.obj[j].thanksCount,
+                          //   helpfulCount: state.obj[j].helpfulCount,
+                          //   shareCount: state.obj[j].shareCount
+                          //   )
+                          );
+                      break;
+                    }
+
+                    if (state.obj!.length - 1 == j) {
+                      newsMainList.add(Item(
+                        title: list[i].title,
+                        description: list[i].description,
+                        link: list[i].link,
+                        guid: list[i].guid,
+                        creator: list[i].creator,
+                        pubDate: list[i].pubDate,
+                        content: list[i].content,
+                        mediaContent: list[i].mediaContent,
+                        enclosure: list[i].enclosure,
+                      ));
+
+                      // newsMainList.add(NotificationList(
+                      //     id: list[i].id,
+                      //     contents: list[i].contents, //obj.contents,
+                      //     headings: list[i].headings, //obj.headings,
+                      //     image: list[i].image, //obj.image,
+                      //     url: list[i].url, //obj.url,
+                      //     likeCount: 0,
+                      //     thanksCount: 0,
+                      //     helpfulCount: 0,
+                      //     shareCount: 0));
+                    }
+                  }
+
+                  setState(() {});
+                }
+              }
+            } else if (state is Loading) {
+              Container(
+                alignment: Alignment.centerLeft,
+                child: ShimmerLoading(
+                    isLoading: true,
+                    child: NewsActionBasic(
+                        page: "social",
+                        newsObj: obj,
+                        icons: icons,
+                        iconsName: iconsName,
+                        isLoading: isCountLoading)),
+              );
+            } else if (state is SocialErrorReceived) {
+              ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+            } else {
+              Container();
+            }
+          },
+          child: Container(),
+        ),
+      ],
+    );
   }
 }

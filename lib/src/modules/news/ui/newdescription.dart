@@ -212,6 +212,7 @@ class _NewdescriptionState extends State<Newdescription> {
         ),
         SpacerWidget(AppTheme.kBodyPadding),
         NewsActionBasic(
+          page: "news",
           newsObj: widget.obj,
           icons: widget.icons,
           iconsName: widget.iconsName,
