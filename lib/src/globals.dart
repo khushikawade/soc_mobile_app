@@ -2,6 +2,8 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'modules/news/model/notification_list.dart';
+
 class Globals {
   static var iosInfo;
   static var androidInfo;
@@ -46,4 +48,5 @@ class Globals {
       GlobalKey<ScaffoldMessengerState>();
   static int? navIndex = 0;
   static int? socialImageIndex=0;
+  static List<NotificationList> notificationList = [];
 }

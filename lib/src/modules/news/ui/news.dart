@@ -199,8 +199,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       List<NotificationList> list, NotificationList obj, int index) {
     return Column(
       children: [
-        newsMainList.length > 0
-            ? BlocBuilder(
+        // newsMainList.length > 0
+        //     ? 
+            BlocBuilder(
                 bloc: _countBloc,
                 builder: (BuildContext context, NewsState state) {
                   if (state is ActionCountSuccess) {
@@ -208,7 +209,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     return Container(
                       // alignment: Alignment.centerLeft,
                       child: NewsActionBasic(
-                          newsObj: newsMainList[index],
+                          newsObj: state.obj[index],
                           icons: icons,
                           iconsName: iconsName,
                           isLoading: isCountLoading),
@@ -219,7 +220,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                       child: ShimmerLoading(
                           isLoading: true,
                           child: NewsActionBasic(
-                              newsObj: newsMainList[index],
+                              newsObj: Globals.notificationList[index],
                               icons: icons,
                               iconsName: iconsName,
                               isLoading: isCountLoading)),
@@ -230,80 +231,82 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   } else {
                     return Container();
                   }
-                })
-            : Container(
-                alignment: Alignment.centerLeft,
-                child: ShimmerLoading(
-                    isLoading: true,
-                    child: NewsActionBasic(
-                        newsObj: obj,
-                        icons: icons,
-                        iconsName: iconsName,
-                        isLoading: isCountLoading)),
-              ),
-        BlocListener(
-          bloc: _countBloc,
-          listener: (BuildContext context, NewsState state) {
-            if (state is ActionCountSuccess) {
-              isCountLoading = false;
-              newsMainList.clear();
-              if (state.obj!.length == 0) {
-                newsMainList.addAll(list);
-                setState(() {});
-              } else {
-                for (int i = 0; i < list.length; i++) {
-                  for (int j = 0; j < state.obj!.length; j++) {
-                    if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
-                        state.obj[j].notificationId) {
-                      newsMainList.add(NotificationList(
-                          id: list[i].id,
-                          contents: list[i].contents, //obj.contents,
-                          headings: list[i].headings, //obj.headings,
-                          image: list[i].image, //obj.image,
-                          url: list[i].url, //obj.url,
-                          likeCount: state.obj[j].likeCount,
-                          thanksCount: state.obj[j].thanksCount,
-                          helpfulCount: state.obj[j].helpfulCount,
-                          shareCount: state.obj[j].shareCount));
-                      break;
-                    }
+                }),
+            // : Container(
+            //     alignment: Alignment.centerLeft,
+            //     child: ShimmerLoading(
+            //         isLoading: true,
+            //         child: NewsActionBasic(
+            //             newsObj: obj,
+            //             icons: icons,
+            //             iconsName: iconsName,
+            //             isLoading: isCountLoading)),
+            //   ),
+        // BlocListener(
+        //   bloc: _countBloc,
+        //   listener: (BuildContext context, NewsState state) {
+        //     if (state is ActionCountSuccess) {
+        //       isCountLoading = false;
+        //       newsMainList.clear();
+        //       if (state.obj!.length == 0) {
+        //         newsMainList.addAll(list);
+        //         setState(() {});
+        //       } else {
+        //         for (int i = 0; i < list.length; i++) {
+        //           for (int j = 0; j < state.obj!.length; j++) {
+        //             if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
+        //                 state.obj[j].notificationId) {
+        //               newsMainList.add(NotificationList(
+        //                   id: list[i].id,
+        //                   contents: list[i].contents, //obj.contents,
+        //                   headings: list[i].headings, //obj.headings,
+        //                   image: list[i].image, //obj.image,
+        //                   url: list[i].url, //obj.url,
+        //                   likeCount: state.obj[j].likeCount,
+        //                   thanksCount: state.obj[j].thanksCount,
+        //                   helpfulCount: state.obj[j].helpfulCount,
+        //                   shareCount: state.obj[j].shareCount));
+        //               break;
+        //             }
 
-                    if (state.obj!.length - 1 == j) {
-                      newsMainList.add(NotificationList(
-                          id: list[i].id,
-                          contents: list[i].contents, //obj.contents,
-                          headings: list[i].headings, //obj.headings,
-                          image: list[i].image, //obj.image,
-                          url: list[i].url, //obj.url,
-                          likeCount: 0,
-                          thanksCount: 0,
-                          helpfulCount: 0,
-                          shareCount: 0));
-                    }
-                  }
+        //             if (state.obj!.length - 1 == j) {
+        //               newsMainList.add(NotificationList(
+        //                   id: list[i].id,
+        //                   contents: list[i].contents, //obj.contents,
+        //                   headings: list[i].headings, //obj.headings,
+        //                   image: list[i].image, //obj.image,
+        //                   url: list[i].url, //obj.url,
+        //                   likeCount: 0,
+        //                   thanksCount: 0,
+        //                   helpfulCount: 0,
+        //                   shareCount: 0));
+        //             }
+        //           }
 
-                  setState(() {});
-                }
-              }
-            } else if (state is NewsLoading) {
-              Container(
-                alignment: Alignment.centerLeft,
-                child: ShimmerLoading(
-                    isLoading: true,
-                    child: NewsActionBasic(
-                        newsObj: obj,
-                        icons: icons,
-                        iconsName: iconsName,
-                        isLoading: isCountLoading)),
-              );
-            } else if (state is NewsErrorReceived) {
-              ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
-            } else {
-              Container();
-            }
-          },
-          child: Container(),
-        ),
+        //           setState(() {});
+        //         }
+        //       }
+        //     } 
+        // else if (state is NewsLoading) {
+        //       Container(
+        //         alignment: Alignment.centerLeft,
+        //         child: ShimmerLoading(
+        //             isLoading: true,
+        //             child: NewsActionBasic(
+        //                 newsObj: obj,
+        //                 icons: icons,
+        //                 iconsName: iconsName,
+        //                 isLoading: isCountLoading)),
+        //       );
+        //     } else if (state is NewsErrorReceived) {
+        //       ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+        //     } else {
+        //       Container();
+        //     }
+        //   },
+        //   child: Container(),
+        // ),
+        
       ],
     );
   }
@@ -415,6 +418,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             bloc: bloc,
                             builder: (BuildContext context, NewsState state) {
                               if (state is NewsLoaded) {
+                                Globals.notificationList.clear();
+                                Globals.notificationList.addAll(state.obj!);
                                 return state.obj != null &&
                                         state.obj!.length > 0
                                     ? _buildList(state.obj!)

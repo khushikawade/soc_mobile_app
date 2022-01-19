@@ -101,7 +101,44 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       try {
         yield NewsLoading();
         List<ActionCountList> list = await fetchNewsActionCount();
-        yield ActionCountSuccess(obj: list);
+        List newsMainList = [];
+              newsMainList.clear();
+              if (list.length == 0) {
+                newsMainList.addAll(Globals.notificationList);
+                // setState(() {});
+              } 
+              else {
+                for (int i = 0; i < Globals.notificationList.length; i++) {
+                  for (int j = 0; j < list.length; j++) {
+                    if ("${Globals.notificationList[i].id}${Overrides.SCHOOL_ID}" ==
+                        list[j].notificationId) {
+                      newsMainList.add(NotificationList(
+                          id: Globals.notificationList[i].id,
+                          contents: Globals.notificationList[i].contents, //obj.contents,
+                          headings: Globals.notificationList[i].headings, //obj.headings,
+                          image: Globals.notificationList[i].image, //obj.image,
+                          url: Globals.notificationList[i].url, //obj.url,
+                          likeCount: list[j].likeCount,
+                          thanksCount: list[j].helpfulCount,
+                          shareCount: list[j].shareCount));
+                      break;
+                    }
+
+                    if (list.length - 1 == j) {
+                      newsMainList.add(NotificationList(
+                          id: Globals.notificationList[i].id,
+                          contents: Globals.notificationList[i].contents, //obj.contents,
+                          headings: Globals.notificationList[i].headings, //obj.headings,
+                          image: Globals.notificationList[i].image, //obj.image,
+                          url: Globals.notificationList[i].url, //obj.url,
+                          likeCount: 0,
+                          thanksCount: 0,
+                          helpfulCount: 0,
+                          shareCount: 0));
+                    }
+                  }}
+                  }
+        yield ActionCountSuccess(obj: newsMainList);
       } catch (e) {
         print(e);
         yield NewsErrorReceived(err: e);
