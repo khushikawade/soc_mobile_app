@@ -86,6 +86,7 @@ class _NewdescriptionState extends State<Newdescription> {
                     Globals.homeObject["App_Logo__c"],
                 height: Utility.displayHeight(context) *
                     (AppTheme.kDetailPageImageHeightFactor / 100),
+                    fitMethod: BoxFit.contain,
                 isOnTap: true,
               )),
             ),

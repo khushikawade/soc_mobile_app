@@ -113,6 +113,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               width: Globals.deviceType == "phone"
                   ? _kIconSize * 1.4
                   : _kIconSize * 2,
+                  fitMethod: BoxFit.contain,
             ),
             SizedBox(
               width: _kLabelSpacing / 2,
