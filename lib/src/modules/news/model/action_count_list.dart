@@ -13,7 +13,7 @@ class ActionCountList {
 
   ActionCountList(
       {
-        // this.name,
+      // this.name,
       this.notificationId,
       this.schoolId,
       this.likeCount,

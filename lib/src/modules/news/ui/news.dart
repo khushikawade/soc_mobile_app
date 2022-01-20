@@ -24,8 +24,6 @@ import 'package:marquee/marquee.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../overrides.dart';
-
 class NewsPage extends StatefulWidget {
   @override
   _NewsPageState createState() => _NewsPageState();
@@ -46,6 +44,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   late AppLifecycleState _notification;
   List newsMainList = [];
   bool? isCountLoading = true;
+  bool? isActionAPICalled = false;
 
   @override
   void initState() {
@@ -62,6 +61,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     });
     if (_notification == AppLifecycleState.resumed)
       bloc.add(FetchNotificationList());
+    isActionAPICalled = false;
     // _countBloc.add(FetchActionCountList());
   }
 
@@ -79,6 +79,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       Globals.indicator.value = true;
       await Future.delayed(Duration(milliseconds: 1500));
       bloc.add(FetchNotificationList());
+      isActionAPICalled = false;
     });
   }
 
@@ -179,18 +180,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                         child: _buildnewsHeading(obj)),
                     subtitle: actionButton(list, obj, index),
                   ),
-                  // SpacerWidget(15),
-                  // Container(
-                  //     padding: EdgeInsets.symmetric(horizontal: 2),
-                  //     child: actionButton(list, obj, index)),
-                  // SpacerWidget(5),
                 ],
               )),
         ),
-        // Container(
-        //   color: Colors.black12,
-        //   height: 5,
-        // )
       ],
     );
   }
@@ -199,128 +191,48 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       List<NotificationList> list, NotificationList obj, int index) {
     return Column(
       children: [
-        // newsMainList.length > 0
-        //     ? 
-            BlocBuilder(
-                bloc: _countBloc,
-                builder: (BuildContext context, NewsState state) {
-                  if (state is ActionCountSuccess) {
-                    isCountLoading = false;
-                    return Container(
-                      // alignment: Alignment.centerLeft,
+        BlocBuilder(
+            bloc: _countBloc,
+            builder: (BuildContext context, NewsState state) {
+              if (state is ActionCountSuccess) {
+                isCountLoading = false;
+                return Container(
+                  // alignment: Alignment.centerLeft,
+                  child: NewsActionBasic(
+                      newsObj: state.obj[index],
+                      icons: icons,
+                      iconsName: iconsName,
+                      isLoading: isCountLoading),
+                );
+              } else if (state is NewsLoading) {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  child: ShimmerLoading(
+                      isLoading: true,
                       child: NewsActionBasic(
-                          newsObj: state.obj[index],
+                          newsObj: Globals.notificationList[index],
                           icons: icons,
                           iconsName: iconsName,
-                          isLoading: isCountLoading),
-                    );
-                  } else if (state is NewsLoading) {
-                    return Container(
-                      alignment: Alignment.centerLeft,
-                      child: ShimmerLoading(
-                          isLoading: true,
-                          child: NewsActionBasic(
-                              newsObj: Globals.notificationList[index],
-                              icons: icons,
-                              iconsName: iconsName,
-                              isLoading: isCountLoading)),
-                    );
-                  } else if (state is NewsErrorReceived) {
-                    return ListView(
-                        shrinkWrap: true, children: [ErrorMsgWidget()]);
-                  } else {
-                    return Container();
-                  }
-                }),
-            // : Container(
-            //     alignment: Alignment.centerLeft,
-            //     child: ShimmerLoading(
-            //         isLoading: true,
-            //         child: NewsActionBasic(
-            //             newsObj: obj,
-            //             icons: icons,
-            //             iconsName: iconsName,
-            //             isLoading: isCountLoading)),
-            //   ),
-        // BlocListener(
-        //   bloc: _countBloc,
-        //   listener: (BuildContext context, NewsState state) {
-        //     if (state is ActionCountSuccess) {
-        //       isCountLoading = false;
-        //       newsMainList.clear();
-        //       if (state.obj!.length == 0) {
-        //         newsMainList.addAll(list);
-        //         setState(() {});
-        //       } else {
-        //         for (int i = 0; i < list.length; i++) {
-        //           for (int j = 0; j < state.obj!.length; j++) {
-        //             if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
-        //                 state.obj[j].notificationId) {
-        //               newsMainList.add(NotificationList(
-        //                   id: list[i].id,
-        //                   contents: list[i].contents, //obj.contents,
-        //                   headings: list[i].headings, //obj.headings,
-        //                   image: list[i].image, //obj.image,
-        //                   url: list[i].url, //obj.url,
-        //                   likeCount: state.obj[j].likeCount,
-        //                   thanksCount: state.obj[j].thanksCount,
-        //                   helpfulCount: state.obj[j].helpfulCount,
-        //                   shareCount: state.obj[j].shareCount));
-        //               break;
-        //             }
-
-        //             if (state.obj!.length - 1 == j) {
-        //               newsMainList.add(NotificationList(
-        //                   id: list[i].id,
-        //                   contents: list[i].contents, //obj.contents,
-        //                   headings: list[i].headings, //obj.headings,
-        //                   image: list[i].image, //obj.image,
-        //                   url: list[i].url, //obj.url,
-        //                   likeCount: 0,
-        //                   thanksCount: 0,
-        //                   helpfulCount: 0,
-        //                   shareCount: 0));
-        //             }
-        //           }
-
-        //           setState(() {});
-        //         }
-        //       }
-        //     } 
-        // else if (state is NewsLoading) {
-        //       Container(
-        //         alignment: Alignment.centerLeft,
-        //         child: ShimmerLoading(
-        //             isLoading: true,
-        //             child: NewsActionBasic(
-        //                 newsObj: obj,
-        //                 icons: icons,
-        //                 iconsName: iconsName,
-        //                 isLoading: isCountLoading)),
-        //       );
-        //     } else if (state is NewsErrorReceived) {
-        //       ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
-        //     } else {
-        //       Container();
-        //     }
-        //   },
-        //   child: Container(),
-        // ),
-        
+                          isLoading: isCountLoading)),
+                );
+              } else if (state is NewsErrorReceived) {
+                return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+              } else {
+                return Container();
+              }
+            }),
       ],
     );
   }
 
   Widget _buildnewsHeading(NotificationList obj) {
-    // return Text(obj.completedAt);
     return Container(
         height: 50,
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
                 Globals.selectedLanguage != ""
-            ? 
-            TranslationWidget(
+            ? TranslationWidget(
                 message: obj.headings!.length > 0 &&
                         obj.headings != "" &&
                         obj.headings != null
@@ -401,6 +313,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               if (connected) {
                 if (iserrorstate == true) {
                   bloc.add(FetchNotificationList());
+                  isActionAPICalled = false;
                   // _countBloc.add(FetchActionCountList());
                   iserrorstate = false;
                 }
@@ -454,7 +367,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             bloc: bloc,
                             listener: (context, state) async {
                               if (state is NewsLoaded) {
-                                _countBloc.add(FetchActionCountList());
+                                if (isActionAPICalled == false) {
+                                  _countBloc.add(FetchActionCountList());
+                                  isActionAPICalled = true;
+                                }
                                 // object = state.obj;
                                 SharedPreferences intPrefs =
                                     await SharedPreferences.getInstance();
@@ -504,6 +420,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     bloc.add(FetchNotificationList());
+    isActionAPICalled = false;
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }

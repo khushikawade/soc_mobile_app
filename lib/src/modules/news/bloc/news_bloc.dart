@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/model/action_count_list.dart';
 import 'package:Soc/src/services/db_service.dart';
+import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -38,7 +39,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsErrorReceived(err: e);
       }
     }
-    
+
     if (event is FetchNotificationList) {
       try {
         // yield NewsLoading();// Should not show loading, instead fetch the data from the Local database and return the list instantly.
@@ -46,7 +47,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
         _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
-  
+
         if (_localData.isEmpty) {
           yield NewsLoading();
         } else {
@@ -77,7 +78,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         // yield NewsErrorReceived(err: e);
       }
     }
-    
+
     if (event is NewsAction) {
       try {
         yield NewsLoading();
@@ -101,43 +102,51 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       try {
         yield NewsLoading();
         List<ActionCountList> list = await fetchNewsActionCount();
-        List newsMainList = [];
-              newsMainList.clear();
-              if (list.length == 0) {
-                newsMainList.addAll(Globals.notificationList);
-                // setState(() {});
-              } 
-              else {
-                for (int i = 0; i < Globals.notificationList.length; i++) {
-                  for (int j = 0; j < list.length; j++) {
-                    if ("${Globals.notificationList[i].id}${Overrides.SCHOOL_ID}" ==
-                        list[j].notificationId) {
-                      newsMainList.add(NotificationList(
-                          id: Globals.notificationList[i].id,
-                          contents: Globals.notificationList[i].contents, //obj.contents,
-                          headings: Globals.notificationList[i].headings, //obj.headings,
-                          image: Globals.notificationList[i].image, //obj.image,
-                          url: Globals.notificationList[i].url, //obj.url,
-                          likeCount: list[j].likeCount,
-                          thanksCount: list[j].helpfulCount,
-                          shareCount: list[j].shareCount));
-                      break;
-                    }
 
-                    if (list.length - 1 == j) {
-                      newsMainList.add(NotificationList(
-                          id: Globals.notificationList[i].id,
-                          contents: Globals.notificationList[i].contents, //obj.contents,
-                          headings: Globals.notificationList[i].headings, //obj.headings,
-                          image: Globals.notificationList[i].image, //obj.image,
-                          url: Globals.notificationList[i].url, //obj.url,
-                          likeCount: 0,
-                          thanksCount: 0,
-                          helpfulCount: 0,
-                          shareCount: 0));
-                    }
-                  }}
-                  }
+        List newsMainList = [];
+        newsMainList.clear();
+        if (list.length == 0) {
+          //If no action added yet for school, Adding onsignal list as it is with no action counts
+          newsMainList.addAll(Globals.notificationList);
+        } else {
+          for (int i = 0; i < Globals.notificationList.length; i++) {
+            for (int j = 0; j < list.length; j++) {
+              //Comparing Id and mapping data to the list if exist in action API
+              if ("${Globals.notificationList[i].id}${Overrides.SCHOOL_ID}" ==
+                  list[j].notificationId) {
+                newsMainList.add(NotificationList(
+                    id: Globals.notificationList[i].id,
+                    contents:
+                        Globals.notificationList[i].contents, //obj.contents,
+                    headings:
+                        Globals.notificationList[i].headings, //obj.headings,
+                    image: Globals.notificationList[i].image, //obj.image,
+                    url: Globals.notificationList[i].url, //obj.url,
+                    likeCount: list[j].likeCount,
+                    thanksCount: list[j].thanksCount,
+                    helpfulCount: list[j].helpfulCount,
+                    shareCount: list[j].shareCount));
+                break;
+              }
+
+              //Mapping action counts 0 if the record doesn't exist in action API
+              if (list.length - 1 == j) {
+                newsMainList.add(NotificationList(
+                    id: Globals.notificationList[i].id,
+                    contents:
+                        Globals.notificationList[i].contents, //obj.contents,
+                    headings:
+                        Globals.notificationList[i].headings, //obj.headings,
+                    image: Globals.notificationList[i].image, //obj.image,
+                    url: Globals.notificationList[i].url, //obj.url,
+                    likeCount: 0,
+                    thanksCount: 0,
+                    helpfulCount: 0,
+                    shareCount: 0));
+              }
+            }
+          }
+        }
         yield ActionCountSuccess(obj: newsMainList);
       } catch (e) {
         print(e);
@@ -160,7 +169,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     }
   }
 
-    
   Future<List<NotificationList>> fetchNotificationList() async {
     try {
       final response = await http.get(
@@ -204,19 +212,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     try {
       // final ResponseModel response = await _dbServices
       //     .postapi("sobjects/News_Interactions__c", body: body);
-      
-      final response = await http.post(
-          Uri.parse('https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/addNewsAction?schoolId=${Overrides.SCHOOL_ID}'),
-           body: json.encode(body),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept-Language': 'Accept-Language',
-          },
-            
-          );    
+
+      final ResponseModel response = await _dbServices
+          .postapi("addNewsAction?schoolId=${Overrides.SCHOOL_ID}", body: body);
 
       if (response.statusCode == 200) {
-        var res = json.decode(response.body);
+        var res = response.data;
         var data = res["statusCode"];
         return data;
       } else {
@@ -229,22 +230,17 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<ActionCountList>> fetchNewsActionCount() async {
     try {
-     
       // final ResponseModel response = await _dbServices.getapi(
       //     "query/?q=${Uri.encodeComponent("SELECT Name,School_App__c, Total_helpful__c, Total_Likes__c, Total_Thanks__c, Total__c FROM Total_News_Interaction__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
-      
-      
-      var response =
-          await http.get(Uri.parse('https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/getNewsAction?schoolId=${Overrides.SCHOOL_ID}'),
-              );      
-      if (response.statusCode == 200) {        
-        var data = json.decode(response.body);
-         //data["records"];
 
-        return data["body"]["Items"]
+      final ResponseModel response = await _dbServices
+          .getapi(Uri.parse('getNewsAction?schoolId=${Overrides.SCHOOL_ID}'));
+
+      if (response.statusCode == 200) {
+        var data = response.data["body"]["Items"];
+        return data
             .map<ActionCountList>((i) => ActionCountList.fromJson(i))
             .toList();
-        
       } else {
         throw ('something_went_wrong');
       }
