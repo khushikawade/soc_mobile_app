@@ -3,21 +3,68 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:invert_colors/invert_colors.dart';
 
-class CustomIconWidget extends StatelessWidget {
+class CustomIconWidget extends StatefulWidget {
   late final String? iconUrl;
   CustomIconWidget({Key? key, @required this.iconUrl}) : super(key: key);
+
+  @override
+  State<CustomIconWidget> createState() => _CustomIconWidgetState();
+}
+
+class _CustomIconWidgetState extends State<CustomIconWidget> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+
+    if (brightness == Brightness.dark) {
+      Globals.themeType = 'Dark';
+    } else {
+ 
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
       child: ClipRRect(
-          child: iconUrl!.contains('Icons+Noun+Project') ||
-                  iconUrl!.contains('the-noun-project-icons') ||
-                  iconUrl!.contains('Staff') ||
-                  iconUrl!.contains('default_icon')
+          child: widget.iconUrl!.contains('Icons+Noun+Project') ||
+                  widget.iconUrl!.contains('the-noun-project-icons') ||
+                  widget.iconUrl!.contains('Staff') ||
+                  widget.iconUrl!.contains('default_icon')
               ? Globals.themeType == 'Dark' 
-                  ? InvertColors(
+                  ?
+                  //  ColorFiltered(
+                  //     colorFilter: 
+                  //     ColorFilter.matrix([
+                  //       -1,
+                  //       0,
+                  //       0,
+                  //       0,
+                  //       255,
+                  //       0,
+                  //       -1,
+                  //       0,
+                  //       0,
+                  //       255,
+                  //       0,
+                  //       0,
+                  //       -1,
+                  //       0,
+                  //       255,
+                  //       0,
+                  //       0,
+                  //       0,
+                  //       1,
+                  //       0,
+                  //     ]),
+                  //     child: cachedNetworkImage(),
+                  //   )
+                  InvertColors(
+
                       child: cachedNetworkImage(),
                     )
                   : cachedNetworkImage()
@@ -27,7 +74,7 @@ class CustomIconWidget extends StatelessWidget {
 
   Widget cachedNetworkImage() {
     return CachedNetworkImage(
-        imageUrl: iconUrl!,
+        imageUrl: widget.iconUrl!,
         height: Globals.deviceType == "phone"
             ? AppTheme.kIconSize
             : AppTheme.kTabIconSize,

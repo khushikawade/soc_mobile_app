@@ -8,6 +8,7 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -37,6 +38,14 @@ class _FamilyPageState extends State<FamilyPage> {
   void initState() {
     super.initState();
     _bloc.add(FamiliesEvent());
+    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+
+    if (brightness == Brightness.dark) {
+      Globals.themeType = 'Dark';
+    } else {
+      
+    }
+    // bool isDarkMode = brightness == Brightness.dark;
   }
 
   @override
@@ -73,7 +82,6 @@ class _FamilyPageState extends State<FamilyPage> {
                 return
                     // connected?
                     Column(
-                      
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
@@ -127,6 +135,7 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+        // backgroundColor: Theme.of(context).backgroundColor,
         key: _scaffoldKey,
         appBar: AppBarWidget(
           marginLeft: 30,
@@ -137,7 +146,7 @@ class _FamilyPageState extends State<FamilyPage> {
         body: Globals.homeObject["Family_Banner_Image__c"] != null &&
                 Globals.homeObject["Family_Banner_Image__c"] != ''
             ? NestedScrollView(
-                // controller: _scrollController,
+                // controll    er: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[

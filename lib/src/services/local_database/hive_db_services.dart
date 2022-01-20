@@ -88,4 +88,22 @@ class HiveDbServices {
     }
   }
 
+  Future<bool> addSingleData(String tableName, key, value) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
+      await hiveBox.put(key, value);
+      return true;
+    } catch (e) {
+      throw (e);
+    }
+  }
+  Future<String> getSingleData(String tableName, key) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
+      String data = await hiveBox.get(key);
+      return data;
+    } catch (e) {
+      throw (e);
+    }
+  }
 }

@@ -46,7 +46,7 @@ class Globals {
       GlobalKey<ScaffoldMessengerState>();
   static int? navIndex = 0;
   static int? socialImageIndex = 0;
-  static bool? darkTheme;
+  static bool? isDarkTheme;
   static bool? systemTheme;
   static String? themeType;
 }

@@ -3,6 +3,7 @@ import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 // ignore: must_be_immutable
 class SelectTheme extends StatefulWidget {
@@ -122,8 +123,18 @@ class SelectThemeState extends State<SelectTheme>
                                 } else if (_light == true || _dark == true) {
                                   _systemDefault = value!;
                                 }
+                                _hiveDbServices.addSingleData(
+                                      'theme', 'theme', 'System');
 
                                 Globals.themeType = 'System';
+                                var brightness = SchedulerBinding
+                                    .instance!.window.platformBrightness;
+
+                                if (brightness == Brightness.dark) {
+                                  Globals.themeType = 'Dark';
+                                } else {
+                                  Globals.themeType = 'System';
+                                }
                               });
                             },
                           ),
@@ -148,7 +159,8 @@ class SelectThemeState extends State<SelectTheme>
                                     _dark == true) {
                                   _light = value!;
                                 } else {}
-
+                                _hiveDbServices.addSingleData(
+                                      'theme', 'theme', 'Light');
                                 Globals.themeType = 'Light';
                               });
                             },
@@ -179,6 +191,8 @@ class SelectThemeState extends State<SelectTheme>
                                     _dark = value!;
                                   }
 
+                                  _hiveDbServices.addSingleData(
+                                      'theme', 'theme', 'Dark');
                                   Globals.themeType = 'Dark';
                                 });
                               },

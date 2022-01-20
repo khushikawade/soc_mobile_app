@@ -101,6 +101,7 @@ class AppTheme {
   );
 
   static final ThemeData lightTheme = ThemeData(
+  
       // fontFamily: 'Roboto',
       primaryColor: Colors.blue,
       accentColor: kAccentColor,
@@ -419,6 +420,8 @@ class AppTheme {
     //4d4d4d
 
     AdaptiveTheme.of(context).setTheme(
+      
+      notify:true ,
         light: AdaptiveTheme.of(context).lightTheme.copyWith(
               //Primary color
               primaryColor: _primaryColor,

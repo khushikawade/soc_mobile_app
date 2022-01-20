@@ -1,5 +1,4 @@
 import 'package:Soc/src/globals.dart';
-
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -7,15 +6,12 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,14 +53,14 @@ class _SettingPageState extends State<SettingPage> {
         .then((value) => {pushState(value!.pushDisabled)});
     _homeBloc.add(FetchBottomNavigationBar());
     Globals.callsnackbar = true;
-    if (Globals.darkTheme != null) {
-      _theme = Globals.darkTheme!;
-    }
-    if (Globals.systemTheme != null) {
-      _themeSystem = Globals.systemTheme!;
-    } else {
-      Globals.systemTheme = false;
-    }
+    // if (Globals.darkTheme != null) {
+    //   _theme = Globals.darkTheme!;
+    // }
+    // if (Globals.systemTheme != null) {
+    //   _themeSystem = Globals.systemTheme!;
+    // } else {
+    //   Globals.systemTheme = false;
+    // }
   }
 
   void appversion() async {
@@ -112,75 +108,75 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Widget _buildSwitchTheme() {
-    return Globals.systemTheme! == true
-        ? Container()
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-                Transform.scale(
-                  scale: 1.0,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
-                    child: Switch(
-                      value: push2 != null ? _theme = !push2! : _theme,
-                      onChanged: (bool value) async {
-                        setState(() {
-                          _theme = value;
-                          if (_theme == true) {
-                            Globals.darkTheme = _theme;
-                            AdaptiveTheme.of(context).setDark();
-                          } else {
-                            Globals.darkTheme = _theme;
-                            AdaptiveTheme.of(context).setLight();
-                          }
-                        });
-                        //
-                      },
-                      activeColor: AppTheme.kactivebackColor,
-                      activeTrackColor: AppTheme.kactiveTrackColor,
-                      inactiveThumbColor: AppTheme.kIndicatorColor,
-                      inactiveTrackColor: AppTheme.kinactiveTrackColor,
-                    ),
-                  ),
-                ),
-              ]);
-  }
+  // Widget _buildSwitchTheme() {
+  //   return Globals.systemTheme! == true
+  //       ? Container()
+  //       : Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           crossAxisAlignment: CrossAxisAlignment.end,
+  //           children: <Widget>[
+  //               Transform.scale(
+  //                 scale: 1.0,
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
+  //                   child: Switch(
+  //                     value: push2 != null ? _theme = !push2! : _theme,
+  //                     onChanged: (bool value) async {
+  //                       setState(() {
+  //                         _theme = value;
+  //                         if (_theme == true) {
+  //                           Globals.darkTheme = _theme;
+  //                           AdaptiveTheme.of(context).setDark();
+  //                         } else {
+  //                           Globals.darkTheme = _theme;
+  //                           AdaptiveTheme.of(context).setLight();
+  //                         }
+  //                       });
+  //                       //
+  //                     },
+  //                     activeColor: AppTheme.kactivebackColor,
+  //                     activeTrackColor: AppTheme.kactiveTrackColor,
+  //                     inactiveThumbColor: AppTheme.kIndicatorColor,
+  //                     inactiveTrackColor: AppTheme.kinactiveTrackColor,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ]);
+  // }
 
-  Widget _buildSwitchSystemTheme() {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          Transform.scale(
-            scale: 1.0,
-            child: Padding(
-              padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
-              child: Switch(
-                value: push3 != null ? _themeSystem = !push3! : _themeSystem,
-                onChanged: (bool value) async {
-                  setState(() {
-                    _themeSystem = value;
-                    if (_themeSystem == true) {
-                      Globals.systemTheme = _themeSystem;
-                      AdaptiveTheme.of(context).setSystem();
-                    } else {
-                      Globals.systemTheme = _themeSystem;
-                      AdaptiveTheme.of(context).setLight();
-                    }
-                  });
-                  //
-                },
-                activeColor: AppTheme.kactivebackColor,
-                activeTrackColor: AppTheme.kactiveTrackColor,
-                inactiveThumbColor: AppTheme.kIndicatorColor,
-                inactiveTrackColor: AppTheme.kinactiveTrackColor,
-              ),
-            ),
-          ),
-        ]);
-  }
+  // Widget _buildSwitchSystemTheme() {
+  //   return Column(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       crossAxisAlignment: CrossAxisAlignment.end,
+  //       children: <Widget>[
+  //         Transform.scale(
+  //           scale: 1.0,
+  //           child: Padding(
+  //             padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
+  //             child: Switch(
+  //               value: push3 != null ? _themeSystem = !push3! : _themeSystem,
+  //               onChanged: (bool value) async {
+  //                 setState(() {
+  //                   _themeSystem = value;
+  //                   if (_themeSystem == true) {
+  //                     Globals.systemTheme = _themeSystem;
+  //                     AdaptiveTheme.of(context).setSystem();
+  //                   } else {
+  //                     Globals.systemTheme = _themeSystem;
+  //                     AdaptiveTheme.of(context).setLight();
+  //                   }
+  //                 });
+  //                 //
+  //               },
+  //               activeColor: AppTheme.kactivebackColor,
+  //               activeTrackColor: AppTheme.kactiveTrackColor,
+  //               inactiveThumbColor: AppTheme.kIndicatorColor,
+  //               inactiveTrackColor: AppTheme.kinactiveTrackColor,
+  //             ),
+  //           ),
+  //         ),
+  //       ]);
+  // }
 
   Widget _buildSwitch() {
     return Column(
@@ -237,30 +233,30 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Widget _buildSystemThemeMode() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          padding:
-              EdgeInsets.symmetric(horizontal: 0, vertical: _kLabelSpacing / 2),
-          child: TranslationWidget(
-            message: "Enable System Theme",
-            fromLanguage: "en",
-            toLanguage: Globals.selectedLanguage,
-            builder: (translatedMessage) => Padding(
-              padding: const EdgeInsets.only(left: _kLabelSpacing),
-              child: Text(translatedMessage.toString(),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline2!),
-            ),
-          ),
-        ),
-        _buildSwitchSystemTheme(),
-      ],
-    );
-  }
+  // Widget _buildSystemThemeMode() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     children: [
+  //       Container(
+  //         padding:
+  //             EdgeInsets.symmetric(horizontal: 0, vertical: _kLabelSpacing / 2),
+  //         child: TranslationWidget(
+  //           message: "Enable System Theme",
+  //           fromLanguage: "en",
+  //           toLanguage: Globals.selectedLanguage,
+  //           builder: (translatedMessage) => Padding(
+  //             padding: const EdgeInsets.only(left: _kLabelSpacing),
+  //             child: Text(translatedMessage.toString(),
+  //                 textAlign: TextAlign.center,
+  //                 style: Theme.of(context).textTheme.headline2!),
+  //           ),
+  //         ),
+  //       ),
+  //       _buildSwitchSystemTheme(),
+  //     ],
+  //   );
+  // }
 
   // Widget _buildThemeMode() {
   //   return Row(
