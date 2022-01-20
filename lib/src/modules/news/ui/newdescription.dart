@@ -209,6 +209,7 @@ class _NewdescriptionState extends State<Newdescription> {
         Row(
           children: [
             Container(
+              padding: EdgeInsets.only(bottom: _kLabelSpacing),
               constraints: BoxConstraints(
                 minWidth: _KButtonSize,
                 maxWidth: 130.0,
@@ -255,7 +256,13 @@ class _NewdescriptionState extends State<Newdescription> {
         _imageUrl = fallBackImageUrl;
       } else {
         _imageUrl = (widget.obj.image != null || widget.obj.image != "") &&
-                widget.obj.image.toString().contains("http")
+                widget.obj.image.toString().contains("http") &&
+                (widget.obj.image.contains('jpg') ||
+                    widget.obj.image.contains('jpeg') ||
+                    widget.obj.image.contains('gif') ||
+                    widget.obj.image.contains('png') ||
+                    widget.obj.image.contains('tiff') ||
+                    widget.obj.image.contains('bmp'))
             ? widget.obj.image
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
