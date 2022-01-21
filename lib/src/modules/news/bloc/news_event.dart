@@ -12,7 +12,6 @@ class FetchNotificationList extends NewsEvent {
 
 class NewsAction extends NewsEvent {
   final String? notificationId;
-  final String? schoolId;
   final int? like;
   final int? thanks;
   final int? helpful;
@@ -20,7 +19,6 @@ class NewsAction extends NewsEvent {
 
   NewsAction(
       {required this.notificationId,
-      required this.schoolId,
       this.like,
       this.thanks,
       this.helpful,
@@ -28,7 +26,7 @@ class NewsAction extends NewsEvent {
 
   @override
   List<Object> get props =>
-      [notificationId!, schoolId!, like!, thanks!, helpful!, shared!];
+      [notificationId!, like!, thanks!, helpful!, shared!];
 }
 
 class FetchActionCountList extends NewsEvent {

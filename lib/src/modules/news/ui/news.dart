@@ -210,7 +210,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                       // alignment: Alignment.centerLeft,
                       child: NewsActionBasic(
                           page: "news",
-                          newsObj: newsMainList[index],
+                          obj: newsMainList[index],
                           icons: icons,
                           iconsName: iconsName,
                           isLoading: isCountLoading),
@@ -222,7 +222,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           isLoading: true,
                           child: NewsActionBasic(
                               page: "news",
-                              newsObj: newsMainList[index],
+                              obj: newsMainList[index],
                               icons: icons,
                               iconsName: iconsName,
                               isLoading: isCountLoading)),
@@ -240,7 +240,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     isLoading: true,
                     child: NewsActionBasic(
                           page: "news",
-                        newsObj: obj,
+                        obj: obj,
                         icons: icons,
                         iconsName: iconsName,
                         isLoading: isCountLoading)),
@@ -296,7 +296,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     isLoading: true,
                     child: NewsActionBasic(
                           page: "news",
-                        newsObj: obj,
+                        obj: obj,
                         icons: icons,
                         iconsName: iconsName,
                         isLoading: isCountLoading)),
