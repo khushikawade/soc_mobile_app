@@ -21,6 +21,18 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   initState() {
     super.initState();
     addThemeType();
+    var window = WidgetsBinding.instance!.window;
+    window.onPlatformBrightnessChanged = () {
+      WidgetsBinding.instance?.handlePlatformBrightnessChanged();
+      // This callback is called every time the brightness changes.
+      var brightness = window.platformBrightness;
+
+      if(brightness == Brightness.dark){
+        Globals.themeType = 'Dark';
+      }if(brightness == Brightness.light){
+        Globals.themeType = 'Light';
+      }
+    };
     WidgetsBinding.instance!.addObserver(this);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
@@ -46,8 +58,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         var brightness = SchedulerBinding.instance!.window.platformBrightness;
         if (brightness == Brightness.dark) {
           Globals.themeType = 'Dark';
-        } 
-        if(brightness == Brightness.light){
+        }
+        if (brightness == Brightness.light) {
           Globals.themeType = 'Light';
         }
         // widget is resumed

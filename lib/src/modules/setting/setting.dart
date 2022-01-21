@@ -17,7 +17,7 @@ import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../globals.dart';
-import 'select_theme.dart';
+
 
 class SettingPage extends StatefulWidget {
   final bool isbuttomsheet;
@@ -304,27 +304,27 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Widget _buildThemeMode() {
-    return InkWell(
-      onTap: () {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return SelectTheme();
-            });
-      },
-      child: Container(
-          padding: EdgeInsets.all(16),
-          child: TranslationWidget(
-              message: "Theme",
-              fromLanguage: "en",
-              toLanguage: Globals.selectedLanguage,
-              builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline2!,
-                  ))),
-    );
-  }
+  // Widget _buildThemeMode() {
+  //   return InkWell(
+  //     onTap: () {
+  //       showDialog(
+  //           context: context,
+  //           builder: (BuildContext context) {
+  //             return SelectTheme();
+  //           });
+  //     },
+  //     child: Container(
+  //         padding: EdgeInsets.all(16),
+  //         child: TranslationWidget(
+  //             message: "Theme",
+  //             fromLanguage: "en",
+  //             toLanguage: Globals.selectedLanguage,
+  //             builder: (translatedMessage) => Text(
+  //                   translatedMessage.toString(),
+  //                   style: Theme.of(context).textTheme.headline2!,
+  //                 ))),
+  //   );
+  // }
 
   Widget _appVersion() {
     return Container(
@@ -339,8 +339,8 @@ class _SettingPageState extends State<SettingPage> {
     return ListView(padding: const EdgeInsets.only(bottom: 25.0), children: [
       _buildHeading("Push Notifcation"),
       _buildNotification(),
-      _buildHeading('Display Setting'),
-      _buildThemeMode(),
+      // _buildHeading('Display Setting'),
+
       // _buildSystemThemeMode(),
       // _buildThemeMode(),
       _buildHeading("Acknowledgements"),

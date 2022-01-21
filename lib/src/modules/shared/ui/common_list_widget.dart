@@ -10,6 +10,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
@@ -167,7 +168,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
 
   Widget _buildLeading(SharedList obj) {
     if (obj.appIconUrlC != null) {
-      return CustomIconWidget(
+      return CustomIconMode(
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else if (obj.appIconC != null) {
@@ -181,7 +182,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
     } else {
-      return CustomIconWidget(
+      return CustomIconMode(
         iconUrl: Overrides.defaultIconUrl,
       );
     }

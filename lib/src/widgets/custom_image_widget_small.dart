@@ -4,17 +4,17 @@ import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:invert_colors/invert_colors.dart';
 
-
-class CustomIconWidget extends StatefulWidget {
+class CustomIconMode extends StatefulWidget {
   late final String? iconUrl;
-  CustomIconWidget({Key? key, @required this.iconUrl}) : super(key: key);
+  CustomIconMode({Key? key, @required this.iconUrl}) : super(key: key);
 
   @override
-  State<CustomIconWidget> createState() => _CustomIconWidgetState();
+  State<CustomIconMode> createState() => _CustomIconModeState();
 }
 
-class _CustomIconWidgetState extends State<CustomIconWidget> {
+class _CustomIconModeState extends State<CustomIconMode> {
   @override
   void initState() {
     // TODO: implement initState
@@ -23,13 +23,20 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
 
     if (brightness == Brightness.dark) {
       Globals.themeType = 'Dark';
-    } else {}
+    } else {
+      Globals.themeType = 'Light';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ClipRRect(child: cachedNetworkImage()),
+      child: ClipRRect(
+          child: Globals.themeType == 'Dark'
+              ? InvertColors(
+                  child: cachedNetworkImage(),
+                )
+              : cachedNetworkImage()),
     );
   }
 
@@ -74,3 +81,12 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
             ));
   }
 }
+
+// black to white
+
+// colorFilter: ColorFilter.matrix([
+//               -1,  0,  0, 0, 255,
+//               0, -1,  0, 0, 255,
+//               0,  0, -1, 0, 255,
+//               0,  0,  0, 1,   0,
+//             ]),
