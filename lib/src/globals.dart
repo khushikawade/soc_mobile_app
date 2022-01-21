@@ -1,6 +1,6 @@
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 class Globals {
   static var iosInfo;
@@ -45,4 +45,5 @@ class Globals {
       GlobalKey<ScaffoldMessengerState>();
   static int? navIndex = 0;
   static int? socialImageIndex=0;
+  static  PackageInfo? packageInfo;
 }

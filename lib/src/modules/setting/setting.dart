@@ -6,16 +6,12 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
@@ -32,7 +28,7 @@ class _SettingPageState extends State<SettingPage> {
   static const double _kLabelSpacing = 18.0;
   bool _lights = true;
   bool? push;
-  PackageInfo? packageInfo;
+  // PackageInfo? packageInfo;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
@@ -42,7 +38,7 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void initState() {
     super.initState();
-    appversion();
+    // appversion();
     OneSignal.shared
         .getDeviceState()
         .then((value) => {pushState(value!.pushDisabled)});
@@ -50,9 +46,9 @@ class _SettingPageState extends State<SettingPage> {
     Globals.callsnackbar = true;
   }
 
-  void appversion() async {
-    packageInfo = await PackageInfo.fromPlatform();
-  }
+  // void appversion() async {
+  //   packageInfo = await PackageInfo.fromPlatform();
+  // }
 
   pushState(data) async {
     SharedPreferences pushStatus = await SharedPreferences.getInstance();
@@ -175,7 +171,7 @@ class _SettingPageState extends State<SettingPage> {
     return Container(
         padding: EdgeInsets.all(16),
         child: Text(
-          packageInfo!.version,
+         Globals.packageInfo!.version,
           style: Theme.of(context).textTheme.headline2!,
         ));
   }
