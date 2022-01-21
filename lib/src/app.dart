@@ -1,4 +1,4 @@
-import 'package:Soc/school_id_login.dart';
+import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/user/ui/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -37,8 +37,8 @@ class _AppState extends State<App> {
           title: 'Solved',
           theme: theme,
           darkTheme: darkTheme,
-          home: StartupPage(),
-          // home: SchoolIDLogin(),
+          // home: StartupPage(),
+          home: SchoolIDLogin(),
           ),
     );
   }
