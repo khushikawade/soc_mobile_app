@@ -152,11 +152,13 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 style: Theme.of(context).textTheme.headline4!,
               ),
             ),
-           
-            Text(obj.completedAt, style: Theme.of(context).textTheme.subtitle1!.copyWith(
-              fontSize: 12.5,
-              fontStyle: FontStyle.italic
-            ),)
+            Text(
+              obj.completedAt.toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(fontSize: 12.5, fontStyle: FontStyle.italic),
+            )
           ],
         ));
   }

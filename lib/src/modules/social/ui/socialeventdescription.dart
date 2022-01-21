@@ -6,6 +6,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/selectable_html_widget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -246,23 +247,24 @@ class SocialDescription extends StatelessWidget {
                     fitMethod: BoxFit.cover,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100))),
+        SpacerWidget(_kPadding),
         TranslationWidget(
           message:
               "${object.description != null && object.description != "" ? object.description["__cdata"].replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "") : ""}",
           // "${data + "#" + data2}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => SelectableHtml(
-            // onImageError: (m, d) {},
+          builder: (translatedMessage) => SelectableHTMLWidget(
+            onImageError: (m, d) {},
             onLinkTap: (String? url, RenderContext context,
                 Map<String, String> attributes, dom.Element? element) {
               _launchURL(url, context);
             },
-            // customRender: {
-            //   "img": (RenderContext context, Widget child) {
-            //     return Container();
-            //   },
-            // },
+            customRender: {
+              "img": (RenderContext context, Widget child) {
+                return Container();
+              },
+            },
             data: translatedMessage.toString(),
             style: {
               "body": Style(
@@ -290,7 +292,7 @@ class SocialDescription extends StatelessWidget {
               "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => Html(
+          builder: (translatedMessage) => SelectableHTMLWidget(
             data: translatedMessage.toString(),
             // style: Theme.of(context).textTheme.subtitle1!,
             onLinkTap: (String? url, RenderContext context,
