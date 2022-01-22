@@ -21,15 +21,24 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   initState() {
     super.initState();
     addThemeType();
+
+    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+
+    if (brightness == Brightness.dark) {
+      Globals.themeType = 'Dark';
+    } else {
+      Globals.themeType = 'Light';
+    }
     var window = WidgetsBinding.instance!.window;
     window.onPlatformBrightnessChanged = () {
       WidgetsBinding.instance?.handlePlatformBrightnessChanged();
       // This callback is called every time the brightness changes.
       var brightness = window.platformBrightness;
 
-      if(brightness == Brightness.dark){
+      if (brightness == Brightness.dark) {
         Globals.themeType = 'Dark';
-      }if(brightness == Brightness.light){
+      }
+      if (brightness == Brightness.light) {
         Globals.themeType = 'Light';
       }
     };

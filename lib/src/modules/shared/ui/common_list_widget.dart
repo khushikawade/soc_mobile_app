@@ -192,7 +192,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: AppTheme.kDividerColorDark,
+          color: Theme.of(context).colorScheme.background,
           width: 0.65,
         ),
         borderRadius: BorderRadius.circular(0.0),

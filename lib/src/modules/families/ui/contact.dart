@@ -131,6 +131,7 @@ class _ContactPageState extends State<ContactPage> {
             ? SizedBox(
                 height: _kboxheight * 2,
                 child: GoogleMap(
+                    
                     compassEnabled: true,
                     buildingsEnabled: true,
                     scrollGesturesEnabled: true,

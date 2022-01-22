@@ -227,7 +227,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline1!.copyWith(
                 // color: Colors.red,
-                color: Theme.of(context).backgroundColor,
+                // color: Theme.of(context).backgroundColor,
                 fontSize: 32,
                 fontStyle: FontStyle.italic),
           ));
