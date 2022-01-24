@@ -50,7 +50,7 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
-    _countSocialBloc.add(FetchActionSocailCountList());
+    _countSocialBloc.add(FetchSocialActionCount());
   }
 
   @override
@@ -62,7 +62,7 @@ class _SocialPageState extends State<SocialPage> {
     refreshKey.currentState?.show(atTop: false);
     bloc.add(SocialPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());
-    _countSocialBloc.add(FetchActionSocailCountList());
+    _countSocialBloc.add(FetchSocialActionCount());
   }
 
   Widget _buildlist(obj, int index, mainObj) {
@@ -83,14 +83,18 @@ class _SocialPageState extends State<SocialPage> {
             ? Theme.of(context).colorScheme.background
             : Theme.of(context).colorScheme.secondary,
         child: InkWell(
-            onTap: () {
+            onTap: () async {
               // print(index);
               // print(mainObj.length);
-              Navigator.push(
+              bool result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => SliderWidget(
-                            obj: mainObj,
+                            icons: icons,
+                            obj: newsMainList.length > 0 &&
+                                    newsMainList[index] != null
+                                ? newsMainList
+                                : mainObj,
                             iconsName: iconsName,
                             currentIndex: index,
                             issocialpage: true,
@@ -100,7 +104,9 @@ class _SocialPageState extends State<SocialPage> {
                             isbuttomsheet: true,
                             language: Globals.selectedLanguage,
                           )));
-              _countSocialBloc.add(FetchActionSocailCountList());
+              if (result == true) {
+                _countSocialBloc.add(FetchSocialActionCount());
+              }
             },
             child: ListTile(
               contentPadding: EdgeInsets.only(left: 0),
@@ -148,46 +154,6 @@ class _SocialPageState extends State<SocialPage> {
                     )
                   : Container(),
               subtitle: actionButton(mainObj, obj, index),
-              // subtitle: BlocListener<NewsBloc, NewsState>(
-              //     bloc: _newsBloc,
-              //     listener: (context, state) async {
-              //       if (state is NewsLoaded) {
-              //         isCountLoading = false;
-              //         newsMainList.clear();
-              //         // if (state.obj!.length == 0) {
-              //           print(state.obj!);
-              //         newsMainList.addAll(state.obj!);
-              //         // setState(() {});
-              //         // } else {
-              //         for (int i = 0; i < state.obj!.length; i++) {
-              //           //   for (int j = 0; j < state.obj!.length; j++) {
-              //           //     if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
-              //           //         state.obj[j].notificationId) {
-              //           newsMainList.add(NotificationList(
-              //               id: state.obj![0].id,
-              //               contents: state.obj![0].contents, //obj.contents,
-              //               headings: state.obj![0].headings, //obj.headings,
-              //               image: state.obj![0].image, //obj.image,
-              //               url: state.obj![0].url, //obj.url,
-              //               likeCount: 0, //state.obj[j].likeCount,
-              //               thanksCount: 0, //state.obj[j].thanksCount,
-              //               helpfulCount: 0, //state.obj[j].helpfulCount,
-              //               shareCount: 0)); //state.obj[j].shareCount));
-              //           setState(() {});
-              //         }
-              //       }
-              //     },
-              //     // }
-              //     child: Container()
-              //     //  Container(
-              //     //   padding: EdgeInsets.only(top: 16),
-              //     //   child: NewsActionBasic(
-              //     //       newsObj: newsMainList[index],
-              //     //       icons: icons,
-              //     //       iconsName: iconsName,
-              //     //       isLoading: isCountLoading),
-              //     // )
-              //     )
             )));
   }
 
@@ -224,6 +190,7 @@ class _SocialPageState extends State<SocialPage> {
                 if (connectivity != ConnectivityResult.none) {
                   if (iserrorstate == true) {
                     bloc.add(SocialPageEvent());
+                    _countSocialBloc.add(FetchSocialActionCount());
                     iserrorstate = false;
                   }
                 } else if (connectivity == ConnectivityResult.none) {
@@ -238,6 +205,7 @@ class _SocialPageState extends State<SocialPage> {
                         bloc: bloc,
                         builder: (BuildContext context, SocialState state) {
                           if (state is SocialDataSucess) {
+                            // _countSocialBloc.add(FetchSocialActionCount());
                             return state.obj != null && state.obj!.length > 0
                                 ? Expanded(child: makeList(state.obj))
                                 : Expanded(
@@ -318,7 +286,7 @@ class _SocialPageState extends State<SocialPage> {
                       // alignment: Alignment.centerLeft,
                       child: NewsActionBasic(
                           page: "social",
-                          newsObj: newsMainList[index],
+                          obj: newsMainList[index],
                           icons: icons,
                           iconsName: iconsName,
                           isLoading: isCountLoading),
@@ -330,7 +298,7 @@ class _SocialPageState extends State<SocialPage> {
                           isLoading: true,
                           child: NewsActionBasic(
                               page: "social",
-                              newsObj: newsMainList[index],
+                              obj: newsMainList[index],
                               icons: icons,
                               iconsName: iconsName,
                               isLoading: isCountLoading)),
@@ -347,7 +315,7 @@ class _SocialPageState extends State<SocialPage> {
                 child: ShimmerLoading(
                     isLoading: true,
                     child: NewsActionBasic(
-                        newsObj: obj,
+                        obj: obj,
                         page: "social",
                         icons: icons,
                         iconsName: iconsName,
@@ -365,61 +333,42 @@ class _SocialPageState extends State<SocialPage> {
               } else {
                 for (int i = 0; i < list.length; i++) {
                   for (int j = 0; j < state.obj!.length; j++) {
-                    if ("${list[i].guid["\$t"]}${list[i].pubDate["\$t"]}" ==
+                    if ("${list[i].id.toString() + list[i].guid['\$t']}" ==
                         state.obj[j].socialId) {
                       newsMainList.add(Item(
-                              title: list[i].title,
-                              description: list[i].description,
-                              link: list[i].link,
-                              guid: list[i].guid,
-                              creator: list[i].creator,
-                              pubDate: list[i].pubDate,
-                              content: list[i].content,
-                              mediaContent: list[i].mediaContent,
-                              enclosure: list[i].enclosure,
-                              likeCount: state.obj[j].likeCount,
-                              thanksCount: state.obj[j].thanksCount,
-                              helpfulCount: state.obj[j].helpfulCount,
-                              shareCount: state.obj[j].shareCount)
-
-                          // NotificationList(
-                          //   id: list[i].id,
-                          //   contents: list[i].contents, //obj.contents,
-                          //   headings: list[i].headings, //obj.headings,
-                          //   image: list[i].image, //obj.image,
-                          //   url: list[i].url, //obj.url,
-                          //   likeCount: state.obj[j].likeCount,
-                          //   thanksCount: state.obj[j].thanksCount,
-                          //   helpfulCount: state.obj[j].helpfulCount,
-                          //   shareCount: state.obj[j].shareCount
-                          //   )
-                          );
+                          id: list[i].id,
+                          title: list[i].title,
+                          description: list[i].description,
+                          link: list[i].link,
+                          guid: list[i].guid,
+                          creator: list[i].creator,
+                          pubDate: list[i].pubDate,
+                          content: list[i].content,
+                          mediaContent: list[i].mediaContent,
+                          enclosure: list[i].enclosure,
+                          likeCount: state.obj[j].likeCount,
+                          thanksCount: state.obj[j].thanksCount,
+                          helpfulCount: state.obj[j].helpfulCount,
+                          shareCount: state.obj[j].shareCount));
                       break;
                     }
 
                     if (state.obj!.length - 1 == j) {
                       newsMainList.add(Item(
-                        title: list[i].title,
-                        description: list[i].description,
-                        link: list[i].link,
-                        guid: list[i].guid,
-                        creator: list[i].creator,
-                        pubDate: list[i].pubDate,
-                        content: list[i].content,
-                        mediaContent: list[i].mediaContent,
-                        enclosure: list[i].enclosure,
-                      ));
-
-                      // newsMainList.add(NotificationList(
-                      //     id: list[i].id,
-                      //     contents: list[i].contents, //obj.contents,
-                      //     headings: list[i].headings, //obj.headings,
-                      //     image: list[i].image, //obj.image,
-                      //     url: list[i].url, //obj.url,
-                      //     likeCount: 0,
-                      //     thanksCount: 0,
-                      //     helpfulCount: 0,
-                      //     shareCount: 0));
+                          id: list[i].id,
+                          title: list[i].title,
+                          description: list[i].description,
+                          link: list[i].link,
+                          guid: list[i].guid,
+                          creator: list[i].creator,
+                          pubDate: list[i].pubDate,
+                          content: list[i].content,
+                          mediaContent: list[i].mediaContent,
+                          enclosure: list[i].enclosure,
+                          likeCount: list[j].likeCount,
+                          thanksCount: state.obj[j].thanksCount,
+                          helpfulCount: state.obj[j].helpfulCount,
+                          shareCount: state.obj[j].shareCount));
                     }
                   }
 
@@ -433,7 +382,7 @@ class _SocialPageState extends State<SocialPage> {
                     isLoading: true,
                     child: NewsActionBasic(
                         page: "social",
-                        newsObj: obj,
+                        obj: obj,
                         icons: icons,
                         iconsName: iconsName,
                         isLoading: isCountLoading)),

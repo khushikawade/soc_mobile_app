@@ -74,8 +74,9 @@ class _SliderWidgetState extends State<SliderWidget> {
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
           leading: BackButtonWidget(
+           
             isNewsPage:
-                widget.iseventpage == false && widget.issocialpage == false
+                widget.iseventpage == false || widget.issocialpage == true
                     ? true
                     : false,
           ),
@@ -157,7 +158,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                   ? SocialDescription(
                              icons: widget.icons,
                               iconsName: widget.iconsName,
-                      object: object[pageinitialIndex],
+                      object: object[widget.currentIndex],
                       language: Globals.selectedLanguage,
                       index: pageinitialIndex,
                     )

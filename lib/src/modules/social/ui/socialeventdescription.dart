@@ -18,12 +18,16 @@ import 'package:html/dom.dart' as dom;
 // ignore: must_be_immutable
 class SocialDescription extends StatelessWidget {
   Item object;
-  
+
   String? language;
   int? index;
-    final List? icons;
+  final List? icons;
   final List? iconsName;
-  SocialDescription({required this.object, this.language, this.index, required this.iconsName,
+  SocialDescription(
+      {required this.object,
+      this.language,
+      this.index,
+      required this.iconsName,
       required this.icons});
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
@@ -113,8 +117,9 @@ class SocialDescription extends StatelessWidget {
                 child: Container(),
               ),
             ),
-               SpacerWidget(_kPadding * 3),
-               _buildActionCount(context)
+            //     SpacerWidget(_kPadding / 5),
+            _buildActionCount(context),
+            
           ],
         ),
       ]),
@@ -340,13 +345,12 @@ class SocialDescription extends StatelessWidget {
   }
 
   _buildActionCount(BuildContext context) {
-
     return // Container();
-      NewsActionBasic(
-          page: "news",
-          newsObj: object,
-          icons: icons,
-          iconsName: iconsName,
-        );
+        NewsActionBasic(
+      page: "social",
+      obj: object,
+      icons: icons,
+      iconsName: iconsName,
+    );
   }
 }

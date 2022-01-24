@@ -85,7 +85,8 @@ class _NewdescriptionState extends State<Newdescription> {
             Container(
               alignment: Alignment.center,
               // height: MediaQuery.of(context).size.width * 0.5,
-              child: ClipRRect(
+              child:
+               ClipRRect(
                   child: CommonImageWidget(
                 iconUrl: widget.obj.image ??
                     Globals.splashImageUrl ??
@@ -213,7 +214,7 @@ class _NewdescriptionState extends State<Newdescription> {
         SpacerWidget(AppTheme.kBodyPadding),
         NewsActionBasic(
           page: "news",
-          newsObj: widget.obj,
+          obj: widget.obj,
           icons: widget.icons,
           iconsName: widget.iconsName,
         ), //countObj:widget.newsCountObj),

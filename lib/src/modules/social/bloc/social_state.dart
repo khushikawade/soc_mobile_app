@@ -51,7 +51,7 @@ class SocialActionSuccess extends SocialState {
 }
 
 class SocialActionCountSuccess extends SocialState {
-  var obj;
+  final obj;
   SocialActionCountSuccess({this.obj});
   SocialActionCountSuccess copyWith({final obj}) {
     return SocialActionCountSuccess(obj: obj ?? this.obj);

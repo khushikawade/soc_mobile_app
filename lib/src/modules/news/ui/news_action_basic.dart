@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -14,18 +13,18 @@ import 'package:share/share.dart';
 class NewsActionBasic extends StatefulWidget {
   NewsActionBasic(
       {Key? key,
-      required this.newsObj,
+      required this.obj,
       required this.icons,
       this.isLoading,
       required this.page,
       required this.iconsName})
       : super(key: key);
 
-  final newsObj;
+  final obj;
   final List? icons;
   final List? iconsName;
   final bool? isLoading;
-  String page;
+  final String page;
 
   _NewsActionBasicState createState() => _NewsActionBasicState();
 }
@@ -182,40 +181,36 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
 
     index == 0
         ? like.value =
-            like.value != 0.0 ? like.value + 1 : widget.newsObj.likeCount! + 1
+            like.value != 0.0 ? like.value + 1 : widget.obj.likeCount! + 1
         : index == 1
             ? thanks.value = thanks.value != 0.0
                 ? thanks.value + 1
-                : widget.newsObj.thanksCount! + 1
+                : widget.obj.thanksCount! + 1
             : index == 2
                 ? helpful.value = helpful.value != 0.0
                     ? helpful.value + 1
-                    : widget.newsObj.helpfulCount! + 1
+                    : widget.obj.helpfulCount! + 1
                 : share.value = share.value != 0.0
                     ? share.value + 1
-                    : widget.newsObj.shareCount! + 1;
+                    : widget.obj.shareCount! + 1;
 
     index == 0
-        ? widget.newsObj.likeCount = like.value
+        ? widget.obj.likeCount = like.value
         : index == 1
-            ? widget.newsObj.thanksCount = thanks.value
+            ? widget.obj.thanksCount = thanks.value
             : index == 2
-                ? widget.newsObj.helpfulCount = helpful.value
-                : widget.newsObj.shareCount = share.value;
+                ? widget.obj.helpfulCount = helpful.value
+                : widget.obj.shareCount = share.value;
     if (widget.page == "news") {
       _newsBloc.add(NewsAction(
-          notificationId: widget.newsObj.id,
-          schoolId: Overrides.SCHOOL_ID,
+          notificationId: widget.obj.id,
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
           helpful: index == 2 ? 1 : 0,
           shared: index == 3 ? 1 : 0));
     } else if (widget.page == "social") {
-      print(widget.newsObj.guid["\$t"]);
-      print(widget.newsObj.pubDate["\$t"]);
       _socialbBloc.add(SocialAction(
-          guid: widget.newsObj.guid["\$t"],
-          pubDate: widget.newsObj.pubDate["\$t"],
+          id: widget.obj.id.toString()+widget.obj.guid['\$t'],
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
           helpful: index == 2 ? 1 : 0,
@@ -230,10 +225,10 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       setState(() {
         _isDownloadingFile = true;
       });
-      String _title = widget.newsObj.headings["en"] ?? "";
-      String _description = widget.newsObj.contents["en"] ?? "";
-      String _imageUrl = widget.newsObj.image != null
-          ? widget.newsObj.image
+      String _title = widget.obj.headings["en"] ?? "";
+      String _description = widget.obj.contents["en"] ?? "";
+      String _imageUrl = widget.obj.image != null
+          ? widget.obj.image
           : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
               ? Globals.splashImageUrl
               : Globals.homeObject["App_Logo__c"];
@@ -242,7 +237,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         _isDownloadingFile = false;
       });
       print(
-          "${widget.newsObj.headings["en"]},${widget.newsObj.contents["en"]}");
+          "${widget.obj.headings["en"]},${widget.obj.contents["en"]}");
       print("${[_image.path]},$_title,$_description");
       Share.shareFiles(
         [_image.path],
@@ -332,36 +327,36 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
           index == 0
               ? (like.value != 0.0
                   ? f.format(like.value).toString().split('.')[0]
-                  : widget.newsObj.likeCount == 0.0
+                  : widget.obj.likeCount == 0.0
                       ? ""
                       : f
-                          .format(widget.newsObj.likeCount)
+                          .format(widget.obj.likeCount)
                           .toString()
                           .split('.')[0])
               : index == 1
                   ? (thanks.value != 0.0
                       ? f.format(thanks.value).toString().split('.')[0]
-                      : widget.newsObj.thanksCount == 0.0
+                      : widget.obj.thanksCount == 0.0
                           ? ""
                           : f
-                              .format(widget.newsObj.thanksCount)
+                              .format(widget.obj.thanksCount)
                               .toString()
                               .split('.')[0])
                   : index == 2
                       ? (helpful.value != 0.0
                           ? f.format(helpful.value).toString().split('.')[0]
-                          : widget.newsObj.helpfulCount == 0.0
+                          : widget.obj.helpfulCount == 0.0
                               ? ""
                               : f
-                                  .format(widget.newsObj.helpfulCount)
+                                  .format(widget.obj.helpfulCount)
                                   .toString()
                                   .split('.')[0])
                       : share.value != 0.0
                           ? f.format(share.value).toString().split('.')[0]
-                          : widget.newsObj.shareCount == 0.0
+                          : widget.obj.shareCount == 0.0
                               ? ""
                               : f
-                                  .format(widget.newsObj.shareCount)
+                                  .format(widget.obj.shareCount)
                                   .toString()
                                   .split('.')[0],
           style: Theme.of(context).textTheme.bodyText1!,

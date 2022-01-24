@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/social/modal/social_action_count_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -56,7 +57,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         // yield SocialError(err: e);
       }
     }
-    if (event is FetchActionSocailCountList) {
+    if (event is FetchSocialActionCount) {
       try {
         yield Loading();
         List<SocialActionCountList> list = await fetchSocialActionCount();
@@ -72,8 +73,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         yield Loading();
 
         var data = await addSocailAction({
-          "id": "${event.guid}${event.pubDate}",
-
+          "socialId": "${event.id}",
           // "School_App_ID__c": event.schoolId,
           "like": event.like,
           "thanks": event.thanks,
@@ -102,16 +102,17 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         final data2 = data1 as List;
         return data2.map((i) {
           return Item(
-            title: i["title"] ?? '',
-            description: i["description"] ?? '',
-            link: i["link"] ?? '',
-            guid: i['guid'] ?? '',
-            creator: i['dc\$creator'] ?? '',
-            pubDate: i['pubDate'] ?? '',
-            content: i['content'] ?? '',
-            enclosure: i['enclosure'] ?? '',
-            mediaContent: i['media\$content'] ?? '',
-          );
+              title: i["title"] ?? '',
+              description: i["description"] ?? '',
+              link: i["link"] ?? '',
+              guid: i['guid'] ?? '',
+              creator: i['dc\$creator'] ?? '',
+              pubDate: i['pubDate'] ?? '',
+              content: i['content'] ?? '',
+              enclosure: i['enclosure'] ?? '',
+              mediaContent: i['media\$content'] ?? '',
+              id: Utility.generateUniqueId(i['pubDate']['\$t'])
+              );
         }).toList();
       } else {
         throw ('something_went_wrong');
