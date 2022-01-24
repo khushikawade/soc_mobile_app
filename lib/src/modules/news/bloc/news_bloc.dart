@@ -30,27 +30,21 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   ) async* {
     if (event is FetchNotificationList) {
       try {
-        yield NewsLoading();
-        List<NotificationList> _list = await fetchNotificationList();
-        yield NewsLoaded(
-          obj: _list,
-        );
-      } catch (e) {
-        yield NewsErrorReceived(err: e);
-      }
-    }
-
-    if (event is FetchNotificationList) {
-      try {
         // yield NewsLoading();// Should not show loading, instead fetch the data from the Local database and return the list instantly.
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-        _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
-
+        _localData.forEach((element) { 
+          if(element.completedAt!=null){
+          _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));}
+        });
+        
         if (_localData.isEmpty) {
           yield NewsLoading();
         } else {
+          //Adding push notification local data to global list
+          Globals.notificationList.clear();
+          Globals.notificationList.addAll(_localData);
           yield NewsLoaded(obj: _localData);
         }
 
@@ -66,6 +60,11 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         // Syncing end.
 
         yield NewsLoading(); // Mimic state change
+
+        //Adding push notification list data to global list
+        Globals.notificationList.clear();
+        Globals.notificationList.addAll(_list);
+
         yield NewsLoaded(
           obj: _list,
         );
@@ -83,8 +82,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       try {
         yield NewsLoading();
         var data = await addNewsAction({
-          "notificationId": "${event.notificationId}${event.schoolId}",
-          // "School_App_ID__c": event.schoolId,
+          "notificationId": "${event.notificationId}${Overrides.SCHOOL_ID}",
+          // "School_App_ID__c": Overrides.SCHOOL_ID,
           "like": event.like,
           "thanks": event.thanks,
           "helpful": event.helpful,
@@ -103,18 +102,18 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsLoading();
         List<ActionCountList> list = await fetchNewsActionCount();
 
-        List newsMainList = [];
-        newsMainList.clear();
+        List newList = [];
+        newList.clear();
         if (list.length == 0) {
           //If no action added yet for school, Adding onsignal list as it is with no action counts
-          newsMainList.addAll(Globals.notificationList);
+          newList.addAll(Globals.notificationList);
         } else {
           for (int i = 0; i < Globals.notificationList.length; i++) {
             for (int j = 0; j < list.length; j++) {
               //Comparing Id and mapping data to the list if exist in action API
               if ("${Globals.notificationList[i].id}${Overrides.SCHOOL_ID}" ==
                   list[j].notificationId) {
-                newsMainList.add(NotificationList(
+                newList.add(NotificationList(
                     id: Globals.notificationList[i].id,
                     contents:
                         Globals.notificationList[i].contents, //obj.contents,
@@ -131,7 +130,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
               //Mapping action counts 0 if the record doesn't exist in action API
               if (list.length - 1 == j) {
-                newsMainList.add(NotificationList(
+                newList.add(NotificationList(
                     id: Globals.notificationList[i].id,
                     contents:
                         Globals.notificationList[i].contents, //obj.contents,
@@ -147,7 +146,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
             }
           }
         }
-        yield ActionCountSuccess(obj: newsMainList);
+        yield ActionCountSuccess(obj: newList);
       } catch (e) {
         print(e);
         yield NewsErrorReceived(err: e);

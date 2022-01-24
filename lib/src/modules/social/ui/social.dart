@@ -1,11 +1,9 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
-import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/news_action_basic.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
-import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
@@ -13,7 +11,6 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -38,18 +35,15 @@ class _SocialPageState extends State<SocialPage> {
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
   SocialBloc bloc = SocialBloc();
-  List newsMainList = [];
   bool? isCountLoading = true;
-  NewsBloc _countBloc = new NewsBloc();
-  NewsBloc _newsBloc = new NewsBloc();
-  List icons = [0xe823, 0xe824, 0xe825, 0xe829];
-  List iconsName = ["Like", "Thanks", "Helpful", "Share"];
+  SocialBloc _countSocialBloc = new SocialBloc();
+  List socialMainList = [];
   // GlobalKey _imgkey = GlobalKey();
 
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
-    _newsBloc.add(FetchNotificationList());
+    _countSocialBloc.add(FetchSocialActionCount());
   }
 
   @override
@@ -61,6 +55,7 @@ class _SocialPageState extends State<SocialPage> {
     refreshKey.currentState?.show(atTop: false);
     bloc.add(SocialPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());
+    _countSocialBloc.add(FetchSocialActionCount());
   }
 
   Widget _buildlist(obj, int index, mainObj) {
@@ -81,15 +76,19 @@ class _SocialPageState extends State<SocialPage> {
             ? Theme.of(context).colorScheme.background
             : Theme.of(context).colorScheme.secondary,
         child: InkWell(
-            onTap: () {
+            onTap: () async {
               // print(index);
               // print(mainObj.length);
-              Navigator.push(
+              bool result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => SliderWidget(
-                            obj: mainObj,
-                            iconsName: [],
+                            // icons: Globals.icons,
+                            obj: socialMainList.length > 0 &&
+                                    socialMainList[index] != null
+                                ? socialMainList
+                                : mainObj,
+                            // iconsName: Globals.iconsName,
                             currentIndex: index,
                             issocialpage: true,
                             isAboutSDPage: false,
@@ -98,90 +97,57 @@ class _SocialPageState extends State<SocialPage> {
                             isbuttomsheet: true,
                             language: Globals.selectedLanguage,
                           )));
+              if (result == true) {
+                _countSocialBloc.add(FetchSocialActionCount());
+              }
             },
             child: ListTile(
-                contentPadding: EdgeInsets.only(left: 0),
-                leading: Container(
-                    child: (CommonImageWidget(
-                  iconUrl: (obj.enclosure != null &&
-                          obj.enclosure != '' &&
-                          obj.enclosure['url'] != null &&
-                          obj.enclosure['url'] != "")
-                      ? obj.enclosure['url']
-                      : (imageLink != null && imageLink != "")
-                          ? imageLink
-                          : Globals.splashImageUrl ??
-                              Globals.homeObject["App_Logo__c"],
-                  height: Globals.deviceType == "phone"
-                      ? _kIconSize * 1.4
-                      : _kIconSize * 2,
-                  width: Globals.deviceType == "phone"
-                      ? _kIconSize * 1.4
-                      : _kIconSize * 2,
-                  fitMethod: BoxFit.cover,
-                ))),
-                title: obj.title["__cdata"] != null &&
-                        obj.title["__cdata"].length > 1
-                    ? Container(
-                        width: MediaQuery.of(context).size.width * 0.69,
-                        child: TranslationWidget(
-                            message:
-                                "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) {
-                              return Text(translatedMessage.toString(),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline2!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant,
-                                      ));
-                            }),
-                      )
-                    : Container(),
-                // subtitle: BlocListener<NewsBloc, NewsState>(
-                //     bloc: _newsBloc,
-                //     listener: (context, state) async {
-                //       if (state is NewsLoaded) {
-                //         isCountLoading = false;
-                //         newsMainList.clear();
-                //         // if (state.obj!.length == 0) {
-                //         newsMainList.addAll(state.obj!);
-                //         // setState(() {});
-                //         // } else {
-                //         for (int i = 0; i < state.obj!.length; i++) {
-                //           //   for (int j = 0; j < state.obj!.length; j++) {
-                //           //     if ("${list[i].id}${Overrides.SCHOOL_ID}" ==
-                //           //         state.obj[j].notificationId) {
-                //           newsMainList.add(NotificationList(
-                //               id: state.obj![0].id,
-                //               contents: state.obj![0].contents, //obj.contents,
-                //               headings: state.obj![0].headings, //obj.headings,
-                //               image: state.obj![0].image, //obj.image,
-                //               url: state.obj![0].url, //obj.url,
-                //               likeCount: 0, //state.obj[j].likeCount,
-                //               thanksCount: 0, //state.obj[j].thanksCount,
-                //               helpfulCount: 0, //state.obj[j].helpfulCount,
-                //               shareCount: 0)); //state.obj[j].shareCount));
-                //           setState(() {});
-                //         }
-                //       }
-                //     },
-                //     // }
-                //     child: Container(
-                //       padding: EdgeInsets.only(top: 16),
-                //       child: NewsActionBasic(
-                //           newsObj: newsMainList[index],
-                //           icons: icons,
-                //           iconsName: iconsName,
-                //           isLoading: isCountLoading),
-                //     ))
-                )));
+              contentPadding: EdgeInsets.only(left: 0),
+              leading: Container(
+                  child: (CommonImageWidget(
+                iconUrl: (obj.enclosure != null &&
+                        obj.enclosure != '' &&
+                        obj.enclosure['url'] != null &&
+                        obj.enclosure['url'] != "")
+                    ? obj.enclosure['url']
+                    : (imageLink != null && imageLink != "")
+                        ? imageLink
+                        : Globals.splashImageUrl ??
+                            Globals.homeObject["App_Logo__c"],
+                height: Globals.deviceType == "phone"
+                    ? _kIconSize * 1.4
+                    : _kIconSize * 2,
+                width: Globals.deviceType == "phone"
+                    ? _kIconSize * 1.4
+                    : _kIconSize * 2,
+                fitMethod: BoxFit.cover,
+              ))),
+              title: obj.title["__cdata"] != null &&
+                      obj.title["__cdata"].length > 1
+                  ? Container(
+                      width: MediaQuery.of(context).size.width * 0.69,
+                      child: TranslationWidget(
+                          message:
+                              "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage.toString(),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    ));
+                          }),
+                    )
+                  : Container(),
+              subtitle: actionButton(mainObj, obj, index),
+            )));
   }
 
   Widget makeList(obj) {
@@ -217,6 +183,7 @@ class _SocialPageState extends State<SocialPage> {
                 if (connectivity != ConnectivityResult.none) {
                   if (iserrorstate == true) {
                     bloc.add(SocialPageEvent());
+                    _countSocialBloc.add(FetchSocialActionCount());
                     iserrorstate = false;
                   }
                 } else if (connectivity == ConnectivityResult.none) {
@@ -231,6 +198,7 @@ class _SocialPageState extends State<SocialPage> {
                         bloc: bloc,
                         builder: (BuildContext context, SocialState state) {
                           if (state is SocialDataSucess) {
+                            // _countSocialBloc.add(FetchSocialActionCount());
                             return state.obj != null && state.obj!.length > 0
                                 ? Expanded(child: makeList(state.obj))
                                 : Expanded(
@@ -241,17 +209,6 @@ class _SocialPageState extends State<SocialPage> {
                                       connected: connected,
                                     ),
                                   );
-                            // Expanded(
-                            //     child: ListView(
-                            //       shrinkWrap: true,
-                            //       children: [
-                            //       NoDataFoundErrorWidget(
-                            //         isResultNotFoundMsg: true,
-                            //         isNews: false,
-                            //         isEvents: false,
-                            //       )
-                            //     ]),
-                            //   );
                           } else if (state is Loading) {
                             return Expanded(
                               child: Container(
@@ -296,5 +253,46 @@ class _SocialPageState extends State<SocialPage> {
               child: Container()),
           onRefresh: refreshPage,
         ));
+  }
+
+  Widget actionButton(List<Item> list, obj, int index) {
+    return BlocBuilder(
+        bloc: _countSocialBloc,
+        builder: (BuildContext context, SocialState state) {
+          if (state is SocialActionCountSuccess) {
+            socialMainList.clear();
+            socialMainList.addAll(state.obj);
+            isCountLoading = false;
+            return Container(
+              // alignment: Alignment.centerLeft,
+              child: NewsActionBasic(
+                  page: "social",
+                  obj: state.obj[index],
+                  isLoading: isCountLoading),
+            );
+          } else if (state is Loading) {
+            return Container(
+              alignment: Alignment.centerLeft,
+              child: ShimmerLoading(
+                  isLoading: true,
+                  child: NewsActionBasic(
+                      page: "social",
+                      obj: Globals.socialList[index],
+                      isLoading: isCountLoading)),
+            );
+          } else if (state is SocialErrorReceived) {
+            return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+          } else {
+            return Container(
+              alignment: Alignment.centerLeft,
+              child: ShimmerLoading(
+                  isLoading: true,
+                  child: NewsActionBasic(
+                      page: "social",
+                      obj: Globals.socialList[index],
+                      isLoading: isCountLoading)),
+            );
+          }
+        });
   }
 }

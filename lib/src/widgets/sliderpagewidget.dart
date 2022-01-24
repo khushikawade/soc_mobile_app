@@ -19,10 +19,10 @@ class SliderWidget extends StatefulWidget {
     required this.date,
     required this.isbuttomsheet,
     required this.language,
-    required this.iconsName,
+    // required this.iconsName,
     this.issocialpage,
     this.isAboutSDPage,
-    this.icons,
+    // this.icons,
   });
   final obj;
   int currentIndex;
@@ -31,8 +31,8 @@ class SliderWidget extends StatefulWidget {
   String date;
   bool isbuttomsheet;
   String? language;
-  final List? icons;
-  final List? iconsName;
+  // final List? icons;
+  // final List? iconsName;
   final iseventpage;
 
   @override
@@ -75,7 +75,7 @@ class _SliderWidgetState extends State<SliderWidget> {
           elevation: 0.0,
           leading: BackButtonWidget(
             isNewsPage:
-                widget.iseventpage == false && widget.issocialpage == false
+                widget.iseventpage == false || widget.issocialpage == true
                     ? true
                     : false,
           ),
@@ -155,7 +155,9 @@ class _SliderWidgetState extends State<SliderWidget> {
             itemBuilder: (BuildContext context, int index) {
               return widget.issocialpage!
                   ? SocialDescription(
-                      object: object[pageinitialIndex],
+                      //  icons: widget.icons,
+                      //   iconsName: widget.iconsName,
+                      object: object[widget.currentIndex],
                       language: Globals.selectedLanguage,
                       index: pageinitialIndex,
                     )
@@ -170,8 +172,8 @@ class _SliderWidgetState extends State<SliderWidget> {
                               language: Globals.selectedLanguage,
                             )
                           : Newdescription(
-                              icons: widget.icons!,
-                              iconsName: widget.iconsName,
+                              // icons: widget.icons!,
+                              // iconsName: widget.iconsName,
                               obj: object[widget.currentIndex],
                               date: widget.date,
                               isbuttomsheet: true,

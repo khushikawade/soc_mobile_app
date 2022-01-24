@@ -204,6 +204,17 @@ class Utility {
     }
   }
 
+  static generateUniqueId(date) {
+    try {
+      DateTime parseDate =
+          DateFormat('E, d MMM yyyy HH:mm:ss').parse(date).toLocal();
+      final uniqueId = parseDate.millisecondsSinceEpoch;
+      return uniqueId;
+    } catch (e) {
+      print(e);
+    }
+  }
+
   static getDate(date) {
     try {
       DateTime parseDate =

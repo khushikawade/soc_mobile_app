@@ -3,9 +3,10 @@ import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 
 class BackButtonWidget extends StatelessWidget {
-  BackButtonWidget({this.isNewsPage});
+  BackButtonWidget({this.isNewsPage, this.isSocialPage});
 
   final bool? isNewsPage;
+  final bool ? isSocialPage;
 
   Widget build(BuildContext context) {
     return Row(

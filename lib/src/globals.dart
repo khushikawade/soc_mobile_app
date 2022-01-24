@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -47,6 +48,9 @@ class Globals {
   static final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   static int? navIndex = 0;
-  static int? socialImageIndex=0;
+  static int? socialImageIndex = 0;
+  static List icons = [0xe823, 0xe824, 0xe825, 0xe829];
+  static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   static List<NotificationList> notificationList = [];
+  static List<Item> socialList = [];
 }

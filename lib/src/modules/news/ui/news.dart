@@ -37,8 +37,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   NewsBloc _countBloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
-  List icons = [0xe823, 0xe824, 0xe825, 0xe829];
-  List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   final HomeBloc _homeBloc = new HomeBloc();
   String newsTimeStamp = '';
   late AppLifecycleState _notification;
@@ -112,8 +110,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                       context,
                       MaterialPageRoute(
                           builder: (context) => SliderWidget(
-                                icons: icons,
-                                iconsName: iconsName,
                                 obj: newsMainList.length > 0 &&
                                         newsMainList[index] != null
                                     ? newsMainList
@@ -189,41 +185,44 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget actionButton(
       List<NotificationList> list, NotificationList obj, int index) {
-    return Column(
-      children: [
-        BlocBuilder(
-            bloc: _countBloc,
-            builder: (BuildContext context, NewsState state) {
-              if (state is ActionCountSuccess) {
-                newsMainList.addAll(state.obj);
-                isCountLoading = false;
-                return Container(
-                  // alignment: Alignment.centerLeft,
+    return BlocBuilder(
+        bloc: _countBloc,
+        builder: (BuildContext context, NewsState state) {
+          if (state is ActionCountSuccess) {
+            newsMainList.clear();
+            newsMainList.addAll(state.obj);
+            isCountLoading = false;
+            return Container(
+              // alignment: Alignment.centerLeft,
+              child: NewsActionBasic(
+                  obj: state.obj[index],
+                  page: "news",
+                  isLoading: isCountLoading),
+            );
+          } else if (state is NewsLoading) {
+            return Container(
+              alignment: Alignment.centerLeft,
+              child: ShimmerLoading(
+                  isLoading: true,
                   child: NewsActionBasic(
-                      newsObj: state.obj[index],
-                      icons: icons,
-                      iconsName: iconsName,
-                      isLoading: isCountLoading),
-                );
-              } else if (state is NewsLoading) {
-                return Container(
-                  alignment: Alignment.centerLeft,
-                  child: ShimmerLoading(
-                      isLoading: true,
-                      child: NewsActionBasic(
-                          newsObj: Globals.notificationList[index],
-                          icons: icons,
-                          iconsName: iconsName,
-                          isLoading: isCountLoading)),
-                );
-              } else if (state is NewsErrorReceived) {
-                return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
-              } else {
-                return Container();
-              }
-            }),
-      ],
-    );
+                      obj: Globals.notificationList[index],
+                      page: "news",
+                      isLoading: isCountLoading)),
+            );
+          } else if (state is NewsErrorReceived) {
+            return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+          } else {
+            return Container(
+              alignment: Alignment.centerLeft,
+              child: ShimmerLoading(
+                  isLoading: true,
+                  child: NewsActionBasic(
+                      obj: Globals.notificationList[index],
+                      page: "news",
+                      isLoading: isCountLoading)),
+            );
+          }
+        });
   }
 
   Widget _buildnewsHeading(NotificationList obj) {
@@ -332,8 +331,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             bloc: bloc,
                             builder: (BuildContext context, NewsState state) {
                               if (state is NewsLoaded) {
-                                Globals.notificationList.clear();
-                                Globals.notificationList.addAll(state.obj!);
                                 return state.obj != null &&
                                         state.obj!.length > 0
                                     ? _buildList(state.obj!)

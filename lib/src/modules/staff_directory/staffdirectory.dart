@@ -100,7 +100,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
-                        iconsName: [],
+                        // iconsName: [],
                         obj: list,
                         currentIndex: index,
                         issocialpage: false,
