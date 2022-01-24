@@ -62,7 +62,7 @@ class _SocialPageState extends State<SocialPage> {
     refreshKey.currentState?.show(atTop: false);
     bloc.add(SocialPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());
-      _countSocialBloc.add(FetchActionSocailCountList());
+    _countSocialBloc.add(FetchActionSocailCountList());
   }
 
   Widget _buildlist(obj, int index, mainObj) {
@@ -91,7 +91,7 @@ class _SocialPageState extends State<SocialPage> {
                   MaterialPageRoute(
                       builder: (context) => SliderWidget(
                             obj: mainObj,
-                            iconsName: [],
+                            iconsName: iconsName,
                             currentIndex: index,
                             issocialpage: true,
                             isAboutSDPage: false,
@@ -368,16 +368,19 @@ class _SocialPageState extends State<SocialPage> {
                     if ("${list[i].guid["\$t"]}${list[i].pubDate["\$t"]}" ==
                         state.obj[j].socialId) {
                       newsMainList.add(Item(
-                        title: list[i].title,
-                        description: list[i].description,
-                        link: list[i].link,
-                        guid: list[i].guid,
-                        creator: list[i].creator,
-                        pubDate: list[i].pubDate,
-                        content: list[i].content,
-                        mediaContent: list[i].mediaContent,
-                        enclosure: list[i].enclosure,
-                      )
+                              title: list[i].title,
+                              description: list[i].description,
+                              link: list[i].link,
+                              guid: list[i].guid,
+                              creator: list[i].creator,
+                              pubDate: list[i].pubDate,
+                              content: list[i].content,
+                              mediaContent: list[i].mediaContent,
+                              enclosure: list[i].enclosure,
+                              likeCount: state.obj[j].likeCount,
+                              thanksCount: state.obj[j].thanksCount,
+                              helpfulCount: state.obj[j].helpfulCount,
+                              shareCount: state.obj[j].shareCount)
 
                           // NotificationList(
                           //   id: list[i].id,

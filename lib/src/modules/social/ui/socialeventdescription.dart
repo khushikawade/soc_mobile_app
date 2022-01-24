@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/news/ui/news_action_basic.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -17,9 +18,13 @@ import 'package:html/dom.dart' as dom;
 // ignore: must_be_immutable
 class SocialDescription extends StatelessWidget {
   Item object;
+  
   String? language;
   int? index;
-  SocialDescription({required this.object, this.language, this.index});
+    final List? icons;
+  final List? iconsName;
+  SocialDescription({required this.object, this.language, this.index, required this.iconsName,
+      required this.icons});
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
   // static const double _kIconSize = 45.0;
@@ -108,6 +113,8 @@ class SocialDescription extends StatelessWidget {
                 child: Container(),
               ),
             ),
+               SpacerWidget(_kPadding * 3),
+               _buildActionCount(context)
           ],
         ),
       ]),
@@ -330,5 +337,16 @@ class SocialDescription extends StatelessWidget {
       link2 = link.substring(match.start, match.end);
     });
     return link2;
+  }
+
+  _buildActionCount(BuildContext context) {
+
+    return // Container();
+      NewsActionBasic(
+          page: "news",
+          newsObj: object,
+          icons: icons,
+          iconsName: iconsName,
+        );
   }
 }

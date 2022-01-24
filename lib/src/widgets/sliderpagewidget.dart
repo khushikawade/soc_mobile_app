@@ -155,6 +155,8 @@ class _SliderWidgetState extends State<SliderWidget> {
             itemBuilder: (BuildContext context, int index) {
               return widget.issocialpage!
                   ? SocialDescription(
+                             icons: widget.icons,
+                              iconsName: widget.iconsName,
                       object: object[pageinitialIndex],
                       language: Globals.selectedLanguage,
                       index: pageinitialIndex,
