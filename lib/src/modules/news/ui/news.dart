@@ -195,6 +195,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             bloc: _countBloc,
             builder: (BuildContext context, NewsState state) {
               if (state is ActionCountSuccess) {
+                newsMainList.addAll(state.obj);
                 isCountLoading = false;
                 return Container(
                   // alignment: Alignment.centerLeft,
