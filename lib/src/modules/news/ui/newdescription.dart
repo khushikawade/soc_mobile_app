@@ -154,6 +154,7 @@ class _NewdescriptionState extends State<Newdescription> {
                     builder: (translatedMessage) => SelectableLinkify(
                       selectionControls: materialTextSelectionControls,
                       onOpen: (link) => _launchURL(link.url),
+                      enableInteractiveSelection: true,
                       options: LinkifyOptions(humanize: false),
                       linkStyle: TextStyle(color: Colors.blue),
                       text: translatedMessage.toString(),
