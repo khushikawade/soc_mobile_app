@@ -158,7 +158,9 @@ class AppSetting {
             : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
         id: json['Id'] as String?,
         ownerId: json['OwnerId'] as String?,
-        isDeleted:  json['IsDeleted'].toString().toLowerCase()=='true'?true:false as bool?,
+        isDeleted: json['IsDeleted'].toString().toLowerCase() == 'true'
+            ? true
+            : false as bool?,
         name: json['Name'] as String?,
         createdDate: json['CreatedDate'] as String?,
         createdById: json['CreatedById'] as String?,

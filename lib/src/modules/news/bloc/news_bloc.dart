@@ -34,11 +34,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-        _localData.forEach((element) { 
-          if(element.completedAt!=null){
-          _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));}
+        _localData.forEach((element) {
+          if (element.completedAt != null) {
+            _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+          }
         });
-        
+
         if (_localData.isEmpty) {
           yield NewsLoading();
         } else {

@@ -22,13 +22,13 @@ class SocialDescription extends StatelessWidget {
   int? index;
   // final List? icons;
   // final List? iconsName;
-  SocialDescription(
-      {required this.object,
-      this.language,
-      this.index,
-      // required this.iconsName,
-      // required this.icons
-      });
+  SocialDescription({
+    required this.object,
+    this.language,
+    this.index,
+    // required this.iconsName,
+    // required this.icons
+  });
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
   // static const double _kIconSize = 45.0;
@@ -161,7 +161,7 @@ class SocialDescription extends StatelessWidget {
                   ),
                 ),
               ),
-            ),            
+            ),
           ],
         ),
       ),

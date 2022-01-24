@@ -162,11 +162,11 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           ),
                         )),
                     title: Container(
-                      padding: EdgeInsets.only(bottom: 7),
-                      child: _buildnewsHeading(obj)),
+                        padding: EdgeInsets.only(bottom: 7),
+                        child: _buildnewsHeading(obj)),
                     subtitle: Container(
-                      // padding: EdgeInsets.only(top: 10),
-                      child: actionButton(list, obj, index)),
+                        // padding: EdgeInsets.only(top: 10),
+                        child: actionButton(list, obj, index)),
                   ),
                 ],
               )),
@@ -219,7 +219,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget _buildnewsHeading(NotificationList obj) {
     return Container(
-      // color: Colors.red,
+        // color: Colors.red,
         // height: 20,
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&

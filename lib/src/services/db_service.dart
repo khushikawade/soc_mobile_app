@@ -14,16 +14,16 @@ class DbServices {
       //     await login();
       //   } catch (e) {}
       // }
-      final response =
-          await httpClient.get(Uri.parse('${Overrides.API_BASE_URL}$api'),
-              // headers: headers != null
-              //     ? headers
-              //     : {
-              //         'Content-Type': 'application/json',
-              //         'Accept-Language': 'Accept-Language',
-              //         // 'authorization': 'Bearer ${Globals.token}'
-              //       }
-                    );
+      final response = await httpClient.get(
+        Uri.parse('${Overrides.API_BASE_URL}$api'),
+        // headers: headers != null
+        //     ? headers
+        //     : {
+        //         'Content-Type': 'application/json',
+        //         'Accept-Language': 'Accept-Language',
+        //         // 'authorization': 'Bearer ${Globals.token}'
+        //       }
+      );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
