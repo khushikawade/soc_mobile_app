@@ -120,7 +120,7 @@ class _SocialPageState extends State<SocialPage> {
                 width: Globals.deviceType == "phone"
                     ? _kIconSize * 1.4
                     : _kIconSize * 2,
-                fitMethod: BoxFit.cover,
+                fitMethod: BoxFit.contain,
               ))),
               title: obj.title["__cdata"] != null &&
                       obj.title["__cdata"].length > 1
@@ -146,7 +146,9 @@ class _SocialPageState extends State<SocialPage> {
                           }),
                     )
                   : Container(),
-              subtitle: actionButton(mainObj, obj, index),
+              subtitle: Container(
+                  padding: EdgeInsets.only(top: 7),
+                  child: actionButton(mainObj, obj, index)),
             )));
   }
 

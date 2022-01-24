@@ -226,7 +226,7 @@ class SocialDescription extends StatelessWidget {
                     isOnTap: true,
                     iconUrl: Globals.splashImageUrl ??
                         Globals.homeObject["App_Logo__c"],
-                    fitMethod: BoxFit.cover,
+                    fitMethod: BoxFit.contain,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100))),
         TranslationWidget(

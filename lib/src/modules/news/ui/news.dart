@@ -133,48 +133,40 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 children: [
                   SpacerWidget(20),
                   ListTile(
+                    // contentPadding: EdgeInsets.only(),
                     leading: Container(
                         // color: Colors.green,
-                        alignment: Alignment.center,
+                        alignment: Alignment.topCenter,
                         width: MediaQuery.of(context).size.width * 0.12,
                         height: MediaQuery.of(context).size.width * 0.5,
                         child:
                             //obj.image != null
                             //     ?
                             ClipRRect(
-                          child: GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => NewsImagePage(
-                                        imageURL: obj.image ??
-                                            Globals.splashImageUrl ??
-                                            Globals.homeObject["App_Logo__c"],
-                                      ));
-                            },
-                            child: CachedNetworkImage(
-                              imageUrl: obj.image ??
-                                  Globals.splashImageUrl ??
-                                  Globals.homeObject["App_Logo__c"],
-                              placeholder: (context, url) => Container(
-                                  alignment: Alignment.center,
-                                  child: ShimmerLoading(
-                                    isLoading: true,
-                                    child: Container(
-                                      width: _kIconSize * 1.4,
-                                      height: _kIconSize * 1.5,
-                                      color: Colors.white,
-                                    ),
-                                  )),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
+                          child: CachedNetworkImage(
+                            imageUrl: obj.image ??
+                                Globals.splashImageUrl ??
+                                Globals.homeObject["App_Logo__c"],
+                            placeholder: (context, url) => Container(
+                                alignment: Alignment.center,
+                                child: ShimmerLoading(
+                                  isLoading: true,
+                                  child: Container(
+                                    width: _kIconSize * 1.4,
+                                    height: _kIconSize * 1.5,
+                                    color: Colors.white,
+                                  ),
+                                )),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
                         )),
                     title: Container(
-                        // color: Colors.red,
-                        child: _buildnewsHeading(obj)),
-                    subtitle: actionButton(list, obj, index),
+                      padding: EdgeInsets.only(bottom: 7),
+                      child: _buildnewsHeading(obj)),
+                    subtitle: Container(
+                      // padding: EdgeInsets.only(top: 10),
+                      child: actionButton(list, obj, index)),
                   ),
                 ],
               )),
@@ -227,7 +219,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget _buildnewsHeading(NotificationList obj) {
     return Container(
-        height: 50,
+      // color: Colors.red,
+        // height: 20,
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
