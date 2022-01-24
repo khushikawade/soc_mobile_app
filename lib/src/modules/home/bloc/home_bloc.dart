@@ -24,7 +24,6 @@ import 'package:http/http.dart' as http;
 part 'home_event.dart';
 part 'home_state.dart';
 
-
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeInitial());
   final DbServices _dbServices = DbServices();
@@ -243,18 +242,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       //   Uri.encodeFull(
       //       'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
       // );
+      final response = await http.get(
+        Uri.parse(
+            'https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2?schoolId=a1f4W000007DQZPQA4&objectName=School_App__c'),
+      );
 
-final response =
-          await http.get(Uri.parse('https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2?schoolId=a1f4W000007DQZPQA4&objectName=School_App__c'),
-              // headers: headers != null
-              //     ? headers
-              //     : {
-              //         'Content-Type': 'application/json',
-              //         'Accept-Language': 'Accept-Language',
-              //         // 'authorization': 'Bearer ${Globals.token}'
-              //       }
-                    );
-                    
 // https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2?schoolId=a1f4W000007DQZPQA4&objectName=School_App__c
 
       if (response.statusCode == 200) {
