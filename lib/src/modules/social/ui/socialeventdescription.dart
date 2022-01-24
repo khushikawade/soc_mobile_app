@@ -7,7 +7,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -101,8 +100,10 @@ class SocialDescription extends StatelessWidget {
             SpacerWidget(_kPadding / 5),
             _buildBottomSection(context),
             SpacerWidget(_kPadding / 2),
+            _buildActionCount(context),
+            SpacerWidget(_kPadding / 2),
             _buildButton(context),
-            SpacerWidget(_kPadding * 3),
+            SpacerWidget(_kPadding * 2),
             Container(
               height: 0,
               width: 0,
@@ -117,9 +118,6 @@ class SocialDescription extends StatelessWidget {
                 child: Container(),
               ),
             ),
-            //     SpacerWidget(_kPadding / 5),
-            _buildActionCount(context),
-            
           ],
         ),
       ]),
@@ -130,7 +128,7 @@ class SocialDescription extends StatelessWidget {
   Widget _buildButton(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: EdgeInsets.all(_kPadding / 2),
+        padding: EdgeInsets.all(_kPadding / 6),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
@@ -162,35 +160,7 @@ class SocialDescription extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-            HorzitalSpacerWidget(_kPadding / 2),
-            Container(
-              constraints: BoxConstraints(
-                minWidth: _KButtonSize,
-                maxWidth: 130.0,
-                minHeight: _KButtonSize / 2,
-                maxHeight: _KButtonSize / 2,
-              ),
-              child: ElevatedButton(
-                onPressed: () async {
-                  SharePopUp obj = new SharePopUp();
-                  String link = await _buildlink();
-                  final String body =
-                      "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}"
-                              " " +
-                          link;
-                  obj.callFunction(context, body, "Social Event");
-                },
-                child: TranslationWidget(
-                  message: "Share".toString(),
-                  toLanguage: language,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Text(
-                    translatedMessage.toString(),
-                  ),
-                ),
-              ),
-            ),
+            ),            
           ],
         ),
       ),
@@ -345,8 +315,7 @@ class SocialDescription extends StatelessWidget {
   }
 
   _buildActionCount(BuildContext context) {
-    return // Container();
-        NewsActionBasic(
+    return NewsActionBasic(
       page: "social",
       obj: object,
       icons: icons,
