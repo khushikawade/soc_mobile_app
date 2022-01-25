@@ -249,10 +249,12 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   Widget iconListWidget(context, index, bool totalCountIcon, scaffoldKey) {
     // bool isOnline = hasNetwork();
     return OfflineBuilder(
+      
       debounceDuration: Duration.zero,
       connectivityBuilder: (BuildContext context,
           ConnectivityResult connectivity, Widget child) {
         return LikeButton(
+
           isLiked: null,
           onTap: (onLikeButtonTapped) async {
             final bool connected = connectivity != ConnectivityResult.none;
