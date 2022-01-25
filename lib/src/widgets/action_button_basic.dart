@@ -231,26 +231,26 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       String _description = widget.page == "news"
           ? widget.obj.contents["en"] ?? ""
           : widget.obj.description["__cdata"] ?? "";
-          String _imageUrl;
-          File _image;
+      String _imageUrl;
+      File _image;
       if (widget.page == "news") {
-         _imageUrl = widget.obj.image != null && widget.obj.image!=""
+        _imageUrl = widget.obj.image != null && widget.obj.image != ""
             ? widget.obj.image
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
                 : Globals.homeObject["App_Logo__c"];
-                    _image = await Utility.createFileFromUrl(_imageUrl);
-      }else{
-          _imageUrl =   widget.obj.mediaContent !="" && widget.obj.mediaContent["url"] != null
+        _image = await Utility.createFileFromUrl(_imageUrl);
+      } else {
+        _imageUrl = widget.obj.mediaContent != "" &&
+                widget.obj.mediaContent != null &&
+                widget.obj.mediaContent["url"] != null &&
+                widget.obj.mediaContent["url"] != ""
             ? widget.obj.mediaContent["url"]
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
                 : Globals.homeObject["App_Logo__c"];
-                    _image = await Utility.createFileFromUrl(_imageUrl);
-        
+        _image = await Utility.createFileFromUrl(_imageUrl);
       }
-
-   
       setState(() {
         _isDownloadingFile = false;
       });
