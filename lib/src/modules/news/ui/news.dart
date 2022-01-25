@@ -4,14 +4,12 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
-import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
@@ -124,7 +122,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                               )));
 
                   if (result == true) {
-                    _countBloc.add(FetchActionCountList());
+                    // _countBloc.add(FetchActionCountList());
                   }
                 }
               },
@@ -314,93 +312,91 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 iserrorstate = true;
               }
 
-              return connected
-                  ? Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BlocBuilder(
-                            bloc: bloc,
-                            builder: (BuildContext context, NewsState state) {
-                              if (state is NewsLoaded) {
-                                return state.obj != null &&
-                                        state.obj!.length > 0
-                                    ? _buildList(state.obj!)
-                                    : Expanded(
-                                        child: NoDataFoundErrorWidget(
-                                          isResultNotFoundMsg: false,
-                                          isNews: true,
-                                          isEvents: false,
-                                        ),
-                                      );
-                              } else if (state is NewsLoading) {
-                                return Expanded(
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.8,
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
+              return
+                  //  connected?
+                  Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BlocBuilder(
+                      bloc: bloc,
+                      builder: (BuildContext context, NewsState state) {
+                        if (state is NewsLoaded) {
+                          Globals.notificationList.clear();
+                          Globals.notificationList.addAll(state.obj!);
+                          return state.obj != null && state.obj!.length > 0
+                              ? _buildList(state.obj!)
+                              : Expanded(
+                                  child: NoDataFoundErrorWidget(
+                                    isResultNotFoundMsg: false,
+                                    isNews: true,
+                                    isEvents: false,
                                   ),
                                 );
-                              } else if (state is NewsErrorReceived) {
-                                return ListView(
-                                    shrinkWrap: true,
-                                    children: [ErrorMsgWidget()]);
-                              } else {
-                                return Container();
-                              }
-                            }),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<NewsBloc, NewsState>(
-                            bloc: bloc,
-                            listener: (context, state) async {
-                              if (state is NewsLoaded) {
-                                if (isActionAPICalled == false) {
-                                  _countBloc.add(FetchActionCountList());
-                                  isActionAPICalled = true;
-                                }
-                                // object = state.obj;
-                                SharedPreferences intPrefs =
-                                    await SharedPreferences.getInstance();
-                                intPrefs.getInt("totalCount") == null
-                                    ? intPrefs.setInt(
-                                        "totalCount", Globals.notiCount!)
-                                    : intPrefs.getInt("totalCount");
-                                if (Globals.notiCount! >
-                                    intPrefs.getInt("totalCount")!) {
-                                  intPrefs.setInt(
-                                      "totalCount", Globals.notiCount!);
-                                }
-                              }
-                            },
-                            child: Container(),
-                          ),
-                        ),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObject = state.obj;
-                                  setState(() {});
-                                } else if (state is HomeErrorReceived) {
-                                  ErrorMsgWidget();
-                                }
-                              },
-                              child: EmptyContainer()),
-                        ),
-                        // actionButton(),
-                      ],
-                    )
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
+                        } else if (state is NewsLoading) {
+                          return Expanded(
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          );
+                        } else if (state is NewsErrorReceived) {
+                          return ListView(
+                              shrinkWrap: true, children: [ErrorMsgWidget()]);
+                        } else {
+                          return Container();
+                        }
+                      }),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<NewsBloc, NewsState>(
+                      bloc: bloc,
+                      listener: (context, state) async {
+                        if (state is NewsLoaded) {
+                          if (isActionAPICalled == false) {
+                            // _countBloc.add(FetchActionCountList());
+                            isActionAPICalled = true;
+                          }
+                          // object = state.obj;
+                          SharedPreferences intPrefs =
+                              await SharedPreferences.getInstance();
+                          intPrefs.getInt("totalCount") == null
+                              ? intPrefs.setInt(
+                                  "totalCount", Globals.notiCount!)
+                              : intPrefs.getInt("totalCount");
+                          if (Globals.notiCount! >
+                              intPrefs.getInt("totalCount")!) {
+                            intPrefs.setInt("totalCount", Globals.notiCount!);
+                          }
+                        }
+                      },
+                      child: Container(),
+                    ),
+                  ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.homeObject = state.obj;
+                            setState(() {});
+                          } else if (state is HomeErrorReceived) {
+                            ErrorMsgWidget();
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                  // actionButton(),
+                ],
+              );
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,

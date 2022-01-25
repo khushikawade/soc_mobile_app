@@ -118,7 +118,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
           "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Resources_App__c"));
       if (response.statusCode == 200) {
         //   dataArray = response.data["records"];
-        List<SharedList> _list = response.data['body']["Items"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
@@ -136,7 +136,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=Resources_App__c&objectName=Resources_Sub_Menu_App__c"));
       if (response.statusCode == 200) {
-        List<SharedList> _list = response.data['body']["Items"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');

@@ -21,6 +21,7 @@ class Newdescription extends StatefulWidget {
     required this.date,
     required this.isbuttomsheet,
     required this.language,
+    required this.connected,
     // required this.iconsName,
     // required this.icons
   }) : super(key: key);
@@ -31,6 +32,7 @@ class Newdescription extends StatefulWidget {
   final String? language;
   // final List? icons;
   // final List? iconsName;
+  final bool? connected;
 
   _NewdescriptionState createState() => _NewdescriptionState();
 }

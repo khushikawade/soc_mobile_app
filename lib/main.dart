@@ -19,6 +19,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
+  
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb) {
