@@ -1,12 +1,9 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
-//import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/modules/news/ui/news_action_basic.dart';
+import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
@@ -14,7 +11,6 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -127,7 +123,7 @@ class _SocialPageState extends State<SocialPage> {
                 width: Globals.deviceType == "phone"
                     ? _kIconSize * 1.4
                     : _kIconSize * 2,
-                fitMethod: BoxFit.cover,
+                fitMethod: BoxFit.contain,
               ))),
               title: obj.title["__cdata"] != null &&
                       obj.title["__cdata"].length > 1
@@ -216,17 +212,6 @@ class _SocialPageState extends State<SocialPage> {
                                       connected: connected,
                                     ),
                                   );
-                            // Expanded(
-                            //     child: ListView(
-                            //       shrinkWrap: true,
-                            //       children: [
-                            //       NoDataFoundErrorWidget(
-                            //         isResultNotFoundMsg: true,
-                            //         isNews: false,
-                            //         isEvents: false,
-                            //       )
-                            //     ]),
-                            //   );
                           } else if (state is Loading) {
                             return Expanded(
                               child: Container(
