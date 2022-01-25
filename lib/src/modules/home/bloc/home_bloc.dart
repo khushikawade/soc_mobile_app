@@ -244,7 +244,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // );
       final response = await http.get(
         Uri.parse(
-            'https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2?schoolId=a1f4W000007DQZPQA4&objectName=School_App__c'),
+            'https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
       );
 
 // https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2?schoolId=a1f4W000007DQZPQA4&objectName=School_App__c
@@ -260,7 +260,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
           print(AppTheme.kBannerHeight);
         }
-
         return data;
       }
     } catch (e) {

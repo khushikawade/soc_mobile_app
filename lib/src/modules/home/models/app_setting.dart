@@ -188,9 +188,9 @@ class AppSetting {
         contactAddressC: json['Contact_Address__c'] as String?,
         socialapiurlc: json['Social_API_URL__c'] as String?,
         contactOfficeLocationLatitudeS:
-            json['Contact_Office_Location__Latitude__s'] as double?,
+           double.parse(json['Contact_Office_Location__Latitude__s']),
         contactOfficeLocationLongitudeS:
-            json['Contact_Office_Location__Longitude__s'] as double?,
+            double.parse(json['Contact_Office_Location__Longitude__s']),
         bannerHeightFactor: double.parse(json['Banner_Height_Factor__c']),
         familyBannerImageC: json['Family_Banner_Image__c'] as String?,
         staffBannerImageC: json['Staff_Banner_Image__c'] as String?,
