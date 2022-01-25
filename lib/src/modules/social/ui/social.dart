@@ -260,7 +260,11 @@ class _SocialPageState extends State<SocialPage> {
 
   Widget actionButton(List<Item> list, obj, int index) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        SizedBox(
+          height: 20,
+        ),
         newsMainList.length > 0
             ? BlocBuilder(
                 bloc: _countSocialBloc,
@@ -268,7 +272,7 @@ class _SocialPageState extends State<SocialPage> {
                   if (state is SocialActionCountSuccess) {
                     isCountLoading = false;
                     return Container(
-                      // alignment: Alignment.centerLeft,
+                      alignment: Alignment.centerLeft,
                       child: NewsActionBasic(
                           page: "social",
                           obj: newsMainList[index],

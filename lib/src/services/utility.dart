@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:html/parser.dart';
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -186,6 +187,12 @@ class Utility {
     } catch (e) {
       print(e);
     }
+  }
+
+  static convertHtmlTOText(String data) {
+    String? convertedData = parseFragment(data).text;
+
+    return convertedData;
   }
 
   static convertDateFormat2(date) {

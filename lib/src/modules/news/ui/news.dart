@@ -200,6 +200,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       List<NotificationList> list, NotificationList obj, int index) {
     return Column(
       children: [
+        SizedBox(height: 20,),
         newsMainList.length > 0
             ? BlocBuilder(
                 bloc: _countBloc,
@@ -265,6 +266,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           headings: list[i].headings, //obj.headings,
                           image: list[i].image, //obj.image,
                           url: list[i].url, //obj.url,
+                          completedAt:list[i].completedAt,
                           likeCount: state.obj[j].likeCount,
                           thanksCount: state.obj[j].thanksCount,
                           helpfulCount: state.obj[j].helpfulCount,
@@ -279,6 +281,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           headings: list[i].headings, //obj.headings,
                           image: list[i].image, //obj.image,
                           url: list[i].url, //obj.url,
+                              completedAt:list[i].completedAt,
                           likeCount: 0,
                           thanksCount: 0,
                           helpfulCount: 0,
@@ -316,7 +319,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildnewsHeading(NotificationList obj) {
     // return Text(obj.completedAt);
     return Container(
-        height: 50,
+       
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
