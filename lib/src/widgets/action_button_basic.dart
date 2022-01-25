@@ -225,19 +225,37 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       setState(() {
         _isDownloadingFile = true;
       });
-      String _title = widget.obj.headings["en"] ?? "";
-      String _description = widget.obj.contents["en"] ?? "";
-      String _imageUrl = widget.obj.image != null
-          ? widget.obj.image
-          : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-              ? Globals.splashImageUrl
-              : Globals.homeObject["App_Logo__c"];
-      File _image = await Utility.createFileFromUrl(_imageUrl);
+      String _title = widget.page == "news"
+          ? widget.obj.headings["en"] ?? ""
+          : widget.obj.title["__cdata"] ?? "";
+      String _description = widget.page == "news"
+          ? widget.obj.contents["en"] ?? ""
+          : widget.obj.description["__cdata"] ?? "";
+      String _imageUrl;
+      File _image;
+      if (widget.page == "news") {
+        _imageUrl = widget.obj.image != null && widget.obj.image != ""
+            ? widget.obj.image
+            : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+                ? Globals.splashImageUrl
+                : Globals.homeObject["App_Logo__c"];
+        _image = await Utility.createFileFromUrl(_imageUrl);
+      } else {
+        _imageUrl = widget.obj.mediaContent != "" &&
+                widget.obj.mediaContent != null &&
+                widget.obj.mediaContent["url"] != null &&
+                widget.obj.mediaContent["url"] != ""
+            ? widget.obj.mediaContent["url"]
+            : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+                ? Globals.splashImageUrl
+                : Globals.homeObject["App_Logo__c"];
+        _image = await Utility.createFileFromUrl(_imageUrl);
+      }
       setState(() {
         _isDownloadingFile = false;
       });
-      print("${widget.obj.headings["en"]},${widget.obj.contents["en"]}");
-      print("${[_image.path]},$_title,$_description");
+      // print("${widget.obj.headings["en"]},${widget.obj.contents["en"]}");
+      // print("${[_image.path]},$_title,$_description");
       Share.shareFiles(
         [_image.path],
         subject: '$_title',

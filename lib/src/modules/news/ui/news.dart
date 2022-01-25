@@ -3,7 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/modules/news/ui/news_action_basic.dart';
+import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/modules/news/ui/news_image.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';

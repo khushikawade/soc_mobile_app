@@ -1,7 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
-import 'package:Soc/src/modules/news/ui/news_action_basic.dart';
+import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/styles/theme.dart';
