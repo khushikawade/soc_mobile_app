@@ -1,3 +1,5 @@
+
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
@@ -195,6 +197,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             bloc: _countBloc,
             builder: (BuildContext context, NewsState state) {
               if (state is ActionCountSuccess) {
+                newsMainList.clear();
                 newsMainList.addAll(state.obj);
                 isCountLoading = false;
                 return Container(

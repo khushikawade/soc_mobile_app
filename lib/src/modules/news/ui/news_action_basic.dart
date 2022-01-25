@@ -49,40 +49,42 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
             : EdgeInsets.only(
                 // left: MediaQuery.of(context).size.width * 0.04,
                 right: MediaQuery.of(context).size.width * 0.04),
-        child: Column(
-          children: [
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  IconButton(
-                      padding: EdgeInsets.all(0),
-                      constraints: BoxConstraints(),
-                      onPressed: () {},
-                      icon: iconListWidget(context, index, false)),
-                  widget.isLoading == true
-                      ? Container()
-                      : Padding(
-                          padding: const EdgeInsets.only(left: 5, top: 1),
-                          child: _likeCount(index),
-                        )
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    IconButton(
+                        padding: EdgeInsets.all(0),
+                        constraints: BoxConstraints(),
+                        onPressed: () {},
+                        icon: iconListWidget(context, index, false)),
+                    widget.isLoading == true
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.only(left: 5, top: 1),
+                            child: _likeCount(index),
+                          )
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-                child: iconNameIndex == index
-                    ? Container(
-                        padding: EdgeInsets.all(0),
-                        child: Text(
-                          widget.iconsName![index],
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      )
-                    : Container(
-                        padding: EdgeInsets.all(0),
-                      ))
-          ],
+              Expanded(
+                  child: iconNameIndex == index
+                      ? Container(
+                          padding: EdgeInsets.all(0),
+                          child: Text(
+                            widget.iconsName![index],
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        )
+                      : Container(
+                          padding: EdgeInsets.all(0),
+                        ))
+            ],
+          ),
         ),
       );
 

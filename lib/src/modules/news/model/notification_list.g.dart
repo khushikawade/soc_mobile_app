@@ -23,6 +23,10 @@ class NotificationListAdapter extends TypeAdapter<NotificationList> {
       url: fields[3] as dynamic,
       image: fields[4] as String?,
       completedAt: fields[5] as dynamic,
+      thanksCount: fields[6] as dynamic,
+      helpfulCount: fields[7] as dynamic,
+      shareCount: fields[8] as dynamic,
+      likeCount: fields[9] as dynamic,
     );
   }
 
@@ -41,7 +45,15 @@ class NotificationListAdapter extends TypeAdapter<NotificationList> {
       ..writeByte(4)
       ..write(obj.image)
       ..writeByte(5)
-      ..write(obj.completedAt);
+      ..write(obj.completedAt)
+      ..writeByte(6)
+      ..write(obj.thanksCount)
+      ..writeByte(7)
+      ..write(obj.helpfulCount)
+      ..writeByte(8)
+      ..write(obj.shareCount)
+      ..writeByte(9)
+      ..write(obj.likeCount);
   }
 
   @override

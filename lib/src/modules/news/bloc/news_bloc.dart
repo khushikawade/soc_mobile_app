@@ -46,7 +46,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-        _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+        // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
 
         if (_localData.isEmpty) {
           yield NewsLoading();
@@ -101,9 +101,27 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     if (event is FetchActionCountList) {
       try {
         yield NewsLoading();
+
+        String? _objectName = "${Strings.newsObjectName}";
+        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        List<NotificationList> _localData = await _localDb.getData();
+        _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+
+        if (_localData.isEmpty) {
+          yield NewsLoading();
+        } else {
+          ActionCountSuccess(obj: _localData);
+        }
+
         List<ActionCountList> list = await fetchNewsActionCount();
 
-        List newsMainList = [];
+        // await _localDb.clear();
+        // list.forEach((NotificationList e) {
+        //   _localDb.addData(e);
+        // });
+        // list.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+
+        List<NotificationList> newsMainList = [];
         newsMainList.clear();
         if (list.length == 0) {
           //If no action added yet for school, Adding onsignal list as it is with no action counts
@@ -147,10 +165,21 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
             }
           }
         }
+        await _localDb.clear();
+        newsMainList.forEach((NotificationList e) {
+          _localDb.addData(e);
+        });
+        print(newsMainList);
+        //  newsMainList.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
         yield ActionCountSuccess(obj: newsMainList);
       } catch (e) {
         print(e);
-        yield NewsErrorReceived(err: e);
+        // yield NewsErrorReceived(err: e);
+        String? _objectName = "${Strings.newsObjectName}";
+        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        List<NotificationList> _localData = await _localDb.getData();
+        _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+        yield ActionCountSuccess(obj: _localData);
       }
     }
   }
@@ -238,7 +267,11 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
       if (response.statusCode == 200) {
         var data = response.data["body"]["Items"];
-        return data
+        final _allNotificationsAction = data;
+        final data1 = _allNotificationsAction;
+        // .where((e) => e['completed_at'] != null)
+        // .toList();
+        return data1
             .map<ActionCountList>((i) => ActionCountList.fromJson(i))
             .toList();
       } else {
