@@ -1,5 +1,3 @@
-
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
@@ -127,6 +125,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                                 date: "$newsTimeStamp",
                                 isbuttomsheet: true,
                                 language: Globals.selectedLanguage,
+                                
                               )));
 
                   if (result == true) {
@@ -206,7 +205,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                       newsObj: state.obj[index],
                       icons: icons,
                       iconsName: iconsName,
-                      isLoading: isCountLoading),
+                      isLoading: isCountLoading,
+                      
+                      scaffoldKey: _scaffoldKey
+                      ),
                 );
               } else if (state is NewsLoading) {
                 return Container(
@@ -217,7 +219,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           newsObj: Globals.notificationList[index],
                           icons: icons,
                           iconsName: iconsName,
-                          isLoading: isCountLoading)),
+                          isLoading: isCountLoading,scaffoldKey: _scaffoldKey)),
                 );
               } else if (state is NewsErrorReceived) {
                 return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
@@ -325,95 +327,91 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 iserrorstate = true;
               }
 
-              return connected
-                  ? Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BlocBuilder(
-                            bloc: bloc,
-                            builder: (BuildContext context, NewsState state) {
-                              if (state is NewsLoaded) {
-                                Globals.notificationList.clear();
-                                Globals.notificationList.addAll(state.obj!);
-                                return state.obj != null &&
-                                        state.obj!.length > 0
-                                    ? _buildList(state.obj!)
-                                    : Expanded(
-                                        child: NoDataFoundErrorWidget(
-                                          isResultNotFoundMsg: false,
-                                          isNews: true,
-                                          isEvents: false,
-                                        ),
-                                      );
-                              } else if (state is NewsLoading) {
-                                return Expanded(
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.8,
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
+              return
+                  //  connected?
+                  Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BlocBuilder(
+                      bloc: bloc,
+                      builder: (BuildContext context, NewsState state) {
+                        if (state is NewsLoaded) {
+                          Globals.notificationList.clear();
+                          Globals.notificationList.addAll(state.obj!);
+                          return state.obj != null && state.obj!.length > 0
+                              ? _buildList(state.obj!)
+                              : Expanded(
+                                  child: NoDataFoundErrorWidget(
+                                    isResultNotFoundMsg: false,
+                                    isNews: true,
+                                    isEvents: false,
                                   ),
                                 );
-                              } else if (state is NewsErrorReceived) {
-                                return ListView(
-                                    shrinkWrap: true,
-                                    children: [ErrorMsgWidget()]);
-                              } else {
-                                return Container();
-                              }
-                            }),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<NewsBloc, NewsState>(
-                            bloc: bloc,
-                            listener: (context, state) async {
-                              if (state is NewsLoaded) {
-                                if (isActionAPICalled == false) {
-                                  _countBloc.add(FetchActionCountList());
-                                  isActionAPICalled = true;
-                                }
-                                // object = state.obj;
-                                SharedPreferences intPrefs =
-                                    await SharedPreferences.getInstance();
-                                intPrefs.getInt("totalCount") == null
-                                    ? intPrefs.setInt(
-                                        "totalCount", Globals.notiCount!)
-                                    : intPrefs.getInt("totalCount");
-                                if (Globals.notiCount! >
-                                    intPrefs.getInt("totalCount")!) {
-                                  intPrefs.setInt(
-                                      "totalCount", Globals.notiCount!);
-                                }
-                              }
-                            },
-                            child: Container(),
-                          ),
-                        ),
-                        Container(
-                          height: 0,
-                          width: 0,
-                          child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.homeObject = state.obj;
-                                  setState(() {});
-                                } else if (state is HomeErrorReceived) {
-                                  ErrorMsgWidget();
-                                }
-                              },
-                              child: EmptyContainer()),
-                        ),
-                        // actionButton(),
-                      ],
-                    )
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
+                        } else if (state is NewsLoading) {
+                          return Expanded(
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          );
+                        } else if (state is NewsErrorReceived) {
+                          return ListView(
+                              shrinkWrap: true, children: [ErrorMsgWidget()]);
+                        } else {
+                          return Container();
+                        }
+                      }),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<NewsBloc, NewsState>(
+                      bloc: bloc,
+                      listener: (context, state) async {
+                        if (state is NewsLoaded) {
+                          if (isActionAPICalled == false) {
+                            _countBloc.add(FetchActionCountList());
+                            isActionAPICalled = true;
+                          }
+                          // object = state.obj;
+                          SharedPreferences intPrefs =
+                              await SharedPreferences.getInstance();
+                          intPrefs.getInt("totalCount") == null
+                              ? intPrefs.setInt(
+                                  "totalCount", Globals.notiCount!)
+                              : intPrefs.getInt("totalCount");
+                          if (Globals.notiCount! >
+                              intPrefs.getInt("totalCount")!) {
+                            intPrefs.setInt("totalCount", Globals.notiCount!);
+                          }
+                        }
+                      },
+                      child: Container(),
+                    ),
+                  ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.homeObject = state.obj;
+                            setState(() {});
+                          } else if (state is HomeErrorReceived) {
+                            ErrorMsgWidget();
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                  // actionButton(),
+                ],
+              );
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,

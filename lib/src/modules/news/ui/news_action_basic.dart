@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:share/share.dart';
@@ -16,6 +17,7 @@ class NewsActionBasic extends StatefulWidget {
       required this.newsObj,
       required this.icons,
       this.isLoading,
+      required this.scaffoldKey,
       required this.iconsName})
       : super(key: key);
 
@@ -23,6 +25,8 @@ class NewsActionBasic extends StatefulWidget {
   final List? icons;
   final List? iconsName;
   final bool? isLoading;
+
+  final Key? scaffoldKey;
 
   _NewsActionBasicState createState() => _NewsActionBasicState();
 }
@@ -39,6 +43,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   // final ValueNotifier<double> share = ValueNotifier<double>(0);
   int? iconNameIndex;
   bool _isDownloadingFile = false;
+  
   var f = NumberFormat.compact();
 
   Widget _iconButton(index) => Container(
@@ -49,100 +54,99 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
             : EdgeInsets.only(
                 // left: MediaQuery.of(context).size.width * 0.04,
                 right: MediaQuery.of(context).size.width * 0.04),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    IconButton(
-                        padding: EdgeInsets.all(0),
-                        constraints: BoxConstraints(),
-                        onPressed: () {},
-                        icon: iconListWidget(context, index, false)),
-                    widget.isLoading == true
-                        ? Container()
-                        : Padding(
-                            padding: const EdgeInsets.only(left: 5, top: 1),
-                            child: _likeCount(index),
-                          )
-                  ],
-                ),
-              ),
-              Expanded(
-                  child: iconNameIndex == index
-                      ? Container(
-                          padding: EdgeInsets.all(0),
-                          child: Text(
-                            widget.iconsName![index],
-                            style: TextStyle(fontSize: 12),
-                          ),
+        child: Column(
+          children: [
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  IconButton(
+                      padding: EdgeInsets.all(0),
+                      constraints: BoxConstraints(),
+                      onPressed: () {},
+                      icon: iconListWidget(
+                          context, index, false, widget.scaffoldKey)),
+                  widget.isLoading == true
+                      ? Container()
+                      : Padding(
+                          padding: const EdgeInsets.only(left: 5, top: 1),
+                          child: _likeCount(index),
                         )
-                      : Container(
-                          padding: EdgeInsets.all(0),
-                        ))
-            ],
-          ),
+                ],
+              ),
+            ),
+            Expanded(
+                child: iconNameIndex == index
+                    ? Container(
+                        padding: EdgeInsets.all(0),
+                        child: Text(
+                          widget.iconsName![index],
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      )
+                    : Container(
+                        padding: EdgeInsets.all(0),
+                      ))
+          ],
         ),
       );
 
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.045,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: widget.icons!
-            .map<Widget>(
-                (element) => _iconButton(widget.icons!.indexOf(element)))
-            .toList(),
-      ),
-      // child: ListView.builder(
-      //   shrinkWrap: true,
-      //   scrollDirection: Axis.horizontal,
-      //   itemCount: widget.icons!.length,
-      //   itemBuilder: (BuildContext context, int index) {
-      //     return Container(
-      //       width: MediaQuery.of(context).size.width * 0.25,
-      //       padding: EdgeInsets.only(
-      //           left: MediaQuery.of(context).size.width * 0.05,
-      //           right: MediaQuery.of(context).size.width * 0.04),
-      //       child: Column(
-      //         children: [
-      //           Center(
-      //             child: Row(
-      //               mainAxisAlignment: MainAxisAlignment.center,
-      //               mainAxisSize: MainAxisSize.max,
-      //               children: [
-      //                 IconButton(
-      //                     padding: EdgeInsets.all(0),
-      //                     constraints: BoxConstraints(),
-      //                     onPressed: () {},
-      //                     icon: iconListWidget(context, index, false)),
-      //                 widget.isLoading == true ? Container() : _likeCount(index)
-      //               ],
-      //             ),
-      //           ),
-      //           Expanded(
-      //               child: iconnameindex == index
-      //                   ? Container(
-      //                       padding: EdgeInsets.all(0),
-      //                       child: Text(
-      //                         widget.iconsName![index],
-      //                         style: TextStyle(fontSize: 12),
-      //                       ),
-      //                     )
-      //                   : Container(
-      //                       padding: EdgeInsets.all(0),
-      //                     ))
-      //         ],
-      //       ),
-      //     );
-      //   },
-      // ),
-    );
+          height: MediaQuery.of(context).size.height * 0.045,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: widget.icons!
+                .map<Widget>(
+                    (element) => _iconButton(widget.icons!.indexOf(element)))
+                .toList(),
+          ),
+          // child: ListView.builder(
+          //   shrinkWrap: true,
+          //   scrollDirection: Axis.horizontal,
+          //   itemCount: widget.icons!.length,
+          //   itemBuilder: (BuildContext context, int index) {
+          //     return Container(
+          //       width: MediaQuery.of(context).size.width * 0.25,
+          //       padding: EdgeInsets.only(
+          //           left: MediaQuery.of(context).size.width * 0.05,
+          //           right: MediaQuery.of(context).size.width * 0.04),
+          //       child: Column(
+          //         children: [
+          //           Center(
+          //             child: Row(
+          //               mainAxisAlignment: MainAxisAlignment.center,
+          //               mainAxisSize: MainAxisSize.max,
+          //               children: [
+          //                 IconButton(
+          //                     padding: EdgeInsets.all(0),
+          //                     constraints: BoxConstraints(),
+          //                     onPressed: () {},
+          //                     icon: iconListWidget(context, index, false)),
+          //                 widget.isLoading == true ? Container() : _likeCount(index)
+          //               ],
+          //             ),
+          //           ),
+          //           Expanded(
+          //               child: iconnameindex == index
+          //                   ? Container(
+          //                       padding: EdgeInsets.all(0),
+          //                       child: Text(
+          //                         widget.iconsName![index],
+          //                         style: TextStyle(fontSize: 12),
+          //                       ),
+          //                     )
+          //                   : Container(
+          //                       padding: EdgeInsets.all(0),
+          //                     ))
+          //         ],
+          //       ),
+          //     );
+          //   },
+          // ),
+        );
   }
 
   int _start = 2;
@@ -242,71 +246,102 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     }
   }
 
-  Widget iconListWidget(context, index, bool totalCountIcon) {
-    return LikeButton(
-      isLiked: null,
-      onTap: (onLikeButtonTapped) async {
-        if (index == 3) {
-          await _shareNews();
-        }
-        return countIncrement(index);
+  Widget iconListWidget(context, index, bool totalCountIcon, scaffoldKey) {
+    // bool isOnline = hasNetwork();
+    return OfflineBuilder(
+      debounceDuration: Duration.zero,
+      connectivityBuilder: (BuildContext context,
+          ConnectivityResult connectivity, Widget child) {
+        return LikeButton(
+          isLiked: null,
+          onTap: (onLikeButtonTapped) async {
+            final bool connected = connectivity != ConnectivityResult.none;
+
+            if (connected) {
+              if (index == 3) {
+                await _shareNews();
+              }
+              return countIncrement(index);
+            } else if (!connected) {
+              Utility.showSnackBar(scaffoldKey, 'no internet connection', context);
+            }
+            // if (_connected) {
+            //   if (index == 3) {
+            //     await _shareNews();
+            //   }
+            //   return countIncrement(index);
+            // } else {
+            //   Utility.showSnackBar(scaffoldKey, 'msg', context);
+            // }
+
+            // if (connected == false) {
+            //   if (index == 3) {
+            //     await _shareNews();
+            //   }
+            //   return countIncrement(index);
+            // } else {
+            //   Utility.showSnackBar(scaffoldKey, 'msg', context);
+            // }
+          },
+          size: 20,
+          circleColor: CircleColor(
+            start: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black,
+            end: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black,
+          ),
+          bubblesColor: BubblesColor(
+            dotPrimaryColor: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black, // Color(0xff33b5e5),
+            dotSecondaryColor: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black, //Color(0xff0099cc),
+          ),
+          likeBuilder: (bool isLiked) {
+            return _isDownloadingFile == true &&
+                    index ==
+                        3 // Id the last button i.e. share button is pressed then it should show loader while the app is downloading the image from the URL.
+                ? CircularProgressIndicator(
+                    strokeWidth: 1,
+                  )
+                : Icon(
+                    IconData(widget.icons![index],
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: index == 0
+                        ? Colors.red
+                        : index == 1
+                            ? Colors.blue
+                            : index == 2
+                                ? Colors.green
+                                : Colors.black,
+                    size: Globals.deviceType == "phone"
+                        ? (index == 0 ? 26 : 21)
+                        : (index == 0 ? 30 : 25),
+                  );
+          },
+        );
       },
-      size: 20,
-      circleColor: CircleColor(
-        start: index == 0
-            ? Colors.red
-            : index == 1
-                ? Colors.blue
-                : index == 2
-                    ? Colors.green
-                    : Colors.black,
-        end: index == 0
-            ? Colors.red
-            : index == 1
-                ? Colors.blue
-                : index == 2
-                    ? Colors.green
-                    : Colors.black,
-      ),
-      bubblesColor: BubblesColor(
-        dotPrimaryColor: index == 0
-            ? Colors.red
-            : index == 1
-                ? Colors.blue
-                : index == 2
-                    ? Colors.green
-                    : Colors.black, // Color(0xff33b5e5),
-        dotSecondaryColor: index == 0
-            ? Colors.red
-            : index == 1
-                ? Colors.blue
-                : index == 2
-                    ? Colors.green
-                    : Colors.black, //Color(0xff0099cc),
-      ),
-      likeBuilder: (bool isLiked) {
-        return _isDownloadingFile == true &&
-                index ==
-                    3 // Id the last button i.e. share button is pressed then it should show loader while the app is downloading the image from the URL.
-            ? CircularProgressIndicator(
-                strokeWidth: 1,
-              )
-            : Icon(
-                IconData(widget.icons![index],
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: index == 0
-                    ? Colors.red
-                    : index == 1
-                        ? Colors.blue
-                        : index == 2
-                            ? Colors.green
-                            : Colors.black,
-                size: Globals.deviceType == "phone"
-                    ? (index == 0 ? 26 : 21)
-                    : (index == 0 ? 30 : 25),
-              );
-      },
+      child: Container(),
     );
   }
 
@@ -362,4 +397,13 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       child: Container(),
     );
   }
+
+//   Future<bool> hasNetwork() async {
+//   try {
+//     final result = await InternetAddress.lookup('example.com');
+//     return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+//   } on SocketException catch (_) {
+//     return false;
+//   }
+// }
 }

@@ -22,6 +22,7 @@ class Newdescription extends StatefulWidget {
       required this.isbuttomsheet,
       required this.language,
       required this.iconsName,
+      required this.connected,
       required this.icons})
       : super(key: key);
 
@@ -31,6 +32,7 @@ class Newdescription extends StatefulWidget {
   final String? language;
   final List? icons;
   final List? iconsName;
+  final bool? connected;
 
   _NewdescriptionState createState() => _NewdescriptionState();
 }
@@ -215,6 +217,7 @@ class _NewdescriptionState extends State<Newdescription> {
           newsObj: widget.obj,
           icons: widget.icons,
           iconsName: widget.iconsName,
+          scaffoldKey: _scaffoldKey,
         ), //countObj:widget.newsCountObj),
         // SpacerWidget(20),
         // Row(
