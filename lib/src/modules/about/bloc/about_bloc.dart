@@ -116,7 +116,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
           "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=About_App__c"));
       if (response.statusCode == 200) {
         //  dataArray = response.data["records"];
-        List<SharedList> _list = response.data['body']["Items"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
@@ -134,7 +134,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=About_App__c&objectName=About_Sub_Menu_App__c"));
       if (response.statusCode == 200) {
-        List<SharedList> _list = response.data['body']["Items"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');

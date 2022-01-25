@@ -204,7 +204,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Families_App__c'));
       if (response.statusCode == 200) {
         //   var dataArray = response.data["records"];
-        List<SharedList> _list = response.data['body']["Items"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
@@ -223,7 +223,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           "getSubRecords?parentId=$id&parentName=Families_App__c&objectName=Family_Sub_Menu_App__c"));
 
       if (response.statusCode == 200) {
-        List<SharedList> _list = response.data['body']["Items"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
@@ -244,7 +244,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           : "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c,Active_Status__c FROM Staff_Directory_App__c where About_App__c = '$categoryId'")}");
 
       if (response.statusCode == 200) {
-        List<SDlist> _list = response.data['body']["Items"]
+        List<SDlist> _list = response.data['body']
             .map<SDlist>((i) => SDlist.fromJson(i))
             .toList();
         _list.removeWhere((SDlist element) => element.status == 'Hide');

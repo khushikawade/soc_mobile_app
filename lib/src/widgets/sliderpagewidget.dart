@@ -34,6 +34,7 @@ class SliderWidget extends StatefulWidget {
   // final List? icons;
   // final List? iconsName;
   final iseventpage;
+  bool? connected;
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -178,6 +179,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                               date: widget.date,
                               isbuttomsheet: true,
                               language: Globals.selectedLanguage,
+                              connected: widget.connected,
                             );
             },
           ),

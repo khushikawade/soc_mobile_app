@@ -74,7 +74,7 @@ class SchoolDirectoryBloc
           "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c"));
       if (response.statusCode == 200) {
         //  dataArray = response.data["records"];
-        List<SchoolDirectoryList> _list = response.data['body']["Items"]
+        List<SchoolDirectoryList> _list = response.data['body']
             .map<SchoolDirectoryList>((i) => SchoolDirectoryList.fromJson(i))
             .toList();
         _list.removeWhere(
