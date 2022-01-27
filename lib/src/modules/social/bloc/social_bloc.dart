@@ -68,9 +68,20 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
     if (event is FetchSocialActionCount) {
       try {
         yield Loading();
+        String? _objectName = "SocialAction";
+        // String? _objectName = "${Strings.newsObjectName}";
+        LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
+        List<Item> _localData = await _localDb.getData();
+        // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+
+        if (_localData.isEmpty) {
+          yield Loading();
+        } else {
+          yield SocialActionCountSuccess(obj: _localData);
+        }
         List<SocialActionCountList> list = await fetchSocialActionCount();
 
-        List newList = [];
+        List<Item> newList = [];
         newList.clear();
         if (list.length == 0) {
           newList.addAll(Globals.socialList);
@@ -117,11 +128,21 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             }
           }
         }
+        await _localDb.clear();
+        newList.forEach((Item e) {
+          _localDb.addData(e);
+        });
 
         yield SocialActionCountSuccess(obj: newList);
       } catch (e) {
         print(e);
-        yield SocialErrorReceived(err: e);
+        // yield SocialErrorReceived(err: e);
+          String? _objectName = "NewsAction";
+        // String? _objectName = "${Strings.newsObjectName}";
+        LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
+        List<Item> _localData = await _localDb.getData();
+        // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+        yield SocialActionCountSuccess(obj: _localData);
       }
     }
 
