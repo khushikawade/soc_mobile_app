@@ -13,10 +13,6 @@ class NotificationList {
   final url;
   @HiveField(4)
   String? image;
-  // double? likeCount;
-  // double? thanksCount;
-  // double? helpfulCount;
-  // double? shareCount;
   @HiveField(5)
   dynamic completedAt;
   @HiveField(6)

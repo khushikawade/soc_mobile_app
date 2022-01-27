@@ -142,9 +142,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             //     ?
                             ClipRRect(
                           child: CachedNetworkImage(
-                            imageUrl: obj.image ??
-                                Globals.splashImageUrl ??
-                                Globals.homeObject["App_Logo__c"],
+                            imageUrl:obj.image != '' && obj.image != null 
+                            ? obj.image 
+                            : Globals.splashImageUrl != '' && Globals.splashImageUrl != null 
+                            ? Globals.splashImageUrl :Globals.homeObject["App_Logo__c"],    
                             placeholder: (context, url) => Container(
                                 alignment: Alignment.center,
                                 child: ShimmerLoading(

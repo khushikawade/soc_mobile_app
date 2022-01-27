@@ -137,7 +137,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       } catch (e) {
         print(e);
         // yield SocialErrorReceived(err: e);
-          String? _objectName = "social_action";
+        String? _objectName = "social_action";
         // String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
         List<Item> _localData = await _localDb.getData();

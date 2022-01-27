@@ -33,7 +33,7 @@ class NotificationListAdapter extends TypeAdapter<NotificationList> {
   @override
   void write(BinaryWriter writer, NotificationList obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
