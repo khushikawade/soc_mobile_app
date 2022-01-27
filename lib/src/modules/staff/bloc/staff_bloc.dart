@@ -133,7 +133,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_App__c'));
       if (response.statusCode == 200) {
-        List<SharedList> _list = response.data['body']["Items"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
@@ -151,7 +151,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=Staff_App__c&objectName=Staff_Sub_Menu_App__c"));
       if (response.statusCode == 200) {
-        List<SharedList> _list = response.data['body']["Items"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
