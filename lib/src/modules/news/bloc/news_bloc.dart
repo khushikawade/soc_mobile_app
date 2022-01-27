@@ -83,12 +83,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       try {
         yield NewsLoading();
         var data = await addNewsAction({
-          "notificationId": "${event.notificationId}${Overrides.SCHOOL_ID}",
+          "Notification_Id__c": "${event.notificationId}${Overrides.SCHOOL_ID}",
           // "School_App_ID__c": Overrides.SCHOOL_ID,
-          "like": event.like,
-          "thanks": event.thanks,
-          "helpful": event.helpful,
-          "share": event.shared,
+          "Like__c": event.like,
+          "Thanks__c": event.thanks,
+          "Helpful__c": event.helpful,
+          "Share__c": event.shared,
         });
         yield NewsActionSuccess(
           obj: data,
@@ -237,7 +237,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       //     .postapi("sobjects/News_Interactions__c", body: body);
 
       final ResponseModel response = await _dbServices
-          .postapi("addNewsAction?schoolId=${Overrides.SCHOOL_ID}", body: body);
+          .postapi("addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News_Interactions__c", body: body);
 
       if (response.statusCode == 200) {
         var res = response.data;
@@ -254,10 +254,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Future<List<ActionCountList>> fetchNewsActionCount() async {
     try {
       final ResponseModel response = await _dbServices
-          .getapi(Uri.parse('getNewsAction?schoolId=${Overrides.SCHOOL_ID}'));
+          .getapi(Uri.parse('getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'));
 
       if (response.statusCode == 200) {
-        var data = response.data["body"]["Items"];
+        var data = response.data["body"];
         final _allNotificationsAction = data;
         final data1 = _allNotificationsAction;
         // .where((e) => e['completed_at'] != null)

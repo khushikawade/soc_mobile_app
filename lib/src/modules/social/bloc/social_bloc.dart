@@ -3,6 +3,8 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/social/modal/social_action_count_list.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/db_service.dart';
+import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -20,7 +22,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   SocialBloc() : super(SocialInitial());
 
   SocialState get initialState => SocialInitial();
-
+ final DbServices _dbServices = DbServices();
   @override
   Stream<SocialState> mapEventToState(
     SocialEvent event,
@@ -151,12 +153,12 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         yield Loading();
 
         var data = await addSocailAction({
-          "socialId": "${event.id}",
+          "Notification_Id__c": "${event.id}",
           // "School_App_ID__c": event.schoolId,
-          "like": event.like,
-          "thanks": event.thanks,
-          "helpful": event.helpful,
-          "share": event.shared,
+          "Like__c": event.like,
+          "Thanks__c": event.thanks,
+          "Helpful__c": event.helpful,
+          "Share__c": event.shared,
         });
         yield SocialActionSuccess(
           obj: data,
@@ -201,18 +203,24 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future<List<SocialActionCountList>> fetchSocialActionCount() async {
     try {
-      var response = await http.get(
-        Uri.parse(
-            'https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/getSocialAction?schoolId=${Overrides.SCHOOL_ID}'),
-      );
+      final ResponseModel response = await _dbServices
+          .getapi(Uri.parse('getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
       if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        //data["records"];
-
-        return data["body"]["Items"]
-            .map<SocialActionCountList>(
-                (i) => SocialActionCountList.fromJson(i))
+        var data = response.data["body"];
+        final _allNotificationsAction = data;
+        final data1 = _allNotificationsAction;
+        // .where((e) => e['completed_at'] != null)
+        // .toList();
+        return data1
+            .map<SocialActionCountList>((i) => SocialActionCountList.fromJson(i))
             .toList();
+        // var data = json.decode(response.body);
+        // //data["records"];
+
+        // return data["body"]["Items"]
+        //     .map<SocialActionCountList>(
+        //         (i) => SocialActionCountList.fromJson(i))
+        //     .toList();
       } else {
         throw ('something_went_wrong');
       }
@@ -223,23 +231,35 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future addSocailAction(body) async {
     try {
-      final response = await http.post(
-        Uri.parse(
-            'https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/addSocialAction?schoolId=${Overrides.SCHOOL_ID}'),
-        body: json.encode(body),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept-Language': 'Accept-Language',
-        },
-      );
+     
+      final ResponseModel response = await _dbServices
+          .postapi("addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social_Interactions__c", body: body);
 
       if (response.statusCode == 200) {
-        var res = json.decode(response.body);
+        var res = response.data;
         var data = res["statusCode"];
         return data;
       } else {
         throw ('something_went_wrong');
       }
+     
+      // final response = await http.post(
+      //   Uri.parse(
+      //       'https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/addSocialAction?schoolId=${Overrides.SCHOOL_ID}'),
+      //   body: json.encode(body),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Accept-Language': 'Accept-Language',
+      //   },
+      // );
+
+      // if (response.statusCode == 200) {
+      //   var res = json.decode(response.body);
+      //   var data = res["statusCode"];
+      //   return data;
+      // } else {
+      //   throw ('something_went_wrong');
+      // }
     } catch (e) {
       throw (e);
     }
