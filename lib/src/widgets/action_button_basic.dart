@@ -6,25 +6,29 @@ import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:share/share.dart';
 
 class NewsActionBasic extends StatefulWidget {
-  NewsActionBasic(
-      {Key? key,
-      required this.obj,
-      required this.icons,
-      this.isLoading,
-      required this.page,
-      required this.iconsName})
-      : super(key: key);
+  NewsActionBasic({
+    Key? key,
+    required this.obj,
+    // required this.icons,
+    this.isLoading,
+    required this.page,
+    this.scaffoldKey,
+    // required this.iconsName
+  }) : super(key: key);
 
   final obj;
-  final List? icons;
-  final List? iconsName;
+  // final List? icons;
+  // final List? iconsName;
   final bool? isLoading;
   final String page;
+
+  final Key? scaffoldKey;
 
   _NewsActionBasicState createState() => _NewsActionBasicState();
 }
@@ -42,6 +46,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   // final ValueNotifier<double> share = ValueNotifier<double>(0);
   int? iconNameIndex;
   bool _isDownloadingFile = false;
+
   var f = NumberFormat.compact();
 
   Widget _iconButton(index) => Container(
@@ -63,7 +68,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                       padding: EdgeInsets.all(0),
                       constraints: BoxConstraints(),
                       onPressed: () {},
-                      icon: iconListWidget(context, index, false)),
+                      icon: iconListWidget(
+                          context, index, false, widget.scaffoldKey)),
                   widget.isLoading == true
                       ? Container()
                       : Padding(
@@ -78,7 +84,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                     ? Container(
                         padding: EdgeInsets.all(0),
                         child: Text(
-                          widget.iconsName![index],
+                          Globals.iconsName[index],
                           style: TextStyle(fontSize: 12),
                         ),
                       )
@@ -95,9 +101,9 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: widget.icons!
+        children: Globals.icons
             .map<Widget>(
-                (element) => _iconButton(widget.icons!.indexOf(element)))
+                (element) => _iconButton(Globals.icons.indexOf(element)))
             .toList(),
       ),
       // child: ListView.builder(
@@ -225,18 +231,15 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       setState(() {
         _isDownloadingFile = true;
       });
-
       String _title = widget.page == "news"
           ? widget.obj.headings["en"] ?? ""
-          : widget.obj.title["__cdata"] ?? "";
+          : Utility.convertHtmlTOText(widget.obj.title["__cdata"]) ?? "";
       String _description = widget.page == "news"
           ? widget.obj.contents["en"] ?? ""
-          : widget.obj.description["__cdata"] ?? "";
+          : Utility.convertHtmlTOText(widget.obj.description["__cdata"]) ?? "";
       String _imageUrl;
       File _image;
       if (widget.page == "news") {
-    
-
         _imageUrl = widget.obj.image != null && widget.obj.image != ""
             ? widget.obj.image
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
@@ -244,16 +247,16 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                 : Globals.homeObject["App_Logo__c"];
         _image = await Utility.createFileFromUrl(_imageUrl);
       } else {
-
         _imageUrl = widget.obj.mediaContent != "" &&
-                widget.obj.mediaContent["url"] != null
+                widget.obj.mediaContent != null &&
+                widget.obj.mediaContent["url"] != null &&
+                widget.obj.mediaContent["url"] != ""
             ? widget.obj.mediaContent["url"]
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
                 : Globals.homeObject["App_Logo__c"];
         _image = await Utility.createFileFromUrl(_imageUrl);
       }
-
       setState(() {
         _isDownloadingFile = false;
       });
@@ -271,71 +274,103 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     }
   }
 
-  Widget iconListWidget(context, index, bool totalCountIcon) {
-    return LikeButton(
-      isLiked: null,
-      onTap: (onLikeButtonTapped) async {
-        if (index == 3) {
-          await _shareNews();
-        }
-        return countIncrement(index);
+  Widget iconListWidget(context, index, bool totalCountIcon, scaffoldKey) {
+    // bool isOnline = hasNetwork();
+    return OfflineBuilder(
+      debounceDuration: Duration.zero,
+      connectivityBuilder: (BuildContext context,
+          ConnectivityResult connectivity, Widget child) {
+        return LikeButton(
+          isLiked: null,
+          onTap: (onLikeButtonTapped) async {
+            final bool connected = connectivity != ConnectivityResult.none;
+
+            if (connected) {
+              if (index == 3) {
+                await _shareNews();
+              }
+              return countIncrement(index);
+            } else if (!connected) {
+              Utility.showSnackBar(
+                  scaffoldKey, 'no internet connection', context);
+            }
+            // if (_connected) {
+            //   if (index == 3) {
+            //     await _shareNews();
+            //   }
+            //   return countIncrement(index);
+            // } else {
+            //   Utility.showSnackBar(scaffoldKey, 'msg', context);
+            // }
+
+            // if (connected == false) {
+            //   if (index == 3) {
+            //     await _shareNews();
+            //   }
+            //   return countIncrement(index);
+            // } else {
+            //   Utility.showSnackBar(scaffoldKey, 'msg', context);
+            // }
+          },
+          size: 20,
+          circleColor: CircleColor(
+            start: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black,
+            end: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black,
+          ),
+          bubblesColor: BubblesColor(
+            dotPrimaryColor: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black, // Color(0xff33b5e5),
+            dotSecondaryColor: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black, //Color(0xff0099cc),
+          ),
+          likeBuilder: (bool isLiked) {
+            return _isDownloadingFile == true &&
+                    index ==
+                        3 // Id the last button i.e. share button is pressed then it should show loader while the app is downloading the image from the URL.
+                ? CircularProgressIndicator(
+                    strokeWidth: 1,
+                  )
+                : Icon(
+                    IconData(Globals.icons[index],
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: index == 0
+                        ? Colors.red
+                        : index == 1
+                            ? Colors.blue
+                            : index == 2
+                                ? Colors.green
+                                : Colors.black,
+                    size: Globals.deviceType == "phone"
+                        ? (index == 0 ? 26 : 21)
+                        : (index == 0 ? 30 : 25),
+                  );
+          },
+        );
       },
-      size: 20,
-      circleColor: CircleColor(
-        start: index == 0
-            ? Colors.red
-            : index == 1
-                ? Colors.blue
-                : index == 2
-                    ? Colors.green
-                    : Colors.black,
-        end: index == 0
-            ? Colors.red
-            : index == 1
-                ? Colors.blue
-                : index == 2
-                    ? Colors.green
-                    : Colors.black,
-      ),
-      bubblesColor: BubblesColor(
-        dotPrimaryColor: index == 0
-            ? Colors.red
-            : index == 1
-                ? Colors.blue
-                : index == 2
-                    ? Colors.green
-                    : Colors.black, // Color(0xff33b5e5),
-        dotSecondaryColor: index == 0
-            ? Colors.red
-            : index == 1
-                ? Colors.blue
-                : index == 2
-                    ? Colors.green
-                    : Colors.black, //Color(0xff0099cc),
-      ),
-      likeBuilder: (bool isLiked) {
-        return _isDownloadingFile == true &&
-                index ==
-                    3 // Id the last button i.e. share button is pressed then it should show loader while the app is downloading the image from the URL.
-            ? CircularProgressIndicator(
-                strokeWidth: 1,
-              )
-            : Icon(
-                IconData(widget.icons![index],
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: index == 0
-                    ? Colors.red
-                    : index == 1
-                        ? Colors.blue
-                        : index == 2
-                            ? Colors.green
-                            : Colors.black,
-                size: Globals.deviceType == "phone"
-                    ? (index == 0 ? 26 : 21)
-                    : (index == 0 ? 30 : 25),
-              );
-      },
+      child: Container(),
     );
   }
 
@@ -389,4 +424,13 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       child: Container(),
     );
   }
+
+//   Future<bool> hasNetwork() async {
+//   try {
+//     final result = await InternetAddress.lookup('example.com');
+//     return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+//   } on SocketException catch (_) {
+//     return false;
+//   }
+// }
 }

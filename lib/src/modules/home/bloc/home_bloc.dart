@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
@@ -19,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:http/http.dart' as http;
 part 'home_event.dart';
 part 'home_state.dart';
 
@@ -240,9 +242,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         Uri.encodeFull(
             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
       );
+      // final response = await http.get(
+      //   Uri.parse(
+      //       'https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
+      // );
+
+// https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2?schoolId=a1f4W000007DQZPQA4&objectName=School_App__c
 
       if (response.statusCode == 200) {
-        final data = response.data['body']['Items'][0];
+        // final data1 = json.decode(response.body);
+        final data = response.data['body'][0];
+        // final data = response.data['body']['Items'][0];
+        // final data = data1['body'][0];
         Globals.appSetting = AppSetting.fromJson(data);
         // To take the backup for all the sections.
         _backupAppData();
@@ -250,7 +261,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
           print(AppTheme.kBannerHeight);
         }
-
         return data;
       }
     } catch (e) {

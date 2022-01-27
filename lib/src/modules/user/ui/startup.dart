@@ -249,6 +249,8 @@ class _StartupPageState extends State<StartupPage> {
                 bloc: _newsBloc,
                 listener: (context, state) async {
                   if (state is NewsLoaded) {
+                    Globals.notificationList.clear();
+                    Globals.notificationList.addAll(state.obj!);
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     SharedPreferences intPrefs =
@@ -263,7 +265,7 @@ class _StartupPageState extends State<StartupPage> {
                       prefs.setBool("enableIndicator", true);
                       Globals.indicator.value = true;
                     }
-                    setState(() {});
+                    // setState(() {});
                   }
                 },
                 child: Container(),

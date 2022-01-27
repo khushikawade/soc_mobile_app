@@ -17,11 +17,17 @@ class NotificationList {
   // double? thanksCount;
   // double? helpfulCount;
   // double? shareCount;
-  int? likeCount;
-  int? thanksCount;
-  int? helpfulCount;
-  int? shareCount;
+  @HiveField(5)
   dynamic completedAt;
+  @HiveField(6)
+  int? thanksCount;
+  @HiveField(7)
+  int? helpfulCount;
+  @HiveField(8)
+  int? shareCount;
+  @HiveField(9)
+  int? likeCount;
+  
 
   NotificationList(
       {this.id,

@@ -158,7 +158,9 @@ class AppSetting {
             : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
         id: json['Id'] as String?,
         ownerId: json['OwnerId'] as String?,
-        isDeleted: json['IsDeleted'] as bool?,
+        isDeleted: json['IsDeleted'].toString().toLowerCase() == 'true'
+            ? true
+            : false as bool?,
         name: json['Name'] as String?,
         createdDate: json['CreatedDate'] as String?,
         createdById: json['CreatedById'] as String?,
@@ -186,10 +188,10 @@ class AppSetting {
         contactAddressC: json['Contact_Address__c'] as String?,
         socialapiurlc: json['Social_API_URL__c'] as String?,
         contactOfficeLocationLatitudeS:
-            json['Contact_Office_Location__Latitude__s'] as double?,
+           double.parse(json['Contact_Office_Location__Latitude__s']),
         contactOfficeLocationLongitudeS:
-            json['Contact_Office_Location__Longitude__s'] as double?,
-        bannerHeightFactor: json['Banner_Height_Factor__c'],
+            double.parse(json['Contact_Office_Location__Longitude__s']),
+        bannerHeightFactor: double.parse(json['Banner_Height_Factor__c']),
         familyBannerImageC: json['Family_Banner_Image__c'] as String?,
         staffBannerImageC: json['Staff_Banner_Image__c'] as String?,
         studentBannerImageC: json['Student_Banner_Image__c'] as String?,
@@ -198,7 +200,7 @@ class AppSetting {
         resourcesBannerImageC: json['Resources_Banner_Image__c'] as String?,
         playStoreUrlC: json['Play_Store_URL__c'] as String?,
         appStoreUrlC: json['App_Store_URL__c'] as String?,
-        bannerHeightFactorC: json['Banner_Height_Factor__c'],
+        bannerHeightFactorC: double.parse(json['Banner_Height_Factor__c']),
         familyBannerColorC: json['Family_Banner_Color__c'] as String?,
         staffBannerColorC: json['Staff_Banner_Color__c'] as String?,
         studentBannerColorC: json['Student_Banner_Color__c'] as String?,

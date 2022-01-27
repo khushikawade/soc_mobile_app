@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:html/parser.dart';
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -188,6 +189,12 @@ class Utility {
     }
   }
 
+  static convertHtmlTOText(String data) {
+    String? convertedData = parseFragment(data).text;
+
+    return convertedData;
+  }
+
   static convertDateFormat2(date) {
     try {
       String dateNew = date;
@@ -199,6 +206,17 @@ class Utility {
       // return DateTime.parse((dateNew));
       // print(formatted);
       return formatted;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static generateUniqueId(date) {
+    try {
+      DateTime parseDate =
+          DateFormat('E, d MMM yyyy HH:mm:ss').parse(date).toLocal();
+      final uniqueId = parseDate.millisecondsSinceEpoch;
+      return uniqueId;
     } catch (e) {
       print(e);
     }

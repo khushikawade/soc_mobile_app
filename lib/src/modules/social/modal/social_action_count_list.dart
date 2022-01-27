@@ -1,7 +1,7 @@
-class ActionCountList {
+class SocialActionCountList {
   // String? name;
-  String? notificationId;
-  String? schoolId;
+  String? socialId;
+
   int? likeCount;
   int? thanksCount;
   int? helpfulCount;
@@ -11,18 +11,17 @@ class ActionCountList {
   // double? helpfulCount;
   // double? shareCount;
 
-  ActionCountList(
+  SocialActionCountList(
       {
       // this.name,
-      this.notificationId,
-      this.schoolId,
+      this.socialId,
       this.likeCount,
       this.thanksCount,
       this.helpfulCount,
       this.shareCount});
 
-  factory ActionCountList.fromJson(Map<String, dynamic> json) =>
-      ActionCountList(
+  factory SocialActionCountList.fromJson(Map<String, dynamic> json) =>
+      SocialActionCountList(
         // name: json['Name'] as String?,
         // schoolId: json['School_App__c'] as String?,
         // likeCount: json['Total_Likes__c'] as double?,
@@ -30,8 +29,8 @@ class ActionCountList {
         // helpfulCount: json['Total_helpful__c'] as double?,
         // shareCount: json['Total__c'] as double?,
 
-        notificationId: json['notificationId'] as String?,
-        schoolId: json['schoolId'] as String?,
+        socialId: json['Id'] as String?,
+
         likeCount: json['like'] as int?,
         thanksCount: json['thanks'] as int?,
         helpfulCount: json['helpful'] as int?,
@@ -39,8 +38,7 @@ class ActionCountList {
       );
 
   Map<String, dynamic> toJson() => {
-        'notificationId': notificationId,
-        'schoolId': schoolId,
+        'Id': socialId,
         'like': likeCount,
         'thanks': thanksCount,
         'helpful': helpfulCount,

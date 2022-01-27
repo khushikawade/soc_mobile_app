@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/news/ui/news_action_basic.dart';
+import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -15,22 +15,24 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:share/share.dart';
 
 class Newdescription extends StatefulWidget {
-  Newdescription(
-      {Key? key,
-      required this.obj,
-      required this.date,
-      required this.isbuttomsheet,
-      required this.language,
-      required this.iconsName,
-      required this.icons})
-      : super(key: key);
+  Newdescription({
+    Key? key,
+    required this.obj,
+    required this.date,
+    required this.isbuttomsheet,
+    required this.language,
+    required this.connected,
+    // required this.iconsName,
+    // required this.icons
+  }) : super(key: key);
 
   final obj;
   final String date;
   final bool isbuttomsheet;
   final String? language;
-  final List? icons;
-  final List? iconsName;
+  // final List? icons;
+  // final List? iconsName;
+  final bool? connected;
 
   _NewdescriptionState createState() => _NewdescriptionState();
 }
@@ -212,96 +214,13 @@ class _NewdescriptionState extends State<Newdescription> {
         ),
         SpacerWidget(AppTheme.kBodyPadding),
         NewsActionBasic(
-          newsObj: widget.obj,
-          icons: widget.icons,
-          iconsName: widget.iconsName,
-        ), //countObj:widget.newsCountObj),
-        // SpacerWidget(20),
-        // Row(
-        //   children: [
-        //     Container(
-        //       constraints: BoxConstraints(
-        //         minWidth: _KButtonSize,
-        //         maxWidth: 130.0,
-        //       ),
-        //       child: ElevatedButton(
-        //           onPressed: () async {
-        //             _shareNews();
-        //           },
-        //           child: _downloadingFile == true
-        //               ? SizedBox(
-        //                   height: 30,
-        //                   width: 30,
-        //                   child: CircularProgressIndicator(
-        //                     valueColor: new AlwaysStoppedAnimation<Color>(
-        //                         Theme.of(context).backgroundColor),
-        //                   ),
-        //                 )
-        //               : TranslationWidget(
-        //                   message: "Share".toString(),
-        //                   toLanguage: Globals.selectedLanguage,
-        //                   fromLanguage: "en",
-        //                   builder: (translatedMessage) => Text(
-        //                     translatedMessage.toString(),
-        //                   ),
-        //                 )),
-        //     ),
-        //   ],
-        // )
+          page: "news",
+          obj: widget.obj,
+          // icons: widget.icons,
+          // iconsName: widget.iconsName,
+        ),
       ],
     );
-  }
-
-  int _totalRetry = 0; // To maintain total no of retries.
-  _shareNews({String? fallBackImageUrl}) async {
-    try {
-      if (_downloadingFile == true) return;
-      setState(() {
-        _downloadingFile = true;
-      });
-      String _title = widget.obj.headings["en"] ?? "";
-      String _description = widget.obj.contents["en"] ?? "";
-      String _imageUrl;
-      if (fallBackImageUrl != null) {
-        _imageUrl = fallBackImageUrl;
-      } else {
-        _imageUrl = (widget.obj.image != null || widget.obj.image != "") &&
-                widget.obj.image.toString().contains("http")
-            ? widget.obj.image
-            : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-                ? Globals.splashImageUrl
-                : Globals.homeObject["App_Logo__c"];
-      }
-
-      File _image = await Utility.createFileFromUrl(_imageUrl);
-      setState(() {
-        _downloadingFile = false;
-      });
-      Share.shareFiles(
-        [_image.path],
-        subject: '$_title',
-        text: '$_description',
-      );
-      _totalRetry = 0;
-    } catch (e) {
-      print(e);
-      setState(() {
-        _downloadingFile = false;
-      });
-      // It should only call the fallback function if there's error with the hosted image and it should not run idefinately. Just 3 retries only.
-      // if (e.toString().contains('403') && _totalRetry < 3) {
-      if (_totalRetry < 3 && e.toString().contains('403')) {
-        print('Current retry :: $_totalRetry');
-        _totalRetry++;
-        String _fallBackImageUrl =
-            Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-                ? Globals.splashImageUrl
-                : Globals.homeObject["App_Logo__c"];
-        _shareNews(fallBackImageUrl: _fallBackImageUrl);
-      } else {
-        Utility.showSnackBar(_scaffoldKey, 'Something went wrong.', context);
-      }
-    }
   }
 
   Widget build(BuildContext context) {
