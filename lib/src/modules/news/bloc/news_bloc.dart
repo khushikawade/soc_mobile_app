@@ -101,9 +101,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     if (event is FetchActionCountList) {
       try {
         yield NewsLoading();
-        String? _objectName = "NewsA";
+        String? _objectName2 = "news_action";
         // String? _objectName = "${Strings.newsObjectName}";
-        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName2);
         List<NotificationList> _localData = await _localDb.getData();
         // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
 
@@ -168,9 +168,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       } catch (e) {
         print(e);
         // yield NewsErrorReceived(err: e);
-        String? _objectName = "NewsA";
+        String? _objectName2 = "news_action";
         // String? _objectName = "${Strings.newsObjectName}";
-        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName2);
         List<NotificationList> _localData = await _localDb.getData();
         // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
         yield ActionCountSuccess(obj: _localData);
