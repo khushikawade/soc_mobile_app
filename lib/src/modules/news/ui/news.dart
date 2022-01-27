@@ -217,8 +217,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget _buildnewsHeading(NotificationList obj) {
     return Container(
-        // color: Colors.red,
-        // height: 20,
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&

@@ -102,10 +102,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       try {
         yield NewsLoading();
         String? _objectName = "Action";
-       // String? _objectName = "${Strings.newsObjectName}";
+        // String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-       // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+        // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
 
         if (_localData.isEmpty) {
           yield NewsLoading();
@@ -163,14 +163,13 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         newList.forEach((NotificationList e) {
           _localDb.addData(e);
         });
-        print(newList);
         //  newsMainList.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
         yield ActionCountSuccess(obj: newList);
       } catch (e) {
         print(e);
         // yield NewsErrorReceived(err: e);
         String? _objectName = "Action";
-       // String? _objectName = "${Strings.newsObjectName}";
+        // String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
         // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
@@ -255,7 +254,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Future<List<ActionCountList>> fetchNewsActionCount() async {
     try {
       final ResponseModel response = await _dbServices
-          .getapi(Uri.parse('getNewsAction?schoolId=${Overrides.SCHOOL_ID}'));    
+          .getapi(Uri.parse('getNewsAction?schoolId=${Overrides.SCHOOL_ID}'));
 
       if (response.statusCode == 200) {
         var data = response.data["body"]["Items"];
