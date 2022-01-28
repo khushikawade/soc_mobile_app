@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:dio/dio.dart';
@@ -312,4 +313,11 @@ class Utility {
     await file.writeAsBytes(rs.data!);
     return file;
   }
+
+
+ static String utf8convert(String ?text) {
+    List<int> bytes = text.toString().codeUnits;
+    return utf8.decode(bytes);
+}
+
 }
