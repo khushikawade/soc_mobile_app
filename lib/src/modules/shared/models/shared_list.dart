@@ -1,3 +1,4 @@
+import 'package:Soc/src/services/utility.dart';
 import 'package:hive/hive.dart';
 part 'shared_list.g.dart';
 
@@ -45,7 +46,7 @@ class SharedList {
       this.status});
 
   factory SharedList.fromJson(Map<String, dynamic> json) => SharedList(
-      titleC: json['Title__c'] as String?,
+      titleC: Utility.utf8convert(json['Title__c'] as String?),
       appIconC: json['App_Icon__c'] as String?,
       appIconUrlC: json['App_Icon_URL__c'] as String?,
       appUrlC: json['URL__c'] as String?,
