@@ -22,11 +22,11 @@ class NotificationListAdapter extends TypeAdapter<NotificationList> {
       headings: fields[2] as dynamic,
       url: fields[3] as dynamic,
       image: fields[4] as String?,
+      likeCount: fields[9] as int?,
       completedAt: fields[5] as dynamic,
-      thanksCount: fields[6] as dynamic,
-      helpfulCount: fields[7] as dynamic,
-      shareCount: fields[8] as dynamic,
-      likeCount: fields[9] as dynamic,
+      thanksCount: fields[6] as int?,
+      helpfulCount: fields[7] as int?,
+      shareCount: fields[8] as int?,
     );
   }
 

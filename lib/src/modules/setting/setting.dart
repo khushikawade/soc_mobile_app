@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -251,7 +252,8 @@ class _SettingPageState extends State<SettingPage> {
 
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        Globals.homeObject = state.obj;
+                        //Globals.homeObject = state.obj;
+                          Globals.appSetting = AppSetting.fromJson(state.obj);
                         isloadingstate = false;
                         setState(() {});
                       }

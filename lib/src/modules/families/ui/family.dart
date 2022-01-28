@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 
 class FamilyPage extends StatefulWidget {
   final obj;
@@ -107,7 +108,8 @@ class _FamilyPageState extends State<FamilyPage> {
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
-                              Globals.homeObject = state.obj;
+                              // Globals.homeObject = state.obj;
+                               Globals.appSetting = AppSetting.fromJson(state.obj);
 
                               setState(() {});
                             }
@@ -133,22 +135,31 @@ class _FamilyPageState extends State<FamilyPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObject["Family_Banner_Image__c"] != null &&
-                Globals.homeObject["Family_Banner_Image__c"] != ''
+        body: 
+        Globals.appSetting.familyBannerImageC != null &&
+                 Globals.appSetting.familyBannerImageC  != ''
+        // Globals.homeObject["Family_Banner_Image__c"] != null &&
+        //         Globals.homeObject["Family_Banner_Image__c"] != ''
             ? NestedScrollView(
                 // controller: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    Globals.homeObject["Family_Banner_Image__c"] != null
+                    Globals.appSetting.familyBannerImageC != null
+                    // Globals.homeObject["Family_Banner_Image__c"] != null
                         ? BannerImageWidget(
                             imageUrl:
-                                Globals.homeObject["Family_Banner_Image__c"],
+                            Globals.appSetting.familyBannerImageC!,
+                                // Globals.homeObject["Family_Banner_Image__c"],
                             bgColor:
-                                Globals.homeObject["Family_Banner_Color__c"] !=
+                            Globals.appSetting.familyBannerColorC
+                                // Globals.homeObject["Family_Banner_Color__c"]
+                                 !=
                                         null
-                                    ? Utility.getColorFromHex(Globals
-                                        .homeObject["Family_Banner_Color__c"])
+                                    ? Utility.getColorFromHex(
+                                      Globals.appSetting.familyBannerColorC!
+                                      // Globals.homeObject["Family_Banner_Color__c"]
+                                        )
                                     : null,
                           )
                         : SliverAppBar(),

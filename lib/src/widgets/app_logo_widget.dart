@@ -30,7 +30,10 @@ class AppLogoWidget extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 0.0),
                   child: ClipRRect(
                       child: CustomIconWidget(
-                          iconUrl: Globals.homeObject["App_Logo__c"])))),
+                          iconUrl: 
+                          Globals.appSetting.appLogoC
+                          // Globals.homeObject["App_Logo__c"]
+                          )))),
         ],
       ),
     );

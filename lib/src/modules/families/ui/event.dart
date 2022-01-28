@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 
 // ignore: must_be_immutable
 class EventPage extends StatefulWidget {
@@ -357,7 +358,8 @@ class _EventPageState extends State<EventPage>
                                   if (state is BottomNavigationBarSuccess) {
                                     AppTheme.setDynamicTheme(
                                         Globals.appSetting, context);
-                                    Globals.homeObject = state.obj;
+                                        Globals.appSetting = AppSetting.fromJson(state.obj);
+                                    // Globals.homeObject = state.obj;
                                     setState(() {});
                                   }
                                 },

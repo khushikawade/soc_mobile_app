@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -155,7 +156,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       fitMethod: BoxFit.cover,
                       iconUrl: obj.imageUrlC ??
                           Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"]),
+                          Globals.appSetting.appLogoC
+                          // Globals.homeObject["App_Logo__c"]
+                          ),
 
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
@@ -345,7 +348,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
-                              Globals.homeObject = state.obj;
+                              // Globals.homeObject = state.obj;
+                              Globals.appSetting = AppSetting.fromJson(state.obj);
                               setState(() {});
                             } else if (state is HomeErrorReceived) {
                               ErrorMsgWidget();

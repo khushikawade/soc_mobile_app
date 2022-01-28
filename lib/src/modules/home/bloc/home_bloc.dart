@@ -41,8 +41,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final data = await fetchBottomNavigationBar();
         // Saving data to the Local DataBase
         AppSetting _appSetting = AppSetting.fromJson(data);
+        print(_appSetting);
+       //  Globals.homeObject = Globals.appSetting.toJson();
         // Should send the response first then it will sync data to the Local database.
-        yield BottomNavigationBarSuccess(obj: data);
+         yield BottomNavigationBarSuccess(obj: data);
+        
         // Saving remote data to the local database.
         LocalDatabase<AppSetting> _appSettingDb =
             LocalDatabase(Strings.schoolObjectName);
@@ -59,7 +62,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         await _appSettingDb.close();
         if (_appSettings.length > 0) {
           Globals.appSetting = _appSettings.last;
-          Globals.homeObject = Globals.appSetting.toJson();
+        //  Globals.homeObject = Globals.appSetting.toJson();
           yield BottomNavigationBarSuccess(obj: Globals.appSetting.toJson());
         } else {
           // if the School object does not found in the Local database then it will return the received error.
@@ -218,7 +221,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         });
         if (list.length > 0) {
           for (int i = 0; i < list.length; i++) {
-            if (list[i].schoolId == Globals.homeObject["Id"]) {
+            // if (list[i].schoolId == Globals.homeObject["Id"]) {
+              if (list[i].schoolId == Globals.appSetting.id) {
               filteredList.add(list[i]);
             }
             yield GlobalSearchSuccess(

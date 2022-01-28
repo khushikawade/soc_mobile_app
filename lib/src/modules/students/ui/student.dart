@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
@@ -336,7 +337,8 @@ class _StudentPageState extends State<StudentPage> {
                     listener: (context, state) async {
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        Globals.homeObject = state.obj;
+                      //  Globals.homeObject = state.obj;
+                        Globals.appSetting = AppSetting.fromJson(state.obj);
                         setState(() {});
                       } else if (state is HomeErrorReceived) {
                         Container(
@@ -365,23 +367,31 @@ class _StudentPageState extends State<StudentPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObject["Student_Banner_Image__c"] != null &&
-                Globals.homeObject["Student_Banner_Image__c"] != ''
+        body: 
+        // Globals.homeObject["Student_Banner_Image__c"] != null &&
+        //         Globals.homeObject["Student_Banner_Image__c"] != ''
+        Globals.appSetting.studentBannerColorC != null &&
+                Globals.appSetting.studentBannerColorC != ''
             ? NestedScrollView(
 
                 // controller: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    Globals.homeObject["Student_Banner_Image__c"] != null
+                    Globals.appSetting.studentBannerImageC != null
+                    // Globals.homeObject["Student_Banner_Image__c"] != null
                         ? BannerImageWidget(
                             imageUrl:
-                                Globals.homeObject["Student_Banner_Image__c"],
+                            Globals.appSetting.studentBannerImageC!,
+                                // Globals.homeObject["Student_Banner_Image__c"],
                             bgColor:
-                                Globals.homeObject["Student_Banner_Color__c"] !=
+                                // Globals.homeObject["Student_Banner_Color__c"] !=
+                                Globals.appSetting.studentBannerColorC !=
                                         null
-                                    ? Utility.getColorFromHex(Globals
-                                        .homeObject["Student_Banner_Color__c"])
+                                    ? Utility.getColorFromHex(
+                                      Globals.appSetting.studentBannerColorC!
+                                      // Globals.homeObject["Student_Banner_Color__c"]
+                                        )
                                     : null,
                           )
                         : SliverAppBar(),

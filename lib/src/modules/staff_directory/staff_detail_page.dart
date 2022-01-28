@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -44,7 +45,8 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         child: CommonImageWidget(
       iconUrl: widget.obj!.imageUrlC ??
           Globals.splashImageUrl ??
-          Globals.homeObject["App_Logo__c"],
+          // Globals.homeObject["App_Logo__c"],
+          Globals.appSetting.appLogoC,
       height: Utility.displayHeight(context) *
           (AppTheme.kDetailPageImageHeightFactor / 100),
       fitMethod: BoxFit.fitHeight,
@@ -293,7 +295,8 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   }
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
-                    Globals.homeObject = state.obj;
+                  //  Globals.homeObject = state.obj;
+                    Globals.appSetting = AppSetting.fromJson(state.obj);
                     isloadingstate = false;
                     setState(() {});
                   }
@@ -308,7 +311,8 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
               listener: (context, state) async {
                 if (state is BottomNavigationBarSuccess) {
                   AppTheme.setDynamicTheme(Globals.appSetting, context);
-                  Globals.homeObject = state.obj;
+                //  Globals.homeObject = state.obj;
+                  Globals.appSetting = AppSetting.fromJson(state.obj);
                   setState(() {});
                 }
               },

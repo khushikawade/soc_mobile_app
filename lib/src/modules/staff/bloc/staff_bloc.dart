@@ -31,7 +31,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
             LocalDatabase(Strings.staffObjectName);
 
         List<SharedList>? _localData = await _localDb.getData();
-        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
           yield StaffLoading();
@@ -131,7 +131,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_App__c'));
       if (response.statusCode == 200) {
-        List<SharedList> _list = response.data['body']["Items"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');

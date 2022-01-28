@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
@@ -113,7 +114,8 @@ class _SocialPageState extends State<SocialPage> {
                     : (imageLink != null && imageLink != "")
                         ? imageLink
                         : Globals.splashImageUrl ??
-                            Globals.homeObject["App_Logo__c"],
+                            // Globals.homeObject["App_Logo__c"],
+                            Globals.appSetting.appLogoC,
                 height: Globals.deviceType == "phone"
                     ? _kIconSize * 1.4
                     : _kIconSize * 2,
@@ -237,7 +239,8 @@ class _SocialPageState extends State<SocialPage> {
                                 Globals.appSetting, context);
 
                             setState(() {
-                              Globals.homeObject = state.obj;
+                             // Globals.homeObject = state.obj;
+                              Globals.appSetting = AppSetting.fromJson(state.obj);
                             });
                           }
                         },

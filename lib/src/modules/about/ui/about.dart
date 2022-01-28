@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 
 class AboutPage extends StatefulWidget {
   final obj;
@@ -268,7 +269,8 @@ class _AboutPageState extends State<AboutPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObject = state.obj;
+                                      Globals.appSetting = AppSetting.fromJson(state.obj);
+                                  // Globals.homeObject = state.obj;
                                   setState(() {});
                                 }
                               },
@@ -305,18 +307,24 @@ class _AboutPageState extends State<AboutPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObject["About_Banner_Image__c"] != null &&
-                Globals.homeObject["About_Banner_Image__c"] != ""
+        body:  Globals.appSetting.aboutBannerImageC != null &&
+               Globals.appSetting.aboutBannerImageC != ""
+        // Globals.homeObject["About_Banner_Image__c"] != null &&
+        //         Globals.homeObject["About_Banner_Image__c"] != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     BannerImageWidget(
-                      imageUrl: Globals.homeObject["About_Banner_Image__c"],
+                      imageUrl: Globals.appSetting.aboutBannerImageC!,
+                      // Globals.homeObject["About_Banner_Image__c"],
                       bgColor:
-                          Globals.homeObject["About_Banner_Color__c"] != null
+                        Globals.appSetting.aboutBannerColorC != null
+                          // Globals.homeObject["About_Banner_Color__c"] != null
                               ? Utility.getColorFromHex(
-                                  Globals.homeObject["About_Banner_Color__c"])
+                                  // Globals.homeObject["About_Banner_Color__c"]
+                                  Globals.appSetting.aboutBannerColorC!
+                                  )
                               : null,
                     )
                   ];

@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
@@ -145,7 +146,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             imageUrl:obj.image != '' && obj.image != null 
                             ? obj.image 
                             : Globals.splashImageUrl != '' && Globals.splashImageUrl != null 
-                            ? Globals.splashImageUrl :Globals.homeObject["App_Logo__c"],    
+                            ? Globals.splashImageUrl 
+                            // :Globals.homeObject["App_Logo__c"],  
+                            :Globals.appSetting.appLogoC,   
                             placeholder: (context, url) => Container(
                                 alignment: Alignment.center,
                                 child: ShimmerLoading(
@@ -380,7 +383,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           if (state is BottomNavigationBarSuccess) {
                             AppTheme.setDynamicTheme(
                                 Globals.appSetting, context);
-                            Globals.homeObject = state.obj;
+                            // Globals.homeObject = state.obj;
+                            Globals.appSetting = AppSetting.fromJson(state.obj);
+
                             setState(() {});
                           } else if (state is HomeErrorReceived) {
                             ErrorMsgWidget();

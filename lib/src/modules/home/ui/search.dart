@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
@@ -89,7 +90,8 @@ class _SearchPageState extends State<SearchPage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => ContactPage(
-                        obj: Globals.homeObject,
+                        obj: Globals.appSetting,
+                        //  Globals.homeObject,
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC!,
                         language: Globals.selectedLanguage!,
@@ -650,7 +652,8 @@ class _SearchPageState extends State<SearchPage> {
                                   if (state is BottomNavigationBarSuccess) {
                                     AppTheme.setDynamicTheme(
                                         Globals.appSetting, context);
-                                    Globals.homeObject = state.obj;
+                                    // Globals.homeObject = state.obj;
+                                    Globals.appSetting = AppSetting.fromJson(state.obj);
                                     setState(() {});
                                   } else if (state is HomeErrorReceived) {}
                                 },

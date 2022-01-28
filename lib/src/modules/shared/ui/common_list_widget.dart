@@ -58,7 +58,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => ContactPage(
-                    obj: Globals.homeObject,
+                    obj: Globals.appSetting,
+                    //  Globals.homeObject,
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage ?? "English",

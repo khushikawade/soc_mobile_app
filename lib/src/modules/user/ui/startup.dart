@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/services/shared_preference.dart';
@@ -220,7 +221,8 @@ class _StartupPageState extends State<StartupPage> {
                 listener: (context, state) async {
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
-                    Globals.homeObject = state.obj;
+                   //  Globals.homeObject = state.obj;
+                     Globals.appSetting = AppSetting.fromJson(state.obj);
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString(

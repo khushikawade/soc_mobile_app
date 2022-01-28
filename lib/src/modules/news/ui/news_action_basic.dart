@@ -241,7 +241,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
             ? widget.obj.image
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
-                : Globals.homeObject["App_Logo__c"];
+                // : Globals.homeObject["App_Logo__c"];
+                : Globals.appSetting.appLogoC;
         _image = await Utility.createFileFromUrl(_imageUrl);
       } else {
 
@@ -250,7 +251,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
             ? widget.obj.mediaContent["url"]
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
-                : Globals.homeObject["App_Logo__c"];
+                // : Globals.homeObject["App_Logo__c"];
+                : Globals.appSetting.appLogoC;
         _image = await Utility.createFileFromUrl(_imageUrl);
       }
 

@@ -65,13 +65,14 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       aboutBannerColorC: fields[45] as String?,
       schoolBannerColorC: fields[46] as String?,
       resourcesBannerColorC: fields[47] as String?,
+      contactImageC: fields[48] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AppSetting obj) {
     writer
-      ..writeByte(48)
+      ..writeByte(49)
       ..writeByte(0)
       ..write(obj.attributes)
       ..writeByte(1)
@@ -167,7 +168,9 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       ..writeByte(46)
       ..write(obj.schoolBannerColorC)
       ..writeByte(47)
-      ..write(obj.resourcesBannerColorC);
+      ..write(obj.resourcesBannerColorC)
+      ..writeByte(48)
+      ..write(obj.contactImageC);
   }
 
   @override

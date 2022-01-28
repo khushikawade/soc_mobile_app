@@ -87,7 +87,8 @@ class ImagePopupState extends State<ImagePopup>
                           minScale: PhotoViewComputedScale.contained * 0.8,
                           imageProvider: CachedNetworkImageProvider(
                             Globals.splashImageUrl ??
-                                Globals.homeObject["App_Logo__c"],
+                                // Globals.homeObject["App_Logo__c"],
+                                Globals.appSetting.appLogoC,
                           ),
                         ));
                       },

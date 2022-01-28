@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -113,7 +114,8 @@ class SocialDescription extends StatelessWidget {
                 listener: (context, state) async {
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
-                    Globals.homeObject = state.obj;
+                 //   Globals.homeObject = state.obj;
+                    Globals.appSetting = AppSetting.fromJson(state.obj);
                   }
                 },
                 child: Container(),
@@ -216,7 +218,8 @@ class SocialDescription extends StatelessWidget {
                     iconUrl: object.enclosure['url'] ??
                         Utility.getHTMLImgSrc(object.description["__cdata"]) ??
                         Globals.splashImageUrl ??
-                        Globals.homeObject["App_Logo__c"],
+                        // Globals.homeObject["App_Logo__c"],
+                        Globals.appSetting.appLogoC,
                     fitMethod: BoxFit.contain,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100)))
@@ -225,7 +228,8 @@ class SocialDescription extends StatelessWidget {
                 child: CommonImageWidget(
                     isOnTap: true,
                     iconUrl: Globals.splashImageUrl ??
-                        Globals.homeObject["App_Logo__c"],
+                        // Globals.homeObject["App_Logo__c"],
+                        Globals.appSetting.appLogoC,
                     fitMethod: BoxFit.contain,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100))),

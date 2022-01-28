@@ -14,7 +14,7 @@ class Globals {
   static String? deviceID;
   static int? outerBottombarIndex;
   static int? internalBottombarIndex;
-  static var homeObject;
+  // static var homeObject;
   static late AppSetting appSetting;
   static int? newsIndex;
   static Locale? myLocale;

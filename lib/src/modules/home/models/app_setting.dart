@@ -100,6 +100,8 @@ class AppSetting {
   final String? schoolBannerColorC;
   @HiveField(47)
   final String? resourcesBannerColorC;
+  @HiveField(48)
+  final String? contactImageC;
 
   AppSetting({
     this.attributes,
@@ -150,6 +152,7 @@ class AppSetting {
     this.aboutBannerColorC,
     this.schoolBannerColorC,
     this.resourcesBannerColorC,
+    this.contactImageC,
   });
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
@@ -184,7 +187,7 @@ class AppSetting {
         appBuildStatusC: json['App_Build_Status__c'] as String?,
         appInformationC: json['App_Information__c'] as String?,
         contactEmailC: json['Contact_Email__c'] as String?,
-        contactPhoneC: json['Contact_Phone__c'] as String?,
+         contactPhoneC: json['Contact_Phone__c'] as String?,
         contactAddressC: json['Contact_Address__c'] as String?,
         socialapiurlc: json['Social_API_URL__c'] as String?,
         contactOfficeLocationLatitudeS:
@@ -207,6 +210,7 @@ class AppSetting {
         aboutBannerColorC: json['About_Banner_Color__c'] as String?,
         schoolBannerColorC: json['School_Banner_Color__c'] as String?,
         resourcesBannerColorC: json['Resources_Banner_Color__c'] as String?,
+        contactImageC: json['Contact_Image__c'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -258,6 +262,7 @@ class AppSetting {
         'About_Banner_Color__c': aboutBannerColorC,
         'School_Banner_Color__c': schoolBannerColorC,
         'Resources_Banner_Color__c': resourcesBannerColorC,
+        'Contact_Image__c' :contactImageC,
       };
 
   AppSetting copyWith({
@@ -308,6 +313,7 @@ class AppSetting {
     String? aboutBannerColorC,
     String? schoolBannerColorC,
     String? resourcesBannerColorC,
+    String? contactImageC
   }) {
     return AppSetting(
       attributes: attributes ?? this.attributes,
@@ -361,6 +367,7 @@ class AppSetting {
       schoolBannerColorC: schoolBannerColorC ?? this.schoolBannerColorC,
       resourcesBannerColorC:
           resourcesBannerColorC ?? this.resourcesBannerColorC,
+          contactImageC: contactImageC ?? this.contactImageC
     );
   }
 }

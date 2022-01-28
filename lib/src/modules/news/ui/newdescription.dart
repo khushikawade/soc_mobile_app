@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -91,7 +92,8 @@ class _NewdescriptionState extends State<Newdescription> {
                   child: CommonImageWidget(
                 iconUrl: widget.obj.image ??
                     Globals.splashImageUrl ??
-                    Globals.homeObject["App_Logo__c"],
+                    Globals.appSetting.appLogoC,
+                    // Globals.homeObject["App_Logo__c"],
                 height: Utility.displayHeight(context) *
                     (AppTheme.kDetailPageImageHeightFactor / 100),
                 isOnTap: true,
@@ -206,7 +208,8 @@ class _NewdescriptionState extends State<Newdescription> {
             listener: (context, state) async {
               if (state is BottomNavigationBarSuccess) {
                 AppTheme.setDynamicTheme(Globals.appSetting, context);
-                Globals.homeObject = state.obj;
+                // Globals.homeObject = state.obj;
+                Globals.appSetting = AppSetting.fromJson(state.obj);
               }
             },
             child: Container(),

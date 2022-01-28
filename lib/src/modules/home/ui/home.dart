@@ -91,7 +91,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   List<Widget> _buildScreens() {
     List<Widget> _screens = [];
-    Globals.homeObject["Bottom_Navigation__c"]
+    // Globals.homeObject["Bottom_Navigation__c"]
+    Globals.appSetting.bottomNavigationC!
         .split(";")
         .forEach((String element) {
       element = element.toLowerCase();
@@ -131,12 +132,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
-    return Globals.homeObject["Bottom_Navigation__c"]
+    return Globals.appSetting.bottomNavigationC!
+    // Globals.homeObject["Bottom_Navigation__c"]
         .split(";")
         .map<PersistentBottomNavBarItem>(
       (item) {
         if (item.split("_")[0].toString().toLowerCase().contains("news")) {
-          Globals.newsIndex = Globals.homeObject["Bottom_Navigation__c"]
+          Globals.newsIndex = Globals.appSetting.bottomNavigationC!
+          // Globals.homeObject["Bottom_Navigation__c"]
               .split(";")
               .indexOf(item);
         }
