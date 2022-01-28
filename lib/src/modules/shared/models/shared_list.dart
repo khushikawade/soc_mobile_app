@@ -55,7 +55,7 @@ class SharedList {
       rtfHTMLC: json['RTF_HTML__c'] as String?,
       typeC: json['Type__c'] as String?,
       calendarId: json['Calendar_Id__c'] as String?,
-      sortOrder: json['Sort_Order__c'] ?? 100,
+      sortOrder: double.parse(json['Sort_Order__c'] ?? '100' ),
       status: json['Active_Status__c'] ?? 'Show');
 
   Map<String, dynamic> toJson() => {
