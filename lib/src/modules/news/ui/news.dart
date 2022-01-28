@@ -47,7 +47,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     bloc.add(FetchNotificationList());
-    // _countBloc.add(FetchActionCountList());
+     _countBloc.add(FetchActionCountList());
     hideIndicator();
     WidgetsBinding.instance!.addObserver(this);
   }
@@ -323,6 +323,29 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  BlocListener<NewsBloc, NewsState>(
+                    bloc: bloc,
+                    listener: (context, state) async {
+                      if (state is NewsLoaded) {
+                        _countBloc.add(FetchActionCountList());
+                        if (isActionAPICalled == false) {
+                          _countBloc.add(FetchActionCountList());
+                          isActionAPICalled = true;
+                        }
+                        // object = state.obj;
+                        SharedPreferences intPrefs =
+                            await SharedPreferences.getInstance();
+                        intPrefs.getInt("totalCount") == null
+                            ? intPrefs.setInt("totalCount", Globals.notiCount!)
+                            : intPrefs.getInt("totalCount");
+                        if (Globals.notiCount! >
+                            intPrefs.getInt("totalCount")!) {
+                          intPrefs.setInt("totalCount", Globals.notiCount!);
+                        }
+                      }
+                    },
+                    child: Container(),
+                  ),
                   BlocBuilder(
                       bloc: bloc,
                       builder: (BuildContext context, NewsState state) {
@@ -352,28 +375,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           return Container();
                         }
                       }),
-                  BlocListener<NewsBloc, NewsState>(
-                    bloc: bloc,
-                    listener: (context, state) async {
-                      if (state is NewsLoaded) {
-                        if (isActionAPICalled == false) {
-                          _countBloc.add(FetchActionCountList());
-                          isActionAPICalled = true;
-                        }
-                        // object = state.obj;
-                        SharedPreferences intPrefs =
-                            await SharedPreferences.getInstance();
-                        intPrefs.getInt("totalCount") == null
-                            ? intPrefs.setInt("totalCount", Globals.notiCount!)
-                            : intPrefs.getInt("totalCount");
-                        if (Globals.notiCount! >
-                            intPrefs.getInt("totalCount")!) {
-                          intPrefs.setInt("totalCount", Globals.notiCount!);
-                        }
-                      }
-                    },
-                    child: Container(),
-                  ),
+                  
                   Container(
                     height: 0,
                     width: 0,

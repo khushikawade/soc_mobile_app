@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/news/model/action_count_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
-import 'package:Soc/src/modules/social/modal/social_action_count_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -81,7 +81,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         } else {
           yield SocialActionCountSuccess(obj: _localData);
         }
-        List<SocialActionCountList> list = await fetchSocialActionCount();
+        List<ActionCountList> list = await fetchSocialActionCount();
 
         List<Item> newList = [];
         newList.clear();
@@ -91,7 +91,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           for (int i = 0; i < Globals.socialList.length; i++) {
             for (int j = 0; j < list.length; j++) {
               if ("${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t']}" ==
-                  list[j].socialId) {
+                  list[j].notificationId) {
                 newList.add(Item(
                     id: Globals.socialList[i].id,
                     title: Globals.socialList[i].title,
@@ -154,11 +154,11 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
         var data = await addSocailAction({
           "Notification_Id__c": "${event.id}",
-          "School_App__c": Overrides.SCHOOL_ID,
-          "Like__c": event.like,
-          "Thanks__c": event.thanks,
-          "Helpful__c": event.helpful,
-          "Share__c": event.shared,
+          // "School_App__c": Overrides.SCHOOL_ID,
+          "Like__c": "${event.like}",
+          "Thanks__c": "${event.thanks}",
+          "Helpful__c": "${event.helpful}",
+          "Share__c": "${event.shared}",
         });
         yield SocialActionSuccess(
           obj: data,
@@ -202,7 +202,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
     }
   }
 
-  Future<List<SocialActionCountList>> fetchSocialActionCount() async {
+  Future<List<ActionCountList>> fetchSocialActionCount() async {
     try {
       final ResponseModel response = await _dbServices
           .getapi(Uri.parse('getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
@@ -211,7 +211,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         final _allNotificationsAction = data;
         final data1 = _allNotificationsAction;
         return data1
-            .map<SocialActionCountList>((i) => SocialActionCountList.fromJson(i))
+            .map<ActionCountList>((i) => ActionCountList.fromJson(i))
             .toList();
       } else {
         throw ('something_went_wrong');
@@ -225,7 +225,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
     try {
      
       final ResponseModel response = await _dbServices
-          .postapi("addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social_Interactions__c", body: body);
+          .postapi("addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social", body: body);
 
       if (response.statusCode == 200) {
         var res = response.data;
