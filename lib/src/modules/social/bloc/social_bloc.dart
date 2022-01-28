@@ -154,7 +154,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
         var data = await addSocailAction({
           "Notification_Id__c": "${event.id}",
-          // "School_App_ID__c": event.schoolId,
+          "School_App__c": Overrides.SCHOOL_ID,
           "Like__c": event.like,
           "Thanks__c": event.thanks,
           "Helpful__c": event.helpful,
@@ -210,18 +210,9 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         var data = response.data["body"];
         final _allNotificationsAction = data;
         final data1 = _allNotificationsAction;
-        // .where((e) => e['completed_at'] != null)
-        // .toList();
         return data1
             .map<SocialActionCountList>((i) => SocialActionCountList.fromJson(i))
             .toList();
-        // var data = json.decode(response.body);
-        // //data["records"];
-
-        // return data["body"]["Items"]
-        //     .map<SocialActionCountList>(
-        //         (i) => SocialActionCountList.fromJson(i))
-        //     .toList();
       } else {
         throw ('something_went_wrong');
       }

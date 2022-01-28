@@ -84,7 +84,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsLoading();
         var data = await addNewsAction({
           "Notification_Id__c": "${event.notificationId}${Overrides.SCHOOL_ID}",
-          // "School_App_ID__c": Overrides.SCHOOL_ID,
           "Like__c": event.like,
           "Thanks__c": event.thanks,
           "Helpful__c": event.helpful,
@@ -236,8 +235,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       // final ResponseModel response = await _dbServices
       //     .postapi("sobjects/News_Interactions__c", body: body);
 
-      final ResponseModel response = await _dbServices
-          .postapi("addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News_Interactions__c", body: body);
+      final ResponseModel response = await _dbServices.postapi(
+          "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News_Interactions__c",
+          body: body);
 
       if (response.statusCode == 200) {
         var res = response.data;
@@ -253,8 +253,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<ActionCountList>> fetchNewsActionCount() async {
     try {
-      final ResponseModel response = await _dbServices
-          .getapi(Uri.parse('getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'));
+      final ResponseModel response = await _dbServices.getapi(Uri.parse(
+          'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'));
 
       if (response.statusCode == 200) {
         var data = response.data["body"];

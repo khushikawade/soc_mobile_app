@@ -30,20 +30,20 @@ class ActionCountList {
         // helpfulCount: json['Total_helpful__c'] as double?,
         // shareCount: json['Total__c'] as double?,
 
-        notificationId: json['notificationId'] as String?,
-        schoolId: json['schoolId'] as String?,
-        likeCount: json['like'] as int?,
-        thanksCount: json['thanks'] as int?,
-        helpfulCount: json['helpful'] as int?,
-        shareCount: json['share'] as int?,
+        notificationId: json['Notification_Id__c'] as String?,
+        schoolId: json['School_App__c'] as String?,
+        likeCount: json['Like__c'] as int?,
+        thanksCount: json['Thanks__c'] as int?,
+        helpfulCount: json['Helpful__c'] as int?,
+        shareCount: json['Share__c'] as int?,
       );
 
   Map<String, dynamic> toJson() => {
-        'notificationId': notificationId,
-        'schoolId': schoolId,
-        'like': likeCount,
-        'thanks': thanksCount,
+        'Notification_Id__c': notificationId,
+        'School_App__c': schoolId,
+        'Like__c': likeCount,
+        'Thanks__c': thanksCount,
         'helpful': helpfulCount,
-        'share': shareCount,
+        'Share__c': shareCount,
       };
 }
