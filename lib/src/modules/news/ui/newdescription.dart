@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
@@ -13,7 +11,6 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:share/share.dart';
 
 class Newdescription extends StatefulWidget {
   Newdescription({
@@ -93,7 +90,7 @@ class _NewdescriptionState extends State<Newdescription> {
                 iconUrl: widget.obj.image ??
                     Globals.splashImageUrl ??
                     Globals.appSetting.appLogoC,
-                    // Globals.homeObject["App_Logo__c"],
+                // Globals.homeObject["App_Logo__c"],
                 height: Utility.displayHeight(context) *
                     (AppTheme.kDetailPageImageHeightFactor / 100),
                 isOnTap: true,
@@ -125,7 +122,8 @@ class _NewdescriptionState extends State<Newdescription> {
                           : widget.obj.contents["en"],
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
-                  builder: (translatedMessage) => Linkify(
+                  builder: (translatedMessage) => SelectableLinkify(
+                    selectionControls: materialTextSelectionControls,
                     onOpen: (link) => _launchURL(link.url),
                     options: LinkifyOptions(humanize: false),
                     linkStyle: TextStyle(color: Colors.blue),
@@ -158,8 +156,10 @@ class _NewdescriptionState extends State<Newdescription> {
                     message: widget.obj.contents["en"].toString(),
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
-                    builder: (translatedMessage) => Linkify(
+                    builder: (translatedMessage) => SelectableLinkify(
+                      selectionControls: materialTextSelectionControls,
                       onOpen: (link) => _launchURL(link.url),
+                      enableInteractiveSelection: true,
                       options: LinkifyOptions(humanize: false),
                       linkStyle: TextStyle(color: Colors.blue),
                       text: translatedMessage.toString(),

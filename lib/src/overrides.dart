@@ -15,12 +15,13 @@ class Overrides {
       'https://rss.app/feeds/_DawozSyanCYfGaQg.xml';
   static const String kFontFam = 'SOC_CustomIcons';
   static const kFontPkg = null;
-  static String? API_BASE_URL = //'https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2';
-  //AWS getRecord1 : 
-  'https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/';
- //Production     'https://solvedconsultingdev.my.salesforce.com/services/data/v52.0/';
+  static String?
+      API_BASE_URL = //'https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2';
+      //AWS getRecord1 :
+      'https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/';
+  //Production     'https://solvedconsultingdev.my.salesforce.com/services/data/v52.0/';
 //Sandbox : 'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
   static String SCHOOL_ID =
-     "a1f4W000007DQaNQAW"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
+      "a1f4W000007DQaNQAW"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
 }

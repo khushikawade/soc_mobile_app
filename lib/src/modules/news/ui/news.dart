@@ -47,7 +47,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     bloc.add(FetchNotificationList());
-     _countBloc.add(FetchActionCountList());
+    _countBloc.add(FetchActionCountList());
     hideIndicator();
     WidgetsBinding.instance!.addObserver(this);
   }
@@ -143,12 +143,13 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             //     ?
                             ClipRRect(
                           child: CachedNetworkImage(
-                            imageUrl:obj.image != '' && obj.image != null 
-                            ? obj.image 
-                            : Globals.splashImageUrl != '' && Globals.splashImageUrl != null 
-                            ? Globals.splashImageUrl 
-                            // :Globals.homeObject["App_Logo__c"],  
-                            :Globals.appSetting.appLogoC,   
+                            imageUrl: obj.image != '' && obj.image != null
+                                ? obj.image
+                                : Globals.splashImageUrl != '' &&
+                                        Globals.splashImageUrl != null
+                                    ? Globals.splashImageUrl
+                                    // :Globals.homeObject["App_Logo__c"],
+                                    : Globals.appSetting.appLogoC,
                             placeholder: (context, url) => Container(
                                 alignment: Alignment.center,
                                 child: ShimmerLoading(
@@ -375,7 +376,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           return Container();
                         }
                       }),
-                  
+
                   Container(
                     height: 0,
                     width: 0,

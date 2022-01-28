@@ -8,6 +8,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/selectable_html_widget.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -59,36 +60,36 @@ class SocialDescription extends StatelessWidget {
     this.currentindex++;
   }
 
-  void htmlparser() {
-    List<String> data = [];
+  // void htmlparser() {
+  //   List<String> data = [];
 
-    data.add(object.description != null && object.description != ""
-        ? object.description["__cdata"]
-            .getElementsByClassName("time")[0]
-            .innerHtml
-        : "");
+  //   data.add(object.description != null && object.description != ""
+  //       ? object.description["__cdata"]
+  //           .getElementsByClassName("time")[0]
+  //           .innerHtml
+  //       : "");
 
-    final temp = object.description != null && object.description != ""
-        ? object.description["__cdata"].getElementsByClassName("temp")[0]
-        : "";
-    data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<span>")));
-    data.add(temp
-        .getElementsByTagName("small")[0]
-        .innerHtml
-        .replaceAll(RegExp("[(|)|℃]"), ""));
+  //   final temp = object.description != null && object.description != ""
+  //       ? object.description["__cdata"].getElementsByClassName("temp")[0]
+  //       : "";
+  //   data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<span>")));
+  //   data.add(temp
+  //       .getElementsByTagName("small")[0]
+  //       .innerHtml
+  //       .replaceAll(RegExp("[(|)|℃]"), ""));
 
-    final rows = object.description != null && object.description != ""
-        ? object.description["__cdata"]
-            .getElementsByTagName("table")[0]
-            .getElementsByTagName("td")
-        : "";
+  //   final rows = object.description != null && object.description != ""
+  //       ? object.description["__cdata"]
+  //           .getElementsByTagName("table")[0]
+  //           .getElementsByTagName("td")
+  //       : "";
 
-    rows.map((e) => e.innerHtml).forEach((element) {
-      if (element != "-") {
-        data.add(element);
-      }
-    });
-  }
+  //   rows.map((e) => e.innerHtml).forEach((element) {
+  //     if (element != "-") {
+  //       data.add(element);
+  //     }
+  //   });
+  // }
 
   Widget _buildItem(BuildContext context) {
     return RefreshIndicator(
@@ -114,7 +115,7 @@ class SocialDescription extends StatelessWidget {
                 listener: (context, state) async {
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
-                 //   Globals.homeObject = state.obj;
+                    //   Globals.homeObject = state.obj;
                     Globals.appSetting = AppSetting.fromJson(state.obj);
                   }
                 },
@@ -233,13 +234,14 @@ class SocialDescription extends StatelessWidget {
                     fitMethod: BoxFit.contain,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100))),
+        SpacerWidget(_kPadding),
         TranslationWidget(
           message:
               "${object.description != null && object.description != "" ? object.description["__cdata"].replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "") : ""}",
           // "${data + "#" + data2}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => Html(
+          builder: (translatedMessage) => SelectableHTMLWidget(
             onImageError: (m, d) {},
             onLinkTap: (String? url, RenderContext context,
                 Map<String, String> attributes, dom.Element? element) {
@@ -277,7 +279,7 @@ class SocialDescription extends StatelessWidget {
               "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => Html(
+          builder: (translatedMessage) => SelectableHTMLWidget(
             data: translatedMessage.toString(),
             // style: Theme.of(context).textTheme.subtitle1!,
             onLinkTap: (String? url, RenderContext context,
