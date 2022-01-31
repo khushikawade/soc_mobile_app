@@ -255,7 +255,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   translatedMessage.toString(),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: Theme.of(context).textTheme.headline4!,
+                  style: Theme.of(context).textTheme.headline2!,
                 ),
               )
             : marqueesText(
