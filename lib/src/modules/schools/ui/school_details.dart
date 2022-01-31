@@ -341,7 +341,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
                         // Globals.homeObject = state.obj;
-                         Globals.appSetting = AppSetting.fromJson(state.obj);
+                        Globals.appSetting = AppSetting.fromJson(state.obj);
                         isloadingstate = false;
                         setState(() {});
                       }
@@ -355,7 +355,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                     if (state is BottomNavigationBarSuccess) {
                       AppTheme.setDynamicTheme(Globals.appSetting, context);
                       // Globals.homeObject = state.obj;
-                       Globals.appSetting = AppSetting.fromJson(state.obj);
+                      Globals.appSetting = AppSetting.fromJson(state.obj);
                       setState(() {});
                     }
                   },
