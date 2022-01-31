@@ -57,33 +57,38 @@ class Recent {
   final geoLocation;
   @HiveField(22)
   dynamic descriptionC;
+  @HiveField(23)
+  final latitude;
+  @HiveField(24)
+  final longitude;
 
   Recent(
-    this.hiveobjid,
-    this.titleC,
-    this.appIconC,
-    this.id,
-    this.name,
-    this.objectName,
-    this.rtfHTMLC,
-    this.typeC,
+      this.hiveobjid,
+      this.titleC,
+      this.appIconC,
+      this.id,
+      this.name,
+      this.objectName,
+      this.rtfHTMLC,
+      this.typeC,
 
-    // this.schoolId,
-    // this.dept,
+      // this.schoolId,
+      // this.dept,
 
-    this.statusC,
-    this.urlC,
-    this.pdfURL,
-    this.sortOrder,
-    this.deepLink,
-    this.appURLC,
-    this.calendarId,
-    this.emailC,
-    this.imageUrlC,
-    this.phoneC,
-    this.webURLC,
-    this.address,
-    this.geoLocation,
-    this.descriptionC,
-  );
+      this.statusC,
+      this.urlC,
+      this.pdfURL,
+      this.sortOrder,
+      this.deepLink,
+      this.appURLC,
+      this.calendarId,
+      this.emailC,
+      this.imageUrlC,
+      this.phoneC,
+      this.webURLC,
+      this.address,
+      this.geoLocation,
+      this.descriptionC,
+      this.latitude,
+      this.longitude);
 }
