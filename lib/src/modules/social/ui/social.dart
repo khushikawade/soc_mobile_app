@@ -127,6 +127,7 @@ class _SocialPageState extends State<SocialPage> {
               title: obj.title["__cdata"] != null &&
                       obj.title["__cdata"].length > 1
                   ? Container(
+                   //   padding: EdgeInsets.only(top: 5),
                       width: MediaQuery.of(context).size.width * 0.69,
                       child: TranslationWidget(
                           message:
@@ -149,7 +150,8 @@ class _SocialPageState extends State<SocialPage> {
                     )
                   : Container(),
               subtitle: Container(
-                  padding: EdgeInsets.only(top: 7),
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.020),
                   child: actionButton(mainObj, obj, index)),
             )));
   }
@@ -239,8 +241,9 @@ class _SocialPageState extends State<SocialPage> {
                                 Globals.appSetting, context);
 
                             setState(() {
-                             // Globals.homeObject = state.obj;
-                              Globals.appSetting = AppSetting.fromJson(state.obj);
+                              // Globals.homeObject = state.obj;
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
                             });
                           }
                         },
