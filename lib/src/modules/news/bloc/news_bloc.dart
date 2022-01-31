@@ -84,10 +84,13 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsLoading();
         var data = await addNewsAction({
           "Notification_Id__c": "${event.notificationId}${Overrides.SCHOOL_ID}",
-          "Like__c": event.like,
-          "Thanks__c": event.thanks,
-          "Helpful__c": event.helpful,
-          "Share__c": event.shared,
+          "Like__c": "${event.like}",
+
+"Thanks__c": "${event.thanks}",
+
+"Helpful__c": "${event.helpful}",
+
+"Share__c": "${event.shared}",
         });
         yield NewsActionSuccess(
           obj: data,
