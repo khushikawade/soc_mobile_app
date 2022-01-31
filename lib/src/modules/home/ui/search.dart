@@ -75,6 +75,12 @@ class _SearchPageState extends State<SearchPage> {
     // print(" ************");
     // print(isDBListEmpty);
   }
+  getListData() async {
+    List list = await HiveDbServices().getListData(Strings.hiveLogName);
+    return list;
+    // print(" ************");
+    // print(isDBListEmpty);
+  }
 
   deleteItem() async {
     int itemcount = await HiveDbServices().getListLength(Strings.hiveLogName);
@@ -434,7 +440,7 @@ class _SearchPageState extends State<SearchPage> {
                 //     state.obj![i].appURLC != null) {
                 //   state.obj![i].typeC = "URL";
                 // }
-                if (state.obj[i].titleC != null) {
+                if (state.obj[i].titleC != null  ) {
                   searchList.add(state.obj![i]);
                 }
               }
@@ -478,7 +484,11 @@ class _SearchPageState extends State<SearchPage> {
                                               .primaryVariant)),
                             ),
                             onTap: () async {
-                              _route(data);
+                              List list = await  getListData();
+                                    if (list.contains(data.id)) {
+                                      
+                                    } else {
+                                      _route(data);
                               if (data != null) {
                                 deleteItem();
                                 final recentitem = Recent(
@@ -504,9 +514,12 @@ class _SearchPageState extends State<SearchPage> {
                                     data.statusC,
                                     data.sortOrder,
                                     data.calendarId);
+                                  
 
-                                addtoDataBase(recentitem);
+                                
                               }
+                                    }
+                              
                             }),
                       );
                     }).toList(),
