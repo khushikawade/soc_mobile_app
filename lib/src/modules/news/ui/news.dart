@@ -30,7 +30,7 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
-   static const double _kLabelSpacing = 16.0;
+  static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   static const double _kIconSize = 48.0;
   // static const double _kLabelSpacing = 16.0;
@@ -94,10 +94,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-             padding: EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing,
-          vertical: _kLabelSpacing / 2,
-        ),
+          padding: EdgeInsets.symmetric(
+            horizontal: _kLabelSpacing,
+            vertical: _kLabelSpacing / 2,
+          ),
           // padding: EdgeInsets.symmetric(
           //   // horizontal: _kLabelSpacing,
           //   vertical: _kLabelSpacing / 1,
@@ -134,7 +134,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 }
               },
               child: ListTile(
-                 contentPadding: EdgeInsets.only(left: 0),
+                contentPadding: EdgeInsets.only(left: 0),
                 leading: Container(
                     // color: Colors.green,
                     // alignment: Alignment.topCenter,
@@ -236,8 +236,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget _buildnewsHeading(NotificationList obj) {
     return Container(
-      
-       //   padding: EdgeInsets.only(top: 5),
+
+        //   padding: EdgeInsets.only(top: 5),
         width: MediaQuery.of(context).size.width * 0.69,
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&
@@ -269,10 +269,15 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   marqueesText(String title) {
     return title.length < 45
-        ? Text("$title", style: Theme.of(context).textTheme.headline4!)
+        ? Text("$title",
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  color: Theme.of(context).colorScheme.primaryVariant,
+                ))
         : Marquee(
             text: "$title",
-            style: Theme.of(context).textTheme.headline4!,
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  color: Theme.of(context).colorScheme.primaryVariant,
+                ),
             scrollAxis: Axis.horizontal,
             velocity: 30.0,
             crossAxisAlignment: CrossAxisAlignment.start,

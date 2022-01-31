@@ -127,7 +127,7 @@ class _SocialPageState extends State<SocialPage> {
               title: obj.title["__cdata"] != null &&
                       obj.title["__cdata"].length > 1
                   ? Container(
-                   //   padding: EdgeInsets.only(top: 5),
+                      //   padding: EdgeInsets.only(top: 5),
                       width: MediaQuery.of(context).size.width * 0.69,
                       child: TranslationWidget(
                           message:
