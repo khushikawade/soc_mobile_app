@@ -49,12 +49,12 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
     super.initState();
     homebloc.add(FetchBottomNavigationBar());
     Globals.callsnackbar = true;
-    if (widget.obj.geoLocation != null) {
+    if (widget.obj.latitude != null && widget.obj.longitude != null) {
       _markers.add(Marker(
           markerId: MarkerId("Location"),
           draggable: true,
-          position: LatLng(widget.obj.geoLocation["latitude"],
-              widget.obj.geoLocation["longitude"])));
+          position: LatLng(double.parse(widget.obj.latitude),
+              double.parse(widget.obj.longitude))));
     }
   }
 
@@ -135,8 +135,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
             decoration: BoxDecoration(
                 color: AppTheme.kmapBackgroundColor,
                 borderRadius: BorderRadius.all(Radius.circular(4.0))),
-            child: widget.obj.geoLocation["latitude"] != null &&
-                    widget.obj.geoLocation["longitude"] != null
+            child: widget.obj.latitude != null && widget.obj.longitude != null
                 ? SizedBox(
                     height: _kboxheight * 2,
                     child: GoogleMap(
@@ -152,8 +151,8 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                         myLocationEnabled: true,
                         initialCameraPosition: CameraPosition(
                             // bearing: 192.8334901395799,
-                            target: LatLng(widget.obj.geoLocation["latitude"],
-                                widget.obj.geoLocation["longitude"]),
+                            target: LatLng(double.parse(widget.obj.latitude),
+                                double.parse(widget.obj.longitude)),
                             zoom: 18,
                             tilt: 59.440717697143555),
                         markers: Set.from(_markers)),
@@ -268,7 +267,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
 
   void _launchMapsUrl() async {
     final url =
-        'https://www.google.com/maps/search/?api=1&query=${widget.obj.geoLocation["latitude"]},${widget.obj.geoLocation["longitude"]}';
+        'https://www.google.com/maps/search/?api=1&query=${widget.obj.latitude},${widget.obj.longitude}';
     await Utility.launchUrlOnExternalBrowser(url);
   }
 
@@ -281,7 +280,9 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         // SpacerWidget(_kLabelSpacing),
         _buildDescriptionWidget(),
         SpacerWidget(_kLabelSpacing * 2),
-        widget.obj.geoLocation != null ? _buildMapWidget() : Container(),
+        widget.obj.latitude != null && widget.obj.longitude != null
+            ? _buildMapWidget()
+            : Container(),
         SpacerWidget(_kLabelSpacing / 1.25),
         widget.obj.urlC != null ? _buildWebsiteWidget() : Container(),
         SpacerWidget(_kLabelSpacing / 1.25),
