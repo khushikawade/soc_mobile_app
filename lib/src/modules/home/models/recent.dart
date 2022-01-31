@@ -7,69 +7,83 @@ class Recent {
   int? hiveobjid;
   @HiveField(1)
   String? titleC;
-  // dynamic appIconC;
+
   @HiveField(2)
-  String? appURLC;
-  @HiveField(3)
-  String? urlC;
+  dynamic appIconC;
+
   @HiveField(4)
   String? id;
   @HiveField(5)
   String? name;
   @HiveField(6)
-  String? typeC;
+  String? objectName;
   @HiveField(7)
   String? rtfHTMLC;
   @HiveField(8)
-  String? pdfURL;
-  @HiveField(9)
-  String? deepLink;
-  @HiveField(10)
-  String? schoolId;
-  @HiveField(11)
-  String? dept;
-  @HiveField(12)
-  dynamic descriptionC;
-  @HiveField(13)
-  String? emailC;
-  @HiveField(14)
-  String? imageUrlC;
-  @HiveField(15)
-  String? phoneC;
-  @HiveField(16)
-  String? webURLC;
-  @HiveField(17)
-  String? address;
-  @HiveField(18)
-  final geoLocation;
-  @HiveField(19)
-  final statusC;
-  @HiveField(20)
-  final sortOrder;
-  @HiveField(21)
-  String? calendarId;
+  String? typeC;
 
+  // @HiveField(10)
+  // String? schoolId;
+  // @HiveField(11)
+  // String? dept;
+
+  // @HiveField(13)
+
+  @HiveField(9)
+  final statusC;
+  @HiveField(10)
+  String? urlC;
+  @HiveField(11)
+  String? pdfURL;
+  @HiveField(12)
+  final sortOrder;
+  @HiveField(13)
+  String? deepLink;
+  @HiveField(14)
+  String? appURLC;
+  @HiveField(15)
+  String? calendarId;
+  @HiveField(16)
+  String? emailC;
+  @HiveField(17)
+  String? imageUrlC;
+  @HiveField(18)
+  String? phoneC;
+  @HiveField(19)
+  String? webURLC;
+  @HiveField(20)
+  String? address;
+  @HiveField(21)
+  final geoLocation;
+  @HiveField(22)
+  dynamic descriptionC;
 
   Recent(
-      this.hiveobjid,
-      this.titleC,
-      this.appURLC,
-      this.urlC,
-      this.id,
-      this.name,
-      this.pdfURL,
-      this.rtfHTMLC,
-      this.typeC,
-      this.deepLink,
-      this.schoolId,
-      this.dept,
-      this.descriptionC,
-      this.emailC,
-      this.imageUrlC,
-      this.phoneC,
-      this.webURLC,
-      this.address,
-      this.geoLocation,
-      this.statusC,
-      this.sortOrder,this.calendarId);
+    this.hiveobjid,
+    this.titleC,
+    this.appIconC,
+    this.id,
+    this.name,
+    this.objectName,
+    this.rtfHTMLC,
+    this.typeC,
+
+    // this.schoolId,
+    // this.dept,
+
+    this.statusC,
+    this.urlC,
+    this.pdfURL,
+    this.sortOrder,
+    this.deepLink,
+    this.appURLC,
+    this.calendarId,
+    this.emailC,
+    this.imageUrlC,
+    this.phoneC,
+    this.webURLC,
+    this.address,
+    this.geoLocation,
+    this.descriptionC,
+  );
 }

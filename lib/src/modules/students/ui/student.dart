@@ -86,12 +86,13 @@ class _StudentPageState extends State<StudentPage> {
     }
   }
 
-  Widget _buildGrid(List<StudentApp> list, List<StudentApp> subList, String key) {
+  Widget _buildGrid(
+      List<StudentApp> list, List<StudentApp> subList, String key) {
     return list.length > 0
         ? //new OrientationBuilder(builder: (context, orientation) {
         //  print(orientation);
         GridView.count(
-           key: ValueKey(key),
+            key: ValueKey(key),
             padding: const EdgeInsets.only(bottom: AppTheme.klistPadding),
             childAspectRatio:
                 MediaQuery.of(context).orientation == Orientation.portrait
@@ -301,34 +302,34 @@ class _StudentPageState extends State<StudentPage> {
 
             return new Stack(fit: StackFit.expand, children: [
               // connected
-              //     ? 
-                  BlocBuilder<StudentBloc, StudentState>(
-                      bloc: _bloc,
-                      builder: (BuildContext contxt, StudentState state) {
-                        if (state is StudentInitial || state is Loading) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (state is StudentDataSucess) {
-                          return state.obj != null && state.obj!.length > 0
-                              ? Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
-                                  child:
-                                      _buildGrid(state.obj!, state.subFolder!, key))
-                              :
-                              // ListView(children: [
-                              NoDataFoundErrorWidget(
-                                  isResultNotFoundMsg: false,
-                                  isNews: false,
-                                  isEvents: false,
-                                  connected: connected,
-                                );
-                          // ]);
-                        } else if (state is StudentError) {
-                          return ListView(children: [ErrorMsgWidget()]);
-                        }
-                        return Container();
-                      }),
-                  // : NoInternetErrorWidget(
-                  //     connected: connected, issplashscreen: false),
+              //     ?
+              BlocBuilder<StudentBloc, StudentState>(
+                  bloc: _bloc,
+                  builder: (BuildContext contxt, StudentState state) {
+                    if (state is StudentInitial || state is Loading) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (state is StudentDataSucess) {
+                      return state.obj != null && state.obj!.length > 0
+                          ? Container(
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                              child:
+                                  _buildGrid(state.obj!, state.subFolder!, key))
+                          :
+                          // ListView(children: [
+                          NoDataFoundErrorWidget(
+                              isResultNotFoundMsg: false,
+                              isNews: false,
+                              isEvents: false,
+                              connected: connected,
+                            );
+                      // ]);
+                    } else if (state is StudentError) {
+                      return ListView(children: [ErrorMsgWidget()]);
+                    }
+                    return Container();
+                  }),
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false),
               Container(
                 height: 0,
                 width: 0,
@@ -337,7 +338,7 @@ class _StudentPageState extends State<StudentPage> {
                     listener: (context, state) async {
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      //  Globals.homeObject = state.obj;
+                        //  Globals.homeObject = state.obj;
                         Globals.appSetting = AppSetting.fromJson(state.obj);
                         setState(() {});
                       } else if (state is HomeErrorReceived) {
@@ -367,37 +368,37 @@ class _StudentPageState extends State<StudentPage> {
             setState(() {});
           },
         ),
-        body: 
-        // Globals.homeObject["Student_Banner_Image__c"] != null &&
-        //         Globals.homeObject["Student_Banner_Image__c"] != ''
-        Globals.appSetting.studentBannerColorC != null &&
-                Globals.appSetting.studentBannerColorC != ''
-            ? NestedScrollView(
+        body:
+            // Globals.homeObject["Student_Banner_Image__c"] != null &&
+            //         Globals.homeObject["Student_Banner_Image__c"] != ''
+            Globals.appSetting.studentBannerColorC != null &&
+                    Globals.appSetting.studentBannerColorC != ''
+                ? NestedScrollView(
 
-                // controller: _scrollController,
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return <Widget>[
-                    Globals.appSetting.studentBannerImageC != null
-                    // Globals.homeObject["Student_Banner_Image__c"] != null
-                        ? BannerImageWidget(
-                            imageUrl:
-                            Globals.appSetting.studentBannerImageC!,
+                    // controller: _scrollController,
+                    headerSliverBuilder:
+                        (BuildContext context, bool innerBoxIsScrolled) {
+                      return <Widget>[
+                        Globals.appSetting.studentBannerImageC != null
+                            // Globals.homeObject["Student_Banner_Image__c"] != null
+                            ? BannerImageWidget(
+                                imageUrl:
+                                    Globals.appSetting.studentBannerImageC!,
                                 // Globals.homeObject["Student_Banner_Image__c"],
-                            bgColor:
-                                // Globals.homeObject["Student_Banner_Color__c"] !=
-                                Globals.appSetting.studentBannerColorC !=
-                                        null
-                                    ? Utility.getColorFromHex(
-                                      Globals.appSetting.studentBannerColorC!
-                                      // Globals.homeObject["Student_Banner_Color__c"]
-                                        )
-                                    : null,
-                          )
-                        : SliverAppBar(),
-                  ];
-                },
-                body: _body('body1'))
-            : _body('body2'));
+                                bgColor:
+                                    // Globals.homeObject["Student_Banner_Color__c"] !=
+                                    Globals.appSetting.studentBannerColorC !=
+                                            null
+                                        ? Utility.getColorFromHex(Globals
+                                                .appSetting.studentBannerColorC!
+                                            // Globals.homeObject["Student_Banner_Color__c"]
+                                            )
+                                        : null,
+                              )
+                            : SliverAppBar(),
+                      ];
+                    },
+                    body: _body('body1'))
+                : _body('body2'));
   }
 }

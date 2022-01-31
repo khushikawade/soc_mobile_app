@@ -435,14 +435,14 @@ class _SearchPageState extends State<SearchPage> {
           if (state is GlobalSearchSuccess) {
             searchList.clear();
             for (int i = 0; i < state.obj!.length; i++) {
-              if (state.obj![i].statusC != "Hide") {
-                // if (state.obj![i].typeC == null &&
-                //     state.obj![i].appURLC != null) {
-                //   state.obj![i].typeC = "URL";
+              // if (state.obj![i].statusC != "Hide") {
+              if (state.obj![i].typeC == null &&
+                  state.obj![i].appURLC != null) {
+                state.obj![i].typeC = "URL";
+              }
+              if (state.obj[i].titleC != null && state.obj[i].titleC != "") {
+                searchList.add(state.obj![i]);
                 // }
-                if (state.obj[i].titleC != null  ) {
-                  searchList.add(state.obj![i]);
-                }
               }
             }
             return searchList.length > 0
@@ -489,38 +489,44 @@ class _SearchPageState extends State<SearchPage> {
                                       
                                     } else {
                                       _route(data);
+                                      print(Recent);
                               if (data != null) {
                                 deleteItem();
                                 final recentitem = Recent(
-                                    1,
-                                    data.titleC,
-                                    data.appURLC,
-                                    data.urlC,
-                                    data.id,
-                                    data.name,
-                                    data.typeC,
-                                    data.rtfHTMLC,
-                                    data.pdfURL,
-                                    data.deepLink,
-                                    data.schoolId,
-                                    data.dept,
-                                    data.descriptionC,
-                                    data.emailC,
-                                    data.imageUrlC,
-                                    data.phoneC,
-                                    data.webURLC,
-                                    data.address,
-                                    data.geoLocation,
-                                    data.statusC,
-                                    data.sortOrder,
-                                    data.calendarId);
-                                  
+                                  1,
+                                  data.titleC,
+                                  data.appIconC,
+                                  data.id,
+                                  data.name,
+                                  data.objectName,
+                                  data.rtfHTMLC,
+                                  data.typeC,
+                                  // data.schoolId,
+                                  // data.dept,
+                                  data.statusC,
+                                  data.urlC,
+                                  data.pdfURL,
+                                  data.sortOrder,
+                                  data.deepLink,
+                                  data.appURLC,
+                                  data.calendarId,
+                                  data.emailC,
+                                  data.imageUrlC,
+                                  data.phoneC,
+                                  data.webURLC,
+                                  data.address,
+                                  data.geoLocation,
+                                  data.descriptionC,
+                                );
 
                                 
                               }
                                     }
                               
-                            }),
+                              
+                                    }
+                              
+                            ),
                       );
                     }).toList(),
                   ))
@@ -666,7 +672,8 @@ class _SearchPageState extends State<SearchPage> {
                                     AppTheme.setDynamicTheme(
                                         Globals.appSetting, context);
                                     // Globals.homeObject = state.obj;
-                                    Globals.appSetting = AppSetting.fromJson(state.obj);
+                                    Globals.appSetting =
+                                        AppSetting.fromJson(state.obj);
                                     setState(() {});
                                   } else if (state is HomeErrorReceived) {}
                                 },

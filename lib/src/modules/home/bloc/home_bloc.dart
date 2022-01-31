@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 part 'home_event.dart';
 part 'home_state.dart';
 
@@ -42,10 +42,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         // Saving data to the Local DataBase
         AppSetting _appSetting = AppSetting.fromJson(data);
         print(_appSetting);
-       //  Globals.homeObject = Globals.appSetting.toJson();
+        //  Globals.homeObject = Globals.appSetting.toJson();
         // Should send the response first then it will sync data to the Local database.
-         yield BottomNavigationBarSuccess(obj: data);
-        
+        yield BottomNavigationBarSuccess(obj: data);
+
         // Saving remote data to the local database.
         LocalDatabase<AppSetting> _appSettingDb =
             LocalDatabase(Strings.schoolObjectName);
@@ -62,7 +62,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         await _appSettingDb.close();
         if (_appSettings.length > 0) {
           Globals.appSetting = _appSettings.last;
-        //  Globals.homeObject = Globals.appSetting.toJson();
+          //  Globals.homeObject = Globals.appSetting.toJson();
           yield BottomNavigationBarSuccess(obj: Globals.appSetting.toJson());
         } else {
           // if the School object does not found in the Local database then it will return the received error.
@@ -73,171 +73,182 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is GlobalSearchEvent) {
       try {
         yield SearchLoading();
-        List<SearchList> filteredList = [];
-        List<SearchList> list = await getGlobalSearch({
-          "q": event.keyword,
-          "sobjects": [
-            {
-              "fields": [
-                "Active_Status__c",
-                "Id",
-                "Title__c",
-                "URL__c",
-                "PDF_URL__c",
-                "Name",
-                "RTF_HTML__c",
-                "Type__c",
-                "School_App__c",
-                "Calendar_Id__c"
-              ],
-              "name": "Families_App__c"
-            },
-            {
-              "name": "Family_Sub_Menu_App__c",
-              "fields": [
-                "Active_Status__c",
-                "Id",
-                "Title__c",
-                "URL__c",
-                "PDF_URL__c",
-                "Name",
-                "RTF_HTML__c",
-                "Type__c",
-                "School_App__c"
-              ]
-            },
-            {
-              "name": "Staff_App__c",
-              "fields": [
-                "Active_Status__c",
-                "Id",
-                "Title__c",
-                "URL__c",
-                "PDF_URL__c",
-                "Name",
-                "RTF_HTML__c",
-                "Type__c",
-                "School_App__c",
-                "Calendar_Id__c"
-              ]
-            },
-            {
-              "fields": [
-                "Active_Status__c",
-                "Id",
-                "Title__c",
-                "URL__c",
-                "PDF_URL__c",
-                "Name",
-                "RTF_HTML__c",
-                "Type__c",
-                "School_App__c"
-              ],
-              "name": "Staff_Sub_Menu_App__c"
-            },
-            {
-              "fields": [
-                "Active_Status__c",
-                "Title__c",
-                "App_URL__c",
-                "App_Icon_URL__c",
-                "Deep_Link__c",
-                "Id",
-                "Name",
-                "App_Folder__c",
-                "School_App__c",
-                "Is_Folder__c",
-                "Sort_Order__c"
-              ],
-              "name": "Student_App__c"
-            },
-            {
-              "fields": [
-                "Id",
-                "Title__c",
-                "Active_Status__c",
-                "Website_URL__c",
-                "Sort_Order__c",
-                "RTF_HTML__c",
-                "Phone__c",
-                "Image_URL__c",
-                "Email__c",
-                "Type__c",
-                "Contact_Office_Location__c",
-                "Contact_Address__c",
-                "School_App__c"
-              ],
-              "name": "School_Directory_App__c"
-            },
-            {
-              "fields": [
-                "Id",
-                "Active_Status__c",
-                "Description__c",
-                "Email__c",
-                "Image_URL__c",
-                "Phone__c",
-                "School_App__c",
-                "Sort_Order__c",
-                "Title__c"
-              ],
-              "name": "Staff_Directory_App__c"
-            },
-            {
-              "fields": [
-                "Active_Status__c",
-                "App_Icon_URL__c",
-                "Sort_Order__c",
-                "Title__c",
-                "Id",
-                "Name",
-                "URL__c",
-                "Type__c",
-                "RTF_HTML__c",
-                "PDF_URL__c",
-                "School_App__c"
-              ],
-              "name": "Resources_App__c"
-            },
-            {
-              "fields": [
-                "Active_Status__c",
-                "App_Icon_URL__c",
-                "Sort_Order__c",
-                "Title__c",
-                "Id",
-                "URL__c",
-                "School_App__c",
-                "PDF_URL__c",
-                "RTF_HTML__c",
-                "Type__c"
-              ],
-              "name": "About_App__c"
-            }
-          ],
-          "in": "ALL",
-          "overallLimit": 100,
-          "defaultLimit": 10
-        });
-        if (list.length > 0) {
-          for (int i = 0; i < list.length; i++) {
-            // if (list[i].schoolId == Globals.homeObject["Id"]) {
-              if (list[i].schoolId == Globals.appSetting.id) {
-              filteredList.add(list[i]);
-            }
-            yield GlobalSearchSuccess(
-              obj: filteredList,
-            );
-          }
-        } else {
-          yield GlobalSearchSuccess(
-            obj: list,
-          );
-        }
+        List<SearchList> list = await getGlobalSearch(event.keyword);
+        yield GlobalSearchSuccess(
+          obj: list,
+        );
       } catch (e) {
         yield HomeErrorReceived(err: e);
       }
     }
+    // if (event is GlobalSearchEvent) {
+    //   try {
+    //     yield SearchLoading();
+    //     List<SearchList> filteredList = [];
+    //     List<SearchList> list = await getGlobalSearch({
+    //       "q": event.keyword,
+    //       "sobjects": [
+    //         {
+    //           "fields": [
+    //             "Active_Status__c",
+    //             "Id",
+    //             "Title__c",
+    //             "URL__c",
+    //             "PDF_URL__c",
+    //             "Name",
+    //             "RTF_HTML__c",
+    //             "Type__c",
+    //             "School_App__c",
+    //             "Calendar_Id__c"
+    //           ],
+    //           "name": "Families_App__c"
+    //         },
+    //         {
+    //           "name": "Family_Sub_Menu_App__c",
+    //           "fields": [
+    //             "Active_Status__c",
+    //             "Id",
+    //             "Title__c",
+    //             "URL__c",
+    //             "PDF_URL__c",
+    //             "Name",
+    //             "RTF_HTML__c",
+    //             "Type__c",
+    //             "School_App__c"
+    //           ]
+    //         },
+    //         {
+    //           "name": "Staff_App__c",
+    //           "fields": [
+    //             "Active_Status__c",
+    //             "Id",
+    //             "Title__c",
+    //             "URL__c",
+    //             "PDF_URL__c",
+    //             "Name",
+    //             "RTF_HTML__c",
+    //             "Type__c",
+    //             "School_App__c",
+    //             "Calendar_Id__c"
+    //           ]
+    //         },
+    //         {
+    //           "fields": [
+    //             "Active_Status__c",
+    //             "Id",
+    //             "Title__c",
+    //             "URL__c",
+    //             "PDF_URL__c",
+    //             "Name",
+    //             "RTF_HTML__c",
+    //             "Type__c",
+    //             "School_App__c"
+    //           ],
+    //           "name": "Staff_Sub_Menu_App__c"
+    //         },
+    //         {
+    //           "fields": [
+    //             "Active_Status__c",
+    //             "Title__c",
+    //             "App_URL__c",
+    //             "App_Icon_URL__c",
+    //             "Deep_Link__c",
+    //             "Id",
+    //             "Name",
+    //             "App_Folder__c",
+    //             "School_App__c",
+    //             "Is_Folder__c",
+    //             "Sort_Order__c"
+    //           ],
+    //           "name": "Student_App__c"
+    //         },
+    //         {
+    //           "fields": [
+    //             "Id",
+    //             "Title__c",
+    //             "Active_Status__c",
+    //             "Website_URL__c",
+    //             "Sort_Order__c",
+    //             "RTF_HTML__c",
+    //             "Phone__c",
+    //             "Image_URL__c",
+    //             "Email__c",
+    //             "Type__c",
+    //             "Contact_Office_Location__c",
+    //             "Contact_Address__c",
+    //             "School_App__c"
+    //           ],
+    //           "name": "School_Directory_App__c"
+    //         },
+    //         {
+    //           "fields": [
+    //             "Id",
+    //             "Active_Status__c",
+    //             "Description__c",
+    //             "Email__c",
+    //             "Image_URL__c",
+    //             "Phone__c",
+    //             "School_App__c",
+    //             "Sort_Order__c",
+    //             "Title__c"
+    //           ],
+    //           "name": "Staff_Directory_App__c"
+    //         },
+    //         {
+    //           "fields": [
+    //             "Active_Status__c",
+    //             "App_Icon_URL__c",
+    //             "Sort_Order__c",
+    //             "Title__c",
+    //             "Id",
+    //             "Name",
+    //             "URL__c",
+    //             "Type__c",
+    //             "RTF_HTML__c",
+    //             "PDF_URL__c",
+    //             "School_App__c"
+    //           ],
+    //           "name": "Resources_App__c"
+    //         },
+    //         {
+    //           "fields": [
+    //             "Active_Status__c",
+    //             "App_Icon_URL__c",
+    //             "Sort_Order__c",
+    //             "Title__c",
+    //             "Id",
+    //             "URL__c",
+    //             "School_App__c",
+    //             "PDF_URL__c",
+    //             "RTF_HTML__c",
+    //             "Type__c"
+    //           ],
+    //           "name": "About_App__c"
+    //         }
+    //       ],
+    //       "in": "ALL",
+    //       "overallLimit": 100,
+    //       "defaultLimit": 10
+    //     });
+    //     if (list.length > 0) {
+    //       for (int i = 0; i < list.length; i++) {
+    //         // if (list[i].schoolId == Globals.homeObject["Id"]) {
+    //           if (list[i].schoolId == Globals.appSetting.id) {
+    //           filteredList.add(list[i]);
+    //         }
+    //         yield GlobalSearchSuccess(
+    //           obj: filteredList,
+    //         );
+    //       }
+    //     } else {
+    //       yield GlobalSearchSuccess(
+    //         obj: list,
+    //       );
+    //     }
+    //   } catch (e) {
+    //     yield HomeErrorReceived(err: e);
+    //   }
+    // }
   }
 
   Future fetchBottomNavigationBar() async {
@@ -246,12 +257,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         Uri.encodeFull(
             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
       );
-      // final response = await http.get(
-      //   Uri.parse(
-      //       'https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
-      // );
-
-// https://7l6e6qqkb8.execute-api.us-east-2.amazonaws.com/dev/getRecords2?schoolId=a1f4W000007DQZPQA4&objectName=School_App__c
 
       if (response.statusCode == 200) {
         // final data1 = json.decode(response.body);
@@ -272,13 +277,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Future getGlobalSearch(body) async {
+  Future getGlobalSearch(keyword) async {
     try {
-      final ResponseModel response =
-          await _dbServices.postapi('parameterizedSearch', body: body);
-      // print(response.data);
+      // final ResponseModel response =
+      //     await _dbServices.postapi('parameterizedSearch', body: body);
+      final ResponseModel response = await _dbServices.getapi(
+          'searchRecords?schoolId=${Overrides.SCHOOL_ID}&keyword=$keyword');
       if (response.statusCode == 200) {
-        return response.data["searchRecords"]
+        return response.data["body"]
             .map<SearchList>((i) => SearchList.fromJson(i))
             .toList();
       }

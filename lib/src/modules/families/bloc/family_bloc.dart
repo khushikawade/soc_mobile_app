@@ -241,7 +241,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       final ResponseModel response = await _dbServices.getapi(categoryId == null
           ? Uri.encodeFull(
               'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c')
-          : "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c,Active_Status__c FROM Staff_Directory_App__c where About_App__c = '$categoryId'")}");
+          :'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId');
+          // "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c,Active_Status__c FROM Staff_Directory_App__c where About_App__c = '$categoryId'")}");
 
       if (response.statusCode == 200) {
         List<SDlist> _list = response.data['body']
