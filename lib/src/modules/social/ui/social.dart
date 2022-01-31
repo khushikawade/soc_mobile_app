@@ -17,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
+import 'package:marquee/marquee.dart';
 
 class SocialPage extends StatefulWidget {
   SocialPage({
@@ -127,31 +128,72 @@ class _SocialPageState extends State<SocialPage> {
               title: obj.title["__cdata"] != null &&
                       obj.title["__cdata"].length > 1
                   ? Container(
+                      //   padding: EdgeInsets.only(top: 5),
                       width: MediaQuery.of(context).size.width * 0.69,
-                      child: TranslationWidget(
+                      height: 18,
+                      child: 
+                      TranslationWidget(
                           message:
                               "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
                           fromLanguage: "en",
                           toLanguage: Globals.selectedLanguage,
                           builder: (translatedMessage) {
-                            return Text(translatedMessage.toString(),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
-                                    ));
-                          }),
+                            return marqueesText(
+                translatedMessage.toString()
+              );
+                            // Text(translatedMessage.toString(),
+                            //     overflow: TextOverflow.ellipsis,
+                            //     maxLines: 1,
+                            //     style: Theme.of(context)
+                            //         .textTheme
+                            //         .headline2!
+                            //         .copyWith(
+                            //           color: Theme.of(context)
+                            //               .colorScheme
+                            //               .primaryVariant,
+                            //         ));
+                          })
+              //             : marqueesText(
+              //   obj.title!.length > 0 &&
+              //           obj.title != "" &&
+              //           obj.title != null
+              //       ? obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")
+              //       : obj.title["__cdata"].toString().split("\n")[0],
+              // ),
                     )
                   : Container(),
               subtitle: Container(
-                  padding: EdgeInsets.only(top: 7),
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.020),
                   child: actionButton(mainObj, obj, index)),
             )));
+  }
+  marqueesText(String title) {
+    return title.length < 45
+        ? 
+        Text("$title",
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  color: Theme.of(context).colorScheme.primaryVariant,
+                ))
+        : Marquee(
+            text: "$title",
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  color: Theme.of(context).colorScheme.primaryVariant,
+                ),
+            scrollAxis: Axis.horizontal,
+            velocity: 30.0,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            blankSpace: //50,
+                MediaQuery.of(context).size.width * 0.5,
+            // velocity: 100.0,
+            pauseAfterRound: Duration(seconds: 5),
+            showFadingOnlyWhenScrolling: true,
+            startPadding: 0.0,
+            accelerationDuration: Duration(seconds: 1),
+            accelerationCurve: Curves.linear,
+            decelerationDuration: Duration(milliseconds: 500),
+            decelerationCurve: Curves.easeOut,
+          );
   }
 
   Widget makeList(obj) {
@@ -239,8 +281,9 @@ class _SocialPageState extends State<SocialPage> {
                                 Globals.appSetting, context);
 
                             setState(() {
-                             // Globals.homeObject = state.obj;
-                              Globals.appSetting = AppSetting.fromJson(state.obj);
+                              // Globals.homeObject = state.obj;
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
                             });
                           }
                         },

@@ -9,6 +9,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -29,6 +30,7 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
+  static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   static const double _kIconSize = 48.0;
   // static const double _kLabelSpacing = 16.0;
@@ -92,6 +94,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: _kLabelSpacing,
+            vertical: _kLabelSpacing / 2,
+          ),
           // padding: EdgeInsets.symmetric(
           //   // horizontal: _kLabelSpacing,
           //   vertical: _kLabelSpacing / 1,
@@ -127,51 +133,59 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   }
                 }
               },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SpacerWidget(20),
-                  ListTile(
-                    // contentPadding: EdgeInsets.only(),
-                    leading: Container(
-                        // color: Colors.green,
-                        alignment: Alignment.topCenter,
-                        width: MediaQuery.of(context).size.width * 0.12,
-                        height: MediaQuery.of(context).size.width * 0.5,
-                        child:
-                            //obj.image != null
-                            //     ?
-                            ClipRRect(
-                          child: CachedNetworkImage(
-                            imageUrl: obj.image != '' && obj.image != null
-                                ? obj.image
-                                : Globals.splashImageUrl != '' &&
-                                        Globals.splashImageUrl != null
-                                    ? Globals.splashImageUrl
-                                    // :Globals.homeObject["App_Logo__c"],
-                                    : Globals.appSetting.appLogoC,
-                            placeholder: (context, url) => Container(
-                                alignment: Alignment.center,
-                                child: ShimmerLoading(
-                                  isLoading: true,
-                                  child: Container(
-                                    width: _kIconSize * 1.4,
-                                    height: _kIconSize * 1.5,
-                                    color: Colors.white,
-                                  ),
-                                )),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                        )),
-                    title: Container(
-                        padding: EdgeInsets.only(bottom: 7),
-                        child: _buildnewsHeading(obj)),
-                    subtitle: Container(
-                        // padding: EdgeInsets.only(top: 10),
-                        child: actionButton(list, obj, index)),
-                  ),
-                ],
+              child: ListTile(
+                contentPadding: EdgeInsets.only(left: 0),
+                leading: Container(
+                    // color: Colors.green,
+                    // alignment: Alignment.topCenter,
+                    // width: MediaQuery.of(context).size.width * 0.12,
+                    // height: MediaQuery.of(context).size.width * 0.5,
+                    child:
+                        //obj.image != null
+                        //     ?
+                        //     ClipRRect(
+                        //   child: CachedNetworkImage(
+                        //     imageUrl:obj.image != '' && obj.image != null
+                        //     ? obj.image
+                        //     : Globals.splashImageUrl != '' && Globals.splashImageUrl != null
+                        //     ? Globals.splashImageUrl
+                        //     // :Globals.homeObject["App_Logo__c"],
+                        //     :Globals.appSetting.appLogoC,
+                        //     placeholder: (context, url) => Container(
+                        //         alignment: Alignment.center,
+                        //         child: ShimmerLoading(
+                        //           isLoading: true,
+                        //           child: Container(
+                        //             width: _kIconSize * 1.4,
+                        //             height: _kIconSize * 1.5,
+                        //             color: Colors.white,
+                        //           ),
+                        //         )),
+                        //     errorWidget: (context, url, error) =>
+                        //         Icon(Icons.error),
+                        //   ),
+                        // )
+
+                        CommonImageWidget(
+                  fitMethod: BoxFit.contain,
+                  iconUrl: obj.image != '' && obj.image != null
+                      ? obj.image
+                      : Globals.splashImageUrl != '' &&
+                              Globals.splashImageUrl != null
+                          ? Globals.splashImageUrl
+                          : Globals.appSetting.appLogoC,
+                  height: Globals.deviceType == "phone"
+                      ? _kIconSize * 1.4
+                      : _kIconSize * 2,
+                  width: Globals.deviceType == "phone"
+                      ? _kIconSize * 1.4
+                      : _kIconSize * 2,
+                )),
+                title: _buildnewsHeading(obj),
+                subtitle: Container(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.020),
+                    child: actionButton(list, obj, index)),
               )),
         ),
       ],
@@ -222,6 +236,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget _buildnewsHeading(NotificationList obj) {
     return Container(
+
+        //   padding: EdgeInsets.only(top: 5),
+        width: MediaQuery.of(context).size.width * 0.69,
         alignment: Alignment.centerLeft,
         child: Globals.selectedLanguage != null &&
                 Globals.selectedLanguage != "English" &&
@@ -238,7 +255,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   translatedMessage.toString(),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: Theme.of(context).textTheme.headline4!,
+                  style: Theme.of(context).textTheme.headline2!,
                 ),
               )
             : marqueesText(
@@ -252,10 +269,15 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   marqueesText(String title) {
     return title.length < 45
-        ? Text("$title", style: Theme.of(context).textTheme.headline4!)
+        ? Text("$title",
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  color: Theme.of(context).colorScheme.primaryVariant,
+                ))
         : Marquee(
             text: "$title",
-            style: Theme.of(context).textTheme.headline4!,
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  color: Theme.of(context).colorScheme.primaryVariant,
+                ),
             scrollAxis: Axis.horizontal,
             velocity: 30.0,
             crossAxisAlignment: CrossAxisAlignment.start,

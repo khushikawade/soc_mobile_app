@@ -457,7 +457,6 @@ class _SearchPageState extends State<SearchPage> {
                                     data.descriptionC,
                                     data.latitude,
                                     data.longitude);
-
                                 addtoDataBase(recentitem);
                               }
                             }),
@@ -491,22 +490,22 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildLeading(obj) {
-    if (obj.appIconUrlC != null && obj.appIconUrlC != "") {
+    if (obj.appIconUrlC != null) {
       return CustomIconWidget(
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     }
-    // else if (obj.appIconC != null) {
-    //   return Icon(
-    //     IconData(
-    //       int.parse('0x${obj.appIconC!}'),
-    //       fontFamily: 'FontAwesomeSolid',
-    //       fontPackage: 'font_awesome_flutter',
-    //     ),
-    //     color: Theme.of(context).colorScheme.primary,
-    //     size: Globals.deviceType == "phone" ? 24 : 32,
-    //   );
-    // }
+    else if (obj.appIconC != null) {
+      return Icon(
+        IconData(
+          int.parse('0x${obj.appIconC!}'),
+          fontFamily: 'FontAwesomeSolid',
+          fontPackage: 'font_awesome_flutter',
+        ),
+        color: Theme.of(context).colorScheme.primary,
+        size: Globals.deviceType == "phone" ? 24 : 32,
+      );
+    }
     else {
       return CustomIconWidget(
         iconUrl: Overrides.defaultIconUrl,

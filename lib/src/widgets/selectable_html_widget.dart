@@ -4,6 +4,7 @@ import 'package:html/dom.dart' as dom;
 // import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_html/src/html_elements.dart';
 
+
 class SelectableHTMLWidget extends StatelessWidget {
   SelectableHTMLWidget(
       {Key? key,
