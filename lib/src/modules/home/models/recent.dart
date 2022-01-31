@@ -9,7 +9,7 @@ class Recent {
   String? titleC;
 
   @HiveField(2)
-  dynamic appIconC;
+  dynamic appIconUrlC;
 
   @HiveField(4)
   String? id;
@@ -65,7 +65,7 @@ class Recent {
   Recent(
       this.hiveobjid,
       this.titleC,
-      this.appIconC,
+      this.appIconUrlC,
       this.id,
       this.name,
       this.objectName,

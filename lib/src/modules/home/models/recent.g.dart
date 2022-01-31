@@ -53,7 +53,7 @@ class RecentAdapter extends TypeAdapter<Recent> {
       ..writeByte(1)
       ..write(obj.titleC)
       ..writeByte(2)
-      ..write(obj.appIconC)
+      ..write(obj.appIconUrlC)
       ..writeByte(4)
       ..write(obj.id)
       ..writeByte(5)

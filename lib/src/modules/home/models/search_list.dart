@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/home/models/search_attributes.dart';
 class SearchList {
   // SearchAttributes? attributes;
   String? titleC;
-  dynamic appIconC;
+  dynamic appIconUrlC;
   dynamic appURLC;
   dynamic urlC;
   String? id;
@@ -34,7 +34,7 @@ class SearchList {
       {
       // this.attributes,
       this.titleC,
-      this.appIconC,
+      this.appIconUrlC,
       this.appURLC,
       this.urlC,
       this.id,
@@ -65,8 +65,8 @@ class SearchList {
       //     : SearchAttributes.fromJson(
       //         json['attributes'] as Map<String, dynamic>),
       titleC: json['Title__c'] as String?,
-      appIconC: json['Icon_URL'] as String?,
-      // appIconC: json['App_Icon__c'] as String?,
+      appIconUrlC: json['Icon_URL'] as String?,
+      // appIconUrlC: json['App_Icon__c'] as String?,
       appURLC: json['App_URL__c'] as String?,
       urlC: json['URL__c'] as String?,
       id: json['Id'] as String?,
@@ -94,8 +94,8 @@ class SearchList {
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
         'Title__c': titleC,
-        'Icon_URL': appIconC,
-        // 'App_Icon__c': appIconC,
+        'Icon_URL': appIconUrlC,
+        // 'App_Icon__c': appIconUrlC,
         "App_URL__c": appURLC,
         'URL__c': urlC,
         'Id': id,

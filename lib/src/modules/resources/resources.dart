@@ -128,8 +128,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
         ),
         body: Globals.appSetting.resourcesBannerImageC != null &&
                 Globals.appSetting.resourcesBannerImageC != ""
-        // Globals.homeObject["Resources_Banner_Image__c"] != null &&
-        //         Globals.homeObject["Resources_Banner_Image__c"] != ""
+            // Globals.homeObject["Resources_Banner_Image__c"] != null &&
+            //         Globals.homeObject["Resources_Banner_Image__c"] != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
@@ -139,10 +139,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       // Globals.homeObject["Resources_Banner_Image__c"],
                       bgColor: Globals
                                   // .homeObject["Resources_Banner_Color__c"] !=
-                                  .appSetting.resourcesBannerColorC !=
+                                  .appSetting
+                                  .resourcesBannerColorC !=
                               null
                           ? Utility.getColorFromHex(
-                             Globals.appSetting.resourcesBannerColorC!
+                              Globals.appSetting.resourcesBannerColorC!
                               // Globals.homeObject["Resources_Banner_Color__c"]
                               )
                           : null,

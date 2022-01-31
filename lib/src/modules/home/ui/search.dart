@@ -17,6 +17,7 @@ import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -140,11 +141,6 @@ class _SearchPageState extends State<SearchPage> {
                       language: Globals.selectedLanguage,
                     )));
       } else {
-        // if (await canLaunch(obj.appURLC!)) {
-        //   await launch(obj.appURLC!);
-        // } else {
-        //   throw 'Could not launch ${obj.appURLC}';
-        // }
         await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
       }
     } else if (obj.typeC == "URL") {
@@ -289,50 +285,6 @@ class _SearchPageState extends State<SearchPage> {
                 onChanged: onItemChanged,
               );
             }),
-
-        //  TextFormField(
-        //   style:
-        //       TextStyle(color: Theme.of(context).colorScheme.primaryVariant),
-        //   focusNode: myFocusNode,
-        //   controller: _controller,
-        //   cursorColor: Colors.black,
-        //   decoration: InputDecoration(
-        //     focusedBorder: OutlineInputBorder(
-        //       borderRadius: BorderRadius.all(Radius.circular(30.0)),
-        //       borderSide: BorderSide(
-        //           color: Theme.of(context).colorScheme.primary, width: 2),
-        //     ),
-        //     enabledBorder: OutlineInputBorder(
-        //       borderRadius: BorderRadius.all(Radius.circular(30.0)),
-        //       borderSide: BorderSide(
-        //           color: Theme.of(context).colorScheme.secondary, width: 2),
-        //     ),
-        //     hintText: 'Search',
-        //     fillColor: Theme.of(context).colorScheme.secondary,
-        //     prefixIcon: Icon(
-        //       const IconData(0xe805,
-        //           fontFamily: Overrides.kFontFam,
-        //           fontPackage: Overrides.kFontPkg),
-        //       size: Globals.deviceType == "phone" ? 20 : 28,
-        //     ),
-        //     suffixIcon: _controller.text.isEmpty
-        //         ? null
-        //         : InkWell(
-        //             onTap: () {
-        //               setState(() {
-        //                 _controller.clear();
-        //                 issuggestionList = false;
-        //                 FocusScope.of(context).requestFocus(FocusNode());
-        //               });
-        //             },
-        //             child: Icon(
-        //               Icons.clear,
-        //               size: Globals.deviceType == "phone" ? 20 : 28,
-        //             ),
-        //           ),
-        //   ),
-        //   onChanged: onItemChanged,
-        // )
       ),
     );
   }
@@ -396,12 +348,7 @@ class _SearchPageState extends State<SearchPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Icon(
-                  const IconData(0xe805,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  size: Globals.deviceType == "phone" ? 14 : 22,
-                ),
+                _buildLeading(items[index]),
                 HorzitalSpacerWidget(_kLabelSpacing),
                 TranslationWidget(
                   message: items[index].titleC != null &&
@@ -463,6 +410,7 @@ class _SearchPageState extends State<SearchPage> {
                               : Theme.of(context).colorScheme.secondary,
                         ),
                         child: ListTile(
+                            leading: _buildLeading(data),
                             title: TranslationWidget(
                               message: data.titleC ?? "-",
                               toLanguage: Globals.selectedLanguage,
@@ -485,7 +433,7 @@ class _SearchPageState extends State<SearchPage> {
                                 final recentitem = Recent(
                                     1,
                                     data.titleC,
-                                    data.appIconC,
+                                    data.appIconUrlC,
                                     data.id,
                                     data.name,
                                     data.objectName,
@@ -540,6 +488,30 @@ class _SearchPageState extends State<SearchPage> {
             return Container(height: 0);
           }
         });
+  }
+
+  Widget _buildLeading(obj) {
+    if (obj.appIconUrlC != null && obj.appIconUrlC != "") {
+      return CustomIconWidget(
+        iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
+      );
+    }
+    // else if (obj.appIconC != null) {
+    //   return Icon(
+    //     IconData(
+    //       int.parse('0x${obj.appIconC!}'),
+    //       fontFamily: 'FontAwesomeSolid',
+    //       fontPackage: 'font_awesome_flutter',
+    //     ),
+    //     color: Theme.of(context).colorScheme.primary,
+    //     size: Globals.deviceType == "phone" ? 24 : 32,
+    //   );
+    // }
+    else {
+      return CustomIconWidget(
+        iconUrl: Overrides.defaultIconUrl,
+      );
+    }
   }
 
   Widget _buildHeading() {
