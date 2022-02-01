@@ -130,7 +130,7 @@ class _SocialPageState extends State<SocialPage> {
                   ? Container(
                       //   padding: EdgeInsets.only(top: 5),
                       width: MediaQuery.of(context).size.width * 0.69,
-                      height: 18,
+                      height: 20,
                       child: 
                       TranslationWidget(
                           message:
