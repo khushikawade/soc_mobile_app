@@ -46,7 +46,8 @@ dependencies:
   table_calendar: ^3.0.1
   flutter_datetime_picker: ^1.5.1
   html: ^0.15.0
-  flutter_html: ^2.1.5
+  flutter_html: ^2.2.1
+  # flutter_html: ^2.1.5
   flutter_linkify: ^5.0.2
   advance_pdf_viewer: 2.0.0
   hive: ^2.0.4
