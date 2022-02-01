@@ -241,17 +241,16 @@ class SocialDescription extends StatelessWidget {
           // "${data + "#" + data2}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => SelectableHTMLWidget(
-            onImageError: (m, d) {},
+          builder: (translatedMessage) => SelectableHtml(
             onLinkTap: (String? url, RenderContext context,
                 Map<String, String> attributes, dom.Element? element) {
               _launchURL(url, context);
             },
-            customRender: {
-              "img": (RenderContext context, Widget child) {
-                return Container();
-              },
-            },
+            // customRender: {
+            //   "img": (RenderContext context, Widget child) {
+            //     return Container();
+            //   },
+            // },
             data: translatedMessage.toString(),
             style: {
               "body": Style(
@@ -279,7 +278,7 @@ class SocialDescription extends StatelessWidget {
               "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => SelectableHTMLWidget(
+          builder: (translatedMessage) => SelectableHtml(
             data: translatedMessage.toString(),
             // style: Theme.of(context).textTheme.subtitle1!,
             onLinkTap: (String? url, RenderContext context,
