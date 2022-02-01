@@ -241,17 +241,17 @@ class SocialDescription extends StatelessWidget {
           // "${data + "#" + data2}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => SelectableHtml(
-            // onImageError: (m, d) {},
+          builder: (translatedMessage) => SelectableHTMLWidget(
+            onImageError: (m, d) {},
             onLinkTap: (String? url, RenderContext context,
                 Map<String, String> attributes, dom.Element? element) {
               _launchURL(url, context);
             },
-            // customRender: {
-            //   "img": (RenderContext context, Widget child) {
-            //     return Container();
-            //   },
-            // },
+            customRender: {
+              "img": (RenderContext context, Widget child) {
+                return Container();
+              },
+            },
             data: translatedMessage.toString(),
             style: {
               "body": Style(
