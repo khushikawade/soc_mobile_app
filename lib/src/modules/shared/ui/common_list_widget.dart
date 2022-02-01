@@ -75,7 +75,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
                     staffDirectoryCategoryId: null,
-                    isAbout: false,
+                    isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
