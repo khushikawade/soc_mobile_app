@@ -15,8 +15,6 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -90,105 +88,69 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget _buildListItems(
       List<NotificationList> list, NotificationList obj, int index) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: _kLabelSpacing,
-            vertical: _kLabelSpacing / 2,
-          ),
-          // padding: EdgeInsets.symmetric(
-          //   // horizontal: _kLabelSpacing,
-          //   vertical: _kLabelSpacing / 1,
-          // ),
-          color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
-          child: InkWell(
-              onTap: () async {
-                if (isCountLoading == true) {
-                  Utility.showSnackBar(_scaffoldKey,
-                      "Please wait while count is loading", context);
-                } else {
-                  bool result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SliderWidget(
-                                obj: newsMainList.length > 0 &&
-                                        newsMainList[index] != null
-                                    ? newsMainList
-                                    : list,
-                                currentIndex: index,
-                                issocialpage: false,
-                                isAboutSDPage: false,
-                                iseventpage: false,
-                                date: "$newsTimeStamp",
-                                isbuttomsheet: true,
-                                language: Globals.selectedLanguage,
-                              )));
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+        vertical: _kLabelSpacing / 2,
+      ),
+      // padding: EdgeInsets.symmetric(
+      //   // horizontal: _kLabelSpacing,
+      //   vertical: _kLabelSpacing / 1,
+      // ),
+      color: (index % 2 == 0)
+          ? Theme.of(context).colorScheme.background
+          : Theme.of(context).colorScheme.secondary,
+      child: InkWell(
+          onTap: () async {
+            if (isCountLoading == true) {
+              Utility.showSnackBar(
+                  _scaffoldKey, "Please wait while count is loading", context);
+            } else {
+              bool result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SliderWidget(
+                            obj: newsMainList.length > 0 &&
+                                    newsMainList[index] != null
+                                ? newsMainList
+                                : list,
+                            currentIndex: index,
+                            issocialpage: false,
+                            isAboutSDPage: false,
+                            iseventpage: false,
+                            date: "$newsTimeStamp",
+                            isbuttomsheet: true,
+                            language: Globals.selectedLanguage,
+                          )));
 
-                  if (result == true) {
-                    _countBloc.add(FetchActionCountList());
-                  }
-                }
-              },
-              child: ListTile(
-                contentPadding: EdgeInsets.only(left: 0),
-                leading: Container(
-                    // color: Colors.green,
-                    // alignment: Alignment.topCenter,
-                    // width: MediaQuery.of(context).size.width * 0.12,
-                    // height: MediaQuery.of(context).size.width * 0.5,
-                    child:
-                        //obj.image != null
-                        //     ?
-                        //     ClipRRect(
-                        //   child: CachedNetworkImage(
-                        //     imageUrl:obj.image != '' && obj.image != null
-                        //     ? obj.image
-                        //     : Globals.splashImageUrl != '' && Globals.splashImageUrl != null
-                        //     ? Globals.splashImageUrl
-                        //     // :Globals.homeObject["App_Logo__c"],
-                        //     :Globals.appSetting.appLogoC,
-                        //     placeholder: (context, url) => Container(
-                        //         alignment: Alignment.center,
-                        //         child: ShimmerLoading(
-                        //           isLoading: true,
-                        //           child: Container(
-                        //             width: _kIconSize * 1.4,
-                        //             height: _kIconSize * 1.5,
-                        //             color: Colors.white,
-                        //           ),
-                        //         )),
-                        //     errorWidget: (context, url, error) =>
-                        //         Icon(Icons.error),
-                        //   ),
-                        // )
-
-                        CommonImageWidget(
-                  fitMethod: BoxFit.contain,
-                  iconUrl: obj.image != '' && obj.image != null
-                      ? obj.image
-                      : Globals.splashImageUrl != '' &&
-                              Globals.splashImageUrl != null
-                          ? Globals.splashImageUrl
-                          : Globals.appSetting.appLogoC,
-                  height: Globals.deviceType == "phone"
-                      ? _kIconSize * 1.4
-                      : _kIconSize * 2,
-                  width: Globals.deviceType == "phone"
-                      ? _kIconSize * 1.4
-                      : _kIconSize * 2,
-                )),
-                title: _buildnewsHeading(obj),
-                subtitle: Container(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.020),
-                    child: actionButton(list, obj, index)),
-              )),
-        ),
-      ],
+              if (result == true) {
+                _countBloc.add(FetchActionCountList());
+              }
+            }
+          },
+          child: ListTile(
+            contentPadding: EdgeInsets.only(left: 0),
+            leading: CommonImageWidget(
+              fitMethod: BoxFit.contain,
+              iconUrl: obj.image != '' && obj.image != null
+              ? obj.image
+              : Globals.splashImageUrl != '' &&
+                      Globals.splashImageUrl != null
+                  ? Globals.splashImageUrl
+                  : Globals.appSetting.appLogoC,
+              height: Globals.deviceType == "phone"
+              ? _kIconSize * 1.4
+              : _kIconSize * 2,
+              width: Globals.deviceType == "phone"
+              ? _kIconSize * 1.4
+              : _kIconSize * 2,
+            ),
+            title: _buildnewsHeading(obj),
+            subtitle: Container(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.020),
+                child: actionButton(list, obj, index)),
+          )),
     );
   }
 
@@ -236,39 +198,23 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget _buildnewsHeading(NotificationList obj) {
     return Container(
-
-        //   padding: EdgeInsets.only(top: 5),
-        width: MediaQuery.of(context).size.width * 0.69,
-        alignment: Alignment.centerLeft,
-        child: Globals.selectedLanguage != null &&
-                Globals.selectedLanguage != "English" &&
-                Globals.selectedLanguage != ""
-            ? TranslationWidget(
-                message: obj.headings!.length > 0 &&
-                        obj.headings != "" &&
-                        obj.headings != null
-                    ? obj.headings["en"].toString()
-                    : obj.contents["en"] ?? '-',
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: Theme.of(context).textTheme.headline2!,
-                ),
-              )
-            : marqueesText(
-                obj.headings!.length > 0 &&
-                        obj.headings != "" &&
-                        obj.headings != null
-                    ? obj.headings["en"].toString()
-                    : obj.contents["en"].toString().split("\n")[0],
-              ));
+      height: 18,
+      child: TranslationWidget(
+          message: obj.headings!.length > 0 &&
+                  obj.headings != "" &&
+                  obj.headings != null
+              ? obj.headings["en"].toString()
+              : obj.contents["en"] ?? '-',
+          fromLanguage: "en",
+          toLanguage: Globals.selectedLanguage,
+          builder: (translatedMessage) =>
+              marqueesText(translatedMessage.toString())
+          ),
+    );
   }
 
   marqueesText(String title) {
-    return title.length < 45
+    return title.length < 50
         ? Text("$title",
             style: Theme.of(context).textTheme.headline2!.copyWith(
                   color: Theme.of(context).colorScheme.primaryVariant,
@@ -297,6 +243,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildList(List<NotificationList> obj) {
     return Expanded(
       child: ListView.builder(
+        shrinkWrap: true,
         padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
         itemCount: obj.length,
@@ -369,6 +316,20 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     },
                     child: Container(),
                   ),
+                  BlocListener<HomeBloc, HomeState>(
+                      bloc: _homeBloc,
+                      listener: (context, state) async {
+                        if (state is BottomNavigationBarSuccess) {
+                          AppTheme.setDynamicTheme(Globals.appSetting, context);
+                          // Globals.homeObject = state.obj;
+                          Globals.appSetting = AppSetting.fromJson(state.obj);
+
+                          setState(() {});
+                        } else if (state is HomeErrorReceived) {
+                          ErrorMsgWidget();
+                        }
+                      },
+                      child: EmptyContainer()),
                   BlocBuilder(
                       bloc: bloc,
                       builder: (BuildContext context, NewsState state) {
@@ -399,25 +360,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                         }
                       }),
 
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                        bloc: _homeBloc,
-                        listener: (context, state) async {
-                          if (state is BottomNavigationBarSuccess) {
-                            AppTheme.setDynamicTheme(
-                                Globals.appSetting, context);
-                            // Globals.homeObject = state.obj;
-                            Globals.appSetting = AppSetting.fromJson(state.obj);
-
-                            setState(() {});
-                          } else if (state is HomeErrorReceived) {
-                            ErrorMsgWidget();
-                          }
-                        },
-                        child: EmptyContainer()),
-                  ),
                   // actionButton(),
                 ],
               );

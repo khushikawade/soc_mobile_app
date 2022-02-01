@@ -131,36 +131,14 @@ class _SocialPageState extends State<SocialPage> {
                       //   padding: EdgeInsets.only(top: 5),
                       width: MediaQuery.of(context).size.width * 0.69,
                       height: 18,
-                      child: 
-                      TranslationWidget(
+                      child: TranslationWidget(
                           message:
                               "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
                           fromLanguage: "en",
                           toLanguage: Globals.selectedLanguage,
                           builder: (translatedMessage) {
-                            return marqueesText(
-                translatedMessage.toString()
-              );
-                            // Text(translatedMessage.toString(),
-                            //     overflow: TextOverflow.ellipsis,
-                            //     maxLines: 1,
-                            //     style: Theme.of(context)
-                            //         .textTheme
-                            //         .headline2!
-                            //         .copyWith(
-                            //           color: Theme.of(context)
-                            //               .colorScheme
-                            //               .primaryVariant,
-                            //         ));
-                          })
-              //             : marqueesText(
-              //   obj.title!.length > 0 &&
-              //           obj.title != "" &&
-              //           obj.title != null
-              //       ? obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")
-              //       : obj.title["__cdata"].toString().split("\n")[0],
-              // ),
-                    )
+                            return marqueesText(translatedMessage.toString());
+                          }))
                   : Container(),
               subtitle: Container(
                   padding: EdgeInsets.only(
@@ -168,10 +146,10 @@ class _SocialPageState extends State<SocialPage> {
                   child: actionButton(mainObj, obj, index)),
             )));
   }
+
   marqueesText(String title) {
     return title.length < 45
-        ? 
-        Text("$title",
+        ? Text("$title",
             style: Theme.of(context).textTheme.headline2!.copyWith(
                   color: Theme.of(context).colorScheme.primaryVariant,
                 ))

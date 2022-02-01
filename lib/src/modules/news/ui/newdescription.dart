@@ -39,15 +39,14 @@ class _NewdescriptionState extends State<Newdescription> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   static const double _kLabelSpacing = 20.0;
   final HomeBloc _homeBloc = new HomeBloc();
-  bool _downloadingFile = false;
-  static const double _KButtonSize = 110.0;
+  // bool _downloadingFile = false;
+  // static const double _KButtonSize = 110.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
     Globals.callsnackbar = true;
-    print(widget.obj.completedAt);
   }
 
   void _launchURL(obj) async {
@@ -138,7 +137,8 @@ class _NewdescriptionState extends State<Newdescription> {
             ),
             //
             Text(
-              widget.obj.completedAt.toString().split(" ")[0],
+              Utility.convertTimestampToDateFormat(
+                  widget.obj.completedAtTimestamp, "MM/dd/yy"),
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     fontSize: 14,
                     color: Colors.grey,

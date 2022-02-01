@@ -27,9 +27,7 @@ class NewsActionBasic extends StatefulWidget {
   // final List? iconsName;
   final bool? isLoading;
   final String page;
-
   final Key? scaffoldKey;
-
   _NewsActionBasicState createState() => _NewsActionBasicState();
 }
 
@@ -40,10 +38,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   final ValueNotifier<int> thanks = ValueNotifier<int>(0);
   final ValueNotifier<int> helpful = ValueNotifier<int>(0);
   final ValueNotifier<int> share = ValueNotifier<int>(0);
-  // final ValueNotifier<double> like = ValueNotifier<double>(0);
-  // final ValueNotifier<double> thanks = ValueNotifier<double>(0);
-  // final ValueNotifier<double> helpful = ValueNotifier<double>(0);
-  // final ValueNotifier<double> share = ValueNotifier<double>(0);
+  bool _downloadingFile = false;
   int? iconNameIndex;
   bool _isDownloadingFile = false;
 
@@ -226,53 +221,61 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     return isliked;
   }
 
-  _shareNews() async {
+  int _totalRetry = 0; // To maintain total no of retries.
+  _shareNews({String? fallBackImageUrl}) async {
     try {
+      if (_downloadingFile == true) return;
       setState(() {
-        _isDownloadingFile = true;
+        _downloadingFile = true;
       });
-      String _title = widget.page == "news"
-          ? widget.obj.headings["en"] ?? ""
-          : Utility.convertHtmlTOText(widget.obj.title["__cdata"]) ?? "";
-      String _description = widget.page == "news"
-          ? widget.obj.contents["en"] ?? ""
-          : Utility.convertHtmlTOText(widget.obj.description["__cdata"]) ?? "";
+      String _title = widget.obj.headings["en"] ?? "";
+      String _description = widget.obj.contents["en"] ?? "";
       String _imageUrl;
-      File _image;
-      if (widget.page == "news") {
-        _imageUrl = widget.obj.image != null && widget.obj.image != ""
+      if (fallBackImageUrl != null) {
+        _imageUrl = fallBackImageUrl;
+      } else {
+        _imageUrl = (widget.obj.image != null || widget.obj.image != "") &&
+                widget.obj.image.toString().contains("http") &&
+                (widget.obj.image.contains('jpg') ||
+                    widget.obj.image.contains('jpeg') ||
+                    widget.obj.image.contains('gif') ||
+                    widget.obj.image.contains('png') ||
+                    widget.obj.image.contains('tiff') ||
+                    widget.obj.image.contains('bmp'))
             ? widget.obj.image
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
-                // : Globals.homeObject["App_Logo__c"];
                 : Globals.appSetting.appLogoC;
-        _image = await Utility.createFileFromUrl(_imageUrl);
-      } else {
-        _imageUrl = widget.obj.mediaContent != "" &&
-                widget.obj.mediaContent != null &&
-                widget.obj.mediaContent["url"] != null &&
-                widget.obj.mediaContent["url"] != ""
-            ? widget.obj.mediaContent["url"]
-            : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-                ? Globals.splashImageUrl
-                // : Globals.homeObject["App_Logo__c"];
-                : Globals.appSetting.appLogoC;
-        _image = await Utility.createFileFromUrl(_imageUrl);
       }
+
+      File _image = await Utility.createFileFromUrl(_imageUrl);
       setState(() {
-        _isDownloadingFile = false;
+        _downloadingFile = false;
       });
-      // print("${widget.obj.headings["en"]},${widget.obj.contents["en"]}");
-      // print("${[_image.path]},$_title,$_description");
       Share.shareFiles(
         [_image.path],
         subject: '$_title',
         text: '$_description',
       );
+      _totalRetry = 0;
     } catch (e) {
+      print(e);
       setState(() {
-        _isDownloadingFile = false;
+        _downloadingFile = false;
       });
+      // It should only call the fallback function if there's error with the hosted image and it should not run idefinately. Just 3 retries only.
+      // if (e.toString().contains('403') && _totalRetry < 3) {
+      if (_totalRetry < 3 && e.toString().contains('403')) {
+        print('Current retry :: $_totalRetry');
+        _totalRetry++;
+        String _fallBackImageUrl = Globals.splashImageUrl != null &&
+                Globals.splashImageUrl != ""
+            ? Globals.splashImageUrl
+            : Globals.appSetting.appLogoC; //Globals.homeObject["App_Logo__c"];
+        _shareNews(fallBackImageUrl: _fallBackImageUrl);
+      } else {
+        Utility.showSnackBar(widget.scaffoldKey, 'Something went wrong.', context);
+      }
     }
   }
 
@@ -296,23 +299,6 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
               Utility.showSnackBar(
                   scaffoldKey, 'no internet connection', context);
             }
-            // if (_connected) {
-            //   if (index == 3) {
-            //     await _shareNews();
-            //   }
-            //   return countIncrement(index);
-            // } else {
-            //   Utility.showSnackBar(scaffoldKey, 'msg', context);
-            // }
-
-            // if (connected == false) {
-            //   if (index == 3) {
-            //     await _shareNews();
-            //   }
-            //   return countIncrement(index);
-            // } else {
-            //   Utility.showSnackBar(scaffoldKey, 'msg', context);
-            // }
           },
           size: 20,
           circleColor: CircleColor(
