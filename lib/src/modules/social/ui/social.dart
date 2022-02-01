@@ -129,8 +129,8 @@ class _SocialPageState extends State<SocialPage> {
                       obj.title["__cdata"].length > 1
                   ? Container(
                       //   padding: EdgeInsets.only(top: 5),
-                      width: MediaQuery.of(context).size.width * 0.69,
-                      height: 20,
+                      // width: MediaQuery.of(context).size.width * 0.69,
+                      height: MediaQuery.of(context).size.height * 0.02,
                       child: TranslationWidget(
                           message:
                               "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",

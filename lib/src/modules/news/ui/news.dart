@@ -133,17 +133,17 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             leading: CommonImageWidget(
               fitMethod: BoxFit.contain,
               iconUrl: obj.image != '' && obj.image != null
-              ? obj.image
-              : Globals.splashImageUrl != '' &&
-                      Globals.splashImageUrl != null
-                  ? Globals.splashImageUrl
-                  : Globals.appSetting.appLogoC,
+                  ? obj.image
+                  : Globals.splashImageUrl != '' &&
+                          Globals.splashImageUrl != null
+                      ? Globals.splashImageUrl
+                      : Globals.appSetting.appLogoC,
               height: Globals.deviceType == "phone"
-              ? _kIconSize * 1.4
-              : _kIconSize * 2,
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
               width: Globals.deviceType == "phone"
-              ? _kIconSize * 1.4
-              : _kIconSize * 2,
+                  ? _kIconSize * 1.4
+                  : _kIconSize * 2,
             ),
             title: _buildnewsHeading(obj),
             subtitle: Container(
@@ -198,7 +198,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget _buildnewsHeading(NotificationList obj) {
     return Container(
-      height: 18,
+      height: MediaQuery.of(context).size.height * 0.02,
       child: TranslationWidget(
           message: obj.headings!.length > 0 &&
                   obj.headings != "" &&
@@ -208,8 +208,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           fromLanguage: "en",
           toLanguage: Globals.selectedLanguage,
           builder: (translatedMessage) =>
-              marqueesText(translatedMessage.toString())
-          ),
+              marqueesText(translatedMessage.toString())),
     );
   }
 
