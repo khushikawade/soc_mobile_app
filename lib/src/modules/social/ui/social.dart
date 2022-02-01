@@ -105,6 +105,7 @@ class _SocialPageState extends State<SocialPage> {
               }
             },
             child: ListTile(
+              
               contentPadding: EdgeInsets.only(left: 0),
               leading: Container(
                   child: (CommonImageWidget(
@@ -128,8 +129,13 @@ class _SocialPageState extends State<SocialPage> {
               ))),
               title: obj.title["__cdata"] != null &&
                       obj.title["__cdata"].length > 1
-                  ? Container(
-                      height: MediaQuery.of(context).size.height * 0.02,
+                  ? Row(                  
+                    children: [
+                      widgetIcon(obj.link),
+                      Container(
+                        padding: EdgeInsets.only(left: 5),
+                      height: MediaQuery.of(context).size.height * 0.03,
+                      width : MediaQuery.of(context).size.width * 0.6,
                       
                       child: 
                       TranslationWidget(
@@ -141,6 +147,8 @@ class _SocialPageState extends State<SocialPage> {
                         return marqueesText(translatedMessage.toString());
                       },)
                           )
+                    ],
+                  )
                   : Container(),
               subtitle: Container(
                   padding: EdgeInsets.only(
@@ -376,13 +384,7 @@ return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000));
 
 }
 
-return Icon(
-
-Icons.ac_unit,
-
-size: 16,
-
-);
+return Container();
 
 }
 
