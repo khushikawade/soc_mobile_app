@@ -101,49 +101,6 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                 (element) => _iconButton(Globals.icons.indexOf(element)))
             .toList(),
       ),
-      // child: ListView.builder(
-      //   shrinkWrap: true,
-      //   scrollDirection: Axis.horizontal,
-      //   itemCount: widget.icons!.length,
-      //   itemBuilder: (BuildContext context, int index) {
-      //     return Container(
-      //       width: MediaQuery.of(context).size.width * 0.25,
-      //       padding: EdgeInsets.only(
-      //           left: MediaQuery.of(context).size.width * 0.05,
-      //           right: MediaQuery.of(context).size.width * 0.04),
-      //       child: Column(
-      //         children: [
-      //           Center(
-      //             child: Row(
-      //               mainAxisAlignment: MainAxisAlignment.center,
-      //               mainAxisSize: MainAxisSize.max,
-      //               children: [
-      //                 IconButton(
-      //                     padding: EdgeInsets.all(0),
-      //                     constraints: BoxConstraints(),
-      //                     onPressed: () {},
-      //                     icon: iconListWidget(context, index, false)),
-      //                 widget.isLoading == true ? Container() : _likeCount(index)
-      //               ],
-      //             ),
-      //           ),
-      //           Expanded(
-      //               child: iconnameindex == index
-      //                   ? Container(
-      //                       padding: EdgeInsets.all(0),
-      //                       child: Text(
-      //                         widget.iconsName![index],
-      //                         style: TextStyle(fontSize: 12),
-      //                       ),
-      //                     )
-      //                   : Container(
-      //                       padding: EdgeInsets.all(0),
-      //                     ))
-      //         ],
-      //       ),
-      //     );
-      //   },
-      // ),
     );
   }
 
