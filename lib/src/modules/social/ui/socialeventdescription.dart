@@ -241,7 +241,9 @@ class SocialDescription extends StatelessWidget {
           // "${data + "#" + data2}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => SelectableHtml(
+          builder: (translatedMessage) => 
+          // SelectableHTMLWidget // Html
+          SelectableHtml(
             onLinkTap: (String? url, RenderContext context,
                 Map<String, String> attributes, dom.Element? element) {
               _launchURL(url, context);
