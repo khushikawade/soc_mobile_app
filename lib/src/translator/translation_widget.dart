@@ -11,8 +11,10 @@ class TranslationWidget extends StatefulWidget {
   final String? fromLanguage;
   final String? toLanguage;
   final Widget Function(String translation)? builder;
+final  GlobalKey<ScaffoldState> ? scaffoldKey;
 
   TranslationWidget({
+     this.scaffoldKey,
     this.shimmerHeight,
     @required this.message,
     this.fromLanguage,
@@ -28,14 +30,16 @@ class TranslationWidget extends StatefulWidget {
 class _TranslationWidgetState extends State<TranslationWidget> {
   ConnectivityResult? connectivity;
   String? translation;
+ 
 
   @override
   Widget build(BuildContext context) {
-    final scaffoldKey = Scaffold.of(context);
+
+ 
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
 
-    if (toLanguageCode == 'en'||toLanguageCode == '') {
+    if (toLanguageCode == 'en' || toLanguageCode == '') {
       return widget.builder!(widget.message!);
     }
 
@@ -50,7 +54,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
               if (Globals.isNetworkError == false) {
                 Globals.isNetworkError = true;
                 Future.delayed(const Duration(seconds: 3), () {
-                  scaffoldKey.showSnackBar(SnackBar(
+                 Globals.scaffoldKey.currentState!.showSnackBar(SnackBar(
                     content: const Text(
                       'Unable to translate, Please check internet connection',
                     ),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'modules/news/model/notification_list.dart';
 
 class Globals {
+  static GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   static var iosInfo;
   static var androidInfo;
   static String? token = '';

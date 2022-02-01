@@ -32,6 +32,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  //  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
@@ -293,6 +294,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: Globals.scaffoldKey,
         body: Stack(
       children: [
         _tabBarBody(),
@@ -312,20 +314,41 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   _onBackPressed() {
     return showDialog(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
               backgroundColor: Colors.white,
-              title: Text("Do you want to exit the app?",
-                  style: Theme.of(context).textTheme.headline2!),
+              title: TranslationWidget(
+                  message: "Do you want to exit the app?",
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) {
+                    return Text(translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline2!);
+                  }),
+
+              //  Text("Do you want to exit the app?",
+              //     style: Theme.of(context).textTheme.headline2!),
               actions: <Widget>[
                 FlatButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child:
-                      Text("No", style: Theme.of(context).textTheme.headline2!),
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: TranslationWidget(
+                      message: "No",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline2!);
+                      }),
                 ),
                 FlatButton(
                   onPressed: () => exit(0),
-                  child: Text("Yes",
-                      style: Theme.of(context).textTheme.headline2!),
+                  child: TranslationWidget(
+                      message: "Yes",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline2!);
+                      }),
                 ),
               ],
             ));
