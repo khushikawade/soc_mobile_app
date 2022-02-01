@@ -15,6 +15,7 @@ import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 import 'package:marquee/marquee.dart';
@@ -129,14 +130,17 @@ class _SocialPageState extends State<SocialPage> {
                       obj.title["__cdata"].length > 1
                   ? Container(
                       height: MediaQuery.of(context).size.height * 0.02,
-                      child: TranslationWidget(
-                          message:
-                              "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                          fromLanguage: "en",
-                          toLanguage: Globals.selectedLanguage,
-                          builder: (translatedMessage) {
-                            return marqueesText(translatedMessage.toString());
-                          }))
+                      
+                      child: 
+                      TranslationWidget(
+                      message:
+                          "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return marqueesText(translatedMessage.toString());
+                      },)
+                          )
                   : Container(),
               subtitle: Container(
                   padding: EdgeInsets.only(
@@ -319,4 +323,82 @@ class _SocialPageState extends State<SocialPage> {
           }
         });
   }
+  Widget widgetIcon(link) {
+if (link["\$t"].contains('instagram')) {
+return ShaderMask(
+shaderCallback: (bounds) => RadialGradient(
+center: Alignment.topRight,
+transform: GradientRotation(50),
+radius: 5,
+colors: [
+Colors.deepPurpleAccent,
+Colors.red,
+Colors.yellow,
+Color(0xffee2a7b),
+Colors.red,
+// Color(0xff002aff),
+],
+).createShader(bounds),
+child: Padding(
+
+padding: EdgeInsets.only(bottom: 1),
+
+child: FaIcon(
+
+FontAwesomeIcons.instagram,
+
+size: 16,
+color: Colors.white,
+
+),
+
+));
+
+// iconWidget(
+
+// FontAwesomeIcons.instagramSquare, [Colors.cyan, Colors.yellow]);
+
+} else if (link["\$t"].contains('twitter')) {
+
+return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2));
+
+} else if (link["\$t"].contains('facebook')) {
+
+return Padding(
+
+padding: EdgeInsets.only(bottom: 1),
+
+child: iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2)));
+
+} else if (link["\$t"].contains('youtube')) {
+
+return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000));
+
+}
+
+return Icon(
+
+Icons.ac_unit,
+
+size: 16,
+
+);
+
+}
+
+
+
+Widget iconWidget(icon, color) {
+
+return FaIcon(
+
+icon,
+
+size: 16,
+
+color: color,
+
+);
+
+}
 }
