@@ -104,24 +104,35 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     );
   }
 
-  int _start = 2;
+  @override
+  void dispose() {
+    super.dispose();
+    iconNameIndex = -1;
+  }
+
+  // int _start = 2;
   void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    new Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_start == 0) {
-          setState(() {
-            timer.cancel();
-            iconNameIndex = -1;
-          });
-        } else {
-          setState(() {
-            _start--;
-          });
-        }
-      },
-    );
+    Future.delayed(const Duration(seconds: 2), () {
+      //  setState(() {
+      iconNameIndex = -1;
+      //  });
+    });
+    // const oneSec = const Duration(seconds: 1);
+    // new Timer.periodic(
+    //   oneSec,
+    //   (Timer timer) {
+    //     if (_start == 0) {
+    //       setState(() {
+    //         timer.cancel();
+    //         iconNameIndex = -1;
+    //       });
+    //     } else {
+    //       setState(() {
+    //         _start--;
+    //       });
+    //     }
+    //   },
+    // );
   }
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
@@ -139,16 +150,16 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
 
     index == 0
         ? like.value =
-            like.value != 0.0 ? like.value + 1 : widget.obj.likeCount! + 1
+            like.value != 0 ? like.value + 1 : widget.obj.likeCount! + 1
         : index == 1
-            ? thanks.value = thanks.value != 0.0
+            ? thanks.value = thanks.value != 0
                 ? thanks.value + 1
                 : widget.obj.thanksCount! + 1
             : index == 2
-                ? helpful.value = helpful.value != 0.0
+                ? helpful.value = helpful.value != 0
                     ? helpful.value + 1
                     : widget.obj.helpfulCount! + 1
-                : share.value = share.value != 0.0
+                : share.value = share.value != 0
                     ? share.value + 1
                     : widget.obj.shareCount! + 1;
 
@@ -231,11 +242,13 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
             : Globals.appSetting.appLogoC; //Globals.homeObject["App_Logo__c"];
         _shareNews(fallBackImageUrl: _fallBackImageUrl);
       } else {
-        Utility.showSnackBar(widget.scaffoldKey, 'Something went wrong.', context);
+        Utility.showSnackBar(
+            widget.scaffoldKey, 'Something went wrong.', context);
       }
     }
   }
 
+  GlobalKey<ScaffoldState> scaffoldKey1 = GlobalKey<ScaffoldState>();
   Widget iconListWidget(context, index, bool totalCountIcon, scaffoldKey) {
     // bool isOnline = hasNetwork();
     return OfflineBuilder(
@@ -253,8 +266,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
               }
               return countIncrement(index);
             } else if (!connected) {
-              Utility.showSnackBar(
-                  scaffoldKey, 'no internet connection', context);
+              Utility.showSnackBar(scaffoldKey,
+                  'Make sure you have a proper Internet connection', context);
             }
           },
           size: 20,
@@ -326,36 +339,27 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
             Text(
           index == 0
               ? (like.value != 0.0
-                  ? f.format(like.value).toString().split('.')[0]
+                  ? f.format(like.value)
                   : widget.obj.likeCount == 0.0
                       ? ""
-                      : f.format(widget.obj.likeCount).toString().split('.')[0])
+                      : f.format(widget.obj.likeCount))
               : index == 1
                   ? (thanks.value != 0.0
-                      ? f.format(thanks.value).toString().split('.')[0]
+                      ? f.format(thanks.value)
                       : widget.obj.thanksCount == 0.0
                           ? ""
-                          : f
-                              .format(widget.obj.thanksCount)
-                              .toString()
-                              .split('.')[0])
+                          : f.format(widget.obj.thanksCount))
                   : index == 2
                       ? (helpful.value != 0.0
-                          ? f.format(helpful.value).toString().split('.')[0]
+                          ? f.format(helpful.value)
                           : widget.obj.helpfulCount == 0.0
                               ? ""
-                              : f
-                                  .format(widget.obj.helpfulCount)
-                                  .toString()
-                                  .split('.')[0])
+                              : f.format(widget.obj.helpfulCount))
                       : share.value != 0.0
-                          ? f.format(share.value).toString().split('.')[0]
+                          ? f.format(share.value)
                           : widget.obj.shareCount == 0.0
                               ? ""
-                              : f
-                                  .format(widget.obj.shareCount)
-                                  .toString()
-                                  .split('.')[0],
+                              : f.format(widget.obj.shareCount),
           style: Theme.of(context).textTheme.bodyText1!,
         );
       },

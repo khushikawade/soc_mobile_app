@@ -101,17 +101,15 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       try {
         yield NewsLoading();
         String? _objectName = "news_action";
-        // String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-        // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
-
-        if (_localData.isEmpty) {
-          yield NewsLoading();
-        } else {
-          yield ActionCountSuccess(obj: _localData);
+        if (event.isDetailPage == false) {
+          if (_localData.isEmpty) {
+            yield NewsLoading();
+          } else {
+            yield ActionCountSuccess(obj: _localData);
+          }
         }
-
         List<ActionCountList> list = await fetchNewsActionCount();
 
         List<NotificationList> newList = [];

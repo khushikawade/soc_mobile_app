@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -35,7 +36,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
 
-    if (toLanguageCode == 'en'||toLanguageCode == '') {
+    if (toLanguageCode == 'en' || toLanguageCode == '') {
       return widget.builder!(widget.message!);
     }
 
@@ -50,15 +51,10 @@ class _TranslationWidgetState extends State<TranslationWidget> {
               if (Globals.isNetworkError == false) {
                 Globals.isNetworkError = true;
                 Future.delayed(const Duration(seconds: 3), () {
-                  scaffoldKey.showSnackBar(SnackBar(
-                    content: const Text(
-                      'Unable to translate, Please check internet connection',
-                    ),
-                    backgroundColor: Colors.black.withOpacity(0.8),
-                    behavior: SnackBarBehavior.floating,
-                    margin: EdgeInsets.only(left: 16, right: 16, bottom: 30),
-                    padding: EdgeInsets.only(left: 16, right: 16),
-                  ));
+                  Utility.showSnackBar(
+                      scaffoldKey,
+                      'Unable to translate, Please check the Internet connection',
+                      context);
                 });
               }
               translation = widget.message!;
