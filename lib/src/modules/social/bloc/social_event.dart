@@ -13,7 +13,12 @@ class SocialPageEvent extends SocialEvent {
 }
 
 class FetchSocialActionCount extends SocialEvent {
-  List<Object> get props => [];
+  final bool? isDetailPage;
+
+  FetchSocialActionCount({
+    required this.isDetailPage,
+  });
+  List<Object> get props => [isDetailPage!];
 }
 
 class SocialAction extends SocialEvent {

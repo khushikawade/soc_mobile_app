@@ -45,7 +45,7 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
-    _countSocialBloc.add(FetchSocialActionCount());
+    _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
   }
 
   @override
@@ -57,7 +57,7 @@ class _SocialPageState extends State<SocialPage> {
     refreshKey.currentState?.show(atTop: false);
     bloc.add(SocialPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());
-    _countSocialBloc.add(FetchSocialActionCount());
+    _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
   }
 
   Widget _buildlist(obj, int index, mainObj) {
@@ -100,7 +100,8 @@ class _SocialPageState extends State<SocialPage> {
                             language: Globals.selectedLanguage,
                           )));
               if (result == true) {
-                _countSocialBloc.add(FetchSocialActionCount());
+                _countSocialBloc
+                    .add(FetchSocialActionCount(isDetailPage: true));
               }
             },
             child: ListTile(
@@ -205,7 +206,8 @@ class _SocialPageState extends State<SocialPage> {
                 if (connectivity != ConnectivityResult.none) {
                   if (iserrorstate == true) {
                     bloc.add(SocialPageEvent());
-                    _countSocialBloc.add(FetchSocialActionCount());
+                    _countSocialBloc
+                        .add(FetchSocialActionCount(isDetailPage: false));
                     iserrorstate = false;
                   }
                 } else if (connectivity == ConnectivityResult.none) {
