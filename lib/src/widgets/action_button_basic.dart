@@ -15,16 +15,12 @@ class NewsActionBasic extends StatefulWidget {
   NewsActionBasic({
     Key? key,
     required this.obj,
-    // required this.icons,
     this.isLoading,
     required this.page,
     this.scaffoldKey,
-    // required this.iconsName
   }) : super(key: key);
 
   final obj;
-  // final List? icons;
-  // final List? iconsName;
   final bool? isLoading;
   final String page;
   final Key? scaffoldKey;
@@ -41,54 +37,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   bool _downloadingFile = false;
   int? iconNameIndex;
   bool _isDownloadingFile = false;
-
   var f = NumberFormat.compact();
-
-  Widget _iconButton(index) => Container(
-        alignment: Alignment.centerLeft,
-        // width: MediaQuery.of(context).size.width * 0.25,
-        padding: Globals.deviceType == "phone"
-            ? null
-            : EdgeInsets.only(
-                // left: MediaQuery.of(context).size.width * 0.04,
-                right: MediaQuery.of(context).size.width * 0.04),
-        child: Column(
-          children: [
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  IconButton(
-                      padding: EdgeInsets.all(0),
-                      constraints: BoxConstraints(),
-                      onPressed: () {},
-                      icon: iconListWidget(
-                          context, index, false, widget.scaffoldKey)),
-                  widget.isLoading == true
-                      ? Container()
-                      : Padding(
-                          padding: const EdgeInsets.only(left: 5, top: 1),
-                          child: _likeCount(index),
-                        )
-                ],
-              ),
-            ),
-            Expanded(
-                child: iconNameIndex == index
-                    ? Container(
-                        padding: EdgeInsets.all(0),
-                        child: Text(
-                          Globals.iconsName[index],
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      )
-                    : Container(
-                        padding: EdgeInsets.all(0),
-                      ))
-          ],
-        ),
-      );
 
   Widget build(BuildContext context) {
     return Container(
@@ -110,43 +59,145 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     iconNameIndex = -1;
   }
 
-  // int _start = 2;
-  void startTimer() {
-    Future.delayed(const Duration(seconds: 2), () {
-      //  setState(() {
-      iconNameIndex = -1;
-      //  });
-    });
-    // const oneSec = const Duration(seconds: 1);
-    // new Timer.periodic(
-    //   oneSec,
-    //   (Timer timer) {
-    //     if (_start == 0) {
-    //       setState(() {
-    //         timer.cancel();
-    //         iconNameIndex = -1;
-    //       });
-    //     } else {
-    //       setState(() {
-    //         _start--;
-    //       });
-    //     }
-    //   },
-    // );
+  Widget _iconButton(index) => Container(
+        alignment: Alignment.centerLeft,
+        padding: Globals.deviceType == "phone"
+            ? null
+            : EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.04),
+        child: Column(
+          children: [
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  IconButton(
+                      padding: EdgeInsets.all(0),
+                      constraints: BoxConstraints(),
+                      onPressed: () {},
+                      icon: iconListWidget(
+                          context, index, false, widget.scaffoldKey)),
+                  widget.isLoading == true
+                      ? Container()
+                      : Padding(
+                          padding: const EdgeInsets.only(left: 5, top: 1),
+                          child: _actionCount(index),
+                        )
+                ],
+              ),
+            ),
+            Expanded(
+                child: iconNameIndex == index
+                    ? Container(
+                        padding: EdgeInsets.all(0),
+                        child: Text(
+                          Globals.iconsName[index],
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      )
+                    : Container(
+                        padding: EdgeInsets.all(0),
+                      ))
+          ],
+        ),
+      );
+
+  Widget iconListWidget(context, index, bool totalCountIcon, scaffoldKey) {
+    return OfflineBuilder(
+      debounceDuration: Duration.zero,
+      connectivityBuilder: (BuildContext context,
+          ConnectivityResult connectivity, Widget child) {
+        return LikeButton(
+          isLiked: null,
+          onTap: (onActionButtonTapped) async {
+            final bool connected = connectivity != ConnectivityResult.none;
+
+            if (connected) {
+              if (index == 3) {
+                await _shareNews();
+              }
+              return countIncrement(index);
+            } else {
+              Utility.showSnackBar(scaffoldKey,
+                  'Make sure you have a proper Internet connection', context);
+            }
+          },
+          size: 20,
+          circleColor: CircleColor(
+            start: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black,
+            end: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black,
+          ),
+          bubblesColor: BubblesColor(
+            dotPrimaryColor: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black,
+            dotSecondaryColor: index == 0
+                ? Colors.red
+                : index == 1
+                    ? Colors.blue
+                    : index == 2
+                        ? Colors.green
+                        : Colors.black,
+          ),
+          likeBuilder: (bool isLiked) {
+            return _isDownloadingFile == true &&
+                    index ==
+                        3 // Id the last button i.e. share button is pressed then it should show loader while the app is downloading the image from the URL.
+                ? CircularProgressIndicator(
+                    strokeWidth: 1,
+                  )
+                : Icon(
+                    IconData(Globals.icons[index],
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: index == 0
+                        ? Colors.red
+                        : index == 1
+                            ? Colors.blue
+                            : index == 2
+                                ? Colors.green
+                                : Colors.black,
+                    size: Globals.deviceType == "phone"
+                        ? (index == 0 ? 26 : 21)
+                        : (index == 0 ? 30 : 25),
+                  );
+          },
+        );
+      },
+      child: Container(),
+    );
   }
 
-  Future<bool> onLikeButtonTapped(bool isLiked) async {
+  Future<bool> onActionButtonTapped(bool isLiked) async {
     return !isLiked;
   }
 
   Future<bool> countIncrement(index) async {
     bool? isliked = true;
-
     setState(() {
       iconNameIndex = index;
     });
-
-    startTimer();
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        iconNameIndex = -1;
+      });
+    });
 
     index == 0
         ? like.value =
@@ -185,11 +236,11 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
           helpful: index == 2 ? 1 : 0,
           shared: index == 3 ? 1 : 0));
     }
-
     return isliked;
   }
 
   int _totalRetry = 0; // To maintain total no of retries.
+
   _shareNews({String? fallBackImageUrl}) async {
     try {
       if (_downloadingFile == true) return;
@@ -232,14 +283,13 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         _downloadingFile = false;
       });
       // It should only call the fallback function if there's error with the hosted image and it should not run idefinately. Just 3 retries only.
-      // if (e.toString().contains('403') && _totalRetry < 3) {
       if (_totalRetry < 3 && e.toString().contains('403')) {
-        print('Current retry :: $_totalRetry');
+        // print('Current retry :: $_totalRetry');
         _totalRetry++;
-        String _fallBackImageUrl = Globals.splashImageUrl != null &&
-                Globals.splashImageUrl != ""
-            ? Globals.splashImageUrl
-            : Globals.appSetting.appLogoC; //Globals.homeObject["App_Logo__c"];
+        String _fallBackImageUrl =
+            Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+                ? Globals.splashImageUrl
+                : Globals.appSetting.appLogoC;
         _shareNews(fallBackImageUrl: _fallBackImageUrl);
       } else {
         Utility.showSnackBar(
@@ -248,95 +298,10 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     }
   }
 
-  GlobalKey<ScaffoldState> scaffoldKey1 = GlobalKey<ScaffoldState>();
-  Widget iconListWidget(context, index, bool totalCountIcon, scaffoldKey) {
-    // bool isOnline = hasNetwork();
-    return OfflineBuilder(
-      debounceDuration: Duration.zero,
-      connectivityBuilder: (BuildContext context,
-          ConnectivityResult connectivity, Widget child) {
-        return LikeButton(
-          isLiked: null,
-          onTap: (onLikeButtonTapped) async {
-            final bool connected = connectivity != ConnectivityResult.none;
-
-            if (connected) {
-              if (index == 3) {
-                await _shareNews();
-              }
-              return countIncrement(index);
-            } else if (!connected) {
-              Utility.showSnackBar(scaffoldKey,
-                  'Make sure you have a proper Internet connection', context);
-            }
-          },
-          size: 20,
-          circleColor: CircleColor(
-            start: index == 0
-                ? Colors.red
-                : index == 1
-                    ? Colors.blue
-                    : index == 2
-                        ? Colors.green
-                        : Colors.black,
-            end: index == 0
-                ? Colors.red
-                : index == 1
-                    ? Colors.blue
-                    : index == 2
-                        ? Colors.green
-                        : Colors.black,
-          ),
-          bubblesColor: BubblesColor(
-            dotPrimaryColor: index == 0
-                ? Colors.red
-                : index == 1
-                    ? Colors.blue
-                    : index == 2
-                        ? Colors.green
-                        : Colors.black, // Color(0xff33b5e5),
-            dotSecondaryColor: index == 0
-                ? Colors.red
-                : index == 1
-                    ? Colors.blue
-                    : index == 2
-                        ? Colors.green
-                        : Colors.black, //Color(0xff0099cc),
-          ),
-          likeBuilder: (bool isLiked) {
-            return _isDownloadingFile == true &&
-                    index ==
-                        3 // Id the last button i.e. share button is pressed then it should show loader while the app is downloading the image from the URL.
-                ? CircularProgressIndicator(
-                    strokeWidth: 1,
-                  )
-                : Icon(
-                    IconData(Globals.icons[index],
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: index == 0
-                        ? Colors.red
-                        : index == 1
-                            ? Colors.blue
-                            : index == 2
-                                ? Colors.green
-                                : Colors.black,
-                    size: Globals.deviceType == "phone"
-                        ? (index == 0 ? 26 : 21)
-                        : (index == 0 ? 30 : 25),
-                  );
-          },
-        );
-      },
-      child: Container(),
-    );
-  }
-
-  Widget _likeCount(index) {
+  Widget _actionCount(index) {
     return ValueListenableBuilder(
       builder: (BuildContext context, dynamic value, Widget? child) {
-        return //Text("");
-            Text(
+        return Text(
           index == 0
               ? (like.value != 0.0
                   ? f.format(like.value)
@@ -373,13 +338,4 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       child: Container(),
     );
   }
-
-//   Future<bool> hasNetwork() async {
-//   try {
-//     final result = await InternetAddress.lookup('example.com');
-//     return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-//   } on SocketException catch (_) {
-//     return false;
-//   }
-// }
 }

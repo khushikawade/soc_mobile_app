@@ -74,7 +74,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         // String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
         List<Item> _localData = await _localDb.getData();
-        // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+
+        //To fetch the latest count if returning back from detail page
         if (event.isDetailPage == false) {
           if (_localData.isEmpty) {
             yield Loading();
