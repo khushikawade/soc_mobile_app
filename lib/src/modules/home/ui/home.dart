@@ -199,11 +199,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) => Expanded(
-                          child: Text(
-                            translatedMessage.toString(),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: Theme.of(context).textTheme.headline4!,
+                          child: FittedBox(
+                            child: Text(
+                              translatedMessage.toString(),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: Theme.of(context).textTheme.headline4!,
+                            ),
                           ),
                         ),
                       ),
