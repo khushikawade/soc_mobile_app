@@ -12,9 +12,11 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 import 'package:marquee/marquee.dart';
@@ -70,80 +72,269 @@ class _SocialPageState extends State<SocialPage> {
     // print(imageLink);
 
     return Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing,
-          vertical: _kLabelSpacing / 2,
-        ),
-        color: (index % 2 == 0)
-            ? Theme.of(context).colorScheme.background
-            : Theme.of(context).colorScheme.secondary,
-        child: InkWell(
-            onTap: () async {
-              // print(index);
-              // print(mainObj.length);
-              bool result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SliderWidget(
-                            // icons: Globals.icons,
-                            obj: socialMainList.length > 0 &&
-                                    socialMainList[index] != null
-                                ? socialMainList
-                                : mainObj,
-                            // iconsName: Globals.iconsName,
-                            currentIndex: index,
-                            issocialpage: true,
-                            isAboutSDPage: false,
-                            iseventpage: false,
-                            date: '1',
-                            isbuttomsheet: true,
-                            language: Globals.selectedLanguage,
-                          )));
-              if (result == true) {
-                _countSocialBloc.add(FetchSocialActionCount());
-              }
-            },
-            child: ListTile(
-              contentPadding: EdgeInsets.only(left: 0),
-              leading: Container(
-                  child: (CommonImageWidget(
-                iconUrl: (obj.enclosure != null &&
-                        obj.enclosure != '' &&
-                        obj.enclosure['url'] != null &&
-                        obj.enclosure['url'] != "")
-                    ? obj.enclosure['url']
-                    : (imageLink != null && imageLink != "")
-                        ? imageLink
-                        : Globals.splashImageUrl ??
-                            // Globals.homeObject["App_Logo__c"],
-                            Globals.appSetting.appLogoC,
-                height: Globals.deviceType == "phone"
-                    ? _kIconSize * 1.4
-                    : _kIconSize * 2,
-                width: Globals.deviceType == "phone"
-                    ? _kIconSize * 1.4
-                    : _kIconSize * 2,
-                fitMethod: BoxFit.contain,
-              ))),
-              title: obj.title["__cdata"] != null &&
-                      obj.title["__cdata"].length > 1
-                  ? Container(
-                      height: MediaQuery.of(context).size.height * 0.02,
-                      child: TranslationWidget(
-                          message:
-                              "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                          fromLanguage: "en",
-                          toLanguage: Globals.selectedLanguage,
-                          builder: (translatedMessage) {
-                            return marqueesText(translatedMessage.toString());
-                          }))
-                  : Container(),
-              subtitle: Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.020),
-                  child: actionButton(mainObj, obj, index)),
-            )));
+      // height: MediaQuery.of(context).size.height * 0.4,
+      // width: MediaQuery.of(context).size.width,
+      // padding: EdgeInsets.symmetric(
+      //   horizontal: _kLabelSpacing,
+      //   vertical: _kLabelSpacing / 2,
+      // ),
+      color: (index % 2 == 0)
+          ? Theme.of(context).colorScheme.background
+          : Theme.of(context).colorScheme.secondary,
+      child: InkWell(
+          onTap: () async {
+            // print(index);
+            // print(mainObj.length);
+            bool result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SliderWidget(
+                          // icons: Globals.icons,
+                          obj: socialMainList.length > 0 &&
+                                  socialMainList[index] != null
+                              ? socialMainList
+                              : mainObj,
+                          // iconsName: Globals.iconsName,
+                          currentIndex: index,
+                          issocialpage: true,
+                          isAboutSDPage: false,
+                          iseventpage: false,
+                          date: '1',
+                          isbuttomsheet: true,
+                          language: Globals.selectedLanguage,
+                        )));
+            if (result == true) {
+              _countSocialBloc.add(FetchSocialActionCount());
+            }
+          },
+          child: Card(
+            elevation: 0.1,
+            child: Container(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(bottom: 15, top: 15),
+                    child: obj.title["__cdata"] != null &&
+                            obj.title["__cdata"].length > 1
+                        ? Container(
+                            child: TranslationWidget(
+                                message:
+                                    "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+                                fromLanguage: "en",
+                                toLanguage: Globals.selectedLanguage,
+                                builder: (translatedMessage) {
+                                  return RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      text: TextSpan(children: [
+                                        WidgetSpan(
+                                          child: widgetIcon(obj.link),
+                                        ),
+                                        WidgetSpan(
+                                            child: SizedBox(
+                                          width: 2,
+                                        )),
+                                        TextSpan(
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline3!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryVariant,
+                                              ),
+                                          text: translatedMessage.toString(),
+                                        )
+                                      ]));
+
+                                  // Text(
+                                  //   translatedMessage.toString(),
+                                  //   style: Theme.of(context)
+                                  //   .textTheme
+                                  //   .headline2!
+                                  //   .copyWith(fontSize: 15),
+                                  //   overflow: TextOverflow.ellipsis,
+                                  //   maxLines: 2,
+                                  // );
+                                }))
+                        : Container(),
+                  ),
+                  Center(
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: CachedNetworkImage(
+                          fit: BoxFit.fitWidth,
+                          imageUrl: (obj.enclosure != null &&
+                                  obj.enclosure != '' &&
+                                  obj.enclosure['url'] != null &&
+                                  obj.enclosure['url'] != "")
+                              ? obj.enclosure['url']
+                              : (imageLink != null && imageLink != "")
+                                  ? imageLink
+                                  : Globals.splashImageUrl ??
+                                      // Globals.homeObject["App_Logo__c"],
+                                      Globals.appSetting.appLogoC,
+
+                                      errorWidget: (context, url, error) => CachedNetworkImage(
+                    imageUrl: Globals.splashImageUrl ??
+                        // Globals.homeObject["App_Logo__c"],
+                        Globals.appSetting.appLogoC,
+                    
+                  ),
+                        )
+                        // Image(
+                        //   // fit: BoxFit.none,
+                        //   image: NetworkImage(
+                        //     (obj.enclosure != null &&
+                        //             obj.enclosure != '' &&
+                        //             obj.enclosure['url'] != null &&
+                        //             obj.enclosure['url'] != "")
+                        //         ? obj.enclosure['url']
+                        //         : (imageLink != null && imageLink != "")
+                        //             ? imageLink
+                        //             : Globals.splashImageUrl ??
+                        //                 // Globals.homeObject["App_Logo__c"],
+                        //                 Globals.appSetting.appLogoC,
+                        //   ),
+                        // )
+                        ),
+                  ),
+                  Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.020),
+                      child: actionButton(mainObj, obj, index)),
+                ],
+              ),
+            ),
+          )),
+    );
   }
+  // ListTile(
+  //         contentPadding: EdgeInsets.only(left: 0),
+  //         leading: Container(
+  //             child: (CommonImageWidget(
+  //           iconUrl: (obj.enclosure != null &&
+  //                   obj.enclosure != '' &&
+  //                   obj.enclosure['url'] != null &&
+  //                   obj.enclosure['url'] != "")
+  //               ? obj.enclosure['url']
+  //               : (imageLink != null && imageLink != "")
+  //                   ? imageLink
+  //                   : Globals.splashImageUrl ??
+  //                       // Globals.homeObject["App_Logo__c"],
+  //                       Globals.appSetting.appLogoC,
+  //           height: Globals.deviceType == "phone"
+  //               ? _kIconSize * 1.4
+  //               : _kIconSize * 2,
+  //           width: Globals.deviceType == "phone"
+  //               ? _kIconSize * 1.4
+  //               : _kIconSize * 2,
+  //           fitMethod: BoxFit.contain,
+  //         ))),
+  //         title: obj.title["__cdata"] != null && obj.title["__cdata"].length > 1
+  //             ? Container(
+  //                 height: MediaQuery.of(context).size.height * 0.02,
+  //                 child: TranslationWidget(
+  //                     message:
+  //                         "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+  //                     fromLanguage: "en",
+  //                     toLanguage: Globals.selectedLanguage,
+  //                     builder: (translatedMessage) {
+  //                       return marqueesText(translatedMessage.toString());
+  //                     }))
+  //             : Container(),
+  //         subtitle: Container(
+  //             padding: EdgeInsets.only(
+  //                 top: MediaQuery.of(context).size.height * 0.020),
+  //             child: actionButton(mainObj, obj, index)),
+  //       ),
+
+  // Widget _buildlist(obj, int index, mainObj) {
+  //   final document = obj.description != null && obj.description != ""
+  //       ? parse(obj.description["__cdata"])
+  //       : parse("");
+  //   dom.Element? link = document.querySelector('img');
+  //   String? imageLink = link != null ? link.attributes['src'] : '';
+  //   // print(index);
+  //   // print(imageLink);
+
+  //   return Container(
+  //       padding: EdgeInsets.symmetric(
+  //         horizontal: _kLabelSpacing,
+  //         vertical: _kLabelSpacing / 2,
+  //       ),
+  //       color: (index % 2 == 0)
+  //           ? Theme.of(context).colorScheme.background
+  //           : Theme.of(context).colorScheme.secondary,
+  //       child: InkWell(
+  //           onTap: () async {
+  //             // print(index);
+  //             // print(mainObj.length);
+  //             bool result = await Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                     builder: (context) => SliderWidget(
+  //                           // icons: Globals.icons,
+  //                           obj: socialMainList.length > 0 &&
+  //                                   socialMainList[index] != null
+  //                               ? socialMainList
+  //                               : mainObj,
+  //                           // iconsName: Globals.iconsName,
+  //                           currentIndex: index,
+  //                           issocialpage: true,
+  //                           isAboutSDPage: false,
+  //                           iseventpage: false,
+  //                           date: '1',
+  //                           isbuttomsheet: true,
+  //                           language: Globals.selectedLanguage,
+  //                         )));
+  //             if (result == true) {
+  //               _countSocialBloc.add(FetchSocialActionCount());
+  //             }
+  //           },
+  //           child: ListTile(
+  //             contentPadding: EdgeInsets.only(left: 0),
+  //             leading: Container(
+  //                 child: (CommonImageWidget(
+  //               iconUrl: (obj.enclosure != null &&
+  //                       obj.enclosure != '' &&
+  //                       obj.enclosure['url'] != null &&
+  //                       obj.enclosure['url'] != "")
+  //                   ? obj.enclosure['url']
+  //                   : (imageLink != null && imageLink != "")
+  //                       ? imageLink
+  //                       : Globals.splashImageUrl ??
+  //                           // Globals.homeObject["App_Logo__c"],
+  //                           Globals.appSetting.appLogoC,
+  //               height: Globals.deviceType == "phone"
+  //                   ? _kIconSize * 1.4
+  //                   : _kIconSize * 2,
+  //               width: Globals.deviceType == "phone"
+  //                   ? _kIconSize * 1.4
+  //                   : _kIconSize * 2,
+  //               fitMethod: BoxFit.contain,
+  //             ))),
+  //             title: obj.title["__cdata"] != null &&
+  //                     obj.title["__cdata"].length > 1
+  //                 ? Container(
+  //                     height: MediaQuery.of(context).size.height * 0.02,
+  //                     child: TranslationWidget(
+  //                         message:
+  //                             "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+  //                         fromLanguage: "en",
+  //                         toLanguage: Globals.selectedLanguage,
+  //                         builder: (translatedMessage) {
+  //                           return marqueesText(translatedMessage.toString());
+  //                         }))
+  //                 : Container(),
+  //             subtitle: Container(
+  //                 padding: EdgeInsets.only(
+  //                     top: MediaQuery.of(context).size.height * 0.020),
+  //                 child: actionButton(mainObj, obj, index)),
+  //           )));
+  // }
 
   marqueesText(String title) {
     return title.length < 45
@@ -318,5 +509,63 @@ class _SocialPageState extends State<SocialPage> {
             );
           }
         });
+  }
+
+  Widget widgetIcon(link) {
+    if (link["\$t"].contains('instagram')) {
+      return ShaderMask(
+          shaderCallback: (bounds) => RadialGradient(
+                center: Alignment.topRight,
+                transform: GradientRotation(50),
+                radius: 5,
+                colors: [
+                  Colors.deepPurpleAccent,
+
+                  Colors.red,
+
+                  Colors.yellow,
+
+                  Color(0xffee2a7b),
+
+                  Colors.red,
+
+// Color(0xff002aff),
+                ],
+              ).createShader(bounds),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 1),
+            child: FaIcon(
+              FontAwesomeIcons.instagram,
+              size: 16,
+              color: Colors.white,
+            ),
+          ));
+
+// iconWidget(
+
+// FontAwesomeIcons.instagramSquare, [Colors.cyan, Colors.yellow]);
+
+    } else if (link["\$t"].contains('twitter')) {
+      return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2));
+    } else if (link["\$t"].contains('facebook')) {
+      return Padding(
+          padding: EdgeInsets.only(bottom: 1),
+          child: iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2)));
+    } else if (link["\$t"].contains('youtube')) {
+      return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000));
+    }
+
+    return Icon(
+      Icons.ac_unit,
+      size: 16,
+    );
+  }
+
+  Widget iconWidget(icon, color) {
+    return FaIcon(
+      icon,
+      size: 16,
+      color: color,
+    );
   }
 }

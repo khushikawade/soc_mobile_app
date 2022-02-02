@@ -327,13 +327,13 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
           index == 0
               ? (like.value != 0.0
                   ? f.format(like.value).toString().split('.')[0]
-                  : widget.obj.likeCount == 0.0
+                  : widget.obj.likeCount == 0.0 || widget.obj.likeCount == null
                       ? ""
                       : f.format(widget.obj.likeCount).toString().split('.')[0])
               : index == 1
                   ? (thanks.value != 0.0
                       ? f.format(thanks.value).toString().split('.')[0]
-                      : widget.obj.thanksCount == 0.0
+                      : widget.obj.thanksCount == 0.0 || widget.obj.thanksCount == null
                           ? ""
                           : f
                               .format(widget.obj.thanksCount)
@@ -342,7 +342,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                   : index == 2
                       ? (helpful.value != 0.0
                           ? f.format(helpful.value).toString().split('.')[0]
-                          : widget.obj.helpfulCount == 0.0
+                          : widget.obj.helpfulCount == 0.0 || widget.obj.helpfulCount == null
                               ? ""
                               : f
                                   .format(widget.obj.helpfulCount)
@@ -350,7 +350,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                                   .split('.')[0])
                       : share.value != 0.0
                           ? f.format(share.value).toString().split('.')[0]
-                          : widget.obj.shareCount == 0.0
+                          : widget.obj.shareCount == 0.0 || widget.obj.shareCount == null
                               ? ""
                               : f
                                   .format(widget.obj.shareCount)
