@@ -306,7 +306,7 @@ class _SearchPageState extends State<SearchPage> {
                           snapshot.data.length < 10 ? snapshot.data.length : 10,
                       itemBuilder: (BuildContext context, int index) {
                         List reverseList = List.from(snapshot.data.reversed);
-                        print(reverseList);
+                        // print(reverseList);
                         // return _buildRecentItem(index, snapshot.data);
                         return _buildRecentItem(index, reverseList);
                       },
@@ -441,7 +441,7 @@ class _SearchPageState extends State<SearchPage> {
                               if (idList.contains(data.id)) {
                               } else {
                                 _route(data);
-                                print(Recent);
+                                // print(Recent);
                                 if (data != null) {
                                   deleteItem();
                                   final recentitem = Recent(
