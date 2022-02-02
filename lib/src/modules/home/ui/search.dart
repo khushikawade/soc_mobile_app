@@ -102,8 +102,8 @@ class _SearchPageState extends State<SearchPage> {
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
                     staffDirectoryCategoryId: null,
-                    isAbout: false,
-                    appBarTitle: obj.titleC!,
+                    isAbout: true,
+                    appBarTitle: obj.titleC!,                    
                     obj: obj,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,

@@ -11,7 +11,6 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -243,14 +242,14 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
       SpacerWidget(_kLabelSpacing),
       _buildDescriptionWidget(),
       // SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj!.phoneC != null
+      widget.obj!.phoneC != null && widget.obj!.phoneC != ""
           ? Padding(
               padding: const EdgeInsets.only(top: _kLabelSpacing / 1.25),
               child: _buildPhoneWidget(),
             )
           : Container(),
       // SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj!.emailC != null
+      widget.obj!.emailC != null && widget.obj!.emailC != ""
           ? Padding(
               padding: const EdgeInsets.only(top: _kLabelSpacing / 1.25),
               child: _buildEmailWidget(),
@@ -262,7 +261,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         buttonTitle: "Share",
         obj: widget.obj,
         body:
-            "${widget.obj!.descriptionC != null ? widget.obj!.descriptionC.toString() : ""}" +
+            "${widget.obj!.descriptionC != null && widget.obj!.descriptionC != "" ? widget.obj!.descriptionC.toString() : ""}" +
                 "\n" +
                 "${widget.obj!.imageUrlC ?? ""}" +
                 "\n" +
@@ -295,7 +294,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   }
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
-                  //  Globals.homeObject = state.obj;
+                    //  Globals.homeObject = state.obj;
                     Globals.appSetting = AppSetting.fromJson(state.obj);
                     isloadingstate = false;
                     setState(() {});
@@ -311,7 +310,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
               listener: (context, state) async {
                 if (state is BottomNavigationBarSuccess) {
                   AppTheme.setDynamicTheme(Globals.appSetting, context);
-                //  Globals.homeObject = state.obj;
+                  //  Globals.homeObject = state.obj;
                   Globals.appSetting = AppSetting.fromJson(state.obj);
                   setState(() {});
                 }
