@@ -22,7 +22,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   SocialBloc() : super(SocialInitial());
 
   SocialState get initialState => SocialInitial();
- final DbServices _dbServices = DbServices();
+  final DbServices _dbServices = DbServices();
   @override
   Stream<SocialState> mapEventToState(
     SocialEvent event,
@@ -74,12 +74,14 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         // String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
         List<Item> _localData = await _localDb.getData();
-        // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
 
-        if (_localData.isEmpty) {
-          yield Loading();
-        } else {
-          yield SocialActionCountSuccess(obj: _localData);
+        //To fetch the latest count if returning back from detail page
+        if (event.isDetailPage == false) {
+          if (_localData.isEmpty) {
+            yield Loading();
+          } else {
+            yield SocialActionCountSuccess(obj: _localData);
+          }
         }
         List<ActionCountList> list = await fetchSocialActionCount();
 
@@ -204,8 +206,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future<List<ActionCountList>> fetchSocialActionCount() async {
     try {
-      final ResponseModel response = await _dbServices
-          .getapi(Uri.parse('getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
+      final ResponseModel response = await _dbServices.getapi(Uri.parse(
+          'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
       if (response.statusCode == 200) {
         var data = response.data["body"];
         final _allNotificationsAction = data;
@@ -223,9 +225,9 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future addSocailAction(body) async {
     try {
-     
-      final ResponseModel response = await _dbServices
-          .postapi("addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social", body: body);
+      final ResponseModel response = await _dbServices.postapi(
+          "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social",
+          body: body);
 
       if (response.statusCode == 200) {
         var res = response.data;
@@ -234,7 +236,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       } else {
         throw ('something_went_wrong');
       }
-     
+
       // final response = await http.post(
       //   Uri.parse(
       //       'https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/addSocialAction?schoolId=${Overrides.SCHOOL_ID}'),
