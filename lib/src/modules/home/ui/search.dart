@@ -432,6 +432,7 @@ class _SearchPageState extends State<SearchPage> {
                                               .primaryVariant)),
                             ),
                             onTap: () async {
+                              _route(data);
                               List itemListData = await getListData();
                               List idList = [];
                               for (int i = 0; i < itemListData.length; i++) {
@@ -440,7 +441,6 @@ class _SearchPageState extends State<SearchPage> {
 
                               if (idList.contains(data.id)) {
                               } else {
-                                _route(data);
                                 // print(Recent);
                                 if (data != null) {
                                   deleteItem();
