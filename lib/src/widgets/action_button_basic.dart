@@ -247,8 +247,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       setState(() {
         _downloadingFile = true;
       });
-      String _title = widget.obj.headings["en"] ?? "";
-      String _description = widget.obj.contents["en"] ?? "";
+      // String _title = widget.obj.headings["en"] ?? "";
+      // String _description = widget.obj.contents["en"] ?? "";
       String _imageUrl;
       if (fallBackImageUrl != null) {
         _imageUrl = fallBackImageUrl;
@@ -273,8 +273,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       });
       Share.shareFiles(
         [_image.path],
-        subject: '$_title',
-        text: '$_description',
+        // subject: '$_title',
+        // text: '$_description',
       );
       _totalRetry = 0;
     } catch (e) {
