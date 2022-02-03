@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/common_feed_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -82,133 +83,54 @@ class _SocialPageState extends State<SocialPage> {
           ? Theme.of(context).colorScheme.background
           : Theme.of(context).colorScheme.secondary,
       child: InkWell(
-          onTap: () async {
-            // print(index);
-            // print(mainObj.length);
-            bool result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SliderWidget(
-                          // icons: Globals.icons,
-                          obj: socialMainList.length > 0 &&
-                                  socialMainList[index] != null
-                              ? socialMainList
-                              : mainObj,
-                          // iconsName: Globals.iconsName,
-                          currentIndex: index,
-                          issocialpage: true,
-                          isAboutSDPage: false,
-                          iseventpage: false,
-                          date: '1',
-                          isbuttomsheet: true,
-                          language: Globals.selectedLanguage,
-                        )));
-            if (result == true) {
-              _countSocialBloc.add(FetchSocialActionCount());
-            }
-          },
-          child: Card(
-            elevation: 0.1,
-            child: Container(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(bottom: 15, top: 15),
-                    child: obj.title["__cdata"] != null &&
-                            obj.title["__cdata"].length > 1
-                        ? Container(
-                            child: TranslationWidget(
-                                message:
-                                    "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                                fromLanguage: "en",
-                                toLanguage: Globals.selectedLanguage,
-                                builder: (translatedMessage) {
-                                  return RichText(
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      text: TextSpan(children: [
-                                        WidgetSpan(
-                                          child: widgetIcon(obj.link),
-                                        ),
-                                        WidgetSpan(
-                                            child: SizedBox(
-                                          width: 2,
-                                        )),
-                                        TextSpan(
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3!
-                                              .copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primaryVariant,
-                                              ),
-                                          text: translatedMessage.toString(),
-                                        )
-                                      ]));
-
-                                  // Text(
-                                  //   translatedMessage.toString(),
-                                  //   style: Theme.of(context)
-                                  //   .textTheme
-                                  //   .headline2!
-                                  //   .copyWith(fontSize: 15),
-                                  //   overflow: TextOverflow.ellipsis,
-                                  //   maxLines: 2,
-                                  // );
-                                }))
-                        : Container(),
-                  ),
-                  Center(
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: CachedNetworkImage(
-                          fit: BoxFit.fitWidth,
-                          imageUrl: (obj.enclosure != null &&
-                                  obj.enclosure != '' &&
-                                  obj.enclosure['url'] != null &&
-                                  obj.enclosure['url'] != "")
-                              ? obj.enclosure['url']
-                              : (imageLink != null && imageLink != "")
-                                  ? imageLink
-                                  : Globals.splashImageUrl ??
-                                      // Globals.homeObject["App_Logo__c"],
-                                      Globals.appSetting.appLogoC,
-
-                                      errorWidget: (context, url, error) => CachedNetworkImage(
-                    imageUrl: Globals.splashImageUrl ??
-                        // Globals.homeObject["App_Logo__c"],
-                        Globals.appSetting.appLogoC,
-                    
-                  ),
-                        )
-                        // Image(
-                        //   // fit: BoxFit.none,
-                        //   image: NetworkImage(
-                        //     (obj.enclosure != null &&
-                        //             obj.enclosure != '' &&
-                        //             obj.enclosure['url'] != null &&
-                        //             obj.enclosure['url'] != "")
-                        //         ? obj.enclosure['url']
-                        //         : (imageLink != null && imageLink != "")
-                        //             ? imageLink
-                        //             : Globals.splashImageUrl ??
-                        //                 // Globals.homeObject["App_Logo__c"],
-                        //                 Globals.appSetting.appLogoC,
-                        //   ),
-                        // )
-                        ),
-                  ),
-                  Container(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.020),
-                      child: actionButton(mainObj, obj, index)),
-                ],
-              ),
-            ),
-          )),
+        onTap: () async {
+          // print(index);
+          // print(mainObj.length);
+          bool result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SliderWidget(
+                        // icons: Globals.icons,
+                        obj: socialMainList.length > 0 &&
+                                socialMainList[index] != null
+                            ? socialMainList
+                            : mainObj,
+                        // iconsName: Globals.iconsName,
+                        currentIndex: index,
+                        issocialpage: true,
+                        isAboutSDPage: false,
+                        iseventpage: false,
+                        date: '1',
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )));
+          if (result == true) {
+            _countSocialBloc.add(FetchSocialActionCount());
+          }
+        },
+        child: CommonFeedWidget(
+          title: obj.title!["__cdata"] != null &&
+                  obj.title!["__cdata"].length > 1
+              ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}"
+              : '',
+          actionIcon: Container(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.020),
+              child: actionButton(mainObj, obj, index)),
+          url: (obj.enclosure != null &&
+                  obj.enclosure != '' &&
+                  obj.enclosure['url'] != null &&
+                  obj.enclosure['url'] != "")
+              ? obj.enclosure['url']
+              : (imageLink != null && imageLink != "")
+                  ? imageLink
+                  : Globals.splashImageUrl ??
+                      // Globals.homeObject["App_Logo__c"],
+                      Globals.appSetting.appLogoC,
+                       iconLink: '',
+        ),
+        //
+      ),
     );
   }
   // ListTile(
@@ -520,16 +442,10 @@ class _SocialPageState extends State<SocialPage> {
                 radius: 5,
                 colors: [
                   Colors.deepPurpleAccent,
-
                   Colors.red,
-
                   Colors.yellow,
-
                   Color(0xffee2a7b),
-
                   Colors.red,
-
-// Color(0xff002aff),
                 ],
               ).createShader(bounds),
           child: Padding(
@@ -540,11 +456,6 @@ class _SocialPageState extends State<SocialPage> {
               color: Colors.white,
             ),
           ));
-
-// iconWidget(
-
-// FontAwesomeIcons.instagramSquare, [Colors.cyan, Colors.yellow]);
-
     } else if (link["\$t"].contains('twitter')) {
       return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2));
     } else if (link["\$t"].contains('facebook')) {
