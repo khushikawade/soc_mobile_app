@@ -416,7 +416,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         border: Border.all(width: 0.5),
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(8))),
-      height: MediaQuery.of(context).size.height * 0.04,
+      height: MediaQuery.of(context).size.height * 0.045,
       width: MediaQuery.of(context).size.width * 0.08,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

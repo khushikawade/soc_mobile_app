@@ -36,7 +36,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  width: MediaQuery.of(context).size.width * 0.12,
+                   width: MediaQuery.of(context).size.width * 0.12,
                   child: Center(child: widget.titleIcon)),
               Container(
                 width: MediaQuery.of(context).size.width * 0.85,
