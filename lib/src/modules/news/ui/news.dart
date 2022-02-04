@@ -167,6 +167,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               // alignment: Alignment.centerLeft,
               child: NewsActionBasic(
                   obj: state.obj[index],
+                  title: state.obj[index].headings['en'],
+                  description: state.obj[index].contents['en'],
+                  imageUrl: state.obj[index].image,
                   page: "news",
                   isLoading: isCountLoading),
             );
