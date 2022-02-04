@@ -66,12 +66,13 @@ class Utility {
     }
   }
 
-  static String convertTimestampToDateFormat(dynamic timestamp, String format) {
+  static String convertTimestampToDateFormat(
+      DateTime timestamp, String format) {
     try {
-      DateTime date =
-          DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
-      String dateFormat = DateFormat(format).format(date);
-      return dateFormat;
+      // final String date = DateFormat(format).format(timestamp);
+      final DateFormat formatter = DateFormat(format);
+      final String date = formatter.format(timestamp);
+      return date;
     } catch (e) {
       return '';
     }

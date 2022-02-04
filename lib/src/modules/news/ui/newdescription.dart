@@ -139,7 +139,7 @@ class _NewdescriptionState extends State<Newdescription> {
             //
             Text(
               Utility.convertTimestampToDateFormat(
-                  widget.obj.completedAtTimestamp, "MM/dd/yy"),
+                  widget.obj.completedAt, "MM/dd/yy"),
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     fontSize: 14,
                     color: Colors.grey,

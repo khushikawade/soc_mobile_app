@@ -60,41 +60,47 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                     SizedBox(
                       height: 5,
                     ),
-                    CachedNetworkImage(
-                        imageUrl: widget.url,
-                        fit: BoxFit.fitWidth,
-                        width: MediaQuery.of(context).size.width * 0.85,
-                        placeholder: (context, url) => Container(
-                            alignment: Alignment.center,
-                            child: ShimmerLoading(
-                              isLoading: true,
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.4,
-                                width: MediaQuery.of(context).size.width * 0.85,
-                                color: Colors.white,
-                              ),
-                            )),
-                        errorWidget: (context, url, error) =>
-                            CachedNetworkImage(
-                              fit: BoxFit.fitWidth,
-                              imageUrl: Globals.splashImageUrl ??
-                                  // Globals.homeObject["App_Logo__c"],
-                                  Globals.appSetting.appLogoC,
-                              placeholder: (context, url) => Container(
-                                  alignment: Alignment.center,
-                                  child: ShimmerLoading(
-                                    isLoading: true,
-                                    child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
+                    widget.url != '' || widget.url == null
+                        ? CachedNetworkImage(
+                            imageUrl: widget.url,
+                            fit: BoxFit.fitWidth,
+                            width: MediaQuery.of(context).size.width * 0.85,
+                            placeholder: (context, url) => Container(
+                                alignment: Alignment.center,
+                                child: ShimmerLoading(
+                                  isLoading: true,
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.4,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.85,
+                                    color: Colors.white,
+                                  ),
+                                )),
+                            errorWidget: (context, url, error) =>
+                                CachedNetworkImage(
+                                  fit: BoxFit.fitWidth,
+                                  imageUrl: Globals.splashImageUrl ??
+                                      // Globals.homeObject["App_Logo__c"],
+                                      Globals.appSetting.appLogoC,
+                                  placeholder: (context, url) => Container(
+                                      alignment: Alignment.center,
+                                      child: ShimmerLoading(
+                                        isLoading: true,
+                                        child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
                                               0.4,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.85,
-                                      color: Colors.white,
-                                    ),
-                                  )),
-                            )),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.85,
+                                          color: Colors.white,
+                                        ),
+                                      )),
+                                ))
+                        : Container(),
                     widget.actionIcon,
                   ],
                 ),

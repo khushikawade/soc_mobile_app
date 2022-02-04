@@ -125,6 +125,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                   list[j].notificationId) {
                 newList.add(NotificationList(
                     id: Globals.notificationList[i].id,
+                    completedAt: Globals.notificationList[i].completedAt,
                     contents:
                         Globals.notificationList[i].contents, //obj.contents,
                     headings:
@@ -142,6 +143,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
               if (list.length - 1 == j) {
                 newList.add(NotificationList(
                     id: Globals.notificationList[i].id,
+                    completedAt: Globals.notificationList[i].completedAt,
                     contents:
                         Globals.notificationList[i].contents, //obj.contents,
                     headings:

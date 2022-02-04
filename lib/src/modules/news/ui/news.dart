@@ -7,7 +7,6 @@ import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/common_feed_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -15,7 +14,6 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:analog_clock/analog_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -144,11 +142,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               ? obj.headings["en"].toString()
               : obj.contents["en"] ?? '-',
           titleIcon: calanderView(obj.completedAt),
-          url: obj.image != '' && obj.image != null
-              ? obj.image
-              : Globals.splashImageUrl != '' && Globals.splashImageUrl != null
-                  ? Globals.splashImageUrl
-                  : Globals.appSetting.appLogoC,
+          url: obj.image != '' && obj.image != null ? obj.image! : '',
+          //  Globals.splashImageUrl != '' && Globals.splashImageUrl != null
+          //     ? Globals.splashImageUrl
+          //     : Globals.appSetting.appLogoC,
         ),
       ),
     );
@@ -164,6 +161,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             if (state is ActionCountSuccess) {
               newsMainList.clear();
               newsMainList.addAll(state.obj);
+              print(newsMainList);
               isCountLoading = false;
               Container(
                 alignment: Alignment.centerLeft,
@@ -394,9 +392,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   }
 
   Widget calanderView(dateTime) {
-    final String month = DateFormat("MMM").format(dateTime);
-    final DateFormat formatter = DateFormat('dd');
-    final String date = formatter.format(dateTime);
+    final String date = Utility.convertTimestampToDateFormat(dateTime, 'dd');
+    final String month = Utility.convertTimestampToDateFormat(dateTime, 'MMM');
     print(month);
     return Container(
       decoration: BoxDecoration(
