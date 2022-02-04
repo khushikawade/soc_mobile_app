@@ -97,44 +97,32 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              // width: MediaQuery.of(context).size.width * 0.4,
-              child: Row(crossAxisAlignment: CrossAxisAlignment.start,
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 0),
-                      child: _iconButton(0),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25),
-                      child: _iconButton(1),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25),
-                      child: _iconButton(2),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25),
-                      child: _iconButton(3),
-                    ),
-                    // _iconButton(1),
-                    // _iconButton(2),
-                    // _iconButton(3),
-                  ]
-                  //  Globals.icons
-                  //     .map<Widget>(
-                  //         //  (element) => _iconButton(Globals.icons.indexOf(element)))
-                  //         (element) =>
-                  //             _iconButton(Globals.icons.indexOf(element)))
-                  //     .toList(),
-                  // _iconButton(0),
-                  // _iconButton(1),
-                  // _iconButton(2),
+              width: MediaQuery.of(context).size.width * 0.55,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children:
+                    // [
+                    //   _iconButton(0),
+                    //   _iconButton(1),
+                    //   _iconButton(2),
+                    //   _iconButton(3),
+                    //   // _iconButton(1),
+                    //   // _iconButton(2),
+                    //   // _iconButton(3),
+                    // ]
+                    Globals.icons
+                        .map<Widget>((element) =>
+                            _iconButton(Globals.icons.indexOf(element)))
+                        .toList(),
+                // _iconButton(0),
+                // _iconButton(1),
+                // _iconButton(2),
 
-                  //  Globals.icons.map<Widget>(
-                  //     // (element) => _iconButton(Globals.icons.indexOf(element)))
-                  //     (element) => _iconButton(Globals.icons.indexOf(element))).toList(),
-                  ),
+                //  Globals.icons.map<Widget>(
+                //     // (element) => _iconButton(Globals.icons.indexOf(element)))
+                //     (element) => _iconButton(Globals.icons.indexOf(element))).toList(),
+              ),
             ),
             // _iconButton(3)
           ],

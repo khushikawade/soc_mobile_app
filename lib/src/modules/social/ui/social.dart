@@ -6,21 +6,22 @@ import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_feed_widget.dart';
-import 'package:Soc/src/widgets/common_image_widget.dart';
+
+
+
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
-import 'package:marquee/marquee.dart';
+
 
 class SocialPage extends StatefulWidget {
   SocialPage({
@@ -35,6 +36,7 @@ class SocialPage extends StatefulWidget {
 
 class _SocialPageState extends State<SocialPage> {
   static const double _kLabelSpacing = 16.0;
+  static const double _kSocialIconSize = 30.0;
   static const double _kIconSize = 48.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
@@ -269,32 +271,32 @@ class _SocialPageState extends State<SocialPage> {
   //           )));
   // }
 
-  marqueesText(String title) {
-    return title.length < 45
-        ? Text("$title",
-            style: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: Theme.of(context).colorScheme.primaryVariant,
-                ))
-        : Marquee(
-            text: "$title",
-            style: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: Theme.of(context).colorScheme.primaryVariant,
-                ),
-            scrollAxis: Axis.horizontal,
-            velocity: 30.0,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            blankSpace: //50,
-                MediaQuery.of(context).size.width * 0.5,
-            // velocity: 100.0,
-            pauseAfterRound: Duration(seconds: 5),
-            showFadingOnlyWhenScrolling: true,
-            startPadding: 0.0,
-            accelerationDuration: Duration(seconds: 1),
-            accelerationCurve: Curves.linear,
-            decelerationDuration: Duration(milliseconds: 500),
-            decelerationCurve: Curves.easeOut,
-          );
-  }
+  // marqueesText(String title) {
+  //   return title.length < 45
+  //       ? Text("$title",
+  //           style: Theme.of(context).textTheme.headline2!.copyWith(
+  //                 color: Theme.of(context).colorScheme.primaryVariant,
+  //               ))
+  //       : Marquee(
+  //           text: "$title",
+  //           style: Theme.of(context).textTheme.headline2!.copyWith(
+  //                 color: Theme.of(context).colorScheme.primaryVariant,
+  //               ),
+  //           scrollAxis: Axis.horizontal,
+  //           velocity: 30.0,
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           blankSpace: //50,
+  //               MediaQuery.of(context).size.width * 0.5,
+  //           // velocity: 100.0,
+  //           pauseAfterRound: Duration(seconds: 5),
+  //           showFadingOnlyWhenScrolling: true,
+  //           startPadding: 0.0,
+  //           accelerationDuration: Duration(seconds: 1),
+  //           accelerationCurve: Curves.linear,
+  //           decelerationDuration: Duration(milliseconds: 500),
+  //           decelerationCurve: Curves.easeOut,
+  //         );
+  // }
 
   Widget makeList(obj) {
     return ListView.builder(
@@ -461,7 +463,7 @@ class _SocialPageState extends State<SocialPage> {
               ).createShader(bounds),
           child: FaIcon(
             FontAwesomeIcons.instagram,
-            size: 30,
+            size: _kSocialIconSize,
             color: Colors.white,
           ));
     } else if (link["\$t"].contains('twitter')) {
@@ -474,14 +476,14 @@ class _SocialPageState extends State<SocialPage> {
 
     return Icon(
       Icons.ac_unit,
-      size: 25,
+      size: _kSocialIconSize,
     );
   }
 
   Widget iconWidget(icon, color) {
     return FaIcon(
       icon,
-      size: 25,
+      size: _kSocialIconSize,
       color: color,
     );
   }

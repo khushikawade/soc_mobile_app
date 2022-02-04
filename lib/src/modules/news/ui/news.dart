@@ -10,7 +10,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/common_feed_widget.dart';
-import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -140,27 +139,27 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   obj.headings != null
               ? obj.headings["en"].toString()
               : obj.contents["en"] ?? '-',
-          titleIcon: 
+          titleIcon: calanderView(),
           // Icon(Icons.notifications_active),
-           ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: AnalogClock(
-              width: 30,
-              isLive: false,
-              showDigitalClock: false,
-              showTicks: true,
-              showNumbers: true,
-              datetime: obj.completedAt,
-              tickColor: Colors.black,
-              minuteHandColor: Colors.black,
-              showSecondHand: false,
-              hourHandColor: Colors.black,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.6),
-              ),
-              height: 30,
-            ),
-          ),
+          //  ClipRRect(
+          //   borderRadius: BorderRadius.circular(100),
+          //   child: AnalogClock(
+          //     width: 30,
+          //     isLive: false,
+          //     showDigitalClock: false,
+          //     showTicks: true,
+          //     showNumbers: true,
+          //     datetime: obj.completedAt,
+          //     tickColor: Colors.black,
+          //     minuteHandColor: Colors.black,
+          //     showSecondHand: false,
+          //     hourHandColor: Colors.black,
+          //     decoration: BoxDecoration(
+          //       color: Theme.of(context).primaryColor.withOpacity(0.6),
+          //     ),
+          //     height: 30,
+          //   ),
+          // ),
           url: obj.image != '' && obj.image != null
               ? obj.image
               : Globals.splashImageUrl != '' && Globals.splashImageUrl != null
@@ -407,6 +406,41 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             },
             child: Container()),
         onRefresh: refreshPage,
+      ),
+    );
+  }
+
+  Widget calanderView() {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(width: 0.5),
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      height: MediaQuery.of(context).size.height * 0.045,
+      width: MediaQuery.of(context).size.width * 0.1,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  topRight: Radius.circular(8.0),
+                )),
+            height: MediaQuery.of(context).size.height * 0.05 / 3,
+            width: MediaQuery.of(context).size.width * 0.1,
+            child: Center(child: Padding(
+              padding: const EdgeInsets.only(bottom: 1),
+              child: Text('Jan',style: Theme.of(context).textTheme.subtitle2,),
+            )),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text('25'),
+          )
+        ],
       ),
     );
   }
