@@ -323,11 +323,14 @@ class SocialDescription extends StatelessWidget {
   }
 
   _buildActionCount(BuildContext context) {
-    return NewsActionBasic(
-      page: "social",
-      obj: object,
-      // icons: icons,
-      // iconsName: iconsName,
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: NewsActionBasic(
+        page: "social",
+        obj: object,
+        // icons: icons,
+        // iconsName: iconsName,
+      ),
     );
   }
 }

@@ -92,7 +92,7 @@ class _NewdescriptionState extends State<Newdescription> {
                 // Globals.homeObject["App_Logo__c"],
                 height: Utility.displayHeight(context) *
                     (AppTheme.kDetailPageImageHeightFactor / 100),
-                    fitMethod: BoxFit.contain,
+                fitMethod: BoxFit.contain,
                 isOnTap: true,
               )),
             ),
@@ -213,11 +213,14 @@ class _NewdescriptionState extends State<Newdescription> {
           child: Container(),
         ),
         SpacerWidget(AppTheme.kBodyPadding),
-        NewsActionBasic(
-          page: "news",
-          obj: widget.obj,
-          // icons: widget.icons,
-          // iconsName: widget.iconsName,
+        Container(
+          alignment: Alignment.centerLeft,
+          child: NewsActionBasic(
+            page: "news",
+            obj: widget.obj,
+            // icons: widget.icons,
+            // iconsName: widget.iconsName,
+          ),
         ),
       ],
     );
