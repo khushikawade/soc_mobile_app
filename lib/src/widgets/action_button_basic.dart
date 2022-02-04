@@ -15,21 +15,18 @@ class NewsActionBasic extends StatefulWidget {
   NewsActionBasic({
     Key? key,
     required this.obj,
-    this.title,
-    this.imageUrl,
-    this.description,
-    // required this.icons,
+    required this.title,
+    required this.imageUrl,
+    required this.description,
     this.isLoading,
     required this.page,
     this.scaffoldKey,
   }) : super(key: key);
 
   final obj;
-  var imageUrl;
-  var title;
-  var description;
-  // final List? icons;
-  // final List? iconsName;
+  final imageUrl;
+  final title;
+  final description;
   final bool? isLoading;
   final String page;
   final Key? scaffoldKey;
@@ -252,31 +249,26 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
 
   _shareNews({String? fallBackImageUrl}) async {
     try {
-
-
-
       if (_downloadingFile == true) return;
       setState(() {
         _downloadingFile = true;
       });
       String _title = Utility.convertHtmlTOText(widget.title) ?? "";
-
       String _description = Utility.convertHtmlTOText(widget.description) ?? "";
 
       String _imageUrl;
       if (fallBackImageUrl != null) {
         _imageUrl = fallBackImageUrl;
       } else {
-        _imageUrl = (widget.imageUrl != null || widget.imageUrl != "") &&
-                widget.imageUrl.toString().contains("http") &&
-              await Utility.errorImageUrl(widget.imageUrl)!=''&&
-                (widget.imageUrl.contains('jpg') ||
-                    widget.imageUrl.contains('jpeg') ||
-                    widget.imageUrl.contains('gif') ||
-                    widget.imageUrl.contains('png') ||
-                    widget.imageUrl.contains('PNG') ||
-                    widget.imageUrl.contains('tiff') ||
-                    widget.imageUrl.contains('bmp'))
+        _imageUrl = widget.imageUrl.toString().contains("http") &&
+                await Utility.errorImageUrl(widget.imageUrl) != '' //&&
+            // (widget.imageUrl.toString().contains('jpg') ||
+            //     widget.imageUrl.toString().contains('jpeg') ||
+            //     widget.imageUrl.toString().contains('gif') ||
+            //     widget.imageUrl.toString().contains('png') ||
+            //     widget.imageUrl.toString().contains('PNG') ||
+            //     widget.imageUrl.toString().contains('tiff') ||
+            //     widget.imageUrl.toString().contains('bmp'))
             ? widget.imageUrl
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
