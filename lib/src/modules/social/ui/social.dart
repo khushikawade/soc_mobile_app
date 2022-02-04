@@ -463,7 +463,7 @@ class _SocialPageState extends State<SocialPage> {
               ).createShader(bounds),
           child: FaIcon(
             FontAwesomeIcons.instagram,
-            size: _kSocialIconSize,
+            size: MediaQuery.of(context).size.width*0.07,
             color: Colors.white,
           ));
     } else if (link["\$t"].contains('twitter')) {
@@ -476,14 +476,14 @@ class _SocialPageState extends State<SocialPage> {
 
     return Icon(
       Icons.ac_unit,
-      size: _kSocialIconSize,
+      size: MediaQuery.of(context).size.width*0.07,
     );
   }
 
   Widget iconWidget(icon, color) {
     return FaIcon(
       icon,
-      size: _kSocialIconSize,
+      size: MediaQuery.of(context).size.width*0.07,
       color: color,
     );
   }

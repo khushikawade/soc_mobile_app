@@ -416,8 +416,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         border: Border.all(width: 0.5),
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(8))),
-      height: MediaQuery.of(context).size.height * 0.045,
-      width: MediaQuery.of(context).size.width * 0.1,
+      height: MediaQuery.of(context).size.height * 0.04,
+      width: MediaQuery.of(context).size.width * 0.08,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -429,17 +429,14 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   topLeft: Radius.circular(8.0),
                   topRight: Radius.circular(8.0),
                 )),
-            height: MediaQuery.of(context).size.height * 0.05 / 3,
-            width: MediaQuery.of(context).size.width * 0.1,
+            height: MediaQuery.of(context).size.height * 0.045 / 2.8,
+            width: MediaQuery.of(context).size.width * 0.08,
             child: Center(child: Padding(
               padding: const EdgeInsets.only(bottom: 1),
               child: Text('Jan',style: Theme.of(context).textTheme.subtitle2,),
             )),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text('25'),
-          )
+          Text('25')
         ],
       ),
     );
