@@ -9,15 +9,18 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/widgets/common_feed_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
+import 'package:analog_clock/analog_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+
 import 'package:marquee/marquee.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -89,68 +92,105 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildListItems(
       List<NotificationList> list, NotificationList obj, int index) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: _kLabelSpacing,
-        vertical: _kLabelSpacing / 2,
-      ),
+      // padding: EdgeInsets.symmetric(
+      //   horizontal: _kLabelSpacing,
+      //   vertical: _kLabelSpacing / 2,
+      // ),
       // padding: EdgeInsets.symmetric(
       //   // horizontal: _kLabelSpacing,
       //   vertical: _kLabelSpacing / 1,
       // ),
-      color: (index % 2 == 0)
-          ? Theme.of(context).colorScheme.background
-          : Theme.of(context).colorScheme.secondary,
-      child: InkWell(
-          onTap: () async {
-            if (isCountLoading == true) {
-              Utility.showSnackBar(
-                  _scaffoldKey, "Please wait while count is loading", context);
-            } else {
-              bool result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SliderWidget(
-                            obj: newsMainList.length > 0 &&
-                                    newsMainList[index] != null
-                                ? newsMainList
-                                : list,
-                            currentIndex: index,
-                            issocialpage: false,
-                            isAboutSDPage: false,
-                            iseventpage: false,
-                            date: "$newsTimeStamp",
-                            isbuttomsheet: true,
-                            language: Globals.selectedLanguage,
-                          )));
+      color: Theme.of(context).colorScheme.background,
 
-              if (result == true) {
-                _countBloc.add(FetchActionCountList());
-              }
+      child: InkWell(
+        onTap: () async {
+          if (isCountLoading == true) {
+            Utility.showSnackBar(
+                _scaffoldKey, "Please wait while count is loading", context);
+          } else {
+            bool result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SliderWidget(
+                          obj: newsMainList.length > 0 &&
+                                  newsMainList[index] != null
+                              ? newsMainList
+                              : list,
+                          currentIndex: index,
+                          issocialpage: false,
+                          isAboutSDPage: false,
+                          iseventpage: false,
+                          date: "$newsTimeStamp",
+                          isbuttomsheet: true,
+                          language: Globals.selectedLanguage,
+                        )));
+
+            if (result == true) {
+              _countBloc.add(FetchActionCountList());
             }
-          },
-          child: ListTile(
-            contentPadding: EdgeInsets.only(left: 0),
-            leading: CommonImageWidget(
-              fitMethod: BoxFit.contain,
-              iconUrl: obj.image != '' && obj.image != null
-                  ? obj.image
-                  : Globals.splashImageUrl != '' &&
-                          Globals.splashImageUrl != null
-                      ? Globals.splashImageUrl
-                      : Globals.appSetting.appLogoC,
-              height: Globals.deviceType == "phone"
-                  ? _kIconSize * 1.4
-                  : _kIconSize * 2,
-              width: Globals.deviceType == "phone"
-                  ? _kIconSize * 1.4
-                  : _kIconSize * 2,
+          }
+        },
+        child: CommonFeedWidget(
+          actionIcon: Container(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.020),
+              child: actionButton(list, obj, index)),
+          title: obj.headings!.length > 0 &&
+                  obj.headings != "" &&
+                  obj.headings != null
+              ? obj.headings["en"].toString()
+              : obj.contents["en"] ?? '-',
+          titleIcon: 
+          // Icon(Icons.notifications_active),
+           ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: AnalogClock(
+              width: 30,
+              isLive: false,
+              showDigitalClock: false,
+              showTicks: true,
+              showNumbers: true,
+              datetime: obj.completedAt,
+              tickColor: Colors.black,
+              minuteHandColor: Colors.black,
+              showSecondHand: false,
+              hourHandColor: Colors.black,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withOpacity(0.6),
+              ),
+              height: 30,
             ),
-            title: _buildnewsHeading(obj),
-            subtitle: Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.020),
-                child: actionButton(list, obj, index)),
-          )),
+          ),
+          url: obj.image != '' && obj.image != null
+              ? obj.image
+              : Globals.splashImageUrl != '' && Globals.splashImageUrl != null
+                  ? Globals.splashImageUrl
+                  : Globals.appSetting.appLogoC,
+        ),
+        // ListTile(
+        //   contentPadding: EdgeInsets.only(left: 0),
+        //   leading: CommonImageWidget(
+        //     fitMethod: BoxFit.contain,
+        //     iconUrl: obj.image != '' && obj.image != null
+        //         ? obj.image
+        //         : Globals.splashImageUrl != '' &&
+        //                 Globals.splashImageUrl != null
+        //             ? Globals.splashImageUrl
+        //             : Globals.appSetting.appLogoC,
+        //     height: Globals.deviceType == "phone"
+        //         ? _kIconSize * 1.4
+        //         : _kIconSize * 2,
+        //     width: Globals.deviceType == "phone"
+        //         ? _kIconSize * 1.4
+        //         : _kIconSize * 2,
+        //   ),
+        //   title: _buildnewsHeading(obj),
+        //   subtitle: Container(
+        //       padding: EdgeInsets.only(
+        //           top: MediaQuery.of(context).size.height * 0.020),
+        //       child: actionButton(list, obj, index)),
+        // )),
+      ),
     );
   }
 

@@ -73,15 +73,26 @@ class _SocialPageState extends State<SocialPage> {
     // print(imageLink);
 
     return Container(
+      // decoration: BoxDecoration(
+      //   border: Border.all(
+
+      //     color: AppTheme.kDividerColor2,
+      //     width: 2,
+      //   ),
+      //   borderRadius: BorderRadius.circular(0.0),
+        
+           
+      // ),
+      color:  Theme.of(context).colorScheme.background,
       // height: MediaQuery.of(context).size.height * 0.4,
       // width: MediaQuery.of(context).size.width,
       // padding: EdgeInsets.symmetric(
       //   horizontal: _kLabelSpacing,
       //   vertical: _kLabelSpacing / 2,
       // ),
-      color: (index % 2 == 0)
-          ? Theme.of(context).colorScheme.background
-          : Theme.of(context).colorScheme.secondary,
+      // color: (index % 2 == 0)
+      //     ? Theme.of(context).colorScheme.background
+      //     : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () async {
           // print(index);
@@ -127,7 +138,7 @@ class _SocialPageState extends State<SocialPage> {
                   : Globals.splashImageUrl ??
                       // Globals.homeObject["App_Logo__c"],
                       Globals.appSetting.appLogoC,
-                       iconLink: '',
+          titleIcon: widgetIcon(obj.link),
         ),
         //
       ),
@@ -448,34 +459,29 @@ class _SocialPageState extends State<SocialPage> {
                   Colors.red,
                 ],
               ).createShader(bounds),
-          child: Padding(
-            padding: EdgeInsets.only(bottom: 1),
-            child: FaIcon(
-              FontAwesomeIcons.instagram,
-              size: 16,
-              color: Colors.white,
-            ),
+          child: FaIcon(
+            FontAwesomeIcons.instagram,
+            size: 30,
+            color: Colors.white,
           ));
     } else if (link["\$t"].contains('twitter')) {
       return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2));
     } else if (link["\$t"].contains('facebook')) {
-      return Padding(
-          padding: EdgeInsets.only(bottom: 1),
-          child: iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2)));
+      return iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2));
     } else if (link["\$t"].contains('youtube')) {
       return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000));
     }
 
     return Icon(
       Icons.ac_unit,
-      size: 16,
+      size: 25,
     );
   }
 
   Widget iconWidget(icon, color) {
     return FaIcon(
       icon,
-      size: 16,
+      size: 25,
       color: color,
     );
   }

@@ -92,16 +92,53 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
 
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.045,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: Globals.icons
-            .map<Widget>(
-                (element) => _iconButton(Globals.icons.indexOf(element)))
-            .toList(),
-      ),
-    );
+        height: MediaQuery.of(context).size.height * 0.045,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              // width: MediaQuery.of(context).size.width * 0.4,
+              child: Row(crossAxisAlignment: CrossAxisAlignment.start,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 0),
+                      child: _iconButton(0),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: _iconButton(1),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: _iconButton(2),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: _iconButton(3),
+                    ),
+                    // _iconButton(1),
+                    // _iconButton(2),
+                    // _iconButton(3),
+                  ]
+                  //  Globals.icons
+                  //     .map<Widget>(
+                  //         //  (element) => _iconButton(Globals.icons.indexOf(element)))
+                  //         (element) =>
+                  //             _iconButton(Globals.icons.indexOf(element)))
+                  //     .toList(),
+                  // _iconButton(0),
+                  // _iconButton(1),
+                  // _iconButton(2),
+
+                  //  Globals.icons.map<Widget>(
+                  //     // (element) => _iconButton(Globals.icons.indexOf(element)))
+                  //     (element) => _iconButton(Globals.icons.indexOf(element))).toList(),
+                  ),
+            ),
+            // _iconButton(3)
+          ],
+        ));
   }
 
   int _start = 2;
@@ -231,7 +268,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
             : Globals.appSetting.appLogoC; //Globals.homeObject["App_Logo__c"];
         _shareNews(fallBackImageUrl: _fallBackImageUrl);
       } else {
-        Utility.showSnackBar(widget.scaffoldKey, 'Something went wrong.', context);
+        Utility.showSnackBar(
+            widget.scaffoldKey, 'Something went wrong.', context);
       }
     }
   }
@@ -333,7 +371,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
               : index == 1
                   ? (thanks.value != 0.0
                       ? f.format(thanks.value).toString().split('.')[0]
-                      : widget.obj.thanksCount == 0.0 || widget.obj.thanksCount == null
+                      : widget.obj.thanksCount == 0.0 ||
+                              widget.obj.thanksCount == null
                           ? ""
                           : f
                               .format(widget.obj.thanksCount)
@@ -342,7 +381,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                   : index == 2
                       ? (helpful.value != 0.0
                           ? f.format(helpful.value).toString().split('.')[0]
-                          : widget.obj.helpfulCount == 0.0 || widget.obj.helpfulCount == null
+                          : widget.obj.helpfulCount == 0.0 ||
+                                  widget.obj.helpfulCount == null
                               ? ""
                               : f
                                   .format(widget.obj.helpfulCount)
@@ -350,7 +390,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                                   .split('.')[0])
                       : share.value != 0.0
                           ? f.format(share.value).toString().split('.')[0]
-                          : widget.obj.shareCount == 0.0 || widget.obj.shareCount == null
+                          : widget.obj.shareCount == 0.0 ||
+                                  widget.obj.shareCount == null
                               ? ""
                               : f
                                   .format(widget.obj.shareCount)
