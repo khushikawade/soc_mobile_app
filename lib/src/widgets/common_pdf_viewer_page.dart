@@ -95,13 +95,13 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                   ))
                 : PDFViewer(
                     document: document!,
-                    // enableSwipeNavigation: true,
-                    // showIndicator: true,
-                    // lazyLoad: false,
-                    // showNavigation: false,
-                    // showPicker: false,
-                    // zoomSteps: 2,
-                    // scrollDirection: Axis.vertical,
+                    enableSwipeNavigation: true,
+                    showIndicator: true,
+                    lazyLoad: false,
+                    showNavigation: false,
+                    showPicker: false,
+                    zoomSteps: 2,
+                    scrollDirection: Axis.vertical,
                   )
             : NoDataFoundErrorWidget(
                 isResultNotFoundMsg: false,

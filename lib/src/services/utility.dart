@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -29,6 +30,15 @@ class Utility {
       return dateFormat;
     } catch (e) {
       return '';
+    }
+  }
+
+  static Future<String> errorImageUrl(String imageUrl) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    if (response.statusCode == 200) {
+      return imageUrl;
+    } else {
+      return imageUrl = '';
     }
   }
 
@@ -320,7 +330,9 @@ class Utility {
 
   static Future<File> createFileFromUrl(_url) async {
     Uri _imgUrl = Uri.parse(_url);
-    String _fileExt = _imgUrl.path.split('.').last;
+    String _fileExt = _imgUrl.query != ""
+        ? _imgUrl.query.split('format=')[1].split("&")[0]
+        : _imgUrl.path.split('.').last;
     String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Response<List<int>> rs = await Dio().get<List<int>>(
       _url,

@@ -16,12 +16,18 @@ class NewsActionBasic extends StatefulWidget {
   NewsActionBasic({
     Key? key,
     required this.obj,
+    required this.title,
+    required this.imageUrl,
+    required this.description,
     this.isLoading,
     required this.page,
     this.scaffoldKey,
   }) : super(key: key);
 
   final obj;
+  final imageUrl;
+  final title;
+  final description;
   final bool? isLoading;
   final String page;
   final Key? scaffoldKey;
@@ -269,21 +275,23 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       setState(() {
         _downloadingFile = true;
       });
-      String _title = widget.obj.headings["en"] ?? "";
-      String _description = widget.obj.contents["en"] ?? "";
+      String _title = Utility.convertHtmlTOText(widget.title) ?? "";
+      String _description = Utility.convertHtmlTOText(widget.description) ?? "";
+
       String _imageUrl;
       if (fallBackImageUrl != null) {
         _imageUrl = fallBackImageUrl;
       } else {
-        _imageUrl = (widget.obj.image != null || widget.obj.image != "") &&
-                widget.obj.image.toString().contains("http") &&
-                (widget.obj.image.contains('jpg') ||
-                    widget.obj.image.contains('jpeg') ||
-                    widget.obj.image.contains('gif') ||
-                    widget.obj.image.contains('png') ||
-                    widget.obj.image.contains('tiff') ||
-                    widget.obj.image.contains('bmp'))
-            ? widget.obj.image
+        _imageUrl = widget.imageUrl.toString().contains("http") &&
+                await Utility.errorImageUrl(widget.imageUrl) != '' //&&
+            // (widget.imageUrl.toString().contains('jpg') ||
+            //     widget.imageUrl.toString().contains('jpeg') ||
+            //     widget.imageUrl.toString().contains('gif') ||
+            //     widget.imageUrl.toString().contains('png') ||
+            //     widget.imageUrl.toString().contains('PNG') ||
+            //     widget.imageUrl.toString().contains('tiff') ||
+            //     widget.imageUrl.toString().contains('bmp'))
+            ? widget.imageUrl
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
                 : Globals.appSetting.appLogoC;

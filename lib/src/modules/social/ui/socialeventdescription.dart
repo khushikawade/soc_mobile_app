@@ -8,12 +8,12 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/selectable_html_widget.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/dom.dart' as dom;
 
 // ignore: must_be_immutable
@@ -241,9 +241,9 @@ class SocialDescription extends StatelessWidget {
           // "${data + "#" + data2}",
           fromLanguage: "en",
           toLanguage: language,
-          builder: (translatedMessage) => 
-          // SelectableHTMLWidget // Html
-          SelectableHtml(
+          builder: (translatedMessage) =>
+              // SelectableHTMLWidget // Html
+              SelectableHtml(
             onLinkTap: (String? url, RenderContext context,
                 Map<String, String> attributes, dom.Element? element) {
               _launchURL(url, context);
@@ -276,19 +276,26 @@ class SocialDescription extends StatelessWidget {
       Container(
         alignment: Alignment.centerLeft,
         child: TranslationWidget(
-          message:
-              "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
-          fromLanguage: "en",
-          toLanguage: language,
-          builder: (translatedMessage) => SelectableHtml(
-            data: translatedMessage.toString(),
-            // style: Theme.of(context).textTheme.subtitle1!,
-            onLinkTap: (String? url, RenderContext context,
-                Map<String, String> attributes, dom.Element? element) {
-              _launchURL(url, context);
-            },
-          ),
-        ),
+            message:
+                "${String.fromCharCode(0xF099)} ${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+            fromLanguage: "en",
+            toLanguage: language,
+            builder: (translatedMessage) => RichText(
+                    text: TextSpan(children: [
+                  WidgetSpan(child: widgetIcon(object.link)),
+                  WidgetSpan(
+                    child: SelectableHtml(
+                      data: translatedMessage.toString(),
+                      // style: Theme.of(context).textTheme.subtitle1!,
+                      onLinkTap: (String? url,
+                          RenderContext context,
+                          Map<String, String> attributes,
+                          dom.Element? element) {
+                        _launchURL(url, context);
+                      },
+                    ),
+                  )
+                ]))),
       ),
       SpacerWidget(_kPadding),
     ]);
@@ -328,9 +335,62 @@ class SocialDescription extends StatelessWidget {
       child: NewsActionBasic(
         page: "social",
         obj: object,
+        title: object.title['__cdata'],
+        description: object.description['__cdata'],
+        imageUrl: object.enclosure != "" ? object.enclosure['url'] : "",
         // icons: icons,
         // iconsName: iconsName,
       ),
+    );
+  }
+
+  Widget widgetIcon(link) {
+    if (link["\$t"].contains('instagram')) {
+      return ShaderMask(
+          shaderCallback: (bounds) => RadialGradient(
+                center: Alignment.topRight,
+                transform: GradientRotation(50),
+                radius: 5,
+                colors: [
+                  Colors.deepPurpleAccent,
+                  Colors.red,
+                  Colors.yellow,
+                  Color(0xffee2a7b),
+                  Colors.red,
+// Color(0xff002aff),
+                ],
+              ).createShader(bounds),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 1),
+            child: FaIcon(
+              FontAwesomeIcons.instagram,
+              size: 16,
+              color: Colors.white,
+            ),
+          ));
+
+// iconWidget(
+
+// FontAwesomeIcons.instagramSquare, [Colors.cyan, Colors.yellow]);
+
+    } else if (link["\$t"].contains('twitter')) {
+      return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2));
+    } else if (link["\$t"].contains('facebook')) {
+      return Padding(
+          padding: EdgeInsets.only(bottom: 1),
+          child: iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2)));
+    } else if (link["\$t"].contains('youtube')) {
+      return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000));
+    }
+
+    return Container();
+  }
+
+  Widget iconWidget(icon, color) {
+    return FaIcon(
+      icon,
+      size: 16,
+      color: color,
     );
   }
 }

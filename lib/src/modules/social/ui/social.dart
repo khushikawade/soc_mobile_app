@@ -258,7 +258,13 @@ class _SocialPageState extends State<SocialPage> {
               child: NewsActionBasic(
                   page: "social",
                   obj: state.obj[index],
-                  isLoading: isCountLoading),
+                  isLoading: isCountLoading,
+                  title: state.obj[index].title['__cdata'],
+                  description: state.obj[index].description['__cdata'],
+                  imageUrl: state.obj[index].enclosure != "" &&
+                          state.obj[index].enclosure != null
+                      ? state.obj[index].enclosure['url']
+                      : ""),
             );
           } else if (state is Loading) {
             return Container(
@@ -266,9 +272,14 @@ class _SocialPageState extends State<SocialPage> {
               child: ShimmerLoading(
                   isLoading: true,
                   child: NewsActionBasic(
-                      page: "social",
-                      obj: Globals.socialList[index],
-                      isLoading: isCountLoading)),
+                    title: Globals.socialList[index].title['__cdata'],
+                    description:
+                        Globals.socialList[index].description['__cdata'],
+                    imageUrl: Globals.socialList[index].enclosure,
+                    page: "social",
+                    obj: Globals.socialList[index],
+                    isLoading: isCountLoading,
+                  )),
             );
           } else if (state is SocialErrorReceived) {
             return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
@@ -278,6 +289,10 @@ class _SocialPageState extends State<SocialPage> {
               child: ShimmerLoading(
                   isLoading: true,
                   child: NewsActionBasic(
+                      title: Globals.socialList[index].title['__cdata'],
+                      description:
+                          Globals.socialList[index].description['__cdata'],
+                      imageUrl: Globals.socialList[index].enclosure,
                       page: "social",
                       obj: Globals.socialList[index],
                       isLoading: isCountLoading)),

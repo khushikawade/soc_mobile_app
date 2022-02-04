@@ -218,6 +218,9 @@ class _NewdescriptionState extends State<Newdescription> {
           child: NewsActionBasic(
             page: "news",
             obj: widget.obj,
+            title: widget.obj.headings['en'],
+            description: widget.obj.contents['en'],
+            imageUrl: widget.obj.image,
             // icons: widget.icons,
             // iconsName: widget.iconsName,
           ),
