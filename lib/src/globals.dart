@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 import 'modules/news/model/notification_list.dart';
 
@@ -53,4 +54,5 @@ class Globals {
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   static List<NotificationList> notificationList = [];
   static List<Item> socialList = [];
+  static PackageInfo? packageInfo;
 }

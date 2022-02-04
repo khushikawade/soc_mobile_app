@@ -131,7 +131,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           child: ListTile(
             contentPadding: EdgeInsets.only(left: 0),
             leading: CommonImageWidget(
-              fitMethod: BoxFit.contain,
               iconUrl: obj.image != '' && obj.image != null
                   ? obj.image
                   : Globals.splashImageUrl != '' &&
@@ -144,6 +143,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               width: Globals.deviceType == "phone"
                   ? _kIconSize * 1.4
                   : _kIconSize * 2,
+              fitMethod: BoxFit.contain,
             ),
             title: _buildnewsHeading(obj),
             subtitle: Container(
