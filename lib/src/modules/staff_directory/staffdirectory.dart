@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
@@ -11,12 +10,10 @@ import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -66,37 +63,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     Globals.callsnackbar = true;
   }
 
-  // Widget _buildHeading(String tittle) {
-  //   return Container(
-  //     padding: EdgeInsets.symmetric(vertical: _kLabelSpacing * 1.2),
-  //     width: MediaQuery.of(context).size.width,
-  //     decoration: BoxDecoration(
-  //       border: Border.all(
-  //         width: 0,
-  //       ),
-  //       color: Theme.of(context).colorScheme.primary,
-  //     ),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: [
-  //         TranslationWidget(
-  //           message: tittle,
-  //           toLanguage: Globals.selectedLanguage,
-  //           fromLanguage: "en",
-  //           builder: (translatedMessage) => Text(
-  //             translatedMessage.toString(),
-  //             style: Theme.of(context).textTheme.headline6!,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget listItem(list, obj, index) {
     return GestureDetector(
-       onTap: () {
-          if (widget.isAbout == true) {
+      onTap: () {
+        if (widget.isAbout == true) {
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -111,8 +81,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )));
-          }
-        },
+        }
+      },
       child: Container(
         margin: EdgeInsets.symmetric(
             horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
@@ -157,8 +127,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       iconUrl: obj.imageUrlC ??
                           Globals.splashImageUrl ??
                           Globals.appSetting.appLogoC
-                          // Globals.homeObject["App_Logo__c"]
-                          ),
+                      // Globals.homeObject["App_Logo__c"]
+                      ),
 
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
@@ -175,7 +145,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               textAlign: TextAlign.start,
                               style: Theme.of(context).textTheme.headline2!),
                         ),
-                        obj.designation != null
+                        obj.designation != null && obj.designation != ""
                             ? TranslationWidget(
                                 message: obj.designation,
                                 toLanguage: Globals.selectedLanguage,
@@ -190,7 +160,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       ],
                     ),
                   ),
-                  obj.phoneC != null
+                  obj.phoneC != null && obj.phoneC != ""
                       ? Container(
                           height: _KButtonMinSize,
                           width: _KButtonMinSize,
@@ -213,7 +183,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         )
                       : EmptyContainer(),
                   HorzitalSpacerWidget(_kLabelSpacing / 2),
-                  obj.emailC != null
+                  obj.emailC != null && obj.emailC != ""
                       ? Container(
                           height: _KButtonMinSize,
                           width: _KButtonMinSize,
@@ -235,27 +205,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         )
                       : EmptyContainer()
                 ]),
-            // widget.isAbout
-            //     ? Container()
-            //     : obj.descriptionC != null
-            //         ? Column(
-            //             children: [
-            //               SpacerWidget(_kLabelSpacing / 1.2),
-            //               TranslationWidget(
-            //                   message: obj.descriptionC,
-            //                   toLanguage: Globals.selectedLanguage,
-            //                   fromLanguage: "en",
-            //                   builder: (translatedMessage) => Align(
-            //                     alignment: Alignment.centerLeft,
-            //                     child: Text(
-            //                         translatedMessage.toString(),
-            //                         textAlign: TextAlign.start,
-            //                         style:
-            //                             Theme.of(context).textTheme.bodyText1!),
-            //                   )),
-            //             ],
-            //           )
-            //         : Container(),
           ],
         ),
       ),
@@ -316,17 +265,17 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             } else if (state is SDDataSucess) {
                               return state.obj != null && state.obj!.length > 0
                                   ? ListView.builder(
-                                    // padding: EdgeInsets.only(
-                                    //     bottom: 25.0),
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: state.obj!.length,
-                                    itemBuilder: (BuildContext context,
-                                        int index) {
-                                      return listItem(state.obj,
-                                          state.obj![index], index);
-                                    },
-                                  )
+                                      // padding: EdgeInsets.only(
+                                      //     bottom: 25.0),
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: state.obj!.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return listItem(state.obj,
+                                            state.obj![index], index);
+                                      },
+                                    )
                                   : NoDataFoundErrorWidget(
                                       isResultNotFoundMsg: false,
                                       isNews: false,
@@ -349,7 +298,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
                               // Globals.homeObject = state.obj;
-                              Globals.appSetting = AppSetting.fromJson(state.obj);
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
                               setState(() {});
                             } else if (state is HomeErrorReceived) {
                               ErrorMsgWidget();

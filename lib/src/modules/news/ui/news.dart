@@ -42,22 +42,22 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   List newsMainList = [];
   bool? isCountLoading = true;
   bool? isActionAPICalled = false;
+  bool? result;
 
   @override
   void initState() {
     super.initState();
     bloc.add(FetchNotificationList());
-    _countBloc.add(FetchActionCountList());
+    _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
     WidgetsBinding.instance!.addObserver(this);
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      _notification = state;
-    });
-    if (_notification == AppLifecycleState.resumed)
-      bloc.add(FetchNotificationList());
+    // setState(() {
+    //   _notification = state;
+    // });
+    if (state == AppLifecycleState.resumed) bloc.add(FetchNotificationList());
     isActionAPICalled = false;
     //  _countBloc.add(FetchActionCountList());
   }
@@ -106,7 +106,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               Utility.showSnackBar(
                   _scaffoldKey, "Please wait while count is loading", context);
             } else {
-              bool result = await Navigator.push(
+              result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => SliderWidget(
@@ -124,7 +124,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           )));
 
               if (result == true) {
-                _countBloc.add(FetchActionCountList());
+                _countBloc.add(FetchActionCountList(isDetailPage: true));
               }
             }
           },
@@ -156,47 +156,66 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Widget actionButton(
       List<NotificationList> list, NotificationList obj, int index) {
-    return BlocBuilder(
-        bloc: _countBloc,
-        builder: (BuildContext context, NewsState state) {
-          if (state is ActionCountSuccess) {
-            newsMainList.clear();
-            newsMainList.addAll(state.obj);
-            isCountLoading = false;
-            return Container(
-              // alignment: Alignment.centerLeft,
-              child: NewsActionBasic(
-                  obj: state.obj[index],
-                  title: state.obj[index].headings['en'],
-                  description: state.obj[index].contents['en'],
-                  imageUrl: state.obj[index].image,
-                  page: "news",
-                  isLoading: isCountLoading),
-            );
-          } else if (state is NewsLoading) {
-            return Container(
-              alignment: Alignment.centerLeft,
-              child: ShimmerLoading(
-                  isLoading: true,
+    return Column(
+      children: [
+        BlocListener<NewsBloc, NewsState>(
+          bloc: _countBloc,
+          listener: (context, state) async {
+            if (state is ActionCountSuccess) {
+              newsMainList.clear();
+              newsMainList.addAll(state.obj);
+              isCountLoading = false;
+              Container(
+                // alignment: Alignment.centerLeft,
+                child: NewsActionBasic(
+                    obj: state.obj[index],
+                    page: "news",
+                    isLoading: isCountLoading),
+              );
+            }
+          },
+          child: Container(),
+        ),
+        BlocBuilder(
+            bloc: _countBloc,
+            builder: (BuildContext context, NewsState state) {
+              if (state is ActionCountSuccess) {
+                newsMainList.clear();
+                newsMainList.addAll(state.obj);
+                isCountLoading = false;
+                return Container(
+                  // alignment: Alignment.centerLeft,
                   child: NewsActionBasic(
-                      obj: Globals.notificationList[index],
+                      obj: state.obj[index],
                       page: "news",
-                      isLoading: isCountLoading)),
-            );
-          } else if (state is NewsErrorReceived) {
-            return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
-          } else {
-            return Container(
-              alignment: Alignment.centerLeft,
-              child: ShimmerLoading(
-                  isLoading: true,
-                  child: NewsActionBasic(
-                      obj: Globals.notificationList[index],
-                      page: "news",
-                      isLoading: isCountLoading)),
-            );
-          }
-        });
+                      isLoading: isCountLoading),
+                );
+              } else if (state is NewsLoading) {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  child: ShimmerLoading(
+                      isLoading: true,
+                      child: NewsActionBasic(
+                          obj: Globals.notificationList[index],
+                          page: "news",
+                          isLoading: isCountLoading)),
+                );
+              } else if (state is NewsErrorReceived) {
+                return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+              } else {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  child: ShimmerLoading(
+                      isLoading: true,
+                      child: NewsActionBasic(
+                          obj: Globals.notificationList[index],
+                          page: "news",
+                          isLoading: isCountLoading)),
+                );
+              }
+            }),
+      ],
+    );
   }
 
   Widget _buildnewsHeading(NotificationList obj) {
@@ -279,12 +298,12 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 if (iserrorstate == true) {
                   bloc.add(FetchNotificationList());
                   isActionAPICalled = false;
-                  _countBloc.add(FetchActionCountList());
+                  _countBloc.add(FetchActionCountList(isDetailPage: false));
                   iserrorstate = false;
                 }
               } else if (!connected) {
                 iserrorstate = true;
-                _countBloc.add(FetchActionCountList());
+                _countBloc.add(FetchActionCountList(isDetailPage: false));
                 // _countBloc.add(FetchActionCountList());
               }
 
@@ -299,9 +318,11 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     bloc: bloc,
                     listener: (context, state) async {
                       if (state is NewsLoaded) {
-                        _countBloc.add(FetchActionCountList());
+                        _countBloc
+                            .add(FetchActionCountList(isDetailPage: false));
                         if (isActionAPICalled == false) {
-                          _countBloc.add(FetchActionCountList());
+                          _countBloc
+                              .add(FetchActionCountList(isDetailPage: false));
                           isActionAPICalled = true;
                         }
                         // object = state.obj;
@@ -326,7 +347,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           // Globals.homeObject = state.obj;
                           Globals.appSetting = AppSetting.fromJson(state.obj);
 
-                          setState(() {});
+                          // setState(() {});
                         } else if (state is HomeErrorReceived) {
                           ErrorMsgWidget();
                         }

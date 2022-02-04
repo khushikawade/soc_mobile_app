@@ -100,15 +100,15 @@ class _SearchPageState extends State<SearchPage> {
                         appBarTitle: obj.titleC!,
                         language: Globals.selectedLanguage!,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
                     staffDirectoryCategoryId: null,
-                    isAbout: false,
-                    appBarTitle: obj.titleC!,
+                    isAbout: true,
+                    appBarTitle: obj.titleC!,                    
                     obj: obj,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
@@ -300,13 +300,13 @@ class _SearchPageState extends State<SearchPage> {
             return snapshot.data != null && snapshot.data.length > 0
                 ? Expanded(
                     child: ListView.builder(
-                      padding: EdgeInsets.only(bottom: 20),
+                      padding: EdgeInsets.only(bottom: _kLabelSpacing*1.5),
                       scrollDirection: Axis.vertical,
                       itemCount:
                           snapshot.data.length < 10 ? snapshot.data.length : 10,
                       itemBuilder: (BuildContext context, int index) {
                         List reverseList = List.from(snapshot.data.reversed);
-                        print(reverseList);
+                        // print(reverseList);
                         // return _buildRecentItem(index, snapshot.data);
                         return _buildRecentItem(index, reverseList);
                       },
@@ -399,9 +399,10 @@ class _SearchPageState extends State<SearchPage> {
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     scrollDirection: Axis.vertical,
-                    padding: EdgeInsets.all(_kLabelSpacing / 2),
+                    padding: EdgeInsets.only(left: _kLabelSpacing / 2,right: _kLabelSpacing / 2 ,bottom: _kLabelSpacing*1.5),
                     children: searchList.map<Widget>((data) {
                       return Container(
+                        
                         decoration: BoxDecoration(
                           border: (searchList.indexOf(data) % 2 == 0)
                               ? Border.all(
@@ -441,8 +442,7 @@ class _SearchPageState extends State<SearchPage> {
 
                               if (idList.contains(data.id)) {
                               } else {
-                                
-                                print(Recent);
+                                // print(Recent);
                                 if (data != null) {
                                   deleteItem();
                                   final recentitem = Recent(

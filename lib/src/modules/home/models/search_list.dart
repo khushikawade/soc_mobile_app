@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:Soc/src/modules/home/models/search_attributes.dart';
+import 'package:Soc/src/services/utility.dart';
 
 class SearchList {
   // SearchAttributes? attributes;
@@ -64,7 +65,7 @@ class SearchList {
       //     ? null
       //     : SearchAttributes.fromJson(
       //         json['attributes'] as Map<String, dynamic>),
-      titleC: json['Title__c'] as String?,
+      titleC: Utility.utf8convert(json['Title__c'] as String?),
       appIconUrlC: json['Icon_URL'] as String?,
       // appIconUrlC: json['App_Icon__c'] as String?,
       appURLC: json['App_URL__c'] as String?,

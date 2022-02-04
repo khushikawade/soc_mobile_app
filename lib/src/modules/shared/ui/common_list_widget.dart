@@ -13,8 +13,6 @@ import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import '../../../widgets/no_data_found_error_widget.dart';
 
 class CommonListWidget extends StatefulWidget {

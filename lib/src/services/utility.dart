@@ -110,8 +110,10 @@ class Utility {
   }
 
   static void showSnackBar(_scaffoldKey, msg, context) {
-    _scaffoldKey.currentState.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
+    // _scaffoldKey.currentState.removeCurrentSnackBar();
+    // _scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Container(
         alignment: Alignment.centerLeft,
         height: 40,
@@ -129,7 +131,7 @@ class Utility {
       margin: EdgeInsets.only(
           left: 16,
           right: 16,
-          bottom: MediaQuery.of(context).size.height * 0.04),
+          bottom: MediaQuery.of(context).size.height * 0.08),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10))),
       behavior: SnackBarBehavior.floating,

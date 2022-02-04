@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/shared_preference.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -82,33 +83,12 @@ class LanguageSelector {
                 title: selectedLanguage == language
                     ? InkWell(
                         onTap: () {
-                          final scaffoldKey = Scaffold.of(context);
+                          final scaffoldKey = ScaffoldMessenger.of(context);
                           // ignore: deprecated_member_use
-                          scaffoldKey.showSnackBar(
-                            SnackBar(
-                              content: Container(
-                                alignment: Alignment.centerLeft,
-                                height: 40,
-                                child: Text(
-                                  '$selectedLanguage language is already selected',
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              behavior: SnackBarBehavior.floating,
-                              margin: EdgeInsets.only(
-                                  left: 16,
-                                  right: 16,
-                                  bottom: MediaQuery.of(context).size.height *
-                                      0.08),
-                              padding: EdgeInsets.only(
-                                left: 16,
-                              ),
-                              backgroundColor: Colors.black.withOpacity(0.8),
-                            ),
-                          );
+                          Utility.showSnackBar(
+                              scaffoldKey,
+                              '$selectedLanguage language is already selected',
+                              context);
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -352,9 +332,9 @@ class LanguageSelector {
   // });
   // future.then((void value) => _closeModal());
 
-  void _closeModal() {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-  }
+  // void _closeModal() {
+  //   SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  // }
 
   onItemChanged(String value, StateSetter setState) {
     setState(() {
