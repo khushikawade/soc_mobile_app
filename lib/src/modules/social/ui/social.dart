@@ -15,10 +15,8 @@ import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
-import 'package:marquee/marquee.dart';
 
 class SocialPage extends StatefulWidget {
   SocialPage({
@@ -106,7 +104,6 @@ class _SocialPageState extends State<SocialPage> {
               }
             },
             child: ListTile(
-              
               contentPadding: EdgeInsets.only(left: 0),
               leading: Container(
                   child: (CommonImageWidget(
@@ -130,59 +127,32 @@ class _SocialPageState extends State<SocialPage> {
               ))),
               title: obj.title["__cdata"] != null &&
                       obj.title["__cdata"].length > 1
-                  ? Row(                  
-                    children: [
-                      widgetIcon(obj.link),
-                      Container(
-                        padding: EdgeInsets.only(left: 5),
-                      height: MediaQuery.of(context).size.height * 0.03,
-                      width : MediaQuery.of(context).size.width * 0.6,
-                      
-                      child: 
-                      TranslationWidget(
-                      message:
-                          "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) {
-                        return marqueesText(translatedMessage.toString());
-                      },)
-                          )
-                    ],
-                  )
+                  ? Container(
+                      width: MediaQuery.of(context).size.width * 0.69,
+                      child: TranslationWidget(
+                          message:
+                              "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage.toString(),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    ));
+                          }),
+                    )
                   : Container(),
               subtitle: Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.020),
+                  padding: EdgeInsets.only(top: 7),
                   child: actionButton(mainObj, obj, index)),
             )));
-  }
-
-  marqueesText(String title) {
-    return title.length < 45
-        ? Text("$title",
-            style: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: Theme.of(context).colorScheme.primaryVariant,
-                ))
-        : Marquee(
-            text: "$title",
-            style: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: Theme.of(context).colorScheme.primaryVariant,
-                ),
-            scrollAxis: Axis.horizontal,
-            velocity: 30.0,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            blankSpace: //50,
-                MediaQuery.of(context).size.width * 0.5,
-            // velocity: 100.0,
-            pauseAfterRound: Duration(seconds: 5),
-            showFadingOnlyWhenScrolling: true,
-            startPadding: 0.0,
-            accelerationDuration: Duration(seconds: 1),
-            accelerationCurve: Curves.linear,
-            decelerationDuration: Duration(milliseconds: 500),
-            decelerationCurve: Curves.easeOut,
-          );
   }
 
   Widget makeList(obj) {
@@ -304,9 +274,13 @@ class _SocialPageState extends State<SocialPage> {
             return Container(
               // alignment: Alignment.centerLeft,
               child: NewsActionBasic(
-                  page: "social",
-                  obj: state.obj[index],
-                  isLoading: isCountLoading),
+                page: "social",
+                obj: state.obj[index],
+                isLoading: isCountLoading,
+                title: state.obj[index].title['__cdata'],
+                description:  state.obj[index].description['__cdata'],
+                imageUrl: state.obj[index].enclosure!=""? state.obj[index].enclosure['url']:"",
+              ),
             );
           } else if (state is Loading) {
             return Container(
@@ -314,9 +288,10 @@ class _SocialPageState extends State<SocialPage> {
               child: ShimmerLoading(
                   isLoading: true,
                   child: NewsActionBasic(
-                      page: "social",
-                      obj: Globals.socialList[index],
-                      isLoading: isCountLoading)),
+                    page: "social",
+                    obj: Globals.socialList[index],
+                    isLoading: isCountLoading,
+                  )),
             );
           } else if (state is SocialErrorReceived) {
             return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
@@ -333,76 +308,4 @@ class _SocialPageState extends State<SocialPage> {
           }
         });
   }
-  Widget widgetIcon(link) {
-if (link["\$t"].contains('instagram')) {
-return ShaderMask(
-shaderCallback: (bounds) => RadialGradient(
-center: Alignment.topRight,
-transform: GradientRotation(50),
-radius: 5,
-colors: [
-Colors.deepPurpleAccent,
-Colors.red,
-Colors.yellow,
-Color(0xffee2a7b),
-Colors.red,
-// Color(0xff002aff),
-],
-).createShader(bounds),
-child: Padding(
-
-padding: EdgeInsets.only(bottom: 1),
-
-child: FaIcon(
-
-FontAwesomeIcons.instagram,
-
-size: 16,
-color: Colors.white,
-
-),
-
-));
-
-// iconWidget(
-
-// FontAwesomeIcons.instagramSquare, [Colors.cyan, Colors.yellow]);
-
-} else if (link["\$t"].contains('twitter')) {
-
-return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2));
-
-} else if (link["\$t"].contains('facebook')) {
-
-return Padding(
-
-padding: EdgeInsets.only(bottom: 1),
-
-child: iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2)));
-
-} else if (link["\$t"].contains('youtube')) {
-
-return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000));
-
-}
-
-return Container();
-
-}
-
-
-
-Widget iconWidget(icon, color) {
-
-return FaIcon(
-
-icon,
-
-size: 16,
-
-color: color,
-
-);
-
-}
 }
