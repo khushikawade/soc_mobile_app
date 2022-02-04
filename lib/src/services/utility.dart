@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:html/parser.dart';
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -103,12 +104,17 @@ class Utility {
       content: Container(
         alignment: Alignment.centerLeft,
         height: 40,
-        child: Text("$msg",
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              color: Theme.of(context).backgroundColor,
-              fontWeight: FontWeight.w600,
-            )),
+        child: TranslationWidget(
+          message: msg,
+          fromLanguage: "en",
+          toLanguage: Globals.selectedLanguage,
+          builder: (translatedMessage) => Text(translatedMessage,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                color: Theme.of(context).backgroundColor,
+                fontWeight: FontWeight.w600,
+              )),
+        ),
       ),
       backgroundColor: Colors.black.withOpacity(0.8),
       padding: EdgeInsets.only(

@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:intl/intl.dart';
@@ -90,9 +91,14 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                 child: iconNameIndex == index
                     ? Container(
                         padding: EdgeInsets.all(0),
-                        child: Text(
-                          Globals.iconsName[index],
-                          style: TextStyle(fontSize: 12),
+                        child: TranslationWidget(
+                          message: Globals.iconsName[index],
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) => Text(
+                            translatedMessage,
+                            style: TextStyle(fontSize: 12),
+                          ),
                         ),
                       )
                     : Container(
