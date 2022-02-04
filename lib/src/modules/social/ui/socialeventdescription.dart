@@ -336,7 +336,7 @@ class SocialDescription extends StatelessWidget {
       obj: object,
       title: object.title['__cdata'],
       description: object.description['__cdata'],
-      imageUrl: object.enclosure['url'],
+      imageUrl:  object.enclosure!=""?object.enclosure['url']:"",
       // icons: icons,
       // iconsName: iconsName,
     );

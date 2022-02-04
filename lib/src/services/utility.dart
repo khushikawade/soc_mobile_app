@@ -33,15 +33,12 @@ class Utility {
     }
   }
 
-  static  Future<String> errorImageUrl(String imageUrl) async {
+  static Future<String> errorImageUrl(String imageUrl) async {
     final response = await http.get(Uri.parse(imageUrl));
     if (response.statusCode == 200) {
       return imageUrl;
     } else {
-      String imageUrl= Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-                ? Globals.splashImageUrl
-                : Globals.appSetting.appLogoC;
-      return imageUrl;
+      return imageUrl = '';
     }
   }
 
@@ -327,7 +324,12 @@ class Utility {
   }
 
   static Future<File> createFileFromUrl(_url) async {
-    Uri _imgUrl = Uri.parse(_url);
+    String _globalUrl =
+        Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+            ? Globals.splashImageUrl
+            : Globals.appSetting.appLogoC;
+    Uri _imgUrl = _url.contains('.') ? Uri.parse(_url) : Uri.parse(_globalUrl);
+    // Uri _imgUrl = Uri.parse(_url);
     String _fileExt = _imgUrl.path.split('.').last;
     String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Response<List<int>> rs = await Dio().get<List<int>>(
