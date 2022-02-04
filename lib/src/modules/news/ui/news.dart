@@ -19,6 +19,7 @@ import 'package:analog_clock/analog_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:intl/intl.dart';
 
 import 'package:marquee/marquee.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -33,6 +34,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   static const double _kIconSize = 48.0;
+  static const double _kPhoneIcon = 36.0;
+  static const double _kTabletIcon = 55.0;
+
   // static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
   NewsBloc _countBloc = new NewsBloc();
@@ -139,7 +143,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   obj.headings != null
               ? obj.headings["en"].toString()
               : obj.contents["en"] ?? '-',
-          titleIcon: calanderView(),
+          titleIcon: calanderView(obj.completedAt),
           // Icon(Icons.notifications_active),
           //  ClipRRect(
           //   borderRadius: BorderRadius.circular(100),
@@ -410,33 +414,48 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     );
   }
 
-  Widget calanderView() {
+  Widget calanderView(dateTime) {
+    final String month = DateFormat("MMM").format(dateTime);
+    final DateFormat formatter = DateFormat('dd');
+    final String date = formatter.format(dateTime);
+    print(month);
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(width: 0.5),
-          color: Colors.white,
+          border: Border.all(width: 0.5),
+          color: AppTheme.kBackgroundColor,
           borderRadius: BorderRadius.all(Radius.circular(8))),
-      height: MediaQuery.of(context).size.height * 0.045,
-      width: MediaQuery.of(context).size.width * 0.08,
+      height: Globals.deviceType == 'phone' ? _kPhoneIcon : _kTabletIcon,
+      //  MediaQuery.of(context).size.height * 0.043,
+      width: Globals.deviceType == 'phone' ? _kPhoneIcon : _kTabletIcon,
+      // MediaQuery.of(context).size.width * 0.09,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
-                
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8.0),
                   topRight: Radius.circular(8.0),
                 )),
-            height: MediaQuery.of(context).size.height * 0.045 / 2.8,
-            width: MediaQuery.of(context).size.width * 0.08,
-            child: Center(child: Padding(
+            height: Globals.deviceType == 'phone'
+                ? _kPhoneIcon / 2.5
+                : _kTabletIcon / 2.5,
+            //MediaQuery.of(context).size.height * 0.045 / 2.8,
+            width: Globals.deviceType == 'phone' ? _kPhoneIcon : _kTabletIcon,
+            child: Center(
+                child: Padding(
               padding: const EdgeInsets.only(bottom: 1),
-              child: Text('Jan',style: Theme.of(context).textTheme.subtitle2,),
+              child: Text(
+                month,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle2!
+                    .copyWith(color: Theme.of(context).backgroundColor),
+              ),
             )),
           ),
-          Text('25')
+          Text(date)
         ],
       ),
     );

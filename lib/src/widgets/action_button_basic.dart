@@ -92,7 +92,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
 
   Widget build(BuildContext context) {
     return Container(
-        height: MediaQuery.of(context).size.height * 0.045,
+        height: MediaQuery.of(context).orientation == Orientation.portrait ?  MediaQuery.of(context).size.height * 0.045 :MediaQuery.of(context).size.width * 0.045,
+        //  MediaQuery.of(context).size.height * 0.045,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -351,7 +352,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         return //Text("");
             Text(
           index == 0
-              ? (like.value != 0.0
+              ? (like.value != 0.0 
                   ? f.format(like.value).toString().split('.')[0]
                   : widget.obj.likeCount == 0.0 || widget.obj.likeCount == null
                       ? ""
