@@ -371,8 +371,10 @@ class _StudentPageState extends State<StudentPage> {
         body:
             // Globals.homeObject["Student_Banner_Image__c"] != null &&
             //         Globals.homeObject["Student_Banner_Image__c"] != ''
-            Globals.appSetting.studentBannerColorC != null &&
-                    Globals.appSetting.studentBannerColorC != ''
+            // Globals.appSetting.studentBannerColorC != null &&
+            //         Globals.appSetting.studentBannerColorC != ''
+             Globals.appSetting.studentBannerImageC !=null&&
+              Globals.appSetting.studentBannerImageC!=""
                 ? NestedScrollView(
 
                     // controller: _scrollController,
