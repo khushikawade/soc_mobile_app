@@ -13,14 +13,19 @@ import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   
   WidgetsFlutterBinding.ensureInitialized();
-
+await Permission.storage.request();
+   await FlutterDownloader.initialize(
+      debug: true // optional: set false to disable printing logs to console
+  );
   if (!kIsWeb) {
     // Not running on the web!
     final appDocumentDirectory =
