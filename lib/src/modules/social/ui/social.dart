@@ -118,7 +118,7 @@ class _SocialPageState extends State<SocialPage> {
               : '',
           actionIcon: Container(
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.020),
+                  top: MediaQuery.of(context).size.height * 0.030),
               child: actionButton(mainObj, obj, index)),
           url: (obj.enclosure != null &&
                   obj.enclosure != '' &&
