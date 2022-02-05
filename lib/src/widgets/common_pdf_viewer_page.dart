@@ -94,9 +94,6 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                         new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
                   ))
                 : PDFViewer(
-                  // showNavigation: false,
-                  // scrollDirection: Axis.vertical,
-                  // showPicker: false,
                     document: document!,
                     enableSwipeNavigation: true,
                     showIndicator: true,

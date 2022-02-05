@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 class Utility {
@@ -324,13 +322,10 @@ class Utility {
   }
 
   static Future<File> createFileFromUrl(_url) async {
-    String _globalUrl =
-        Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-            ? Globals.splashImageUrl
-            : Globals.appSetting.appLogoC;
-    Uri _imgUrl = _url.contains('.') ? Uri.parse(_url) : Uri.parse(_globalUrl);
-    // Uri _imgUrl = Uri.parse(_url);
-    String _fileExt = _imgUrl.path.split('.').last;
+    Uri _imgUrl = Uri.parse(_url);
+    String _fileExt = _imgUrl.query != ""
+        ? _imgUrl.query.split('format=')[1].split("&")[0]
+        : _imgUrl.path.split('.').last;
     String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Response<List<int>> rs = await Dio().get<List<int>>(
       _url,

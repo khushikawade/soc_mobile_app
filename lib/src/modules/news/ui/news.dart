@@ -168,6 +168,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               Container(
                 // alignment: Alignment.centerLeft,
                 child: NewsActionBasic(
+                    title: state.obj[index].headings['en'],
+                    description: state.obj[index].contents['en'],
+                    imageUrl: state.obj[index].image,
                     obj: state.obj[index],
                     page: "news",
                     isLoading: isCountLoading),
@@ -199,6 +202,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   child: ShimmerLoading(
                       isLoading: true,
                       child: NewsActionBasic(
+                          title: Globals.notificationList[index].headings['en'],
+                          description:
+                              Globals.notificationList[index].contents['en'],
+                          imageUrl: Globals.notificationList[index].image,
                           obj: Globals.notificationList[index],
                           page: "news",
                           isLoading: isCountLoading)),
@@ -211,6 +218,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   child: ShimmerLoading(
                       isLoading: true,
                       child: NewsActionBasic(
+                          title: Globals.notificationList[index].headings['en'],
+                          description:
+                              Globals.notificationList[index].contents['en'],
+                          imageUrl: Globals.notificationList[index].image,
                           obj: Globals.notificationList[index],
                           page: "news",
                           isLoading: isCountLoading)),
