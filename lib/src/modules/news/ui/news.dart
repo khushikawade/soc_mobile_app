@@ -8,6 +8,7 @@ import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/widgets/calendra_icon_widget.dart';
 import 'package:Soc/src/widgets/common_feed_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
@@ -17,9 +18,6 @@ import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:intl/intl.dart';
-
-import 'package:marquee/marquee.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,11 +27,11 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
-  static const double _kLabelSpacing = 16.0;
+  // static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  static const double _kIconSize = 48.0;
-  static const double _kPhoneIcon = 36.0;
-  static const double _kTabletIcon = 55.0;
+  // static const double _kIconSize = 48.0;
+  // static const double _kPhoneIcon = 36.0;
+  // static const double _kTabletIcon = 55.0;
 
   // static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
@@ -141,7 +139,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   obj.headings != null
               ? obj.headings["en"].toString()
               : obj.contents["en"] ?? '-',
-          titleIcon: calanderView(obj.completedAt),
+          titleIcon: CalendraIconWidget(dateTime: obj.completedAt),
+          // calanderView(obj.completedAt),
           url: obj.image != '' && obj.image != null ? obj.image! : '',
           //  Globals.splashImageUrl != '' && Globals.splashImageUrl != null
           //     ? Globals.splashImageUrl
@@ -387,52 +386,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             },
             child: Container()),
         onRefresh: refreshPage,
-      ),
-    );
-  }
-
-  Widget calanderView(dateTime) {
-    final String date = Utility.convertTimestampToDateFormat(dateTime, 'dd');
-    final String month = Utility.convertTimestampToDateFormat(dateTime, 'MMM');
-    // print(month);
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(width: 0.5),
-          color: AppTheme.kBackgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(8))),
-      height: Globals.deviceType == 'phone' ? _kPhoneIcon : _kTabletIcon,
-      //  MediaQuery.of(context).size.height * 0.043,
-      width: Globals.deviceType == 'phone' ? _kPhoneIcon : _kTabletIcon,
-      // MediaQuery.of(context).size.width * 0.09,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8.0),
-                  topRight: Radius.circular(8.0),
-                )),
-            height: Globals.deviceType == 'phone'
-                ? _kPhoneIcon / 2.5
-                : _kTabletIcon / 2.5,
-            //MediaQuery.of(context).size.height * 0.045 / 2.8,
-            width: Globals.deviceType == 'phone' ? _kPhoneIcon : _kTabletIcon,
-            child: Center(
-                child: Padding(
-              padding: const EdgeInsets.only(bottom: 1),
-              child: Text(
-                month,
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle2!
-                    .copyWith(color: Theme.of(context).backgroundColor),
-              ),
-            )),
-          ),
-          Text(date)
-        ],
       ),
     );
   }
