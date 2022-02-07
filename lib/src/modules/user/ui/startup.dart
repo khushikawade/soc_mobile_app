@@ -15,6 +15,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
 // import '../bloc/user_bloc.dart';
@@ -40,6 +41,7 @@ class _StartupPageState extends State<StartupPage> {
     super.initState();
     // print("${Globals.deviceToken}, ${Globals.deviceToken}");
     getindicatorValue();
+     appversion();
     initPlatformState(context);
     // _loginBloc.add(PerfomLogin());
     _bloc.add(FetchBottomNavigationBar());
@@ -71,6 +73,10 @@ class _StartupPageState extends State<StartupPage> {
       _notification = state;
     });
     // print(_notification);
+  }
+
+ void appversion() async {
+    Globals.packageInfo = await PackageInfo.fromPlatform();
   }
 
   getindexvalue() async {

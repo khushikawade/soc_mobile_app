@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:intl/intl.dart';
@@ -46,18 +47,34 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   bool _isDownloadingFile = false;
   var f = NumberFormat.compact();
 
+  // Widget build(BuildContext context) {
+  //   return Container(
+  //     height: MediaQuery.of(context).size.height * 0.045,
+  //     child: Row(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: Globals.icons
+  //           .map<Widget>(
+  //               (element) => _iconButton(Globals.icons.indexOf(element)))
+  //           .toList(),
+  //     ),
+  //   );
+  // }
+
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.045,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: Globals.icons
-            .map<Widget>(
-                (element) => _iconButton(Globals.icons.indexOf(element)))
-            .toList(),
-      ),
-    );
+        width: MediaQuery.of(context).size.width * 0.60,
+        height: MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.height * 0.045
+            : MediaQuery.of(context).size.width * 0.045,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: Globals.icons
+              .map<Widget>(
+                  (element) => _iconButton(Globals.icons.indexOf(element)))
+              .toList(),
+        ));
   }
 
   @override
@@ -97,9 +114,14 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                 child: iconNameIndex == index
                     ? Container(
                         padding: EdgeInsets.all(0),
-                        child: Text(
-                          Globals.iconsName[index],
-                          style: TextStyle(fontSize: 12),
+                        child: TranslationWidget(
+                          message: Globals.iconsName[index],
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) => Text(
+                            translatedMessage,
+                            style: TextStyle(fontSize: 12),
+                          ),
                         ),
                       )
                     : Container(
@@ -264,23 +286,32 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         _imageUrl = widget.imageUrl.toString().contains("http") &&
                 await Utility.errorImageUrl(widget.imageUrl) != ''
             ? widget.imageUrl
-            : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-                ? Globals.splashImageUrl
-                : Globals.appSetting.appLogoC;
+            : '';
       }
+      File? _image;
 
-      File _image = await Utility.createFileFromUrl(
-          _imageUrl, widget.page == "social" ? widget.imageExtType : "");
+      if (_imageUrl != '') {
+        _image = await Utility.createFileFromUrl(
+            _imageUrl, widget.page == "social" ? widget.imageExtType : "");
+      }
 
       //  await Utility.createFileFromUrl(_imageUrl);
       setState(() {
         _downloadingFile = false;
       });
-      Share.shareFiles(
-        [_image.path],
-        subject: '$_title',
-        text: '$_description',
-      );
+      if (_image != null) {
+        Share.shareFiles(
+          [_image.path],
+          subject: '$_title',
+          text: '$_description',
+        );
+      } else {
+        Share.share(
+          
+          " $_title $_description"
+        );
+      }
+
       _totalRetry = 0;
     } catch (e) {
       print(e);
@@ -308,26 +339,29 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       builder: (BuildContext context, dynamic value, Widget? child) {
         return Text(
           index == 0
-              ? (like.value != 0.0
-                  ? f.format(like.value)
-                  : widget.obj.likeCount == 0.0
+              ? (like.value != 0
+                  ? f.format(like.value).toString().split('.')[0]
+                  : widget.obj.likeCount == 0 || widget.obj.likeCount == null
                       ? ""
                       : f.format(widget.obj.likeCount))
               : index == 1
-                  ? (thanks.value != 0.0
-                      ? f.format(thanks.value)
-                      : widget.obj.thanksCount == 0.0
+                  ? (thanks.value != 0
+                      ? f.format(thanks.value).toString().split('.')[0]
+                      : widget.obj.thanksCount == 0 ||
+                              widget.obj.thanksCount == null
                           ? ""
                           : f.format(widget.obj.thanksCount))
                   : index == 2
-                      ? (helpful.value != 0.0
-                          ? f.format(helpful.value)
-                          : widget.obj.helpfulCount == 0.0
+                      ? (helpful.value != 0
+                          ? f.format(helpful.value).toString().split('.')[0]
+                          : widget.obj.helpfulCount == 0 ||
+                                  widget.obj.helpfulCount == null
                               ? ""
                               : f.format(widget.obj.helpfulCount))
-                      : share.value != 0.0
-                          ? f.format(share.value)
-                          : widget.obj.shareCount == 0.0
+                      : share.value != 0
+                          ? f.format(share.value).toString().split('.')[0]
+                          : widget.obj.shareCount == 0 ||
+                                  widget.obj.shareCount == null
                               ? ""
                               : f.format(widget.obj.shareCount),
           style: Theme.of(context).textTheme.bodyText1!,

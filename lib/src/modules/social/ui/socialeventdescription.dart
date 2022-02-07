@@ -8,7 +8,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/selectable_html_widget.dart';
 import 'package:Soc/src/widgets/soicalwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +96,7 @@ class SocialDescription extends StatelessWidget {
       key: refreshKey,
       child: ListView(padding: const EdgeInsets.all(_kPadding), children: [
         Column(
+         crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildnews(context),
             SpacerWidget(_kPadding / 2),
@@ -278,7 +278,7 @@ class SocialDescription extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: TranslationWidget(
             message:
-                "${String.fromCharCode(0xF099)} ${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+                "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
             fromLanguage: "en",
             toLanguage: language,
             builder: (translatedMessage) => RichText(
@@ -332,13 +332,12 @@ class SocialDescription extends StatelessWidget {
 
   _buildActionCount(BuildContext context) {
     return NewsActionBasic(
-      
       page: "social",
       obj: object,
       title: object.title['__cdata'],
       description: object.description['__cdata'],
-      imageUrl:  object.enclosure!=""?object.enclosure['url']:"",
-      imageExtType: object.enclosure!=""?object.enclosure['type']:"",
+      imageUrl: object.enclosure != "" ? object.enclosure['url'] : "",
+      imageExtType: object.enclosure != "" ? object.enclosure['type'] : "",
       // icons: icons,
       // iconsName: iconsName,
     );

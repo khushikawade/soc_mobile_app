@@ -92,6 +92,7 @@ class _NewdescriptionState extends State<Newdescription> {
                 // Globals.homeObject["App_Logo__c"],
                 height: Utility.displayHeight(context) *
                     (AppTheme.kDetailPageImageHeightFactor / 100),
+                fitMethod: BoxFit.contain,
                 isOnTap: true,
               )),
             ),
@@ -138,7 +139,7 @@ class _NewdescriptionState extends State<Newdescription> {
             //
             Text(
               Utility.convertTimestampToDateFormat(
-                  widget.obj.completedAtTimestamp, "MM/dd/yy"),
+                  widget.obj.completedAt, "MM/dd/yy"),
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     fontSize: 14,
                     color: Colors.grey,
@@ -212,14 +213,17 @@ class _NewdescriptionState extends State<Newdescription> {
           child: Container(),
         ),
         SpacerWidget(AppTheme.kBodyPadding),
-        NewsActionBasic(
-          page: "news",
-          obj: widget.obj,
-          title: widget.obj.headings['en'],
-          description: widget.obj.contents['en'],
-          imageUrl: widget.obj.image,
-          // icons: widget.icons,
-          // iconsName: widget.iconsName,
+        Container(
+          alignment: Alignment.centerLeft,
+          child: NewsActionBasic(
+            page: "news",
+            obj: widget.obj,
+            title: widget.obj.headings['en'],
+            description: widget.obj.contents['en'],
+            imageUrl: widget.obj.image,
+            // icons: widget.icons,
+            // iconsName: widget.iconsName,
+          ),
         ),
       ],
     );
