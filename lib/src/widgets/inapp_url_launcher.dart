@@ -72,7 +72,8 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
               return connected
                   ? Padding(
                     padding: const EdgeInsets.only(bottom : 30.0), // To manage web page crop issue together with bottom nav bar.
-                    child: WebView(           
+                    child: WebView(       
+                          
                       gestureNavigationEnabled:
                           widget.isiFrame == true ? true : false,
                       initialUrl: widget.isiFrame == true
