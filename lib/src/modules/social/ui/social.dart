@@ -44,7 +44,7 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
-      _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
+    _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
   }
 
   @override
