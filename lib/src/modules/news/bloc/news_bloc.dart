@@ -236,7 +236,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       // final ResponseModel response = await _dbServices
       //     .postapi("sobjects/News_Interactions__c", body: body);
 
-      print(body);
+      // print(body);
 
       final ResponseModel response = await _dbServices.postapi(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News",

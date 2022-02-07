@@ -161,7 +161,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             if (state is ActionCountSuccess) {
               newsMainList.clear();
               newsMainList.addAll(state.obj);
-              print(newsMainList);
+              // print(newsMainList);
               isCountLoading = false;
               Container(
                 alignment: Alignment.centerLeft,
@@ -394,7 +394,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget calanderView(dateTime) {
     final String date = Utility.convertTimestampToDateFormat(dateTime, 'dd');
     final String month = Utility.convertTimestampToDateFormat(dateTime, 'MMM');
-    print(month);
+    // print(month);
     return Container(
       decoration: BoxDecoration(
           border: Border.all(width: 0.5),

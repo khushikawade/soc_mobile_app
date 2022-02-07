@@ -128,9 +128,9 @@ class _SocialPageState extends State<SocialPage> {
               : (imageLink != null && imageLink != "")
                   ? imageLink
                   : '',
-                  // Globals.splashImageUrl ??
-                  //     // Globals.homeObject["App_Logo__c"],
-                  //     Globals.appSetting.appLogoC,
+          // Globals.splashImageUrl ??
+          //     // Globals.homeObject["App_Logo__c"],
+          //     Globals.appSetting.appLogoC,
           titleIcon: widgetIcon(obj.link),
         ),
         //
