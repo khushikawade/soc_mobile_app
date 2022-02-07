@@ -294,10 +294,14 @@ class _SocialPageState extends State<SocialPage> {
                   description: state.obj[index].description['__cdata'],
                   imageExtType: state.obj[index].enclosure != "" &&
                           state.obj[index].enclosure != null
+                          &&
+                          state.obj[index].enclosure['type']!=""
+                          && 
+                          state.obj[index].enclosure['type']!=null
                       ? state.obj[index].enclosure['type']
                       : "",
                   imageUrl: state.obj[index].enclosure != "" &&
-                          state.obj[index].enclosure != null
+                          state.obj[index].enclosure != null 
                       ? state.obj[index].enclosure['url']
                       : ""),
             );

@@ -331,6 +331,7 @@ class Utility {
     String _fileExt = imageExtType != ""
         ? imageExtType.split('/').last
         : _imgUrl.query != ""
+        
             ? _imgUrl.query.split('format=')[1].split("&")[0]
             : _imgUrl.path.split('.').last;
     String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
