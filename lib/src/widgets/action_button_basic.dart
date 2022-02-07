@@ -262,14 +262,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         _imageUrl = fallBackImageUrl;
       } else {
         _imageUrl = widget.imageUrl.toString().contains("http") &&
-                await Utility.errorImageUrl(widget.imageUrl) != '' //&&
-            // (widget.imageUrl.toString().contains('jpg') ||
-            //     widget.imageUrl.toString().contains('jpeg') ||
-            //     widget.imageUrl.toString().contains('gif') ||
-            //     widget.imageUrl.toString().contains('png') ||
-            //     widget.imageUrl.toString().contains('PNG') ||
-            //     widget.imageUrl.toString().contains('tiff') ||
-            //     widget.imageUrl.toString().contains('bmp'))
+                await Utility.errorImageUrl(widget.imageUrl) != ''
             ? widget.imageUrl
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
