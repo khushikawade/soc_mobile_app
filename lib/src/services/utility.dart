@@ -321,11 +321,18 @@ class Utility {
     }
   }
 
-  static Future<File> createFileFromUrl(_url) async {
+  static Future<File> createFileFromUrl(_url, imageExtType) async {
     Uri _imgUrl = Uri.parse(_url);
-    String _fileExt = _imgUrl.query != ""
-        ? _imgUrl.query.split('format=')[1].split("&")[0]
-        : _imgUrl.path.split('.').last;
+    // String _fileExt = _imgUrl.query != ""
+    //     ? _imgUrl.query.split('format=')[1].split("&")[0]
+    //     : _imgUrl.path.split('.').last;
+  
+
+    String _fileExt = imageExtType != ""
+        ? imageExtType.split('/').last
+        : _imgUrl.query != ""
+            ? _imgUrl.query.split('format=')[1].split("&")[0]
+            : _imgUrl.path.split('.').last;
     String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Response<List<int>> rs = await Dio().get<List<int>>(
       _url,

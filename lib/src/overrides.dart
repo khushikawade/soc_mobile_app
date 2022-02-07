@@ -21,5 +21,5 @@ class Overrides {
 //Sandbox : 'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
   static String SCHOOL_ID =
-      "a1f4W000007DQaNQAW"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
+      "a1f4W000007DQcTQAW"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
 }

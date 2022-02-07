@@ -13,13 +13,14 @@ import 'package:share/share.dart';
 class NewsActionBasic extends StatefulWidget {
   NewsActionBasic(
       {Key? key,
+      this.imageExtType,
       required this.obj,
       required this.icons,
       this.isLoading,
       required this.page,
       required this.iconsName})
       : super(key: key);
-
+  final imageExtType;
   final obj;
   final List? icons;
   final List? iconsName;
@@ -235,17 +236,17 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       String _imageUrl;
       File _image;
       if (widget.page == "news") {
-    
-
         _imageUrl = widget.obj.image != null && widget.obj.image != ""
             ? widget.obj.image
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
                 // : Globals.homeObject["App_Logo__c"];
                 : Globals.appSetting.appLogoC;
-        _image = await Utility.createFileFromUrl(_imageUrl);
+        _image =
+            // await Utility.createFileFromUrl(_imageUrl,);
+            await Utility.createFileFromUrl(
+                _imageUrl, widget.page == "social" ? widget.imageExtType : "");
       } else {
-
         _imageUrl = widget.obj.mediaContent != "" &&
                 widget.obj.mediaContent["url"] != null
             ? widget.obj.mediaContent["url"]
@@ -253,7 +254,10 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                 ? Globals.splashImageUrl
                 // : Globals.homeObject["App_Logo__c"];
                 : Globals.appSetting.appLogoC;
-        _image = await Utility.createFileFromUrl(_imageUrl);
+        _image =
+            //await Utility.createFileFromUrl(_imageUrl);
+            await Utility.createFileFromUrl(
+                _imageUrl, widget.page == "social" ? widget.imageExtType : "");
       }
 
       setState(() {
