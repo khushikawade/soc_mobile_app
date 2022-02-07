@@ -330,17 +330,15 @@ class SocialDescription extends StatelessWidget {
   }
 
   _buildActionCount(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerLeft,
-      child: NewsActionBasic(
-        page: "social",
-        obj: object,
-        title: object.title['__cdata'],
-        description: object.description['__cdata'],
-        imageUrl: object.enclosure != "" ? object.enclosure['url'] : "",
-        // icons: icons,
-        // iconsName: iconsName,
-      ),
+    return NewsActionBasic(
+      page: "social",
+      obj: object,
+      title: object.title['__cdata'],
+      description: object.description['__cdata'],
+      imageUrl: object.enclosure != "" ? object.enclosure['url'] : "",
+      imageExtType: object.enclosure != "" ? object.enclosure['type'] : "",
+      // icons: icons,
+      // iconsName: iconsName,
     );
   }
 

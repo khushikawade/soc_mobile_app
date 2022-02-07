@@ -213,6 +213,19 @@ class _SocialPageState extends State<SocialPage> {
                           }
                           return Container();
                         }),
+                    BlocListener<SocialBloc, SocialState>(
+                      bloc: bloc,
+                      listener: (context, state) async {
+                        if (state is SocialDataSucess) {
+                          _countSocialBloc
+                              .add(FetchSocialActionCount(isDetailPage: false));
+
+                          // object = state.obj;
+
+                        }
+                      },
+                      child: Container(),
+                    ),
                     Container(
                       height: 0,
                       width: 0,
@@ -262,9 +275,17 @@ class _SocialPageState extends State<SocialPage> {
                   isLoading: isCountLoading,
                   title: state.obj[index].title['__cdata'],
                   description: state.obj[index].description['__cdata'],
+                  imageExtType: state.obj[index].enclosure != "" &&
+                          state.obj[index].enclosure != null &&
+                          state.obj[index].enclosure['type'] != "" &&
+                          state.obj[index].enclosure['type'] != null
+                      ? state.obj[index].enclosure['type']
+                      : "",
                   imageUrl: state.obj[index].enclosure != "" &&
                           state.obj[index].enclosure != null
-                      ? state.obj[index].enclosure['url']
+                      ? state.obj[index].enclosure['url'] &&
+                          state.obj[index].enclosure['url'] != "" &&
+                          state.obj[index].enclosure['url'] != null
                       : ""),
             );
           } else if (state is Loading) {

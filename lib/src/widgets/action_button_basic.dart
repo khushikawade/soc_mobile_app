@@ -21,9 +21,10 @@ class NewsActionBasic extends StatefulWidget {
     required this.description,
     this.isLoading,
     required this.page,
+    this.imageExtType,
     this.scaffoldKey,
   }) : super(key: key);
-
+  final imageExtType;
   final obj;
   final imageUrl;
   final title;
@@ -283,21 +284,17 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         _imageUrl = fallBackImageUrl;
       } else {
         _imageUrl = widget.imageUrl.toString().contains("http") &&
-                await Utility.errorImageUrl(widget.imageUrl) != '' //&&
-            // (widget.imageUrl.toString().contains('jpg') ||
-            //     widget.imageUrl.toString().contains('jpeg') ||
-            //     widget.imageUrl.toString().contains('gif') ||
-            //     widget.imageUrl.toString().contains('png') ||
-            //     widget.imageUrl.toString().contains('PNG') ||
-            //     widget.imageUrl.toString().contains('tiff') ||
-            //     widget.imageUrl.toString().contains('bmp'))
+                await Utility.errorImageUrl(widget.imageUrl) != ''
             ? widget.imageUrl
             : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Globals.splashImageUrl
                 : Globals.appSetting.appLogoC;
       }
 
-      File _image = await Utility.createFileFromUrl(_imageUrl);
+      File _image = await Utility.createFileFromUrl(
+          _imageUrl, widget.page == "social" ? widget.imageExtType : "");
+
+      //  await Utility.createFileFromUrl(_imageUrl);
       setState(() {
         _downloadingFile = false;
       });
