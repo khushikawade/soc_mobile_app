@@ -286,23 +286,32 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         _imageUrl = widget.imageUrl.toString().contains("http") &&
                 await Utility.errorImageUrl(widget.imageUrl) != ''
             ? widget.imageUrl
-            : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-                ? Globals.splashImageUrl
-                : Globals.appSetting.appLogoC;
+            : '';
       }
+      File? _image;
 
-      File _image = await Utility.createFileFromUrl(
-          _imageUrl, widget.page == "social" ? widget.imageExtType : "");
+      if (_imageUrl != '') {
+        _image = await Utility.createFileFromUrl(
+            _imageUrl, widget.page == "social" ? widget.imageExtType : "");
+      }
 
       //  await Utility.createFileFromUrl(_imageUrl);
       setState(() {
         _downloadingFile = false;
       });
-      Share.shareFiles(
-        [_image.path],
-        subject: '$_title',
-        text: '$_description',
-      );
+      if (_image != null) {
+        Share.shareFiles(
+          [_image.path],
+          subject: '$_title',
+          text: '$_description',
+        );
+      } else {
+        Share.share(
+          
+          " $_title $_description"
+        );
+      }
+
       _totalRetry = 0;
     } catch (e) {
       print(e);

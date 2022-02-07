@@ -96,6 +96,7 @@ class SocialDescription extends StatelessWidget {
       key: refreshKey,
       child: ListView(padding: const EdgeInsets.all(_kPadding), children: [
         Column(
+         crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildnews(context),
             SpacerWidget(_kPadding / 2),
@@ -277,7 +278,7 @@ class SocialDescription extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: TranslationWidget(
             message:
-                "${String.fromCharCode(0xF099)} ${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+                "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
             fromLanguage: "en",
             toLanguage: language,
             builder: (translatedMessage) => RichText(

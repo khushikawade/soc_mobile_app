@@ -260,103 +260,60 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Widget actionButton(List<Item> list, obj, int index) {
-    return Column(
-      children: [
-        BlocListener<SocialBloc, SocialState>(
-          bloc: _countSocialBloc,
-          listener: (context, state) async {
-            if (state is SocialActionCountSuccess) {
-              socialMainList.clear();
-              socialMainList.addAll(state.obj);
-              isCountLoading = false;
-              Container(
-                // alignment: Alignment.centerLeft,
-                child: NewsActionBasic(
-                    page: "social",
-                    obj: state.obj[index],
-                    isLoading: isCountLoading,
-                    title: state.obj[index].title['__cdata'],
-                    description: state.obj[index].description['__cdata'],
-                    imageExtType: state.obj[index].enclosure != "" &&
-                            state.obj[index].enclosure != null &&
-                            state.obj[index].enclosure['type'] != "" &&
-                            state.obj[index].enclosure['type'] != null
-                        ? state.obj[index].enclosure['type']
-                        : "",
-                    imageUrl: state.obj[index].enclosure != "" &&
-                            state.obj[index].enclosure != null
-                        ? state.obj[index].enclosure['url'] &&
-                            state.obj[index].enclosure['url'] != "" &&
-                            state.obj[index].enclosure['url'] != null
-                        : ""),
-              );
-            }
-          },
-          child: Container(),
-        ),
-        BlocBuilder(
-            bloc: _countSocialBloc,
-            builder: (BuildContext context, SocialState state) {
-              if (state is SocialActionCountSuccess) {
-                socialMainList.clear();
-                socialMainList.addAll(state.obj);
-                isCountLoading = false;
-                return Container(
-                  // alignment: Alignment.centerLeft,
+    return BlocBuilder(
+        bloc: _countSocialBloc,
+        builder: (BuildContext context, SocialState state) {
+          if (state is SocialActionCountSuccess) {
+            socialMainList.clear();
+            socialMainList.addAll(state.obj);
+            isCountLoading = false;
+            return Container(
+              // alignment: Alignment.centerLeft,
+              child: NewsActionBasic(
+                  page: "social",
+                  obj: state.obj[index],
+                  isLoading: isCountLoading,
+                  title: state.obj[index].title['__cdata'],
+                  description: state.obj[index].description['__cdata'],
+                  imageUrl: state.obj[index].enclosure != "" &&
+                          state.obj[index].enclosure != null
+                      ? state.obj[index].enclosure['url']
+                      : "",
+                      imageExtType: state.obj[index].enclosure != "" ? state.obj[index].enclosure['type'] : "",),
+            );
+          } else if (state is Loading) {
+            return Container(
+              alignment: Alignment.centerLeft,
+              child: ShimmerLoading(
+                  isLoading: true,
                   child: NewsActionBasic(
+                    title: Globals.socialList[index].title['__cdata'],
+                    description:
+                        Globals.socialList[index].description['__cdata'],
+                    imageUrl: Globals.socialList[index].enclosure,
+                    page: "social",
+                    obj: Globals.socialList[index],
+                    isLoading: isCountLoading,
+                  )),
+            );
+          } else if (state is SocialErrorReceived) {
+            return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+          } else {
+            return Container(
+              alignment: Alignment.centerLeft,
+              child: ShimmerLoading(
+                  isLoading: true,
+                  child: NewsActionBasic(
+                      title: Globals.socialList[index].title['__cdata'],
+                      description:
+                          Globals.socialList[index].description['__cdata'],
+                      imageUrl: Globals.socialList[index].enclosure,
                       page: "social",
-                      obj: state.obj[index],
-                      isLoading: isCountLoading,
-                      title: state.obj[index].title['__cdata'],
-                      description: state.obj[index].description['__cdata'],
-                      imageExtType: state.obj[index].enclosure != "" &&
-                              state.obj[index].enclosure != null &&
-                              state.obj[index].enclosure['type'] != "" &&
-                              state.obj[index].enclosure['type'] != null
-                          ? state.obj[index].enclosure['type']
-                          : "",
-                      imageUrl: state.obj[index].enclosure != "" &&
-                              state.obj[index].enclosure != null
-                          ? state.obj[index].enclosure['url'] &&
-                              state.obj[index].enclosure['url'] != "" &&
-                              state.obj[index].enclosure['url'] != null
-                          : ""),
-                );
-              } else if (state is Loading) {
-                return Container(
-                  alignment: Alignment.centerLeft,
-                  child: ShimmerLoading(
-                      isLoading: true,
-                      child: NewsActionBasic(
-                        title: Globals.socialList[index].title['__cdata'],
-                        description:
-                            Globals.socialList[index].description['__cdata'],
-                        imageUrl: Globals.socialList[index].enclosure,
-                        page: "social",
-                        obj: Globals.socialList[index],
-                        isLoading: isCountLoading,
-                      )),
-                );
-              } else if (state is SocialErrorReceived) {
-                return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
-              } else {
-                return Container(
-                  alignment: Alignment.centerLeft,
-                  child: ShimmerLoading(
-                      isLoading: true,
-                      child: NewsActionBasic(
-                          title: Globals.socialList[index].title['__cdata'],
-                          description:
-                              Globals.socialList[index].description['__cdata'],
-                          imageUrl: Globals.socialList[index].enclosure,
-                          page: "social",
-                          obj: Globals.socialList[index],
-                          isLoading: isCountLoading)),
-                );
-              }
-            }),
-      ],
-    );
+                      obj: Globals.socialList[index],
+                       isLoading: isCountLoading)),
+            );
+          }
+        });
   }
 
   Widget widgetIcon(link) {

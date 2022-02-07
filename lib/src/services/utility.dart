@@ -330,27 +330,29 @@ class Utility {
   }
 
   static Future<File> createFileFromUrl(_url, imageExtType) async {
-    Uri _imgUrl = Uri.parse(_url);
-    // String _fileExt = _imgUrl.query != ""
-    //     ? _imgUrl.query.split('format=')[1].split("&")[0]
-    //     : _imgUrl.path.split('.').last;
-  
+    try {
+      Uri _imgUrl = Uri.parse(_url);
+      // String _fileExt = _imgUrl.query != ""
+      //     ? _imgUrl.query.split('format=')[1].split("&")[0]
+      //     : _imgUrl.path.split('.').last;
 
-    String _fileExt = imageExtType != ""
-        ? imageExtType.split('/').last
-        : _imgUrl.query != ""
-        
-            ? _imgUrl.query.split('format=')[1].split("&")[0]
-            : _imgUrl.path.split('.').last;
-    String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Response<List<int>> rs = await Dio().get<List<int>>(
-      _url,
-      options: Options(responseType: ResponseType.bytes),
-    );
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    File file = new File('$dir/$_fileName.$_fileExt');
-    await file.writeAsBytes(rs.data!);
-    return file;
+      String _fileExt = imageExtType != "" && imageExtType != null
+          ? imageExtType.split('/').last
+          : _imgUrl.query != ""
+              ? _imgUrl.query.split('format=')[1].split("&")[0]
+              : _imgUrl.path.split('.').last;
+      String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Response<List<int>> rs = await Dio().get<List<int>>(
+        _url,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      String dir = (await getApplicationDocumentsDirectory()).path;
+      File file = new File('$dir/$_fileName.$_fileExt');
+      await file.writeAsBytes(rs.data!);
+      return file;
+    } catch (e) {
+      throw Exception('Something went wrong');
+    }
   }
 
   static String utf8convert(String? text) {
