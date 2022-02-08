@@ -185,30 +185,25 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         futureListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
-              : a.start['date']
-                  .toString());
-                   //before -> var adate = a.expiry;
-          var bdate =DateTime.parse(b.start.toString().contains('dateTime')
+              : a.start['date'].toString());
+          //before -> var adate = a.expiry;
+          var bdate = DateTime.parse(b.start.toString().contains('dateTime')
               ? b.start['dateTime'].split('T')[0]
-              : b.start['date']
-                  .toString()); //before -> var bdate = b.expiry;
+              : b.start['date'].toString()); //before -> var bdate = b.expiry;
           return adate.compareTo(
               bdate); //to get the order other way just switch `adate & bdate`
         });
         pastListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
-              : a.start['date']
-                  .toString());
-                   //before -> var adate = a.expiry;
-          var bdate =DateTime.parse(b.start.toString().contains('dateTime')
+              : a.start['date'].toString());
+          //before -> var adate = a.expiry;
+          var bdate = DateTime.parse(b.start.toString().contains('dateTime')
               ? b.start['dateTime'].split('T')[0]
-              : b.start['date']
-                  .toString()); //before -> var bdate = b.expiry;
+              : b.start['date'].toString()); //before -> var bdate = b.expiry;
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
-
 
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
