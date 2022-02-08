@@ -165,6 +165,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         List<CalendarEventList> list = await getCalendarEventList();
         List<CalendarEventList>? futureListobj = [];
         List<CalendarEventList>? pastListobj = [];
+
         DateTime now = new DateTime.now();
         final DateFormat formatter = DateFormat('yyyy-MM-dd');
         final DateTime currentDate =
@@ -181,6 +182,34 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             }
           } catch (e) {}
         }
+        futureListobj.sort((a, b) {
+          var adate = DateTime.parse(a.start.toString().contains('dateTime')
+              ? a.start['dateTime'].split('T')[0]
+              : a.start['date']
+                  .toString());
+                   //before -> var adate = a.expiry;
+          var bdate =DateTime.parse(b.start.toString().contains('dateTime')
+              ? b.start['dateTime'].split('T')[0]
+              : b.start['date']
+                  .toString()); //before -> var bdate = b.expiry;
+          return adate.compareTo(
+              bdate); //to get the order other way just switch `adate & bdate`
+        });
+        pastListobj.sort((a, b) {
+          var adate = DateTime.parse(a.start.toString().contains('dateTime')
+              ? a.start['dateTime'].split('T')[0]
+              : a.start['date']
+                  .toString());
+                   //before -> var adate = a.expiry;
+          var bdate =DateTime.parse(b.start.toString().contains('dateTime')
+              ? b.start['dateTime'].split('T')[0]
+              : b.start['date']
+                  .toString()); //before -> var bdate = b.expiry;
+          return bdate.compareTo(
+              adate); //to get the order other way just switch `adate & bdate`
+        });
+
+
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {
@@ -241,8 +270,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       final ResponseModel response = await _dbServices.getapi(categoryId == null
           ? Uri.encodeFull(
               'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c')
-          :'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId');
-          // "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c,Active_Status__c FROM Staff_Directory_App__c where About_App__c = '$categoryId'")}");
+          : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId');
+      // "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c,Active_Status__c FROM Staff_Directory_App__c where About_App__c = '$categoryId'")}");
 
       if (response.statusCode == 200) {
         List<SDlist> _list = response.data['body']

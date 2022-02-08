@@ -283,7 +283,7 @@ class SocialDescription extends StatelessWidget {
             toLanguage: language,
             builder: (translatedMessage) => RichText(
                     text: TextSpan(children: [
-                  WidgetSpan(child: widgetIcon(object.link)),
+                  WidgetSpan(child: widgetIcon(object.link,context)),
                   WidgetSpan(
                     child: SelectableHtml(
                       data: translatedMessage.toString(),
@@ -343,7 +343,7 @@ class SocialDescription extends StatelessWidget {
     );
   }
 
-  Widget widgetIcon(link) {
+  Widget widgetIcon(link , context) {
     if (link["\$t"].contains('instagram')) {
       return ShaderMask(
           shaderCallback: (bounds) => RadialGradient(
@@ -363,7 +363,7 @@ class SocialDescription extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 1),
             child: FaIcon(
               FontAwesomeIcons.instagram,
-              size: 16,
+              size: MediaQuery.of(context).size.height *0.02,
               color: Colors.white,
             ),
           ));
@@ -373,22 +373,22 @@ class SocialDescription extends StatelessWidget {
 // FontAwesomeIcons.instagramSquare, [Colors.cyan, Colors.yellow]);
 
     } else if (link["\$t"].contains('twitter')) {
-      return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2));
+      return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2),context);
     } else if (link["\$t"].contains('facebook')) {
       return Padding(
           padding: EdgeInsets.only(bottom: 1),
-          child: iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2)));
+          child: iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2),context));
     } else if (link["\$t"].contains('youtube')) {
-      return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000));
+      return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000),context);
     }
 
     return Container();
   }
 
-  Widget iconWidget(icon, color) {
+  Widget iconWidget(icon, color,context) {
     return FaIcon(
       icon,
-      size: 16,
+      size: MediaQuery.of(context).size.height *0.1,
       color: color,
     );
   }
