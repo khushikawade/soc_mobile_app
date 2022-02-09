@@ -388,7 +388,7 @@ class SocialDescription extends StatelessWidget {
   Widget iconWidget(icon, color,context) {
     return FaIcon(
       icon,
-      size: MediaQuery.of(context).size.height *0.1,
+      size: MediaQuery.of(context).size.height *0.02,
       color: color,
     );
   }

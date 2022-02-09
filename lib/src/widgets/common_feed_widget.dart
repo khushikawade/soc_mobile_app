@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 
 class CommonFeedWidget extends StatefulWidget {
   final String title;
+  final String description;
   final Widget actionIcon;
   final String url;
   final Widget titleIcon;
   CommonFeedWidget(
       {Key? key,
       required this.title,
+      required this.description,
       required this.actionIcon,
       required this.url,
       required this.titleIcon})
@@ -39,28 +41,28 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   width: MediaQuery.of(context).size.width * 0.15,
                   child: Center(child: widget.titleIcon)),
               Container(
-                width: MediaQuery.of(context).size.width * 0.82,
+                 width: MediaQuery.of(context).size.width * 0.82,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TranslationWidget(
-                        message: widget.title,
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) {
-                          return Text(
-                            translatedMessage.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(fontSize: 16),
-                          );
-                        }),
+                    _buildHeadline(),
                     SizedBox(
                       height: 5,
                     ),
-                    widget.url != '' || widget.url == null
+                    _buildImage(),
+                    widget.actionIcon,
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _buildImage(){
+    return widget.url != '' || widget.url == null
                         ? CachedNetworkImage(
                             imageUrl: widget.url,
                             fit: BoxFit.fitWidth,
@@ -98,17 +100,54 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                                               0.85,
                                           color: Colors.white,
                                         ),
-                                      )),
-                                ))
-                        : Container(),
-                    widget.actionIcon,
-                  ],
-                ),
-              )
+                                      ),),
+                                ),)
+                        : Container();
+  }
+
+  Widget _buildHeadline() {
+    return widget.title != '' && widget.description != ''
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TranslationWidget(
+                  message: widget.title,
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) {
+                    return Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(fontWeight: FontWeight.w700),
+                    );
+                  },),
+              TranslationWidget(
+                  message: widget.description,
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) {
+                    return Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.headline2!.copyWith(),
+                    );
+                  },)
             ],
-          ),
-        ),
-      ],
-    );
+          )
+        : TranslationWidget(
+            message: widget.description,
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) {
+              return Text(
+                translatedMessage.toString(),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontSize: 16),
+              );
+            },);
   }
 }

@@ -112,10 +112,11 @@ class _SocialPageState extends State<SocialPage> {
           }
         },
         child: CommonFeedWidget(
-          title: obj.title!["__cdata"] != null &&
+          title: '',
+          description: obj.title!["__cdata"] != null &&
                   obj.title!["__cdata"].length > 1
               ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}"
-              : '',
+              : '',    
           actionIcon: Container(
               padding: EdgeInsets.only(
                   top: MediaQuery.of(context).size.height * 0.030),
