@@ -101,15 +101,17 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Container(
-                        height: 35,
-                        width: 35,
-                        // color: Colors.grey,
-                        child: IconButton(
-                            padding: EdgeInsets.all(0),
-                            // constraints: BoxConstraints(),
-                            onPressed: () {},
-                            icon: iconListWidget(
-                                context, index, false, widget.scaffoldKey))),
+                        height:Globals.deviceType == 'phone'? 35 :45,
+                        width: Globals.deviceType == 'phone'? 35 :45,
+                        //  color: Colors.grey,
+                        child: Center(
+                          child: IconButton(
+                              padding: EdgeInsets.all(0),
+                              // constraints: BoxConstraints(),
+                              onPressed: () {},
+                              icon: iconListWidget(
+                                  context, index, false, widget.scaffoldKey)),
+                        )),
                     widget.isLoading == true
                         ? Container()
                         : Container(

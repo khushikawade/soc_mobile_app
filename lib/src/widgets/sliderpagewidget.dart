@@ -9,6 +9,7 @@ import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
@@ -61,12 +62,20 @@ class _SliderWidgetState extends State<SliderWidget> {
     pageinitialIndex = widget.currentIndex;
     _controller = PageController(initialPage: widget.currentIndex);
     Globals.callsnackbar = false;
+    BackButtonInterceptor.add(updateAction);
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+    BackButtonInterceptor.remove(updateAction);
+  }
+
+  bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
+   bool isNewsPage = widget.iseventpage == false || widget.issocialpage == true ? true : false;
+    Navigator.pop(context, isNewsPage);
+    return true;
   }
 
   Widget build(BuildContext context) {

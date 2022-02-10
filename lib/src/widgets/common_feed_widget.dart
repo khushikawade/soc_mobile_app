@@ -121,7 +121,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                       style: Theme.of(context)
                           .textTheme
                           .headline2!
-                          .copyWith(fontWeight: FontWeight.w700),
+                          .copyWith(fontWeight: FontWeight.w500),
                     );
                   },),
               TranslationWidget(

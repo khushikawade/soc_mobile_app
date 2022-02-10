@@ -49,6 +49,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    
     bloc.add(FetchNotificationList());
     _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
