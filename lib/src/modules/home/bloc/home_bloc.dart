@@ -40,7 +40,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final data = await fetchBottomNavigationBar();
         // Saving data to the Local DataBase
         AppSetting _appSetting = AppSetting.fromJson(data);
-        print(_appSetting);
+        // print(_appSetting);
         //  Globals.homeObject = Globals.appSetting.toJson();
         // Should send the response first then it will sync data to the Local database.
         yield BottomNavigationBarSuccess(obj: data);
@@ -96,7 +96,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _backupAppData();
         if (Globals.appSetting.bannerHeightFactor != null) {
           AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
-          print(AppTheme.kBannerHeight);
+          // print(AppTheme.kBannerHeight);
         }
         return data;
       }

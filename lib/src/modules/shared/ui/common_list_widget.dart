@@ -63,7 +63,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     language: Globals.selectedLanguage ?? "English",
                   )));
     } else if (obj.typeC == "URL") {
-      obj.appUrlC != null
+      obj.appUrlC != null &&obj.appUrlC!=""
           ? _launchURL(obj)
           : Utility.showSnackBar(
               widget.scaffoldKey, "No link available", context);

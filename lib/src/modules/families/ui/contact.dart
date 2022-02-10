@@ -10,7 +10,6 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -55,12 +54,11 @@ class _ContactPageState extends State<ContactPage> {
     _markers.add(Marker(
         markerId: MarkerId("Your location"),
         draggable: false,
-        position: LatLng(
-            Globals.appSetting.contactOfficeLocationLatitudeS!,Globals.appSetting.contactOfficeLocationLongitudeS!
+        position: LatLng(Globals.appSetting.contactOfficeLocationLatitudeS!,
+            Globals.appSetting.contactOfficeLocationLongitudeS!
             // Globals.homeObject["Contact_Office_Location__Latitude__s"],
             // Globals.homeObject["Contact_Office_Location__Longitude__s"]
-            )
-            ));
+            )));
   }
 
   @override
@@ -78,11 +76,11 @@ class _ContactPageState extends State<ContactPage> {
               height: Utility.displayHeight(context) *
                   (AppTheme.kDetailPageImageHeightFactor / 100),
               iconUrl: Globals.appSetting.contactImageC
-              // Globals.homeObject["Contact_Image__c"]
-               ??
+                  // Globals.homeObject["Contact_Image__c"]
+                  ??
                   Globals.splashImageUrl ??
                   Globals.appSetting.appLogoC,
-                  // Globals.homeObject["App_Logo__c"],
+              // Globals.homeObject["App_Logo__c"],
             )));
   }
 
@@ -93,8 +91,9 @@ class _ContactPageState extends State<ContactPage> {
         ),
         child: TranslationWidget(
           message: Globals.appSetting.contactImageC
-          // Globals.homeObject["Contact_Name__c"]
-           ?? "-",
+              // Globals.homeObject["Contact_Name__c"]
+              ??
+              "-",
           toLanguage: Globals.selectedLanguage,
           fromLanguage: "en",
           builder: (translatedMessage) => Text(
@@ -133,14 +132,12 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             color: AppTheme.kmapBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
-        child: Globals.appSetting.contactOfficeLocationLatitudeS !=
-                    null &&
-                Globals.appSetting.contactOfficeLocationLongitudeS !=
-                    null
-        // Globals.homeObject["Contact_Office_Location__Latitude__s"] !=
-        //             null &&
-        //         Globals.homeObject["Contact_Office_Location__Longitude__s"] !=
-        //             null
+        child: Globals.appSetting.contactOfficeLocationLatitudeS != null &&
+                Globals.appSetting.contactOfficeLocationLongitudeS != null
+            // Globals.homeObject["Contact_Office_Location__Latitude__s"] !=
+            //             null &&
+            //         Globals.homeObject["Contact_Office_Location__Longitude__s"] !=
+            //             null
             ? SizedBox(
                 height: _kboxheight * 2,
                 child: GoogleMap(
@@ -157,12 +154,13 @@ class _ContactPageState extends State<ContactPage> {
                     initialCameraPosition: CameraPosition(
                         // bearing: 192.8334901395799,
                         target: LatLng(
-                           Globals.appSetting.contactOfficeLocationLatitudeS!,Globals.appSetting.contactOfficeLocationLongitudeS!
+                            Globals.appSetting.contactOfficeLocationLatitudeS!,
+                            Globals.appSetting.contactOfficeLocationLongitudeS!
                             // Globals.homeObject[
                             //     "Contact_Office_Location__Latitude__s"],
                             // Globals.homeObject[
                             //     "Contact_Office_Location__Longitude__s"]
-                                ),
+                            ),
                         zoom: 18,
                         tilt: 59.440717697143555),
                     markers: Set.from(
@@ -208,13 +206,7 @@ class _ContactPageState extends State<ContactPage> {
 
   void _launchMapsUrl() async {
     final url =
-       'https://www.google.com/maps/search/?api=1&query=${Globals.appSetting.contactOfficeLocationLatitudeS},${Globals.appSetting.contactOfficeLocationLongitudeS}';
-        // 'https://www.google.com/maps/search/?api=1&query=${Globals.homeObject["Contact_Office_Location__Latitude__s"]},${Globals.homeObject["Contact_Office_Location__Longitude__s"]}';
-    // if (await canLaunch(url)) {
-    //   await launch(url);
-    // } else {
-    //   throw 'Could not launch $url';
-    // }
+        'https://www.google.com/maps/search/?api=1&query=${Globals.appSetting.contactOfficeLocationLatitudeS},${Globals.appSetting.contactOfficeLocationLongitudeS}';
     await Utility.launchUrlOnExternalBrowser(url);
   }
 
@@ -244,8 +236,9 @@ class _ContactPageState extends State<ContactPage> {
               onTap: _launchMapsUrl,
               child: Text(
                 Globals.appSetting.contactAddressC
-                // Globals.homeObject["Contact_Address__c"]
-                 ?? '-',
+                    // Globals.homeObject["Contact_Address__c"]
+                    ??
+                    '-',
                 style: AppTheme
                     .linkStyle, //Theme.of(context).textTheme.bodyText1!,
                 textAlign: TextAlign.start,
@@ -279,10 +272,9 @@ class _ContactPageState extends State<ContactPage> {
             padding: const EdgeInsets.only(bottom: 4.0),
             child: InkWell(
               onTap: () {
-                if (
-                  Globals.appSetting.contactPhoneC != null
-                  // Globals.homeObject["Contact_Phone__c"] != null
-                  ) {
+                if (Globals.appSetting.contactPhoneC != null
+                    // Globals.homeObject["Contact_Phone__c"] != null
+                    ) {
                   // urlobj.callurlLaucher(
                   //     context, "tel:" + Globals.homeObject["Contact_Phone__c"]);
                   Utility.launchUrlOnExternalBrowser(
@@ -293,8 +285,9 @@ class _ContactPageState extends State<ContactPage> {
               },
               child: Text(
                 Globals.appSetting.contactPhoneC
-                // Globals.homeObject["Contact_Phone__c"] 
-                ?? '-',
+                    // Globals.homeObject["Contact_Phone__c"]
+                    ??
+                    '-',
                 style: AppTheme.linkStyle,
                 textAlign: TextAlign.center,
               ),
@@ -347,15 +340,14 @@ class _ContactPageState extends State<ContactPage> {
             child: InkWell(
               onTap: () {
                 // Globals.homeObject["Contact_Email__c"]
-                Globals.appSetting.contactEmailC
-                 != null
+                Globals.appSetting.contactEmailC != null
                     ?
                     // urlobj.callurlLaucher(context,
                     //     'mailto:"${Globals.homeObject["Contact_Email__c"]}"')
                     Utility.launchUrlOnExternalBrowser(
                         "mailto:" + Globals.appSetting.contactEmailC!)
                     : print("null value");
-                    // Globals.homeObject["Contact_Email__c"]
+                // Globals.homeObject["Contact_Email__c"]
               },
               child: Text(
                 Globals.appSetting.contactEmailC ?? '-',
@@ -382,9 +374,8 @@ class _ContactPageState extends State<ContactPage> {
           ? _buildPhoneWidget()
           : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      // Globals.homeObject["Contact_Email__c"] 
-      Globals.appSetting.contactEmailC
-      != null
+      // Globals.homeObject["Contact_Email__c"]
+      Globals.appSetting.contactEmailC != null
           ? _buildEmailWidget()
           : Container(),
     ]);

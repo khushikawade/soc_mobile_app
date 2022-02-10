@@ -7,9 +7,9 @@ import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/Strings.dart';
-import 'package:Soc/src/widgets/common_image_widget.dart';
+import 'package:Soc/src/widgets/calendra_icon_widget.dart';
+import 'package:Soc/src/widgets/common_feed_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -18,7 +18,6 @@ import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:marquee/marquee.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,9 +27,12 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
-  static const double _kLabelSpacing = 16.0;
+  // static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  static const double _kIconSize = 48.0;
+  // static const double _kIconSize = 48.0;
+  // static const double _kPhoneIcon = 36.0;
+  // static const double _kTabletIcon = 55.0;
+
   // static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
   NewsBloc _countBloc = new NewsBloc();
@@ -47,6 +49,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    
     bloc.add(FetchNotificationList());
     _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
@@ -89,68 +92,63 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildListItems(
       List<NotificationList> list, NotificationList obj, int index) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: _kLabelSpacing,
-        vertical: _kLabelSpacing / 2,
-      ),
+      // padding: EdgeInsets.symmetric(
+      //   horizontal: _kLabelSpacing,
+      //   vertical: _kLabelSpacing / 2,
+      // ),
       // padding: EdgeInsets.symmetric(
       //   // horizontal: _kLabelSpacing,
       //   vertical: _kLabelSpacing / 1,
       // ),
-      color: (index % 2 == 0)
-          ? Theme.of(context).colorScheme.background
-          : Theme.of(context).colorScheme.secondary,
-      child: InkWell(
-          onTap: () async {
-            if (isCountLoading == true) {
-              Utility.showSnackBar(
-                  _scaffoldKey, "Please wait while count is loading", context);
-            } else {
-              result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SliderWidget(
-                            obj: newsMainList.length > 0 &&
-                                    newsMainList[index] != null
-                                ? newsMainList
-                                : list,
-                            currentIndex: index,
-                            issocialpage: false,
-                            isAboutSDPage: false,
-                            iseventpage: false,
-                            date: "$newsTimeStamp",
-                            isbuttomsheet: true,
-                            language: Globals.selectedLanguage,
-                          )));
+      color: Theme.of(context).colorScheme.background,
 
-              if (result == true) {
-                _countBloc.add(FetchActionCountList(isDetailPage: true));
-              }
+      child: InkWell(
+        onTap: () async {
+          if (isCountLoading == true) {
+            Utility.showSnackBar(
+                _scaffoldKey, "Please wait while count is loading", context);
+          } else {
+            bool result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SliderWidget(
+                          obj: newsMainList.length > 0 &&
+                                  newsMainList[index] != null
+                              ? newsMainList
+                              : list,
+                          currentIndex: index,
+                          issocialpage: false,
+                          isAboutSDPage: false,
+                          iseventpage: false,
+                          date: "$newsTimeStamp",
+                          isbuttomsheet: true,
+                          language: Globals.selectedLanguage,
+                        )));
+
+            if (result == true) {
+              _countBloc.add(FetchActionCountList(isDetailPage: true));
             }
-          },
-          child: ListTile(
-            contentPadding: EdgeInsets.only(left: 0),
-            leading: CommonImageWidget(
-              fitMethod: BoxFit.contain,
-              iconUrl: obj.image != '' && obj.image != null
-                  ? obj.image
-                  : Globals.splashImageUrl != '' &&
-                          Globals.splashImageUrl != null
-                      ? Globals.splashImageUrl
-                      : Globals.appSetting.appLogoC,
-              height: Globals.deviceType == "phone"
-                  ? _kIconSize * 1.4
-                  : _kIconSize * 2,
-              width: Globals.deviceType == "phone"
-                  ? _kIconSize * 1.4
-                  : _kIconSize * 2,
-            ),
-            title: _buildnewsHeading(obj),
-            subtitle: Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.020),
-                child: actionButton(list, obj, index)),
-          )),
+          }
+        },
+        child: CommonFeedWidget(
+          actionIcon: Container(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.030),
+              child: actionButton(list, obj, index)),
+          title: obj.headings!.length > 0 &&
+                  obj.headings != "" &&
+                  obj.headings != null
+              ? '${obj.headings["en"].toString()}'
+              : obj.contents["en"] ?? '-',
+          description: '${obj.contents["en"].toString()}',    
+          titleIcon: CalendraIconWidget(dateTime: obj.completedAt),
+          // calanderView(obj.completedAt),
+          url: obj.image != '' && obj.image != null ? obj.image! : '',
+          //  Globals.splashImageUrl != '' && Globals.splashImageUrl != null
+          //     ? Globals.splashImageUrl
+          //     : Globals.appSetting.appLogoC,
+        ),
+      ),
     );
   }
 
@@ -164,10 +162,14 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             if (state is ActionCountSuccess) {
               newsMainList.clear();
               newsMainList.addAll(state.obj);
+              // print(newsMainList);
               isCountLoading = false;
               Container(
-                // alignment: Alignment.centerLeft,
+                alignment: Alignment.centerLeft,
                 child: NewsActionBasic(
+                    title: state.obj[index].headings['en'],
+                    description: state.obj[index].contents['en'],
+                    imageUrl: state.obj[index].image,
                     obj: state.obj[index],
                     page: "news",
                     isLoading: isCountLoading),
@@ -184,8 +186,11 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 newsMainList.addAll(state.obj);
                 isCountLoading = false;
                 return Container(
-                  // alignment: Alignment.centerLeft,
+                  alignment: Alignment.centerLeft,
                   child: NewsActionBasic(
+                      title: state.obj[index].headings['en'],
+                      description: state.obj[index].contents['en'],
+                      imageUrl: state.obj[index].image,
                       obj: state.obj[index],
                       page: "news",
                       isLoading: isCountLoading),
@@ -196,6 +201,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   child: ShimmerLoading(
                       isLoading: true,
                       child: NewsActionBasic(
+                          title: Globals.notificationList[index].headings['en'],
+                          description:
+                              Globals.notificationList[index].contents['en'],
+                          imageUrl: Globals.notificationList[index].image,
                           obj: Globals.notificationList[index],
                           page: "news",
                           isLoading: isCountLoading)),
@@ -208,6 +217,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   child: ShimmerLoading(
                       isLoading: true,
                       child: NewsActionBasic(
+                          title: Globals.notificationList[index].headings['en'],
+                          description:
+                              Globals.notificationList[index].contents['en'],
+                          imageUrl: Globals.notificationList[index].image,
                           obj: Globals.notificationList[index],
                           page: "news",
                           isLoading: isCountLoading)),
@@ -218,48 +231,32 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildnewsHeading(NotificationList obj) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.02,
-      child: TranslationWidget(
-          message: obj.headings!.length > 0 &&
-                  obj.headings != "" &&
-                  obj.headings != null
-              ? obj.headings["en"].toString()
-              : obj.contents["en"] ?? '-',
-          fromLanguage: "en",
-          toLanguage: Globals.selectedLanguage,
-          builder: (translatedMessage) =>
-              marqueesText(translatedMessage.toString())),
-    );
-  }
-
-  marqueesText(String title) {
-    return title.length < 50
-        ? Text("$title",
-            style: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: Theme.of(context).colorScheme.primaryVariant,
-                ))
-        : Marquee(
-            text: "$title",
-            style: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: Theme.of(context).colorScheme.primaryVariant,
-                ),
-            scrollAxis: Axis.horizontal,
-            velocity: 30.0,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            blankSpace: //50,
-                MediaQuery.of(context).size.width * 0.5,
-            // velocity: 100.0,
-            pauseAfterRound: Duration(seconds: 5),
-            showFadingOnlyWhenScrolling: true,
-            startPadding: 0.0,
-            accelerationDuration: Duration(seconds: 1),
-            accelerationCurve: Curves.linear,
-            decelerationDuration: Duration(milliseconds: 500),
-            decelerationCurve: Curves.easeOut,
-          );
-  }
+  // marqueesText(String title) {
+  //   return title.length < 50
+  //       ? Text("$title",
+  //           style: Theme.of(context).textTheme.headline2!.copyWith(
+  //                 color: Theme.of(context).colorScheme.primaryVariant,
+  //               ))
+  //       : Marquee(
+  //           text: "$title",
+  //           style: Theme.of(context).textTheme.headline2!.copyWith(
+  //                 color: Theme.of(context).colorScheme.primaryVariant,
+  //               ),
+  //           scrollAxis: Axis.horizontal,
+  //           velocity: 30.0,
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           blankSpace: //50,
+  //               MediaQuery.of(context).size.width * 0.5,
+  //           // velocity: 100.0,
+  //           pauseAfterRound: Duration(seconds: 5),
+  //           showFadingOnlyWhenScrolling: true,
+  //           startPadding: 0.0,
+  //           accelerationDuration: Duration(seconds: 1),
+  //           accelerationCurve: Curves.linear,
+  //           decelerationDuration: Duration(milliseconds: 500),
+  //           decelerationCurve: Curves.easeOut,
+  //         );
+  // }
 
   Widget _buildList(List<NotificationList> obj) {
     return Expanded(

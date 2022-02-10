@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:html/parser.dart';
+import 'package:http/http.dart' as http;
 
 class Utility {
   static Size displaySize(BuildContext context) {
@@ -28,6 +30,15 @@ class Utility {
       return dateFormat;
     } catch (e) {
       return '';
+    }
+  }
+
+  static Future<String> errorImageUrl(String imageUrl) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    if (response.statusCode == 200) {
+      return imageUrl;
+    } else {
+      return imageUrl = '';
     }
   }
 
@@ -55,12 +66,13 @@ class Utility {
     }
   }
 
-  static String convertTimestampToDateFormat(dynamic timestamp, String format) {
+  static String convertTimestampToDateFormat(
+      DateTime timestamp, String format) {
     try {
-      DateTime date =
-          DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
-      String dateFormat = DateFormat(format).format(date);
-      return dateFormat;
+      // final String date = DateFormat(format).format(timestamp);
+      final DateFormat formatter = DateFormat(format);
+      final String date = formatter.format(timestamp);
+      return date;
     } catch (e) {
       return '';
     }
@@ -103,12 +115,17 @@ class Utility {
       content: Container(
         alignment: Alignment.centerLeft,
         height: 40,
-        child: Text("$msg",
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              color: Theme.of(context).backgroundColor,
-              fontWeight: FontWeight.w600,
-            )),
+        child: TranslationWidget(
+          message: msg,
+          fromLanguage: "en",
+          toLanguage: Globals.selectedLanguage,
+          builder: (translatedMessage) => Text(translatedMessage,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                color: Theme.of(context).backgroundColor,
+                fontWeight: FontWeight.w600,
+              )),
+        ),
       ),
       backgroundColor: Colors.black.withOpacity(0.8),
       padding: EdgeInsets.only(
@@ -312,18 +329,30 @@ class Utility {
     }
   }
 
-  static Future<File> createFileFromUrl(_url) async {
-    Uri _imgUrl = Uri.parse(_url);
-    String _fileExt = _imgUrl.path.split('.').last;
-    String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Response<List<int>> rs = await Dio().get<List<int>>(
-      _url,
-      options: Options(responseType: ResponseType.bytes),
-    );
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    File file = new File('$dir/$_fileName.$_fileExt');
-    await file.writeAsBytes(rs.data!);
-    return file;
+  static Future<File> createFileFromUrl(_url, imageExtType) async {
+    try {
+      Uri _imgUrl = Uri.parse(_url);
+      // String _fileExt = _imgUrl.query != ""
+      //     ? _imgUrl.query.split('format=')[1].split("&")[0]
+      //     : _imgUrl.path.split('.').last;
+
+      String _fileExt = imageExtType != "" && imageExtType != null
+          ? imageExtType.split('/').last
+          : _imgUrl.query != ""
+              ? _imgUrl.query.split('format=')[1].split("&")[0]
+              : _imgUrl.path.split('.').last;
+      String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Response<List<int>> rs = await Dio().get<List<int>>(
+        _url,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      String dir = (await getApplicationDocumentsDirectory()).path;
+      File file = new File('$dir/$_fileName.$_fileExt');
+      await file.writeAsBytes(rs.data!);
+      return file;
+    } catch (e) {
+      throw Exception('Something went wrong');
+    }
   }
 
   static String utf8convert(String? text) {

@@ -75,6 +75,11 @@ class _SearchPageState extends State<SearchPage> {
     length < 1 ? isDBListEmpty = true : isDBListEmpty = false;
   }
 
+  getListData() async {
+    List listItem = await HiveDbServices().getListData(Strings.hiveLogName);
+    return listItem;
+  }
+
   deleteItem() async {
     int itemcount = await HiveDbServices().getListLength(Strings.hiveLogName);
     if (itemcount > 5) {
@@ -298,9 +303,12 @@ class _SearchPageState extends State<SearchPage> {
                       padding: EdgeInsets.only(bottom: _kLabelSpacing*1.5),
                       scrollDirection: Axis.vertical,
                       itemCount:
-                          snapshot.data.length < 5 ? snapshot.data.length : 5,
+                          snapshot.data.length < 10 ? snapshot.data.length : 10,
                       itemBuilder: (BuildContext context, int index) {
-                        return _buildRecentItem(index, snapshot.data);
+                        List reverseList = List.from(snapshot.data.reversed);
+                        // print(reverseList);
+                        // return _buildRecentItem(index, snapshot.data);
+                        return _buildRecentItem(index, reverseList);
                       },
                     ),
                   )
@@ -426,37 +434,46 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                             onTap: () async {
                               _route(data);
-                              print(Recent);
-                              if (data != null) {
-                                deleteItem();
-                                final recentitem = Recent(
-                                    1,
-                                    data.titleC,
-                                    data.appIconUrlC,
-                                    data.id,
-                                    data.name,
-                                    data.objectName,
-                                    data.rtfHTMLC,
-                                    data.typeC,
-                                    // data.schoolId,
-                                    // data.dept,
-                                    data.statusC,
-                                    data.urlC,
-                                    data.pdfURL,
-                                    data.sortOrder,
-                                    data.deepLink,
-                                    data.appURLC,
-                                    data.calendarId,
-                                    data.emailC,
-                                    data.imageUrlC,
-                                    data.phoneC,
-                                    data.webURLC,
-                                    data.address,
-                                    data.geoLocation,
-                                    data.descriptionC,
-                                    data.latitude,
-                                    data.longitude);
-                                addtoDataBase(recentitem);
+                              List itemListData = await getListData();
+                              List idList = [];
+                              for (int i = 0; i < itemListData.length; i++) {
+                                idList.add(itemListData[i].id);
+                              }
+
+                              if (idList.contains(data.id)) {
+                              } else {
+                                // print(Recent);
+                                if (data != null) {
+                                  deleteItem();
+                                  final recentitem = Recent(
+                                      1,
+                                      data.titleC,
+                                      data.appIconUrlC,
+                                      data.id,
+                                      data.name,
+                                      data.objectName,
+                                      data.rtfHTMLC,
+                                      data.typeC,
+                                      // data.schoolId,
+                                      // data.dept,
+                                      data.statusC,
+                                      data.urlC,
+                                      data.pdfURL,
+                                      data.sortOrder,
+                                      data.deepLink,
+                                      data.appURLC,
+                                      data.calendarId,
+                                      data.emailC,
+                                      data.imageUrlC,
+                                      data.phoneC,
+                                      data.webURLC,
+                                      data.address,
+                                      data.geoLocation,
+                                      data.descriptionC,
+                                      data.latitude,
+                                      data.longitude);
+                                  addtoDataBase(recentitem);
+                                }
                               }
                             }),
                       );
