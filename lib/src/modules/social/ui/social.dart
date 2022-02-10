@@ -92,7 +92,8 @@ class _SocialPageState extends State<SocialPage> {
           bool result = await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => SliderWidget(
+                  builder: (context) =>
+                   SliderWidget(
                         // icons: Globals.icons,
                         obj: socialMainList.length > 0 &&
                                 socialMainList[index] != null
@@ -106,7 +107,8 @@ class _SocialPageState extends State<SocialPage> {
                         date: '1',
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
-                      )));
+                      )
+                      ));
           if (result == true) {
             _countSocialBloc.add(FetchSocialActionCount(isDetailPage: true));
           }
