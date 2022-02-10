@@ -80,6 +80,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                               30.0), // To manage web page crop issue together with bottom nav bar.
                       child: 
                       WebviewScaffold(
+                        mediaPlaybackRequiresUserGesture: true,
                         supportMultipleWindows: true,
                         withJavascript: true,
                         withLocalUrl: true,

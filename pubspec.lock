@@ -29,13 +29,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  analog_clock:
-    dependency: "direct main"
-    description:
-      name: analog_clock
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
   analyzer:
     dependency: transitive
     description:
@@ -64,6 +57,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.1"
+  back_button_interceptor:
+    dependency: "direct main"
+    description:
+      name: back_button_interceptor
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.2"
   bloc:
     dependency: transitive
     description:
