@@ -116,7 +116,7 @@ class _SocialPageState extends State<SocialPage> {
           description: obj.title!["__cdata"] != null &&
                   obj.title!["__cdata"].length > 1
               ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}"
-              : '',    
+              : '',
           actionIcon: Container(
               padding: EdgeInsets.only(
                   top: MediaQuery.of(context).size.height * 0.030),
@@ -271,16 +271,19 @@ class _SocialPageState extends State<SocialPage> {
             return Container(
               // alignment: Alignment.centerLeft,
               child: NewsActionBasic(
-                  page: "social",
-                  obj: state.obj[index],
-                  isLoading: isCountLoading,
-                  title: state.obj[index].title['__cdata'],
-                  description: state.obj[index].description['__cdata'],
-                  imageUrl: state.obj[index].enclosure != "" &&
-                          state.obj[index].enclosure != null
-                      ? state.obj[index].enclosure['url']
-                      : "",
-                      imageExtType: state.obj[index].enclosure != "" ? state.obj[index].enclosure['type'] : "",),
+                page: "social",
+                obj: state.obj[index],
+                isLoading: isCountLoading,
+                title: state.obj[index].title['__cdata'],
+                description: state.obj[index].description['__cdata'],
+                imageUrl: state.obj[index].enclosure != "" &&
+                        state.obj[index].enclosure != null
+                    ? state.obj[index].enclosure['url']
+                    : "",
+                imageExtType: state.obj[index].enclosure != ""
+                    ? state.obj[index].enclosure['type']
+                    : "",
+              ),
             );
           } else if (state is Loading) {
             return Container(
@@ -311,7 +314,7 @@ class _SocialPageState extends State<SocialPage> {
                       imageUrl: Globals.socialList[index].enclosure,
                       page: "social",
                       obj: Globals.socialList[index],
-                       isLoading: isCountLoading)),
+                      isLoading: isCountLoading)),
             );
           }
         });
