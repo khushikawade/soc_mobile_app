@@ -62,21 +62,21 @@ class _SliderWidgetState extends State<SliderWidget> {
     pageinitialIndex = widget.currentIndex;
     _controller = PageController(initialPage: widget.currentIndex);
     Globals.callsnackbar = false;
-    BackButtonInterceptor.add(updateAction);
+    // BackButtonInterceptor.add(updateAction);
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
-    BackButtonInterceptor.remove(updateAction);
+    // BackButtonInterceptor.remove(updateAction);
   }
 
-  bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
-   bool isNewsPage = widget.iseventpage == false || widget.issocialpage == true ? true : false;
-    Navigator.pop(context, isNewsPage);
-    return true;
-  }
+  // bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
+  //  bool isNewsPage = widget.iseventpage == false || widget.issocialpage == true ? true : false;
+  //   Navigator.of(context).pop(isNewsPage);
+  //   return true;
+  // }
 
   Widget build(BuildContext context) {
     return Scaffold(
