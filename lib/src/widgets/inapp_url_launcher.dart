@@ -78,17 +78,18 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                       padding: const EdgeInsets.only(
                           bottom:
                               30.0), // To manage web page crop issue together with bottom nav bar.
-                      child: 
-                      WebviewScaffold(
+                      child: WebviewScaffold(
                         mediaPlaybackRequiresUserGesture: true,
                         supportMultipleWindows: true,
                         withJavascript: true,
                         withLocalUrl: true,
                         withLocalStorage: true,
                         allowFileURLs: true,
-                        url: widget.isiFrame==true?
-                        Uri.dataFromString(widget.url,mimeType: 'text/html').toString():
-                         widget.url,
+                        url: widget.isiFrame == true
+                            ? Uri.dataFromString(widget.url,
+                                    mimeType: 'text/html')
+                                .toString()
+                            : widget.url,
                       )
 
                       //  WebView(
