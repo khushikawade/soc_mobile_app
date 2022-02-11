@@ -98,6 +98,18 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       }
     }
 
+    if (event is NewsCountLength) {
+      try {
+        
+       List<NotificationList> _list = await fetchNotificationList();
+        yield NewsCountLenghtSuccess(
+          obj: _list,
+        );
+      } catch (e) {
+        yield NewsErrorReceived(err: e);
+      }
+    }
+
     if (event is FetchActionCountList) {
       try {
         yield NewsLoading();

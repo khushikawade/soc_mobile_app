@@ -3,9 +3,9 @@ class Overrides {
   static const String privacyPolicyUrl =
       'https:/www.solvedconsulting.com/privacy';
   static String PUSH_APP_ID =
-      "fdfc75e1-64ef-462a-90a4-2f8e769f1dfc"; //"4d63eb69-bd08-4e3d-9a75-3d66f44e92c6";
+      "51962f9e-9a77-43fe-9272-ae2974945ed7"; //"4d63eb69-bd08-4e3d-9a75-3d66f44e92c6";
   static String REST_API_KEY =
-      "ZmZiNTA4NjQtZjFhOS00ZTczLTlhN2MtOTA2ZGYzNzRhNzUz";
+      "MzEzZThkN2EtMmVhNy00NjNkLTg4ZTUtYjgzYjFjZmE4NjVl";
   // "NjY1YzEwY2ItN2UxNS00MzRkLWJkM2EtZTY1OTkyNDRlNDBj";
   static const String privacyPolicyUrl2 =
       'https://solvedapps.webnode.com/ps-456-bronx-bears/';

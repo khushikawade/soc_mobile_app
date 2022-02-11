@@ -3,12 +3,15 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
 import 'package:Soc/src/modules/schools/ui/schools.dart';
 import 'package:Soc/src/modules/social/ui/social.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
+import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -52,21 +55,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       _notification = state;
     });
     if (_notification == AppLifecycleState.resumed)
-      _newsBloc.add(FetchNotificationList());
+      _newsBloc.add(NewsCountLength());
   }
 
   Widget callNotification() {
     return BlocListener<NewsBloc, NewsState>(
       bloc: _newsBloc,
       listener: (context, state) async {
-        if (state is NewsLoaded) {
+        if (state is NewsCountLenghtSuccess) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           SharedPreferences intPrefs = await SharedPreferences.getInstance();
-          intPrefs.getInt("totalCount") == null
-              ? intPrefs.setInt("totalCount", Globals.notiCount!)
-              : intPrefs.getInt("totalCount");
+          String? _objectName = "${Strings.newsObjectName}";
+        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        List<NotificationList> _localData = await _localDb.getData();
           // print(intPrefs.getInt("totalCount"));
-          if (Globals.notiCount! > intPrefs.getInt("totalCount")!) {
+          if (_localData.length < state.obj!.length) {
             intPrefs.setInt("totalCount", Globals.notiCount!);
             prefs.setBool("enableIndicator", true);
             Globals.indicator.value = true;
@@ -92,7 +95,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
+    
     _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
     WidgetsBinding.instance!.addObserver(this);
     _checkNewVersion();
