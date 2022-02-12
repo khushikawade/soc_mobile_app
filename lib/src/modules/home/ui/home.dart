@@ -19,6 +19,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_version/new_version.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,6 +50,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
+  
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
@@ -66,8 +68,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           SharedPreferences intPrefs = await SharedPreferences.getInstance();
           String? _objectName = "${Strings.newsObjectName}";
-        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-        List<NotificationList> _localData = await _localDb.getData();
+          LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+          List<NotificationList> _localData = await _localDb.getData();
           // print(intPrefs.getInt("totalCount"));
           if (_localData.length < state.obj!.length) {
             intPrefs.setInt("totalCount", Globals.notiCount!);
@@ -78,6 +80,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       },
       child: Container(),
     );
+  }
+
+  void _getNotificationIntance() {
+    OneSignal.shared.setNotificationWillShowInForegroundHandler(
+        (OSNotificationReceivedEvent notification) async {
+      notification.complete(notification.notification);
+      Globals.indicator.value = true;
+    });
   }
 
   void _checkNewVersion() async {
@@ -95,9 +105,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _getNotificationIntance();
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
-    
+
     _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
     WidgetsBinding.instance!.addObserver(this);
     _checkNewVersion();

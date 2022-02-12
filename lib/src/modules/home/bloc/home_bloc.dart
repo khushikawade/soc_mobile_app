@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/overrides.dart';
@@ -70,16 +73,81 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     }
     if (event is GlobalSearchEvent) {
+      List<SearchList> _list = [];
+      SearchList _searchList = SearchList();
       try {
         yield SearchLoading();
-        List<SearchList> list = await getGlobalSearch(event.keyword);
+        LocalDatabase<SharedList> _localDb =
+            LocalDatabase(Strings.familiesObjectName);
+
+        List<SharedList>? _localData = await _localDb.getData();
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _list.clear();
+        for (var i = 0; i < _localData.length; i++) {
+          if (_localData[i].titleC!.contains(event.keyword!)) {
+            _searchList.id = _localData[i].id ?? null;
+            _searchList.urlC = _localData[i].appUrlC ?? null;
+            _searchList.appIconUrlC = _localData[i].appIconUrlC ?? null;
+            _searchList.titleC = _localData[i].titleC ?? null;
+            _searchList.typeC = _localData[i].typeC ?? null;
+            _searchList.statusC = _localData[i].status ?? null;
+            _searchList.sortOrder = _localData[i].sortOrder ?? null;
+            _searchList.rtfHTMLC = _localData[i].rtfHTMLC ?? null;
+            _searchList.pdfURL = _localData[i].pdfURL ?? null;
+            _searchList.name = _localData[i].name ?? null;
+            _searchList.calendarId = _localData[i].calendarId ?? null;
+
+            _list.add(_searchList);
+          }
+        }
+        print(_list);
+
         yield GlobalSearchSuccess(
-          obj: list,
+          obj: _list,
         );
       } catch (e) {
-        yield HomeErrorReceived(err: e);
+        String? _objectName = "${Strings.globalSearchName}";
+        LocalDatabase<SearchList> _localDb = LocalDatabase(_objectName);
+        List<SearchList> _localData = await _localDb.getData();
+        yield GlobalSearchSuccess(
+          obj: _localData,
+        );
+        // yield HomeErrorReceived(err: e);
       }
     }
+    // if (event is GlobalSearchEvent) {
+    //   try {
+    //     yield SearchLoading();
+    //      String? _objectName = "${Strings.globalSearchName}";
+    //     LocalDatabase<SearchList> _localDb = LocalDatabase(_objectName);
+    //     List<SearchList> _localData = await _localDb.getData();
+
+    //     if (_localData.isEmpty) {
+    //       yield SearchLoading();
+    //     }else {
+    //        yield GlobalSearchSuccess(
+    //       obj: _localData,
+    //     );
+    //     }
+    //     List<SearchList> list = await getGlobalSearch(event.keyword);
+
+    //     await _localDb.clear();
+    //     list.forEach((SearchList e) {
+    //       _localDb.addData(e);
+    //     });
+    //     yield GlobalSearchSuccess(
+    //       obj: list,
+    //     );
+    //   } catch (e) {
+    //      String? _objectName = "${Strings.globalSearchName}";
+    //     LocalDatabase<SearchList> _localDb = LocalDatabase(_objectName);
+    //     List<SearchList> _localData = await _localDb.getData();
+    //      yield GlobalSearchSuccess(
+    //       obj: _localData,
+    //     );
+    //     // yield HomeErrorReceived(err: e);
+    //   }
+    // }
   }
 
   Future fetchBottomNavigationBar() async {

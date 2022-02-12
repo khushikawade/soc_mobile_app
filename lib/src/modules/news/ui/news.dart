@@ -81,6 +81,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       bloc.add(FetchNotificationList());
       isActionAPICalled = false;
     });
+
+    
   }
 
   @override

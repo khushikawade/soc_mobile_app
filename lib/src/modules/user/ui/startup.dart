@@ -4,6 +4,9 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/modules/news/ui/news.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/services/strings.dart';
@@ -15,6 +18,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
@@ -39,13 +43,14 @@ class _StartupPageState extends State<StartupPage> {
 
   void initState() {
     super.initState();
+    _onNotificationTap();
     // print("${Globals.deviceToken}, ${Globals.deviceToken}");
     getindicatorValue();
-     appversion();
+    appversion();
     initPlatformState(context);
     // _loginBloc.add(PerfomLogin());
     _bloc.add(FetchBottomNavigationBar());
-    _newsBloc.add(FetchNotificationList());
+    _newsBloc.add(NewsCountLength());
     getindexvalue();
     _showcase();
 
@@ -54,6 +59,17 @@ class _StartupPageState extends State<StartupPage> {
     } else if (Platform.isIOS) {
       Globals.isAndroid = false;
     }
+  }
+
+  _onNotificationTap() {
+ 
+
+ OneSignal.shared.setNotificationOpenedHandler((result) {
+         Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => NewsPage()),
+  );
+    });
   }
 
   Future<void> _showcase() async {
@@ -75,7 +91,7 @@ class _StartupPageState extends State<StartupPage> {
     // print(_notification);
   }
 
- void appversion() async {
+  void appversion() async {
     Globals.packageInfo = await PackageInfo.fromPlatform();
   }
 
@@ -227,8 +243,8 @@ class _StartupPageState extends State<StartupPage> {
                 listener: (context, state) async {
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
-                   //  Globals.homeObject = state.obj;
-                     Globals.appSetting = AppSetting.fromJson(state.obj);
+                    //  Globals.homeObject = state.obj;
+                    Globals.appSetting = AppSetting.fromJson(state.obj);
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString(
@@ -256,24 +272,22 @@ class _StartupPageState extends State<StartupPage> {
               child: BlocListener<NewsBloc, NewsState>(
                 bloc: _newsBloc,
                 listener: (context, state) async {
-                  if (state is NewsLoaded) {
-                    Globals.notificationList.clear();
-                    Globals.notificationList.addAll(state.obj!);
+                  if (state is NewsCountLenghtSuccess) {
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     SharedPreferences intPrefs =
                         await SharedPreferences.getInstance();
-                    intPrefs.getInt("totalCount") == null
-                        ? intPrefs.setInt("totalCount", Globals.notiCount!)
-                        : intPrefs.getInt("totalCount");
+                    String? _objectName = "${Strings.newsObjectName}";
+                    LocalDatabase<NotificationList> _localDb =
+                        LocalDatabase(_objectName);
+                    List<NotificationList> _localData =
+                        await _localDb.getData();
                     // print(intPrefs.getInt("totalCount"));
-                    if (Globals.notiCount != null &&
-                        Globals.notiCount! > intPrefs.getInt("totalCount")!) {
+                    if (_localData.length < state.obj!.length) {
                       intPrefs.setInt("totalCount", Globals.notiCount!);
                       prefs.setBool("enableIndicator", true);
                       Globals.indicator.value = true;
                     }
-                    // setState(() {});
                   }
                 },
                 child: Container(),

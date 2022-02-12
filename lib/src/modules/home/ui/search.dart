@@ -2,10 +2,12 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/home/models/search_list.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
-import 'package:Soc/src/modules/home/models/search_list.dart';
+
 import 'package:Soc/src/modules/schools/ui/school_details.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -54,6 +56,7 @@ class _SearchPageState extends State<SearchPage> {
   static const double _kIconSize = 38.0;
   bool? isDBListEmpty = true;
   List<SearchList> searchList = [];
+  
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -108,7 +111,7 @@ class _SearchPageState extends State<SearchPage> {
               builder: (BuildContext context) => StaffDirectory(
                     staffDirectoryCategoryId: null,
                     isAbout: true,
-                    appBarTitle: obj.titleC!,                    
+                    appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
@@ -132,21 +135,23 @@ class _SearchPageState extends State<SearchPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
-    } else if (obj.deepLink != null) {
-      if (obj.deepLink == 'NO') {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC!,
-                      url: obj.appURLC!,
-                      isbuttomsheet: true,
-                      language: Globals.selectedLanguage,
-                    )));
-      } else {
-        await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
-      }
-    } else if (obj.typeC == "URL") {
+    } 
+    // else if (obj.deepLink != null) {
+    //   if (obj.deepLink == 'NO') {
+    //     Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (BuildContext context) => InAppUrlLauncer(
+    //                   title: obj.titleC!,
+    //                   url: obj.appURLC!,
+    //                   isbuttomsheet: true,
+    //                   language: Globals.selectedLanguage,
+    //                 )));
+    //   } else {
+    //     await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
+    //   }
+    // }
+     else if (obj.typeC == "URL") {
       obj.urlC != null
           ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
@@ -300,7 +305,7 @@ class _SearchPageState extends State<SearchPage> {
             return snapshot.data != null && snapshot.data.length > 0
                 ? Expanded(
                     child: ListView.builder(
-                      padding: EdgeInsets.only(bottom: _kLabelSpacing*1.5),
+                      padding: EdgeInsets.only(bottom: _kLabelSpacing * 1.5),
                       scrollDirection: Axis.vertical,
                       itemCount:
                           snapshot.data.length < 10 ? snapshot.data.length : 10,
@@ -384,7 +389,7 @@ class _SearchPageState extends State<SearchPage> {
             for (int i = 0; i < state.obj!.length; i++) {
               // if (state.obj![i].statusC != "Hide") {
               if (state.obj![i].typeC == null &&
-                  state.obj![i].appURLC != null) {
+                  state.obj![i].urlC != null) {
                 state.obj![i].typeC = "URL";
               }
               if (state.obj[i].titleC != null && state.obj[i].titleC != "") {
@@ -399,10 +404,12 @@ class _SearchPageState extends State<SearchPage> {
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     scrollDirection: Axis.vertical,
-                    padding: EdgeInsets.only(left: _kLabelSpacing / 2,right: _kLabelSpacing / 2 ,bottom: _kLabelSpacing*1.5),
+                    padding: EdgeInsets.only(
+                        left: _kLabelSpacing / 2,
+                        right: _kLabelSpacing / 2,
+                        bottom: _kLabelSpacing * 1.5),
                     children: searchList.map<Widget>((data) {
                       return Container(
-                        
                         decoration: BoxDecoration(
                           border: (searchList.indexOf(data) % 2 == 0)
                               ? Border.all(
@@ -445,34 +452,34 @@ class _SearchPageState extends State<SearchPage> {
                                 // print(Recent);
                                 if (data != null) {
                                   deleteItem();
-                                  final recentitem = Recent(
-                                      1,
-                                      data.titleC,
-                                      data.appIconUrlC,
-                                      data.id,
-                                      data.name,
-                                      data.objectName,
-                                      data.rtfHTMLC,
-                                      data.typeC,
-                                      // data.schoolId,
-                                      // data.dept,
-                                      data.statusC,
-                                      data.urlC,
-                                      data.pdfURL,
-                                      data.sortOrder,
-                                      data.deepLink,
-                                      data.appURLC,
-                                      data.calendarId,
-                                      data.emailC,
-                                      data.imageUrlC,
-                                      data.phoneC,
-                                      data.webURLC,
-                                      data.address,
-                                      data.geoLocation,
-                                      data.descriptionC,
-                                      data.latitude,
-                                      data.longitude);
-                                  addtoDataBase(recentitem);
+                                  // final recentitem = Recent(
+                                  //     1,
+                                  //     data.titleC,
+                                  //     data.appIconUrlC,
+                                  //     data.id,
+                                  //     data.name,
+                                  //     data.objectName,
+                                  //     data.rtfHTMLC,
+                                  //     data.typeC,
+                                  //     // data.schoolId,
+                                  //     // data.dept,
+                                  //     data.statusC,
+                                  //     data.urlC,
+                                  //     data.pdfURL,
+                                  //     data.sortOrder,
+                                  //     data.deepLink,
+                                  //     data.appURLC,
+                                  //     data.calendarId,
+                                  //     data.emailC,
+                                  //     data.imageUrlC,
+                                  //     data.phoneC,
+                                  //     data.webURLC,
+                                  //     data.address,
+                                  //     data.geoLocation,
+                                  //     data.descriptionC,
+                                  //     data.latitude,
+                                  //     data.longitude);
+                                  // addtoDataBase(recentitem);
                                 }
                               }
                             }),
@@ -510,10 +517,10 @@ class _SearchPageState extends State<SearchPage> {
       return CustomIconWidget(
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
-    } else if (obj.appIconC != null) {
+    } else if (obj.appIconUrlC != null) {
       return Icon(
         IconData(
-          int.parse('0x${obj.appIconC!}'),
+          int.parse('0x${obj.appIconUrlC!}'),
           fontFamily: 'FontAwesomeSolid',
           fontPackage: 'font_awesome_flutter',
         ),
@@ -615,45 +622,46 @@ class _SearchPageState extends State<SearchPage> {
                   iserrorstate = true;
                 }
 
-                return connected
-                    ? Container(
-                        child:
-                            Column(mainAxisSize: MainAxisSize.max, children: [
-                          SpacerWidget(_kLabelSpacing / 4),
-                          _buildHeading(),
-                          SpacerWidget(_kLabelSpacing / 2),
-                          _buildSearchbar(),
-                          issuggestionList
-                              ? _buildissuggestionList()
-                              : SizedBox(height: 0),
-                          SpacerWidget(_kLabelSpacing / 2),
-                          issuggestionList == false
-                              ? _buildHeading2()
-                              : SizedBox(height: 0),
-                          issuggestionList == false
-                              ? _buildRecentItemList()
-                              : SizedBox(height: 0),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    // Globals.homeObject = state.obj;
-                                    Globals.appSetting =
-                                        AppSetting.fromJson(state.obj);
-                                    setState(() {});
-                                  } else if (state is HomeErrorReceived) {}
-                                },
-                                child: EmptyContainer()),
-                          ),
-                        ]),
-                      )
-                    : NoInternetErrorWidget(
-                        connected: connected, issplashscreen: false);
+                return
+                    //  connected
+                    //     ?
+                    Container(
+                  child: Column(mainAxisSize: MainAxisSize.max, children: [
+                    SpacerWidget(_kLabelSpacing / 4),
+                    _buildHeading(),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    _buildSearchbar(),
+                    issuggestionList
+                        ? _buildissuggestionList()
+                        : SizedBox(height: 0),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    issuggestionList == false
+                        ? _buildHeading2()
+                        : SizedBox(height: 0),
+                    issuggestionList == false
+                        ? _buildRecentItemList()
+                        : SizedBox(height: 0),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                          bloc: _homeBloc,
+                          listener: (context, state) async {
+                            if (state is BottomNavigationBarSuccess) {
+                              AppTheme.setDynamicTheme(
+                                  Globals.appSetting, context);
+                              // Globals.homeObject = state.obj;
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
+                              setState(() {});
+                            } else if (state is HomeErrorReceived) {}
+                          },
+                          child: EmptyContainer()),
+                    ),
+                  ]),
+                );
+                // : NoInternetErrorWidget(
+                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,
