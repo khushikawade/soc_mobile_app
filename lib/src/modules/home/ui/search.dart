@@ -3,11 +3,9 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
-import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
-
 import 'package:Soc/src/modules/schools/ui/school_details.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -25,7 +23,6 @@ import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -452,34 +449,34 @@ class _SearchPageState extends State<SearchPage> {
                                 // print(Recent);
                                 if (data != null) {
                                   deleteItem();
-                                  // final recentitem = Recent(
-                                  //     1,
-                                  //     data.titleC,
-                                  //     data.appIconUrlC,
-                                  //     data.id,
-                                  //     data.name,
-                                  //     data.objectName,
-                                  //     data.rtfHTMLC,
-                                  //     data.typeC,
-                                  //     // data.schoolId,
-                                  //     // data.dept,
-                                  //     data.statusC,
-                                  //     data.urlC,
-                                  //     data.pdfURL,
-                                  //     data.sortOrder,
-                                  //     data.deepLink,
-                                  //     data.appURLC,
-                                  //     data.calendarId,
-                                  //     data.emailC,
-                                  //     data.imageUrlC,
-                                  //     data.phoneC,
-                                  //     data.webURLC,
-                                  //     data.address,
-                                  //     data.geoLocation,
-                                  //     data.descriptionC,
-                                  //     data.latitude,
-                                  //     data.longitude);
-                                  // addtoDataBase(recentitem);
+                                  final recentitem = Recent(
+                                      1,
+                                      data.titleC,
+                                      data.appIconUrlC,
+                                      data.id,
+                                      data.name,
+                                      data.objectName,
+                                      data.rtfHTMLC,
+                                      data.typeC,
+                                      // data.schoolId,
+                                      // data.dept,
+                                      data.statusC,
+                                      data.urlC,
+                                      data.pdfURL,
+                                      data.sortOrder,
+                                      data.deepLink,
+                                      data.appURLC,
+                                      data.calendarId,
+                                      data.emailC,
+                                      data.imageUrlC,
+                                      data.phoneC,
+                                      data.webURLC,
+                                      data.address,
+                                      data.geoLocation,
+                                      data.descriptionC,
+                                      data.latitude,
+                                      data.longitude);
+                                  addtoDataBase(recentitem);
                                 }
                               }
                             }),

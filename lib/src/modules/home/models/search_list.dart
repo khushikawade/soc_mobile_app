@@ -159,9 +159,9 @@ class SearchList {
   @HiveField(11)
   String? address;
   @HiveField(12)
-  final geoLocation;
+  var geoLocation;
   @HiveField(13)
-   var statusC;
+  var statusC;
   @HiveField(14)
   double? sortOrder;
   @HiveField(15)

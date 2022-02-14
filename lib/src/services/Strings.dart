@@ -23,4 +23,5 @@ class Strings {
   static final String socialObjectName = 'social';
   static final String socialActionObjectName = 'social_action';
   static final String globalSearchName = 'global_search';
+  static final String calendarObjectName = 'calandar_action';
 }
