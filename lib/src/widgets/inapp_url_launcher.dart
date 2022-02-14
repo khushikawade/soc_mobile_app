@@ -40,7 +40,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
      if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
-  String u = "https://formstack.io/133A5";
+  
   @override
   void dispose() {
     super.dispose();
@@ -97,10 +97,10 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                         gestureNavigationEnabled:
                             widget.isiFrame == true ? true : false,
                         initialUrl: widget.isiFrame == true
-                            ? Uri.dataFromString(u,
+                            ? Uri.dataFromString(widget.url,
                                     mimeType: 'text/html')
                                 .toString()
-                            : u,
+                            : widget.url,
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated:
                             (WebViewController webViewController) {
