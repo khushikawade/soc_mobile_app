@@ -161,8 +161,70 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
     if (event is CalendarListEvent) {
       try {
+        
         yield FamilyLoading();
+        // String? _objectName = "${Strings.calendarObjectName}";
+        // LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
+
+        // List<CalendarEventList>? _localData = await _localDb.getData();
+
+        // if (_localData.isEmpty) {
+        //   yield FamilyLoading();
+        // } else {
+        //   DateTime now = new DateTime.now();
+        //   final DateFormat formatter = DateFormat('yyyy-MM-dd');
+        //   final DateTime currentDate =
+        //       DateTime.parse(formatter.format(now).toString());
+        //   for (int i = 0; i < _localData.length; i++) {
+        //     try {
+        //       var temp = _localData[i].start.toString().contains('dateTime')
+        //           ? _localData[i].start['dateTime'].toString().substring(0, 10)
+        //           : _localData[i].start['date'].toString().substring(0, 10);
+        //       if (DateTime.parse(temp).isBefore(currentDate)) {
+        //         pastListobj.add(_localData[i]);
+        //       } else {
+        //         futureListobj.add(_localData[i]);
+        //       }
+        //     } catch (e) {}
+        //   }
+        //   futureListobj.sort((a, b) {
+        //     var adate = DateTime.parse(a.start.toString().contains('dateTime')
+        //         ? a.start['dateTime'].split('T')[0]
+        //         : a.start['date'].toString());
+        //     //before -> var adate = a.expiry;
+        //     var bdate = DateTime.parse(b.start.toString().contains('dateTime')
+        //         ? b.start['dateTime'].split('T')[0]
+        //         : b.start['date'].toString()); //before -> var bdate = b.expiry;
+        //     return adate.compareTo(
+        //         bdate); //to get the order other way just switch `adate & bdate`
+        //   });
+        //   pastListobj.sort((a, b) {
+        //     var adate = DateTime.parse(a.start.toString().contains('dateTime')
+        //         ? a.start['dateTime'].split('T')[0]
+        //         : a.start['date'].toString());
+        //     //before -> var adate = a.expiry;
+        //     var bdate = DateTime.parse(b.start.toString().contains('dateTime')
+        //         ? b.start['dateTime'].split('T')[0]
+        //         : b.start['date'].toString()); //before -> var bdate = b.expiry;
+        //     return bdate.compareTo(
+        //         adate); //to get the order other way just switch `adate & bdate`
+        //   });
+        //   yield CalendarListSuccess(
+        //       futureListobj: futureListobj, pastListobj: pastListobj);
+
+        //   // futureListobj.clear();
+        //   // pastListobj.clear();
+        // }
+
         List<CalendarEventList> list = await getCalendarEventList();
+
+        // await _localDb.clear();
+        // list.forEach((CalendarEventList e) {
+        //   _localDb.addData(e);
+        // });
+
+        // List<CalendarEventList>? _localData1 = await _localDb.getData();
+        // print(_localData1);
         List<CalendarEventList>? futureListobj = [];
         List<CalendarEventList>? pastListobj = [];
 
@@ -208,7 +270,67 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {
-        yield ErrorLoading(err: e);
+        // LocalDatabase<CalendarEventList> _localDbPast =
+        //     LocalDatabase(Strings.calendarPastObjectName);
+
+        // List<CalendarEventList>? _localDataPast = await _localDbPast.getData();
+
+        // LocalDatabase<CalendarEventList> _localDbFuture =
+        //     LocalDatabase(Strings.calendarFutureObjectName);
+
+        // List<CalendarEventList>? _localDataFuture =
+        //     await _localDbFuture.getData();
+
+        // yield CalendarListSuccess(
+        //     futureListobj: _localDataFuture, pastListobj: _localDataPast);
+          yield ErrorLoading(err: e);
+        // String? _objectName = "${Strings.calendarObjectName}";
+        // LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
+
+        // List<CalendarEventList>? _localData = await _localDb.getData();
+        // List<CalendarEventList>? futureListobj = [];
+        // List<CalendarEventList>? pastListobj = [];
+
+        // DateTime now = new DateTime.now();
+        // final DateFormat formatter = DateFormat('yyyy-MM-dd');
+        // final DateTime currentDate =
+        //     DateTime.parse(formatter.format(now).toString());
+        // for (int i = 0; i < _localData.length; i++) {
+        //   try {
+        //     var temp = _localData[i].start.toString().contains('dateTime')
+        //         ? _localData[i].start['dateTime'].toString().substring(0, 10)
+        //         : _localData[i].start['date'].toString().substring(0, 10);
+        //     if (DateTime.parse(temp).isBefore(currentDate)) {
+        //       pastListobj.add(_localData[i]);
+        //     } else {
+        //       futureListobj.add(_localData[i]);
+        //     }
+        //   } catch (e) {}
+        // }
+        // futureListobj.sort((a, b) {
+        //   var adate = DateTime.parse(a.start.toString().contains('dateTime')
+        //       ? a.start['dateTime'].split('T')[0]
+        //       : a.start['date'].toString());
+        //   //before -> var adate = a.expiry;
+        //   var bdate = DateTime.parse(b.start.toString().contains('dateTime')
+        //       ? b.start['dateTime'].split('T')[0]
+        //       : b.start['date'].toString()); //before -> var bdate = b.expiry;
+        //   return adate.compareTo(
+        //       bdate); //to get the order other way just switch `adate & bdate`
+        // });
+        // pastListobj.sort((a, b) {
+        //   var adate = DateTime.parse(a.start.toString().contains('dateTime')
+        //       ? a.start['dateTime'].split('T')[0]
+        //       : a.start['date'].toString());
+        //   //before -> var adate = a.expiry;
+        //   var bdate = DateTime.parse(b.start.toString().contains('dateTime')
+        //       ? b.start['dateTime'].split('T')[0]
+        //       : b.start['date'].toString()); //before -> var bdate = b.expiry;
+        //   return bdate.compareTo(
+        //       adate); //to get the order other way just switch `adate & bdate`
+        // });
+        // yield CalendarListSuccess(
+        //     futureListobj: futureListobj, pastListobj: pastListobj);
       }
     }
   }

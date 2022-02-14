@@ -35,7 +35,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
         _localData.forEach((element) {
-          if (element.completedAtTimestamp != null) {
+          if (element.completedAtTimestamp != null) {   
             _localData.sort((a, b) =>
                 b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
           }
@@ -92,6 +92,25 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         });
         yield NewsActionSuccess(
           obj: data,
+        );
+      } catch (e) {
+        yield NewsErrorReceived(err: e);
+      }
+    }
+
+    if (event is NewsCountLength) {
+      try {
+        
+       List<NotificationList> _list = await fetchNotificationList();
+         String? _objectName = "${Strings.newsObjectName}";
+          LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+          List<NotificationList> _localData = await _localDb.getData();
+          // print(intPrefs.getInt("totalCount"));
+          if (_localData.length < _list.length) {
+            Globals.indicator.value = true;
+          }
+        yield NewsCountLenghtSuccess(
+          obj: _list,
         );
       } catch (e) {
         yield NewsErrorReceived(err: e);
