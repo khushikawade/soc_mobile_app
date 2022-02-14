@@ -510,10 +510,10 @@ class _SearchPageState extends State<SearchPage> {
       return CustomIconWidget(
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
-    } else if (obj.appIconC != null) {
+    } else if (obj.imageUrlC != null) {
       return Icon(
         IconData(
-          int.parse('0x${obj.appIconC!}'),
+          int.parse('0x${obj.imageUrlC!}'),
           fontFamily: 'FontAwesomeSolid',
           fontPackage: 'font_awesome_flutter',
         ),
