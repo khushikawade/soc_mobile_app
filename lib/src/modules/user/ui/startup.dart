@@ -283,7 +283,7 @@ class _StartupPageState extends State<StartupPage> {
                     List<NotificationList> _localData =
                         await _localDb.getData();
                     // print(intPrefs.getInt("totalCount"));
-                    if (_localData.length < state.obj!.length) {
+                    if (_localData.length < state.obj!.length && _localData.isNotEmpty) {
                       intPrefs.setInt("totalCount", Globals.notiCount!);
                       prefs.setBool("enableIndicator", true);
                       Globals.indicator.value = true;

@@ -8,7 +8,7 @@ part of 'calendar_event_list.dart';
 
 class CalendarEventListAdapter extends TypeAdapter<CalendarEventList> {
   @override
-  final int typeId = 12;
+  final int typeId = 13;
 
   @override
   CalendarEventList read(BinaryReader reader) {

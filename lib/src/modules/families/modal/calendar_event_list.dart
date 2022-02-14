@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 part 'calendar_event_list.g.dart';
-@HiveType(typeId: 12)
+
+@HiveType(typeId: 13)
 class CalendarEventList {
   @HiveField(0)
   String? kind;
@@ -18,7 +19,6 @@ class CalendarEventList {
   String? updated;
   @HiveField(7)
   String? summary;
-
   // Creator? creator;
   // Organizer? organizer;
   @HiveField(8)
@@ -76,7 +76,7 @@ class CalendarEventList {
         //  json['start'] == null
         //     ? null
         //     : Start.fromJson(json['start'] as Map<String, dynamic>),
-        end: json['end']['date'],
+        end: json['end'],
         // == null
         //     ? null
         //     : End.fromJson(json['end'] as Map<String, dynamic>),
