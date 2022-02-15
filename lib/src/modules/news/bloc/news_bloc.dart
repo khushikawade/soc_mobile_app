@@ -106,7 +106,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
           List<NotificationList> _localData = await _localDb.getData();
           // print(intPrefs.getInt("totalCount"));
-          if (_localData.length < _list.length) {
+          if (_localData.length < _list.length && _localData.isNotEmpty) {
             Globals.indicator.value = true;
           }
         yield NewsCountLenghtSuccess(
