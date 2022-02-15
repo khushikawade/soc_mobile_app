@@ -118,8 +118,8 @@ class _SocialPageState extends State<SocialPage> {
               ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}"
               : '',
           actionIcon: Container(
-              padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.030),
+              // padding: EdgeInsets.only(
+              //     top: MediaQuery.of(context).size.height * 0.030),
               child: actionButton(mainObj, obj, index)),
           url: (obj.enclosure != null &&
                   obj.enclosure != '' &&

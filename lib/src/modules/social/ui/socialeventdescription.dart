@@ -363,7 +363,7 @@ class SocialDescription extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 1),
             child: FaIcon(
               FontAwesomeIcons.instagram,
-              size: MediaQuery.of(context).size.height *0.02,
+              size: Globals.deviceType == 'phone'? 18 : 22,
               color: Colors.white,
             ),
           ));
@@ -388,7 +388,8 @@ class SocialDescription extends StatelessWidget {
   Widget iconWidget(icon, color,context) {
     return FaIcon(
       icon,
-      size: MediaQuery.of(context).size.height *0.02,
+      size: Globals.deviceType == 'phone'? 18 : 22,
+      // MediaQuery.of(context).size.height *0.02,
       color: color,
     );
   }

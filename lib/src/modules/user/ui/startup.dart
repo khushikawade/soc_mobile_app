@@ -244,7 +244,7 @@ class _StartupPageState extends State<StartupPage> {
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
                     //  Globals.homeObject = state.obj;
-                    Globals.appSetting = AppSetting.fromJson(state.obj);
+                   Globals.appSetting = AppSetting.fromJson(state.obj);
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString(

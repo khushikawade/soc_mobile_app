@@ -329,8 +329,8 @@ class _EventPageState extends State<EventPage>
                 }
 
                 return
-                     connected
-                        ?
+                    //  connected
+                    //     ?
                     ListView(
                   children: [
                     BlocBuilder<FamilyBloc, FamilyState>(
@@ -367,9 +367,9 @@ class _EventPageState extends State<EventPage>
                           child: EmptyContainer()),
                     ),
                   ],
-                )
-                : NoInternetErrorWidget(
-                    connected: connected, issplashscreen: false);
+                );
+                // : NoInternetErrorWidget(
+                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

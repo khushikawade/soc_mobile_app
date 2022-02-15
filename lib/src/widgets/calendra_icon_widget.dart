@@ -25,6 +25,7 @@ class CalendraIconWidget extends StatelessWidget {
       // MediaQuery.of(context).size.width * 0.09,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        
         children: [
           Container(
             decoration: BoxDecoration(
@@ -50,7 +51,9 @@ class CalendraIconWidget extends StatelessWidget {
               ),
             )),
           ),
-          Text(date)
+          Padding(
+            padding: EdgeInsets.only(top: 1.7),
+            child: Text(date))
         ],
       ),
     );

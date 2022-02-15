@@ -6,7 +6,6 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../overrides.dart';
 
@@ -29,7 +28,7 @@ class _SoicalPageWebviewState extends State<SoicalPageWebview> {
   String url = "";
   static const double _kPadding = 16.0;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
-  final flutterWebviewPlugin = new FlutterWebviewPlugin();
+  // final flutterWebviewPlugin = new FlutterWebviewPlugin();
   WebViewController? _webViewController;
   bool? iserrorstate = false;
   // StreamSubscription<WebViewStateChanged>?
