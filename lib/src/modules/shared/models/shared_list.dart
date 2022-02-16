@@ -28,6 +28,8 @@ class SharedList {
   final sortOrder;
   @HiveField(11)
   final status;
+  @HiveField(12)
+  String? deepLinkC;
 
   SharedList(
       {
@@ -43,7 +45,8 @@ class SharedList {
       this.typeC,
       this.calendarId,
       this.sortOrder,
-      this.status});
+      this.status,
+      this.deepLinkC});
 
   factory SharedList.fromJson(Map<String, dynamic> json) => SharedList(
       titleC: Utility.utf8convert(json['Title__c'] as String?),
@@ -57,7 +60,8 @@ class SharedList {
       typeC: json['Type__c'] as String?,
       calendarId: json['Calendar_Id__c'] as String?,
       sortOrder: double.parse(json['Sort_Order__c'] ?? '100'),
-      status: json['Active_Status__c'] ?? 'Show');
+      status: json['Active_Status__c'] ?? 'Show',
+      deepLinkC: json['Deep_Link__c'] as String?,);
 
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
@@ -73,5 +77,6 @@ class SharedList {
         'Sort_Order__c': sortOrder,
         'App_Icon_URL__c': appIconUrlC,
         'Active_Status__c': status,
+        'Deep_Link__c': deepLinkC,
       };
 }
