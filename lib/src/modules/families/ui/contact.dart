@@ -93,7 +93,7 @@ class _ContactPageState extends State<ContactPage> {
           message: Globals.appSetting.contactImageC
               // Globals.homeObject["Contact_Name__c"]
               ??
-              "-",
+              "",
           toLanguage: Globals.selectedLanguage,
           fromLanguage: "en",
           builder: (translatedMessage) => Text(

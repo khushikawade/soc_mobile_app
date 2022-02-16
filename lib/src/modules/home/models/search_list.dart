@@ -230,7 +230,7 @@ class SearchList {
       address: json['Contact_Address__c'] as String?,
       geoLocation: json['Contact_Office_Location__c'],
       statusC: json['Active_Status__c'],
-      sortOrder: double.parse(json['Sort_Order__c']),
+      sortOrder: double.parse(json['Sort_Order__c'] ?? "0.0"),
       name: json['Name'] as String?,
       typeC: json['Type__c'] as String?,
       pdfURL: json['PDF_URL__c'] as String?,
