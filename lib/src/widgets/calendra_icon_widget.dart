@@ -4,7 +4,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 class CalendraIconWidget extends StatelessWidget {
-  final DateTime dateTime;
+  final dateTime;
   CalendraIconWidget({Key? key, required this.dateTime}) : super(key: key);
 
   static const double _kPhoneIcon = 36.0;
@@ -12,8 +12,8 @@ class CalendraIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final String date = Utility.convertTimestampToDateFormat(dateTime, 'dd');
-  final String month = Utility.convertTimestampToDateFormat(dateTime, 'MMM');
+  final String date = dateTime.runtimeType.toString() != 'String' ?Utility.convertTimestampToDateFormat(dateTime, 'dd') : dateTime.toString().split('/')[0];
+  final String month = dateTime.runtimeType.toString() != 'String' ?Utility.convertTimestampToDateFormat(dateTime, 'MMM') : dateTime.toString().split('/')[1];
     return Container(
       decoration: BoxDecoration(
           border: Border.all(width: 0.5),
