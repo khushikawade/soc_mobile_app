@@ -52,9 +52,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         // Local database end.
         List<NotificationList> _list = await fetchNotificationList();
         // Syncing to local database
-        await _localDb.clear();
+        await _localDb.clear(); 
         _list.forEach((NotificationList e) {
-          _localDb.addData(e);
+          _localDb.addData(e); 
         });
         _list.sort(
             (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));

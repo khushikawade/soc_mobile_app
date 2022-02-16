@@ -10,10 +10,43 @@ class CalendraIconWidget extends StatelessWidget {
   static const double _kPhoneIcon = 36.0;
   static const double _kTabletIcon = 55.0;
 
+  static const List<String> months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
+  String getDate() {
+    try {
+      return dateTime.runtimeType.toString() == 'DateTime'
+          ? Utility.convertTimestampToDateFormat(dateTime, 'dd')
+          : dateTime.toString().split('/')[1];
+    } catch (e) {
+      return '';
+    }
+  }
+
+  String getMonth() {
+    try {
+      return dateTime.runtimeType.toString() == 'DateTime'
+          ? Utility.convertTimestampToDateFormat(dateTime, 'MMM')
+          : months[int.parse(dateTime.toString().split('/')[0]) - 1];
+    } catch (e) {
+      return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-  final String date = dateTime.runtimeType.toString() == 'DateTime' ?Utility.convertTimestampToDateFormat(dateTime, 'dd') : dateTime.toString().split('/')[0];
-  final String month = dateTime.runtimeType.toString() == 'DateTime' ?Utility.convertTimestampToDateFormat(dateTime, 'MMM') : dateTime.toString().split('/')[1];
     return Container(
       decoration: BoxDecoration(
           border: Border.all(width: 0.5),
@@ -25,7 +58,6 @@ class CalendraIconWidget extends StatelessWidget {
       // MediaQuery.of(context).size.width * 0.09,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        
         children: [
           Container(
             decoration: BoxDecoration(
@@ -43,7 +75,7 @@ class CalendraIconWidget extends StatelessWidget {
                 child: Padding(
               padding: const EdgeInsets.only(bottom: 1),
               child: Text(
-                month,
+                getMonth(),
                 style: Theme.of(context)
                     .textTheme
                     .subtitle2!
@@ -51,9 +83,7 @@ class CalendraIconWidget extends StatelessWidget {
               ),
             )),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 1.7),
-            child: Text(date))
+          Padding(padding: EdgeInsets.only(top: 1.7), child: Text(getDate()))
         ],
       ),
     );
