@@ -138,7 +138,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               ? '${obj.headings["en"].toString()}'
               : obj.contents["en"] ?? '-',
           description: '${obj.contents["en"].toString()}',
-          titleIcon: CalendraIconWidget(dateTime: obj.completedAt),
+          titleIcon: CalendraIconWidget(dateTime: DateTime.parse(obj.completedAt.toString())),
           // calanderView(obj.completedAt),
           url: obj.image != '' && obj.image != null ? obj.image! : '',
           //  Globals.splashImageUrl != '' && Globals.splashImageUrl != null
