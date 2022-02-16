@@ -29,13 +29,14 @@ class SharedListAdapter extends TypeAdapter<SharedList> {
       calendarId: fields[9] as String?,
       sortOrder: fields[10] as dynamic,
       status: fields[11] as dynamic,
+      deepLinkC: fields[12] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, SharedList obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.titleC)
       ..writeByte(1)
@@ -59,7 +60,9 @@ class SharedListAdapter extends TypeAdapter<SharedList> {
       ..writeByte(10)
       ..write(obj.sortOrder)
       ..writeByte(11)
-      ..write(obj.status);
+      ..write(obj.status)
+      ..writeByte(12)
+      ..write(obj.deepLinkC);
   }
 
   @override
