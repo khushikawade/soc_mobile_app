@@ -270,20 +270,23 @@ class _SocialPageState extends State<SocialPage> {
             isCountLoading = false;
             return Container(
               // alignment: Alignment.centerLeft,
-              child: NewsActionBasic(
-                page: "social",
-                obj: state.obj[index],
-                isLoading: isCountLoading,
-                title: state.obj[index].title['__cdata'],
-                description: state.obj[index].description['__cdata'],
-                imageUrl: state.obj[index].enclosure != "" &&
-                        state.obj[index].enclosure != null
-                    ? state.obj[index].enclosure['url']
-                    : "",
-                imageExtType: state.obj[index].enclosure != ""
-                    ? state.obj[index].enclosure['type']
-                    : "",
-              ),
+              child: state.obj[index] ==
+                      null // To make it backward compatible:: If the local database has something different than the real data that has been fetched by the API.
+                  ? Container()
+                  : NewsActionBasic(
+                      page: "social",
+                      obj: state.obj[index],
+                      isLoading: isCountLoading,
+                      title: state.obj[index].title['__cdata'],
+                      description: state.obj[index].description['__cdata'],
+                      imageUrl: state.obj[index].enclosure != "" &&
+                              state.obj[index].enclosure != null
+                          ? state.obj[index].enclosure['url']
+                          : "",
+                      imageExtType: state.obj[index].enclosure != ""
+                          ? state.obj[index].enclosure['type']
+                          : "",
+                    ),
             );
           } else if (state is Loading) {
             return Container(
