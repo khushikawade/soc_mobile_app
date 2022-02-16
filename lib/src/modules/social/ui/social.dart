@@ -92,8 +92,7 @@ class _SocialPageState extends State<SocialPage> {
           bool result = await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                   SliderWidget(
+                  builder: (context) => SliderWidget(
                         // icons: Globals.icons,
                         obj: socialMainList.length > 0 &&
                                 socialMainList[index] != null
@@ -107,8 +106,7 @@ class _SocialPageState extends State<SocialPage> {
                         date: '1',
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
-                      )
-                      ));
+                      )));
           if (result == true) {
             _countSocialBloc.add(FetchSocialActionCount(isDetailPage: true));
           }
@@ -120,8 +118,8 @@ class _SocialPageState extends State<SocialPage> {
               ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}"
               : '',
           actionIcon: Container(
-              padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.030),
+              // padding: EdgeInsets.only(
+              //     top: MediaQuery.of(context).size.height * 0.030),
               child: actionButton(mainObj, obj, index)),
           url: (obj.enclosure != null &&
                   obj.enclosure != '' &&

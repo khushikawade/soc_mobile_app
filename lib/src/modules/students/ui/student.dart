@@ -311,7 +311,7 @@ class _StudentPageState extends State<StudentPage> {
                     } else if (state is StudentDataSucess) {
                       return state.obj != null && state.obj!.length > 0
                           ? Container(
-                              padding: EdgeInsets.symmetric(horizontal: 5),
+                              padding: EdgeInsets.symmetric(horizontal: 5,vertical: 25),
                               child:
                                   _buildGrid(state.obj!, state.subFolder!, key))
                           :

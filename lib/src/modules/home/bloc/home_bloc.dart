@@ -1,13 +1,19 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:ffi';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
+import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
+import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
@@ -69,15 +75,63 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
       }
     }
+
     if (event is GlobalSearchEvent) {
       try {
         yield SearchLoading();
+
         List<SearchList> list = await getGlobalSearch(event.keyword);
+
         yield GlobalSearchSuccess(
           obj: list,
         );
       } catch (e) {
+        // yield HomeErrorReceived(err: e);
+        List<SearchList> _listGlobal = [];
+      try {
+        yield SearchLoading();
+
+        // _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        if (event.keyword!.isNotEmpty) {
+          _listGlobal.clear();
+          List<SearchList> _list1 = await getGlobalSearchList(
+              Strings.familiesObjectName, event.keyword);
+          _listGlobal.addAll(_list1);
+          List<SearchList> _list2 =
+              await getGlobalSearchList(Strings.staffObjectName, event.keyword);
+          _listGlobal.addAll(_list2);
+          List<SearchList> _list3 = await getGlobalSearchList(
+              Strings.resourcesObjectName, event.keyword);
+          _listGlobal.addAll(_list3);
+          List<SearchList> _list4 =
+              await getGlobalSearchList(Strings.aboutObjectName, event.keyword);
+          _listGlobal.addAll(_list4);
+          List<SearchList> _list5 = await getGlobalSearchListStudent(
+              Strings.studentsObjectName, event.keyword);
+          _listGlobal.addAll(_list5);
+          List<SearchList> _list6 = await getGlobalSearchListSchool(
+              Strings.schoolDirectoryObjectName, event.keyword);
+          _listGlobal.addAll(_list6);
+          // List<SearchList> _list7 = await getGlobalSearchList(
+          //     Strings.familiesSubListObjectName, event.keyword);
+          // _listGlobal.addAll(_list7);
+          // List<SearchList> _list8 = await getGlobalSearchList(
+          //     Strings.staffSubListObjectName, event.keyword);
+          // _listGlobal.addAll(_list8);
+          // List<SearchList> _list9 = await getGlobalSearchList(
+          //     Strings.aboutSubListObjectName, event.keyword);
+          // _listGlobal.addAll(_list9);
+          // List<SearchList> _list10 = await getGlobalSearchList(
+          //     Strings.resourcesSubListObjectName, event.keyword);
+          // _listGlobal.addAll(_list10);
+        }
+
+        yield GlobalSearchSuccess(
+          obj: _listGlobal,
+        );
+      } catch (e) {
         yield HomeErrorReceived(err: e);
+      }
       }
     }
   }
@@ -102,6 +156,100 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     } catch (e) {
       throw (e);
+    }
+  }
+
+  Future<List<SearchList>> getGlobalSearchList(dataBaseName, keyword) async {
+    try {
+      LocalDatabase<SharedList> _localDb = LocalDatabase(dataBaseName);
+
+      List<SharedList>? _localData = await _localDb.getData();
+      List<SearchList> listSearch = [];
+      listSearch.clear();
+      for (var i = 0; i < _localData.length; i++) {
+        if (_localData[i].titleC!.contains(keyword!)) {
+          SearchList _searchList = SearchList();
+          _searchList.id = _localData[i].id ?? null;
+          _searchList.urlC = _localData[i].appUrlC ?? null;
+          _searchList.appIconUrlC = _localData[i].appIconUrlC ?? null;
+          _searchList.titleC = _localData[i].titleC ?? null;
+          _searchList.typeC = _localData[i].typeC ?? null;
+          _searchList.statusC = _localData[i].status ?? null;
+          _searchList.sortOrder = _localData[i].sortOrder ?? null;
+          _searchList.rtfHTMLC = _localData[i].rtfHTMLC ?? null;
+          _searchList.pdfURL = _localData[i].pdfURL ?? null;
+          _searchList.name = _localData[i].name ?? null;
+          _searchList.calendarId = _localData[i].calendarId ?? null;
+          listSearch.insert(listSearch.length, _searchList);
+        }
+      }
+      return listSearch;
+    } catch (e) {
+      print(e);
+      throw Exception('Something went wrong');
+    }
+  }
+
+  Future<List<SearchList>> getGlobalSearchListSchool(
+      dataBaseName, keyword) async {
+    SearchList _searchList = SearchList();
+    List<SearchList> _listSearch = [];
+    try {
+      LocalDatabase<SchoolDirectoryList> _localDb = LocalDatabase(dataBaseName);
+
+      List<SchoolDirectoryList>? _localData = await _localDb.getData();
+      _listSearch.clear();
+      for (var i = 0; i < _localData.length; i++) {
+        if (_localData[i].titleC!.contains(keyword!)) {
+          _searchList.id = _localData[i].id ?? null;
+          _searchList.urlC = _localData[i].urlC ?? null;
+          _searchList.appIconUrlC = _localData[i].imageUrlC ?? null;
+          _searchList.titleC = _localData[i].titleC ?? null;
+          _searchList.address = _localData[i].address ?? null;
+          _searchList.phoneC = _localData[i].phoneC ?? null;
+          _searchList.rtfHTMLC = _localData[i].rtfHTMLC ?? null;
+          _searchList.geoLocation = _localData[i].geoLocation ?? null;
+          _searchList.statusC = _localData[i].statusC ?? null;
+          _searchList.latitude = _localData[i].latitude ?? null;
+          _searchList.longitude = _localData[i].longitude ?? null;
+          _searchList.sortOrder = double.parse(_localData[i].sortOrder ?? null);
+
+          _listSearch.insert(0, _searchList);
+        }
+      }
+      return _listSearch;
+    } catch (e) {
+      throw Exception('Something went wrong');
+    }
+  }
+
+  Future<List<SearchList>> getGlobalSearchListStudent(
+      dataBaseName, keyword) async {
+    SearchList _searchList = SearchList();
+    List<SearchList> _listSearch = [];
+    try {
+      LocalDatabase<StudentApp> _localDb = LocalDatabase(dataBaseName);
+
+      List<StudentApp>? _localData = await _localDb.getData();
+      _listSearch.clear();
+      for (var i = 0; i < _localData.length; i++) {
+        if (_localData[i].titleC!.contains(keyword!)) {
+          _searchList.id = _localData[i].id ?? null;
+          _searchList.urlC = _localData[i].appUrlC ?? null;
+          _searchList.appIconUrlC = _localData[i].appUrlC ?? null;
+          _searchList.titleC = _localData[i].titleC ?? null;
+          _searchList.deepLink = _localData[i].deepLinkC ?? null;
+          _searchList.statusC = _localData[i].status ?? null;
+          _searchList.sortOrder = double.parse(_localData[i].sortOrder ?? null);
+
+          _searchList.name = _localData[i].name ?? null;
+
+          _listSearch.insert(0, _searchList);
+        }
+      }
+      return _listSearch;
+    } catch (e) {
+      throw Exception('Something went wrong');
     }
   }
 

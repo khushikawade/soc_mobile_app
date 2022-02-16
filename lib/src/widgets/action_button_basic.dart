@@ -101,8 +101,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Container(
-                        height:Globals.deviceType == 'phone'? 35 :45,
-                        width: Globals.deviceType == 'phone'? 35 :45,
+                        height: Globals.deviceType == 'phone' ? 35 : 45,
+                        width: Globals.deviceType == 'phone' ? 35 : 45,
                         //  color: Colors.grey,
                         child: Center(
                           child: IconButton(
@@ -270,6 +270,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     if (widget.page == "news") {
       _newsBloc.add(NewsAction(
           notificationId: widget.obj.id,
+          notificationTitle: widget.title,
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
           helpful: index == 2 ? 1 : 0,
@@ -277,6 +278,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     } else if (widget.page == "social") {
       _socialbBloc.add(SocialAction(
           id: widget.obj.id.toString() + widget.obj.guid['\$t'],
+          title: widget.title.toString(),
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
           helpful: index == 2 ? 1 : 0,

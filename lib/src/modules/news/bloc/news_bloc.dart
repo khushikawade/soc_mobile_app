@@ -35,7 +35,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
         _localData.forEach((element) {
-          if (element.completedAtTimestamp != null) {
+          if (element.completedAtTimestamp != null) {   
             _localData.sort((a, b) =>
                 b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
           }
@@ -84,6 +84,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsLoading();
         var data = await addNewsAction({
           "Notification_Id__c": "${event.notificationId}${Overrides.SCHOOL_ID}",
+          "Title__c": "${event.notificationTitle}",
           "Like__c": "${event.like}",
           "Thanks__c": "${event.thanks}",
           "Helpful__c": "${event.helpful}",
@@ -91,6 +92,25 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         });
         yield NewsActionSuccess(
           obj: data,
+        );
+      } catch (e) {
+        yield NewsErrorReceived(err: e);
+      }
+    }
+
+    if (event is NewsCountLength) {
+      try {
+        
+       List<NotificationList> _list = await fetchNotificationList();
+         String? _objectName = "${Strings.newsObjectName}";
+          LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+          List<NotificationList> _localData = await _localDb.getData();
+          // print(intPrefs.getInt("totalCount"));
+          if (_localData.length < _list.length && _localData.isNotEmpty) {
+            Globals.indicator.value = true;
+          }
+        yield NewsCountLenghtSuccess(
+          obj: _list,
         );
       } catch (e) {
         yield NewsErrorReceived(err: e);
@@ -233,11 +253,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future addNewsAction(body) async {
     try {
-      // final ResponseModel response = await _dbServices
-      //     .postapi("sobjects/News_Interactions__c", body: body);
-
-      // print(body);
-
       final ResponseModel response = await _dbServices.postapi(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News",
           body: body);

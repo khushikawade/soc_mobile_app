@@ -8,7 +8,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/soicalwebview.dart';
+import 'package:Soc/src/widgets/socialwebview.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -150,7 +150,7 @@ class SocialDescription extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => SoicalPageWebview(
+                          builder: (context) => SocialPageWebview(
                                 link: link2,
                                 isSocialpage: true,
                                 isbuttomsheet: true,
@@ -363,7 +363,7 @@ class SocialDescription extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 1),
             child: FaIcon(
               FontAwesomeIcons.instagram,
-              size: MediaQuery.of(context).size.height *0.02,
+              size: Globals.deviceType == 'phone'? 18 : 22,
               color: Colors.white,
             ),
           ));
@@ -388,7 +388,8 @@ class SocialDescription extends StatelessWidget {
   Widget iconWidget(icon, color,context) {
     return FaIcon(
       icon,
-      size: MediaQuery.of(context).size.height *0.02,
+      size: Globals.deviceType == 'phone'? 18 : 22,
+      // MediaQuery.of(context).size.height *0.02,
       color: color,
     );
   }

@@ -81,6 +81,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       bloc.add(FetchNotificationList());
       isActionAPICalled = false;
     });
+
+    
   }
 
   @override
@@ -132,8 +134,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         },
         child: CommonFeedWidget(
           actionIcon: Container(
-              padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.030),
+              
               child: actionButton(list, obj, index)),
           title: obj.headings!.length > 0 &&
                   obj.headings != "" &&
