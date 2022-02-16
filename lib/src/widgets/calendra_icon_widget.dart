@@ -12,8 +12,8 @@ class CalendraIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final String date = dateTime.runtimeType.toString() != 'String' ?Utility.convertTimestampToDateFormat(dateTime, 'dd') : dateTime.toString().split('/')[0];
-  final String month = dateTime.runtimeType.toString() != 'String' ?Utility.convertTimestampToDateFormat(dateTime, 'MMM') : dateTime.toString().split('/')[1];
+  final String date = dateTime.runtimeType.toString() == 'DateTime' ?Utility.convertTimestampToDateFormat(dateTime, 'dd') : dateTime.toString().split('/')[0];
+  final String month = dateTime.runtimeType.toString() == 'DateTime' ?Utility.convertTimestampToDateFormat(dateTime, 'MMM') : dateTime.toString().split('/')[1];
     return Container(
       decoration: BoxDecoration(
           border: Border.all(width: 0.5),
