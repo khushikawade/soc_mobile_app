@@ -229,7 +229,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social",
           body: body);
 
-      if (response.statusCode == 200) {
+      if (response. statusCode == 200) {
         var res = response.data;
         var data = res["statusCode"];
         return data;
