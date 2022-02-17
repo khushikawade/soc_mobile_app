@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'attributes.dart';
 import 'package:hive/hive.dart';
 part 'app_setting.g.dart';
@@ -102,58 +104,60 @@ class AppSetting {
   final String? resourcesBannerColorC;
   @HiveField(48)
   final String? contactImageC;
+  @HiveField(49)
+  final Bool? isTestSchool;
 
-  AppSetting({
-    this.attributes,
-    this.id,
-    this.ownerId,
-    this.isDeleted,
-    this.name,
-    this.createdDate,
-    this.createdById,
-    this.lastModifiedDate,
-    this.lastModifiedById,
-    this.systemModstamp,
-    this.lastActivityDate,
-    this.lastViewedDate,
-    this.lastReferencedDate,
-    this.schoolNameC,
-    this.contactNameC,
-    this.appIconC,
-    this.splashScreenC,
-    this.primaryColorC,
-    this.backgroundColorC,
-    this.secondaryColorC,
-    this.fontColorC,
-    this.appLogoC,
-    this.fullLogoC,
-    this.bottomNavigationC,
-    this.appBuildStatusC,
-    this.appInformationC,
-    this.contactEmailC,
-    this.contactPhoneC,
-    this.contactAddressC,
-    this.socialapiurlc,
-    this.contactOfficeLocationLatitudeS,
-    this.contactOfficeLocationLongitudeS,
-    this.bannerHeightFactor,
-    this.familyBannerImageC,
-    this.staffBannerImageC,
-    this.studentBannerImageC,
-    this.aboutBannerImageC,
-    this.schoolBannerImageC,
-    this.resourcesBannerImageC,
-    this.playStoreUrlC,
-    this.appStoreUrlC,
-    this.bannerHeightFactorC,
-    this.familyBannerColorC,
-    this.staffBannerColorC,
-    this.studentBannerColorC,
-    this.aboutBannerColorC,
-    this.schoolBannerColorC,
-    this.resourcesBannerColorC,
-    this.contactImageC,
-  });
+  AppSetting(
+      {this.attributes,
+      this.id,
+      this.ownerId,
+      this.isDeleted,
+      this.name,
+      this.createdDate,
+      this.createdById,
+      this.lastModifiedDate,
+      this.lastModifiedById,
+      this.systemModstamp,
+      this.lastActivityDate,
+      this.lastViewedDate,
+      this.lastReferencedDate,
+      this.schoolNameC,
+      this.contactNameC,
+      this.appIconC,
+      this.splashScreenC,
+      this.primaryColorC,
+      this.backgroundColorC,
+      this.secondaryColorC,
+      this.fontColorC,
+      this.appLogoC,
+      this.fullLogoC,
+      this.bottomNavigationC,
+      this.appBuildStatusC,
+      this.appInformationC,
+      this.contactEmailC,
+      this.contactPhoneC,
+      this.contactAddressC,
+      this.socialapiurlc,
+      this.contactOfficeLocationLatitudeS,
+      this.contactOfficeLocationLongitudeS,
+      this.bannerHeightFactor,
+      this.familyBannerImageC,
+      this.staffBannerImageC,
+      this.studentBannerImageC,
+      this.aboutBannerImageC,
+      this.schoolBannerImageC,
+      this.resourcesBannerImageC,
+      this.playStoreUrlC,
+      this.appStoreUrlC,
+      this.bannerHeightFactorC,
+      this.familyBannerColorC,
+      this.staffBannerColorC,
+      this.studentBannerColorC,
+      this.aboutBannerColorC,
+      this.schoolBannerColorC,
+      this.resourcesBannerColorC,
+      this.contactImageC,
+      this.isTestSchool});
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
         attributes: json['attributes'] == null
@@ -190,10 +194,10 @@ class AppSetting {
         contactPhoneC: json['Contact_Phone__c'] as String?,
         contactAddressC: json['Contact_Address__c'] as String?,
         socialapiurlc: json['Social_API_URL__c'] as String?,
-        contactOfficeLocationLatitudeS:
-            double.parse(json['Contact_Office_Location__Latitude__s'].toString()),
-        contactOfficeLocationLongitudeS:
-            double.parse(json['Contact_Office_Location__Longitude__s'].toString()),
+        contactOfficeLocationLatitudeS: double.parse(
+            json['Contact_Office_Location__Latitude__s'].toString()),
+        contactOfficeLocationLongitudeS: double.parse(
+            json['Contact_Office_Location__Longitude__s'].toString()),
         bannerHeightFactor:
             double.parse(json['Banner_Height_Factor__c'].toString()),
         familyBannerImageC: json['Family_Banner_Image__c'] as String?,
@@ -213,6 +217,7 @@ class AppSetting {
         schoolBannerColorC: json['School_Banner_Color__c'] as String?,
         resourcesBannerColorC: json['Resources_Banner_Color__c'] as String?,
         contactImageC: json['Contact_Image__c'] as String?,
+        isTestSchool: json['Test_School__c'] as Bool?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -265,6 +270,7 @@ class AppSetting {
         'School_Banner_Color__c': schoolBannerColorC,
         'Resources_Banner_Color__c': resourcesBannerColorC,
         'Contact_Image__c': contactImageC,
+        'Test_School__c': isTestSchool
       };
 
   AppSetting copyWith(
@@ -315,7 +321,8 @@ class AppSetting {
       String? aboutBannerColorC,
       String? schoolBannerColorC,
       String? resourcesBannerColorC,
-      String? contactImageC}) {
+      String? contactImageC,
+      Bool? isTestSchool}) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,
@@ -368,6 +375,7 @@ class AppSetting {
         schoolBannerColorC: schoolBannerColorC ?? this.schoolBannerColorC,
         resourcesBannerColorC:
             resourcesBannerColorC ?? this.resourcesBannerColorC,
-        contactImageC: contactImageC ?? this.contactImageC);
+        contactImageC: contactImageC ?? this.contactImageC,
+        isTestSchool: isTestSchool ?? this.isTestSchool);
   }
 }

@@ -22,6 +22,7 @@ class Overrides {
   //Production     'https://solvedconsultingdev.my.salesforce.com/services/data/v52.0/';
 //Sandbox : 'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
-  static String SCHOOL_ID =
-      "a1f4W000007DQaNQAW"; //"a1f4W000007DR8nQAG"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
+  static String SCHOOL_ID = "a1f7h000001NfN9AAK";
+  //Sandboc Id : a1f7h000001NfMzAAK
+    //  "a1f4W000007DQaNQAW"; //"a1f4W000007DR8nQAG"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
 }

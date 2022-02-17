@@ -89,6 +89,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           "Thanks__c": "${event.thanks}",
           "Helpful__c": "${event.helpful}",
           "Share__c": "${event.shared}",
+          "Test_School__c": "${Globals.appSetting.isTestSchool}"
         });
         yield NewsActionSuccess(
           obj: data,
