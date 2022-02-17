@@ -36,8 +36,9 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   @override
   void initState() {
     super.initState();
-    _getPermission();
-    //  if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+
+  //  _getPermission();
+      if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
   String u = "https://formstack.io/133A5";
@@ -79,33 +80,33 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                           bottom:
                               30.0), // To manage web page crop issue together with bottom nav bar.
                       child: 
-                      WebviewScaffold(
-                        mediaPlaybackRequiresUserGesture: true,
-                        supportMultipleWindows: true,
-                        withJavascript: true,
-                        withLocalUrl: true,
-                        withLocalStorage: true,
-                        allowFileURLs: true,
-                        url: widget.isiFrame==true?
-                        Uri.dataFromString(widget.url,mimeType: 'text/html').toString():
-                         widget.url,
-                      )
+                      // WebviewScaffold(
+                      //   mediaPlaybackRequiresUserGesture: true,
+                      //   supportMultipleWindows: true,
+                      //   withJavascript: true,
+                      //   withLocalUrl: true,
+                      //   withLocalStorage: true,
+                      //   allowFileURLs: true,
+                      //   url: widget.isiFrame==true?
+                      //   Uri.dataFromString(widget.url,mimeType: 'text/html').toString():
+                      //    widget.url,
+                      // )
 
-                      //  WebView(
-                      //   gestureNavigationEnabled:
-                      //       widget.isiFrame == true ? true : false,
-                      //   initialUrl: widget.isiFrame == true
-                      //       ? Uri.dataFromString(u,
-                      //               mimeType: 'text/html')
-                      //           .toString()
-                      //       : u,
-                      //   javascriptMode: JavascriptMode.unrestricted,
-                      //   onWebViewCreated:
-                      //       (WebViewController webViewController) {
-                      //     _controller.complete(webViewController);
-                      //   },
+                       WebView(
+                        gestureNavigationEnabled:
+                            widget.isiFrame == true ? true : false,
+                        initialUrl: widget.isiFrame == true
+                            ? Uri.dataFromString(u,
+                                    mimeType: 'text/html')
+                                .toString()
+                            : u,
+                        javascriptMode: JavascriptMode.unrestricted,
+                        onWebViewCreated:
+                            (WebViewController webViewController) {
+                          _controller.complete(webViewController);
+                        },
 
-                      // ),
+                      ),
                       )
                   : NoInternetErrorWidget(
                       connected: connected, issplashscreen: false);
@@ -113,7 +114,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
             child: Container()));
   }
 
-  _getPermission() async {
-    await Permission.storage.request();
-  }
+  // _getPermission() async {
+  //   await Permission.storage.request();
+  // }
 }
