@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
 
-    _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
+    _controller = PersistentTabController(initialIndex: Globals.isNewTap ? Globals.newsIndex ?? 0 : Globals.homeIndex ?? 1);
     WidgetsBinding.instance!.addObserver(this);
     _checkNewVersion();
   }
