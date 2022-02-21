@@ -32,6 +32,16 @@ class NewsActionSuccess extends NewsState {
   @override
   List<Object> get props => [];
 }
+class NewsCountLenghtSuccess extends NewsState {
+  List<NotificationList>? obj;
+  NewsCountLenghtSuccess({this.obj});
+  NewsCountLenghtSuccess copyWith({final obj}) {
+    return NewsCountLenghtSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
 
 class ActionCountSuccess extends NewsState {
   var obj;

@@ -156,7 +156,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
         var data = await addSocailAction({
           "Notification_Id__c": "${event.id}",
-          // "School_App__c": Overrides.SCHOOL_ID,
+          "Title__c": "${event.title}",
           "Like__c": "${event.like}",
           "Thanks__c": "${event.thanks}",
           "Helpful__c": "${event.helpful}",
@@ -229,31 +229,13 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social",
           body: body);
 
-      if (response.statusCode == 200) {
+      if (response. statusCode == 200) {
         var res = response.data;
         var data = res["statusCode"];
         return data;
       } else {
         throw ('something_went_wrong');
       }
-
-      // final response = await http.post(
-      //   Uri.parse(
-      //       'https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/addSocialAction?schoolId=${Overrides.SCHOOL_ID}'),
-      //   body: json.encode(body),
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Accept-Language': 'Accept-Language',
-      //   },
-      // );
-
-      // if (response.statusCode == 200) {
-      //   var res = json.decode(response.body);
-      //   var data = res["statusCode"];
-      //   return data;
-      // } else {
-      //   throw ('something_went_wrong');
-      // }
     } catch (e) {
       throw (e);
     }

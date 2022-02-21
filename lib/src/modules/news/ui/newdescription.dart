@@ -133,7 +133,7 @@ class _NewdescriptionState extends State<Newdescription> {
                     text: translatedMessage.toString(),
                     style: Theme.of(context).textTheme.headline2!.copyWith(
                           fontWeight: FontWeight.w500,
-                          fontSize: 16,
+                          // fontSize: 16,
                         ),
                   ),
                 )),

@@ -93,7 +93,7 @@ class _StudentPageState extends State<StudentPage> {
         //  print(orientation);
         GridView.count(
             key: ValueKey(key),
-            padding: const EdgeInsets.only(bottom: AppTheme.klistPadding),
+            padding: const EdgeInsets.only(bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding  ),
             childAspectRatio:
                 MediaQuery.of(context).orientation == Orientation.portrait
                     ? 1
