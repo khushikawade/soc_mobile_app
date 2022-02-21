@@ -49,11 +49,12 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    
+
     bloc.add(FetchNotificationList());
     _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
     WidgetsBinding.instance!.addObserver(this);
+    Globals.isNewTap = false;
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -81,8 +82,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       bloc.add(FetchNotificationList());
       isActionAPICalled = false;
     });
-
-    
   }
 
   @override
@@ -133,15 +132,13 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           }
         },
         child: CommonFeedWidget(
-          actionIcon: Container(
-              
-              child: actionButton(list, obj, index)),
+          actionIcon: Container(child: actionButton(list, obj, index)),
           title: obj.headings!.length > 0 &&
                   obj.headings != "" &&
                   obj.headings != null
               ? '${obj.headings["en"].toString()}'
               : obj.contents["en"] ?? '-',
-          description: '${obj.contents["en"].toString()}',    
+          description: '${obj.contents["en"].toString()}',
           titleIcon: CalendraIconWidget(dateTime: obj.completedAt),
           // calanderView(obj.completedAt),
           url: obj.image != '' && obj.image != null ? obj.image! : '',
@@ -188,13 +185,16 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 isCountLoading = false;
                 return Container(
                   alignment: Alignment.centerLeft,
-                  child: NewsActionBasic(
-                      title: state.obj[index].headings['en'],
-                      description: state.obj[index].contents['en'],
-                      imageUrl: state.obj[index].image,
-                      obj: state.obj[index],
-                      page: "news",
-                      isLoading: isCountLoading),
+                  child: state.obj[index] ==
+                          null // To make it backward compatible:: If the local database has something different than the real data that has been fetched by the API.
+                      ? Container()
+                      : NewsActionBasic(
+                          title: state.obj[index].headings['en'],
+                          description: state.obj[index].contents['en'],
+                          imageUrl: state.obj[index].image,
+                          obj: state.obj[index],
+                          page: "news",
+                          isLoading: isCountLoading),
                 );
               } else if (state is NewsLoading) {
                 return Container(

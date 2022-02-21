@@ -62,13 +62,8 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   _onNotificationTap() {
- 
-
- OneSignal.shared.setNotificationOpenedHandler((result) {
-         Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => NewsPage()),
-  );
+    OneSignal.shared.setNotificationOpenedHandler((result) {
+      Globals.isNewTap = true;
     });
   }
 
@@ -244,7 +239,7 @@ class _StartupPageState extends State<StartupPage> {
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
                     //  Globals.homeObject = state.obj;
-                   Globals.appSetting = AppSetting.fromJson(state.obj);
+                    Globals.appSetting = AppSetting.fromJson(state.obj);
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString(
@@ -283,7 +278,8 @@ class _StartupPageState extends State<StartupPage> {
                     List<NotificationList> _localData =
                         await _localDb.getData();
                     // print(intPrefs.getInt("totalCount"));
-                    if (_localData.length < state.obj!.length && _localData.isNotEmpty) {
+                    if (_localData.length < state.obj!.length &&
+                        _localData.isNotEmpty) {
                       intPrefs.setInt("totalCount", Globals.notiCount!);
                       prefs.setBool("enableIndicator", true);
                       Globals.indicator.value = true;

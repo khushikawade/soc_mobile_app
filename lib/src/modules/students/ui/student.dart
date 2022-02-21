@@ -93,7 +93,7 @@ class _StudentPageState extends State<StudentPage> {
         //  print(orientation);
         GridView.count(
             key: ValueKey(key),
-            padding: const EdgeInsets.only(bottom: AppTheme.klistPadding),
+            padding: const EdgeInsets.only(bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding  ),
             childAspectRatio:
                 MediaQuery.of(context).orientation == Orientation.portrait
                     ? 1
@@ -311,7 +311,7 @@ class _StudentPageState extends State<StudentPage> {
                     } else if (state is StudentDataSucess) {
                       return state.obj != null && state.obj!.length > 0
                           ? Container(
-                              padding: EdgeInsets.symmetric(horizontal: 5,vertical: 25),
+                              padding: EdgeInsets.symmetric(horizontal: 5),
                               child:
                                   _buildGrid(state.obj!, state.subFolder!, key))
                           :

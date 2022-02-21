@@ -212,7 +212,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _searchList.statusC = _localData[i].statusC ?? null;
           _searchList.latitude = _localData[i].latitude ?? null;
           _searchList.longitude = _localData[i].longitude ?? null;
-          _searchList.sortOrder = double.parse(_localData[i].sortOrder ?? null);
+          _searchList.sortOrder = double.parse(_localData[i].sortOrder ?? "0.0");
 
           _listSearch.insert(0, _searchList);
         }
@@ -240,7 +240,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _searchList.titleC = _localData[i].titleC ?? null;
           _searchList.deepLink = _localData[i].deepLinkC ?? null;
           _searchList.statusC = _localData[i].status ?? null;
-          _searchList.sortOrder = double.parse(_localData[i].sortOrder ?? null);
+          _searchList.sortOrder = double.parse(_localData[i].sortOrder ?? "0.0");
 
           _searchList.name = _localData[i].name ?? null;
 
