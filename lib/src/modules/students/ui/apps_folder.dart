@@ -83,6 +83,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
 
   @override
   Widget build(BuildContext context) {
+    List onlyShowList = apps.where((i) => i.status == 'Show').toList();
     return Center(
       child: Material(
         color: Colors.transparent,
@@ -103,53 +104,54 @@ class AppsFolderPageState extends State<AppsFolderPage>
                 body: Padding(
                   padding: const EdgeInsets.only(
                       top: 20, left: 20.0, right: 20, bottom: 20),
-                  child: apps.length > 0
+                  child: onlyShowList.length > 0
                       ? GridView.count(
-                          crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait &&
-                        Globals.deviceType == "phone"
-                    ? 3
-                    : (MediaQuery.of(context).orientation ==
-                                Orientation.landscape &&
-                            Globals.deviceType == "phone")
-                        ? 4
-                        : MediaQuery.of(context).orientation ==
-                                    Orientation.portrait &&
-                                Globals.deviceType != "phone"
-                            ? 4
-                            : MediaQuery.of(context).orientation ==
-                                        Orientation.landscape &&
-                                    Globals.deviceType != "phone"
-                                ? 5
-                                : 3,
+                          crossAxisCount: MediaQuery.of(context).orientation ==
+                                      Orientation.portrait &&
+                                  Globals.deviceType == "phone"
+                              ? 3
+                              : (MediaQuery.of(context).orientation ==
+                                          Orientation.landscape &&
+                                      Globals.deviceType == "phone")
+                                  ? 4
+                                  : MediaQuery.of(context).orientation ==
+                                              Orientation.portrait &&
+                                          Globals.deviceType != "phone"
+                                      ? 4
+                                      : MediaQuery.of(context).orientation ==
+                                                  Orientation.landscape &&
+                                              Globals.deviceType != "phone"
+                                          ? 5
+                                          : 3,
                           crossAxisSpacing: _kLableSpacing,
                           mainAxisSpacing: _kLableSpacing,
                           children: List.generate(
-                            apps.length,
+                            onlyShowList.length,
                             (index) {
-                              return apps[index].status == null ||
-                                      apps[index].status == 'Show'
+                              return onlyShowList[index].status == null ||
+                                      onlyShowList[index].status == 'Show'
                                   ? InkWell(
-                                      onTap: () => _launchURL(apps[index]),
+                                      onTap: () => _launchURL(onlyShowList[index]),
                                       child: Column(
                                         children: [
-                                          apps[index].appIconC != null &&
-                                                  apps[index].appIconC != ''
+                                          onlyShowList[index].appIconC != null &&
+                                                  onlyShowList[index].appIconC != ''
                                               ? Container(
                                                   height: 65,
                                                   width: 65,
                                                   child: CustomIconWidget(
-                                                      iconUrl: apps[index]
+                                                      iconUrl: onlyShowList[index]
                                                               .appIconC ??
                                                           Overrides
                                                               .folderDefaultImage))
                                               : Container(),
                                           Container(
                                               child: TranslationWidget(
-                                            message: apps[index].appFolderc !=
+                                            message: onlyShowList[index].appFolderc !=
                                                         null &&
                                                     widget.folderName ==
-                                                        apps[index].appFolderc
-                                                ? "${apps[index].titleC}"
+                                                        onlyShowList[index].appFolderc
+                                                ? "${onlyShowList[index].titleC}"
                                                 : '',
                                             fromLanguage: "en",
                                             toLanguage:

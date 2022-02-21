@@ -236,7 +236,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return Container(
         padding: EdgeInsets.only(left: 5),
         child: IconButton(
-        //  constraints: BoxConstraints(),
+          //  constraints: BoxConstraints(),
           onPressed: () {
             if (Platform.isAndroid) {
               OpenAppsSettings.openAppsSettings(
@@ -253,7 +253,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           icon: Icon(
             FontAwesomeIcons.universalAccess,
             color: Colors.blue,
-                   key: _openSettingShowCaseKey,
+            key: _openSettingShowCaseKey,
             size: Globals.deviceType == "phone" ? 25 : 32,
           ),
         ));
