@@ -67,6 +67,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         await _appSettingDb.close();
         if (_appSettings.length > 0) {
           Globals.appSetting = _appSettings.last;
+          if (Globals.appSetting.bannerHeightFactor != null) {
+          AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
+          // print(AppTheme.kBannerHeight);
+        }
           //  Globals.homeObject = Globals.appSetting.toJson();
           yield BottomNavigationBarSuccess(obj: Globals.appSetting.toJson());
         } else {
