@@ -200,7 +200,7 @@ class AppSetting {
                 : "0.0"),
         bannerHeightFactor: double.parse(json['Banner_Height_Factor__c'] != null
             ? json['Banner_Height_Factor__c'].toString()
-            : "0.0"),
+            : "15.0"),
         familyBannerImageC: json['Family_Banner_Image__c'] as String?,
         staffBannerImageC: json['Staff_Banner_Image__c'] as String?,
         studentBannerImageC: json['Student_Banner_Image__c'] as String?,
@@ -210,7 +210,7 @@ class AppSetting {
         playStoreUrlC: json['Play_Store_URL__c'] as String?,
         appStoreUrlC: json['App_Store_URL__c'] as String?,
         bannerHeightFactorC:
-            double.parse(json['Banner_Height_Factor__c'] != null ? json['Banner_Height_Factor__c'].toString() : "0.0"),
+            double.parse(json['Banner_Height_Factor__c'] != null ? json['Banner_Height_Factor__c'].toString() : "15.0"),
         familyBannerColorC: json['Family_Banner_Color__c'] as String?,
         staffBannerColorC: json['Staff_Banner_Color__c'] as String?,
         studentBannerColorC: json['Student_Banner_Color__c'] as String?,
