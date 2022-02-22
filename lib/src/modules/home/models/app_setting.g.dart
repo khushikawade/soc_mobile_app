@@ -66,7 +66,7 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       schoolBannerColorC: fields[46] as String?,
       resourcesBannerColorC: fields[47] as String?,
       contactImageC: fields[48] as String?,
-      isTestSchool: fields[49] as Bool?,
+      isTestSchool: fields[49] as bool?,
     );
   }
 

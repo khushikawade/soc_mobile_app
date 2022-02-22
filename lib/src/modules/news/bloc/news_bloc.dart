@@ -35,7 +35,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
         _localData.forEach((element) {
-          if (element.completedAtTimestamp != null) {   
+          if (element.completedAtTimestamp != null) {
             _localData.sort((a, b) =>
                 b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
           }
@@ -52,9 +52,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         // Local database end.
         List<NotificationList> _list = await fetchNotificationList();
         // Syncing to local database
-        await _localDb.clear(); 
+        await _localDb.clear();
         _list.forEach((NotificationList e) {
-          _localDb.addData(e); 
+          _localDb.addData(e);
         });
         _list.sort(
             (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
@@ -101,15 +101,14 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     if (event is NewsCountLength) {
       try {
-        
-       List<NotificationList> _list = await fetchNotificationList();
-         String? _objectName = "${Strings.newsObjectName}";
-          LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-          List<NotificationList> _localData = await _localDb.getData();
-          // print(intPrefs.getInt("totalCount"));
-          if (_localData.length < _list.length && _localData.isNotEmpty) {
-            Globals.indicator.value = true;
-          }
+        List<NotificationList> _list = await fetchNotificationList();
+        String? _objectName = "${Strings.newsObjectName}";
+        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        List<NotificationList> _localData = await _localDb.getData();
+        // print(intPrefs.getInt("totalCount"));
+        if (_localData.length < _list.length && _localData.isNotEmpty) {
+          Globals.indicator.value = true;
+        }
         yield NewsCountLenghtSuccess(
           obj: _list,
         );

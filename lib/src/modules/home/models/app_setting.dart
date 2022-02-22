@@ -105,7 +105,7 @@ class AppSetting {
   @HiveField(48)
   final String? contactImageC;
   @HiveField(49)
-  final Bool? isTestSchool;
+  final bool? isTestSchool;
 
   AppSetting(
       {this.attributes,
@@ -195,11 +195,16 @@ class AppSetting {
         contactAddressC: json['Contact_Address__c'] as String?,
         socialapiurlc: json['Social_API_URL__c'] as String?,
         contactOfficeLocationLatitudeS: double.parse(
-            json['Contact_Office_Location__Latitude__s'].toString()),
+            json['Contact_Office_Location__Latitude__s'] != null
+                ? json['Contact_Office_Location__Latitude__s'].toString()
+                : "0.0"),
         contactOfficeLocationLongitudeS: double.parse(
-            json['Contact_Office_Location__Longitude__s'].toString()),
-        bannerHeightFactor:
-            double.parse(json['Banner_Height_Factor__c'].toString()),
+            json['Contact_Office_Location__Longitude__s'] != null
+                ? json['Contact_Office_Location__Longitude__s'].toString()
+                : "0.0"),
+        bannerHeightFactor: double.parse(json['Banner_Height_Factor__c'] != null
+            ? json['Banner_Height_Factor__c'].toString()
+            : "0.0"),
         familyBannerImageC: json['Family_Banner_Image__c'] as String?,
         staffBannerImageC: json['Staff_Banner_Image__c'] as String?,
         studentBannerImageC: json['Student_Banner_Image__c'] as String?,
@@ -208,8 +213,10 @@ class AppSetting {
         resourcesBannerImageC: json['Resources_Banner_Image__c'] as String?,
         playStoreUrlC: json['Play_Store_URL__c'] as String?,
         appStoreUrlC: json['App_Store_URL__c'] as String?,
-        bannerHeightFactorC:
-            double.parse(json['Banner_Height_Factor__c'].toString()),
+        bannerHeightFactorC: double.parse(
+            json['Banner_Height_Factor__c'] != null
+                ? json['Banner_Height_Factor__c'].toString()
+                : "0.0"),
         familyBannerColorC: json['Family_Banner_Color__c'] as String?,
         staffBannerColorC: json['Staff_Banner_Color__c'] as String?,
         studentBannerColorC: json['Student_Banner_Color__c'] as String?,
@@ -217,7 +224,7 @@ class AppSetting {
         schoolBannerColorC: json['School_Banner_Color__c'] as String?,
         resourcesBannerColorC: json['Resources_Banner_Color__c'] as String?,
         contactImageC: json['Contact_Image__c'] as String?,
-        isTestSchool: json['Test_School__c'] as Bool?,
+        isTestSchool: json['Test_School__c'] as bool?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -322,7 +329,7 @@ class AppSetting {
       String? schoolBannerColorC,
       String? resourcesBannerColorC,
       String? contactImageC,
-      Bool? isTestSchool}) {
+      bool? isTestSchool}) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,

@@ -88,50 +88,50 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       } catch (e) {
         // yield HomeErrorReceived(err: e);
         List<SearchList> _listGlobal = [];
-      try {
-        yield SearchLoading();
+        try {
+          yield SearchLoading();
 
-        // _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
-        if (event.keyword!.isNotEmpty) {
-          _listGlobal.clear();
-          List<SearchList> _list1 = await getGlobalSearchList(
-              Strings.familiesObjectName, event.keyword);
-          _listGlobal.addAll(_list1);
-          List<SearchList> _list2 =
-              await getGlobalSearchList(Strings.staffObjectName, event.keyword);
-          _listGlobal.addAll(_list2);
-          List<SearchList> _list3 = await getGlobalSearchList(
-              Strings.resourcesObjectName, event.keyword);
-          _listGlobal.addAll(_list3);
-          List<SearchList> _list4 =
-              await getGlobalSearchList(Strings.aboutObjectName, event.keyword);
-          _listGlobal.addAll(_list4);
-          List<SearchList> _list5 = await getGlobalSearchListStudent(
-              Strings.studentsObjectName, event.keyword);
-          _listGlobal.addAll(_list5);
-          List<SearchList> _list6 = await getGlobalSearchListSchool(
-              Strings.schoolDirectoryObjectName, event.keyword);
-          _listGlobal.addAll(_list6);
-          // List<SearchList> _list7 = await getGlobalSearchList(
-          //     Strings.familiesSubListObjectName, event.keyword);
-          // _listGlobal.addAll(_list7);
-          // List<SearchList> _list8 = await getGlobalSearchList(
-          //     Strings.staffSubListObjectName, event.keyword);
-          // _listGlobal.addAll(_list8);
-          // List<SearchList> _list9 = await getGlobalSearchList(
-          //     Strings.aboutSubListObjectName, event.keyword);
-          // _listGlobal.addAll(_list9);
-          // List<SearchList> _list10 = await getGlobalSearchList(
-          //     Strings.resourcesSubListObjectName, event.keyword);
-          // _listGlobal.addAll(_list10);
+          // _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+          if (event.keyword!.isNotEmpty) {
+            _listGlobal.clear();
+            List<SearchList> _list1 = await getGlobalSearchList(
+                Strings.familiesObjectName, event.keyword);
+            _listGlobal.addAll(_list1);
+            List<SearchList> _list2 = await getGlobalSearchList(
+                Strings.staffObjectName, event.keyword);
+            _listGlobal.addAll(_list2);
+            List<SearchList> _list3 = await getGlobalSearchList(
+                Strings.resourcesObjectName, event.keyword);
+            _listGlobal.addAll(_list3);
+            List<SearchList> _list4 = await getGlobalSearchList(
+                Strings.aboutObjectName, event.keyword);
+            _listGlobal.addAll(_list4);
+            List<SearchList> _list5 = await getGlobalSearchListStudent(
+                Strings.studentsObjectName, event.keyword);
+            _listGlobal.addAll(_list5);
+            List<SearchList> _list6 = await getGlobalSearchListSchool(
+                Strings.schoolDirectoryObjectName, event.keyword);
+            _listGlobal.addAll(_list6);
+            // List<SearchList> _list7 = await getGlobalSearchList(
+            //     Strings.familiesSubListObjectName, event.keyword);
+            // _listGlobal.addAll(_list7);
+            // List<SearchList> _list8 = await getGlobalSearchList(
+            //     Strings.staffSubListObjectName, event.keyword);
+            // _listGlobal.addAll(_list8);
+            // List<SearchList> _list9 = await getGlobalSearchList(
+            //     Strings.aboutSubListObjectName, event.keyword);
+            // _listGlobal.addAll(_list9);
+            // List<SearchList> _list10 = await getGlobalSearchList(
+            //     Strings.resourcesSubListObjectName, event.keyword);
+            // _listGlobal.addAll(_list10);
+          }
+
+          yield GlobalSearchSuccess(
+            obj: _listGlobal,
+          );
+        } catch (e) {
+          yield HomeErrorReceived(err: e);
         }
-
-        yield GlobalSearchSuccess(
-          obj: _listGlobal,
-        );
-      } catch (e) {
-        yield HomeErrorReceived(err: e);
-      }
       }
     }
   }
@@ -212,7 +212,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _searchList.statusC = _localData[i].statusC ?? null;
           _searchList.latitude = _localData[i].latitude ?? null;
           _searchList.longitude = _localData[i].longitude ?? null;
-          _searchList.sortOrder = double.parse(_localData[i].sortOrder ?? null);
+          _searchList.sortOrder =
+              double.parse(_localData[i].sortOrder ?? "0.0");
 
           _listSearch.insert(0, _searchList);
         }
@@ -240,7 +241,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _searchList.titleC = _localData[i].titleC ?? null;
           _searchList.deepLink = _localData[i].deepLinkC ?? null;
           _searchList.statusC = _localData[i].status ?? null;
-          _searchList.sortOrder = double.parse(_localData[i].sortOrder ?? null);
+          _searchList.sortOrder =
+              double.parse(_localData[i].sortOrder ?? "0.0");
 
           _searchList.name = _localData[i].name ?? null;
 
