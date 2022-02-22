@@ -3,9 +3,9 @@ class Overrides {
   static const String privacyPolicyUrl =
       'https:/www.solvedconsulting.com/privacy';
   static String PUSH_APP_ID =
-      "51962f9e-9a77-43fe-9272-ae2974945ed7"; //"4d63eb69-bd08-4e3d-9a75-3d66f44e92c6";
+      "c504a587-d16f-4858-80ab-86b6ab2f4780"; //"4d63eb69-bd08-4e3d-9a75-3d66f44e92c6";
   static String REST_API_KEY =
-      "MzEzZThkN2EtMmVhNy00NjNkLTg4ZTUtYjgzYjFjZmE4NjVl";
+      "MGJiYjJkZjQtNTVkOC00NWNkLTk5YjUtNmZlNTU3ODc5YWEx";
   // "NjY1YzEwY2ItN2UxNS00MzRkLWJkM2EtZTY1OTkyNDRlNDBj";
   static const String privacyPolicyUrl2 =
       'https://solvedapps.webnode.com/ps-456-bronx-bears/';
@@ -23,5 +23,5 @@ class Overrides {
 //Sandbox : 'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
   static String SCHOOL_ID =
-      "a1f4W000007DQaNQAW"; //"a1f4W000007DR8nQAG"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
+      "a1f4W000007DSBlQAO"; //"a1f4W000007DR8nQAG"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
 }

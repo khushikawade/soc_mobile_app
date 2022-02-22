@@ -44,7 +44,7 @@ class StudentApp {
       id: json['Id'] as String?,
       name: json['Name'] as String?,
       appFolderc: json['App_Folder__c'] as String?,
-      sortOrder: json['Sort_Order__c'],
+      sortOrder: double.parse(json['Sort_Order__c'] ?? '100'),
       status: json['Active_Status__c'],
       isFolder: json['Is_Folder__c']);
 

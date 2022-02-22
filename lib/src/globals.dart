@@ -55,4 +55,5 @@ class Globals {
   static List<NotificationList> notificationList = [];
   static List<Item> socialList = [];
   static PackageInfo? packageInfo;
+  static bool isNewTap = false;
 }
