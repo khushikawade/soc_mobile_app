@@ -3,12 +3,15 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
 import 'package:Soc/src/modules/schools/ui/schools.dart';
 import 'package:Soc/src/modules/social/ui/social.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
+import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -16,6 +19,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_version/new_version.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,21 +56,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       _notification = state;
     });
     if (_notification == AppLifecycleState.resumed)
-      _newsBloc.add(FetchNotificationList());
+      _newsBloc.add(NewsCountLength());
   }
 
   Widget callNotification() {
     return BlocListener<NewsBloc, NewsState>(
       bloc: _newsBloc,
       listener: (context, state) async {
-        if (state is NewsLoaded) {
+        if (state is NewsCountLenghtSuccess) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           SharedPreferences intPrefs = await SharedPreferences.getInstance();
-          intPrefs.getInt("totalCount") == null
-              ? intPrefs.setInt("totalCount", Globals.notiCount!)
-              : intPrefs.getInt("totalCount");
+          String? _objectName = "${Strings.newsObjectName}";
+          LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+          List<NotificationList> _localData = await _localDb.getData();
           // print(intPrefs.getInt("totalCount"));
-          if (Globals.notiCount! > intPrefs.getInt("totalCount")!) {
+          if (_localData.length < state.obj!.length && _localData.isNotEmpty) {
             intPrefs.setInt("totalCount", Globals.notiCount!);
             prefs.setBool("enableIndicator", true);
             Globals.indicator.value = true;
@@ -75,6 +79,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       },
       child: Container(),
     );
+  }
+
+  void _getNotificationIntance() {
+    OneSignal.shared.setNotificationWillShowInForegroundHandler(
+        (OSNotificationReceivedEvent notification) async {
+      notification.complete(notification.notification);
+      Globals.indicator.value = true;
+    });
   }
 
   void _checkNewVersion() async {
@@ -92,8 +104,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _getNotificationIntance();
+    _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
-    _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
+
+    _controller = PersistentTabController(
+        initialIndex:
+            Globals.isNewTap ? Globals.newsIndex ?? 0 : Globals.homeIndex ?? 1);
     WidgetsBinding.instance!.addObserver(this);
     _checkNewVersion();
   }
@@ -339,22 +356,43 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   _onBackPressed() {
     return showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text("Do you want to exit the app?",
-                  style: Theme.of(context).textTheme.headline2!),
-              actions: <Widget>[
-                FlatButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child:
-                      Text("No", style: Theme.of(context).textTheme.headline2!),
-                ),
-                FlatButton(
-                  onPressed: () => exit(0),
-                  child: Text("Yes",
-                      style: Theme.of(context).textTheme.headline2!),
-                ),
-              ],
-            ));
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: Globals.deviceType == 'phone'
+                    ? Text("Do you want to exit the app?",
+                        style: Theme.of(context).textTheme.headline2!)
+                    : Container(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        height: orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 15
+                            : MediaQuery.of(context).size.width / 15,
+                        width: orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.width / 2
+                            : MediaQuery.of(context).size.height / 2,
+                        child: Text("Do you want to exit the app?",
+                            style: Theme.of(context).textTheme.headline2!),
+                      ),
+                actions: <Widget>[
+                  FlatButton(
+                    padding: Globals.deviceType != 'phone'
+                        ? EdgeInsets.only(bottom: 10.0, right: 10.0)
+                        : EdgeInsets.all(0),
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text("No",
+                        style: Theme.of(context).textTheme.headline2!),
+                  ),
+                  FlatButton(
+                    padding: Globals.deviceType != 'phone'
+                        ? EdgeInsets.only(bottom: 10.0, right: 10.0)
+                        : EdgeInsets.all(0.0),
+                    onPressed: () => exit(0),
+                    child: Text("Yes",
+                        style: Theme.of(context).textTheme.headline2!),
+                  )
+                ],
+              );
+            }));
   }
 }
