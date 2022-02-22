@@ -51,6 +51,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(height);
 
   Widget _buildPopupMenuWidget(BuildContext context) {
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
     final scaffoldKey = Scaffold.of(context);
     return PopupMenuButton<IconMenu>(
       shape: RoundedRectangleBorder(
@@ -108,30 +109,67 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             break;
         }
       },
-      itemBuilder: (context) => IconsMenu.items
-          .map((item) => PopupMenuItem<IconMenu>(
-              value: item,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: _kLabelSpacing / 4, vertical: 0),
-                child: TranslationWidget(
-                    message: item.text,
-                    fromLanguage: "en",
-                    toLanguage: Globals.selectedLanguage,
-                    builder: (translatedMessage) {
-                      return Text(
-                        translatedMessage.toString(),
-                        style:
-                            Theme.of(context).textTheme.bodyText1!.copyWith(),
-                      );
-                    }),
+      itemBuilder: Globals.deviceType != "phone"
+          ? (context) => IconsMenu.items
+              .map((item) => PopupMenuItem<IconMenu>(
+                  height: currentOrientation == Orientation.portrait
+                      ? MediaQuery.of(context).size.height / 17
+                      : MediaQuery.of(context).size.width / 17,
+                  value: item,
+                  child: SizedBox(
+                    width: currentOrientation == Orientation.portrait
+                        ? MediaQuery.of(context).size.width / 5
+                        : MediaQuery.of(context).size.height / 5,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: _kLabelSpacing / 4, vertical: 0),
+                      child: TranslationWidget(
+                          message: item.text,
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(
+                              translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(),
+                            );
+                          }),
 
-                //  Text(
-                //   item.text,
-                //   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-                // ),
-              )))
-          .toList(),
+                      //  Text(
+                      //   item.text,
+                      //   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                      // ),
+                    ),
+                  )))
+              .toList()
+          : (context) => IconsMenu.items
+              .map((item) => PopupMenuItem<IconMenu>(
+                  value: item,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: _kLabelSpacing / 4, vertical: 0),
+                    child: TranslationWidget(
+                        message: item.text,
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1!
+                                .copyWith(),
+                          );
+                        }),
+
+                    //  Text(
+                    //   item.text,
+                    //   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                    // ),
+                  )))
+              .toList(),
     );
   }
 

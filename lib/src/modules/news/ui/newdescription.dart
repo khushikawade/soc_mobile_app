@@ -125,7 +125,8 @@ class _NewdescriptionState extends State<Newdescription> {
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => SelectableLinkify(
-                    toolbarOptions: ToolbarOptions(copy: false,selectAll: false),
+                    toolbarOptions:
+                        ToolbarOptions(copy: false, selectAll: false),
                     selectionControls: materialTextSelectionControls,
                     onOpen: (link) => _launchURL(link.url),
                     options: LinkifyOptions(humanize: false),
@@ -161,7 +162,9 @@ class _NewdescriptionState extends State<Newdescription> {
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => SelectableLinkify(
-                      toolbarOptions:Platform.isAndroid? ToolbarOptions(copy:true,selectAll: true): ToolbarOptions(copy: true),
+                      toolbarOptions: Platform.isAndroid
+                          ? ToolbarOptions(copy: true, selectAll: true)
+                          : ToolbarOptions(copy: true),
                       selectionControls: materialTextSelectionControls,
                       onOpen: (link) => _launchURL(link.url),
                       enableInteractiveSelection: true,
@@ -183,7 +186,7 @@ class _NewdescriptionState extends State<Newdescription> {
                           message: widget.obj.url.toString(),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
-                          builder: (translatedMessage) => Linkify(
+                          builder: (translatedMessage) => SelectableLinkify(
                             onOpen: (link) => _launchURL(link.url),
                             linkStyle: TextStyle(color: Colors.blue),
                             options: LinkifyOptions(humanize: false),
