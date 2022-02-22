@@ -93,9 +93,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   List<Widget> _buildScreens() {
     List<Widget> _screens = [];
     // Globals.homeObject["Bottom_Navigation__c"]
-    Globals.appSetting.bottomNavigationC!
-        .split(";")
-        .forEach((String element) {
+    Globals.appSetting.bottomNavigationC!.split(";").forEach((String element) {
       element = element.toLowerCase();
       if (element.contains('news')) {
         _screens.add(NewsPage());
@@ -134,13 +132,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return Globals.appSetting.bottomNavigationC!
-    // Globals.homeObject["Bottom_Navigation__c"]
+        // Globals.homeObject["Bottom_Navigation__c"]
         .split(";")
         .map<PersistentBottomNavBarItem>(
       (item) {
         if (item.split("_")[0].toString().toLowerCase().contains("news")) {
           Globals.newsIndex = Globals.appSetting.bottomNavigationC!
-          // Globals.homeObject["Bottom_Navigation__c"]
+              // Globals.homeObject["Bottom_Navigation__c"]
               .split(";")
               .indexOf(item);
         }
@@ -296,21 +294,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: Globals.scaffoldKey,
+        key: Globals.scaffoldKey,
         body: Stack(
-      children: [
-        _tabBarBody(),
-        ValueListenableBuilder<bool>(
-            valueListenable: Globals.hasShowcaseInitialised,
-            builder: (context, value, _) {
-              if (Globals.hasShowcaseInitialised.value == true)
-                return Container();
-              return Center(
-                  child: _continueShowCaseInstructions(
-                      'Tap anywhere on the screen to continue.'));
-            }),
-      ],
-    ));
+          children: [
+            _tabBarBody(),
+            ValueListenableBuilder<bool>(
+                valueListenable: Globals.hasShowcaseInitialised,
+                builder: (context, value, _) {
+                  if (Globals.hasShowcaseInitialised.value == true)
+                    return Container();
+                  return Center(
+                      child: _continueShowCaseInstructions(
+                          'Tap anywhere on the screen to continue.'));
+                }),
+          ],
+        ));
   }
 
   _onBackPressed() {
