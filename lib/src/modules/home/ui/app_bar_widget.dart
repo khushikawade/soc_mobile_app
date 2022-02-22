@@ -30,8 +30,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       ValueNotifier<String>("English");
   final ValueChanged? refresh;
   final double? marginLeft;
-  // final _scaffoldKey = GlobalKey<ScaffoldState>();
-  //final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
   bool? initalscreen;
   bool? hideAccessibilityButton;
   bool? showClosebutton;
@@ -51,6 +49,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(height);
 
   Widget _buildPopupMenuWidget(BuildContext context) {
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
     final scaffoldKey = Scaffold.of(context);
     return PopupMenuButton<IconMenu>(
       shape: RoundedRectangleBorder(
@@ -75,22 +74,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                             )))
                 : Utility.showSnackBar(
                     scaffoldKey, 'No Information Available', context);
-            // scaffoldKey.showSnackBar(
-            //     SnackBar(
-            //       content: const Text(
-            //         'No Information Available',
-            //       ),
-            //       behavior: SnackBarBehavior.floating,
-            //       margin: EdgeInsets.only(
-            //           left: 16,
-            //           right: 16,
-            //           bottom: MediaQuery.of(context).size.height * 0.04),
-            //       padding: EdgeInsets.only(
-            //         left: 16,
-            //       ),
-            //       backgroundColor: Colors.black.withOpacity(0.8),
-            //     ),
-            //   );
             break;
           case IconsMenu.Setting:
             Navigator.push(
@@ -110,8 +93,18 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       },
       itemBuilder: (context) => IconsMenu.items
           .map((item) => PopupMenuItem<IconMenu>(
+              height: Globals.deviceType != "phone"
+                  ? currentOrientation == Orientation.portrait
+                      ? MediaQuery.of(context).size.height / 17
+                      : MediaQuery.of(context).size.width / 17
+                  : kMinInteractiveDimension,
               value: item,
-              child: Padding(
+              child: Container(
+                width: Globals.deviceType != "phone"
+                    ? currentOrientation == Orientation.portrait
+                        ? MediaQuery.of(context).size.width / 5
+                        : MediaQuery.of(context).size.height / 5
+                    : null,
                 padding: EdgeInsets.symmetric(
                     horizontal: _kLabelSpacing / 4, vertical: 0),
                 child: TranslationWidget(
@@ -125,11 +118,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                             Theme.of(context).textTheme.bodyText1!.copyWith(),
                       );
                     }),
-
-                //  Text(
-                //   item.text,
-                //   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-                // ),
               )))
           .toList(),
     );
@@ -144,6 +132,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           leadingWidth: _kIconSize,
           elevation: 0.0,
           leading: BubbleShowcase(
+            counterText: null,
             enabled: !Globals.hasShowcaseInitialised.value,
             showCloseButton: false,
             bubbleShowcaseId: 'my_bubble_showcase',
@@ -235,7 +224,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return Container(
         padding: EdgeInsets.only(left: 5),
         child: IconButton(
-          constraints: BoxConstraints(),
+          //  constraints: BoxConstraints(),
           onPressed: () {
             if (Platform.isAndroid) {
               OpenAppsSettings.openAppsSettings(
@@ -249,13 +238,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                           IosAccessibilityGuidePage()));
             }
           },
-          icon: Container(
+          icon: Icon(
+            FontAwesomeIcons.universalAccess,
+            color: Colors.blue,
             key: _openSettingShowCaseKey,
-            child: Icon(
-              FontAwesomeIcons.universalAccess,
-              color: Colors.blue,
-              size: Globals.deviceType == "phone" ? 25 : 32,
-            ),
+            size: Globals.deviceType == "phone" ? 25 : 32,
           ),
         ));
   }

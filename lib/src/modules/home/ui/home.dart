@@ -3,15 +3,12 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
 import 'package:Soc/src/modules/schools/ui/schools.dart';
 import 'package:Soc/src/modules/social/ui/social.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
-import 'package:Soc/src/services/Strings.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -19,7 +16,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_version/new_version.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,7 +34,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  //  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
@@ -47,7 +42,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
-  // final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
+
   late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
@@ -57,21 +52,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       _notification = state;
     });
     if (_notification == AppLifecycleState.resumed)
-      _newsBloc.add(NewsCountLength());
+      _newsBloc.add(FetchNotificationList());
   }
 
   Widget callNotification() {
     return BlocListener<NewsBloc, NewsState>(
       bloc: _newsBloc,
       listener: (context, state) async {
-        if (state is NewsCountLenghtSuccess) {
+        if (state is NewsLoaded) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           SharedPreferences intPrefs = await SharedPreferences.getInstance();
-          String? _objectName = "${Strings.newsObjectName}";
-          LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-          List<NotificationList> _localData = await _localDb.getData();
+          intPrefs.getInt("totalCount") == null
+              ? intPrefs.setInt("totalCount", Globals.notiCount!)
+              : intPrefs.getInt("totalCount");
           // print(intPrefs.getInt("totalCount"));
-          if (_localData.length < state.obj!.length && _localData.isNotEmpty) {
+          if (Globals.notiCount! > intPrefs.getInt("totalCount")!) {
             intPrefs.setInt("totalCount", Globals.notiCount!);
             prefs.setBool("enableIndicator", true);
             Globals.indicator.value = true;
@@ -82,14 +77,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
   }
 
-  void _getNotificationIntance() {
-    OneSignal.shared.setNotificationWillShowInForegroundHandler(
-        (OSNotificationReceivedEvent notification) async {
-      notification.complete(notification.notification);
-      Globals.indicator.value = true;
-    });
-  }
-
   void _checkNewVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String _packageName = packageInfo.packageName;
@@ -97,16 +84,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       iOSId: _packageName,
       androidId: _packageName,
     );
-    // You can let the plugin handle fetching the status and showing a dialog,
-    // or you can fetch the status and display your own dialog, or no dialog.
     _checkVersionUpdateStatus(newVersion);
   }
 
   @override
   void initState() {
     super.initState();
-    _getNotificationIntance();
-    _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
 
     _controller = PersistentTabController(
@@ -168,17 +151,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return Globals.appSetting.bottomNavigationC!
-        // Globals.homeObject["Bottom_Navigation__c"]
         .split(";")
         .map<PersistentBottomNavBarItem>(
       (item) {
         if (item.split("_")[0].toString().toLowerCase().contains("news")) {
-          Globals.newsIndex = Globals.appSetting.bottomNavigationC!
-              // Globals.homeObject["Bottom_Navigation__c"]
-              .split(";")
-              .indexOf(item);
+          Globals.newsIndex =
+              Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
         }
-        // print(Globals.newsIndex);
         setState(() {});
         return PersistentBottomNavBarItem(
           icon: Row(
@@ -191,8 +170,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     children: [
                       Stack(
                         alignment: Alignment.center,
-                        // crossAxisAlignment: CrossAxisAlignment.center,
-                        // mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ValueListenableBuilder(
                             builder: (BuildContext context, dynamic value,
@@ -204,7 +181,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                         Container(
                                           margin: EdgeInsets.only(
                                               bottom: 15, left: 50),
-                                          // padding:EdgeInsets.only(bottom: 25,) ,
                                           height: 7,
                                           width: 7,
                                           decoration: BoxDecoration(
@@ -330,15 +306,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-
-          //   UpgradeAlert(
-          // // appcastConfig: cfg,
-
-          // debugLogging: true,
-          // child:
-
-          Stack(
+      body: Stack(
         children: [
           _tabBarBody(),
           ValueListenableBuilder<bool>(
@@ -369,9 +337,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     return Text(translatedMessage.toString(),
                         style: Theme.of(context).textTheme.headline2!);
                   }),
-
-              //  Text("Do you want to exit the app?",
-              //     style: Theme.of(context).textTheme.headline2!),
               actions: <Widget>[
                 FlatButton(
                   onPressed: () => Navigator.pop(dialogContext, false),
