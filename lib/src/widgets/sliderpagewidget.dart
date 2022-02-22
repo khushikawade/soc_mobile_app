@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
@@ -52,6 +53,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   var link;
   var link2;
   bool first = false;
+  bool? isDeviceBackButton = true;
 
   @override
   void initState() {
@@ -61,21 +63,28 @@ class _SliderWidgetState extends State<SliderWidget> {
     pageinitialIndex = widget.currentIndex;
     _controller = PageController(initialPage: widget.currentIndex);
     Globals.callsnackbar = false;
-    // BackButtonInterceptor.add(updateAction);
+  BackButtonInterceptor.add(updateAction);
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
-    // BackButtonInterceptor.remove(updateAction);
+    BackButtonInterceptor.remove(updateAction);
   }
 
-  // bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
-  //  bool isNewsPage = widget.iseventpage == false || widget.issocialpage == true ? true : false;
-  //   Navigator.of(context).pop(isNewsPage);
-  //   return true;
-  // }
+ bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
+    if (isDeviceBackButton == true) {
+      isDeviceBackButton = false;
+      bool isNewsPage =
+          widget.iseventpage == false || widget.issocialpage == true
+              ? true
+              : false;
+      Navigator.of(context).pop(isNewsPage);
+      return true;
+    }
+    return false;
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
