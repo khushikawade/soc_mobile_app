@@ -4,16 +4,49 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 class CalendraIconWidget extends StatelessWidget {
-  final DateTime dateTime;
+  final dateTime;
   CalendraIconWidget({Key? key, required this.dateTime}) : super(key: key);
 
   static const double _kPhoneIcon = 36.0;
   static const double _kTabletIcon = 55.0;
 
+  static const List<String> months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
+  String getDate() {
+    try {
+      return dateTime.runtimeType.toString() == 'DateTime'
+          ? Utility.convertTimestampToDateFormat(dateTime, 'dd')
+          : dateTime.toString().split('/')[1];
+    } catch (e) {
+      return '';
+    }
+  }
+
+  String getMonth() {
+    try {
+      return dateTime.runtimeType.toString() == 'DateTime'
+          ? Utility.convertTimestampToDateFormat(dateTime, 'MMM')
+          : months[int.parse(dateTime.toString().split('/')[0]) - 1];
+    } catch (e) {
+      return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-  final String date = Utility.convertTimestampToDateFormat(dateTime, 'dd');
-  final String month = Utility.convertTimestampToDateFormat(dateTime, 'MMM');
     return Container(
       decoration: BoxDecoration(
           border: Border.all(width: 0.5),
@@ -42,7 +75,7 @@ class CalendraIconWidget extends StatelessWidget {
                 child: Padding(
               padding: const EdgeInsets.only(bottom: 1),
               child: Text(
-                month,
+                getMonth(),
                 style: Theme.of(context)
                     .textTheme
                     .subtitle2!
@@ -50,7 +83,7 @@ class CalendraIconWidget extends StatelessWidget {
               ),
             )),
           ),
-          Text(date)
+          Padding(padding: EdgeInsets.only(top: 1.7), child: Text(getDate()))
         ],
       ),
     );

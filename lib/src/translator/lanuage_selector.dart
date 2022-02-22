@@ -137,7 +137,7 @@ class LanguageSelector {
                 return SafeArea(
                     child: Container(
                   height: orientation == Orientation.landscape
-                      ? MediaQuery.of(context).size.width * 0.965
+                      ? MediaQuery.of(context).size.height * 0.82
                       : MediaQuery.of(context).size.height * 0.60,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,

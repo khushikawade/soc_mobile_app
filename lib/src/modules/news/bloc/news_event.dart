@@ -9,9 +9,13 @@ abstract class NewsEvent extends Equatable {
 class FetchNotificationList extends NewsEvent {
   List<Object> get props => [];
 }
+class NewsCountLength extends NewsEvent {
+  List<Object> get props => [];
+}
 
 class NewsAction extends NewsEvent {
   final String? notificationId;
+  final String? notificationTitle;
   final int? like;
   final int? thanks;
   final int? helpful;
@@ -19,6 +23,7 @@ class NewsAction extends NewsEvent {
 
   NewsAction(
       {required this.notificationId,
+      required this.notificationTitle,
       this.like,
       this.thanks,
       this.helpful,
@@ -26,7 +31,7 @@ class NewsAction extends NewsEvent {
 
   @override
   List<Object> get props =>
-      [notificationId!, like!, thanks!, helpful!, shared!];
+      [notificationId!,notificationTitle!, like!, thanks!, helpful!, shared!];
 }
 
 class FetchActionCountList extends NewsEvent {

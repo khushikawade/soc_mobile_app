@@ -35,7 +35,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   // final widget.scaffoldKey = GlobalKey<ScaffoldState>();
 
   _launchURL(obj) async {
-    if (obj.appUrlC.toString().split(":")[0] == 'http') {
+    if (obj.appUrlC.toString().split(":")[0] == 'http' || obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
     } else {
       Navigator.push(

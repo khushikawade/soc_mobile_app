@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 
+import 'dart:io' show Platform;
+
 class Newdescription extends StatefulWidget {
   Newdescription({
     Key? key,
@@ -123,6 +125,7 @@ class _NewdescriptionState extends State<Newdescription> {
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => SelectableLinkify(
+                    toolbarOptions: ToolbarOptions(copy: false,selectAll: false),
                     selectionControls: materialTextSelectionControls,
                     onOpen: (link) => _launchURL(link.url),
                     options: LinkifyOptions(humanize: false),
@@ -130,7 +133,7 @@ class _NewdescriptionState extends State<Newdescription> {
                     text: translatedMessage.toString(),
                     style: Theme.of(context).textTheme.headline2!.copyWith(
                           fontWeight: FontWeight.w500,
-                          fontSize: 16,
+                          // fontSize: 16,
                         ),
                   ),
                 )),
@@ -158,6 +161,7 @@ class _NewdescriptionState extends State<Newdescription> {
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => SelectableLinkify(
+                      toolbarOptions:Platform.isAndroid? ToolbarOptions(copy:true,selectAll: true): ToolbarOptions(copy: true),
                       selectionControls: materialTextSelectionControls,
                       onOpen: (link) => _launchURL(link.url),
                       enableInteractiveSelection: true,

@@ -61,13 +61,21 @@ class _SliderWidgetState extends State<SliderWidget> {
     pageinitialIndex = widget.currentIndex;
     _controller = PageController(initialPage: widget.currentIndex);
     Globals.callsnackbar = false;
+    // BackButtonInterceptor.add(updateAction);
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+    // BackButtonInterceptor.remove(updateAction);
   }
+
+  // bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
+  //  bool isNewsPage = widget.iseventpage == false || widget.issocialpage == true ? true : false;
+  //   Navigator.of(context).pop(isNewsPage);
+  //   return true;
+  // }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,28 +145,28 @@ class _SliderWidgetState extends State<SliderWidget> {
             onPageChanged: (sliderIndex) {
               pageinitialIndex = sliderIndex;
               setState(() {});
-              if (first) {
-                pageinitialIndex <= sliderIndex
-                    ? ++widget.currentIndex
-                    : --widget.currentIndex;
-                pageViewCurrentIndex = sliderIndex;
-                first = false;
-              } else {
-                if (sliderIndex > widget.currentIndex &&
-                    widget.currentIndex < object.length - 1) {
-                  ++widget.currentIndex;
-                } else if (sliderIndex <= widget.currentIndex &&
-                    widget.currentIndex > 0) {
-                  --widget.currentIndex;
-                }
-              }
+              // if (first) {
+              //   pageinitialIndex <= sliderIndex
+              //       ? ++widget.currentIndex
+              //       : --widget.currentIndex;
+              //   pageViewCurrentIndex = sliderIndex;
+              //   first = false;
+              // } else {
+              //   if (sliderIndex > widget.currentIndex &&
+              //       widget.currentIndex < object.length - 1) {
+              //     ++widget.currentIndex;
+              //   } else if (sliderIndex <= widget.currentIndex &&
+              //       widget.currentIndex > 0) {
+              //     --widget.currentIndex;
+              //   }
+              // }
             },
             itemBuilder: (BuildContext context, int index) {
               return widget.issocialpage!
                   ? SocialDescription(
                       //  icons: widget.icons,
                       //   iconsName: widget.iconsName,
-                      object: object[widget.currentIndex],
+                      object: object[pageinitialIndex],
                       language: Globals.selectedLanguage,
                       index: pageinitialIndex,
                     )
@@ -175,7 +183,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                           : Newdescription(
                               // icons: widget.icons!,
                               // iconsName: widget.iconsName,
-                              obj: object[widget.currentIndex],
+                              obj: object[pageinitialIndex],
                               date: widget.date,
                               isbuttomsheet: true,
                               language: Globals.selectedLanguage,

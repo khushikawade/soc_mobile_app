@@ -3,9 +3,9 @@ class Overrides {
   static const String privacyPolicyUrl =
       'https:/www.solvedconsulting.com/privacy';
   static String PUSH_APP_ID =
-      "fdfc75e1-64ef-462a-90a4-2f8e769f1dfc"; //"4d63eb69-bd08-4e3d-9a75-3d66f44e92c6";
+      "c504a587-d16f-4858-80ab-86b6ab2f4780"; //"4d63eb69-bd08-4e3d-9a75-3d66f44e92c6";
   static String REST_API_KEY =
-      "ZmZiNTA4NjQtZjFhOS00ZTczLTlhN2MtOTA2ZGYzNzRhNzUz";
+      "MGJiYjJkZjQtNTVkOC00NWNkLTk5YjUtNmZlNTU3ODc5YWEx";
   // "NjY1YzEwY2ItN2UxNS00MzRkLWJkM2EtZTY1OTkyNDRlNDBj";
   static const String privacyPolicyUrl2 =
       'https://solvedapps.webnode.com/ps-456-bronx-bears/';
@@ -18,7 +18,7 @@ class Overrides {
   static const String kFontFam = 'SOC_CustomIcons';
   static const kFontPkg = null;
   static String? API_BASE_URL =
-      'https://ny67869sad.execute-api.us-east-2.amazonaws.com/sandbox/';
+      'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/';
   //Production     'https://solvedconsultingdev.my.salesforce.com/services/data/v52.0/';
 //Sandbox : 'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';

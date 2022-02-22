@@ -144,6 +144,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           leadingWidth: _kIconSize,
           elevation: 0.0,
           leading: BubbleShowcase(
+            counterText: null,
             enabled: !Globals.hasShowcaseInitialised.value,
             showCloseButton: false,
             bubbleShowcaseId: 'my_bubble_showcase',
@@ -235,7 +236,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return Container(
         padding: EdgeInsets.only(left: 5),
         child: IconButton(
-          constraints: BoxConstraints(),
+          //  constraints: BoxConstraints(),
           onPressed: () {
             if (Platform.isAndroid) {
               OpenAppsSettings.openAppsSettings(
@@ -249,13 +250,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                           IosAccessibilityGuidePage()));
             }
           },
-          icon: Container(
+          icon: Icon(
+            FontAwesomeIcons.universalAccess,
+            color: Colors.blue,
             key: _openSettingShowCaseKey,
-            child: Icon(
-              FontAwesomeIcons.universalAccess,
-              color: Colors.blue,
-              size: Globals.deviceType == "phone" ? 25 : 32,
-            ),
+            size: Globals.deviceType == "phone" ? 25 : 32,
           ),
         ));
   }
