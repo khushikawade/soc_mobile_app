@@ -96,7 +96,7 @@ class SocialDescription extends StatelessWidget {
       key: refreshKey,
       child: ListView(padding: const EdgeInsets.all(_kPadding), children: [
         Column(
-         crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildnews(context),
             SpacerWidget(_kPadding / 2),
@@ -283,7 +283,7 @@ class SocialDescription extends StatelessWidget {
             toLanguage: language,
             builder: (translatedMessage) => RichText(
                     text: TextSpan(children: [
-                  WidgetSpan(child: widgetIcon(object.link,context)),
+                  WidgetSpan(child: widgetIcon(object.link, context)),
                   WidgetSpan(
                     child: SelectableHtml(
                       data: translatedMessage.toString(),
@@ -343,7 +343,7 @@ class SocialDescription extends StatelessWidget {
     );
   }
 
-  Widget widgetIcon(link , context) {
+  Widget widgetIcon(link, context) {
     if (link["\$t"].contains('instagram')) {
       return ShaderMask(
           shaderCallback: (bounds) => RadialGradient(
@@ -363,7 +363,7 @@ class SocialDescription extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 1),
             child: FaIcon(
               FontAwesomeIcons.instagram,
-              size: Globals.deviceType == 'phone'? 18 : 22,
+              size: Globals.deviceType == 'phone' ? 18 : 22,
               color: Colors.white,
             ),
           ));
@@ -373,22 +373,23 @@ class SocialDescription extends StatelessWidget {
 // FontAwesomeIcons.instagramSquare, [Colors.cyan, Colors.yellow]);
 
     } else if (link["\$t"].contains('twitter')) {
-      return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2),context);
+      return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2), context);
     } else if (link["\$t"].contains('facebook')) {
       return Padding(
           padding: EdgeInsets.only(bottom: 1),
-          child: iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2),context));
+          child: iconWidget(
+              FontAwesomeIcons.facebook, Color(0xff4267B2), context));
     } else if (link["\$t"].contains('youtube')) {
-      return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000),context);
+      return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000), context);
     }
 
     return Container();
   }
 
-  Widget iconWidget(icon, color,context) {
+  Widget iconWidget(icon, color, context) {
     return FaIcon(
       icon,
-      size: Globals.deviceType == 'phone'? 18 : 22,
+      size: Globals.deviceType == 'phone' ? 18 : 22,
       // MediaQuery.of(context).size.height *0.02,
       color: color,
     );

@@ -38,6 +38,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  //  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final NewsBloc _bloc = new NewsBloc();
   String language1 = Translations.supportedLanguages.first;
   String language2 = Translations.supportedLanguages.last;
@@ -50,7 +51,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
-  
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
@@ -109,7 +109,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
 
-    _controller = PersistentTabController(initialIndex: Globals.isNewTap ? Globals.newsIndex ?? 0 : Globals.homeIndex ?? 1);
+    _controller = PersistentTabController(
+        initialIndex:
+            Globals.isNewTap ? Globals.newsIndex ?? 0 : Globals.homeIndex ?? 1);
     WidgetsBinding.instance!.addObserver(this);
     _checkNewVersion();
   }
@@ -231,11 +233,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) => Expanded(
-                          child: Text(
-                            translatedMessage.toString(),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: Theme.of(context).textTheme.headline4!,
+                          child: FittedBox(
+                            child: Text(
+                              translatedMessage.toString(),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: Theme.of(context).textTheme.headline4!,
+                            ),
                           ),
                         ),
                       ),
@@ -355,20 +359,41 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   _onBackPressed() {
     return showDialog(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
               backgroundColor: Colors.white,
-              title: Text("Do you want to exit the app?",
-                  style: Theme.of(context).textTheme.headline2!),
+              title: TranslationWidget(
+                  message: "Do you want to exit the app?",
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) {
+                    return Text(translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline2!);
+                  }),
+
+              //  Text("Do you want to exit the app?",
+              //     style: Theme.of(context).textTheme.headline2!),
               actions: <Widget>[
                 FlatButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child:
-                      Text("No", style: Theme.of(context).textTheme.headline2!),
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: TranslationWidget(
+                      message: "No",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline2!);
+                      }),
                 ),
                 FlatButton(
                   onPressed: () => exit(0),
-                  child: Text("Yes",
-                      style: Theme.of(context).textTheme.headline2!),
+                  child: TranslationWidget(
+                      message: "Yes",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline2!);
+                      }),
                 ),
               ],
             ));

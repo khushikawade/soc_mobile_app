@@ -1,12 +1,12 @@
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 
 import 'modules/news/model/notification_list.dart';
 
 class Globals {
+  // static GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   static var iosInfo;
   static var androidInfo;
   static String? token = '';
