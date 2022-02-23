@@ -395,6 +395,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     bloc.add(FetchNotificationList());
     isActionAPICalled = false;
     _homeBloc.add(FetchBottomNavigationBar());

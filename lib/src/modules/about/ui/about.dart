@@ -47,6 +47,7 @@ class _AboutPageState extends State<AboutPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     _bloc.add(AboutStaffDirectoryEvent());
     _homeBloc.add(FetchBottomNavigationBar());
   }

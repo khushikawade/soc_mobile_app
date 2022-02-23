@@ -42,6 +42,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     _bloc.add(ResourcesListEvent());
     _homeBloc.add(FetchBottomNavigationBar());
   }
