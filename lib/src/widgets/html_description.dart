@@ -30,7 +30,6 @@ class AboutusPage extends StatefulWidget {
 }
 
 class _AboutusPageState extends State<AboutusPage> {
- 
   static const double _kLabelSpacing = 20.0;
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
@@ -105,7 +104,7 @@ class _AboutusPageState extends State<AboutusPage> {
   }
 
   Widget build(BuildContext context) {
-    String getImgFromHtml = Utility.getHTMLImgSrc(widget.htmlText);
+    //String getImgFromHtml = Utility.getHTMLImgSrc(widget.htmlText);
 
     return Scaffold(
       appBar: CustomAppBarWidget(
@@ -113,8 +112,8 @@ class _AboutusPageState extends State<AboutusPage> {
         isShare: true,
         appBarTitle: widget.appbarTitle,
         ishtmlpage: widget.ishtml,
-        sharedpopBodytext: "${widget.htmlText.replaceAll(exp, '').toString()} $getImgFromHtml",
-        // sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
+        //sharedpopBodytext: "${widget.htmlText.replaceAll(exp, '').toString()} $getImgFromHtml",
+        sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
         sharedpopUpheaderText: "Please checkout this link",
         language: Globals.selectedLanguage,
       ),
