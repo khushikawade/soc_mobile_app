@@ -93,7 +93,8 @@ class _StudentPageState extends State<StudentPage> {
         //  print(orientation);
         GridView.count(
             key: ValueKey(key),
-            padding: const EdgeInsets.only(bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding  ),
+            padding: const EdgeInsets.only(
+                bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding),
             childAspectRatio:
                 MediaQuery.of(context).orientation == Orientation.portrait
                     ? 1
@@ -373,8 +374,8 @@ class _StudentPageState extends State<StudentPage> {
             //         Globals.homeObject["Student_Banner_Image__c"] != ''
             // Globals.appSetting.studentBannerColorC != null &&
             //         Globals.appSetting.studentBannerColorC != ''
-             Globals.appSetting.studentBannerImageC !=null&&
-              Globals.appSetting.studentBannerImageC!=""
+            Globals.appSetting.studentBannerImageC != null &&
+                    Globals.appSetting.studentBannerImageC != ""
                 ? NestedScrollView(
 
                     // controller: _scrollController,

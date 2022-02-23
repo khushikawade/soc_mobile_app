@@ -58,12 +58,17 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
         ),
-        child: Text(
-          widget.obj!.designation ?? "",
-          textAlign: TextAlign.left,
-          style: Theme.of(context).textTheme.headline2!.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+        child: TranslationWidget(
+          message: widget.obj!.designation ?? "",
+          toLanguage: Globals.selectedLanguage,
+          fromLanguage: "en",
+          builder: (translatedMessage) => Text(
+            translatedMessage.toString(),
+            textAlign: TextAlign.left,
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+          ),
         ));
   }
 
@@ -72,12 +77,17 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
         ),
-        child: Text(
-          widget.obj!.name ?? "",
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline2!.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+        child: TranslationWidget(
+          message: widget.obj!.name ?? "",
+          toLanguage: Globals.selectedLanguage,
+          fromLanguage: "en",
+          builder: (translatedMessage) => Text(
+            translatedMessage.toString(),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+          ),
         ));
   }
 
@@ -87,13 +97,18 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
           horizontal: _kLabelSpacing,
         ),
         // TODO: Replace text with HTML // text: widget.obj!.descriptionC ?? "",
-        child: Linkify(
-          onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
-          options: LinkifyOptions(humanize: false),
-          linkStyle: TextStyle(color: Colors.blue),
-          text: widget.obj!.descriptionC ?? "",
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-        ));
+        child: TranslationWidget(
+            message: widget.obj!.descriptionC ?? "",
+            toLanguage: Globals.selectedLanguage,
+            fromLanguage: "en",
+            builder: (translatedMessage) => Linkify(
+                  onOpen: (link) =>
+                      Utility.launchUrlOnExternalBrowser(link.url),
+                  options: LinkifyOptions(humanize: false),
+                  linkStyle: TextStyle(color: Colors.blue),
+                  text: translatedMessage,
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                )));
   }
 
   Widget _buildPhoneWidget() {

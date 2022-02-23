@@ -165,7 +165,7 @@ class LanguageSelector {
                                     .textTheme
                                     .headline6!
                                     .copyWith(
-                                      fontSize: AppTheme.kBottomSheetTitleSize,
+                                      fontSize: Globals.deviceType == "phone" ?AppTheme.kBottomSheetTitleSize:AppTheme.kBottomSheetTitleSize*1.3,
                                     ),
                               );
                             }),

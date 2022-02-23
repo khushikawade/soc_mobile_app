@@ -83,7 +83,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
 
   @override
   Widget build(BuildContext context) {
-    List onlyShowList = apps.where((i) => i.status == 'Show').toList();
+    //List onlyShowList = apps.where((i) => i.status == 'Show').toList();
     return Center(
       child: Material(
         color: Colors.transparent,
@@ -104,7 +104,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                 body: Padding(
                   padding: const EdgeInsets.only(
                       top: 20, left: 20.0, right: 20, bottom: 20),
-                  child: onlyShowList.length > 0
+                  child: apps.length > 0
                       ? GridView.count(
                           crossAxisCount: MediaQuery.of(context).orientation ==
                                       Orientation.portrait &&
@@ -126,32 +126,32 @@ class AppsFolderPageState extends State<AppsFolderPage>
                           crossAxisSpacing: _kLableSpacing,
                           mainAxisSpacing: _kLableSpacing,
                           children: List.generate(
-                            onlyShowList.length,
+                            apps.length,
                             (index) {
-                              return onlyShowList[index].status == null ||
-                                      onlyShowList[index].status == 'Show'
+                              return apps[index].status == null ||
+                                      apps[index].status == 'Show'
                                   ? InkWell(
-                                      onTap: () => _launchURL(onlyShowList[index]),
+                                      onTap: () => _launchURL(apps[index]),
                                       child: Column(
                                         children: [
-                                          onlyShowList[index].appIconC != null &&
-                                                  onlyShowList[index].appIconC != ''
+                                          apps[index].appIconC != null &&
+                                                  apps[index].appIconC != ''
                                               ? Container(
                                                   height: 65,
                                                   width: 65,
                                                   child: CustomIconWidget(
-                                                      iconUrl: onlyShowList[index]
+                                                      iconUrl: apps[index]
                                                               .appIconC ??
                                                           Overrides
                                                               .folderDefaultImage))
                                               : Container(),
                                           Container(
                                               child: TranslationWidget(
-                                            message: onlyShowList[index].appFolderc !=
+                                            message: apps[index].appFolderc !=
                                                         null &&
                                                     widget.folderName ==
-                                                        onlyShowList[index].appFolderc
-                                                ? "${onlyShowList[index].titleC}"
+                                                        apps[index].appFolderc
+                                                ? "${apps[index].titleC}"
                                                 : '',
                                             fromLanguage: "en",
                                             toLanguage:
