@@ -378,6 +378,7 @@ class _EventPageState extends State<EventPage>
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());
   }
