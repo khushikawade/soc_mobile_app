@@ -62,8 +62,8 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   _onNotificationTap() {
-    OneSignal.shared.setNotificationOpenedHandler((result) {
-      Globals.isNewTap = true;
+    OneSignal.shared.setNotificationOpenedHandler((OSNotificationOpenedResult result) {     
+        Globals.isNewTap = true;
     });
   }
 
