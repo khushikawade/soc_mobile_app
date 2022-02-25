@@ -34,6 +34,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
+
         _localData.forEach((element) {
           if (element.completedAtTimestamp != null) {
             _localData.sort((a, b) =>
@@ -123,6 +124,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         String? _objectName = "news_action";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
+        
         if (event.isDetailPage == false) {
           if (_localData.isEmpty) {
             yield NewsLoading();
