@@ -92,7 +92,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         } else {
           for (int i = 0; i < Globals.socialList.length; i++) {
             for (int j = 0; j < list.length; j++) {
-              if ("${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t']}" ==
+              //if ("${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t']}" ==
+                if("${Globals.socialList[i].guid['\$t']}${Overrides.SCHOOL_ID}"==
                   list[j].notificationId) {
                 newList.add(Item(
                     id: Globals.socialList[i].id,
@@ -155,7 +156,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         yield Loading();
 
         var data = await addSocailAction({
-          "Notification_Id__c": "${event.id}",
+          "Notification_Id__c": "${event.id}${Overrides.SCHOOL_ID}",
           "Title__c": "${event.title}",
           "Like__c": "${event.like}",
           "Thanks__c": "${event.thanks}",
