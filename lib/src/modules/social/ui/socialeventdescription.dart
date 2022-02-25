@@ -217,11 +217,17 @@ class SocialDescription extends StatelessWidget {
                 alignment: Alignment.center,
                 child: CommonImageWidget(
                     isOnTap: true,
-                    iconUrl: object.enclosure['url'] ??
-                        Utility.getHTMLImgSrc(object.description["__cdata"]) ??
-                        Globals.splashImageUrl ??
-                        // Globals.homeObject["App_Logo__c"],
-                        Globals.appSetting.appLogoC,
+                    iconUrl: (object.enclosure != null &&
+                    object.enclosure != "" &&
+                    object.enclosure['url'] != null &&
+                    object.enclosure['url'] != "") ?
+                    object.enclosure['url'] : Utility.getHTMLImgSrc(object.description["__cdata"]) != ''?Utility.getHTMLImgSrc(object.description["__cdata"]) :Globals.splashImageUrl ??Globals.appSetting.appLogoC,
+                    
+                    // object.enclosure['url'] ??
+                    //     Utility.getHTMLImgSrc(object.description["__cdata"]) ??
+                    //     Globals.splashImageUrl ??
+                    //     // Globals.homeObject["App_Logo__c"],
+                    //     Globals.appSetting.appLogoC,
                     fitMethod: BoxFit.contain,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100)))
