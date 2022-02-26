@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
@@ -100,7 +101,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
                           if (state is BottomNavigationBarSuccess) {
                             AppTheme.setDynamicTheme(
                                 Globals.appSetting, context);
-                            Globals.homeObject = state.obj;
+                            // Globals.homeObject = state.obj;
+                            Globals.appSetting = AppSetting.fromJson(state.obj);
                             setState(() {});
                           }
                         },
@@ -124,19 +126,26 @@ class _ResourcesPageState extends State<ResourcesPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObject["Resources_Banner_Image__c"] != null &&
-                Globals.homeObject["Resources_Banner_Image__c"] != ""
+        body: Globals.appSetting.resourcesBannerImageC != null &&
+                Globals.appSetting.resourcesBannerImageC != ""
+            // Globals.homeObject["Resources_Banner_Image__c"] != null &&
+            //         Globals.homeObject["Resources_Banner_Image__c"] != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     BannerImageWidget(
-                      imageUrl: Globals.homeObject["Resources_Banner_Image__c"],
+                      imageUrl: Globals.appSetting.resourcesBannerImageC!,
+                      // Globals.homeObject["Resources_Banner_Image__c"],
                       bgColor: Globals
-                                  .homeObject["Resources_Banner_Color__c"] !=
+                                  // .homeObject["Resources_Banner_Color__c"] !=
+                                  .appSetting
+                                  .resourcesBannerColorC !=
                               null
                           ? Utility.getColorFromHex(
-                              Globals.homeObject["Resources_Banner_Color__c"])
+                              Globals.appSetting.resourcesBannerColorC!
+                              // Globals.homeObject["Resources_Banner_Color__c"]
+                              )
                           : null,
                     )
                   ];

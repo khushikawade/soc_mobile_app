@@ -1,10 +1,11 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
-import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/schools/ui/school_details.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -16,12 +17,12 @@ import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,7 @@ class _SearchPageState extends State<SearchPage> {
   static const double _kIconSize = 38.0;
   bool? isDBListEmpty = true;
   List<SearchList> searchList = [];
+  
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -71,8 +73,11 @@ class _SearchPageState extends State<SearchPage> {
   getListLength() async {
     int length = await HiveDbServices().getListLength(Strings.hiveLogName);
     length < 1 ? isDBListEmpty = true : isDBListEmpty = false;
-    // print(" ************");
-    // print(isDBListEmpty);
+  }
+
+  getListData() async {
+    List listItem = await HiveDbServices().getListData(Strings.hiveLogName);
+    return listItem;
   }
 
   deleteItem() async {
@@ -89,19 +94,20 @@ class _SearchPageState extends State<SearchPage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => ContactPage(
-                        obj: Globals.homeObject,
+                        obj: Globals.appSetting,
+                        //  Globals.homeObject,
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC!,
                         language: Globals.selectedLanguage!,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (obj.typeC == "Form") {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
                     staffDirectoryCategoryId: null,
-                    isAbout: false,
+                    isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,
@@ -126,26 +132,23 @@ class _SearchPageState extends State<SearchPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
-    } else if (obj.deepLink != null) {
-      if (obj.deepLink == 'NO') {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC!,
-                      url: obj.appURLC!,
-                      isbuttomsheet: true,
-                      language: Globals.selectedLanguage,
-                    )));
-      } else {
-        // if (await canLaunch(obj.appURLC!)) {
-        //   await launch(obj.appURLC!);
-        // } else {
-        //   throw 'Could not launch ${obj.appURLC}';
-        // }
-        await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
-      }
-    } else if (obj.typeC == "URL") {
+    } 
+    // else if (obj.deepLink != null) {
+    //   if (obj.deepLink == 'NO') {
+    //     Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (BuildContext context) => InAppUrlLauncer(
+    //                   title: obj.titleC!,
+    //                   url: obj.appURLC!,
+    //                   isbuttomsheet: true,
+    //                   language: Globals.selectedLanguage,
+    //                 )));
+    //   } else {
+    //     await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
+    //   }
+    // }
+     else if (obj.typeC == "URL") {
       obj.urlC != null
           ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
@@ -287,50 +290,6 @@ class _SearchPageState extends State<SearchPage> {
                 onChanged: onItemChanged,
               );
             }),
-
-        //  TextFormField(
-        //   style:
-        //       TextStyle(color: Theme.of(context).colorScheme.primaryVariant),
-        //   focusNode: myFocusNode,
-        //   controller: _controller,
-        //   cursorColor: Colors.black,
-        //   decoration: InputDecoration(
-        //     focusedBorder: OutlineInputBorder(
-        //       borderRadius: BorderRadius.all(Radius.circular(30.0)),
-        //       borderSide: BorderSide(
-        //           color: Theme.of(context).colorScheme.primary, width: 2),
-        //     ),
-        //     enabledBorder: OutlineInputBorder(
-        //       borderRadius: BorderRadius.all(Radius.circular(30.0)),
-        //       borderSide: BorderSide(
-        //           color: Theme.of(context).colorScheme.secondary, width: 2),
-        //     ),
-        //     hintText: 'Search',
-        //     fillColor: Theme.of(context).colorScheme.secondary,
-        //     prefixIcon: Icon(
-        //       const IconData(0xe805,
-        //           fontFamily: Overrides.kFontFam,
-        //           fontPackage: Overrides.kFontPkg),
-        //       size: Globals.deviceType == "phone" ? 20 : 28,
-        //     ),
-        //     suffixIcon: _controller.text.isEmpty
-        //         ? null
-        //         : InkWell(
-        //             onTap: () {
-        //               setState(() {
-        //                 _controller.clear();
-        //                 issuggestionList = false;
-        //                 FocusScope.of(context).requestFocus(FocusNode());
-        //               });
-        //             },
-        //             child: Icon(
-        //               Icons.clear,
-        //               size: Globals.deviceType == "phone" ? 20 : 28,
-        //             ),
-        //           ),
-        //   ),
-        //   onChanged: onItemChanged,
-        // )
       ),
     );
   }
@@ -343,12 +302,15 @@ class _SearchPageState extends State<SearchPage> {
             return snapshot.data != null && snapshot.data.length > 0
                 ? Expanded(
                     child: ListView.builder(
-                      padding: EdgeInsets.only(bottom: 20),
+                      padding: EdgeInsets.only(bottom: _kLabelSpacing * 1.5),
                       scrollDirection: Axis.vertical,
                       itemCount:
-                          snapshot.data.length < 5 ? snapshot.data.length : 5,
+                          snapshot.data.length < 10 ? snapshot.data.length : 10,
                       itemBuilder: (BuildContext context, int index) {
-                        return _buildRecentItem(index, snapshot.data);
+                        List reverseList = List.from(snapshot.data.reversed);
+                        // print(reverseList);
+                        // return _buildRecentItem(index, snapshot.data);
+                        return _buildRecentItem(index, reverseList);
                       },
                     ),
                   )
@@ -394,12 +356,7 @@ class _SearchPageState extends State<SearchPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Icon(
-                  const IconData(0xe805,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  size: Globals.deviceType == "phone" ? 14 : 22,
-                ),
+                _buildLeading(items[index]),
                 HorzitalSpacerWidget(_kLabelSpacing),
                 TranslationWidget(
                   message: items[index].titleC != null &&
@@ -427,14 +384,14 @@ class _SearchPageState extends State<SearchPage> {
           if (state is GlobalSearchSuccess) {
             searchList.clear();
             for (int i = 0; i < state.obj!.length; i++) {
-              if (state.obj![i].statusC != "Hide") {
-                // if (state.obj![i].typeC == null &&
-                //     state.obj![i].appURLC != null) {
-                //   state.obj![i].typeC = "URL";
+              // if (state.obj![i].statusC != "Hide") {
+              if (state.obj![i].typeC == null &&
+                  state.obj![i].urlC != null) {
+                state.obj![i].typeC = "URL";
+              }
+              if (state.obj[i].titleC != null && state.obj[i].titleC != "") {
+                searchList.add(state.obj![i]);
                 // }
-                if (state.obj[i].titleC != null) {
-                  searchList.add(state.obj![i]);
-                }
               }
             }
             return searchList.length > 0
@@ -444,7 +401,10 @@ class _SearchPageState extends State<SearchPage> {
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     scrollDirection: Axis.vertical,
-                    padding: EdgeInsets.all(_kLabelSpacing / 2),
+                    padding: EdgeInsets.only(
+                        left: _kLabelSpacing / 2,
+                        right: _kLabelSpacing / 2,
+                        bottom: _kLabelSpacing * 1.5),
                     children: searchList.map<Widget>((data) {
                       return Container(
                         decoration: BoxDecoration(
@@ -461,6 +421,7 @@ class _SearchPageState extends State<SearchPage> {
                               : Theme.of(context).colorScheme.secondary,
                         ),
                         child: ListTile(
+                            leading: _buildLeading(data),
                             title: TranslationWidget(
                               message: data.titleC ?? "-",
                               toLanguage: Globals.selectedLanguage,
@@ -477,33 +438,46 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                             onTap: () async {
                               _route(data);
-                              if (data != null) {
-                                deleteItem();
-                                final recentitem = Recent(
-                                    1,
-                                    data.titleC,
-                                    data.appURLC,
-                                    data.urlC,
-                                    data.id,
-                                    data.name,
-                                    data.typeC,
-                                    data.rtfHTMLC,
-                                    data.pdfURL,
-                                    data.deepLink,
-                                    data.schoolId,
-                                    data.dept,
-                                    data.descriptionC,
-                                    data.emailC,
-                                    data.imageUrlC,
-                                    data.phoneC,
-                                    data.webURLC,
-                                    data.address,
-                                    data.geoLocation,
-                                    data.statusC,
-                                    data.sortOrder,
-                                    data.calendarId);
+                              List itemListData = await getListData();
+                              List idList = [];
+                              for (int i = 0; i < itemListData.length; i++) {
+                                idList.add(itemListData[i].id);
+                              }
 
-                                addtoDataBase(recentitem);
+                              if (idList.contains(data.id)) {
+                              } else {
+                                // print(Recent);
+                                if (data != null) {
+                                  deleteItem();
+                                  final recentitem = Recent(
+                                      1,
+                                      data.titleC,
+                                      data.appIconUrlC,
+                                      data.id,
+                                      data.name,
+                                      data.objectName,
+                                      data.rtfHTMLC,
+                                      data.typeC,
+                                      // data.schoolId,
+                                      // data.dept,
+                                      data.statusC,
+                                      data.urlC,
+                                      data.pdfURL,
+                                      data.sortOrder,
+                                      data.deepLink,
+                                      data.appURLC,
+                                      data.calendarId,
+                                      data.emailC,
+                                      data.imageUrlC,
+                                      data.phoneC,
+                                      data.webURLC,
+                                      data.address,
+                                      data.geoLocation,
+                                      data.descriptionC,
+                                      data.latitude,
+                                      data.longitude);
+                                  addtoDataBase(recentitem);
+                                }
                               }
                             }),
                       );
@@ -533,6 +507,28 @@ class _SearchPageState extends State<SearchPage> {
             return Container(height: 0);
           }
         });
+  }
+
+  Widget _buildLeading(obj) {
+    if (obj.appIconUrlC != null) {
+      return CustomIconWidget(
+        iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
+      );
+    } else if (obj.appIconUrlC != null) {
+      return Icon(
+        IconData(
+          int.parse('0x${obj.appIconUrlC!}'),
+          fontFamily: 'FontAwesomeSolid',
+          fontPackage: 'font_awesome_flutter',
+        ),
+        color: Theme.of(context).colorScheme.primary,
+        size: Globals.deviceType == "phone" ? 24 : 32,
+      );
+    } else {
+      return CustomIconWidget(
+        iconUrl: Overrides.defaultIconUrl,
+      );
+    }
   }
 
   Widget _buildHeading() {
@@ -623,43 +619,46 @@ class _SearchPageState extends State<SearchPage> {
                   iserrorstate = true;
                 }
 
-                return connected
-                    ? Container(
-                        child:
-                            Column(mainAxisSize: MainAxisSize.max, children: [
-                          SpacerWidget(_kLabelSpacing / 4),
-                          _buildHeading(),
-                          SpacerWidget(_kLabelSpacing / 2),
-                          _buildSearchbar(),
-                          issuggestionList
-                              ? _buildissuggestionList()
-                              : SizedBox(height: 0),
-                          SpacerWidget(_kLabelSpacing / 2),
-                          issuggestionList == false
-                              ? _buildHeading2()
-                              : SizedBox(height: 0),
-                          issuggestionList == false
-                              ? _buildRecentItemList()
-                              : SizedBox(height: 0),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    Globals.homeObject = state.obj;
-                                    setState(() {});
-                                  } else if (state is HomeErrorReceived) {}
-                                },
-                                child: EmptyContainer()),
-                          ),
-                        ]),
-                      )
-                    : NoInternetErrorWidget(
-                        connected: connected, issplashscreen: false);
+                return
+                    //  connected
+                    //     ?
+                    Container(
+                  child: Column(mainAxisSize: MainAxisSize.max, children: [
+                    SpacerWidget(_kLabelSpacing / 4),
+                    _buildHeading(),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    _buildSearchbar(),
+                    issuggestionList
+                        ? _buildissuggestionList()
+                        : SizedBox(height: 0),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    issuggestionList == false
+                        ? _buildHeading2()
+                        : SizedBox(height: 0),
+                    issuggestionList == false
+                        ? _buildRecentItemList()
+                        : SizedBox(height: 0),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                          bloc: _homeBloc,
+                          listener: (context, state) async {
+                            if (state is BottomNavigationBarSuccess) {
+                              AppTheme.setDynamicTheme(
+                                  Globals.appSetting, context);
+                              // Globals.homeObject = state.obj;
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
+                              setState(() {});
+                            } else if (state is HomeErrorReceived) {}
+                          },
+                          child: EmptyContainer()),
+                    ),
+                  ]),
+                );
+                // : NoInternetErrorWidget(
+                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

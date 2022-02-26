@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
 import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
@@ -96,7 +97,8 @@ class _SchoolPageState extends State<SchoolPage> {
                       : _kIconSize * 2,
                   iconUrl: obj.imageUrlC ??
                       Globals.splashImageUrl ??
-                      Globals.homeObject["App_Logo__c"],
+                      // Globals.homeObject["App_Logo__c"],
+                      Globals.appSetting.appLogoC,
                   fitMethod: BoxFit.cover,
                 ))),
             SizedBox(
@@ -185,7 +187,8 @@ class _SchoolPageState extends State<SchoolPage> {
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
-                              Globals.homeObject = state.obj;
+                              // Globals.homeObject = state.obj;
+                              Globals.appSetting = AppSetting.fromJson(state.obj);
                               setState(() {});
                             } else if (state is HomeErrorReceived) {
                               ErrorMsgWidget();
@@ -224,18 +227,24 @@ class _SchoolPageState extends State<SchoolPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObject["School_Banner_Image__c"] != null &&
-                Globals.homeObject["School_Banner_Image__c"] != ""
+        body: Globals.appSetting.schoolBannerImageC != null &&
+                Globals.appSetting.schoolBannerImageC != ""
+        //  Globals.homeObject["School_Banner_Image__c"] != null &&
+        //         Globals.homeObject["School_Banner_Image__c"] != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     BannerImageWidget(
-                      imageUrl: Globals.homeObject["School_Banner_Image__c"],
+                      imageUrl: Globals.appSetting.schoolBannerImageC!,
+                      // Globals.homeObject["School_Banner_Image__c"],
                       bgColor:
-                          Globals.homeObject["School_Banner_Color__c"] != null
+                      Globals.appSetting.schoolBannerColorC != null
+                          // Globals.homeObject["School_Banner_Color__c"] != null
                               ? Utility.getColorFromHex(
-                                  Globals.homeObject["School_Banner_Color__c"])
+                                Globals.appSetting.schoolBannerColorC! 
+                                 // Globals.homeObject["School_Banner_Color__c"]
+                                  )
                               : null,
                     )
                   ];

@@ -1,18 +1,31 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
+import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
+
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
 
 // ignore: must_be_immutable
 class SliderWidget extends StatefulWidget {
+  SliderWidget({
+    required this.obj,
+    required this.currentIndex,
+    required this.iseventpage,
+    required this.date,
+    required this.isbuttomsheet,
+    required this.language,
+    // required this.iconsName,
+    this.issocialpage,
+    this.isAboutSDPage,
+    // this.icons,
+  });
   final obj;
   int currentIndex;
   bool? issocialpage;
@@ -20,16 +33,10 @@ class SliderWidget extends StatefulWidget {
   String date;
   bool isbuttomsheet;
   String? language;
-  bool isEvent;
-  SliderWidget(
-      {required this.obj,
-      required this.currentIndex,
-      this.issocialpage,
-      required this.isAboutSDPage,
-      required this.date,
-      required this.isbuttomsheet,
-      required this.language,
-      required this.isEvent});
+  // final List? icons;
+  // final List? iconsName;
+  final iseventpage;
+  bool? connected;
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -47,6 +54,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   var link;
   var link2;
   bool first = false;
+  bool? isDeviceBackButton = true;
 
   @override
   void initState() {
@@ -56,12 +64,27 @@ class _SliderWidgetState extends State<SliderWidget> {
     pageinitialIndex = widget.currentIndex;
     _controller = PageController(initialPage: widget.currentIndex);
     Globals.callsnackbar = false;
+  BackButtonInterceptor.add(updateAction);
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+    BackButtonInterceptor.remove(updateAction);
+  }
+
+ bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
+    if (isDeviceBackButton == true) {
+      isDeviceBackButton = false;
+      bool isNewsPage =
+          widget.iseventpage == false || widget.issocialpage == true
+              ? true
+              : false;
+      Navigator.of(context).pop(isNewsPage);
+      return true;
+    }
+    return false;
   }
 
   Widget build(BuildContext context) {
@@ -69,11 +92,17 @@ class _SliderWidgetState extends State<SliderWidget> {
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
-          leading: BackButtonWidget(),
-          title: //SizedBox(width: 100.0, height: 60.0, child:
-              AppLogoWidget(
-            marginLeft: 57,
+          leading: BackButtonWidget(
+            isNewsPage:
+                widget.iseventpage == false || widget.issocialpage == true
+                    ? true
+                    : false,
           ),
+          title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            AppLogoWidget(
+              marginLeft: 57,
+            ),
+          ]),
           actions: <Widget>[
             IconButton(
               onPressed: () async {
@@ -96,7 +125,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                 size: Globals.deviceType == "phone" ? 18 : 26,
               ),
             ),
-            HorzitalSpacerWidget(_kPadding / 3),
             IconButton(
               onPressed: () async {
                 // setState(() {});
@@ -128,7 +156,7 @@ class _SliderWidgetState extends State<SliderWidget> {
               pageinitialIndex = sliderIndex;
               setState(() {});
               // if (first) {
-              //   pageinitialIndex < sliderIndex
+              //   pageinitialIndex <= sliderIndex
               //       ? ++widget.currentIndex
               //       : --widget.currentIndex;
               //   pageViewCurrentIndex = sliderIndex;
@@ -146,6 +174,8 @@ class _SliderWidgetState extends State<SliderWidget> {
             itemBuilder: (BuildContext context, int index) {
               return widget.issocialpage!
                   ? SocialDescription(
+                      //  icons: widget.icons,
+                      //   iconsName: widget.iconsName,
                       object: object[pageinitialIndex],
                       language: Globals.selectedLanguage,
                       index: pageinitialIndex,
@@ -154,17 +184,20 @@ class _SliderWidgetState extends State<SliderWidget> {
                       ? AboutSDDetailPage(
                           obj: object[pageinitialIndex],
                         )
-                      : widget.isEvent
+                      : widget.iseventpage
                           ? EventDescription(
                               obj: object[pageinitialIndex],
                               isbuttomsheet: true,
                               language: Globals.selectedLanguage,
                             )
                           : Newdescription(
+                              // icons: widget.icons!,
+                              // iconsName: widget.iconsName,
                               obj: object[pageinitialIndex],
                               date: widget.date,
                               isbuttomsheet: true,
                               language: Globals.selectedLanguage,
+                              connected: widget.connected,
                             );
             },
           ),

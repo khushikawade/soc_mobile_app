@@ -1,17 +1,20 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
+import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/common_image_widget.dart';
+import 'package:Soc/src/widgets/common_feed_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 
@@ -27,17 +30,22 @@ class SocialPage extends StatefulWidget {
 }
 
 class _SocialPageState extends State<SocialPage> {
-  static const double _kLabelSpacing = 16.0;
-  static const double _kIconSize = 48.0;
+  // static const double _kLabelSpacing = 16.0;
+  // static const double _kSocialIconSize = 30.0;
+  // static const double _kIconSize = 48.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
   SocialBloc bloc = SocialBloc();
+  bool? isCountLoading = true;
+  SocialBloc _countSocialBloc = new SocialBloc();
+  List socialMainList = [];
   // GlobalKey _imgkey = GlobalKey();
 
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent());
+    _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
   }
 
   @override
@@ -49,6 +57,7 @@ class _SocialPageState extends State<SocialPage> {
     refreshKey.currentState?.show(atTop: false);
     bloc.add(SocialPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());
+    _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
   }
 
   Widget _buildlist(obj, int index, mainObj) {
@@ -57,122 +66,75 @@ class _SocialPageState extends State<SocialPage> {
         : parse("");
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
-    // print(index);
-    // print(imageLink);
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: _kLabelSpacing,
-        vertical: _kLabelSpacing / 2,
-      ),
-      color: (index % 2 == 0)
-          ? Theme.of(context).colorScheme.background
-          : Theme.of(context).colorScheme.secondary,
+      // decoration: BoxDecoration(
+      //   border: Border.all(
+
+      //     color: AppTheme.kDividerColor2,
+      //     width: 2,
+      //   ),
+      //   borderRadius: BorderRadius.circular(0.0),
+
+      // ),
+      color: Theme.of(context).colorScheme.background,
+      // height: MediaQuery.of(context).size.height * 0.4,
+      // width: MediaQuery.of(context).size.width,
+      // padding: EdgeInsets.symmetric(
+      //   horizontal: _kLabelSpacing,
+      //   vertical: _kLabelSpacing / 2,
+      // ),
+      // color: (index % 2 == 0)
+      //     ? Theme.of(context).colorScheme.background
+      //     : Theme.of(context).colorScheme.secondary,
       child: InkWell(
-        onTap: () {
-          // print(index);
-          // print(mainObj.length);
-          Navigator.push(
+        onTap: () async {
+          bool result = await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
-                        obj: mainObj,
+                        // icons: Globals.icons,
+                        obj: socialMainList.length > 0 &&
+                                socialMainList[index] != null
+                            ? socialMainList
+                            : mainObj,
+                        // iconsName: Globals.iconsName,
                         currentIndex: index,
                         issocialpage: true,
                         isAboutSDPage: false,
-                        isEvent: false,
+                        iseventpage: false,
                         date: '1',
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )));
+          if (result == true) {
+            _countSocialBloc.add(FetchSocialActionCount(isDetailPage: true));
+          }
         },
-        child: Row(
-          children: <Widget>[
-            Container(
-                child: (CommonImageWidget(
-              iconUrl: (obj.enclosure != null &&
-                      obj.enclosure != '' &&
-                      obj.enclosure['url'] != null &&
-                      obj.enclosure['url'] != "")
-                  ? obj.enclosure['url']
-                  : (imageLink != null && imageLink != "")
-                      ? imageLink
-                      : Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"],
-              height: Globals.deviceType == "phone"
-                  ? _kIconSize * 1.4
-                  : _kIconSize * 2,
-              width: Globals.deviceType == "phone"
-                  ? _kIconSize * 1.4
-                  : _kIconSize * 2,
-              fitMethod: BoxFit.cover,
-            ))),
-            SizedBox(
-              width: _kLabelSpacing / 2,
-            ),
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      obj.title["__cdata"] != null &&
-                              obj.title["__cdata"].length > 1
-                          ? Container(
-                              width: MediaQuery.of(context).size.width * 0.69,
-                              child: TranslationWidget(
-                                  message:
-                                      "${obj.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}",
-                                  fromLanguage: "en",
-                                  toLanguage: Globals.selectedLanguage,
-                                  builder: (translatedMessage) {
-                                    return Text(translatedMessage.toString(),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline2!
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant,
-                                            ));
-                                  }),
-                            )
-                          : Container()
-                    ],
-                  ),
-                  SizedBox(height: _kLabelSpacing / 2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      obj.pubDate != null && obj.pubDate.length > 1
-                          ? Container(
-                              width: MediaQuery.of(context).size.width * 0.40,
-                              child: TranslationWidget(
-                                message:
-                                    Utility.convertDate(obj.pubDate).toString(),
-                                fromLanguage: "en",
-                                toLanguage: Globals.selectedLanguage,
-                                builder: (translatedMessage) => Text(
-                                    translatedMessage.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant,
-                                        )),
-                              ))
-                          : Container()
-                    ],
-                  ),
-                ]),
-          ],
+        child: CommonFeedWidget(
+          title: '',
+          description: obj.title!["__cdata"] != null &&
+                  obj.title!["__cdata"].length > 1
+              ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}"
+              : '',
+          actionIcon: Container(
+              // padding: EdgeInsets.only(
+              //     top: MediaQuery.of(context).size.height * 0.030),
+              child: actionButton(mainObj, obj, index)),
+          url: (obj.enclosure != null &&
+                  obj.enclosure != '' &&
+                  obj.enclosure['url'] != null &&
+                  obj.enclosure['url'] != "")
+              ? obj.enclosure['url']
+              : (imageLink != null && imageLink != "")
+                  ? imageLink
+                  : '',
+          // Globals.splashImageUrl ??
+          //     // Globals.homeObject["App_Logo__c"],
+          //     Globals.appSetting.appLogoC,
+          titleIcon: widgetIcon(obj.link),
         ),
+        //
       ),
     );
   }
@@ -211,6 +173,8 @@ class _SocialPageState extends State<SocialPage> {
                 if (connectivity != ConnectivityResult.none) {
                   if (iserrorstate == true) {
                     bloc.add(SocialPageEvent());
+                    _countSocialBloc
+                        .add(FetchSocialActionCount(isDetailPage: false));
                     iserrorstate = false;
                   }
                 } else if (connectivity == ConnectivityResult.none) {
@@ -225,6 +189,7 @@ class _SocialPageState extends State<SocialPage> {
                         bloc: bloc,
                         builder: (BuildContext context, SocialState state) {
                           if (state is SocialDataSucess) {
+                            // _countSocialBloc.add(FetchSocialActionCount());
                             return state.obj != null && state.obj!.length > 0
                                 ? Expanded(child: makeList(state.obj))
                                 : Expanded(
@@ -235,17 +200,6 @@ class _SocialPageState extends State<SocialPage> {
                                       connected: connected,
                                     ),
                                   );
-                            // Expanded(
-                            //     child: ListView(
-                            //       shrinkWrap: true,
-                            //       children: [
-                            //       NoDataFoundErrorWidget(
-                            //         isResultNotFoundMsg: true,
-                            //         isNews: false,
-                            //         isEvents: false,
-                            //       )
-                            //     ]),
-                            //   );
                           } else if (state is Loading) {
                             return Expanded(
                               child: Container(
@@ -261,6 +215,19 @@ class _SocialPageState extends State<SocialPage> {
                           }
                           return Container();
                         }),
+                    BlocListener<SocialBloc, SocialState>(
+                      bloc: bloc,
+                      listener: (context, state) async {
+                        if (state is SocialDataSucess) {
+                          _countSocialBloc
+                              .add(FetchSocialActionCount(isDetailPage: false));
+
+                          // object = state.obj;
+
+                        }
+                      },
+                      child: Container(),
+                    ),
                     Container(
                       height: 0,
                       width: 0,
@@ -272,7 +239,9 @@ class _SocialPageState extends State<SocialPage> {
                                 Globals.appSetting, context);
 
                             setState(() {
-                              Globals.homeObject = state.obj;
+                              // Globals.homeObject = state.obj;
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
                             });
                           }
                         },
@@ -290,5 +259,110 @@ class _SocialPageState extends State<SocialPage> {
               child: Container()),
           onRefresh: refreshPage,
         ));
+  }
+
+  Widget actionButton(List<Item> list, obj, int index) {
+    return BlocBuilder(
+        bloc: _countSocialBloc,
+        builder: (BuildContext context, SocialState state) {
+          if (state is SocialActionCountSuccess) {
+            socialMainList.clear();
+            socialMainList.addAll(state.obj);
+            isCountLoading = false;
+            return Container(
+              // alignment: Alignment.centerLeft,
+              child: state.obj[index] ==
+                      null // To make it backward compatible:: If the local database has something different than the real data that has been fetched by the API.
+                  ? Container()
+                  : NewsActionBasic(
+                      page: "social",
+                      obj: state.obj[index],
+                      isLoading: isCountLoading,
+                      title: state.obj[index].title['__cdata'],
+                      description: state.obj[index].description['__cdata'],
+                      imageUrl: state.obj[index].enclosure != "" &&
+                              state.obj[index].enclosure != null
+                          ? state.obj[index].enclosure['url']
+                          : "",
+                      imageExtType: state.obj[index].enclosure != ""
+                          ? state.obj[index].enclosure['type']
+                          : "",
+                    ),
+            );
+          } else if (state is Loading) {
+            return Container(
+              alignment: Alignment.centerLeft,
+              child: ShimmerLoading(
+                  isLoading: true,
+                  child: NewsActionBasic(
+                    title: Globals.socialList[index].title['__cdata'],
+                    description:
+                        Globals.socialList[index].description['__cdata'],
+                    imageUrl: Globals.socialList[index].enclosure,
+                    page: "social",
+                    obj: Globals.socialList[index],
+                    isLoading: isCountLoading,
+                  )),
+            );
+          } else if (state is SocialErrorReceived) {
+            return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
+          } else {
+            return Container(
+              alignment: Alignment.centerLeft,
+              child: ShimmerLoading(
+                  isLoading: true,
+                  child: NewsActionBasic(
+                      title: Globals.socialList[index].title['__cdata'],
+                      description:
+                          Globals.socialList[index].description['__cdata'],
+                      imageUrl: Globals.socialList[index].enclosure,
+                      page: "social",
+                      obj: Globals.socialList[index],
+                      isLoading: isCountLoading)),
+            );
+          }
+        });
+  }
+
+  Widget widgetIcon(link) {
+    if (link["\$t"].contains('instagram')) {
+      return ShaderMask(
+          shaderCallback: (bounds) => RadialGradient(
+                center: Alignment.topRight,
+                transform: GradientRotation(50),
+                radius: 5,
+                colors: [
+                  Colors.deepPurpleAccent,
+                  Colors.red,
+                  Colors.yellow,
+                  Color(0xffee2a7b),
+                  Colors.red,
+                ],
+              ).createShader(bounds),
+          child: FaIcon(
+            FontAwesomeIcons.instagram,
+            size: MediaQuery.of(context).size.width * 0.07,
+            color: Colors.white,
+          ));
+    } else if (link["\$t"].contains('twitter')) {
+      return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2));
+    } else if (link["\$t"].contains('facebook')) {
+      return iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2));
+    } else if (link["\$t"].contains('youtube')) {
+      return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000));
+    }
+
+    return Icon(
+      Icons.ac_unit,
+      size: MediaQuery.of(context).size.width * 0.07,
+    );
+  }
+
+  Widget iconWidget(icon, color) {
+    return FaIcon(
+      icon,
+      size: MediaQuery.of(context).size.width * 0.07,
+      color: color,
+    );
   }
 }

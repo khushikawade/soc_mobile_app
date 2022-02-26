@@ -15,6 +15,8 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:new_version/new_version.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../overrides.dart';
@@ -40,7 +42,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
-  // final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
+
   late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
@@ -50,7 +52,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       _notification = state;
     });
     if (_notification == AppLifecycleState.resumed)
-      _newsBloc.add(FetchNotificationCount());
+      _newsBloc.add(FetchNotificationList());
   }
 
   Widget callNotification() {
@@ -75,12 +77,30 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
   }
 
+  void _checkNewVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String _packageName = packageInfo.packageName;
+    final newVersion = NewVersion(
+      iOSId: _packageName,
+      androidId: _packageName,
+    );
+    _checkVersionUpdateStatus(newVersion);
+  }
+
   @override
   void initState() {
     super.initState();
     _bloc.initPushState(context);
-    _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
+
+    _controller = PersistentTabController(
+        initialIndex:
+            Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
     WidgetsBinding.instance!.addObserver(this);
+    _checkNewVersion();
+  }
+
+  _checkVersionUpdateStatus(NewVersion newVersion) async {
+    newVersion.showAlertIfNecessary(context: context);
   }
 
   @override
@@ -91,9 +111,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   List<Widget> _buildScreens() {
     List<Widget> _screens = [];
-    Globals.homeObject["Bottom_Navigation__c"]
-        .split(";")
-        .forEach((String element) {
+    // Globals.homeObject["Bottom_Navigation__c"]
+    Globals.appSetting.bottomNavigationC!.split(";").forEach((String element) {
       element = element.toLowerCase();
       if (element.contains('news')) {
         _screens.add(NewsPage());
@@ -131,16 +150,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
-    return Globals.homeObject["Bottom_Navigation__c"]
+    return Globals.appSetting.bottomNavigationC!
         .split(";")
         .map<PersistentBottomNavBarItem>(
       (item) {
         if (item.split("_")[0].toString().toLowerCase().contains("news")) {
-          Globals.newsIndex = Globals.homeObject["Bottom_Navigation__c"]
-              .split(";")
-              .indexOf(item);
+          Globals.newsIndex =
+              Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
         }
-        // print(Globals.newsIndex);F
         setState(() {});
         return PersistentBottomNavBarItem(
           icon: Row(
@@ -153,8 +170,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     children: [
                       Stack(
                         alignment: Alignment.center,
-                        // crossAxisAlignment: CrossAxisAlignment.center,
-                        // mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ValueListenableBuilder(
                             builder: (BuildContext context, dynamic value,
@@ -166,7 +181,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                         Container(
                                           margin: EdgeInsets.only(
                                               bottom: 15, left: 50),
-                                          // padding:EdgeInsets.only(bottom: 25,) ,
                                           height: 7,
                                           width: 7,
                                           decoration: BoxDecoration(
@@ -195,11 +209,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) => Expanded(
-                          child: Text(
-                            translatedMessage.toString(),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: Theme.of(context).textTheme.headline4!,
+                          child: FittedBox(
+                            child: Text(
+                              translatedMessage.toString(),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: Theme.of(context).textTheme.headline4!,
+                            ),
                           ),
                         ),
                       ),
@@ -290,39 +306,59 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        _tabBarBody(),
-        ValueListenableBuilder<bool>(
-            valueListenable: Globals.hasShowcaseInitialised,
-            builder: (context, value, _) {
-              if (Globals.hasShowcaseInitialised.value == true)
-                return Container();
-              return Center(
-                  child: _continueShowCaseInstructions(
-                      'Tap anywhere on the screen to continue.'));
-            }),
-      ],
-    ));
+      body: Stack(
+        children: [
+          _tabBarBody(),
+          ValueListenableBuilder<bool>(
+              valueListenable: Globals.hasShowcaseInitialised,
+              builder: (context, value, _) {
+                if (Globals.hasShowcaseInitialised.value == true)
+                  return Container();
+                return Center(
+                    child: _continueShowCaseInstructions(
+                        'Tap anywhere on the screen to continue.'));
+              }),
+        ],
+      ),
+    );
+    // );
   }
 
   _onBackPressed() {
     return showDialog(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
               backgroundColor: Colors.white,
-              title: Text("Do you want to exit the app?",
-                  style: Theme.of(context).textTheme.headline2!),
+              title: TranslationWidget(
+                  message: "Do you want to exit the app?",
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) {
+                    return Text(translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline2!);
+                  }),
               actions: <Widget>[
                 FlatButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child:
-                      Text("No", style: Theme.of(context).textTheme.headline2!),
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: TranslationWidget(
+                      message: "No",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline2!);
+                      }),
                 ),
                 FlatButton(
                   onPressed: () => exit(0),
-                  child: Text("Yes",
-                      style: Theme.of(context).textTheme.headline2!),
+                  child: TranslationWidget(
+                      message: "Yes",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline2!);
+                      }),
                 ),
               ],
             ));

@@ -14,8 +14,6 @@ import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import '../../../widgets/no_data_found_error_widget.dart';
 
 class CommonListWidget extends StatefulWidget {
@@ -38,7 +36,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   // final widget.scaffoldKey = GlobalKey<ScaffoldState>();
 
   _launchURL(obj) async {
-    if (obj.appUrlC.toString().split(":")[0] == 'http') {
+    if (obj.appUrlC.toString().split(":")[0] == 'http' || obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
     } else {
       Navigator.push(
@@ -59,13 +57,14 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => ContactPage(
-                    obj: Globals.homeObject,
+                    obj: Globals.appSetting,
+                    //  Globals.homeObject,
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage ?? "English",
                   )));
     } else if (obj.typeC == "URL") {
-      obj.appUrlC != null
+      obj.appUrlC != null &&obj.appUrlC!=""
           ? _launchURL(obj)
           : Utility.showSnackBar(
               widget.scaffoldKey, "No link available", context);
@@ -75,7 +74,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
                     staffDirectoryCategoryId: null,
-                    isAbout: false,
+                    isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isbuttomsheet: true,

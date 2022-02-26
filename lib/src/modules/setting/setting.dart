@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -9,11 +10,9 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/share_button.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../globals.dart';
@@ -35,9 +34,7 @@ class _SettingPageState extends State<SettingPage> {
   bool _theme = false;
   bool _themeSystem = false;
   bool? push;
-  bool? push2;
-  bool? push3;
-  PackageInfo? packageInfo;
+  // PackageInfo? packageInfo;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
@@ -47,7 +44,7 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void initState() {
     super.initState();
-    appversion();
+    // appversion();
     OneSignal.shared
         .getDeviceState()
         .then((value) => {pushState(value!.pushDisabled)});
@@ -63,9 +60,9 @@ class _SettingPageState extends State<SettingPage> {
     // }
   }
 
-  void appversion() async {
-    packageInfo = await PackageInfo.fromPlatform();
-  }
+  // void appversion() async {
+  //   packageInfo = await PackageInfo.fromPlatform();
+  // }
 
   pushState(data) async {
     SharedPreferences pushStatus = await SharedPreferences.getInstance();
@@ -330,7 +327,7 @@ class _SettingPageState extends State<SettingPage> {
     return Container(
         padding: EdgeInsets.all(16),
         child: Text(
-          packageInfo!.version,
+         Globals.packageInfo!.version,
           style: Theme.of(context).textTheme.headline2!,
         ));
   }
@@ -410,7 +407,8 @@ class _SettingPageState extends State<SettingPage> {
 
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        Globals.homeObject = state.obj;
+                        //Globals.homeObject = state.obj;
+                          Globals.appSetting = AppSetting.fromJson(state.obj);
                         isloadingstate = false;
                         setState(() {});
                       }

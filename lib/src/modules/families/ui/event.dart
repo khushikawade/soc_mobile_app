@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 
 // ignore: must_be_immutable
 class EventPage extends StatefulWidget {
@@ -62,9 +63,10 @@ class _EventPageState extends State<EventPage>
             MaterialPageRoute(
                 builder: (context) => SliderWidget(
                       obj: mainObj,
+                      // iconsName: [],
                       issocialpage: false,
                       isAboutSDPage: false,
-                      isEvent: true,
+                      iseventpage: true,
                       currentIndex: index,
                       date: '',
                       isbuttomsheet: true,
@@ -328,46 +330,48 @@ class _EventPageState extends State<EventPage>
                   iserrorstate = true;
                 }
 
-                return connected
-                    ? ListView(
-                        children: [
-                          BlocBuilder<FamilyBloc, FamilyState>(
-                              bloc: _eventBloc,
-                              builder:
-                                  (BuildContext contxt, FamilyState state) {
-                                if (state is FamilyLoading) {
-                                  return Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.8,
-                                      alignment: Alignment.center,
-                                      child: CircularProgressIndicator());
-                                } else if (state is CalendarListSuccess) {
-                                  return _buildTabs(state);
-                                } else if (state is ErrorLoading) {
-                                  return ErrorMsgWidget();
-                                }
-                                return Container();
-                              }),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    Globals.homeObject = state.obj;
-                                    setState(() {});
-                                  }
-                                },
-                                child: EmptyContainer()),
-                          ),
-                        ],
-                      )
-                    : NoInternetErrorWidget(
-                        connected: connected, issplashscreen: false);
+                return
+                    //  connected
+                    //     ?
+                    ListView(
+                  children: [
+                    BlocBuilder<FamilyBloc, FamilyState>(
+                        bloc: _eventBloc,
+                        builder: (BuildContext contxt, FamilyState state) {
+                          if (state is FamilyLoading) {
+                            return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator());
+                          } else if (state is CalendarListSuccess) {
+                            return _buildTabs(state);
+                          } else if (state is ErrorLoading) {
+                            return ErrorMsgWidget();
+                          }
+                          return Container();
+                        }),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                          bloc: _homeBloc,
+                          listener: (context, state) async {
+                            if (state is BottomNavigationBarSuccess) {
+                              AppTheme.setDynamicTheme(
+                                  Globals.appSetting, context);
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
+                              // Globals.homeObject = state.obj;
+                              setState(() {});
+                            }
+                          },
+                          child: EmptyContainer()),
+                    ),
+                  ],
+                );
+                // : NoInternetErrorWidget(
+                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

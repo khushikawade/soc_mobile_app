@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -86,7 +87,8 @@ class _StaffPageState extends State<StaffPage> {
                       listener: (context, state) async {
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObject = state.obj;
+                     //     Globals.homeObject = state.obj;
+                          Globals.appSetting = AppSetting.fromJson(state.obj);
 
                           setState(() {});
                         }
@@ -123,17 +125,23 @@ class _StaffPageState extends State<StaffPage> {
           setState(() {});
         },
       ),
-      body: Globals.homeObject["Staff_Banner_Image__c"] != null &&
-              Globals.homeObject["Staff_Banner_Image__c"] != ''
+      body: Globals.appSetting.staffBannerImageC != null &&
+              Globals.appSetting.staffBannerImageC  != ''
+      //  Globals.homeObject["Staff_Banner_Image__c"] != null &&
+      //         Globals.homeObject["Staff_Banner_Image__c"] != ''
           ? NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   BannerImageWidget(
-                    imageUrl: Globals.homeObject["Staff_Banner_Image__c"],
-                    bgColor: Globals.homeObject["Staff_Banner_Color__c"] != null
+                    imageUrl: Globals.appSetting.staffBannerImageC!, 
+                    //Globals.homeObject["Staff_Banner_Image__c"],
+                    bgColor: Globals.appSetting.studentBannerColorC != null
+                    // Globals.homeObject["Staff_Banner_Color__c"] != null
                         ? Utility.getColorFromHex(
-                            Globals.homeObject["Staff_Banner_Color__c"])
+                          Globals.appSetting.studentBannerColorC!
+                            // Globals.homeObject["Staff_Banner_Color__c"]
+                            )
                         : null,
                   )
                 ];

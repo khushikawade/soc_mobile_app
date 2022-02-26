@@ -104,12 +104,15 @@ class _AboutusPageState extends State<AboutusPage> {
   }
 
   Widget build(BuildContext context) {
+    //String getImgFromHtml = Utility.getHTMLImgSrc(widget.htmlText);
+
     return Scaffold(
       appBar: CustomAppBarWidget(
         isSearch: false,
         isShare: true,
         appBarTitle: widget.appbarTitle,
         ishtmlpage: widget.ishtml,
+        //sharedpopBodytext: "${widget.htmlText.replaceAll(exp, '').toString()} $getImgFromHtml",
         sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
         sharedpopUpheaderText: "Please checkout this link",
         language: Globals.selectedLanguage,

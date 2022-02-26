@@ -19,7 +19,10 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import 'src/modules/families/modal/calendar_event_list.dart';
+
 void main() async {
+  
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb) {
@@ -36,7 +39,8 @@ void main() async {
       ..registerAdapter(StudentAppAdapter())
       ..registerAdapter(NotificationListAdapter())
       ..registerAdapter(ItemAdapter())
-      ..registerAdapter(AppSettingAdapter());
+      ..registerAdapter(AppSettingAdapter())
+      ..registerAdapter(CalendarEventListAdapter());
   }
 
   SystemChrome.setPreferredOrientations([

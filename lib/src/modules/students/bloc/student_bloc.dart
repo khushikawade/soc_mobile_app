@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
@@ -23,20 +22,26 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     StudentEvent event,
   ) async* {
     if (event is StudentPageEvent) {
+      List<StudentApp> appList = [];
+      List<StudentApp> subList = [];
       try {
         // yield Loading();
         LocalDatabase<StudentApp> _localDb =
             LocalDatabase(Strings.studentsObjectName);
+
         List<StudentApp> _localData = await _localDb.getData();
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         if (_localData.isEmpty) {
           yield Loading();
         } else {
-          List<StudentApp> appList = [];
-
+          // List<StudentApp> appList = [];
+          // List<StudentApp> subList = [];
+          appList.clear();
+          subList.clear();
           for (int i = 0; i < _localData.length; i++) {
             if (_localData[i].status == "Show" ||
                 _localData[i].status == null) {
+              subList.add(_localData[i]);
               // list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
               if (_localData[i].appFolderc == null ||
                   _localData[i].appFolderc == "") {
@@ -44,7 +49,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
               }
             }
           }
-          yield StudentDataSucess(obj: appList, subFolder: _localData);
+          yield StudentDataSucess(obj: appList, subFolder: subList);
         }
         // Local Database End
         List<StudentApp> list = await getStudentDetails();
@@ -57,10 +62,12 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
-        List<StudentApp> appList = [];
+        appList.clear();
+        subList.clear();
         if (list.length > 0) {
           for (int i = 0; i < list.length; i++) {
             if (list[i].status == "Show" || list[i].status == null) {
+              subList.add(list[i]);
               // list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
               if (list[i].appFolderc == null || list[i].appFolderc == "") {
                 appList.add(list[i]);
@@ -69,7 +76,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           }
         }
         yield Loading(); // Mimic state change.
-        yield StudentDataSucess(obj: appList, subFolder: list);
+        yield StudentDataSucess(obj: appList, subFolder: subList);
       } catch (e) {
         // Fetching the data from the local database instead.
         LocalDatabase<StudentApp> _localDb =
@@ -78,10 +85,12 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
 
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
-        List<StudentApp> appList = [];
+        appList.clear();
+        subList.clear();
 
         for (int i = 0; i < _localData.length; i++) {
           if (_localData[i].status == "Show" || _localData[i].status == null) {
+            subList.add(_localData[i]);
             if (_localData[i].appFolderc == null ||
                 _localData[i].appFolderc == "") {
               appList.add(_localData[i]);
@@ -89,7 +98,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           }
         }
         yield Loading(); // Mimic state change.
-        yield StudentDataSucess(obj: appList, subFolder: _localData);
+        yield StudentDataSucess(obj: appList, subFolder: subList);
         // yield StudentError(err: e);
       }
     }
@@ -97,10 +106,10 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
 
   Future<List<StudentApp>> getStudentDetails() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,App_Icon_URL__c,App_URL__c,Deep_Link__c,Id,Name,App_Folder__c,Sort_Order__c,Active_Status__c,Is_Folder__c FROM Student_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+          "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Student_App__c"));
       if (response.statusCode == 200) {
-        return response.data["records"]
+        return response.data['body']
             .map<StudentApp>((i) => StudentApp.fromJson(i))
             .toList();
       } else {

@@ -19,5 +19,10 @@ class Strings {
   static final String schoolDirectoryObjectName = 'school_directory';
   static final String studentsObjectName = 'students';
   static final String newsObjectName = 'news';
+  static final String newsActionObjectName = 'news_action';
   static final String socialObjectName = 'social';
+  static final String socialActionObjectName = 'social_action';
+  static final String globalSearchName = 'global_search';
+  static final String calendarObjectName = 'calandar_action';
+  
 }
