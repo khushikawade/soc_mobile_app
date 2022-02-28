@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
+import 'package:Soc/src/modules/custom/ui/custom.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
@@ -39,6 +40,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String language2 = Translations.supportedLanguages.last;
   var item;
   var item2;
+  List<Widget> _screens = [];
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
@@ -110,10 +112,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   List<Widget> _buildScreens() {
-    List<Widget> _screens = [];
+    
     // Globals.homeObject["Bottom_Navigation__c"]
-    Globals.appSetting.bottomNavigationC!.split(";").forEach((String element) {
+    Globals.appSetting.isCustomApp! ?
+    
+    addScreen()
+   
+: Globals.appSetting.bottomNavigationC!.split(";").forEach((String element) {
       element = element.toLowerCase();
+
+      
       if (element.contains('news')) {
         _screens.add(NewsPage());
       } else if (element.contains('student')) {
@@ -362,5 +370,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 ),
               ],
             ));
+  }
+  void addScreen(){
+    for (var i = 0; i < Globals.customSetting!.length; i++) {
+      _screens.add(CustomPage(id: Globals.customSetting![i].id,));
+    }
   }
 }

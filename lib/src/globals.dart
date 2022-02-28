@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 
+import 'modules/home/models/custom_setting.dart';
 import 'modules/news/model/notification_list.dart';
 
 class Globals {
@@ -17,6 +18,8 @@ class Globals {
   static int? internalBottombarIndex;
   // static var homeObject;
   static late AppSetting appSetting;
+  static List<CustomSetting>? customSetting;
+  static bool? isCustomNavbar = false;
   static int? newsIndex;
   static Locale? myLocale;
   static int? notiCount;

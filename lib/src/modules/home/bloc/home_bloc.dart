@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
+import 'package:Soc/src/modules/home/models/custom_setting.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
@@ -45,7 +46,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         yield HomeLoading();
         final data = await fetchBottomNavigationBar();
         // Saving data to the Local DataBase
+
         AppSetting _appSetting = AppSetting.fromJson(data);
+        Globals.isCustomNavbar = false;
+        if (_appSetting.isCustomApp!) {
+          List<CustomSetting> data1 = await fetchCustomNavigationBar();
+          Globals.customSetting = data1;
+          Globals.isCustomNavbar = true;
+        }
         // print(_appSetting);
         //  Globals.homeObject = Globals.appSetting.toJson();
         // Should send the response first then it will sync data to the Local database.
@@ -68,9 +76,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (_appSettings.length > 0) {
           Globals.appSetting = _appSettings.last;
           if (Globals.appSetting.bannerHeightFactor != null) {
-          AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
-          // print(AppTheme.kBannerHeight);
-        }
+            AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
+            // print(AppTheme.kBannerHeight);
+          }
           //  Globals.homeObject = Globals.appSetting.toJson();
           yield BottomNavigationBarSuccess(obj: Globals.appSetting.toJson());
         } else {
@@ -137,6 +145,31 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           yield HomeErrorReceived(err: e);
         }
       }
+    }
+  }
+
+  Future fetchCustomNavigationBar() async {
+    try {
+      final ResponseModel response = await _dbServices.getapi(
+        Uri.encodeFull(
+            'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Custom_App_Section__c'),
+      );
+
+      if (response.statusCode == 200) {
+        List<CustomSetting> _list = response.data['body']
+            .map<CustomSetting>((i) => CustomSetting.fromJson(i))
+            .toList();
+        print(_list);
+        // To take the backup for all the sections.
+        // _backupAppData();
+        // if (Globals.appSetting.bannerHeightFactor != null) {
+        //   AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
+        //   // print(AppTheme.kBannerHeight);
+        // }
+        return _list;
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 

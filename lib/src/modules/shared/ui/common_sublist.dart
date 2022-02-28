@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
+import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
@@ -38,6 +39,7 @@ class _SubListPageState extends State<SubListPage> {
   FamilyBloc _bloc = FamilyBloc();
   StaffBloc _staffBloc = StaffBloc();
   AboutBloc _aboutBloc = AboutBloc();
+  CustomBloc _customBloc = CustomBloc();
   bool? iserrorstate = false;
   // List<SharedList> mainSubList = [];
   // List<SharedList> staffList = [];
@@ -57,6 +59,8 @@ class _SubListPageState extends State<SubListPage> {
       _resourceBloc.add(ResourcesSublistEvent(id: widget.obj.id));
     } else if (widget.module == "about") {
       _aboutBloc.add(AboutSublistEvent(id: widget.obj.id));
+    }else if (widget.module == "Custom") {
+      _customBloc.add(CustomSublistEvent(id: widget.obj.id));
     }
   }
 
@@ -363,6 +367,31 @@ class _SubListPageState extends State<SubListPage> {
                                       }
                                     }),
                               )
+                              : widget.module == "Custom"
+                              ?Expanded(
+                    child: BlocBuilder<CustomBloc, CustomState>(
+                        bloc: _customBloc,
+                        builder: (BuildContext contxt, CustomState state) {
+                          if (state is CustomInitial ||
+                              state is CustomLoading) {
+                            return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.75,
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator());
+                          } else if (state is CustomSublistSuccess) {
+                            return CommonListWidget(
+                                scaffoldKey: _scaffoldKey,
+                                connected: connected,
+                                data: state.obj!,
+                                sectionName: 'Custom');
+                           
+                          } else {
+                            return Container();
+                          }
+                        }),
+                  )
+
                             : Expanded(
                                 child: NoDataFoundErrorWidget(
                                   isResultNotFoundMsg: false,
