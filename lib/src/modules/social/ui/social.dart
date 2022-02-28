@@ -206,7 +206,9 @@ class _SocialPageState extends State<SocialPage> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.8,
                                 child:
-                                    Center(child: CircularProgressIndicator()),
+                                    Center(child: CircularProgressIndicator(
+                                      color: Theme.of(context).colorScheme.primaryVariant,
+                                    )),
                               ),
                             );
                           } else if (state is SocialError) {

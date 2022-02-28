@@ -91,7 +91,9 @@ class _FamilyPageState extends State<FamilyPage> {
                           builder: (BuildContext contxt, FamilyState state) {
                             if (state is FamilyInitial ||
                                 state is FamilyLoading) {
-                              return Center(child: CircularProgressIndicator());
+                              return Center(child: CircularProgressIndicator(
+                                color: Theme.of(context).colorScheme.primaryVariant,
+                              ));
                             } else if (state is FamiliesDataSucess) {
                               // print('List data......');
                               // print(state.obj);

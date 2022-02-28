@@ -64,7 +64,9 @@ class _StaffPageState extends State<StaffPage> {
                       bloc: _bloc,
                       builder: (BuildContext contxt, StaffState state) {
                         if (state is StaffInitial || state is StaffLoading) {
-                          return Center(child: CircularProgressIndicator());
+                          return Center(child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                          ));
                         } else if (state is StaffDataSucess) {
                           return CommonListWidget(
                               key: ValueKey(key),

@@ -90,6 +90,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
             ? document == null
                 ? Center(
                     child: CircularProgressIndicator(
+                      
                     valueColor:
                         new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
                   ))

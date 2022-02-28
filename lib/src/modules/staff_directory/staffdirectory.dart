@@ -261,7 +261,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   height:
                                       MediaQuery.of(context).size.height * 0.8,
                                   alignment: Alignment.center,
-                                  child: CircularProgressIndicator());
+                                  child: CircularProgressIndicator(
+                                    color: Theme.of(context).colorScheme.primaryVariant,
+                                  ));
                             } else if (state is SDDataSucess) {
                               return state.obj != null && state.obj!.length > 0
                                   ? ListView.builder(

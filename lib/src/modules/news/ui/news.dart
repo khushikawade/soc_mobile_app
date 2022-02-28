@@ -371,6 +371,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.8,
                               child: Center(child: CircularProgressIndicator()),
+                              color: Theme.of(context).colorScheme.primaryVariant,
                             ),
                           );
                         } else if (state is NewsErrorReceived) {

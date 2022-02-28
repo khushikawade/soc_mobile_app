@@ -113,6 +113,7 @@ class Utility {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Container(
+
         alignment: Alignment.centerLeft,
         height: 40,
         child: TranslationWidget(
@@ -122,12 +123,12 @@ class Utility {
           builder: (translatedMessage) => Text(translatedMessage,
               textAlign: TextAlign.left,
               style: TextStyle(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
                 fontWeight: FontWeight.w600,
               )),
         ),
       ),
-      backgroundColor: Colors.black.withOpacity(0.8),
+      backgroundColor: Theme.of(context).colorScheme.primaryVariant.withOpacity(0.8),
       padding: EdgeInsets.only(
         left: 16,
       ),

@@ -57,7 +57,7 @@ class LanguageSelector {
               left: 10,
               right: 10,
             ),
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.background,
             child: Theme(
               data: ThemeData(
                 unselectedWidgetColor: Theme.of(context).colorScheme.onPrimary,

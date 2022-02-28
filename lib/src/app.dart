@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class App extends StatefulWidget {
   @override
@@ -22,6 +23,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   initState() {
     super.initState();
     addThemeType();
+    _onNotificationTap();
 
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
@@ -101,6 +103,15 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         // home: SchoolIDLogin(),
       ),
     );
+  }
+
+  _onNotificationTap() {
+    OneSignal.shared
+        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+      this.setState(() {
+        Globals.isNewTap = true;
+      });
+    });
   }
 
   addThemeType() async {

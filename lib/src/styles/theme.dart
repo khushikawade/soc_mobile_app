@@ -609,6 +609,7 @@ class AppTheme {
               backgroundColor: _darkBackgroundColor,
               scaffoldBackgroundColor: _darkBackgroundColor,
               accentColor: _primaryColor,
+            
               appBarTheme: AppBarTheme(
                 titleTextStyle: TextStyle(
                     color: _primaryColor,

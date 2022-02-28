@@ -343,7 +343,9 @@ class _EventPageState extends State<EventPage>
                                 height:
                                     MediaQuery.of(context).size.height * 0.8,
                                 alignment: Alignment.center,
-                                child: CircularProgressIndicator());
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.primaryVariant,
+                                ));
                           } else if (state is CalendarListSuccess) {
                             return _buildTabs(state);
                           } else if (state is ErrorLoading) {
