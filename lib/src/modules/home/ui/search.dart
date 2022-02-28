@@ -53,7 +53,7 @@ class _SearchPageState extends State<SearchPage> {
   static const double _kIconSize = 38.0;
   bool? isDBListEmpty = true;
   List<SearchList> searchList = [];
-  
+  final ScrollController _scrollController = ScrollController();
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -132,7 +132,7 @@ class _SearchPageState extends State<SearchPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
-    } 
+    }
     // else if (obj.deepLink != null) {
     //   if (obj.deepLink == 'NO') {
     //     Navigator.push(
@@ -148,7 +148,7 @@ class _SearchPageState extends State<SearchPage> {
     //     await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
     //   }
     // }
-     else if (obj.typeC == "URL") {
+    else if (obj.typeC == "URL") {
       obj.urlC != null
           ? _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
@@ -294,7 +294,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildRecentItemList() {
+  Widget _buildRecentItemList(BoxConstraints constraints) {
     return FutureBuilder(
         future: HiveDbServices().getListData(Strings.hiveLogName),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -302,6 +302,8 @@ class _SearchPageState extends State<SearchPage> {
             return snapshot.data != null && snapshot.data.length > 0
                 ? Expanded(
                     child: ListView.builder(
+                      controller: _scrollController,
+                      shrinkWrap: true,
                       padding: EdgeInsets.only(bottom: _kLabelSpacing * 1.5),
                       scrollDirection: Axis.vertical,
                       itemCount:
@@ -318,6 +320,10 @@ class _SearchPageState extends State<SearchPage> {
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Expanded(
               child: Container(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                // alignment: Alignment.center,
                 height: MediaQuery.of(context).size.height * 0.7,
                 child: Center(child: CircularProgressIndicator()),
               ),
@@ -377,7 +383,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildissuggestionList() {
+  Widget _buildissuggestionList(BoxConstraints constraints) {
     return BlocBuilder<HomeBloc, HomeState>(
         bloc: _searchBloc,
         builder: (BuildContext contxt, HomeState state) {
@@ -385,8 +391,7 @@ class _SearchPageState extends State<SearchPage> {
             searchList.clear();
             for (int i = 0; i < state.obj!.length; i++) {
               // if (state.obj![i].statusC != "Hide") {
-              if (state.obj![i].typeC == null &&
-                  state.obj![i].urlC != null) {
+              if (state.obj![i].typeC == null && state.obj![i].urlC != null) {
                 state.obj![i].typeC = "URL";
               }
               if (state.obj[i].titleC != null && state.obj[i].titleC != "") {
@@ -397,6 +402,7 @@ class _SearchPageState extends State<SearchPage> {
             return searchList.length > 0
                 ? Expanded(
                     child: ListView(
+                    controller: _scrollController,
                     shrinkWrap: true,
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
@@ -484,17 +490,24 @@ class _SearchPageState extends State<SearchPage> {
                     }).toList(),
                   ))
                 : Expanded(
-                    child: NoDataFoundErrorWidget(
-                      isResultNotFoundMsg: false,
-                      marginTop: MediaQuery.of(context).size.height * 0.15,
-                      isNews: false,
-                      isEvents: false,
+                    child: Container(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: NoDataFoundErrorWidget(
+                        isResultNotFoundMsg: false,
+                        marginTop: MediaQuery.of(context).size.height * 0.15,
+                        isNews: false,
+                        isEvents: false,
+                      ),
                     ),
                   );
           } else if (state is SearchLoading) {
-            return Expanded(
-                child: Center(
+            return Center(
               child: Container(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
                 alignment: Alignment.center,
                 width: _kIconSize * 1.4,
                 height: _kIconSize * 1.5,
@@ -502,7 +515,7 @@ class _SearchPageState extends State<SearchPage> {
                   strokeWidth: 2,
                 ),
               ),
-            ));
+            );
           } else {
             return Container(height: 0);
           }
@@ -584,7 +597,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         appBar: new AppBar(
           elevation: 0.0,
           leading: BackButtonWidget(),
@@ -601,73 +614,77 @@ class _SearchPageState extends State<SearchPage> {
           ),
           // )
         ),
-        body: RefreshIndicator(
-          key: refreshKey,
-          child: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final bool connected = connectivity != ConnectivityResult.none;
+        body: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
 
-                if (connected) {
-                  if (iserrorstate == true) {
-                    iserrorstate = false;
-                  }
-                } else if (!connected) {
-                  iserrorstate = true;
+              if (connected) {
+                if (iserrorstate == true) {
+                  iserrorstate = false;
                 }
+              } else if (!connected) {
+                iserrorstate = true;
+              }
 
-                return
-                    //  connected
-                    //     ?
-                    Container(
-                  child: Column(mainAxisSize: MainAxisSize.max, children: [
-                    SpacerWidget(_kLabelSpacing / 4),
-                    _buildHeading(),
-                    SpacerWidget(_kLabelSpacing / 2),
-                    _buildSearchbar(),
-                    issuggestionList
-                        ? _buildissuggestionList()
-                        : SizedBox(height: 0),
-                    SpacerWidget(_kLabelSpacing / 2),
-                    issuggestionList == false
-                        ? _buildHeading2()
-                        : SizedBox(height: 0),
-                    issuggestionList == false
-                        ? _buildRecentItemList()
-                        : SizedBox(height: 0),
-                    Container(
-                      height: 0,
-                      width: 0,
-                      child: BlocListener<HomeBloc, HomeState>(
-                          bloc: _homeBloc,
-                          listener: (context, state) async {
-                            if (state is BottomNavigationBarSuccess) {
-                              AppTheme.setDynamicTheme(
-                                  Globals.appSetting, context);
-                              // Globals.homeObject = state.obj;
-                              Globals.appSetting =
-                                  AppSetting.fromJson(state.obj);
-                              setState(() {});
-                            } else if (state is HomeErrorReceived) {}
-                          },
-                          child: EmptyContainer()),
-                    ),
-                  ]),
-                );
-                // : NoInternetErrorWidget(
-                //     connected: connected, issplashscreen: false);
-              },
-              child: Container()),
-          onRefresh: refreshPage,
-        ));
+              return
+                  //  connected
+                  //     ?
+                  Container(
+                child: Scrollbar(
+                  isAlwaysShown: true,
+                  controller: _scrollController,
+                  child: LayoutBuilder(builder: (context, constraints) {
+                    return ListView(controller: _scrollController,
+                        //mainAxisSize: MainAxisSize.max,
+                        children: [
+                          SpacerWidget(_kLabelSpacing / 4),
+                          _buildHeading(),
+                          SpacerWidget(_kLabelSpacing / 2),
+                          _buildSearchbar(),
+                          issuggestionList
+                              ? _buildissuggestionList(constraints)
+                              : SizedBox(height: 0),
+                          SpacerWidget(_kLabelSpacing / 2),
+                          issuggestionList == false
+                              ? _buildHeading2()
+                              : SizedBox(height: 0),
+                          issuggestionList == false
+                              ? _buildRecentItemList(constraints)
+                              : SizedBox(height: 0),
+                          Container(
+                            height: 0,
+                            width: 0,
+                            child: BlocListener<HomeBloc, HomeState>(
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+                                    // Globals.homeObject = state.obj;
+                                    Globals.appSetting =
+                                        AppSetting.fromJson(state.obj);
+                                    setState(() {});
+                                  } else if (state is HomeErrorReceived) {}
+                                },
+                                child: EmptyContainer()),
+                          ),
+                        ]);
+                  }),
+                ),
+              );
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false);
+            },
+            child: Container()));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }

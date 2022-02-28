@@ -28,7 +28,7 @@ class NoDataFoundErrorWidget extends StatelessWidget {
             issplashscreen: false,
             connected: connected,
           )
-        : ListView(
+        : Column(
             children: [
               Container(
                   margin: EdgeInsets.only(

@@ -125,8 +125,9 @@ class _NewdescriptionState extends State<Newdescription> {
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => SelectableLinkify(
-                    toolbarOptions:
-                        ToolbarOptions(copy: false, selectAll: false),
+                    toolbarOptions: Platform.isAndroid
+                          ? ToolbarOptions(copy: true, selectAll: true)
+                          : ToolbarOptions(copy: true),
                     selectionControls: materialTextSelectionControls,
                     onOpen: (link) => _launchURL(link.url),
                     options: LinkifyOptions(humanize: false),

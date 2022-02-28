@@ -237,6 +237,7 @@ class _EventPageState extends State<EventPage>
                       state.futureListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
+                              key: refreshKey,
                               child: new ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   padding: Platform.isAndroid
@@ -266,6 +267,7 @@ class _EventPageState extends State<EventPage>
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
+                              key: refreshKey,
                               child: new ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   padding: Platform.isAndroid
@@ -308,77 +310,71 @@ class _EventPageState extends State<EventPage>
           isCenterIcon: true,
           language: Globals.selectedLanguage,
         ),
-        body: RefreshIndicator(
-          key: refreshKey,
-          child: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final bool connected = connectivity != ConnectivityResult.none;
-                Globals.isNetworkError = !connected;
+        body: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
+              Globals.isNetworkError = !connected;
 
-                if (connected) {
-                  if (iserrorstate == true) {
-                    _eventBloc.add(CalendarListEvent());
-                    iserrorstate = false;
-                  }
-                } else if (!connected) {
-                  iserrorstate = true;
+              if (connected) {
+                if (iserrorstate == true) {
+                  _eventBloc.add(CalendarListEvent());
+                  iserrorstate = false;
                 }
+              } else if (!connected) {
+                iserrorstate = true;
+              }
 
-                return
-                    //  connected
-                    //     ?
-                    ListView(
-                  children: [
-                    BlocBuilder<FamilyBloc, FamilyState>(
-                        bloc: _eventBloc,
-                        builder: (BuildContext contxt, FamilyState state) {
-                          if (state is FamilyLoading) {
-                            return Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
-                                alignment: Alignment.center,
-                                child: CircularProgressIndicator());
-                          } else if (state is CalendarListSuccess) {
-                            return _buildTabs(state);
-                          } else if (state is ErrorLoading) {
-                            return ErrorMsgWidget();
+              return
+                  //  connected
+                  //     ?
+                  ListView(
+                children: [
+                  BlocBuilder<FamilyBloc, FamilyState>(
+                      bloc: _eventBloc,
+                      builder: (BuildContext contxt, FamilyState state) {
+                        if (state is FamilyLoading) {
+                          return Container(
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator());
+                        } else if (state is CalendarListSuccess) {
+                          return _buildTabs(state);
+                        } else if (state is ErrorLoading) {
+                          return ErrorMsgWidget();
+                        }
+                        return Container();
+                      }),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.appSetting = AppSetting.fromJson(state.obj);
+                            // Globals.homeObject = state.obj;
+                            setState(() {});
                           }
-                          return Container();
-                        }),
-                    Container(
-                      height: 0,
-                      width: 0,
-                      child: BlocListener<HomeBloc, HomeState>(
-                          bloc: _homeBloc,
-                          listener: (context, state) async {
-                            if (state is BottomNavigationBarSuccess) {
-                              AppTheme.setDynamicTheme(
-                                  Globals.appSetting, context);
-                              Globals.appSetting =
-                                  AppSetting.fromJson(state.obj);
-                              // Globals.homeObject = state.obj;
-                              setState(() {});
-                            }
-                          },
-                          child: EmptyContainer()),
-                    ),
-                  ],
-                );
-                // : NoInternetErrorWidget(
-                //     connected: connected, issplashscreen: false);
-              },
-              child: Container()),
-          onRefresh: refreshPage,
-        ));
+                        },
+                        child: EmptyContainer()),
+                  ),
+                ],
+              );
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false);
+            },
+            child: Container()));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());
   }
