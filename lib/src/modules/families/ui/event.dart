@@ -42,6 +42,7 @@ class _EventPageState extends State<EventPage>
   FamilyBloc _eventBloc = FamilyBloc();
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+    final refreshKey1 = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
   double? _ktabmargin = 50;
   @override
@@ -90,6 +91,7 @@ class _EventPageState extends State<EventPage>
               children: <Widget>[
                 HorzitalSpacerWidget(_kLabelSpacing / 2),
                 Container(
+                  
                   alignment: Alignment.center,
                   width: Globals.deviceType == "phone" ? 40 : 70,
                   child: Wrap(alignment: WrapAlignment.center, children: [
@@ -267,7 +269,7 @@ class _EventPageState extends State<EventPage>
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
-                              key: refreshKey,
+                              key: refreshKey1,
                               child: new ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   padding: Platform.isAndroid
@@ -374,6 +376,7 @@ class _EventPageState extends State<EventPage>
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     refreshKey1.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());

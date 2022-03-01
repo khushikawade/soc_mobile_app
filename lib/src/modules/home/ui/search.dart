@@ -1,8 +1,10 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
+import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
@@ -24,8 +26,10 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
@@ -53,7 +57,6 @@ class _SearchPageState extends State<SearchPage> {
   static const double _kIconSize = 38.0;
   bool? isDBListEmpty = true;
   List<SearchList> searchList = [];
-  final ScrollController _scrollController = ScrollController();
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -66,8 +69,15 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    _setLocked();
     Globals.callsnackbar = true;
     getListLength();
+  }
+
+  @override
+  dispose() {
+    _setFree();
+    super.dispose();
   }
 
   getListLength() async {
@@ -88,9 +98,10 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _route(obj) async {
+    obj.typeC != null && obj.typeC != '' ? _setFree() : _setLocked();
     if (obj.typeC == "Contact") {
       obj.titleC != null
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => ContactPage(
@@ -101,8 +112,36 @@ class _SearchPageState extends State<SearchPage> {
                         language: Globals.selectedLanguage!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "Form" &&
+        obj.objectName == 'Staff_Directory_App__c') {
+      List<SDlist> newObj = [];
+      newObj.add(SDlist(
+          descriptionC: obj.descriptionC,
+          designation: "",
+          emailC: obj.emailC,
+          id: obj.id,
+          imageUrlC: obj.appIconUrlC,
+          name: obj.name,
+          phoneC: obj.phoneC,
+          sortOrderC: obj.sortOrder,
+          status: obj.statusC));
+      print(newObj);
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SliderWidget(
+                    obj: newObj,
+                    currentIndex: 0,
+                    issocialpage: false,
+                    isAboutSDPage: true,
+                    iseventpage: false,
+                    date: "",
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+      //  _setLocked();
     } else if (obj.typeC == "Form") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
@@ -113,15 +152,17 @@ class _SearchPageState extends State<SearchPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
+      //  _setLocked();
     } else if (obj.typeC == "SchoolDirectoryApp") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => SchoolDetailPage(
                     obj: obj,
                   )));
+      //   _setLocked();
     } else if (obj.typeC == "Staff_Directory") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
@@ -132,6 +173,7 @@ class _SearchPageState extends State<SearchPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
+      //  _setLocked();
     }
     // else if (obj.deepLink != null) {
     //   if (obj.deepLink == 'NO') {
@@ -150,13 +192,13 @@ class _SearchPageState extends State<SearchPage> {
     // }
     else if (obj.typeC == "URL") {
       obj.urlC != null
-          ? _launchURL(obj)
+          ? await _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
     } else if (obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
         obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
@@ -167,9 +209,10 @@ class _SearchPageState extends State<SearchPage> {
                         appbarTitle: obj.titleC!,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+      // _setLocked();
     } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
@@ -179,9 +222,10 @@ class _SearchPageState extends State<SearchPage> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+      // _setLocked();
     } else if (obj.typeC == "Calendar/Events") {
       obj.calendarId != null && obj.calendarId != ""
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => EventPage(
@@ -192,8 +236,9 @@ class _SearchPageState extends State<SearchPage> {
                       )))
           : Utility.showSnackBar(
               _scaffoldKey, "No calendar/events available", context);
+      //  _setLocked();
     } else if (obj.typeC == "Sub-Menu") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => SubListPage(
@@ -211,17 +256,19 @@ class _SearchPageState extends State<SearchPage> {
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage,
                   )));
+      //   _setLocked();
     } else {
       Utility.showSnackBar(
           _scaffoldKey, "No data available for this record", context);
     }
+    _setLocked();
   }
 
   _launchURL(obj) async {
     if (obj.urlC.toString().split(":")[0] == 'http') {
       await Utility.launchUrlOnExternalBrowser(obj.urlC);
     } else {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
@@ -230,6 +277,7 @@ class _SearchPageState extends State<SearchPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
+      // _setLocked();
     }
   }
 
@@ -294,7 +342,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildRecentItemList(BoxConstraints constraints) {
+  Widget _buildRecentItemList() {
     return FutureBuilder(
         future: HiveDbServices().getListData(Strings.hiveLogName),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -302,8 +350,6 @@ class _SearchPageState extends State<SearchPage> {
             return snapshot.data != null && snapshot.data.length > 0
                 ? Expanded(
                     child: ListView.builder(
-                      controller: _scrollController,
-                      shrinkWrap: true,
                       padding: EdgeInsets.only(bottom: _kLabelSpacing * 1.5),
                       scrollDirection: Axis.vertical,
                       itemCount:
@@ -320,10 +366,6 @@ class _SearchPageState extends State<SearchPage> {
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Expanded(
               child: Container(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
-                // alignment: Alignment.center,
                 height: MediaQuery.of(context).size.height * 0.7,
                 child: Center(child: CircularProgressIndicator()),
               ),
@@ -383,7 +425,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildissuggestionList(BoxConstraints constraints) {
+  Widget _buildissuggestionList() {
     return BlocBuilder<HomeBloc, HomeState>(
         bloc: _searchBloc,
         builder: (BuildContext contxt, HomeState state) {
@@ -402,7 +444,6 @@ class _SearchPageState extends State<SearchPage> {
             return searchList.length > 0
                 ? Expanded(
                     child: ListView(
-                    controller: _scrollController,
                     shrinkWrap: true,
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
@@ -490,24 +531,17 @@ class _SearchPageState extends State<SearchPage> {
                     }).toList(),
                   ))
                 : Expanded(
-                    child: Container(
-                      constraints: BoxConstraints(
-                        minHeight: constraints.maxHeight,
-                      ),
-                      child: NoDataFoundErrorWidget(
-                        isResultNotFoundMsg: false,
-                        marginTop: MediaQuery.of(context).size.height * 0.15,
-                        isNews: false,
-                        isEvents: false,
-                      ),
+                    child: NoDataFoundErrorWidget(
+                      isResultNotFoundMsg: false,
+                      marginTop: MediaQuery.of(context).size.height * 0.15,
+                      isNews: false,
+                      isEvents: false,
                     ),
                   );
           } else if (state is SearchLoading) {
-            return Center(
+            return Expanded(
+                child: Center(
               child: Container(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
                 alignment: Alignment.center,
                 width: _kIconSize * 1.4,
                 height: _kIconSize * 1.5,
@@ -515,7 +549,7 @@ class _SearchPageState extends State<SearchPage> {
                   strokeWidth: 2,
                 ),
               ),
-            );
+            ));
           } else {
             return Container(height: 0);
           }
@@ -597,7 +631,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: new AppBar(
           elevation: 0.0,
           leading: BackButtonWidget(),
@@ -614,77 +648,87 @@ class _SearchPageState extends State<SearchPage> {
           ),
           // )
         ),
-        body: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final bool connected = connectivity != ConnectivityResult.none;
+        body: RefreshIndicator(
+          key: refreshKey,
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
 
-              if (connected) {
-                if (iserrorstate == true) {
-                  iserrorstate = false;
+                if (connected) {
+                  if (iserrorstate == true) {
+                    iserrorstate = false;
+                  }
+                } else if (!connected) {
+                  iserrorstate = true;
                 }
-              } else if (!connected) {
-                iserrorstate = true;
-              }
 
-              return
-                  //  connected
-                  //     ?
-                  Container(
-                child: Scrollbar(
-                  isAlwaysShown: true,
-                  controller: _scrollController,
-                  child: LayoutBuilder(builder: (context, constraints) {
-                    return ListView(controller: _scrollController,
-                        //mainAxisSize: MainAxisSize.max,
-                        children: [
-                          SpacerWidget(_kLabelSpacing / 4),
-                          _buildHeading(),
-                          SpacerWidget(_kLabelSpacing / 2),
-                          _buildSearchbar(),
-                          issuggestionList
-                              ? _buildissuggestionList(constraints)
-                              : SizedBox(height: 0),
-                          SpacerWidget(_kLabelSpacing / 2),
-                          issuggestionList == false
-                              ? _buildHeading2()
-                              : SizedBox(height: 0),
-                          issuggestionList == false
-                              ? _buildRecentItemList(constraints)
-                              : SizedBox(height: 0),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    // Globals.homeObject = state.obj;
-                                    Globals.appSetting =
-                                        AppSetting.fromJson(state.obj);
-                                    setState(() {});
-                                  } else if (state is HomeErrorReceived) {}
-                                },
-                                child: EmptyContainer()),
-                          ),
-                        ]);
-                  }),
-                ),
-              );
-              // : NoInternetErrorWidget(
-              //     connected: connected, issplashscreen: false);
-            },
-            child: Container()));
+                return
+                    //  connected
+                    //     ?
+                    Container(
+                  child: Column(mainAxisSize: MainAxisSize.max, children: [
+                    SpacerWidget(_kLabelSpacing / 4),
+                    _buildHeading(),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    _buildSearchbar(),
+                    issuggestionList
+                        ? _buildissuggestionList()
+                        : SizedBox(height: 0),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    issuggestionList == false
+                        ? _buildHeading2()
+                        : SizedBox(height: 0),
+                    issuggestionList == false
+                        ? _buildRecentItemList()
+                        : SizedBox(height: 0),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                          bloc: _homeBloc,
+                          listener: (context, state) async {
+                            if (state is BottomNavigationBarSuccess) {
+                              AppTheme.setDynamicTheme(
+                                  Globals.appSetting, context);
+                              // Globals.homeObject = state.obj;
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
+                              setState(() {});
+                            } else if (state is HomeErrorReceived) {}
+                          },
+                          child: EmptyContainer()),
+                    ),
+                  ]),
+                );
+                // : NoInternetErrorWidget(
+                //     connected: connected, issplashscreen: false);
+              },
+              child: Container()),
+          onRefresh: refreshPage,
+        ));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 2));
     _homeBloc.add(FetchBottomNavigationBar());
+  }
+
+  void _setFree() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  void _setLocked() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
   }
 }
