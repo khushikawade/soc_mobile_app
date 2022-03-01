@@ -42,6 +42,7 @@ class _EventPageState extends State<EventPage>
   FamilyBloc _eventBloc = FamilyBloc();
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final refreshKey1 = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
   double? _ktabmargin = 50;
   @override
@@ -259,15 +260,23 @@ class _EventPageState extends State<EventPage>
                                   }),
                               onRefresh: refreshPage,
                             ))
-                          : NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: true,
+                          : new RefreshIndicator(
+                              // key: refreshKey,
+                              onRefresh: refreshPage,
+                              child: ListView(
+                                children: [
+                                  NoDataFoundErrorWidget(
+                                    isResultNotFoundMsg: false,
+                                    isNews: false,
+                                    isEvents: true,
+                                  ),
+                                ],
+                              ),
                             ),
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
-                              key: refreshKey,
+                              key: refreshKey1,
                               child: new ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   padding: Platform.isAndroid
@@ -279,10 +288,18 @@ class _EventPageState extends State<EventPage>
                                     return state.pastListobj!.length > 0
                                         ? _buildList(state.pastListobj![index],
                                             index, state.pastListobj)
-                                        : NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                            isEvents: true,
+                                        : new RefreshIndicator(
+                                            // key: refreshKey,
+                                            onRefresh: refreshPage,
+                                            child: ListView(
+                                              children: [
+                                                NoDataFoundErrorWidget(
+                                                  isResultNotFoundMsg: false,
+                                                  isNews: false,
+                                                  isEvents: true,
+                                                ),
+                                              ],
+                                            ),
                                           );
                                   }),
                               onRefresh: refreshPage,
@@ -291,7 +308,7 @@ class _EventPageState extends State<EventPage>
                               isResultNotFoundMsg: false,
                               isNews: false,
                               isEvents: true,
-                            )
+                            ),
                     ])),
               ]))
     ]);
@@ -374,6 +391,7 @@ class _EventPageState extends State<EventPage>
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     refreshKey1.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());

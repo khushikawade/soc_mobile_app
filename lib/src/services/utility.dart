@@ -317,11 +317,6 @@ class Utility {
   }
 
   static launchUrlOnExternalBrowser(String url) async {
-    // if (await canLaunch(url)) {
-    //   await launch(url);
-    // } else {
-    //   throw 'Could not launch $url';
-    // }
     try {
       await launch(url);
     } catch (e) {
@@ -366,7 +361,7 @@ class Utility {
       if (response.statusCode == 200) {
         return "No";
       } else {
-        return "No";
+        return "Yes";
       }
     } catch (e) {
       print(e.toString());

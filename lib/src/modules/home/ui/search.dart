@@ -53,7 +53,6 @@ class _SearchPageState extends State<SearchPage> {
   static const double _kIconSize = 38.0;
   bool? isDBListEmpty = true;
   List<SearchList> searchList = [];
-  final ScrollController _scrollController = ScrollController();
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -302,7 +301,6 @@ class _SearchPageState extends State<SearchPage> {
             return snapshot.data != null && snapshot.data.length > 0
                 ? Expanded(
                     child: ListView.builder(
-                      controller: _scrollController,
                       shrinkWrap: true,
                       padding: EdgeInsets.only(bottom: _kLabelSpacing * 1.5),
                       scrollDirection: Axis.vertical,
@@ -402,7 +400,6 @@ class _SearchPageState extends State<SearchPage> {
             return searchList.length > 0
                 ? Expanded(
                     child: ListView(
-                    controller: _scrollController,
                     shrinkWrap: true,
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
@@ -634,47 +631,43 @@ class _SearchPageState extends State<SearchPage> {
                   //  connected
                   //     ?
                   Container(
-                child: Scrollbar(
-                  isAlwaysShown: true,
-                  controller: _scrollController,
-                  child: LayoutBuilder(builder: (context, constraints) {
-                    return ListView(controller: _scrollController,
-                        //mainAxisSize: MainAxisSize.max,
-                        children: [
-                          SpacerWidget(_kLabelSpacing / 4),
-                          _buildHeading(),
-                          SpacerWidget(_kLabelSpacing / 2),
-                          _buildSearchbar(),
-                          issuggestionList
-                              ? _buildissuggestionList(constraints)
-                              : SizedBox(height: 0),
-                          SpacerWidget(_kLabelSpacing / 2),
-                          issuggestionList == false
-                              ? _buildHeading2()
-                              : SizedBox(height: 0),
-                          issuggestionList == false
-                              ? _buildRecentItemList(constraints)
-                              : SizedBox(height: 0),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                    // Globals.homeObject = state.obj;
-                                    Globals.appSetting =
-                                        AppSetting.fromJson(state.obj);
-                                    setState(() {});
-                                  } else if (state is HomeErrorReceived) {}
-                                },
-                                child: EmptyContainer()),
-                          ),
-                        ]);
-                  }),
-                ),
+                child: LayoutBuilder(builder: (context, constraints) {
+                  return ListView(
+                      //mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SpacerWidget(_kLabelSpacing / 4),
+                        _buildHeading(),
+                        SpacerWidget(_kLabelSpacing / 2),
+                        _buildSearchbar(),
+                        issuggestionList
+                            ? _buildissuggestionList(constraints)
+                            : SizedBox(height: 0),
+                        SpacerWidget(_kLabelSpacing / 2),
+                        issuggestionList == false
+                            ? _buildHeading2()
+                            : SizedBox(height: 0),
+                        issuggestionList == false
+                            ? _buildRecentItemList(constraints)
+                            : SizedBox(height: 0),
+                        Container(
+                          height: 0,
+                          width: 0,
+                          child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  // Globals.homeObject = state.obj;
+                                  Globals.appSetting =
+                                      AppSetting.fromJson(state.obj);
+                                  setState(() {});
+                                } else if (state is HomeErrorReceived) {}
+                              },
+                              child: EmptyContainer()),
+                        ),
+                      ]);
+                }),
               );
               // : NoInternetErrorWidget(
               //     connected: connected, issplashscreen: false);

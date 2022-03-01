@@ -112,8 +112,8 @@ class _AboutusPageState extends State<AboutusPage> {
         ishtmlpage: widget.ishtml,
         // sharedpopBodytext:parseHtmlString(widget.htmlText),
         sharedpopBodytext: widget.htmlText
-            .replaceAll('<img src=', ' ')
-            .replaceAll('data-imageguid=', '</')
+            .replaceAll('<img src=', '')
+            .replaceAll('data-imageguid=', '<')
             .replaceAll(exp, '')
             .toString(),
         sharedpopUpheaderText: "Please checkout this link",
