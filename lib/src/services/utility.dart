@@ -361,7 +361,7 @@ class Utility {
       if (response.statusCode == 200) {
         return "No";
       } else {
-        return "Yes";
+        return "No";
       }
     } catch (e) {
       print(e.toString());
