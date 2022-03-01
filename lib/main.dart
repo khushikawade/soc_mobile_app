@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
+import 'package:Soc/src/modules/home/models/custom_setting.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
@@ -38,7 +39,8 @@ void main() async {
       ..registerAdapter(NotificationListAdapter())
       ..registerAdapter(ItemAdapter())
       ..registerAdapter(AppSettingAdapter())
-      ..registerAdapter(CalendarEventListAdapter());
+      ..registerAdapter(CalendarEventListAdapter())
+      ..registerAdapter(CustomSettingAdapter());
   }
 
   SystemChrome.setPreferredOrientations([

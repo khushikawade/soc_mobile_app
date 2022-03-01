@@ -240,6 +240,6 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                 isResultNotFoundMsg: false,
                 isNews: false,
                 isEvents: false,
-                connected: widget.connected));
+                connected: true));
   }
 }

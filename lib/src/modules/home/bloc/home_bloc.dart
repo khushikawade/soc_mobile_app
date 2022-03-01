@@ -49,11 +49,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         AppSetting _appSetting = AppSetting.fromJson(data);
         Globals.isCustomNavbar = false;
+
+        // fatch custom bottom navbar and update to localdata base
         if (_appSetting.isCustomApp!) {
           List<CustomSetting> data1 = await fetchCustomNavigationBar();
+          data1.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
           Globals.customSetting = data1;
           Globals.isCustomNavbar = true;
+          LocalDatabase<CustomSetting> _customSettingDb =
+              LocalDatabase(Strings.customSettingObjectName);
+          await _customSettingDb.clear();
+          data1.forEach((CustomSetting e) {
+            _customSettingDb.addData(e);
+          });
         }
+
         // print(_appSetting);
         //  Globals.homeObject = Globals.appSetting.toJson();
         // Should send the response first then it will sync data to the Local database.
@@ -73,8 +83,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             LocalDatabase(Strings.schoolObjectName);
         List<AppSetting>? _appSettings = await _appSettingDb.getData();
         await _appSettingDb.close();
+
         if (_appSettings.length > 0) {
           Globals.appSetting = _appSettings.last;
+          if (Globals.appSetting.isCustomApp!) {
+            Globals.isCustomNavbar = true;
+
+            LocalDatabase<CustomSetting> _customSettingDb =
+                LocalDatabase(Strings.customSettingObjectName);
+            List<CustomSetting>? _localData = await _customSettingDb.getData();
+            _localData.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
+            Globals.customSetting = _localData;
+            _customSettingDb.close();
+          }
           if (Globals.appSetting.bannerHeightFactor != null) {
             AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
             // print(AppTheme.kBannerHeight);
@@ -166,6 +187,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         //   AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
         //   // print(AppTheme.kBannerHeight);
         // }
+        // _list.removeWhere((CustomSetting element) => element.status == 'Hide');
+        _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
+        _list.removeRange(6, _list.length);
         return _list;
       }
     } catch (e) {

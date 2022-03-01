@@ -33,8 +33,9 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     if (event is CustomsEvent) {
       try {
         // yield CustomLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
+         String? _objectName = "${Strings.customObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb =
-            LocalDatabase(Strings.familiesObjectName);
+            LocalDatabase(_objectName);
 
         List<SharedList>? _localData = await _localDb.getData();
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
@@ -59,8 +60,9 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         yield CustomLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
         yield CustomDataSucess(obj: list);
       } catch (e) {
+        String? _objectName = "${Strings.customObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb =
-            LocalDatabase(Strings.familiesObjectName);
+            LocalDatabase(_objectName);
 
         List<SharedList>? _localData = await _localDb.getData();
         _localDb.close();
@@ -77,7 +79,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     if (event is CustomSublistEvent) {
       try {
         // yield CustomLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
-        String? _objectName = "${Strings.familiesSubListObjectName}${event.id}";
+        String? _objectName = "${Strings.customSubListObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
 
         List<SharedList>? _localData = await _localDb.getData();
@@ -101,7 +103,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         yield CustomLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
         yield CustomSublistSuccess(obj: list);
       } catch (e) {
-        String? _objectName = "${Strings.familiesSubListObjectName}${event.id}";
+        String? _objectName = "${Strings.customSubListObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
 
         List<SharedList>? _localData = await _localDb.getData();
@@ -349,7 +351,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
   Future<List<SharedList>> getCustomList(id) async {
     try {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
-          'parentId=$id&parentName=Custom_App_Section__c&objectName=Custom_App_Menu__c'));
+          'getSubRecords?parentId=$id&parentName=Custom_App_Section__c&objectName=Custom_App_Menu__c'));
       if (response.statusCode == 200) {
         //   var dataArray = response.data["records"];
         List<SharedList> _list = response.data['body']
@@ -368,7 +370,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
   Future<List<SharedList>> getCustomSubList(id) async {
     try {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
-          "getSubRecords?parentId=$id&parentName=Families_App__c&objectName=Family_Sub_Menu_App__c"));
+          "getSubRecords?parentId=$id&parentName=Custom_App_Menu__c&objectName=Custom_App_Sub_Menu__c"));
 
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']

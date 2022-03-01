@@ -112,134 +112,154 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   List<Widget> _buildScreens() {
-    
     // Globals.homeObject["Bottom_Navigation__c"]
-    Globals.appSetting.isCustomApp! ?
-    
-    addScreen()
-   
-: Globals.appSetting.bottomNavigationC!.split(";").forEach((String element) {
-      element = element.toLowerCase();
-
-      
-      if (element.contains('news')) {
-        _screens.add(NewsPage());
-      } else if (element.contains('student')) {
-        _screens.add(StudentPage(
-          homeObj: widget.homeObj,
-        ));
-      } else if (element.contains('families')) {
-        _screens.add(
-          FamilyPage(
-            obj: widget.homeObj,
-          ),
-        );
-      } else if (element.contains('staff')) {
-        _screens.add(StaffPage());
-      } else if (element.contains('social')) {
-        _screens.add(
-          SocialPage(),
-        );
-      } else if (element.contains('about')) {
-        _screens.add(
-          AboutPage(),
-        );
-      } else if (element.contains('school')) {
-        _screens.add(
-          SchoolPage(),
-        );
-      } else if (element.contains('resource')) {
-        _screens.add(
-          ResourcesPage(),
-        );
-      }
-    });
+    _screens.clear();
+    Globals.appSetting.isCustomApp!
+        ? addScreen()
+        : Globals.appSetting.bottomNavigationC!
+            .split(";")
+            .forEach((String element) {
+            element = element.toLowerCase();
+            if (_screens.length <
+                Globals.appSetting.bottomNavigationC!.split(";").length) {
+              if (element.contains('news')) {
+                _screens.add(NewsPage());
+              } else if (element.contains('student')) {
+                _screens.add(StudentPage(
+                  homeObj: widget.homeObj,
+                ));
+              } else if (element.contains('families')) {
+                _screens.add(
+                  FamilyPage(
+                    obj: widget.homeObj,
+                  ),
+                );
+              } else if (element.contains('staff')) {
+                _screens.add(StaffPage());
+              } else if (element.contains('social')) {
+                _screens.add(
+                  SocialPage(),
+                );
+              } else if (element.contains('about')) {
+                _screens.add(
+                  AboutPage(),
+                );
+              } else if (element.contains('school')) {
+                _screens.add(
+                  SchoolPage(),
+                );
+              } else if (element.contains('resource')) {
+                _screens.add(
+                  ResourcesPage(),
+                );
+              }
+            }
+          });
     return _screens;
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
-    return Globals.appSetting.bottomNavigationC!
-        .split(";")
-        .map<PersistentBottomNavBarItem>(
-      (item) {
-        if (item.split("_")[0].toString().toLowerCase().contains("news")) {
-          Globals.newsIndex =
-              Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
-        }
-        setState(() {});
-        return PersistentBottomNavBarItem(
-          icon: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Container(
-                  child: Column(
-                    children: [
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          ValueListenableBuilder(
-                            builder: (BuildContext context, dynamic value,
-                                Widget? child) {
-                              return item.split("_")[0] == "News" &&
-                                      Globals.indicator.value == true
-                                  ? Wrap(
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                              bottom: 15, left: 50),
-                                          height: 7,
-                                          width: 7,
-                                          decoration: BoxDecoration(
-                                              color: Colors.red,
-                                              shape: BoxShape.circle),
-                                        ),
-                                      ],
-                                    )
-                                  : Container();
-                            },
-                            valueListenable: Globals.indicator,
-                            child: Container(),
-                          ),
-                          Icon(
-                            IconData(int.parse(item.split("_")[1]),
-                                fontFamily: Overrides.kFontFam,
-                                fontPackage: Overrides.kFontPkg),
-                          ),
-                        ],
+    if (Globals.appSetting.isCustomApp!) {
+      
+      return Globals.customSetting!.map<PersistentBottomNavBarItem>(
+        (item) {
+          setState(() {});
+          return PersistentBottomNavBarItem(
+            icon: _bottomIcon(item.selectionTitleC, item.sectionIconC),
+            // title:(''), //("${item.split("_")[0]}"),
+            activeColorPrimary: Theme.of(context).primaryColor,
+            inactiveColorPrimary: CupertinoColors.systemGrey,
+          );
+        },
+      ).toList();
+    } else {
+      return Globals.appSetting.bottomNavigationC!
+          .split(";")
+          .map<PersistentBottomNavBarItem>(
+        (item) {
+          if (item.split("_")[0].toString().toLowerCase().contains("news")) {
+            Globals.newsIndex =
+                Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
+          }
+          setState(() {});
+          return PersistentBottomNavBarItem(
+            icon: _bottomIcon(item.split("_")[0], item.split("_")[1]),
+            // title:(''), //("${item.split("_")[0]}"),
+            activeColorPrimary: Theme.of(context).primaryColor,
+            inactiveColorPrimary: CupertinoColors.systemGrey,
+          );
+        },
+      ).toList();
+    }
+  }
+
+  Widget _bottomIcon(title, iconData) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Container(
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ValueListenableBuilder(
+                      builder:
+                          (BuildContext context, dynamic value, Widget? child) {
+                        return title == "News" &&
+                                Globals.indicator.value == true
+                            ? Wrap(
+                                children: [
+                                  Container(
+                                    margin:
+                                        EdgeInsets.only(bottom: 15, left: 50),
+                                    height: 7,
+                                    width: 7,
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle),
+                                  ),
+                                ],
+                              )
+                            : Container();
+                      },
+                      valueListenable: Globals.indicator,
+                      child: Container(),
+                    ),
+                    Icon(
+                      IconData(int.parse(iconData),
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                    ),
+                  ],
+                ),
+                SpacerWidget(2),
+                TranslationWidget(
+                  shimmerHeight: 8,
+                  message:
+                      title, //"${item.split("_")[0]=="Student"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) => Expanded(
+                    child: FittedBox(
+                      child: Text(
+                        translatedMessage.toString(),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: Theme.of(context).textTheme.headline4!,
                       ),
-                      SpacerWidget(2),
-                      TranslationWidget(
-                        shimmerHeight: 8,
-                        message: item.split("_")[
-                            0], //"${item.split("_")[0]=="Student"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) => Expanded(
-                          child: FittedBox(
-                            child: Text(
-                              translatedMessage.toString(),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              style: Theme.of(context).textTheme.headline4!,
-                            ),
-                          ),
-                        ),
-                      ),
-                      callNotification()
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+                callNotification()
+              ],
+            ),
           ),
-          // title:(''), //("${item.split("_")[0]}"),
-          activeColorPrimary: Theme.of(context).primaryColor,
-          inactiveColorPrimary: CupertinoColors.systemGrey,
-        );
-      },
-    ).toList();
+        ),
+      ],
+    );
   }
 
   Widget _continueShowCaseInstructions(String text) => TranslationWidget(
@@ -371,9 +391,26 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               ],
             ));
   }
-  void addScreen(){
-    for (var i = 0; i < Globals.customSetting!.length; i++) {
-      _screens.add(CustomPage(id: Globals.customSetting![i].id,));
+
+  void addScreen() {
+    if (_screens.length < Globals.customSetting!.length) {
+      for (var i = 0; i < Globals.customSetting!.length; i++) {
+        if (Globals.customSetting![i].standardSectionC == 'News') {
+          _screens.add(NewsPage());
+        } else if (Globals.customSetting![i].standardSectionC == 'Social') {
+          _screens.add(SocialPage());
+        } else if (Globals.customSetting![i].standardSectionC == 'Student') {
+          _screens.add(StudentPage());
+        } else if (Globals.customSetting![i].standardSectionC == 'Staff') {
+          _screens.add(StaffPage());
+        } else if (Globals.customSetting![i].standardSectionC == 'Families') {
+          _screens.add(FamilyPage());
+        } else {
+          _screens.add(CustomPage(obj: Globals.customSetting![i],
+           
+          ));
+        }
+      }
     }
   }
 }

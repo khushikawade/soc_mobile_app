@@ -33,6 +33,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     if (event is FamiliesEvent) {
       try {
         // yield FamilyLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
+       
         LocalDatabase<SharedList> _localDb =
             LocalDatabase(Strings.familiesObjectName);
 

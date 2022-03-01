@@ -1,8 +1,11 @@
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/custom_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/widgets/banner_image_widget.dart';
 
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
@@ -16,12 +19,12 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 
 class CustomPage extends StatefulWidget {
   final id;
-  final obj;
+ final CustomSetting obj;
   final searchObj;
   CustomPage({
     Key? key,
-    this.obj,
-    required this.id,
+    required this.obj,
+    this.id,
     this.searchObj,
   }) : super(key: key);
 
@@ -40,7 +43,7 @@ class _CustomPageState extends State<CustomPage> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(CustomsEvent(id: widget.id));
+    _bloc.add(CustomsEvent(id: widget.obj.id));
   }
 
   @override
@@ -50,7 +53,7 @@ class _CustomPageState extends State<CustomPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _bloc.add(CustomsEvent(id: widget.id));
+    _bloc.add(CustomsEvent(id: widget.obj.id));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
@@ -67,7 +70,7 @@ class _CustomPageState extends State<CustomPage> {
 
                 if (connected) {
                   if (iserrorstate == true) {
-                    _bloc.add(CustomsEvent(id: widget.id));
+                    _bloc.add(CustomsEvent(id: widget.obj.id));
                     iserrorstate = false;
                   }
                 } else if (!connected) {
@@ -174,29 +177,36 @@ class _CustomPageState extends State<CustomPage> {
   }
 
   Widget bannerWidget(state) {
-    return NestedScrollView(
+    return  widget.obj.bannerImageC != null &&
+                  widget.obj.bannerImageC  != ''
+        // Globals.homeObject["Family_Banner_Image__c"] != null &&
+        //         Globals.homeObject["Family_Banner_Image__c"] != ''
+            ? NestedScrollView(
         // controller: _scrollController,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
-            // Globals.appSetting.CustomBannerImageC != null
-            //     // Globals.homeObject["Custom_Banner_Image__c"] != null
-            //     ? BannerImageWidget(
-            //         imageUrl: Globals.appSetting.CustomBannerImageC!,
-            //         // Globals.homeObject["Custom_Banner_Image__c"],
-            //         bgColor: Globals.appSetting.CustomBannerColorC
-            //                 // Globals.homeObject["Custom_Banner_Color__c"]
-            //                 !=
-            //                 null
-            //             ? Utility.getColorFromHex(
-            //                 Globals.appSetting.CustomBannerColorC!
-            //                 // Globals.homeObject["Custom_Banner_Color__c"]
-            //                 )
-            //             : null,
-            //       )
-            //     :
+           
+            widget.obj.bannerImageC != null
+                // Globals.homeObject["Custom_Banner_Image__c"] != null
+                ? BannerImageWidget(
+                    imageUrl: widget.obj.bannerImageC!,
+                    // Globals.homeObject["Custom_Banner_Image__c"],
+                    bgColor: widget.obj.bannerColorC
+                            // Globals.homeObject["Custom_Banner_Color__c"]
+                            !=
+                            null
+                        ? Utility.getColorFromHex(
+                            widget.obj.bannerColorC!
+                            // Globals.homeObject["Custom_Banner_Color__c"]
+                            )
+                        : null,
+                  )
+                :
             SliverAppBar(),
           ];
         },
-        body: _body(state));
+        body: _body(state))
+        :_body(state);
   }
+
 }
