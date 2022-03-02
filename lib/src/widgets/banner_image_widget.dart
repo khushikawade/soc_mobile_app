@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -36,6 +37,10 @@ class _BannerImageWidgetState extends State<BannerImageWidget> {
               width: Utility.displayWidth(context),
             ),
           ),
+          errorWidget: (context, url, error) {
+            
+            return Container();
+          },
         ),
       )),
     );

@@ -19,7 +19,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 
 class CustomPage extends StatefulWidget {
   final id;
- final CustomSetting obj;
+  final CustomSetting obj;
   final searchObj;
   CustomPage({
     Key? key,
@@ -72,6 +72,7 @@ class _CustomPageState extends State<CustomPage> {
                   if (iserrorstate == true) {
                     _bloc.add(CustomsEvent(id: widget.obj.id));
                     iserrorstate = false;
+                    
                   }
                 } else if (!connected) {
                   iserrorstate = true;
@@ -177,36 +178,33 @@ class _CustomPageState extends State<CustomPage> {
   }
 
   Widget bannerWidget(state) {
-    return  widget.obj.bannerImageC != null &&
-                  widget.obj.bannerImageC  != ''
+    return widget.obj.bannerImageC != null &&
+            widget.obj.bannerImageC != '' 
         // Globals.homeObject["Family_Banner_Image__c"] != null &&
         //         Globals.homeObject["Family_Banner_Image__c"] != ''
-            ? NestedScrollView(
-        // controller: _scrollController,
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-           
-            widget.obj.bannerImageC != null
-                // Globals.homeObject["Custom_Banner_Image__c"] != null
-                ? BannerImageWidget(
-                    imageUrl: widget.obj.bannerImageC!,
-                    // Globals.homeObject["Custom_Banner_Image__c"],
-                    bgColor: widget.obj.bannerColorC
-                            // Globals.homeObject["Custom_Banner_Color__c"]
-                            !=
-                            null
-                        ? Utility.getColorFromHex(
-                            widget.obj.bannerColorC!
-                            // Globals.homeObject["Custom_Banner_Color__c"]
-                            )
-                        : null,
-                  )
-                :
-            SliverAppBar(),
-          ];
-        },
-        body: _body(state))
-        :_body(state);
+        ? NestedScrollView(
+            // controller: _scrollController,
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                widget.obj.bannerImageC != null
+                    // Globals.homeObject["Custom_Banner_Image__c"] != null
+                    ? BannerImageWidget(
+                        imageUrl: widget.obj.bannerImageC!,
+                        // Globals.homeObject["Custom_Banner_Image__c"],
+                        bgColor: widget.obj.bannerColorC
+                                // Globals.homeObject["Custom_Banner_Color__c"]
+                                !=
+                                null
+                            ? Utility.getColorFromHex(widget.obj.bannerColorC!
+                                // Globals.homeObject["Custom_Banner_Color__c"]
+                                )
+                            : null,
+                      )
+                    : SliverAppBar(),
+              ];
+            },
+            body: _body(state))
+        : _body(state);
   }
-
 }

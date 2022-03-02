@@ -40,13 +40,14 @@ class CustomSettingAdapter extends TypeAdapter<CustomSetting> {
       connectionReceivedId: fields[20] as String?,
       connectionSentId: fields[21] as String?,
       schoolAppC: fields[22] as String?,
+      status: fields[23] as dynamic,
     );
   }
 
   @override
   void write(BinaryWriter writer, CustomSetting obj) {
     writer
-      ..writeByte(23)
+      ..writeByte(24)
       ..writeByte(0)
       ..write(obj.attributes)
       ..writeByte(1)
@@ -92,7 +93,9 @@ class CustomSettingAdapter extends TypeAdapter<CustomSetting> {
       ..writeByte(21)
       ..write(obj.connectionSentId)
       ..writeByte(22)
-      ..write(obj.schoolAppC);
+      ..write(obj.schoolAppC)
+      ..writeByte(23)
+      ..write(obj.status);
   }
 
   @override
