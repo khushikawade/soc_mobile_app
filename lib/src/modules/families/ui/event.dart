@@ -263,16 +263,13 @@ class _EventPageState extends State<EventPage>
                           : new RefreshIndicator(
                               // key: refreshKey,
                               onRefresh: refreshPage,
-                              child: ListView(
-                                children: [
-                                  NoDataFoundErrorWidget(
-                                    isResultNotFoundMsg: false,
-                                    isNews: false,
-                                    isEvents: true,
-                                  ),
-                                ],
-                              ),
-                            ),
+                              child: ListView(children: [
+                                NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: true,
+                                ),
+                              ])),
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
@@ -391,7 +388,7 @@ class _EventPageState extends State<EventPage>
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     refreshKey1.currentState?.show(atTop: false);
+    refreshKey1.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());

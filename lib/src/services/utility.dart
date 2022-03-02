@@ -231,7 +231,9 @@ class Utility {
       final string = dateNew.toString();
       final formatter = DateFormat('yyyy-MM-dd');
       final dateTime = formatter.parse(string);
-      final DateFormat formatNew = DateFormat('dd/MM/yyyy');
+      //final DateFormat formatNew = DateFormat('dd/MM/yyyy');
+      final DateFormat formatNew = DateFormat('MM/dd/yyyy');
+
       final String formatted = formatNew.format(dateTime);
       // return DateTime.parse((dateNew));
       // print(formatted);
