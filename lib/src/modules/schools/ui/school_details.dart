@@ -53,8 +53,8 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
       _markers.add(Marker(
           markerId: MarkerId("Location"),
           draggable: true,
-          position: LatLng(double.parse(widget.obj.latitude),
-              double.parse(widget.obj.longitude))));
+          position: LatLng(double.parse(widget.obj.latitude ?? "0.0"),
+              double.parse(widget.obj.longitude ?? "0.0"))));
     }
   }
 
@@ -151,8 +151,8 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                         myLocationEnabled: true,
                         initialCameraPosition: CameraPosition(
                             // bearing: 192.8334901395799,
-                            target: LatLng(double.parse(widget.obj.latitude),
-                                double.parse(widget.obj.longitude)),
+                            target: LatLng(double.parse(widget.obj.latitude ?? "0.0"),
+                                double.parse(widget.obj.longitude ?? "0.0")),
                             zoom: 18,
                             tilt: 59.440717697143555),
                         markers: Set.from(_markers)),
@@ -371,6 +371,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     homebloc.add(FetchBottomNavigationBar());
   }
 }

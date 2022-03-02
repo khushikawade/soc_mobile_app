@@ -42,6 +42,7 @@ class _EventPageState extends State<EventPage>
   FamilyBloc _eventBloc = FamilyBloc();
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final refreshKey1 = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
   double? _ktabmargin = 50;
   @override
@@ -237,6 +238,7 @@ class _EventPageState extends State<EventPage>
                       state.futureListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
+                              key: refreshKey,
                               child: new ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   padding: Platform.isAndroid
@@ -258,14 +260,20 @@ class _EventPageState extends State<EventPage>
                                   }),
                               onRefresh: refreshPage,
                             ))
-                          : NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: true,
-                            ),
+                          : new RefreshIndicator(
+                              // key: refreshKey,
+                              onRefresh: refreshPage,
+                              child: ListView(children: [
+                                NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: true,
+                                ),
+                              ])),
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
+                              key: refreshKey1,
                               child: new ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   padding: Platform.isAndroid
@@ -277,10 +285,18 @@ class _EventPageState extends State<EventPage>
                                     return state.pastListobj!.length > 0
                                         ? _buildList(state.pastListobj![index],
                                             index, state.pastListobj)
-                                        : NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                            isEvents: true,
+                                        : new RefreshIndicator(
+                                            // key: refreshKey,
+                                            onRefresh: refreshPage,
+                                            child: ListView(
+                                              children: [
+                                                NoDataFoundErrorWidget(
+                                                  isResultNotFoundMsg: false,
+                                                  isNews: false,
+                                                  isEvents: true,
+                                                ),
+                                              ],
+                                            ),
                                           );
                                   }),
                               onRefresh: refreshPage,
@@ -289,7 +305,7 @@ class _EventPageState extends State<EventPage>
                               isResultNotFoundMsg: false,
                               isNews: false,
                               isEvents: true,
-                            )
+                            ),
                     ])),
               ]))
     ]);
@@ -308,75 +324,72 @@ class _EventPageState extends State<EventPage>
           isCenterIcon: true,
           language: Globals.selectedLanguage,
         ),
-        body: RefreshIndicator(
-          key: refreshKey,
-          child: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final bool connected = connectivity != ConnectivityResult.none;
-                Globals.isNetworkError = !connected;
+        body: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
+              Globals.isNetworkError = !connected;
 
-                if (connected) {
-                  if (iserrorstate == true) {
-                    _eventBloc.add(CalendarListEvent());
-                    iserrorstate = false;
-                  }
-                } else if (!connected) {
-                  iserrorstate = true;
+              if (connected) {
+                if (iserrorstate == true) {
+                  _eventBloc.add(CalendarListEvent());
+                  iserrorstate = false;
                 }
+              } else if (!connected) {
+                iserrorstate = true;
+              }
 
-                return connected
-                    ? ListView(
-                        children: [
-                          BlocBuilder<FamilyBloc, FamilyState>(
-                              bloc: _eventBloc,
-                              builder:
-                                  (BuildContext contxt, FamilyState state) {
-                                if (state is FamilyLoading) {
-                                  return Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.8,
-                                      alignment: Alignment.center,
-                                      child: CircularProgressIndicator());
-                                } else if (state is CalendarListSuccess) {
-                                  return _buildTabs(state);
-                                } else if (state is ErrorLoading) {
-                                  return ErrorMsgWidget();
-                                }
-                                return Container();
-                              }),
-                          Container(
-                            height: 0,
-                            width: 0,
-                            child: BlocListener<HomeBloc, HomeState>(
-                                bloc: _homeBloc,
-                                listener: (context, state) async {
-                                  if (state is BottomNavigationBarSuccess) {
-                                    AppTheme.setDynamicTheme(
-                                        Globals.appSetting, context);
-                                        Globals.appSetting = AppSetting.fromJson(state.obj);
-                                    // Globals.homeObject = state.obj;
-                                    setState(() {});
-                                  }
-                                },
-                                child: EmptyContainer()),
-                          ),
-                        ],
-                      )
-                    : NoInternetErrorWidget(
-                        connected: connected, issplashscreen: false);
-              },
-              child: Container()),
-          onRefresh: refreshPage,
-        ));
+              return
+                  //  connected
+                  //     ?
+                  ListView(
+                children: [
+                  BlocBuilder<FamilyBloc, FamilyState>(
+                      bloc: _eventBloc,
+                      builder: (BuildContext contxt, FamilyState state) {
+                        if (state is FamilyLoading) {
+                          return Container(
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator());
+                        } else if (state is CalendarListSuccess) {
+                          return _buildTabs(state);
+                        } else if (state is ErrorLoading) {
+                          return ErrorMsgWidget();
+                        }
+                        return Container();
+                      }),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.appSetting = AppSetting.fromJson(state.obj);
+                            // Globals.homeObject = state.obj;
+                            setState(() {});
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                ],
+              );
+              // : NoInternetErrorWidget(
+              //     connected: connected, issplashscreen: false);
+            },
+            child: Container()));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+    refreshKey1.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());
   }

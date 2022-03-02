@@ -93,7 +93,7 @@ class _ContactPageState extends State<ContactPage> {
           message: Globals.appSetting.contactImageC
               // Globals.homeObject["Contact_Name__c"]
               ??
-              "-",
+              "",
           toLanguage: Globals.selectedLanguage,
           fromLanguage: "en",
           builder: (translatedMessage) => Text(
@@ -470,6 +470,7 @@ class _ContactPageState extends State<ContactPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     homebloc.add(FetchBottomNavigationBar());
   }
 }

@@ -137,7 +137,7 @@ class LanguageSelector {
                 return SafeArea(
                     child: Container(
                   height: orientation == Orientation.landscape
-                      ? MediaQuery.of(context).size.width * 0.965
+                      ? MediaQuery.of(context).size.height * 0.82
                       : MediaQuery.of(context).size.height * 0.60,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -165,7 +165,7 @@ class LanguageSelector {
                                     .textTheme
                                     .headline6!
                                     .copyWith(
-                                      fontSize: AppTheme.kBottomSheetTitleSize,
+                                      fontSize: Globals.deviceType == "phone" ?AppTheme.kBottomSheetTitleSize:AppTheme.kBottomSheetTitleSize*1.3,
                                     ),
                               );
                             }),

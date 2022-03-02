@@ -154,6 +154,7 @@ class _StaffPageState extends State<StaffPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     _bloc.add(StaffPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());
   }

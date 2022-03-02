@@ -231,7 +231,9 @@ class Utility {
       final string = dateNew.toString();
       final formatter = DateFormat('yyyy-MM-dd');
       final dateTime = formatter.parse(string);
-      final DateFormat formatNew = DateFormat('dd/MM/yyyy');
+      //final DateFormat formatNew = DateFormat('dd/MM/yyyy');
+      final DateFormat formatNew = DateFormat('MM/dd/yyyy');
+
       final String formatted = formatNew.format(dateTime);
       // return DateTime.parse((dateNew));
       // print(formatted);
@@ -317,11 +319,6 @@ class Utility {
   }
 
   static launchUrlOnExternalBrowser(String url) async {
-    // if (await canLaunch(url)) {
-    //   await launch(url);
-    // } else {
-    //   throw 'Could not launch $url';
-    // }
     try {
       await launch(url);
     } catch (e) {
@@ -358,5 +355,22 @@ class Utility {
   static String utf8convert(String? text) {
     List<int> bytes = text.toString().codeUnits;
     return utf8.decode(bytes);
+  }
+
+  static Future<String> sslErrorHandler(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        return "No";
+      } else {
+        return "No";
+      }
+    } catch (e) {
+      print(e.toString());
+      if (e.toString().contains('HandshakeException')) {
+        return 'Yes';
+      }
+      return 'No';
+    }
   }
 }
