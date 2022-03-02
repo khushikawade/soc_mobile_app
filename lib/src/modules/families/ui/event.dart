@@ -42,7 +42,7 @@ class _EventPageState extends State<EventPage>
   FamilyBloc _eventBloc = FamilyBloc();
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-    final refreshKey1 = GlobalKey<RefreshIndicatorState>();
+  final refreshKey1 = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
   double? _ktabmargin = 50;
   @override
@@ -261,10 +261,18 @@ class _EventPageState extends State<EventPage>
                                   }),
                               onRefresh: refreshPage,
                             ))
-                          : NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: true,
+                          : new RefreshIndicator(
+                              // key: refreshKey,
+                              onRefresh: refreshPage,
+                              child: ListView(
+                                children: [
+                                  NoDataFoundErrorWidget(
+                                    isResultNotFoundMsg: false,
+                                    isNews: false,
+                                    isEvents: true,
+                                  ),
+                                ],
+                              ),
                             ),
                       state.pastListobj!.length > 0
                           ? Tab(
@@ -281,10 +289,18 @@ class _EventPageState extends State<EventPage>
                                     return state.pastListobj!.length > 0
                                         ? _buildList(state.pastListobj![index],
                                             index, state.pastListobj)
-                                        : NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                            isEvents: true,
+                                        : new RefreshIndicator(
+                                            // key: refreshKey,
+                                            onRefresh: refreshPage,
+                                            child: ListView(
+                                              children: [
+                                                NoDataFoundErrorWidget(
+                                                  isResultNotFoundMsg: false,
+                                                  isNews: false,
+                                                  isEvents: true,
+                                                ),
+                                              ],
+                                            ),
                                           );
                                   }),
                               onRefresh: refreshPage,
@@ -293,7 +309,7 @@ class _EventPageState extends State<EventPage>
                               isResultNotFoundMsg: false,
                               isNews: false,
                               isEvents: true,
-                            )
+                            ),
                     ])),
               ]))
     ]);
