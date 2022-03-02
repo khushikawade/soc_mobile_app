@@ -116,9 +116,8 @@ class _SearchPageState extends State<SearchPage> {
         obj.objectName == 'Staff_Directory_App__c') {
       List<SDlist> newObj = [];
       newObj.add(SDlist(
-      
           descriptionC: obj.descriptionC,
-          designation:  obj.titleC,
+          designation: obj.titleC,
           emailC: obj.emailC,
           id: obj.id,
           imageUrlC: obj.appIconUrlC,
@@ -533,7 +532,7 @@ class _SearchPageState extends State<SearchPage> {
                   ))
                 : Expanded(
                     child: NoDataFoundErrorWidget(
-                          isSearchpage: true,
+                      isSearchpage: true,
                       isResultNotFoundMsg: false,
                       marginTop: MediaQuery.of(context).size.height * 0.15,
                       isNews: false,

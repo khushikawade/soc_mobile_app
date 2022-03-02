@@ -50,8 +50,8 @@ class NoDataFoundErrorWidget extends StatelessWidget {
                         ? SvgPicture.asset(
                             Strings.noDataIconPath,
                             fit: BoxFit.cover,
-                            height: MediaQuery.of(context).size.height/4,
-                            width:  MediaQuery.of(context).size.height/4
+                            height: 80,
+                            width: 80,
                           )
                         : SvgPicture.asset(
                             Strings.noDataIconPath,

@@ -261,19 +261,11 @@ class _EventPageState extends State<EventPage>
                                   }),
                               onRefresh: refreshPage,
                             ))
-                          : new RefreshIndicator(
-                              // key: refreshKey,
-                              onRefresh: refreshPage,
-                              child: ListView(
-                                children: [
-                                  NoDataFoundErrorWidget(
-                                    isResultNotFoundMsg: false,
-                                    isNews: false,
-                                    isEvents: true,
-                                  ),
-                                ],
-                              ),
-                            ),
+                          : NoDataFoundErrorWidget(
+                            isResultNotFoundMsg: false,
+                            isNews: false,
+                            isEvents: true,
+                          ),
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
