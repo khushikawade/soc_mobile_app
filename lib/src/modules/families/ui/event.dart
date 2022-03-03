@@ -261,15 +261,23 @@ class _EventPageState extends State<EventPage>
                               onRefresh: refreshPage,
                             ))
                           : new RefreshIndicator(
-                              // key: refreshKey,
+                               key: refreshKey,
                               onRefresh: refreshPage,
-                              child: ListView(children: [
-                                NoDataFoundErrorWidget(
-                                  isResultNotFoundMsg: false,
-                                  isNews: false,
-                                  isEvents: true,
-                                ),
-                              ])),
+                              child: OrientationBuilder(
+                                  builder: (context, orientation) {
+                                bool?  currentOrientation=
+                                    orientation == Orientation.landscape
+                                        ? true
+                                        : null;
+                                return ListView(children: [
+                                  NoDataFoundErrorWidget( 
+                                    isCalendarPageOrientationLandscape: currentOrientation,
+                                    isResultNotFoundMsg: false,
+                                    isNews: false,
+                                    isEvents: true,
+                                  ),
+                                ]);
+                              })),
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
@@ -301,11 +309,24 @@ class _EventPageState extends State<EventPage>
                                   }),
                               onRefresh: refreshPage,
                             ))
-                          : NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: true,
-                            ),
+                          : new RefreshIndicator(
+                               key: refreshKey1,
+                              onRefresh: refreshPage,
+                              child: OrientationBuilder(
+                                  builder: (context, orientation) {
+                                bool? currentOrientation =
+                                    orientation == Orientation.landscape
+                                        ? true
+                                        : null;
+                                return ListView(children: [
+                                  NoDataFoundErrorWidget( 
+                                    isCalendarPageOrientationLandscape: currentOrientation,
+                                    isResultNotFoundMsg: false,
+                                    isNews: false,
+                                    isEvents: true,
+                                  ),
+                                ]);
+                              })),
                     ])),
               ]))
     ]);
