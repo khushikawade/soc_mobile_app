@@ -4,7 +4,6 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
-import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
@@ -125,7 +124,6 @@ class _SearchPageState extends State<SearchPage> {
           phoneC: obj.phoneC,
           sortOrderC: obj.sortOrder,
           status: obj.statusC));
-      print(newObj);
       await Navigator.push(
           context,
           MaterialPageRoute(
@@ -531,12 +529,16 @@ class _SearchPageState extends State<SearchPage> {
                     }).toList(),
                   ))
                 : Expanded(
-                    child: NoDataFoundErrorWidget(
-                      isSearchpage: true,
-                      isResultNotFoundMsg: false,
-                      marginTop: MediaQuery.of(context).size.height * 0.15,
-                      isNews: false,
-                      isEvents: false,
+                    child: ListView(
+                      children: [
+                        NoDataFoundErrorWidget(
+                          isSearchpage: true,
+                          isResultNotFoundMsg: false,
+                          marginTop: MediaQuery.of(context).size.height * 0.15,
+                          isNews: false,
+                          isEvents: false,
+                        ),
+                      ],
                     ),
                   );
           } else if (state is SearchLoading) {
@@ -731,6 +733,7 @@ class _SearchPageState extends State<SearchPage> {
   void _setLocked() {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
   }
 }

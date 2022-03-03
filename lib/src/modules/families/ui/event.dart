@@ -91,7 +91,6 @@ class _EventPageState extends State<EventPage>
               children: <Widget>[
                 HorzitalSpacerWidget(_kLabelSpacing / 2),
                 Container(
-                  
                   alignment: Alignment.center,
                   width: Globals.deviceType == "phone" ? 40 : 70,
                   child: Wrap(alignment: WrapAlignment.center, children: [
@@ -261,11 +260,24 @@ class _EventPageState extends State<EventPage>
                                   }),
                               onRefresh: refreshPage,
                             ))
-                          : NoDataFoundErrorWidget(
-                            isResultNotFoundMsg: false,
-                            isNews: false,
-                            isEvents: true,
-                          ),
+                          : new RefreshIndicator(
+                               key: refreshKey,
+                              onRefresh: refreshPage,
+                              child: OrientationBuilder(
+                                  builder: (context, orientation) {
+                                bool?  currentOrientation=
+                                    orientation == Orientation.landscape
+                                        ? true
+                                        : null;
+                                return ListView(children: [
+                                  NoDataFoundErrorWidget( 
+                                    isCalendarPageOrientationLandscape: currentOrientation,
+                                    isResultNotFoundMsg: false,
+                                    isNews: false,
+                                    isEvents: true,
+                                  ),
+                                ]);
+                              })),
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
@@ -297,11 +309,24 @@ class _EventPageState extends State<EventPage>
                                   }),
                               onRefresh: refreshPage,
                             ))
-                          : NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: true,
-                            ),
+                          : new RefreshIndicator(
+                               key: refreshKey1,
+                              onRefresh: refreshPage,
+                              child: OrientationBuilder(
+                                  builder: (context, orientation) {
+                                bool? currentOrientation =
+                                    orientation == Orientation.landscape
+                                        ? true
+                                        : null;
+                                return ListView(children: [
+                                  NoDataFoundErrorWidget( 
+                                    isCalendarPageOrientationLandscape: currentOrientation,
+                                    isResultNotFoundMsg: false,
+                                    isNews: false,
+                                    isEvents: true,
+                                  ),
+                                ]);
+                              })),
                     ])),
               ]))
     ]);
@@ -384,7 +409,7 @@ class _EventPageState extends State<EventPage>
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     refreshKey1.currentState?.show(atTop: false);
+    refreshKey1.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     _eventBloc.add(CalendarListEvent());
     _homeBloc.add(FetchBottomNavigationBar());
