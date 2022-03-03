@@ -113,8 +113,7 @@ class _AboutusPageState extends State<AboutusPage> {
         // sharedpopBodytext:parseHtmlString(widget.htmlText),
         sharedpopBodytext: Utility.parseHtml(widget.htmlText
             .replaceAll('<img src=', ' ')
-            .replaceAll('data-imageguid=', '</')
-            ),
+            .replaceAll('data-imageguid=', '</')),
 
         //  widget.htmlText
         //     .replaceAll('<img src=', ' ')

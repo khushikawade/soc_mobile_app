@@ -719,6 +719,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _setFree() {
+    
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
