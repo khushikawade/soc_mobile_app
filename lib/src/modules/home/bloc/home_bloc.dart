@@ -3,15 +3,18 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
+import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/models/custom_setting.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
 import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
+import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
@@ -180,16 +183,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         List<CustomSetting> _list = response.data['body']
             .map<CustomSetting>((i) => CustomSetting.fromJson(i))
             .toList();
-        print(_list);
-        // To take the backup for all the sections.
-        // _backupAppData();
+        
         // if (Globals.appSetting.bannerHeightFactor != null) {
         //   AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
         //   // print(AppTheme.kBannerHeight);
         // }
-        // _list.removeWhere((CustomSetting element) => element.status == 'Hide');
+        _list.removeWhere((CustomSetting element) => element.status == 'Hide');
         _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
-        _list.removeRange(6, _list.length);
+        if (_list.length > 6) {
+          _list.removeRange(6, _list.length);
+        }
+          Globals.customSetting = _list;
+          // To take the backup for all the sections.
+        _backupAppData();
         return _list;
       }
     } catch (e) {
@@ -339,6 +345,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (element.contains('student')) {
           StudentBloc _studentBloc = StudentBloc();
           _studentBloc.add(StudentPageEvent());
+        } else if (element.contains('social')) {
+          SocialBloc _socialBloc = SocialBloc();
+          _socialBloc.add(SocialPageEvent());
+        } else if (element.contains('news')) {
+          NewsBloc _newsBloc = NewsBloc();
+          _newsBloc.add(FetchNotificationList());
         } else if (element.contains('families')) {
           FamilyBloc _familyBloc = FamilyBloc();
           _familyBloc.add(FamiliesEvent());
@@ -356,6 +368,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _resourceBloc.add(ResourcesListEvent());
         }
       });
+
+      if(Globals.customSetting != null){
+        for (var i = 0; i < Globals.customSetting!.length; i++) {
+        CustomBloc _customBloc = CustomBloc();
+        _customBloc.add(CustomsEvent(id: Globals.customSetting![i].id));
+      }
+      }
+      NewsBloc _newsBloc = NewsBloc();
+      _newsBloc.add(FetchActionCountList(isDetailPage: false));
+      SocialBloc _socialBloc = SocialBloc();
+      _socialBloc.add(FetchSocialActionCount(isDetailPage: false));
     } catch (e) {
       print(e);
     }

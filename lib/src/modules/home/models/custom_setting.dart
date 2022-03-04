@@ -52,6 +52,8 @@ class CustomSetting {
   String? connectionSentId;
   @HiveField(22)
   String? schoolAppC;
+  @HiveField(23)
+  final status;
 
   CustomSetting({
     this.attributes,
@@ -77,6 +79,7 @@ class CustomSetting {
     this.connectionReceivedId,
     this.connectionSentId,
     this.schoolAppC,
+    this.status
   });
 
   factory CustomSetting.fromJson(Map<String, dynamic> json) => CustomSetting(
@@ -107,6 +110,7 @@ class CustomSetting {
         connectionReceivedId: json['ConnectionReceivedId'],
         connectionSentId: json['ConnectionSentId'],
         schoolAppC: json['School_App__c'],
+        status: json['Active_Status__c'] ?? 'Show',
       );
 
   Map<String, dynamic> toJson() => {
@@ -133,6 +137,7 @@ class CustomSetting {
         'SystemModstamp': systemModstamp,
         'ConnectionReceivedId': connectionReceivedId,
         'ConnectionSentId': connectionSentId,
+         'Active_Status__c': status,
       };
 
   CustomSetting copyWith({
@@ -159,6 +164,7 @@ class CustomSetting {
     String? connectionReceivedId,
     String? connectionSentId,
     String? schoolAppC,
+    final status,
   }) {
     return CustomSetting(
       attributes: attributes ?? this.attributes,
@@ -184,6 +190,7 @@ class CustomSetting {
       customAppC: customAppC ?? this.customAppC,
       connectionReceivedId: connectionReceivedId ?? this.connectionReceivedId,
       connectionSentId: connectionSentId ?? this.connectionSentId,
+      status: status?? this.status,
     );
   }
 }

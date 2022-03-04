@@ -94,9 +94,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.initState();
     _bloc.initPushState(context);
 
-    _controller = PersistentTabController(
-        initialIndex:
-            Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
+    // _controller = PersistentTabController(
+    //   initialIndex:
+    //        Globals.homeIndex ?? 0);
+Globals.globalController=PersistentTabController(
+      initialIndex:
+           Globals.homeIndex ?? 0);
+
+        //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
     WidgetsBinding.instance!.addObserver(this);
     _checkNewVersion();
   }
@@ -163,7 +168,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       
       return Globals.customSetting!.map<PersistentBottomNavBarItem>(
         (item) {
-          setState(() {});
+          //setState(() {});
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(item.selectionTitleC, item.sectionIconC),
             // title:(''), //("${item.split("_")[0]}"),
@@ -278,7 +283,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   Widget _tabBarBody() => PersistentTabView(
         context,
-        controller: _controller,
+        controller: Globals.globalController,//_controller,
         screens: _buildScreens(),
         // hideNavigationBar: true,
         onItemSelected: (int i) {
@@ -393,7 +398,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void addScreen() {
-    if (_screens.length < Globals.customSetting!.length) {
+    //if (_screens.length < Globals.customSetting!.length) {
       for (var i = 0; i < Globals.customSetting!.length; i++) {
         if (Globals.customSetting![i].standardSectionC == 'News') {
           _screens.add(NewsPage());
@@ -405,12 +410,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           _screens.add(StaffPage());
         } else if (Globals.customSetting![i].standardSectionC == 'Families') {
           _screens.add(FamilyPage());
-        } else {
+        } 
+        else {
           _screens.add(CustomPage(obj: Globals.customSetting![i],
            
           ));
         }
       }
-    }
+    //}
   }
 }

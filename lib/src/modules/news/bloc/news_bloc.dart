@@ -60,12 +60,13 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         _list.sort(
             (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
         // Syncing end.
-
-        yield NewsLoading(); // Mimic state change
-
         //Adding push notification list data to global list
         Globals.notificationList.clear();
         Globals.notificationList.addAll(_list);
+
+        yield NewsLoading(); // Mimic state change
+
+        
 
         yield NewsLoaded(
           obj: _list,
