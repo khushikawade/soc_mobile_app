@@ -97,7 +97,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _route(obj) async {
-    obj.typeC != null && obj.typeC != '' ? _setFree() : _setLocked();
+    //obj.typeC != null && obj.typeC != '' ? _setFree() : _setLocked();
+    _setFree();
     if (obj.typeC == "Contact") {
       obj.titleC != null
           ? await Navigator.push(
@@ -721,11 +722,12 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _setFree() {
+    print("Inside setfree");
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
+      //DeviceOrientation.portraitUp,
+      //DeviceOrientation.portraitDown,
     ]);
   }
 
