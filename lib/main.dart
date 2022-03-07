@@ -16,13 +16,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kReleaseMode;
+import 'package:restart_app/restart_app.dart';
 
 import 'src/modules/families/modal/calendar_event_list.dart';
 
 void main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    if (details.exception.toString().contains('RangeError')) {
+    //  new runApp(App());
+      
+      print('finally catch the eroorrrrrrrrrrrrrrrrr');
+    }
+  };
 
   if (!kIsWeb) {
     // Not running on the web!

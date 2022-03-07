@@ -98,7 +98,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.initState();
     _bloc.initPushState(context);
 
-    Globals.controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
+    // Globals.controller =
+    //     PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
 
     // initialIndex:
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
@@ -179,10 +180,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       ).toList();
     } else {
       _tmp.clear();
-      _tmp.addAll(Globals.appSetting.bottomNavigationC!
-          .split(";"));
-      return _tmp
-          .map<PersistentBottomNavBarItem>(
+      _tmp.addAll(Globals.appSetting.bottomNavigationC!.split(";"));
+      return _tmp.map<PersistentBottomNavBarItem>(
         (item) {
           if (item.split("_")[0].toString().toLowerCase().contains("news")) {
             Globals.newsIndex =
@@ -283,13 +282,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 fontStyle: FontStyle.italic),
           ));
 
-  Widget _tabBarBody() => PersistentTabView(
+  Widget _tabBarBody() {
+    try {
+      return PersistentTabView(
         context,
         controller: Globals.controller,
         screens: _buildScreens(),
+
         // hideNavigationBar: true,
-        onItemSelected: (int i) {
+        onItemSelected: (i) {
           setState(() {
+            Globals.controller.index = i;
             // To make sure if the ShowCase is in the progress and user taps on bottom nav bar items so the Showcase should not apear on other pages/
             Globals.hasShowcaseInitialised.value = true;
             // New news item indicator
@@ -337,27 +340,38 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         navBarStyle: NavBarStyle.style6,
         navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
       );
+    } catch (e) {
+      throw Exception('Something went wrong');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-     
-      body: Stack(
-        children: [
-          _tabBarBody(),
-          ValueListenableBuilder<bool>(
-              valueListenable: Globals.hasShowcaseInitialised,
-              builder: (context, value, _) {
-                if (Globals.hasShowcaseInitialised.value == true)
-                  return Container();
-                return Center(
-                    child: _continueShowCaseInstructions(
-                        'Tap anywhere on the screen to continue.'));
-              }),
-        ],
-      ),
-    );
+    return mainbody();
     // );
+  }
+
+  Widget mainbody() {
+    try {
+      return Scaffold(
+        body: Stack(
+          children: [
+            _tabBarBody(),
+            ValueListenableBuilder<bool>(
+                valueListenable: Globals.hasShowcaseInitialised,
+                builder: (context, value, _) {
+                  if (Globals.hasShowcaseInitialised.value == true)
+                    return Container();
+                  return Center(
+                      child: _continueShowCaseInstructions(
+                          'Tap anywhere on the screen to continue.'));
+                }),
+          ],
+        ),
+      );
+    } catch (e) {
+      throw Exception('Something went wrong');
+    }
   }
 
   _onBackPressed() {
