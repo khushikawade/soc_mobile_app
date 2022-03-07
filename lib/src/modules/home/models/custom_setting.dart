@@ -54,6 +54,14 @@ class CustomSetting {
   String? schoolAppC;
   @HiveField(23)
   final status;
+  @HiveField(24)
+  final appUrlC;
+  @HiveField(25)
+  final pdfURL;
+  @HiveField(26)
+  final rtfHTMLC;
+  @HiveField(27)
+  final calendarId;
 
   CustomSetting({
     this.attributes,
@@ -79,7 +87,11 @@ class CustomSetting {
     this.connectionReceivedId,
     this.connectionSentId,
     this.schoolAppC,
-    this.status
+    this.status,
+    this.appUrlC,
+    this.pdfURL,
+    this.rtfHTMLC,
+    this.calendarId
   });
 
   factory CustomSetting.fromJson(Map<String, dynamic> json) => CustomSetting(
@@ -111,6 +123,10 @@ class CustomSetting {
         connectionSentId: json['ConnectionSentId'],
         schoolAppC: json['School_App__c'],
         status: json['Active_Status__c'] ?? 'Show',
+         appUrlC: json['URL__c'] as String?,
+      pdfURL: json['PDF_URL__c'] as String?,
+       rtfHTMLC: json['RTF_HTML__c'] as String?,
+       calendarId: json['Calendar_Id__c'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -138,6 +154,10 @@ class CustomSetting {
         'ConnectionReceivedId': connectionReceivedId,
         'ConnectionSentId': connectionSentId,
          'Active_Status__c': status,
+         'URL__c': appUrlC,
+        'PDF_URL__c': pdfURL,
+        'RTF_HTML__c': rtfHTMLC,
+        'Calendar_Id__c': calendarId,
       };
 
   CustomSetting copyWith({
@@ -165,6 +185,10 @@ class CustomSetting {
     String? connectionSentId,
     String? schoolAppC,
     final status,
+    String? appUrlC,
+    String? pdfURL,
+    String? rtfHTMLC,
+    String? calendarId,
   }) {
     return CustomSetting(
       attributes: attributes ?? this.attributes,
@@ -191,6 +215,10 @@ class CustomSetting {
       connectionReceivedId: connectionReceivedId ?? this.connectionReceivedId,
       connectionSentId: connectionSentId ?? this.connectionSentId,
       status: status?? this.status,
+      appUrlC: appUrlC ?? this.appUrlC,
+      pdfURL: pdfURL ?? this.pdfURL,
+      rtfHTMLC: rtfHTMLC ?? this.rtfHTMLC,
+      calendarId: calendarId ?? this.calendarId
     );
   }
 }

@@ -30,6 +30,8 @@ PODS:
   - OneSignalXCFramework (3.10.0)
   - open_apps_settings (0.0.1):
     - Flutter
+  - orientation (0.0.1):
+    - Flutter
   - package_info (0.0.1):
     - Flutter
   - package_info_plus (0.4.5):
@@ -70,6 +72,7 @@ DEPENDENCIES:
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
   - open_apps_settings (from `.symlinks/plugins/open_apps_settings/ios`)
+  - orientation (from `.symlinks/plugins/orientation/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
@@ -112,6 +115,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
   open_apps_settings:
     :path: ".symlinks/plugins/open_apps_settings/ios"
+  orientation:
+    :path: ".symlinks/plugins/orientation/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   package_info_plus:
@@ -153,6 +158,7 @@ SPEC CHECKSUMS:
   onesignal_flutter: 532fddb1b5921fb1145e4baef5177b9bca1c9d36
   OneSignalXCFramework: 10648e60ff3d335fbffa62d9b44b700b56d49b51
   open_apps_settings: b15bcddca026a201319f58e24f36464218793efc
+  orientation: 6c9203efe86ce4cff379756910f18b2d745628c3
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5

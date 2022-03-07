@@ -33,9 +33,8 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     if (event is CustomsEvent) {
       try {
         // yield CustomLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
-         String? _objectName = "${Strings.customObjectName}${event.id}";
-        LocalDatabase<SharedList> _localDb =
-            LocalDatabase(_objectName);
+        String? _objectName = "${Strings.customObjectName}${event.id}";
+        LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
 
         List<SharedList>? _localData = await _localDb.getData();
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
@@ -61,8 +60,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         yield CustomDataSucess(obj: list);
       } catch (e) {
         String? _objectName = "${Strings.customObjectName}${event.id}";
-        LocalDatabase<SharedList> _localDb =
-            LocalDatabase(_objectName);
+        LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
 
         List<SharedList>? _localData = await _localDb.getData();
         _localDb.close();
@@ -164,7 +162,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     if (event is CalendarListEvent) {
       try {
         yield CustomLoading();
-        String? _objectName = "${Strings.calendarObjectName}";
+        String? _objectName = "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
 
         List<CalendarEventList>? _localData = await _localDb.getData();
@@ -220,7 +218,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           // pastListobj.clear();
         }
 
-        List<CalendarEventList> list = await getCalendarEventList();
+        List<CalendarEventList> list = await getCalendarEventList(event.calendarId);
 
         await _localDb.clear();
         list.forEach((CalendarEventList e) {
@@ -288,7 +286,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         // yield CalendarListSuccess(
         //     futureListobj: _localDataFuture, pastListobj: _localDataPast);
         // yield ErrorLoading(err: e);
-        String? _objectName = "${Strings.calendarObjectName}";
+        String? _objectName = "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
 
         List<CalendarEventList>? _localData = await _localDb.getData();
@@ -408,11 +406,11 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     }
   }
 
-  Future<List<CalendarEventList>> getCalendarEventList() async {
+  Future<List<CalendarEventList>> getCalendarEventList(id) async {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://www.googleapis.com/calendar/v3/calendars/${Globals.calendar_Id}/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
+            'https://www.googleapis.com/calendar/v3/calendars/$id/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

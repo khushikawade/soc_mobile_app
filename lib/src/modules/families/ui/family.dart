@@ -109,7 +109,11 @@ class _FamilyPageState extends State<FamilyPage> {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
                               // Globals.homeObject = state.obj;
-                               Globals.appSetting = AppSetting.fromJson(state.obj);
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
+                              if (Globals.appSetting.isCustomApp! == false) {
+                                                  
+                              }
 
                               setState(() {});
                             }
@@ -135,32 +139,29 @@ class _FamilyPageState extends State<FamilyPage> {
             setState(() {});
           },
         ),
-        body: 
-        Globals.appSetting.familyBannerImageC != null &&
-                 Globals.appSetting.familyBannerImageC  != ''
-        // Globals.homeObject["Family_Banner_Image__c"] != null &&
-        //         Globals.homeObject["Family_Banner_Image__c"] != ''
+        body: Globals.appSetting.familyBannerImageC != null &&
+                Globals.appSetting.familyBannerImageC != ''
+            // Globals.homeObject["Family_Banner_Image__c"] != null &&
+            //         Globals.homeObject["Family_Banner_Image__c"] != ''
             ? NestedScrollView(
                 // controller: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     Globals.appSetting.familyBannerImageC != null
-                    // Globals.homeObject["Family_Banner_Image__c"] != null
+                        // Globals.homeObject["Family_Banner_Image__c"] != null
                         ? BannerImageWidget(
-                            imageUrl:
-                            Globals.appSetting.familyBannerImageC!,
-                                // Globals.homeObject["Family_Banner_Image__c"],
-                            bgColor:
-                            Globals.appSetting.familyBannerColorC
-                                // Globals.homeObject["Family_Banner_Color__c"]
-                                 !=
-                                        null
-                                    ? Utility.getColorFromHex(
-                                      Globals.appSetting.familyBannerColorC!
-                                      // Globals.homeObject["Family_Banner_Color__c"]
-                                        )
-                                    : null,
+                            imageUrl: Globals.appSetting.familyBannerImageC!,
+                            // Globals.homeObject["Family_Banner_Image__c"],
+                            bgColor: Globals.appSetting.familyBannerColorC
+                                    // Globals.homeObject["Family_Banner_Color__c"]
+                                    !=
+                                    null
+                                ? Utility.getColorFromHex(
+                                    Globals.appSetting.familyBannerColorC!
+                                    // Globals.homeObject["Family_Banner_Color__c"]
+                                    )
+                                : null,
                           )
                         : SliverAppBar(),
                   ];

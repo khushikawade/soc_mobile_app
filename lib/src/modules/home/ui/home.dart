@@ -2,7 +2,10 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/custom/ui/custom.dart';
+import 'package:Soc/src/modules/custom/ui/custom_url.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
@@ -41,11 +44,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   var item;
   var item2;
   List<Widget> _screens = [];
+  List<String> _tmp = [];
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
 
-  late PersistentTabController _controller;
+  // late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
 
@@ -94,12 +98,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.initState();
     _bloc.initPushState(context);
 
-    _controller = PersistentTabController(
-      initialIndex:
-           Globals.homeIndex ?? 0);
+    Globals.controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
 
-        // initialIndex:
-        //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
+    // initialIndex:
+    //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
     WidgetsBinding.instance!.addObserver(this);
     _checkNewVersion();
   }
@@ -117,6 +119,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   List<Widget> _buildScreens() {
     // Globals.homeObject["Bottom_Navigation__c"]
     _screens.clear();
+    _tmp.clear();
     Globals.appSetting.isCustomApp!
         ? addScreen()
         : Globals.appSetting.bottomNavigationC!
@@ -163,12 +166,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     if (Globals.appSetting.isCustomApp!) {
-      
-      return Globals.customSetting!.map<PersistentBottomNavBarItem>(
+      return _tmp.map<PersistentBottomNavBarItem>(
         (item) {
           setState(() {});
           return PersistentBottomNavBarItem(
-            icon: _bottomIcon(item.selectionTitleC, item.sectionIconC),
+            icon: _bottomIcon(item.split("_")[0], item.split("_")[1]),
             // title:(''), //("${item.split("_")[0]}"),
             activeColorPrimary: Theme.of(context).primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
@@ -176,8 +178,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         },
       ).toList();
     } else {
-      return Globals.appSetting.bottomNavigationC!
-          .split(";")
+      _tmp.clear();
+      _tmp.addAll(Globals.appSetting.bottomNavigationC!
+          .split(";"));
+      return _tmp
           .map<PersistentBottomNavBarItem>(
         (item) {
           if (item.split("_")[0].toString().toLowerCase().contains("news")) {
@@ -281,7 +285,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   Widget _tabBarBody() => PersistentTabView(
         context,
-        controller: _controller,
+        controller: Globals.controller,
         screens: _buildScreens(),
         // hideNavigationBar: true,
         onItemSelected: (int i) {
@@ -337,6 +341,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+     
       body: Stack(
         children: [
           _tabBarBody(),
@@ -398,20 +403,57 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void addScreen() {
     if (_screens.length < Globals.customSetting!.length) {
       for (var i = 0; i < Globals.customSetting!.length; i++) {
-        if (Globals.customSetting![i].standardSectionC == 'News') {
-          _screens.add(NewsPage());
-        } else if (Globals.customSetting![i].standardSectionC == 'Social') {
-          _screens.add(SocialPage());
-        } else if (Globals.customSetting![i].standardSectionC == 'Student') {
-          _screens.add(StudentPage());
-        } else if (Globals.customSetting![i].standardSectionC == 'Staff') {
-          _screens.add(StaffPage());
-        } else if (Globals.customSetting![i].standardSectionC == 'Families') {
-          _screens.add(FamilyPage());
-        } else {
-          _screens.add(CustomPage(obj: Globals.customSetting![i],
-           
-          ));
+        if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
+          if (Globals.customSetting![i].standardSectionC == 'News') {
+            _screens.add(NewsPage());
+            _tmp.add(
+                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+          } else if (Globals.customSetting![i].standardSectionC == 'Social') {
+            _screens.add(SocialPage());
+            _tmp.add(
+                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+          } else if (Globals.customSetting![i].standardSectionC == 'Student') {
+            _screens.add(StudentPage());
+            _tmp.add(
+                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+          } else if (Globals.customSetting![i].standardSectionC == 'Staff') {
+            _screens.add(StaffPage());
+            _tmp.add(
+                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+          } else if (Globals.customSetting![i].standardSectionC == 'Families') {
+            _screens.add(FamilyPage());
+            _tmp.add(
+                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+          } else if (Globals.customSetting![i].standardSectionC ==
+              'School Directory') {
+            _screens.add(SchoolPage());
+            _tmp.add(
+                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+          } else if (Globals.customSetting![i].standardSectionC == 'About') {
+            _screens.add(AboutPage());
+            _tmp.add(
+                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+          } else if (Globals.customSetting![i].standardSectionC ==
+              'Resources') {
+            _screens.add(ResourcesPage());
+            _tmp.add(
+                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+          }
+        } else if (Globals.customSetting![i].typeOfSectionC ==
+            'Custom section') {
+          _screens.add(CustomPage(obj: Globals.customSetting![i]));
+          _tmp.add(
+              '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+        } else if (Globals.customSetting![i].typeOfSectionC ==
+                'Calendar/Events' ||
+            Globals.customSetting![i].typeOfSectionC == 'Contact' ||
+            Globals.customSetting![i].typeOfSectionC == 'Embed iFrame' ||
+            Globals.customSetting![i].typeOfSectionC == 'PDF URL' ||
+            Globals.customSetting![i].typeOfSectionC == 'RFT_HTML' ||
+            Globals.customSetting![i].typeOfSectionC == 'URL') {
+          _screens.add(CustomUrlPage(obj: Globals.customSetting![i]));
+          _tmp.add(
+              '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
         }
       }
     }

@@ -1,4 +1,3 @@
-import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/user/ui/startup.dart';
 import 'package:Soc/src/styles/theme.dart';

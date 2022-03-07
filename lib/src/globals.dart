@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'modules/home/models/custom_setting.dart';
 import 'modules/news/model/notification_list.dart';
@@ -59,5 +60,6 @@ class Globals {
   static List<Item> socialList = [];
   static PackageInfo? packageInfo;
   static bool isNewTap = false;
+  static PersistentTabController? controller;
 
 }

@@ -44,6 +44,10 @@ class SDevent extends CustomEvent {
 }
 
 class CalendarListEvent extends CustomEvent {
+  final String? calendarId;
+  CalendarListEvent({
+    this.calendarId,
+  });
   @override
   List<Object> get props => [];
 
