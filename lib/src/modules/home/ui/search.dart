@@ -230,7 +230,7 @@ class _SearchPageState extends State<SearchPage> {
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
-                        // calendarId: obj.calendarId.toString(),
+                         calendarId: obj.calendarId.toString(),
                       )))
           : Utility.showSnackBar(
               _scaffoldKey, "No calendar/events available", context);
