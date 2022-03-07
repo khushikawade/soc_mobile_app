@@ -345,19 +345,33 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             OrientationBuilder(builder: (context, orientation) {
               return AlertDialog(
                 backgroundColor: Colors.white,
-                title: Globals.deviceType == 'phone'
-                    ? Text("Do you want to exit the app?",
-                        style: Theme.of(context).textTheme.headline2!)
-                    : Container(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        height: orientation == Orientation.portrait
+                 title: 
+                //Globals.deviceType == 'phone'
+                //     ? TranslationWidget(
+                //   message: "Do you want to exit the app?",
+                //   fromLanguage: "en",
+                //   toLanguage: Globals.selectedLanguage,
+                //   builder: (translatedMessage) {
+                //     return Text(translatedMessage.toString(),
+                //         style: Theme.of(context).textTheme.headline2!);
+                //   })
+                //     :
+                     Container(
+                        padding:Globals.deviceType == 'phone'?null: const EdgeInsets.only(top: 10.0),
+                        height:Globals.deviceType == 'phone'? null: orientation == Orientation.portrait
                             ? MediaQuery.of(context).size.height / 15
                             : MediaQuery.of(context).size.width / 15,
-                        width: orientation == Orientation.portrait
+                        width:Globals.deviceType == 'phone'?null: orientation == Orientation.portrait
                             ? MediaQuery.of(context).size.width / 2
                             : MediaQuery.of(context).size.height / 2,
-                        child: Text("Do you want to exit the app?",
-                            style: Theme.of(context).textTheme.headline2!),
+                        child: TranslationWidget(
+                  message: "Do you want to exit the app?",
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) {
+                    return Text(translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline2!);
+                  }),
                       ),
                 actions: <Widget>[
                   FlatButton(
@@ -365,16 +379,27 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         ? EdgeInsets.only(bottom: 10.0, right: 10.0)
                         : EdgeInsets.all(0),
                     onPressed: () => Navigator.pop(context, false),
-                    child: Text("No",
-                        style: Theme.of(context).textTheme.headline2!),
-                  ),
+                    child: TranslationWidget(
+                      message: "No",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline2!);
+                      }),),
                   FlatButton(
                     padding: Globals.deviceType != 'phone'
                         ? EdgeInsets.only(bottom: 10.0, right: 10.0)
                         : EdgeInsets.all(0.0),
                     onPressed: () => exit(0),
-                    child: Text("Yes",
-                        style: Theme.of(context).textTheme.headline2!),
+                    child: TranslationWidget(
+                      message: "Yes",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline2!);
+                      })
                   )
                 ],
               );
