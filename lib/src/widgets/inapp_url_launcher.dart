@@ -106,7 +106,6 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                             (WebViewController webViewController) {
                           _controller.complete(webViewController);
                         },
-
                       ),
                       )
                   : NoInternetErrorWidget(
