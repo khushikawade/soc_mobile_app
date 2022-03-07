@@ -68,7 +68,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    _setLocked();
+      _setLocked();
     Globals.callsnackbar = true;
     getListLength();
   }
@@ -720,9 +720,8 @@ class _SearchPageState extends State<SearchPage> {
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
-  void _setFree() {
-    
-    SystemChrome.setPreferredOrientations([
+  Future _setFree() async {
+    await SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.portraitUp,
@@ -730,8 +729,8 @@ class _SearchPageState extends State<SearchPage> {
     ]);
   }
 
-  void _setLocked() {
-    SystemChrome.setPreferredOrientations([
+  Future _setLocked() async {
+    await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
