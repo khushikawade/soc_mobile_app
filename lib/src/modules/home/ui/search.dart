@@ -97,7 +97,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _route(obj) async {
-    //obj.typeC != null && obj.typeC != '' ? _setFree() : _setLocked();
+    obj.typeC != null && obj.typeC != '' ? _setFree() : _setLocked();
     _setFree();
     if (obj.typeC == "Contact") {
       obj.titleC != null
@@ -138,7 +138,6 @@ class _SearchPageState extends State<SearchPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
-      //  _setLocked();
     } else if (obj.typeC == "Form") {
       await Navigator.push(
           context,
@@ -151,7 +150,6 @@ class _SearchPageState extends State<SearchPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
-      //  _setLocked();
     } else if (obj.typeC == "SchoolDirectoryApp") {
       await Navigator.push(
           context,
@@ -159,7 +157,6 @@ class _SearchPageState extends State<SearchPage> {
               builder: (BuildContext context) => SchoolDetailPage(
                     obj: obj,
                   )));
-      //   _setLocked();
     } else if (obj.typeC == "Staff_Directory") {
       await Navigator.push(
           context,
@@ -172,7 +169,6 @@ class _SearchPageState extends State<SearchPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
-      //  _setLocked();
     }
     // else if (obj.deepLink != null) {
     //   if (obj.deepLink == 'NO') {
@@ -235,7 +231,6 @@ class _SearchPageState extends State<SearchPage> {
                       )))
           : Utility.showSnackBar(
               _scaffoldKey, "No calendar/events available", context);
-      //  _setLocked();
     } else if (obj.typeC == "Sub-Menu") {
       await Navigator.push(
           context,
@@ -255,7 +250,6 @@ class _SearchPageState extends State<SearchPage> {
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage,
                   )));
-      //   _setLocked();
     } else {
       Utility.showSnackBar(
           _scaffoldKey, "No data available for this record", context);
