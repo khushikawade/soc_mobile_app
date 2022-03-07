@@ -69,31 +69,56 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _buildNameWidget() {
     return Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing,
-        ),
-        child: Text(
-          widget.obj!.name ?? "",
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline2!.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
-        ));
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: TranslationWidget(
+          message: widget.obj!.name ?? "",
+          toLanguage: Globals.selectedLanguage,
+          fromLanguage: "en",
+          builder: (translatedMessage) => Text(
+                translatedMessage.toString(),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline2!.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+              )
+
+          // Text(
+          //   translatedMessage.toString(),
+          //   style: Theme.of(context).textTheme.bodyText2!.copyWith(
+          //         fontWeight: FontWeight.w500,
+          //       ),
+          // ),
+          ),
+    );
   }
 
   Widget _buildDescriptionWidget() {
     return Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing,
-        ),
-        // TODO: Replace text with HTML // text: widget.obj!.descriptionC ?? "",
-        child: Linkify(
-          onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
-          options: LinkifyOptions(humanize: false),
-          linkStyle: TextStyle(color: Colors.blue),
-          text: widget.obj!.descriptionC ?? "",
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-        ));
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      // TODO: Replace text with HTML // text: widget.obj!.descriptionC ?? "",
+      child: TranslationWidget(
+          message: widget.obj!.descriptionC ?? "",
+          toLanguage: Globals.selectedLanguage,
+          fromLanguage: "en",
+          builder: (translatedMessage) => Linkify(
+                onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
+                options: LinkifyOptions(humanize: false),
+                linkStyle: TextStyle(color: Colors.blue),
+                text: translatedMessage.toString(),
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+              )
+          //  Text(
+          //   translatedMessage.toString(),
+          //   style: Theme.of(context).textTheme.bodyText2!.copyWith(
+          //         fontWeight: FontWeight.w500,
+          //       ),
+          // ),
+          ),
+    );
   }
 
   Widget _buildPhoneWidget() {
@@ -326,7 +351,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     homebloc.add(FetchBottomNavigationBar());
   }
 }

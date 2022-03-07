@@ -346,7 +346,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               return AlertDialog(
                 backgroundColor: Colors.white,
                 title: Globals.deviceType == 'phone'
-                    ? Text("Do you want to exit the app?",
+                    ? 
+                    Text("Do you want to exit the app?",
                         style: Theme.of(context).textTheme.headline2!)
                     : Container(
                         padding: const EdgeInsets.only(top: 10.0),
