@@ -25,12 +25,12 @@ class EventPage extends StatefulWidget {
     required this.isbuttomsheet,
     required this.appBarTitle,
     required this.language,
-    // required this.calendarId,
+    required this.calendarId,
   });
   String? language;
   bool? isbuttomsheet;
   String? appBarTitle;
-  // String calendarId;
+  String calendarId;
 
   @override
   _EventPageState createState() => _EventPageState();
@@ -51,7 +51,7 @@ class _EventPageState extends State<EventPage>
   void initState() {
     super.initState();
     // Globals.calendar_Id = widget.calendarId;
-    _eventBloc.add(CalendarListEvent());
+    _eventBloc.add(CalendarListEvent(widget.calendarId));
 
     // _ktabmargin = MediaQuery.of(context).size.height * 0.25;
   }
@@ -182,7 +182,7 @@ class _EventPageState extends State<EventPage>
     );
   }
 
-  Widget _buildTabs(state) {
+  Widget _buildTabs(state, bool? currentOrientation) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
         Widget>[
       DefaultTabController(
@@ -261,23 +261,17 @@ class _EventPageState extends State<EventPage>
                               onRefresh: refreshPage,
                             ))
                           : new RefreshIndicator(
-                               key: refreshKey,
+                              key: refreshKey,
                               onRefresh: refreshPage,
-                              child: OrientationBuilder(
-                                  builder: (context, orientation) {
-                                bool?  currentOrientation=
-                                    orientation == Orientation.landscape
-                                        ? true
-                                        : null;
-                                return ListView(children: [
-                                  NoDataFoundErrorWidget( 
-                                    isCalendarPageOrientationLandscape: currentOrientation,
-                                    isResultNotFoundMsg: false,
-                                    isNews: false,
-                                    isEvents: true,
-                                  ),
-                                ]);
-                              })),
+                              child: ListView(children: [
+                                NoDataFoundErrorWidget(
+                                  isCalendarPageOrientationLandscape:
+                                      currentOrientation,
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: true,
+                                ),
+                              ])),
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
@@ -310,23 +304,18 @@ class _EventPageState extends State<EventPage>
                               onRefresh: refreshPage,
                             ))
                           : new RefreshIndicator(
-                               key: refreshKey1,
+                              key: refreshKey1,
                               onRefresh: refreshPage,
-                              child: OrientationBuilder(
-                                  builder: (context, orientation) {
-                                bool? currentOrientation =
-                                    orientation == Orientation.landscape
-                                        ? true
-                                        : null;
-                                return ListView(children: [
-                                  NoDataFoundErrorWidget( 
-                                    isCalendarPageOrientationLandscape: currentOrientation,
-                                    isResultNotFoundMsg: false,
-                                    isNews: false,
-                                    isEvents: true,
-                                  ),
-                                ]);
-                              })),
+                              child: ListView(children: [
+                                NoDataFoundErrorWidget(
+                                  isCalendarPageOrientationLandscape:
+                                      currentOrientation,
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: true,
+                                ),
+                              ]),
+                            ),
                     ])),
               ]))
     ]);
@@ -345,73 +334,79 @@ class _EventPageState extends State<EventPage>
           isCenterIcon: true,
           language: Globals.selectedLanguage,
         ),
-        body: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final bool connected = connectivity != ConnectivityResult.none;
-              Globals.isNetworkError = !connected;
+        body: OrientationBuilder(builder: (context, orientation) {
+          bool? currentOrientation =
+              orientation == Orientation.landscape ? true : null;
+          return OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
+                Globals.isNetworkError = !connected;
 
-              if (connected) {
-                if (iserrorstate == true) {
-                  _eventBloc.add(CalendarListEvent());
-                  iserrorstate = false;
+                if (connected) {
+                  if (iserrorstate == true) {
+                    _eventBloc.add(CalendarListEvent(widget.calendarId));
+                    iserrorstate = false;
+                  }
+                } else if (!connected) {
+                  iserrorstate = true;
                 }
-              } else if (!connected) {
-                iserrorstate = true;
-              }
 
-              return
-                  //  connected
-                  //     ?
-                  ListView(
-                children: [
-                  BlocBuilder<FamilyBloc, FamilyState>(
-                      bloc: _eventBloc,
-                      builder: (BuildContext contxt, FamilyState state) {
-                        if (state is FamilyLoading) {
-                          return Container(
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              alignment: Alignment.center,
-                              child: CircularProgressIndicator());
-                        } else if (state is CalendarListSuccess) {
-                          return _buildTabs(state);
-                        } else if (state is ErrorLoading) {
-                          return ErrorMsgWidget();
-                        }
-                        return Container();
-                      }),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                        bloc: _homeBloc,
-                        listener: (context, state) async {
-                          if (state is BottomNavigationBarSuccess) {
-                            AppTheme.setDynamicTheme(
-                                Globals.appSetting, context);
-                            Globals.appSetting = AppSetting.fromJson(state.obj);
-                            // Globals.homeObject = state.obj;
-                            setState(() {});
+                return
+                    //  connected
+                    //     ?
+                    ListView(
+                  children: [
+                    BlocBuilder<FamilyBloc, FamilyState>(
+                        bloc: _eventBloc,
+                        builder: (BuildContext contxt, FamilyState state) {
+                          if (state is FamilyLoading) {
+                            return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator());
+                          } else if (state is CalendarListSuccess) {
+                            return _buildTabs(state, currentOrientation);
+                          } else if (state is ErrorLoading) {
+                            return ErrorMsgWidget();
                           }
-                        },
-                        child: EmptyContainer()),
-                  ),
-                ],
-              );
-              // : NoInternetErrorWidget(
-              //     connected: connected, issplashscreen: false);
-            },
-            child: Container()));
+                          return Container();
+                        }),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                          bloc: _homeBloc,
+                          listener: (context, state) async {
+                            if (state is BottomNavigationBarSuccess) {
+                              AppTheme.setDynamicTheme(
+                                  Globals.appSetting, context);
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
+                              // Globals.homeObject = state.obj;
+                              setState(() {});
+                            }
+                          },
+                          child: EmptyContainer()),
+                    ),
+                  ],
+                );
+                // : NoInternetErrorWidget(
+                //     connected: connected, issplashscreen: false);
+              },
+              child: Container());
+        }));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     refreshKey1.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    _eventBloc.add(CalendarListEvent());
+    _eventBloc.add(CalendarListEvent(widget.calendarId));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }
