@@ -47,8 +47,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
-
-  // late PersistentTabController _controller;
+ late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
 
@@ -67,7 +66,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       if (details.exception.toString().contains('RangeError')) {
         //  new runApp(App());
        
-          Globals.controller.index = 0;
+         _controller.index = 0;
   
         print('finally catch the eroorrrrrrrrrrrrrrrrr');
       }
@@ -111,8 +110,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.initState();
     _bloc.initPushState(context);
     restart();
-    // Globals.controller =
-    //     PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
+   _controller =
+        PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
 
     // initialIndex:
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
@@ -299,13 +298,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     
       return PersistentTabView(
         context,
-        controller: Globals.controller,
+        controller: _controller,
         screens: _buildScreens(),
 
         // hideNavigationBar: true,
         onItemSelected: (i) {
           setState(() {
-            Globals.controller.index = i;
+            // Globals.controller.index = i;
             // To make sure if the ShowCase is in the progress and user taps on bottom nav bar items so the Showcase should not apear on other pages/
             Globals.hasShowcaseInitialised.value = true;
             // New news item indicator

@@ -60,7 +60,7 @@ class Globals {
   static List<Item> socialList = [];
   static PackageInfo? packageInfo;
   static bool isNewTap = false;
-  static PersistentTabController controller =
-      PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
+  // static PersistentTabController? controller; 
+  
   static BuildContext? context;
 }
