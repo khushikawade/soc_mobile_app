@@ -1,11 +1,10 @@
+
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/custom/ui/custom.dart';
 import 'package:Soc/src/modules/custom/ui/custom_url.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
-import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
@@ -61,6 +60,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       _newsBloc.add(FetchNotificationList());
   }
 
+  void restart() {
+    WidgetsFlutterBinding.ensureInitialized();
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      if (details.exception.toString().contains('RangeError')) {
+        //  new runApp(App());
+       
+          Globals.controller.index = 0;
+  
+        print('finally catch the eroorrrrrrrrrrrrrrrrr');
+      }
+    };
+  }
+
   Widget callNotification() {
     return BlocListener<NewsBloc, NewsState>(
       bloc: _newsBloc,
@@ -97,7 +110,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     _bloc.initPushState(context);
-
+    restart();
     // Globals.controller =
     //     PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
 
@@ -283,7 +296,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           ));
 
   Widget _tabBarBody() {
-    try {
+    
       return PersistentTabView(
         context,
         controller: Globals.controller,
@@ -335,14 +348,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         screenTransitionAnimation: ScreenTransitionAnimation(
           animateTabTransition: true,
           curve: Curves.ease,
-          duration: Duration(milliseconds: 200),
+          duration: Duration(milliseconds: 100),
         ),
         navBarStyle: NavBarStyle.style6,
         navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
       );
-    } catch (e) {
-      throw Exception('Something went wrong');
-    }
+    
   }
 
   @override
@@ -352,7 +363,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Widget mainbody() {
-    try {
+    
       return Scaffold(
         body: Stack(
           children: [
@@ -369,9 +380,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           ],
         ),
       );
-    } catch (e) {
-      throw Exception('Something went wrong');
-    }
+    
   }
 
   _onBackPressed() {

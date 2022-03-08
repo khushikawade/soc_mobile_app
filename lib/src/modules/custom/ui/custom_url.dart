@@ -162,12 +162,14 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                   url: obj.appUrlC,
                   language: Globals.selectedLanguage,
                 ))
-          : Container(
-              child: NoDataFoundErrorWidget(
-                  isResultNotFoundMsg: false,
-                  isNews: false,
-                  isEvents: false,
-                  connected: true));
+          : Expanded(
+              child: Container(
+                  child: NoDataFoundErrorWidget(
+                      isResultNotFoundMsg: false,
+                      isNews: false,
+                      isEvents: false,
+                      connected: true)),
+            );
     } else if (obj.typeOfSectionC == "RTF_HTML" ||
         obj.typeOfSectionC == "RFT_HTML" ||
         obj.typeOfSectionC == "HTML/RTF" ||
