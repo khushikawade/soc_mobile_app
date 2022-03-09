@@ -1,17 +1,12 @@
 import 'package:Soc/src/modules/custom/ui/home_calendar.dart';
 import 'package:Soc/src/modules/custom/ui/home_contect.dart';
-import 'package:Soc/src/modules/families/ui/contact.dart';
-import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
-import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/modules/custom/ui/home_html.dart';
 import 'package:Soc/src/modules/custom/ui/home_inapp_url_launcher.dart';
 import 'package:Soc/src/modules/custom/ui/home_pdf_viewer_pagr.dart';
-import 'package:Soc/src/widgets/html_description.dart';
-import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,6 +48,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
     refreshKey.currentState?.show(atTop: false);
 
     _homeBloc.add(FetchBottomNavigationBar());
+    Globals.webViewController!.reload();
   }
 
   Widget _body(String key) => Container(

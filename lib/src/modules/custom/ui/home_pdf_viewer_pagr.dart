@@ -82,6 +82,7 @@ class _HomePdfViewerPageState extends State<HomePdfViewerPage> {
                         new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
                   ))
                 : PDFViewer(
+                  
                     document: document!,
                     enableSwipeNavigation: true,
                     showIndicator: true,
