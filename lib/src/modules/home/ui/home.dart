@@ -296,9 +296,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           curve: Curves.ease,
         ),
         screenTransitionAnimation: ScreenTransitionAnimation(
-          animateTabTransition: true,
-          curve: Curves.ease,
-          duration: Duration(milliseconds: 200),
+          animateTabTransition: false,
+          // curve: Curves.ease,
+          // duration: Duration(milliseconds: 200),
         ),
         navBarStyle: NavBarStyle.style6,
         navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
