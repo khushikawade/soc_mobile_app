@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
@@ -43,13 +42,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   var item;
   var item2;
   List<Widget> _screens = [];
-  List<String> _tmp = [];
+  // List<String> _tmp = [];
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
- late PersistentTabController _controller;
+  late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
+  int previousIndex = 0;
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
@@ -64,10 +64,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.presentError(details);
       if (details.exception.toString().contains('RangeError')) {
-        //  new runApp(App());
-       
-         _controller.index = 0;
-  
+      
+
+        _controller.index = 0;
+
         print('finally catch the eroorrrrrrrrrrrrrrrrr');
       }
     };
@@ -110,9 +110,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.initState();
     _bloc.initPushState(context);
     restart();
-   _controller =
-        PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
-
+    _controller = PersistentTabController(initialIndex: Globals.homeIndex ?? 0);
     // initialIndex:
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
     WidgetsBinding.instance!.addObserver(this);
@@ -132,7 +130,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   List<Widget> _buildScreens() {
     // Globals.homeObject["Bottom_Navigation__c"]
     _screens.clear();
-    _tmp.clear();
+
     Globals.appSetting.isCustomApp!
         ? addScreen()
         : Globals.appSetting.bottomNavigationC!
@@ -179,11 +177,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     if (Globals.appSetting.isCustomApp!) {
-      return _tmp.map<PersistentBottomNavBarItem>(
+      return Globals.customSetting!.map<PersistentBottomNavBarItem>(
         (item) {
           setState(() {});
           return PersistentBottomNavBarItem(
-            icon: _bottomIcon(item.split("_")[0], item.split("_")[1]),
+            icon: _bottomIcon(item.selectionTitleC, item.sectionIconC),
             // title:(''), //("${item.split("_")[0]}"),
             activeColorPrimary: Theme.of(context).primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
@@ -191,9 +189,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         },
       ).toList();
     } else {
-      _tmp.clear();
-      _tmp.addAll(Globals.appSetting.bottomNavigationC!.split(";"));
-      return _tmp.map<PersistentBottomNavBarItem>(
+      // _tmp.addAll(Globals.appSetting.bottomNavigationC!.split(";"));
+      return Globals.appSetting.bottomNavigationC!
+          .split(";")
+          .map<PersistentBottomNavBarItem>(
         (item) {
           if (item.split("_")[0].toString().toLowerCase().contains("news")) {
             Globals.newsIndex =
@@ -295,64 +294,69 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           ));
 
   Widget _tabBarBody() {
-    
-      return PersistentTabView(
-        context,
-        controller: _controller,
-        screens: _buildScreens(),
+    return PersistentTabView(
+      context,
+      controller: _controller,
+      screens: _buildScreens(),
 
-        // hideNavigationBar: true,
-        onItemSelected: (i) {
-          setState(() {
-            // Globals.controller.index = i;
-            // To make sure if the ShowCase is in the progress and user taps on bottom nav bar items so the Showcase should not apear on other pages/
-            Globals.hasShowcaseInitialised.value = true;
-            // New news item indicator
-            if (i == Globals.newsIndex) {
-              Globals.indicator.value = false;
-            }
-          });
-        },
-        items: _navBarsItems(),
-        confineInSafeArea: true,
-        backgroundColor: Theme.of(context).backgroundColor,
-        handleAndroidBackButtonPress: true,
-        resizeToAvoidBottomInset:
-            true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-        stateManagement: true, // Default is true.
-        hideNavigationBarWhenKeyboardShows:
-            true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-        decoration: NavBarDecoration(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(25),
-              topLeft: Radius.circular(25),
+      // hideNavigationBar: true,
+      onItemSelected: (i) {
+        // _controller.index = i;
+        setState(() {
+          if (previousIndex == i && Globals.urlIndex == i) {
+            Globals.webViewController1!.loadUrl(Globals.homeUrl!);
+          }
+
+          previousIndex = i;
+          // Globals.controller.index = i;
+          // To make sure if the ShowCase is in the progress and user taps on bottom nav bar items so the Showcase should not apear on other pages/
+          Globals.hasShowcaseInitialised.value = true;
+          // New news item indicator
+          if (i == Globals.newsIndex) {
+            Globals.indicator.value = false;
+          }
+        });
+      },
+      items: _navBarsItems(),
+      confineInSafeArea: true,
+      backgroundColor: Theme.of(context).backgroundColor,
+      handleAndroidBackButtonPress: true,
+      resizeToAvoidBottomInset:
+          true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+      stateManagement: true, // Default is true.
+      hideNavigationBarWhenKeyboardShows:
+          true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+      decoration: NavBarDecoration(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(25),
+            topLeft: Radius.circular(25),
+          ),
+          // circular(25.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey,
+              blurRadius: 10.0,
             ),
-            // circular(25.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 10.0,
-              ),
-            ]),
-        onWillPop: (context) async {
-          await _onBackPressed();
-          return false;
-        },
-        popAllScreensOnTapOfSelectedTab: true,
-        popActionScreens: PopActionScreensType.all,
-        itemAnimationProperties: ItemAnimationProperties(
-          duration: Duration(milliseconds: 200),
-          curve: Curves.ease,
-        ),
-        screenTransitionAnimation: ScreenTransitionAnimation(
-          animateTabTransition: true,
-          curve: Curves.ease,
-          duration: Duration(milliseconds: 100),
-        ),
-        navBarStyle: NavBarStyle.style6,
-        navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
-      );
-    
+          ]),
+      onWillPop: (context) async {
+        await _onBackPressed();
+        return false;
+      },
+      popAllScreensOnTapOfSelectedTab: true,
+
+      popActionScreens: PopActionScreensType.all,
+      itemAnimationProperties: ItemAnimationProperties(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.ease,
+      ),
+      screenTransitionAnimation: ScreenTransitionAnimation(
+        animateTabTransition: true,
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 200),
+      ),
+      navBarStyle: NavBarStyle.style6,
+      navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+    );
   }
 
   @override
@@ -362,24 +366,22 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Widget mainbody() {
-    
-      return Scaffold(
-        body: Stack(
-          children: [
-            _tabBarBody(),
-            ValueListenableBuilder<bool>(
-                valueListenable: Globals.hasShowcaseInitialised,
-                builder: (context, value, _) {
-                  if (Globals.hasShowcaseInitialised.value == true)
-                    return Container();
-                  return Center(
-                      child: _continueShowCaseInstructions(
-                          'Tap anywhere on the screen to continue.'));
-                }),
-          ],
-        ),
-      );
-    
+    return Scaffold(
+      body: Stack(
+        children: [
+          _tabBarBody(),
+          ValueListenableBuilder<bool>(
+              valueListenable: Globals.hasShowcaseInitialised,
+              builder: (context, value, _) {
+                if (Globals.hasShowcaseInitialised.value == true)
+                  return Container();
+                return Center(
+                    child: _continueShowCaseInstructions(
+                        'Tap anywhere on the screen to continue.'));
+              }),
+        ],
+      ),
+    );
   }
 
   _onBackPressed() {
@@ -428,44 +430,44 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
           if (Globals.customSetting![i].standardSectionC == 'News') {
             _screens.add(NewsPage());
-            _tmp.add(
-                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+            // _tmp.add(
+            //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
           } else if (Globals.customSetting![i].standardSectionC == 'Social') {
             _screens.add(SocialPage());
-            _tmp.add(
-                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+            // _tmp.add(
+            //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
           } else if (Globals.customSetting![i].standardSectionC == 'Student') {
             _screens.add(StudentPage());
-            _tmp.add(
-                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+            // _tmp.add(
+            //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
           } else if (Globals.customSetting![i].standardSectionC == 'Staff') {
             _screens.add(StaffPage());
-            _tmp.add(
-                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+            // _tmp.add(
+            //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
           } else if (Globals.customSetting![i].standardSectionC == 'Families') {
             _screens.add(FamilyPage());
-            _tmp.add(
-                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+            // _tmp.add(
+            //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
           } else if (Globals.customSetting![i].standardSectionC ==
               'School Directory') {
             _screens.add(SchoolPage());
-            _tmp.add(
-                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+            // _tmp.add(
+            //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
           } else if (Globals.customSetting![i].standardSectionC == 'About') {
             _screens.add(AboutPage());
-            _tmp.add(
-                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+            // _tmp.add(
+            //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
           } else if (Globals.customSetting![i].standardSectionC ==
               'Resources') {
             _screens.add(ResourcesPage());
-            _tmp.add(
-                '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+            // _tmp.add(
+            //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
           }
         } else if (Globals.customSetting![i].typeOfSectionC ==
             'Custom section') {
           _screens.add(CustomPage(obj: Globals.customSetting![i]));
-          _tmp.add(
-              '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+          // _tmp.add(
+          //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
         } else if (Globals.customSetting![i].typeOfSectionC ==
                 'Calendar/Events' ||
             Globals.customSetting![i].typeOfSectionC == 'Contact' ||
@@ -474,8 +476,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             Globals.customSetting![i].typeOfSectionC == 'RFT_HTML' ||
             Globals.customSetting![i].typeOfSectionC == 'URL') {
           _screens.add(CustomUrlPage(obj: Globals.customSetting![i]));
-          _tmp.add(
-              '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+
+          // _tmp.add(
+          //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
+          if (Globals.customSetting![i].typeOfSectionC == 'URL') {
+            Globals.urlIndex = _screens.length - 1;
+            Globals.homeUrl = Globals.customSetting![i].appUrlC;
+          }
         }
       }
     }

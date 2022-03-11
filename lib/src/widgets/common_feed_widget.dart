@@ -128,7 +128,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                     );
                   },),
               TranslationWidget(
-                  message: widget.description,
+                  message: widget.description == '' ? widget.title :  widget.description ,
                   fromLanguage: "en",
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) {

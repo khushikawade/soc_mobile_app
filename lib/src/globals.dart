@@ -62,6 +62,9 @@ class Globals {
   static PackageInfo? packageInfo;
   static bool isNewTap = false;
   // static PersistentTabController? controller;
-  static WebViewController? webViewController;
+  // static WebViewController? webViewController;
   static BuildContext? context;
+  static int? urlIndex;
+  static late WebViewController? webViewController1;
+  static String? homeUrl;
 }

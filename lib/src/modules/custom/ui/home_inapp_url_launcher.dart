@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+
 // import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:Soc/src/globals.dart';
-import 'package:flutter/rendering.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +23,15 @@ class HomeInAppUrlLauncer extends StatefulWidget {
 
 class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
   bool? iserrorstate = false;
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
+  // WebViewController webViewController;
+  String? checkUrlChange;
   @override
   void initState() {
     super.initState();
+    checkUrlChange = widget.url;
     // _getPermission();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
@@ -35,56 +39,92 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
   @override
   void dispose() {
     super.dispose();
+  
   }
 
   @override
   Widget build(BuildContext context) {
-    return OfflineBuilder(
-        connectivityBuilder: (
-          BuildContext context,
-          ConnectivityResult connectivity,
-          Widget child,
-        ) {
-          final bool connected = connectivity != ConnectivityResult.none;
+    return Expanded(
+      child: OfflineBuilder(
+          connectivityBuilder: (
+            BuildContext context,
+            ConnectivityResult connectivity,
+            Widget child,
+          ) {
+            final bool connected = connectivity != ConnectivityResult.none;
 
-          if (connected) {
-            if (iserrorstate == true) {
-              iserrorstate = false;
+            if (connected) {
+              if (iserrorstate == true) {
+                iserrorstate = false;
+              }
+            } else if (!connected) {
+              iserrorstate = true;
             }
-          } else if (!connected) {
-            iserrorstate = true;
-          }
 
-          return connected
-              ? Expanded(
-                  child: ListView(children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: WebView(
-                        gestureNavigationEnabled:
-                            widget.isiFrame == true ? true : false,
-                        initialUrl: widget.isiFrame == true
-                            ? Uri.dataFromString(widget.url,
-                                    mimeType: 'text/html')
-                                .toString()
-                            : widget.url,
-                        javascriptMode: JavascriptMode.unrestricted,
-                        onWebViewCreated:
-                            (WebViewController webViewController) {
-                          _controller.complete(Globals.webViewController);
-                          
-                        },
-                      ),
-                    ),
-                  ]),
+            return connected
+                ? Container(
+                  // height: webHight + 20,
+                  // height: MediaQuery.of(context).size.height,
+                  // width: MediaQuery.of(context).size.width,
+                  child: WebView(
+                    
+                    // onPageFinished: (webhight) async {
+                    //   await funcThatMakesAsyncCall();
+                    //   setState(() {
+                    //     webHight = double.parse(hight!);
+                    //   });
+                    // },
+                    gestureNavigationEnabled:
+                        widget.isiFrame == true ? true : false,
+                    initialUrl: widget.isiFrame == true
+                        ? Uri.dataFromString(widget.url,
+                                mimeType: 'text/html')
+                            .toString()
+                        : widget.url,
+                    javascriptMode: JavascriptMode.unrestricted,
+                    onWebViewCreated:
+                        (WebViewController webViewController) {
+                      _controller.complete(webViewController);
+                      Globals.webViewController1 = webViewController;
+                    },
+                    // initialCookies: [],
+
+                  ),
                 )
-              : NoInternetErrorWidget(
-                
-                  connected: connected, issplashscreen: false);
-        },
-        child: Container());
+                : NoInternetErrorWidget(
+                    connected: connected, issplashscreen: false);
+          },
+          child: Container()),
+    );
   }
+
+  // Future refreshPage() async {
+  //   refreshKey.currentState?.show(atTop: false);
+  //   Globals.webViewController1!.reload();
+  //   if (checkUrlChange == widget.url) {
+  //     Globals.webViewController1!.reload();
+  //     checkUrlChange = widget.url;
+  //   } else {
+  //     Globals.webViewController1!.loadUrl(widget.url);
+  //     checkUrlChange = widget.url;
+  //   }
+  //   // _webViewController.currentUrl();
+  //   // _webViewController.clearCache();
+  //   // _webViewController.loadUrl(widget.url);
+  // }
+
+  // String? hight;
+  // double webHight = 400; //default some value
+  // Future funcThatMakesAsyncCall() async {
+  //   var result = await Globals.webViewController1!
+  //       .evaluateJavascript('document.body.scrollHeight');
+  //   //here we call javascript for get browser data
+  //   setState(
+  //     () {
+  //       hight = result;
+  //     },
+  //   );
+  // }
 
   // _getPermission() async {
   //   await Permission.storage.request();

@@ -46,9 +46,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-
-    _homeBloc.add(FetchBottomNavigationBar());
-    Globals.webViewController!.reload();
+    _homeBloc.add(FetchBottomNavigationBar());   
   }
 
   Widget _body(String key) => Container(
@@ -206,12 +204,12 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
     } else if (obj.typeOfSectionC == "PDF URL" || obj.typeOfSectionC == "PDF") {
       return obj.pdfURL != null
           ? Expanded(
-              child: HomePdfViewerPage(
-                url: obj.pdfURL,
-                isbuttomsheet: true,
-                language: Globals.selectedLanguage,
-              ),
-            )
+            child: HomePdfViewerPage(
+              url: obj.pdfURL,
+              isbuttomsheet: true,
+              language: Globals.selectedLanguage,
+            ),
+          )
           : Expanded(
               child: Container(
                   child: NoDataFoundErrorWidget(
