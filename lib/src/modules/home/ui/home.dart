@@ -350,9 +350,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         curve: Curves.ease,
       ),
       screenTransitionAnimation: ScreenTransitionAnimation(
-        animateTabTransition: true,
-        curve: Curves.ease,
-        duration: Duration(milliseconds: 200),
+        animateTabTransition: false,
+        // curve: Curves.ease,
+        // duration: Duration(milliseconds: 200),
       ),
       navBarStyle: NavBarStyle.style6,
       navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
@@ -469,20 +469,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           // _tmp.add(
           //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
         } else if (Globals.customSetting![i].typeOfSectionC ==
-                'Calendar/Events' ||
-            Globals.customSetting![i].typeOfSectionC == 'Contact' ||
-            Globals.customSetting![i].typeOfSectionC == 'Embed iFrame' ||
-            Globals.customSetting![i].typeOfSectionC == 'PDF URL' ||
-            Globals.customSetting![i].typeOfSectionC == 'RFT_HTML' ||
-            Globals.customSetting![i].typeOfSectionC == 'URL') {
+                'Custom Type') {
           _screens.add(CustomUrlPage(obj: Globals.customSetting![i]));
 
           // _tmp.add(
           //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
-          if (Globals.customSetting![i].typeOfSectionC == 'URL') {
+          if (Globals.customSetting![i].typeOfPageC == 'URL') {
             Globals.urlIndex = _screens.length - 1;
             Globals.homeUrl = Globals.customSetting![i].appUrlC;
           }
+        }else{
+          _screens.add(CustomPage(obj: Globals.customSetting![i]));
         }
       }
     }

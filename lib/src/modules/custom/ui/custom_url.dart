@@ -147,7 +147,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
   }
 
   Widget buildPage(obj) {
-    if (obj.typeOfSectionC == "URL") {
+    if (obj.typeOfPageC == "URL") {
       return obj.appUrlC != null && obj.appUrlC != ""
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
               // || obj.deepLinkC == 'YES'
@@ -164,7 +164,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.typeOfSectionC == "RTF_HTML" ||
+    } else if (obj.typeOfPageC == "RTF_HTML" ||
         obj.typeOfSectionC == "RFT_HTML" ||
         obj.typeOfSectionC == "HTML/RTF" ||
         obj.typeOfSectionC == "RTF/HTML") {
@@ -184,7 +184,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.typeOfSectionC == "Embed iFrame") {
+    } else if (obj.typeOfPageC == "Embed iFrame") {
       return obj.rtfHTMLC != null
           ? Expanded(
               child: HomeInAppUrlLauncer(
@@ -201,7 +201,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.typeOfSectionC == "PDF URL" || obj.typeOfSectionC == "PDF") {
+    } else if (obj.typeOfPageC == "PDF URL" || obj.typeOfSectionC == "PDF") {
       return obj.pdfURL != null
           ? Expanded(
             child: HomePdfViewerPage(
@@ -218,7 +218,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.typeOfSectionC == "Contact") {
+    } else if (obj.typeOfPageC == "Contact") {
       return Expanded(
         child: HomeContactPage(
           obj: Globals.appSetting,
@@ -228,7 +228,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
           language: Globals.selectedLanguage ?? "English",
         ),
       );
-    } else if (obj.typeOfSectionC == "Calendar/Events") {
+    } else if (obj.typeOfPageC == "Calendar/Events") {
       return obj.calendarId != null && obj.calendarId != ""
           ? Expanded(
               child: HomeCalendar(

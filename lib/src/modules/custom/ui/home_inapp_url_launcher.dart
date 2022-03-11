@@ -4,6 +4,8 @@ import 'dart:io';
 // import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:Soc/src/globals.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -39,79 +41,93 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
   @override
   void dispose() {
     super.dispose();
-  
   }
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: OfflineBuilder(
-          connectivityBuilder: (
-            BuildContext context,
-            ConnectivityResult connectivity,
-            Widget child,
-          ) {
-            final bool connected = connectivity != ConnectivityResult.none;
+      child: RefreshIndicator(
+          key: refreshKey,
+          child: OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
 
-            if (connected) {
-              if (iserrorstate == true) {
-                iserrorstate = false;
-              }
-            } else if (!connected) {
-              iserrorstate = true;
-            }
+                if (connected) {
+                  if (iserrorstate == true) {
+                    iserrorstate = false;
+                  }
+                } else if (!connected) {
+                  iserrorstate = true;
+                }
 
-            return connected
-                ? Container(
-                  // height: webHight + 20,
-                  // height: MediaQuery.of(context).size.height,
-                  // width: MediaQuery.of(context).size.width,
-                  child: WebView(
-                    
-                    // onPageFinished: (webhight) async {
-                    //   await funcThatMakesAsyncCall();
-                    //   setState(() {
-                    //     webHight = double.parse(hight!);
-                    //   });
-                    // },
-                    gestureNavigationEnabled:
-                        widget.isiFrame == true ? true : false,
-                    initialUrl: widget.isiFrame == true
-                        ? Uri.dataFromString(widget.url,
-                                mimeType: 'text/html')
-                            .toString()
-                        : widget.url,
-                    javascriptMode: JavascriptMode.unrestricted,
-                    onWebViewCreated:
-                        (WebViewController webViewController) {
-                      _controller.complete(webViewController);
-                      Globals.webViewController1 = webViewController;
-                    },
-                    // initialCookies: [],
+                return connected
+                    ? ListView(
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        children: [
+                            Container(
+                              // height: webHight + 20,
+                              height: MediaQuery.of(context).size.height,
+                              // width: MediaQuery.of(context).size.width,
+                              child: WebView(
+                                //gestureRecognizers: Set()..add(Factory<VerticalDragGestureRecognizer>(()=>VerticalDragGestureRecognizer())),
+                                gestureRecognizers: Set()
+                                  ..add(Factory<VerticalDragGestureRecognizer>(
+                                      () => VerticalDragGestureRecognizer()
+                                        ..onDown =
+                                            (DragDownDetails dragDownDetails) {
+                                          Globals.webViewController1!
+                                              .getScrollY()
+                                              .then((value) {
+                                            if (value == 0 &&
+                                                dragDownDetails.globalPosition
+                                                        .direction <
+                                                    1) {
+                                              refreshPage();
+                                            }
+                                          });
+                                        })),
 
-                  ),
-                )
-                : NoInternetErrorWidget(
-                    connected: connected, issplashscreen: false);
-          },
-          child: Container()),
+                                gestureNavigationEnabled:
+                                    widget.isiFrame == true ? true : false,
+                                initialUrl: widget.isiFrame == true
+                                    ? Uri.dataFromString(widget.url,
+                                            mimeType: 'text/html')
+                                        .toString()
+                                    : widget.url,
+                                javascriptMode: JavascriptMode.unrestricted,
+                                onWebViewCreated:
+                                    (WebViewController webViewController) {
+                                  _controller.complete(webViewController);
+                                  Globals.webViewController1 =
+                                      webViewController;
+                                },
+                              ),
+                            ),
+                          ])
+                    : NoInternetErrorWidget(
+                        connected: connected, issplashscreen: false);
+              },
+              child: Container()),
+          onRefresh: refreshPage),
     );
   }
 
-  // Future refreshPage() async {
-  //   refreshKey.currentState?.show(atTop: false);
-  //   Globals.webViewController1!.reload();
-  //   if (checkUrlChange == widget.url) {
-  //     Globals.webViewController1!.reload();
-  //     checkUrlChange = widget.url;
-  //   } else {
-  //     Globals.webViewController1!.loadUrl(widget.url);
-  //     checkUrlChange = widget.url;
-  //   }
-  //   // _webViewController.currentUrl();
-  //   // _webViewController.clearCache();
-  //   // _webViewController.loadUrl(widget.url);
-  // }
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    Globals.webViewController1!.reload();
+    if (checkUrlChange == widget.url) {
+      Globals.webViewController1!.reload();
+      checkUrlChange = widget.url;
+    } else {
+      Globals.webViewController1!.loadUrl(widget.url);
+      checkUrlChange = widget.url;
+    }
+  }
 
   // String? hight;
   // double webHight = 400; //default some value

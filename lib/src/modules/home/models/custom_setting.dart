@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'attributes.dart';
 import 'package:hive/hive.dart';
 part 'custom_setting.g.dart';
@@ -62,6 +60,8 @@ class CustomSetting {
   final rtfHTMLC;
   @HiveField(27)
   final calendarId;
+   @HiveField(28)
+  String? typeOfPageC;
 
   CustomSetting({
     this.attributes,
@@ -91,7 +91,8 @@ class CustomSetting {
     this.appUrlC,
     this.pdfURL,
     this.rtfHTMLC,
-    this.calendarId
+    this.calendarId,
+    this.typeOfPageC
   });
 
   factory CustomSetting.fromJson(Map<String, dynamic> json) => CustomSetting(
@@ -106,7 +107,7 @@ class CustomSetting {
         ownerId: json['OwnerId'],
         name: json['Name'],
         createdDate: json['CreatedDate'],
-        sectionIconC: json['Section_icon_URL__c'],
+        sectionIconC: json['Section_Icon__c'],
         selectionTitleC: json['Section_Title__c'],
         sortOrderC: double.parse(json['Sort_Order__c'] ?? '100'),
         standardSectionC: json['Standard_section__c'],
@@ -127,6 +128,7 @@ class CustomSetting {
       pdfURL: json['PDF_URL__c'] as String?,
        rtfHTMLC: json['RTF_HTML__c'] as String?,
        calendarId: json['Calendar_Id__c'] as String?,
+       typeOfPageC:json['Type_of_page__c'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -144,7 +146,7 @@ class CustomSetting {
         'LastViewedDate': lastViewedDate,
         'LastReferencedDate': lastReferencedDate,
         'School_App__c': schoolAppC,
-        'Section_icon_URL__c': sectionIconC,
+        'Section_Icon__c': sectionIconC,
         'Section_Title__c': selectionTitleC,
         'Sort_Order__c': sortOrderC,
         'Standard_section__c': standardSectionC,
@@ -158,6 +160,7 @@ class CustomSetting {
         'PDF_URL__c': pdfURL,
         'RTF_HTML__c': rtfHTMLC,
         'Calendar_Id__c': calendarId,
+        'Type_of_page__c': typeOfPageC
       };
 
   CustomSetting copyWith({
@@ -189,6 +192,7 @@ class CustomSetting {
     String? pdfURL,
     String? rtfHTMLC,
     String? calendarId,
+    String? typeOfPageC
   }) {
     return CustomSetting(
       attributes: attributes ?? this.attributes,
@@ -218,7 +222,8 @@ class CustomSetting {
       appUrlC: appUrlC ?? this.appUrlC,
       pdfURL: pdfURL ?? this.pdfURL,
       rtfHTMLC: rtfHTMLC ?? this.rtfHTMLC,
-      calendarId: calendarId ?? this.calendarId
+      calendarId: calendarId ?? this.calendarId,
+      typeOfPageC: typeOfPageC ?? this.typeOfPageC
     );
   }
 }

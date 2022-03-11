@@ -45,13 +45,14 @@ class CustomSettingAdapter extends TypeAdapter<CustomSetting> {
       pdfURL: fields[25] as dynamic,
       rtfHTMLC: fields[26] as dynamic,
       calendarId: fields[27] as dynamic,
+      typeOfPageC: fields[28] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CustomSetting obj) {
     writer
-      ..writeByte(28)
+      ..writeByte(29)
       ..writeByte(0)
       ..write(obj.attributes)
       ..writeByte(1)
@@ -107,7 +108,9 @@ class CustomSettingAdapter extends TypeAdapter<CustomSetting> {
       ..writeByte(26)
       ..write(obj.rtfHTMLC)
       ..writeByte(27)
-      ..write(obj.calendarId);
+      ..write(obj.calendarId)
+      ..writeByte(28)
+      ..write(obj.typeOfPageC);
   }
 
   @override
