@@ -55,70 +55,84 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _buildTitleWidget() {
     return Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing,
-        ),
-        child: Text(
-          widget.obj!.designation ?? "",
-          textAlign: TextAlign.left,
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: TranslationWidget(
+        message: widget.obj!.designation ?? "",
+        toLanguage: Globals.selectedLanguage,
+        fromLanguage: "en",
+        builder: (translatedMessage) => Text(
+          translatedMessage.toString(),
           style: Theme.of(context).textTheme.headline2!.copyWith(
                 fontWeight: FontWeight.w500,
               ),
-        ));
+        ),
+      ),
+
+      //  Text(
+      //   widget.obj!.designation ?? "",
+      //   textAlign: TextAlign.left,
+      //   style: Theme.of(context).textTheme.headline2!.copyWith(
+      //         fontWeight: FontWeight.w500,
+      //       ),
+      // )
+    );
   }
 
   Widget _buildNameWidget() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: _kLabelSpacing,
-      ),
-      child: TranslationWidget(
+        padding: const EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing,
+        ),
+        child: TranslationWidget(
           message: widget.obj!.name ?? "",
           toLanguage: Globals.selectedLanguage,
           fromLanguage: "en",
           builder: (translatedMessage) => Text(
-                translatedMessage.toString(),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline2!.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-              )
-
-          // Text(
-          //   translatedMessage.toString(),
-          //   style: Theme.of(context).textTheme.bodyText2!.copyWith(
-          //         fontWeight: FontWeight.w500,
-          //       ),
-          // ),
+            translatedMessage.toString(),
+            style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
           ),
-    );
+        ));
+
+    //  Text(
+    //   widget.obj!.name ?? "",
+    //   textAlign: TextAlign.center,
+    //   style: Theme.of(context).textTheme.headline2!.copyWith(
+    //         fontWeight: FontWeight.w500,
+    //       ),
+    // ));
   }
 
   Widget _buildDescriptionWidget() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: _kLabelSpacing,
-      ),
-      // TODO: Replace text with HTML // text: widget.obj!.descriptionC ?? "",
-      child: TranslationWidget(
-          message: widget.obj!.descriptionC ?? "",
-          toLanguage: Globals.selectedLanguage,
-          fromLanguage: "en",
-          builder: (translatedMessage) => Linkify(
-                onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
-                options: LinkifyOptions(humanize: false),
-                linkStyle: TextStyle(color: Colors.blue),
-                text: translatedMessage.toString(),
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-              )
-          //  Text(
-          //   translatedMessage.toString(),
-          //   style: Theme.of(context).textTheme.bodyText2!.copyWith(
-          //         fontWeight: FontWeight.w500,
-          //       ),
-          // ),
-          ),
-    );
+        padding: const EdgeInsets.symmetric(
+          horizontal: _kLabelSpacing,
+        ),
+        // TODO: Replace text with HTML // text: widget.obj!.descriptionC ?? "",
+        child: TranslationWidget(
+            message: widget.obj!.descriptionC ?? "",
+            toLanguage: Globals.selectedLanguage,
+            fromLanguage: "en",
+            builder: (translatedMessage) => Linkify(
+                  onOpen: (link) =>
+                      Utility.launchUrlOnExternalBrowser(link.url),
+                  options: LinkifyOptions(humanize: false),
+                  linkStyle: TextStyle(color: Colors.blue),
+                  text: translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                  // )
+                )));
+
+    //  Linkify(
+    //   onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
+    //   options: LinkifyOptions(humanize: false),
+    //   linkStyle: TextStyle(color: Colors.blue),
+    //   text: widget.obj!.descriptionC ?? "",
+    //   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+    // ));
   }
 
   Widget _buildPhoneWidget() {
