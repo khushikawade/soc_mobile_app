@@ -246,9 +246,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       child: Container(),
                     ),
                     Icon(
-                      IconData(int.parse(iconData),
+                      
+                      
+
+
+                      
+                      IconData(
+
+                        int.parse(iconData),
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
+                          // size: 40,
                     ),
                   ],
                 ),

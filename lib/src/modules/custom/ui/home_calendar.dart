@@ -126,7 +126,7 @@ class _HomeCalendarState extends State<HomeCalendar>
                             right: MediaQuery.of(context).size.width * 0.04),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment:CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Container(
@@ -135,14 +135,17 @@ class _HomeCalendarState extends State<HomeCalendar>
                             //  color: Colors.grey,
                             child: Center(
                               child: IconButton(
+                                  iconSize: 30,
                                   padding: EdgeInsets.all(0),
                                   // constraints: BoxConstraints(),
                                   onPressed: () {
-                                    Add2Calendar.addEvent2Cal(
-                                      buildEvent(list),
-                                    );
+                                    UrlLauncherWidget obj =
+                                        new UrlLauncherWidget();
+                                    // obj.callurlLaucher(context, list.htmlLink);
+                                    Utility.launchUrlOnExternalBrowser(
+                                        list.htmlLink);
                                   },
-                                  icon: Icon(Icons.ios_share_rounded)),
+                                  icon: Icon(Icons.open_in_browser_rounded)),
                             )),
                         Container(
                             height: Globals.deviceType == 'phone' ? 35 : 45,
@@ -159,7 +162,7 @@ class _HomeCalendarState extends State<HomeCalendar>
                                         list.htmlLink.toString(),
                                         list.summary.toString());
                                   },
-                                  icon: Icon(Icons.share)),
+                                  icon: Icon(IconData(0xe829))),
                             )),
                         Container(
                             height: Globals.deviceType == 'phone' ? 35 : 45,
@@ -170,11 +173,9 @@ class _HomeCalendarState extends State<HomeCalendar>
                                   padding: EdgeInsets.all(0),
                                   // constraints: BoxConstraints(),
                                   onPressed: () {
-                                    UrlLauncherWidget obj =
-                                        new UrlLauncherWidget();
-                                    // obj.callurlLaucher(context, list.htmlLink);
-                                    Utility.launchUrlOnExternalBrowser(
-                                        list.htmlLink);
+                                    Add2Calendar.addEvent2Cal(
+                                      buildEvent(list),
+                                    );
                                   },
                                   icon: Icon(Icons.calendar_today_outlined)),
                             )),
@@ -190,6 +191,7 @@ class _HomeCalendarState extends State<HomeCalendar>
             titleIcon: Container(
               padding: EdgeInsets.only(top: 4),
               child: CalendraIconWidget(
+                color: Colors.red,
                 dateTime: _dateTime,
               ),
             ),

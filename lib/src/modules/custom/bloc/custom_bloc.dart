@@ -226,7 +226,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         });
 
         List<CalendarEventList>? _localData1 = await _localDb.getData();
-        print(_localData1);
+        // print(_localData1);
         List<CalendarEventList>? futureListobj = [];
         List<CalendarEventList>? pastListobj = [];
 

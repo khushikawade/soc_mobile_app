@@ -208,7 +208,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                       strokeWidth: 1,
                     )
                   : Icon(
-                      IconData(Globals.icons[index],
+                      IconData(
+                         Globals.icons[index],
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
                       color: index == 0
