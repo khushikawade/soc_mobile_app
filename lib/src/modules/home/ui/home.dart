@@ -64,8 +64,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.presentError(details);
       if (details.exception.toString().contains('RangeError')) {
-      
-
         _controller.index = 0;
 
         print('finally catch the eroorrrrrrrrrrrrrrrrr');
@@ -246,17 +244,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       child: Container(),
                     ),
                     Icon(
-                      
-                      
-
-
-                      
                       IconData(
-
-                        int.parse(iconData),
+                          //0xe803,
+                          int.parse(iconData),
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
-                          // size: 40,
+                      // size: 40,
                     ),
                   ],
                 ),
@@ -476,8 +469,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           _screens.add(CustomPage(obj: Globals.customSetting![i]));
           // _tmp.add(
           //     '${Globals.customSetting![i].selectionTitleC}_${Globals.customSetting![i].sectionIconC}');
-        } else if (Globals.customSetting![i].typeOfSectionC ==
-                'Custom Type') {
+        } else if (Globals.customSetting![i].typeOfSectionC == 'Custom Type') {
           _screens.add(CustomUrlPage(obj: Globals.customSetting![i]));
 
           // _tmp.add(
@@ -486,7 +478,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             Globals.urlIndex = _screens.length - 1;
             Globals.homeUrl = Globals.customSetting![i].appUrlC;
           }
-        }else{
+        } else {
           _screens.add(CustomPage(obj: Globals.customSetting![i]));
         }
       }
