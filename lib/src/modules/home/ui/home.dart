@@ -170,7 +170,7 @@ Globals.globalController=PersistentTabController(
         (item) {
           //setState(() {});
           return PersistentBottomNavBarItem(
-            icon: _bottomIcon(item.selectionTitleC, item.sectionIconC),
+            icon: _bottomIcon(item.selectionTitleC, '0xe844'),//item.sectionIconC),
             // title:(''), //("${item.split("_")[0]}"),
             activeColorPrimary: Theme.of(context).primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
