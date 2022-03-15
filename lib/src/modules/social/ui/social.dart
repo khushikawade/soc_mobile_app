@@ -55,6 +55,7 @@ class _SocialPageState extends State<SocialPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     bloc.add(SocialPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());
     _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
@@ -277,8 +278,14 @@ class _SocialPageState extends State<SocialPage> {
                       page: "social",
                       obj: state.obj[index],
                       isLoading: isCountLoading,
-                      title: state.obj[index].title['__cdata'],
-                      description: state.obj[index].description['__cdata'],
+                      title: state.obj[index].title != "" &&
+                              state.obj[index].title != null
+                          ? state.obj[index].title['__cdata']
+                          : "",
+                      description: state.obj[index].description != "" &&
+                              state.obj[index].description != null
+                          ? state.obj[index].description['__cdata']
+                          : "",
                       imageUrl: state.obj[index].enclosure != "" &&
                               state.obj[index].enclosure != null
                           ? state.obj[index].enclosure['url']

@@ -205,6 +205,7 @@ class _EventDescriptionState extends State<EventDescription> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }

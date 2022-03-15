@@ -35,7 +35,10 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   // final widget.scaffoldKey = GlobalKey<ScaffoldState>();
 
   _launchURL(obj) async {
-    if (obj.appUrlC.toString().split(":")[0] == 'http' || obj.deepLinkC == 'YES') {
+    if (obj.appUrlC.toString().split(":")[0] == 'http' ||
+        obj.deepLinkC == 'YES') {
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
+    } else if (await Utility.sslErrorHandler(obj.appUrlC) == "Yes") {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
     } else {
       Navigator.push(
@@ -63,7 +66,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     language: Globals.selectedLanguage ?? "English",
                   )));
     } else if (obj.typeC == "URL") {
-      obj.appUrlC != null &&obj.appUrlC!=""
+      obj.appUrlC != null && obj.appUrlC != ""
           ? _launchURL(obj)
           : Utility.showSnackBar(
               widget.scaffoldKey, "No link available", context);
@@ -88,7 +91,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
-                        // calendarId: obj.calendarId.toString(),
+                        calendarId: obj.calendarId.toString(),
                       )))
           : Utility.showSnackBar(
               widget.scaffoldKey, "No calendar/events available", context);

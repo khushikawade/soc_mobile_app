@@ -48,6 +48,7 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     _bloc.add(FamiliesEvent());
     _homeBloc.add(FetchBottomNavigationBar());
   }

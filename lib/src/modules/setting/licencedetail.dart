@@ -329,6 +329,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }
