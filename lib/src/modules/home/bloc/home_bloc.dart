@@ -183,7 +183,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         List<CustomSetting> _list = response.data['body']
             .map<CustomSetting>((i) => CustomSetting.fromJson(i))
             .toList();
-        
+
         // if (Globals.appSetting.bannerHeightFactor != null) {
         //   AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
         //   // print(AppTheme.kBannerHeight);
@@ -193,8 +193,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (_list.length > 6) {
           _list.removeRange(6, _list.length);
         }
-          Globals.customSetting = _list;
-          // To take the backup for all the sections.
+        Globals.customSetting = _list;
+        // To take the backup for all the sections.
         _backupAppData();
         return _list;
       }
@@ -213,6 +213,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (response.statusCode == 200) {
         final data = response.data['body'][0];
         Globals.appSetting = AppSetting.fromJson(data);
+
+        // if (Globals.appSetting.isCustomApp == false) {
+        //   Globals.controller.index = 1;
+        // }
         // To take the backup for all the sections.
         _backupAppData();
         if (Globals.appSetting.bannerHeightFactor != null) {
@@ -369,11 +373,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
       });
 
-      if(Globals.customSetting != null){
+      if (Globals.customSetting != null) {
         for (var i = 0; i < Globals.customSetting!.length; i++) {
-        CustomBloc _customBloc = CustomBloc();
-        _customBloc.add(CustomsEvent(id: Globals.customSetting![i].id));
-      }
+          CustomBloc _customBloc = CustomBloc();
+          _customBloc.add(CustomsEvent(id: Globals.customSetting![i].id));
+        }
       }
       NewsBloc _newsBloc = NewsBloc();
       _newsBloc.add(FetchActionCountList(isDetailPage: false));

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 class CalendraIconWidget extends StatelessWidget {
   final dateTime;
-  CalendraIconWidget({Key? key, required this.dateTime}) : super(key: key);
+  final color;
+  CalendraIconWidget({Key? key, required this.dateTime, this.color}) : super(key: key);
 
   static const double _kPhoneIcon = 36.0;
   static const double _kTabletIcon = 55.0;
@@ -61,7 +62,7 @@ class CalendraIconWidget extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: color == null || color == '' ? Theme.of(context).primaryColor : color,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8.0),
                   topRight: Radius.circular(8.0),

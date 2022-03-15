@@ -26,8 +26,10 @@ import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+
 
 class SearchPage extends StatefulWidget {
   final bool isbuttomsheet;
@@ -68,6 +70,7 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
     Globals.callsnackbar = true;
     getListLength();
+   
   }
 
   getListLength() async {

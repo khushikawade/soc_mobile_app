@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/custom_setting.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
+
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
@@ -18,11 +19,12 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+
 import 'src/modules/families/modal/calendar_event_list.dart';
 
 void main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
+  
 
   if (!kIsWeb) {
     // Not running on the web!

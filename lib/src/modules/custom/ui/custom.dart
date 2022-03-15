@@ -2,14 +2,11 @@ import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/custom_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
-
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
-
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
-
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,18 +43,13 @@ class _CustomPageState extends State<CustomPage> {
     _bloc.add(CustomsEvent(id: widget.obj.id));
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     _bloc.add(CustomsEvent(id: widget.obj.id));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
-  Widget _body(state) => Container(
+  Widget _body(String key) => Container(
         child: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(
@@ -67,12 +59,10 @@ class _CustomPageState extends State<CustomPage> {
                 Widget child,
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
-
                 if (connected) {
                   if (iserrorstate == true) {
                     _bloc.add(CustomsEvent(id: widget.obj.id));
                     iserrorstate = false;
-                    
                   }
                 } else if (!connected) {
                   iserrorstate = true;
@@ -84,11 +74,24 @@ class _CustomPageState extends State<CustomPage> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
-                      child: CommonListWidget(
-                          scaffoldKey: _scaffoldKey,
-                          connected: connected,
-                          data: state.obj!,
-                          sectionName: "Custom"),
+                      child: BlocBuilder<CustomBloc, CustomState>(
+                          bloc: _bloc,
+                          builder: (BuildContext contxt, CustomState state) {
+                            if (state is CustomInitial ||
+                                state is CustomLoading) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (state is CustomDataSucess) {
+                              return CommonListWidget(
+                                  scaffoldKey: _scaffoldKey,
+                                  connected: connected,
+                                  data: state.obj!,
+                                  sectionName: "Custom");
+                            } else if (state is ErrorLoading) {
+                              return ListView(children: [ErrorMsgWidget()]);
+                            } else {
+                              return Container();
+                            }
+                          }),
                     ),
                     Container(
                       height: 0,
@@ -102,8 +105,7 @@ class _CustomPageState extends State<CustomPage> {
                               // Globals.homeObject = state.obj;
                               Globals.appSetting =
                                   AppSetting.fromJson(state.obj);
-
-                              setState(() {});
+                              // setState(() {});
                             }
                           },
                           child: EmptyContainer()),
@@ -127,84 +129,53 @@ class _CustomPageState extends State<CustomPage> {
           setState(() {});
         },
       ),
-      body:
-          // Globals.appSetting.CustomBannerImageC != null &&
-          //          Globals.appSetting.CustomBannerImageC  != ''
-          // // Globals.homeObject["Custom_Banner_Image__c"] != null &&
-          // //         Globals.homeObject["Custom_Banner_Image__c"] != ''
-          //     ? NestedScrollView(
-          //         // controller: _scrollController,
-          //         headerSliverBuilder:
-          //             (BuildContext context, bool innerBoxIsScrolled) {
-          //           return <Widget>[
-          //             Globals.appSetting.CustomBannerImageC != null
-          //             // Globals.homeObject["Custom_Banner_Image__c"] != null
-          //                 ? BannerImageWidget(
-          //                     imageUrl:
-          //                     Globals.appSetting.CustomBannerImageC!,
-          //                         // Globals.homeObject["Custom_Banner_Image__c"],
-          //                     bgColor:
-          //                     Globals.appSetting.CustomBannerColorC
-          //                         // Globals.homeObject["Custom_Banner_Color__c"]
-          //                          !=
-          //                                 null
-          //                             ? Utility.getColorFromHex(
-          //                               Globals.appSetting.CustomBannerColorC!
-          //                               // Globals.homeObject["Custom_Banner_Color__c"]
-          //                                 )
-          //                             : null,
-          //                   )
-          //                 : SliverAppBar(),
-          //           ];
-          //         },
-          //         body: _body('body1'))
-          //   :
-          BlocBuilder<CustomBloc, CustomState>(
-              bloc: _bloc,
-              builder: (BuildContext contxt, CustomState state) {
-                if (state is CustomInitial || state is CustomLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is CustomDataSucess) {
-                  // print('List data......');
-                  // print(state.obj);
-                  return bannerWidget(state);
-                } else if (state is ErrorLoading) {
-                  return ListView(children: [ErrorMsgWidget()]);
-                } else {
-                  return Container();
-                }
-              }),
+      body: widget.obj.customBannerImageC != null &&
+              widget.obj.customBannerImageC != ''
+          ? NestedScrollView(
+              // controller: _scrollController,
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  BannerImageWidget(
+                    imageUrl: widget.obj.customBannerImageC!,
+                    bgColor: widget.obj.customBannerImageC != null
+                        ? Utility.getColorFromHex(
+                            widget.obj.customBannerImageC!)
+                        : null,
+                  )
+                ];
+              },
+              body: _body('body2'),
+            )
+          : _body('body2'),
     );
   }
 
-  Widget bannerWidget(state) {
-    return widget.obj.bannerImageC != null &&
-            widget.obj.bannerImageC != '' 
-        // Globals.homeObject["Family_Banner_Image__c"] != null &&
-        //         Globals.homeObject["Family_Banner_Image__c"] != ''
-        ? NestedScrollView(
-            // controller: _scrollController,
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                widget.obj.bannerImageC != null
-                    // Globals.homeObject["Custom_Banner_Image__c"] != null
-                    ? BannerImageWidget(
-                        imageUrl: widget.obj.bannerImageC!,
-                        // Globals.homeObject["Custom_Banner_Image__c"],
-                        bgColor: widget.obj.bannerColorC
-                                // Globals.homeObject["Custom_Banner_Color__c"]
-                                !=
-                                null
-                            ? Utility.getColorFromHex(widget.obj.bannerColorC!
-                                // Globals.homeObject["Custom_Banner_Color__c"]
-                                )
-                            : null,
-                      )
-                    : SliverAppBar(),
-              ];
-            },
-            body: _body(state))
-        : _body(state);
-  }
+  // Widget bannerWidget(state) {
+  //   return widget.obj.customBannerImageC != null && widget.obj.customBannerImageC != ''
+  //       // Globals.homeObject["Family_Banner_Image__c"] != null &&
+  //       //         Globals.homeObject["Family_Banner_Image__c"] != ''
+  //       ? NestedScrollView(
+  //           // controller: _scrollController,
+  //           headerSliverBuilder:
+  //               (BuildContext context, bool innerBoxIsScrolled) {
+  //             return <Widget>[
+  //               // Globals.homeObject["Custom_Banner_Image__c"] != null
+  //               BannerImageWidget(
+  //                 imageUrl: widget.obj.customBannerImageC!,
+  //                 // Globals.homeObject["Custom_Banner_Image__c"],
+  //                 bgColor: widget.obj.bannerColorC
+  //                         // Globals.homeObject["Custom_Banner_Color__c"]
+  //                         !=
+  //                         null
+  //                     ? Utility.getColorFromHex(widget.obj.bannerColorC!
+  //                         // Globals.homeObject["Custom_Banner_Color__c"]
+  //                         )
+  //                     : null,
+  //               )
+  //             ];
+  //           },
+  //           body: _body(state, 'body1'))
+  //       : _body(state, 'body2');
+  // }
 }

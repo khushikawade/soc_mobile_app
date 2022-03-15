@@ -1,10 +1,8 @@
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -13,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import '../../../widgets/empty_container_widget.dart';
 
 class FamilyPage extends StatefulWidget {
   final obj;
@@ -87,8 +85,6 @@ class _FamilyPageState extends State<FamilyPage> {
                                 state is FamilyLoading) {
                               return Center(child: CircularProgressIndicator());
                             } else if (state is FamiliesDataSucess) {
-                              // print('List data......');
-                              // print(state.obj);
                               return CommonListWidget(
                                   key: ValueKey(key),
                                   scaffoldKey: _scaffoldKey,
@@ -114,23 +110,7 @@ class _FamilyPageState extends State<FamilyPage> {
                               // Globals.homeObject = state.obj;
                               Globals.appSetting =
                                   AppSetting.fromJson(state.obj);
-                             
-                              setState(() {Globals.appSetting.isCustomApp != isCustomApp
-                                  ?
-                                    Navigator.replace(context, newRoute: MaterialPageRoute(
-                          builder: (context) => HomePage()), oldRoute: MaterialPageRoute(
-                          builder: (context) => HomePage())
-                     )
-                                 
-                                  // Globals.globalController! .index=0
-                                  // // Globals.globalController =
-                                  // //     PersistentTabController(
-                                  // //         initialIndex: Globals.homeIndex=0)
-                                  : null;
-
-                                   isCustomApp = Globals.appSetting.isCustomApp;});
-
-                              
+                              setState(() {});
                             }
                           },
                           child: EmptyContainer()),
@@ -156,27 +136,18 @@ class _FamilyPageState extends State<FamilyPage> {
         ),
         body: Globals.appSetting.familyBannerImageC != null &&
                 Globals.appSetting.familyBannerImageC != ''
-            // Globals.homeObject["Family_Banner_Image__c"] != null &&
-            //         Globals.homeObject["Family_Banner_Image__c"] != ''
             ? NestedScrollView(
-                // controller: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     Globals.appSetting.familyBannerImageC != null
-                        // Globals.homeObject["Family_Banner_Image__c"] != null
                         ? BannerImageWidget(
                             imageUrl: Globals.appSetting.familyBannerImageC!,
-                            // Globals.homeObject["Family_Banner_Image__c"],
-                            bgColor: Globals.appSetting.familyBannerColorC
-                                    // Globals.homeObject["Family_Banner_Color__c"]
-                                    !=
-                                    null
-                                ? Utility.getColorFromHex(
-                                    Globals.appSetting.familyBannerColorC!
-                                    // Globals.homeObject["Family_Banner_Color__c"]
-                                    )
-                                : null,
+                            bgColor:
+                                Globals.appSetting.familyBannerColorC != null
+                                    ? Utility.getColorFromHex(
+                                        Globals.appSetting.familyBannerColorC!)
+                                    : null,
                           )
                         : SliverAppBar(),
                   ];
