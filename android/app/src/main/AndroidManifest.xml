@@ -18,8 +18,10 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 	 -->
+    
+    <!--android:name="io.flutter.app.FlutterApplication"-->
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name="io.flutter.embedding.android.FlutterActivity"        
         android:label="SOC App"
         android:icon="@mipmap/ic_launcher">
         <activity
