@@ -10,6 +10,7 @@ import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
+import 'package:Soc/src/widgets/image_to_text.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:flutter/material.dart';
@@ -88,6 +89,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             // AppSettings.openAppSettings();
             OpenAppsSettings.openAppsSettings(
                 settingsCode: SettingsCode.APP_SETTINGS);
+            break;
+          case IconsMenu.Camera:
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ImageToText(
+                          
+                        )));
             break;
         }
       },
