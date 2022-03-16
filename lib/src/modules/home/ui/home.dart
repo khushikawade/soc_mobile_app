@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         (item) {
           //setState(() {});
           return PersistentBottomNavBarItem(
-            icon: _bottomIcon(item.selectionTitleC, item.sectionIconC),
+            icon: _bottomIcon(item.selectionTitleC,   item.sectionIconC),
             // title:(''), //("${item.split("_")[0]}"),
             activeColorPrimary: Theme.of(context).primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
@@ -259,8 +259,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     ),
                     Icon(
                       IconData(
-                          //0xe803,
-                          int.parse(iconData),
+                     //   0xe82b,
+                           int.parse(iconData),
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
                       // size: 40,
