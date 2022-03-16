@@ -47,6 +47,7 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
   Widget build(BuildContext context) {
     return Expanded(
       child: RefreshIndicator(
+        edgeOffset: MediaQuery.of(context).size.height*0.6,
           key: refreshKey,
           child: OfflineBuilder(
               connectivityBuilder: (
@@ -118,6 +119,10 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
   }
 
   Future refreshPage() async {
+  
+await Future.delayed(Duration(seconds: 2));
+
+
     refreshKey.currentState?.show(atTop: false);
     Globals.webViewController1!.reload();
     if (checkUrlChange == widget.url) {

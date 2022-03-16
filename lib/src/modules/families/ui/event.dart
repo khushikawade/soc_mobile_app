@@ -263,6 +263,7 @@ class _EventPageState extends State<EventPage>
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Container(
+                         padding: EdgeInsets.only(top: 5),
                             height: Globals.deviceType == 'phone' ? 35 : 45,
                             width: Globals.deviceType == 'phone' ? 35 : 45,
                             //  color: Colors.grey,
@@ -277,7 +278,7 @@ class _EventPageState extends State<EventPage>
                                     Utility.launchUrlOnExternalBrowser(
                                         list.htmlLink);
                                   },
-                                  icon: Icon(IconData(0xe82c,
+                                  icon: Icon(IconData(0xe84f,
                                   fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg))),
                             )),
@@ -287,7 +288,7 @@ class _EventPageState extends State<EventPage>
                             //  color: Colors.grey,
                             child: Center(
                               child: IconButton(
-                                iconSize: 20,
+                                 iconSize: 22,
                                   padding: EdgeInsets.all(0),
                                   // constraints: BoxConstraints(),
                                   onPressed: () {
@@ -317,7 +318,7 @@ class _EventPageState extends State<EventPage>
                                       buildEvent(list),
                                     );
                                   },
-                                  icon: Icon(IconData(0xe82b,fontFamily: Overrides.kFontFam,
+                                  icon: Icon(IconData(0xe84e,fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg))),
                             )
                             ),
