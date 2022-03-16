@@ -10,6 +10,8 @@ import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
+import 'package:Soc/src/widgets/image_to_text.dart';
+import 'package:camera/camera.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,8 +22,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'src/modules/families/modal/calendar_event_list.dart';
 
 void main() async {
-  
-  WidgetsFlutterBinding.ensureInitialized();
+   WidgetsFlutterBinding.ensureInitialized();
+    cameras = await availableCameras();  
+ 
 
   if (!kIsWeb) {
     // Not running on the web!
@@ -47,6 +50,7 @@ void main() async {
     DeviceOrientation.landscapeRight,
     DeviceOrientation.landscapeLeft
   ]).then((_) {
+    
     runApp(App());
   });
   getDeviceType();
