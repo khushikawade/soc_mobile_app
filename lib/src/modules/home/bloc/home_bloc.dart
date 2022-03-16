@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:ffi';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
@@ -9,7 +7,6 @@ import 'package:Soc/src/modules/home/models/custom_setting.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
 import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';

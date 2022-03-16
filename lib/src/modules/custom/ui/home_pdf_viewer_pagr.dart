@@ -170,13 +170,14 @@ class _HomePdfViewerPageState extends State<HomePdfViewerPage> {
       //   scrollDirection: Axis.values,
       children: [
         Container(
-          height: 40,
+          height: 80,
         ),
         Container(
             // color: Colors.white,
             height: MediaQuery.of(context).size.height * 0.6,
             width: MediaQuery.of(context).size.width,
             child: PDF(
+                    pageSnap: true,
                     pageFling: true,
                     fitPolicy: FitPolicy.HEIGHT,
 
@@ -199,7 +200,8 @@ class _HomePdfViewerPageState extends State<HomePdfViewerPage> {
                             })))
                 .cachedFromUrl(
               widget.url!,
-              placeholder: (progress) => Center(child: Text('$progress %')),
+              placeholder: (progress) =>
+                  Center(child: CircularProgressIndicator()),
               errorWidget: (error) => Center(child: Text(error.toString())),
             )
             //         SfPdfViewer.network(
