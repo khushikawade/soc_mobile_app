@@ -1,4 +1,4 @@
-import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +27,9 @@ class _HomePdfViewerPageState extends State<HomePdfViewerPage> {
   // final _controller = PageController();
 
   String? pdfPath;
-  PDFDocument? document;
-  PDFDocument? document1;
-  PDFDocument? doc;
+  // PDFDocument? document;
+  // PDFDocument? document1;
+  // PDFDocument? doc;
   String? pdfUrl;
   bool stopScroll = true;
   // final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -170,16 +170,16 @@ class _HomePdfViewerPageState extends State<HomePdfViewerPage> {
       //   scrollDirection: Axis.values,
       children: [
         Container(
-          height: 80,
+          height: 20,
         ),
         Container(
             // color: Colors.white,
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.8,
             width: MediaQuery.of(context).size.width,
             child: PDF(
                     pageSnap: true,
                     pageFling: true,
-                    fitPolicy: FitPolicy.HEIGHT,
+                    fitPolicy: FitPolicy.WIDTH,
 
                     // fitEachPage: true,
                     // autoSpacing: true,

@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -276,7 +277,9 @@ class _EventPageState extends State<EventPage>
                                     Utility.launchUrlOnExternalBrowser(
                                         list.htmlLink);
                                   },
-                                  icon: Icon(IconData(0xe82c))),
+                                  icon: Icon(IconData(0xe82c,
+                                  fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg))),
                             )),
                         Container(
                             height: Globals.deviceType == 'phone' ? 35 : 45,
@@ -284,6 +287,7 @@ class _EventPageState extends State<EventPage>
                             //  color: Colors.grey,
                             child: Center(
                               child: IconButton(
+                                iconSize: 20,
                                   padding: EdgeInsets.all(0),
                                   // constraints: BoxConstraints(),
                                   onPressed: () {
@@ -293,14 +297,19 @@ class _EventPageState extends State<EventPage>
                                         list.htmlLink.toString(),
                                         list.summary.toString());
                                   },
-                                  icon: Icon(IconData(0xe829))),
+                                  icon: Icon(IconData(0xe829,
+                                  fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg))
+                          ),
                             )),
                         Container(
+                          padding: EdgeInsets.only(top: 5),
                             height: Globals.deviceType == 'phone' ? 35 : 45,
                             width: Globals.deviceType == 'phone' ? 35 : 45,
                             //  color: Colors.grey,
                             child: Center(
-                              child: IconButton(
+                              child: 
+                              IconButton(
                                   padding: EdgeInsets.all(0),
                                   // constraints: BoxConstraints(),
                                   onPressed: () {
@@ -308,8 +317,10 @@ class _EventPageState extends State<EventPage>
                                       buildEvent(list),
                                     );
                                   },
-                                  icon: Icon(IconData(0xe82b))),
-                            )),
+                                  icon: Icon(IconData(0xe82b,fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg))),
+                            )
+                            ),
                       ],
                     ),
                   )
