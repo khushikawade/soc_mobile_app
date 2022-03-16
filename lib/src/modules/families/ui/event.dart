@@ -23,11 +23,14 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 
 // ignore: must_be_immutable
 class EventPage extends StatefulWidget {
+  bool? isAppBar;
+
   EventPage({
     required this.isbuttomsheet,
     required this.appBarTitle,
     required this.language,
     required this.calendarId,
+    this.isAppBar,
   });
   String? language;
   bool? isbuttomsheet;
@@ -264,7 +267,6 @@ class _EventPageState extends State<EventPage>
                             //  color: Colors.grey,
                             child: Center(
                               child: IconButton(
-                                  iconSize: 30,
                                   padding: EdgeInsets.all(0),
                                   // constraints: BoxConstraints(),
                                   onPressed: () {
@@ -274,7 +276,7 @@ class _EventPageState extends State<EventPage>
                                     Utility.launchUrlOnExternalBrowser(
                                         list.htmlLink);
                                   },
-                                  icon: Icon(Icons.open_in_browser_rounded)),
+                                  icon: Icon(IconData(0xe82c))),
                             )),
                         Container(
                             height: Globals.deviceType == 'phone' ? 35 : 45,
@@ -306,7 +308,7 @@ class _EventPageState extends State<EventPage>
                                       buildEvent(list),
                                     );
                                   },
-                                  icon: Icon(Icons.calendar_today_outlined)),
+                                  icon: Icon(IconData(0xe82b))),
                             )),
                       ],
                     ),
@@ -569,16 +571,18 @@ class _EventPageState extends State<EventPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          marginLeft: 30,
-          appBarTitle: widget.appBarTitle!,
-          isSearch: true,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
-          isShare: false,
-          isCenterIcon: true,
-          language: Globals.selectedLanguage,
-        ),
+        appBar: widget.isAppBar == false
+            ? null
+            : CustomAppBarWidget(
+                marginLeft: 30,
+                appBarTitle: widget.appBarTitle!,
+                isSearch: true,
+                sharedpopBodytext: '',
+                sharedpopUpheaderText: '',
+                isShare: false,
+                isCenterIcon: true,
+                language: Globals.selectedLanguage,
+              ),
         body: OrientationBuilder(builder: (context, orientation) {
           bool? currentOrientation =
               orientation == Orientation.landscape ? true : null;

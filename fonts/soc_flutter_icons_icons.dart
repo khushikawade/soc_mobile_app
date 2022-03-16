@@ -68,6 +68,8 @@ class CustomFlutterIcons {
   static const IconData blue_2 = IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData v1 = IconData(0xe829, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData call = IconData(0xe82a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData add_to_calendar = IconData(0xe82b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData open_browser = IconData(0xe82c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData after_school = IconData(0xe844, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData athletics = IconData(0xe845, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData clubs = IconData(0xe846, fontFamily: _kFontFam, fontPackage: _kFontPkg);

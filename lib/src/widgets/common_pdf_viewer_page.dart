@@ -96,8 +96,8 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                 : PDFViewer(
                     document: document!,
                     enableSwipeNavigation: true,
-                    showIndicator: true,
                     lazyLoad: false,
+                    showIndicator: true,
                     showNavigation: false,
                     showPicker: false,
                     zoomSteps: 2,

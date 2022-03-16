@@ -1,5 +1,6 @@
 import 'package:Soc/src/modules/custom/ui/home_calendar.dart';
 import 'package:Soc/src/modules/custom/ui/home_contect.dart';
+import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -136,6 +137,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         key: _scaffoldKey,
         appBar: AppBarWidget(
           marginLeft: 30,
@@ -231,7 +233,9 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
     } else if (obj.typeOfPageC == "Calendar/Events") {
       return obj.calendarId != null && obj.calendarId != ""
           ? Expanded(
-              child: HomeCalendar(
+              child: EventPage(
+                appBarTitle: '',
+                isAppBar: false,
                 isbuttomsheet: true,
                 language: Globals.selectedLanguage,
                 calendarId: obj.calendarId.toString(),
