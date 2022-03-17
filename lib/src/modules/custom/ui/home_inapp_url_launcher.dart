@@ -4,8 +4,14 @@ import 'dart:io';
 // import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +34,7 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
+  HomeBloc _homeBloc = HomeBloc();
   // WebViewController webViewController;
   String? checkUrlChange;
   @override
@@ -47,7 +54,7 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
   Widget build(BuildContext context) {
     return Expanded(
       child: RefreshIndicator(
-        edgeOffset: MediaQuery.of(context).size.height*0.6,
+          edgeOffset: MediaQuery.of(context).size.height * 0.6,
           key: refreshKey,
           child: OfflineBuilder(
               connectivityBuilder: (
@@ -109,6 +116,23 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
                                 },
                               ),
                             ),
+                            Container(
+                              height: 0,
+                              width: 0,
+                              child: BlocListener<HomeBloc, HomeState>(
+                                  bloc: _homeBloc,
+                                  listener: (context, state) async {
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+                                      // Globals.homeObject = state.obj;
+                                      Globals.appSetting =
+                                          AppSetting.fromJson(state.obj);
+                                      setState(() {});
+                                    }
+                                  },
+                                  child: EmptyContainer()),
+                            ),
                           ])
                     : NoInternetErrorWidget(
                         connected: connected, issplashscreen: false);
@@ -119,11 +143,10 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
   }
 
   Future refreshPage() async {
-  
-await Future.delayed(Duration(seconds: 2));
-
+    await Future.delayed(Duration(seconds: 2));
 
     refreshKey.currentState?.show(atTop: false);
+    _homeBloc.add(FetchBottomNavigationBar());
     Globals.webViewController1!.reload();
     if (checkUrlChange == widget.url) {
       Globals.webViewController1!.reload();

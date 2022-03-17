@@ -263,7 +263,7 @@ class _EventPageState extends State<EventPage>
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Container(
-                         padding: EdgeInsets.only(top: 5),
+                            padding: EdgeInsets.only(top: 4),
                             height: Globals.deviceType == 'phone' ? 35 : 45,
                             width: Globals.deviceType == 'phone' ? 35 : 45,
                             //  color: Colors.grey,
@@ -278,9 +278,9 @@ class _EventPageState extends State<EventPage>
                                     Utility.launchUrlOnExternalBrowser(
                                         list.htmlLink);
                                   },
-                                  icon: Icon(IconData(0xe84f,
-                                  fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg))),
+                                  icon: Icon(IconData(0xe851,
+                                      fontFamily: Overrides.kFontFam,
+                                      fontPackage: Overrides.kFontPkg))),
                             )),
                         Container(
                             height: Globals.deviceType == 'phone' ? 35 : 45,
@@ -288,7 +288,7 @@ class _EventPageState extends State<EventPage>
                             //  color: Colors.grey,
                             child: Center(
                               child: IconButton(
-                                 iconSize: 22,
+                                  iconSize: 22,
                                   padding: EdgeInsets.all(0),
                                   // constraints: BoxConstraints(),
                                   onPressed: () {
@@ -299,18 +299,16 @@ class _EventPageState extends State<EventPage>
                                         list.summary.toString());
                                   },
                                   icon: Icon(IconData(0xe829,
-                                  fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg))
-                          ),
+                                      fontFamily: Overrides.kFontFam,
+                                      fontPackage: Overrides.kFontPkg))),
                             )),
                         Container(
-                          padding: EdgeInsets.only(top: 5),
+                            padding: EdgeInsets.only(top: 6),
                             height: Globals.deviceType == 'phone' ? 35 : 45,
                             width: Globals.deviceType == 'phone' ? 35 : 45,
                             //  color: Colors.grey,
                             child: Center(
-                              child: 
-                              IconButton(
+                              child: IconButton(
                                   padding: EdgeInsets.all(0),
                                   // constraints: BoxConstraints(),
                                   onPressed: () {
@@ -318,10 +316,10 @@ class _EventPageState extends State<EventPage>
                                       buildEvent(list),
                                     );
                                   },
-                                  icon: Icon(IconData(0xe84e,fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg))),
-                            )
-                            ),
+                                  icon: Icon(IconData(0xe850,
+                                      fontFamily: Overrides.kFontFam,
+                                      fontPackage: Overrides.kFontPkg))),
+                            )),
                       ],
                     ),
                   )
