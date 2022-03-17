@@ -157,20 +157,5 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
     }
   }
 
-  // String? hight;
-  // double webHight = 400; //default some value
-  // Future funcThatMakesAsyncCall() async {
-  //   var result = await Globals.webViewController1!
-  //       .evaluateJavascript('document.body.scrollHeight');
-  //   //here we call javascript for get browser data
-  //   setState(
-  //     () {
-  //       hight = result;
-  //     },
-  //   );
-  // }
-
-  // _getPermission() async {
-  //   await Permission.storage.request();
-  // }
+  
 }

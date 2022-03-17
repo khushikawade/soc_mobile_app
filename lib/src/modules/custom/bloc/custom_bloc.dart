@@ -274,20 +274,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {
-        // LocalDatabase<CalendarEventList> _localDbPast =
-        //     LocalDatabase(Strings.calendarPastObjectName);
-
-        // List<CalendarEventList>? _localDataPast = await _localDbPast.getData();
-
-        // LocalDatabase<CalendarEventList> _localDbFuture =
-        //     LocalDatabase(Strings.calendarFutureObjectName);
-
-        // List<CalendarEventList>? _localDataFuture =
-        //     await _localDbFuture.getData();
-
-        // yield CalendarListSuccess(
-        //     futureListobj: _localDataFuture, pastListobj: _localDataPast);
-        // yield ErrorLoading(err: e);
+       
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);

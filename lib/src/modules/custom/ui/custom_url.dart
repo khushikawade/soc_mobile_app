@@ -1,13 +1,12 @@
-import 'package:Soc/src/modules/custom/ui/home_calendar.dart';
-import 'package:Soc/src/modules/custom/ui/home_contect.dart';
+import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/modules/custom/ui/home_html.dart';
 import 'package:Soc/src/modules/custom/ui/home_inapp_url_launcher.dart';
 import 'package:Soc/src/modules/custom/ui/home_pdf_viewer_pagr.dart';
+import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,38 +74,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     buildPage(widget.obj),
-                    // Expanded(
-                    //   child: BlocBuilder<FamilyBloc, FamilyState>(
-                    //       bloc: _bloc,
-                    //       builder: (BuildContext contxt, FamilyState state) {
-                    //         if (state is FamilyInitial ||
-                    //             state is FamilyLoading) {
-                    //           return Center(child: CircularProgressIndicator());
-                    //         } else if (state is FamiliesDataSucess) {
-                    //           // print('List data......');
-                    //           // print(state.obj);
-                    //           return buildPage(state.obj);
-                    //         } else if (state is ErrorLoading) {
-                    //           return ListView(children: [ErrorMsgWidget()]);
-                    //         } else {
-                    //           return Container();
-                    //         }
-                    //       }),
-                    // ),
-                    // Container(
-                    //   height: 0,
-                    //   width: 0,
-                    //   child: BlocListener<FamilyBloc, FamilyState>(
-                    //       bloc: _bloc,
-                    //       listener: (context, state) async {
-                    //         if (state is FamiliesDataSucess) {
-                    //         //  if (state.obj.appUrlC.toString().split(":")[0] == 'http' || state.obj.deepLinkC == 'YES'){
-                    //         //    await Utility.launchUrlOnExternalBrowser(state.obj.appUrlC);
-                    //         //  }
-                    //         }
-                    //       },
-                    //       child: EmptyContainer()),
-                    // ),
+                    
                     Container(
                       height: 0,
                       width: 0,
@@ -127,8 +95,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                     ),
                   ],
                 );
-                // : NoInternetErrorWidget(
-                //     connected: connected, issplashscreen: false);
+                
               },
               child: Container()),
           onRefresh: refreshPage,
@@ -171,12 +138,15 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
         obj.typeOfSectionC == "HTML/RTF" ||
         obj.typeOfSectionC == "RTF/HTML") {
       return obj.rtfHTMLC != null
-          ? HomeHtml(
-              htmlText: obj.rtfHTMLC.toString(),
-              isbuttomsheet: true,
-              ishtml: true,
-              // appbarTitle: obj.titleC!,
-              language: Globals.selectedLanguage,
+          ? Expanded(
+              child: AboutusPage(
+                htmlText: obj.rtfHTMLC.toString(),
+                isbuttomsheet: true,
+                ishtml: true,
+                isAppBar: false,
+                // appbarTitle: obj.titleC!,
+                language: Globals.selectedLanguage, appbarTitle: '',
+              ),
             )
           : Expanded(
               child: Container(
@@ -222,12 +192,12 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
             );
     } else if (obj.typeOfPageC == "Contact") {
       return Expanded(
-        child: HomeContactPage(
+        child: ContactPage(
           obj: Globals.appSetting,
           //  Globals.homeObject,
           isbuttomsheet: true,
-
-          language: Globals.selectedLanguage ?? "English",
+          isAppBar: false,
+          language: Globals.selectedLanguage ?? "English", appBarTitle: '',
         ),
       );
     } else if (obj.typeOfPageC == "Calendar/Events") {
@@ -260,16 +230,5 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
     );
   }
 
-  // Widget _launchURL(obj) async {
-  //   if (obj.appUrlC.toString().split(":")[0] == 'http' ||
-  //       obj.deepLinkC == 'YES') {
-  //     await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
-  //     return Container(
-  //         child: NoDataFoundErrorWidget(
-  //             isResultNotFoundMsg: false,
-  //             isNews: false,
-  //             isEvents: false,
-  //             connected: true));
-  //   } else {}
-  // }
+ 
 }

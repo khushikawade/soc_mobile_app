@@ -336,12 +336,9 @@ class _EventPageState extends State<EventPage>
                 dateTime: _dateTime,
               ),
             ),
-            // calanderView(obj.completedAt),
+           
             url: ''
-            // obj.image != '' && obj.image != null ? obj.image! : '',
-            //  Globals.splashImageUrl != '' && Globals.splashImageUrl != null
-            //     ? Globals.splashImageUrl
-            //     : Globals.appSetting.appLogoC,
+        
             ),
 
         // Padding(
@@ -583,7 +580,8 @@ class _EventPageState extends State<EventPage>
     return Scaffold(
         appBar: widget.isAppBar == false
             ? null
-            : CustomAppBarWidget(
+            :
+             CustomAppBarWidget(
                 marginLeft: 30,
                 appBarTitle: widget.appBarTitle!,
                 isSearch: true,
