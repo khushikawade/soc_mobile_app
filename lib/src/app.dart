@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
+import 'modules/user/ui/startup.dart';
+
 class App extends StatefulWidget {
   @override
   _AppState createState() => _AppState();
@@ -36,8 +38,8 @@ class _AppState extends State<App> {
           title: 'Solved',
           theme: theme,
           darkTheme: darkTheme,
-          //home: StartupPage(),
-          home: SchoolIDLogin(),
+          home: StartupPage(),
+          //home: SchoolIDLogin(),
           ),
     );
   }
