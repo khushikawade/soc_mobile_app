@@ -92,6 +92,9 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         } else {
           for (int i = 0; i < Globals.socialList.length; i++) {
             for (int j = 0; j < list.length; j++) {
+              // print("Comparision : ");
+              // print("${Globals.socialList[i].id.toString()}");
+              // print(list[j].notificationId);
               if ("${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t']}" ==list[j].notificationId) {
               //if (Globals.socialList[i].guid['\$t'] == list[j].notificationId) {
                 newList.add(Item(
@@ -226,6 +229,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future addSocailAction(body) async {
     try {
+      print("body : "+ body);
       final ResponseModel response = await _dbServices.postapi(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social",
           body: body);
