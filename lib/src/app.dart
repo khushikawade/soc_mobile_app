@@ -1,10 +1,11 @@
 import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/user/ui/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
+
+import 'modules/user/ui/startup.dart';
 
 class App extends StatefulWidget {
   @override
@@ -37,8 +38,8 @@ class _AppState extends State<App> {
           title: 'Solved',
           theme: theme,
           darkTheme: darkTheme,
-           home: StartupPage(),
-           //  home: SchoolIDLogin(),
+          home: StartupPage(),
+          //home: SchoolIDLogin(),
           ),
     );
   }

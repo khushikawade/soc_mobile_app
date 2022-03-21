@@ -92,11 +92,10 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         } else {
           for (int i = 0; i < Globals.socialList.length; i++) {
             for (int j = 0; j < list.length; j++) {
-              if ("${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t']}" ==
-                  list[j].notificationId 
-                  // || "${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t'] + Overrides.SCHOOL_ID}" ==
+              if ("${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t']}" ==list[j].notificationId) {
+                // || "${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t'] + Overrides.SCHOOL_ID}" ==
                   // list[j].notificationId
-                  ) {
+              //if (Globals.socialList[i].guid['\$t'] == list[j].notificationId) {
                 newList.add(Item(
                     id: Globals.socialList[i].id,
                     title: Globals.socialList[i].title,
@@ -164,6 +163,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           "Thanks__c": "${event.thanks}",
           "Helpful__c": "${event.helpful}",
           "Share__c": "${event.shared}",
+          "Test_School__c": "${Globals.appSetting.isTestSchool}"
         });
         yield SocialActionSuccess(
           obj: data,
@@ -232,7 +232,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social",
           body: body);
 
-      if (response. statusCode == 200) {
+      if (response.statusCode == 200) {
         var res = response.data;
         var data = res["statusCode"];
         return data;

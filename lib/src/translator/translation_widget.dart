@@ -12,8 +12,10 @@ class TranslationWidget extends StatefulWidget {
   final String? fromLanguage;
   final String? toLanguage;
   final Widget Function(String translation)? builder;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
   TranslationWidget({
+    this.scaffoldKey,
     this.shimmerHeight,
     @required this.message,
     this.fromLanguage,
@@ -32,7 +34,6 @@ class _TranslationWidgetState extends State<TranslationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final scaffoldKey = Scaffold.of(context);
     final toLanguageCode =
         Translations.supportedLanguagesCodes(widget.toLanguage!);
 
@@ -52,7 +53,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
                 Globals.isNetworkError = true;
                 Future.delayed(const Duration(seconds: 3), () {
                   Utility.showSnackBar(
-                      scaffoldKey,
+                      Globals.scaffoldKey,
                       'Unable to translate, Please check the Internet connection',
                       context);
                 });

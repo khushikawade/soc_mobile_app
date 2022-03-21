@@ -21,7 +21,7 @@
     
     <!--android:name="io.flutter.app.FlutterApplication"-->
     <application
-        android:name="io.flutter.embedding.android.FlutterActivity"        
+        android:name="io.flutter.embedding.android.FlutterActivity"
         android:label="SOC App"
         android:icon="@mipmap/ic_launcher">
         <activity

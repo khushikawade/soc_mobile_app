@@ -246,8 +246,8 @@ class Utility {
   static generateUniqueId(date) {
     try {
       DateTime parseDate =
-          DateFormat('E, d MMM yyyy HH:mm:ss').parse(date).toLocal();
-      final uniqueId = parseDate.millisecondsSinceEpoch;
+          DateFormat('E, d MMM yyyy HH:mm:ss').parse(date); //.toLocal();
+      int uniqueId = parseDate.millisecondsSinceEpoch;
       return uniqueId;
     } catch (e) {
       print(e);

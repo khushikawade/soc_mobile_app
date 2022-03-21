@@ -32,8 +32,8 @@ class Item {
   int? helpfulCount;
   @HiveField(13)
   int? shareCount;
-  @HiveField(14)
-  dynamic completedAt;
+  // @HiveField(14)
+  // dynamic completedAt;
   
   
 
@@ -49,7 +49,7 @@ class Item {
       this.enclosure,
       this.id,
       this.likeCount = 0,
-      this.completedAt,
+      // this.completedAt,
       this.thanksCount = 0,
       this.helpfulCount = 0,
       this.shareCount = 0});
