@@ -93,7 +93,10 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           for (int i = 0; i < Globals.socialList.length; i++) {
             for (int j = 0; j < list.length; j++) {
               if ("${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t']}" ==
-                  list[j].notificationId) {
+                  list[j].notificationId 
+                  // || "${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t'] + Overrides.SCHOOL_ID}" ==
+                  // list[j].notificationId
+                  ) {
                 newList.add(Item(
                     id: Globals.socialList[i].id,
                     title: Globals.socialList[i].title,
