@@ -55,21 +55,29 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _buildTitleWidget() {
     return Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing,
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: TranslationWidget(
+        message: widget.obj!.designation ?? "",
+        toLanguage: Globals.selectedLanguage,
+        fromLanguage: "en",
+        builder: (translatedMessage) => Text(
+          translatedMessage.toString(),
+          style: Theme.of(context).textTheme.headline2!.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
         ),
-        child: TranslationWidget(
-          message: widget.obj!.designation ?? "",
-          toLanguage: Globals.selectedLanguage,
-          fromLanguage: "en",
-          builder: (translatedMessage) => Text(
-            translatedMessage.toString(),
-            textAlign: TextAlign.left,
-            style: Theme.of(context).textTheme.headline2!.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-          ),
-        ));
+      ),
+
+      //  Text(
+      //   widget.obj!.designation ?? "",
+      //   textAlign: TextAlign.left,
+      //   style: Theme.of(context).textTheme.headline2!.copyWith(
+      //         fontWeight: FontWeight.w500,
+      //       ),
+      // )
+    );
   }
 
   Widget _buildNameWidget() {
@@ -83,12 +91,19 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
           fromLanguage: "en",
           builder: (translatedMessage) => Text(
             translatedMessage.toString(),
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline2!.copyWith(
+            style: Theme.of(context).textTheme.bodyText2!.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
           ),
         ));
+
+    //  Text(
+    //   widget.obj!.name ?? "",
+    //   textAlign: TextAlign.center,
+    //   style: Theme.of(context).textTheme.headline2!.copyWith(
+    //         fontWeight: FontWeight.w500,
+    //       ),
+    // ));
   }
 
   Widget _buildDescriptionWidget() {
@@ -106,9 +121,18 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                       Utility.launchUrlOnExternalBrowser(link.url),
                   options: LinkifyOptions(humanize: false),
                   linkStyle: TextStyle(color: Colors.blue),
-                  text: translatedMessage,
+                  text: translatedMessage.toString(),
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                  // )
                 )));
+
+    //  Linkify(
+    //   onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
+    //   options: LinkifyOptions(humanize: false),
+    //   linkStyle: TextStyle(color: Colors.blue),
+    //   text: widget.obj!.descriptionC ?? "",
+    //   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+    // ));
   }
 
   Widget _buildPhoneWidget() {
@@ -341,6 +365,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
     homebloc.add(FetchBottomNavigationBar());
   }
 }

@@ -371,6 +371,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+     await Future.delayed(Duration(seconds: 2));
     homebloc.add(FetchBottomNavigationBar());
   }
 }

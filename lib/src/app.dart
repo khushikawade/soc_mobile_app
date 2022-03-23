@@ -94,14 +94,14 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       dark: AppTheme.darkTheme,
       initial: AdaptiveThemeMode.system,
       builder: (theme, darkTheme) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
-        title: 'Solved',
-        theme: theme,
-        darkTheme: darkTheme,
-        home: StartupPage(),
-        // home: SchoolIDLogin(),
-      ),
+          debugShowCheckedModeBanner: false,
+          scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
+          title: 'Solved',
+          theme: theme,
+          darkTheme: darkTheme,
+          home: StartupPage(),
+          //   home: SchoolIDLogin(),
+          ),
     );
   }
 

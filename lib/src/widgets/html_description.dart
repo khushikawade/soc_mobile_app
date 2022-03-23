@@ -45,29 +45,6 @@ class _AboutusPageState extends State<AboutusPage> {
       margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Wrap(
         children: [
-          // widget.htmlText.toString().contains("src=") &&
-          //         widget.htmlText.toString().split('"')[1] != ""
-          //     ? Container(
-          //         alignment: Alignment.center,
-          //         child: ClipRRect(
-          //           child: CachedNetworkImage(
-          //             imageUrl: Utility.getHTMLImgSrc(widget.htmlText),
-          //             fit: BoxFit.cover,
-          //             placeholder: (context, url) => Container(
-          //                 alignment: Alignment.center,
-          //                 child: ShimmerLoading(
-          //                   isLoading: true,
-          //                   child: Container(
-          //                     width: MediaQuery.of(context).size.width * 0.8,
-          //                     height: MediaQuery.of(context).size.width * 0.5,
-          //                     color: Colors.white,
-          //                   ),
-          //                 )),
-          //             errorWidget: (context, url, error) => Container(),
-          //           ),
-          //         ),
-          //       )
-          //     : Container(),
           TranslationWidget(
             message: widget.htmlText,
             fromLanguage: "en",
@@ -104,16 +81,15 @@ class _AboutusPageState extends State<AboutusPage> {
   }
 
   Widget build(BuildContext context) {
-    //String getImgFromHtml = Utility.getHTMLImgSrc(widget.htmlText);
-
     return Scaffold(
       appBar: CustomAppBarWidget(
         isSearch: false,
         isShare: true,
         appBarTitle: widget.appbarTitle,
         ishtmlpage: widget.ishtml,
-        //sharedpopBodytext: "${widget.htmlText.replaceAll(exp, '').toString()} $getImgFromHtml",
-        sharedpopBodytext: widget.htmlText.replaceAll(exp, '').toString(),
+        sharedpopBodytext: Utility.parseHtml(widget.htmlText
+            .replaceAll('<img src=', ' ')
+            .replaceAll('data-imageguid=', '</')),
         sharedpopUpheaderText: "Please checkout this link",
         language: Globals.selectedLanguage,
       ),

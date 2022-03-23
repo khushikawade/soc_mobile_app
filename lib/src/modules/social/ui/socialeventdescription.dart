@@ -174,6 +174,8 @@ class SocialDescription extends StatelessWidget {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+    
+     await Future.delayed(Duration(seconds: 2));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
@@ -218,11 +220,18 @@ class SocialDescription extends StatelessWidget {
                 child: CommonImageWidget(
                     isOnTap: true,
                     iconUrl: (object.enclosure != null &&
-                    object.enclosure != "" &&
-                    object.enclosure['url'] != null &&
-                    object.enclosure['url'] != "") ?
-                    object.enclosure['url'] : Utility.getHTMLImgSrc(object.description["__cdata"]) != ''?Utility.getHTMLImgSrc(object.description["__cdata"]) :Globals.splashImageUrl ??Globals.appSetting.appLogoC,
-                    
+                            object.enclosure != "" &&
+                            object.enclosure['url'] != null &&
+                            object.enclosure['url'] != "")
+                        ? object.enclosure['url']
+                        : Utility.getHTMLImgSrc(
+                                    object.description["__cdata"]) !=
+                                ''
+                            ? Utility.getHTMLImgSrc(
+                                object.description["__cdata"])
+                            : Globals.splashImageUrl ??
+                                Globals.appSetting.appLogoC,
+
                     // object.enclosure['url'] ??
                     //     Utility.getHTMLImgSrc(object.description["__cdata"]) ??
                     //     Globals.splashImageUrl ??
@@ -283,8 +292,9 @@ class SocialDescription extends StatelessWidget {
       Container(
         alignment: Alignment.centerLeft,
         child: TranslationWidget(
-            message:
-                "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}",
+            message: object.title != null && object.title != ""
+                ? "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}"
+                : "",
             fromLanguage: "en",
             toLanguage: language,
             builder: (translatedMessage) => RichText(
@@ -340,10 +350,25 @@ class SocialDescription extends StatelessWidget {
     return NewsActionBasic(
       page: "social",
       obj: object,
-      title: object.title['__cdata'],
-      description: object.description['__cdata'],
-      imageUrl: object.enclosure != "" ? object.enclosure['url'] : "",
-      imageExtType: object.enclosure != "" ? object.enclosure['type'] : "",
+      title: object.title != "" && object.title != null
+          ? object.title['__cdata']
+          : "",
+      description: object.title != "" && object.title != null
+          ? object.title['__cdata']
+          : "",
+
+      imageUrl: object.enclosure != "" &&
+              object.enclosure != null &&
+              object.enclosure['url'] != "" &&
+              object.enclosure['url'] != null
+          ? object.enclosure['url']
+          : "",
+      imageExtType: object.enclosure != "" &&
+              object.enclosure != null &&
+              object.enclosure['type'] != "" &&
+              object.enclosure['type'] != null
+          ? object.enclosure['type']
+          : "",
       // icons: icons,
       // iconsName: iconsName,
     );

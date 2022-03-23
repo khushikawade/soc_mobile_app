@@ -476,6 +476,7 @@ class _SubListPageState extends State<SubListPage> {
     } else if (widget.module == "about") {
       _aboutBloc.add(AboutSublistEvent(id: widget.obj.id));
     }
+     await Future.delayed(Duration(seconds: 2));
     refreshKey.currentState?.show(atTop: false);
   }
 }

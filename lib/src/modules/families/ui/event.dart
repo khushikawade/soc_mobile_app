@@ -25,12 +25,12 @@ class EventPage extends StatefulWidget {
     required this.isbuttomsheet,
     required this.appBarTitle,
     required this.language,
-    // required this.calendarId,
+    required this.calendarId,
   });
   String? language;
   bool? isbuttomsheet;
   String? appBarTitle;
-  // String calendarId;
+  String calendarId;
 
   @override
   _EventPageState createState() => _EventPageState();
@@ -42,6 +42,7 @@ class _EventPageState extends State<EventPage>
   FamilyBloc _eventBloc = FamilyBloc();
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final refreshKey1 = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
   double? _ktabmargin = 50;
   @override
@@ -50,7 +51,7 @@ class _EventPageState extends State<EventPage>
   void initState() {
     super.initState();
     // Globals.calendar_Id = widget.calendarId;
-    _eventBloc.add(CalendarListEvent());
+    _eventBloc.add(CalendarListEvent(widget.calendarId));
 
     // _ktabmargin = MediaQuery.of(context).size.height * 0.25;
   }
@@ -181,7 +182,7 @@ class _EventPageState extends State<EventPage>
     );
   }
 
-  Widget _buildTabs(state) {
+  Widget _buildTabs(state, bool? currentOrientation) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
         Widget>[
       DefaultTabController(
@@ -239,6 +240,7 @@ class _EventPageState extends State<EventPage>
                       state.futureListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
+                              key: refreshKey,
                               child: new ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   padding: Platform.isAndroid
@@ -260,14 +262,22 @@ class _EventPageState extends State<EventPage>
                                   }),
                               onRefresh: refreshPage,
                             ))
-                          : NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: true,
-                            ),
+                          : new RefreshIndicator(
+                              key: refreshKey,
+                              onRefresh: refreshPage,
+                              child: ListView(children: [
+                                NoDataFoundErrorWidget(
+                                  isCalendarPageOrientationLandscape:
+                                      currentOrientation,
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: true,
+                                ),
+                              ])),
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
+                              key: refreshKey1,
                               child: new ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   padding: Platform.isAndroid
@@ -279,19 +289,35 @@ class _EventPageState extends State<EventPage>
                                     return state.pastListobj!.length > 0
                                         ? _buildList(state.pastListobj![index],
                                             index, state.pastListobj)
-                                        : NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                            isEvents: true,
+                                        : new RefreshIndicator(
+                                            // key: refreshKey,
+                                            onRefresh: refreshPage,
+                                            child: ListView(
+                                              children: [
+                                                NoDataFoundErrorWidget(
+                                                  isResultNotFoundMsg: false,
+                                                  isNews: false,
+                                                  isEvents: true,
+                                                ),
+                                              ],
+                                            ),
                                           );
                                   }),
                               onRefresh: refreshPage,
                             ))
-                          : NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: true,
-                            )
+                          : new RefreshIndicator(
+                              key: refreshKey1,
+                              onRefresh: refreshPage,
+                              child: ListView(children: [
+                                NoDataFoundErrorWidget(
+                                  isCalendarPageOrientationLandscape:
+                                      currentOrientation,
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: true,
+                                ),
+                              ]),
+                            ),
                     ])),
               ]))
     ]);
@@ -310,9 +336,10 @@ class _EventPageState extends State<EventPage>
           isCenterIcon: true,
           language: Globals.selectedLanguage,
         ),
-        body: RefreshIndicator(
-          key: refreshKey,
-          child: OfflineBuilder(
+        body: OrientationBuilder(builder: (context, orientation) {
+          bool? currentOrientation =
+              orientation == Orientation.landscape ? true : null;
+          return OfflineBuilder(
               connectivityBuilder: (
                 BuildContext context,
                 ConnectivityResult connectivity,
@@ -323,7 +350,7 @@ class _EventPageState extends State<EventPage>
 
                 if (connected) {
                   if (iserrorstate == true) {
-                    _eventBloc.add(CalendarListEvent());
+                    _eventBloc.add(CalendarListEvent(widget.calendarId));
                     iserrorstate = false;
                   }
                 } else if (!connected) {
@@ -347,7 +374,7 @@ class _EventPageState extends State<EventPage>
                                   color: Theme.of(context).colorScheme.primaryVariant,
                                 ));
                           } else if (state is CalendarListSuccess) {
-                            return _buildTabs(state);
+                            return _buildTabs(state, currentOrientation);
                           } else if (state is ErrorLoading) {
                             return ErrorMsgWidget();
                           }
@@ -375,14 +402,15 @@ class _EventPageState extends State<EventPage>
                 // : NoInternetErrorWidget(
                 //     connected: connected, issplashscreen: false);
               },
-              child: Container()),
-          onRefresh: refreshPage,
-        ));
+              child: Container());
+        }));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _eventBloc.add(CalendarListEvent());
+    refreshKey1.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+    _eventBloc.add(CalendarListEvent(widget.calendarId));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 }
