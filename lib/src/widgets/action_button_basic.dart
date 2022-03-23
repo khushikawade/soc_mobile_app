@@ -276,8 +276,9 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
           helpful: index == 2 ? 1 : 0,
           shared: index == 3 ? 1 : 0));
     } else if (widget.page == "social") {
+      print( widget.obj.guid['\$t']);
       _socialbBloc.add(SocialAction(
-          id: widget.obj.id.toString() + widget.obj.guid['\$t'] + Overrides.SCHOOL_ID,
+          id: widget.obj.id.toString() + widget.obj.guid['\$t'], //+ Overrides.SCHOOL_ID,
           title: widget.title.toString(),
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
