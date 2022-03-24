@@ -105,7 +105,7 @@ class _CustomPageState extends State<CustomPage> {
                               // Globals.homeObject = state.obj;
                               Globals.appSetting =
                                   AppSetting.fromJson(state.obj);
-                              // setState(() {});
+                              setState(() {});
                             }
                           },
                           child: EmptyContainer()),
@@ -147,7 +147,7 @@ class _CustomPageState extends State<CustomPage> {
               },
               body: _body('body2'),
             )
-          : _body('body2'),
+          : _body('body1'),
     );
   }
 
