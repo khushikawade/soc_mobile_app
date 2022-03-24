@@ -1,4 +1,3 @@
-import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/user/ui/startup.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -22,7 +21,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   initState() {
     super.initState();
-    addThemeType();
+    
     _onNotificationTap();
 
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
@@ -40,9 +39,12 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
       if (brightness == Brightness.dark) {
         Globals.themeType = 'Dark';
+        
       }
       if (brightness == Brightness.light) {
         Globals.themeType = 'Light';
+        
+      
       }
     };
     WidgetsBinding.instance!.addObserver(this);
@@ -114,8 +116,5 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     });
   }
 
-  addThemeType() async {
-    Globals.themeType = await _hiveDbServices.getSingleData('theme', 'theme');
-    print(Globals.themeType);
-  }
+  
 }

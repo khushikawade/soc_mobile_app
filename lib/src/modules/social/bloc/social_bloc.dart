@@ -92,8 +92,9 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         } else {
           for (int i = 0; i < Globals.socialList.length; i++) {
             for (int j = 0; j < list.length; j++) {
-              if ("${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t']}" ==list[j].notificationId) {
-              //if (Globals.socialList[i].guid['\$t'] == list[j].notificationId) {
+              if ("${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t']}" ==
+                  list[j].notificationId) {
+                //if (Globals.socialList[i].guid['\$t'] == list[j].notificationId) {
                 newList.add(Item(
                     id: Globals.socialList[i].id,
                     title: Globals.socialList[i].title,
@@ -174,7 +175,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future getEventDetails() async {
     try {
-      // final link = Uri.parse("${Globals.homeObject["Social_API_URL__c"]}");
+      // final link = Uri.parse("https://rss.app/feeds/xJZg5SAApFgtrAco.xml");
       final link = Uri.parse("${Globals.appSetting.socialapiurlc}");
       Xml2Json xml2json = new Xml2Json();
       http.Response response = await http.get(link);

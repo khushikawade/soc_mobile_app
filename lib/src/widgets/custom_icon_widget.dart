@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -23,7 +24,12 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
 
     if (brightness == Brightness.dark) {
       Globals.themeType = 'Dark';
-    } else {}
+      
+
+    } else {
+      
+
+    }
   }
 
   @override
