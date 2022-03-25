@@ -27,7 +27,7 @@ class ActionCountList {
         helpfulCount: json['Total_Helpful__c'] as int?,
         shareCount: json['Total_Share__c'] as int?,
         title: json['Title__c'] as String?,
-        id: json['Id'] as String?,
+        id: json['UID'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -38,6 +38,6 @@ class ActionCountList {
         'Total_Helpful__c': helpfulCount,
         'Total_Share__c': shareCount,
         'Title__c': title,
-        'Id': id
+        'UID': id
       };
 }
