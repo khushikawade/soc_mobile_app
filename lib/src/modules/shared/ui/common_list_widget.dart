@@ -33,7 +33,7 @@ class CommonListWidget extends StatefulWidget {
 
 class _CommonListWidgetState extends State<CommonListWidget> {
   // final widget.scaffoldKey = GlobalKey<ScaffoldState>();
-
+  bool? tapped = true;
   _launchURL(obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
@@ -41,15 +41,21 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     } else if (await Utility.sslErrorHandler(obj.appUrlC) == "Yes") {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
     } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.titleC,
-                    url: obj.appUrlC,
-                    isbuttomsheet: true,
-                    language: Globals.selectedLanguage,
-                  )));
+      if (tapped == true) {
+        tapped = false;
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => InAppUrlLauncer(
+                      title: obj.titleC,
+                      url: obj.appUrlC,
+                      isbuttomsheet: true,
+                      language: Globals.selectedLanguage,
+                    )));
+        tapped = true;
+      } else {
+        print("tapped multiple times");
+      }
     }
   }
 
