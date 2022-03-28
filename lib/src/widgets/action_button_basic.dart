@@ -277,7 +277,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
           shared: index == 3 ? 1 : 0));
     } else if (widget.page == "social") {
       _socialbBloc.add(SocialAction(
-          id: widget.obj.id.toString() + widget.obj.guid['\$t'] + Overrides.SCHOOL_ID,
+          id: 
+          widget.obj.id.toString() + widget.obj.guid['\$t'] + Overrides.SCHOOL_ID,
           title: widget.title.toString(),
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
@@ -351,6 +352,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   }
 
   Widget _actionCount(index) {
+  print(widget.obj.likeCount);
+  print(widget.obj.thanksCount);
     return ValueListenableBuilder(
       builder: (BuildContext context, dynamic value, Widget? child) {
         return Text(

@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
 import 'package:Soc/src/modules/schools/ui/schools.dart';
 import 'package:Soc/src/modules/social/ui/social.dart';
+import 'package:Soc/src/modules/social/ui/social_new.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -144,7 +145,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         _screens.add(StaffPage());
       } else if (element.contains('social')) {
         _screens.add(
-          SocialPage(),
+          SocialNewPage(),
         );
       } else if (element.contains('about')) {
         _screens.add(
