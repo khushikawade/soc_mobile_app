@@ -263,13 +263,14 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         yield Loading();
 
         var data = await addSocailAction({
-          "Notification_Id__c": "${event.id}",
+          "Notification_Id__c":
+              event.id! + Overrides.SCHOOL_ID,
           "Title__c": "${event.title}",
           "Like__c": "${event.like}",
           "Thanks__c": "${event.thanks}",
           "Helpful__c": "${event.helpful}",
           "Share__c": "${event.shared}",
-          "Test_School__c": "${Globals.appSetting.isTestSchool}"
+          "Test_School__c": Globals.appSetting.isTestSchool
         });
         yield SocialActionSuccess(
           obj: data,
@@ -315,8 +316,12 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future<List<ActionCountList>> fetchSocialActionCount() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.parse(
-          'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
+      final ResponseModel response = await
+           _dbServices.postapi(Uri.parse(
+              'dummyFunction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'
+              ));
+          // _dbServices.getapi(Uri.parse(
+          //     'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
       if (response.statusCode == 200) {
         var data = response.data["body"];
         final _allNotificationsAction = data;
@@ -336,7 +341,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   Future addSocailAction(body) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-          "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social",
+          "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
           body: body);
 
       if (response.statusCode == 200) {
