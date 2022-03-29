@@ -57,138 +57,9 @@ class _EventPageState extends State<EventPage>
   @override
   void initState() {
     super.initState();
-    // Globals.calendar_Id = widget.calendarId;
+
     _eventBloc.add(CalendarListEvent(widget.calendarId));
-    // lastMonth = Utility.convertTimestampToDateFormat(DateTime.now(), 'MMMM');
-
-    // _ktabmargin = MediaQuery.of(context).size.height * 0.25;
   }
-
-  // Widget _buildList(list, int index, mainObj) {
-  //   return GestureDetector(
-  //     onTap: () {
-  //       Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //               builder: (context) => SliderWidget(
-  //                     obj: mainObj,
-  //                     // iconsName: [],
-  //                     issocialpage: false,
-  //                     isAboutSDPage: false,
-  //                     iseventpage: true,
-  //                     currentIndex: index,
-  //                     date: '',
-  //                     isbuttomsheet: true,
-  //                     language: Globals.selectedLanguage,
-  //                   )));
-  //     },
-  //     child: Container(
-  //         decoration: BoxDecoration(
-  //           border: (index % 2 == 0)
-  //               ? Border.all(color: Theme.of(context).colorScheme.background)
-  //               : Border.all(color: Theme.of(context).colorScheme.secondary),
-  //           borderRadius: BorderRadius.circular(0.0),
-  //           color: (index % 2 == 0)
-  //               ? Theme.of(context).colorScheme.background
-  //               : Theme.of(context).colorScheme.secondary,
-  //         ),
-  //         child: Padding(
-  //           padding: const EdgeInsets.symmetric(
-  //               horizontal: _kLabelSpacing * 1, vertical: _kLabelSpacing / 2),
-  //           child: Row(
-  //             children: <Widget>[
-  //               HorzitalSpacerWidget(_kLabelSpacing / 2),
-  //               Container(
-  //                 alignment: Alignment.center,
-  //                 width: Globals.deviceType == "phone" ? 40 : 70,
-  //                 child: Wrap(alignment: WrapAlignment.center, children: [
-  //                   Text(
-  //                       Utility.getMonthFromDate(
-  //                               list.start.toString().contains('dateTime')
-  //                                   ? list.start['dateTime']
-  //                                       .toString()
-  //                                       .substring(0, 10)
-  //                                   : list.start['date']
-  //                                       .toString()
-  //                                       .substring(0, 10))
-  //                           .toString()
-  //                           .split("/")[0],
-  //                       style: Theme.of(context).textTheme.headline5!),
-  //                   TranslationWidget(
-  //                     message: Utility.getMonthFromDate(list.start
-  //                                 .toString()
-  //                                 .contains('dateTime')
-  //                             ? list.start['dateTime']
-  //                                 .toString()
-  //                                 .substring(0, 10)
-  //                             : list.start['date'].toString().substring(0, 10))
-  //                         .toString()
-  //                         .split("/")[1],
-  //                     toLanguage: Globals.selectedLanguage,
-  //                     fromLanguage: "en",
-  //                     builder: (translatedMessage) => Text(
-  //                         translatedMessage.toString(),
-  //                         style:
-  //                             Theme.of(context).textTheme.headline2!.copyWith(
-  //                                   height: 1.5,
-  //                                 ),
-  //                         textAlign: TextAlign.center),
-  //                   )
-  //                 ]),
-  //               ),
-  //               HorzitalSpacerWidget(_kLabelSpacing),
-  //               Column(
-  //                 mainAxisAlignment: MainAxisAlignment.start,
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   TranslationWidget(
-  //                       message: list.summary ?? "",
-  //                       toLanguage: Globals.selectedLanguage,
-  //                       fromLanguage: "en",
-  //                       builder: (translatedMessage) => Container(
-  //                             width: MediaQuery.of(context).size.width * 0.70,
-  //                             child: Text(
-  //                               translatedMessage.toString(),
-  //                               style: Theme.of(context)
-  //                                   .textTheme
-  //                                   .headline2! //headline5
-  //                               // .copyWith(
-  //                               //   fontWeight: FontWeight.w500,
-  //                               // )
-  //                               ,
-  //                               overflow: TextOverflow.ellipsis,
-  //                             ),
-  //                           )),
-  //                   TranslationWidget(
-  //                     message: Utility.convertDateFormat2(
-  //                             list.start.toString().contains('dateTime')
-  //                                 ? list.start['dateTime']
-  //                                     .toString()
-  //                                     .substring(0, 10)
-  //                                 : list.start['date']
-  //                                     .toString()
-  //                                     .substring(0, 10)) +
-  //                         " - " +
-  //                         Utility.convertDateFormat2(list.end
-  //                                 .toString()
-  //                                 .contains('dateTime')
-  //                             ? list.end['dateTime'].toString().substring(0, 10)
-  //                             : list.end['date'].toString().substring(0, 10)),
-  //                     toLanguage: Globals.selectedLanguage,
-  //                     fromLanguage: "en",
-  //                     builder: (translatedMessage) => Text(
-  //                       translatedMessage.toString(),
-  //                       style: Theme.of(context).textTheme.headline2!.copyWith(
-  //                           fontWeight: FontWeight.normal, height: 1.5),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ],
-  //           ),
-  //         )),
-  //   );
-  // }
 
   Widget _buildList(list, int index, mainObj) {
     DateTime _dateTime = getDate(list.start.toString().contains('dateTime')
@@ -196,24 +67,23 @@ class _EventPageState extends State<EventPage>
         : list.start['date'].toString().substring(0, 10));
     // DateTime.parse();
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SliderWidget(
-                      obj: mainObj,
-                      // iconsName: [],
-                      issocialpage: false,
-                      isAboutSDPage: false,
-                      iseventpage: true,
-                      currentIndex: index,
-                      date: '',
-                      isbuttomsheet: true,
-                      language: Globals.selectedLanguage,
-                    )));
-      },
+      // onTap: () {
+      //   Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (context) => SliderWidget(
+      //                 obj: mainObj,
+      //                 // iconsName: [],
+      //                 issocialpage: false,
+      //                 isAboutSDPage: false,
+      //                 iseventpage: true,
+      //                 currentIndex: index,
+      //                 date: '',
+      //                 isbuttomsheet: true,
+      //                 language: Globals.selectedLanguage,
+      //               )));
+      // },
       child: Container(
-        
           child: Column(
         children: [
           _buildCalendarBanner(_dateTime),
@@ -260,7 +130,6 @@ class _EventPageState extends State<EventPage>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                         
                           Container(
                               padding: EdgeInsets.only(top: 6),
                               height: Globals.deviceType == 'phone' ? 35 : 45,
@@ -299,7 +168,6 @@ class _EventPageState extends State<EventPage>
                                         fontFamily: Overrides.kFontFam,
                                         fontPackage: Overrides.kFontPkg))),
                               )),
-                          
                         ],
                       ),
                     )
@@ -318,10 +186,7 @@ class _EventPageState extends State<EventPage>
               ),
               url: ''),
         ],
-      )
-
-          
-          ),
+      )),
     );
   }
 
@@ -336,7 +201,7 @@ class _EventPageState extends State<EventPage>
               color: Theme.of(context).colorScheme.secondary,
               child: Center(
                   child: Container(
-                padding: EdgeInsets.only(left: 8, right: 8),
+                padding: EdgeInsets.only(left: 10, right: 10,top: 2,bottom: 2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(30)),
                   color: Theme.of(context).colorScheme.background,
