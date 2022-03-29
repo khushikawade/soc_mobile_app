@@ -147,15 +147,17 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
 
   Widget iconListWidget(context, index, bool totalCountIcon, scaffoldKey) {
     return OfflineBuilder(
+
       debounceDuration: Duration.zero,
       connectivityBuilder: (BuildContext context,
           ConnectivityResult connectivity, Widget child) {
+            final bool connected = connectivity != ConnectivityResult.none;
         return Container(
           // color: Colors.yellow,
           child: LikeButton(
             isLiked: null,
             onTap: (onActionButtonTapped) async {
-              final bool connected = connectivity != ConnectivityResult.none;
+              
 
               if (connected) {
                 if (index == 3) {

@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/schools/ui/school_details.dart';
+import 'package:Soc/src/modules/students/ui/apps_folder.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -31,7 +32,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-
 
 class SearchPage extends StatefulWidget {
   final bool isbuttomsheet;
@@ -69,10 +69,9 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-      _setLocked();
+    _setLocked();
     Globals.callsnackbar = true;
     getListLength();
-   
   }
 
   @override
@@ -100,7 +99,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Future<void> _route(obj) async {
     obj.typeC != null && obj.typeC != '' ? _setFree() : _setLocked();
- 
+
     if (obj.typeC == "Contact") {
       obj.titleC != null
           ? await Navigator.push(
@@ -191,7 +190,8 @@ class _SearchPageState extends State<SearchPage> {
       obj.urlC != null
           ? await _launchURL(obj)
           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-    } else if (obj.typeC == "RFT_HTML" ||
+    } else if (obj.typeC == "RTF_HTML" ||
+        obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
         obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
@@ -229,7 +229,7 @@ class _SearchPageState extends State<SearchPage> {
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
-                         calendarId: obj.calendarId.toString(),
+                        calendarId: obj.calendarId.toString(),
                       )))
           : Utility.showSnackBar(
               _scaffoldKey, "No calendar/events available", context);
@@ -260,19 +260,31 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   _launchURL(obj) async {
-    if (obj.urlC.toString().split(":")[0] == 'http') {
-      await Utility.launchUrlOnExternalBrowser(obj.urlC);
-    } else {
+    if (obj.urlC.toString().split(":")[0] == 'http' || obj.deepLink == 'YES') {
+      
+      if (obj.objectName == "Student_App__c" && obj.appURLC != null) {
+       
+        await Utility.launchUrlOnExternalBrowser(obj.appURLC);
+      } else if (obj.urlC != null && obj.urlC != "URL__c") {
+        await Utility.launchUrlOnExternalBrowser(obj.urlC);
+      }else {
+      Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+    }
+    } else if (obj.urlC != null || obj.appURLC != null) {
       await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC ?? "",
-                    url: obj.urlC,
+                    url: obj.objectName == "Student_App__c"
+                        ? obj.appURLC
+                        : obj.urlC,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
       // _setLocked();
+    } else {
+      Utility.showSnackBar(_scaffoldKey, "No URL available", context);
     }
   }
 

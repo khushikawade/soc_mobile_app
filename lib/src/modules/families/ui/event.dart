@@ -336,10 +336,7 @@ class _EventPageState extends State<EventPage>
                 dateTime: _dateTime,
               ),
             ),
-           
-            url: ''
-        
-            ),
+            url: ''),
 
         // Padding(
         //   padding: const EdgeInsets.symmetric(
@@ -493,25 +490,25 @@ class _EventPageState extends State<EventPage>
                           ? Tab(
                               child: new RefreshIndicator(
                               key: refreshKey,
-                              child: new ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  padding: Platform.isAndroid
-                                      ? EdgeInsets.only(bottom: 20)
-                                      : EdgeInsets.only(bottom: 60),
-                                  itemCount: state.futureListobj!.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return state.futureListobj!.length > 0
-                                        ? _buildList(
+                              child: state.futureListobj!.length > 0
+                                  ? new ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      padding: Platform.isAndroid
+                                          ? EdgeInsets.only(bottom: 20)
+                                          : EdgeInsets.only(bottom: 60),
+                                      itemCount: state.futureListobj!.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return _buildList(
                                             state.futureListobj![index],
                                             index,
-                                            state.futureListobj)
-                                        : NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: false,
-                                            isNews: false,
-                                            isEvents: true,
-                                          );
-                                  }),
+                                            state.futureListobj);
+                                      })
+                                  : NoDataFoundErrorWidget(
+                                      isResultNotFoundMsg: false,
+                                      isNews: false,
+                                      isEvents: true,
+                                    ),
                               onRefresh: refreshPage,
                             ))
                           : new RefreshIndicator(
@@ -530,7 +527,9 @@ class _EventPageState extends State<EventPage>
                           ? Tab(
                               child: new RefreshIndicator(
                               key: refreshKey1,
-                              child: new ListView.builder(
+                              child:state.pastListobj!.length > 0
+                                        ? 
+                               new ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   padding: Platform.isAndroid
                                       ? EdgeInsets.only(bottom: 20)
@@ -538,23 +537,27 @@ class _EventPageState extends State<EventPage>
                                   itemCount: state.pastListobj!.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return state.pastListobj!.length > 0
-                                        ? _buildList(state.pastListobj![index],
-                                            index, state.pastListobj)
-                                        : new RefreshIndicator(
-                                            // key: refreshKey,
-                                            onRefresh: refreshPage,
-                                            child: ListView(
-                                              children: [
-                                                NoDataFoundErrorWidget(
-                                                  isResultNotFoundMsg: false,
-                                                  isNews: false,
-                                                  isEvents: true,
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                  }),
+                                    return 
+                                        _buildList(state.pastListobj![index],
+                                            index, state.pastListobj);
+                                        // : new RefreshIndicator(
+                                        //     // key: refreshKey,
+                                        //     onRefresh: refreshPage,
+                                        //     child: ListView(
+                                        //       children: [
+                                        //         NoDataFoundErrorWidget(
+                                        //           isResultNotFoundMsg: false,
+                                        //           isNews: false,
+                                        //           isEvents: true,
+                                        //         ),
+                                        //       ],
+                                        //     ),
+                                        //   );
+                                  }):NoDataFoundErrorWidget(
+                                      isResultNotFoundMsg: false,
+                                      isNews: false,
+                                      isEvents: true,
+                                    ),
                               onRefresh: refreshPage,
                             ))
                           : new RefreshIndicator(
@@ -580,8 +583,7 @@ class _EventPageState extends State<EventPage>
     return Scaffold(
         appBar: widget.isAppBar == false
             ? null
-            :
-             CustomAppBarWidget(
+            : CustomAppBarWidget(
                 marginLeft: 30,
                 appBarTitle: widget.appBarTitle!,
                 isSearch: true,

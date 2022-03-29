@@ -47,7 +47,7 @@ class _HomePdfViewerPageState extends State<HomePdfViewerPage> {
       physics: stopScroll ? NeverScrollableScrollPhysics() : null,
       children: [
         Container(
-          height: 20,
+          height: 40,
         ),
         Container(
             height: MediaQuery.of(context).size.height * 0.8,
