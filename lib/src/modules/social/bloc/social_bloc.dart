@@ -164,7 +164,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           "Thanks__c": "${event.thanks}",
           "Helpful__c": "${event.helpful}",
           "Share__c": "${event.shared}",
-          "Test_School__c": "${Globals.appSetting.isTestSchool}"
+          "Test_School__c": "${Globals.appSetting.isTestSchool}",
         });
         yield SocialActionSuccess(
           obj: data,
