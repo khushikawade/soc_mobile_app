@@ -70,9 +70,9 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         if (listActioncount.length == 0) {
           newList.addAll(list);
         } else {
-          for (int i = 0; i < Globals.socialList.length; i++) {
-            for (int j = 0; j < list.length; j++) {
-              if (Globals.socialList[i].guid['\$t'] + Overrides.SCHOOL_ID ==
+          for (int i = 0; i < list.length; i++) {
+            for (int j = 0; j < listActioncount.length; j++) {
+              if (list[i].guid['\$t'] + Overrides.SCHOOL_ID ==
                       list[j].id
 
                   //Old method of mapping
