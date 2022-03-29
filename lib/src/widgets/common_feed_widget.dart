@@ -150,13 +150,23 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
             fromLanguage: "en",
             toLanguage: Globals.selectedLanguage,
             builder: (translatedMessage) {
-              return Text(
-                translatedMessage.toString(),
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(fontSize: 16),
-              );
+              return Linkify(
+                  onOpen: (link) => _launchURL(link.url),
+                  options: LinkifyOptions(humanize: false),
+                  linkStyle: TextStyle(color: Colors.blue),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontSize: 16),
+                  text: translatedMessage.toString());
+
+              // Text(
+              //   translatedMessage.toString(),
+              //   style: Theme.of(context)
+              //       .textTheme
+              //       .headline2!
+              //       .copyWith(fontSize: 16),
+              // );
             },
           );
   }
@@ -173,6 +183,8 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
     } else if (obj.toString().split(":")[0] == 'http') {
       await Utility.launchUrlOnExternalBrowser(obj);
     } else if (obj.toString().contains('mailto')) {
+      Utility.launchUrlOnExternalBrowser(obj);
+    } else if (widget.title == "") {
       Utility.launchUrlOnExternalBrowser(obj);
     } else {
       Navigator.push(

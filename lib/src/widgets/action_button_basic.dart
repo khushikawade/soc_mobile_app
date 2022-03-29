@@ -352,6 +352,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   }
 
   Widget _actionCount(index) {
+    print(widget.obj.likeCount);
+    print(widget.obj.thanksCount);
     return ValueListenableBuilder(
       builder: (BuildContext context, dynamic value, Widget? child) {
         return Text(

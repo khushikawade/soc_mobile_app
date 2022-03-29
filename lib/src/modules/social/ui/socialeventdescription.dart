@@ -174,8 +174,7 @@ class SocialDescription extends StatelessWidget {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
@@ -271,6 +270,8 @@ class SocialDescription extends StatelessWidget {
             // },
             data: translatedMessage.toString(),
             style: {
+
+              
               "body": Style(
                 fontSize: Globals.deviceType == "phone"
                     ? FontSize(13.0)
@@ -288,6 +289,8 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildnews(BuildContext context) {
+  
+    print( "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}");
     return Wrap(children: [
       Container(
         alignment: Alignment.centerLeft,
@@ -349,6 +352,8 @@ class SocialDescription extends StatelessWidget {
   _buildActionCount(BuildContext context) {
     return NewsActionBasic(
       page: "social",
+
+
       obj: object,
       title: object.title != "" && object.title != null
           ? object.title['__cdata']

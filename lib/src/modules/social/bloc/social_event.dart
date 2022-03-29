@@ -5,11 +5,11 @@ abstract class SocialEvent extends Equatable {
 }
 
 class SocialPageEvent extends SocialEvent {
-  @override
-  List<Object> get props => [];
+  final bool? reLoad;
 
-  @override
-  String toString() => 'SocialButtonPressed';
+  SocialPageEvent({required this.reLoad});
+
+  List<Object> get props => [reLoad!];
 }
 
 class FetchSocialActionCount extends SocialEvent {
