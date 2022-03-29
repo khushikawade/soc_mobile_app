@@ -44,13 +44,13 @@ class SocialDataSucess extends SocialState {
   List<Object> get props => [];
 }
 
-class Reload extends SocialState {
+class SocialReload extends SocialState {
   List<Item>? obj;
 
-  Reload({this.obj,});
+  SocialReload({this.obj,});
 
-  Reload copyWith({final obj,}) {
-    return Reload(obj: obj ?? this.obj,);
+  SocialReload copyWith({final obj,}) {
+    return SocialReload(obj: obj ?? this.obj,);
   }
 
   @override

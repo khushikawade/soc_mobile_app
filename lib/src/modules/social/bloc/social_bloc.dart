@@ -18,12 +18,10 @@ part 'social_event.dart';
 part 'social_state.dart';
 
 class SocialBloc extends Bloc<SocialEvent, SocialState> {
-  // final data;
-
   SocialBloc() : super(SocialInitial());
-
   SocialState get initialState => SocialInitial();
   final DbServices _dbServices = DbServices();
+
   @override
   Stream<SocialState> mapEventToState(
     SocialEvent event,
@@ -38,7 +36,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         if (_localData.isEmpty) {
           yield Loading();
         } else if (event.action!.contains("refresh")) {
-          yield Reload(obj: _localData);
+          yield SocialReload(obj: _localData);
         } else {
           yield SocialDataSucess(obj: _localData);
         }
@@ -64,7 +62,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           for (int i = 0; i < list.length; i++) {
             for (int j = 0; j < listActioncount.length; j++) {
               if ("${list[i].id.toString() + list[i].guid['\$t'] + Overrides.SCHOOL_ID}" ==
-                  listActioncount[j].notificationId) {
+                  listActioncount[j].id) {
                 newList.add(Item(
                     id: list[i].id,
                     title: list[i].title,
@@ -153,7 +151,6 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future getEventDetails() async {
     try {
-      //  final link = Uri.parse("https://rss.app/feeds/1qKh7lUVpzyCuWOP.xml");
       final link = Uri.parse("${Globals.appSetting.socialapiurlc}");
       Xml2Json xml2json = new Xml2Json();
       http.Response response = await http.get(link);
@@ -186,10 +183,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future<List<ActionCountList>> fetchSocialActionCount() async {
     try {
-      final ResponseModel response = await _dbServices.postapi(Uri.parse(
-          'dummyFunction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
-      // _dbServices.getapi(Uri.parse(
-      //     'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
+      final ResponseModel response = await _dbServices.getapi(Uri.parse(
+          'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
       if (response.statusCode == 200) {
         var data = response.data["body"];
         final _allNotificationsAction = data;

@@ -41,7 +41,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    bloc.add(SocialPageEvent(action: '"inital'));
+    bloc.add(SocialPageEvent(action: "inital"));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
@@ -241,7 +241,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
                                       connected: connected,
                                     ),
                                   );
-                          } else if (state is Reload) {
+                          } else if (state is SocialReload) {
                             return state.obj != null && state.obj!.length > 0
                                 ? Expanded(child: makeList(state.obj, true))
                                 : Expanded(
