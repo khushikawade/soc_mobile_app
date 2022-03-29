@@ -230,7 +230,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   Future addSocailAction(body) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-          "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social",
+          "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
           body: body);
 
       if (response.statusCode == 200) {
