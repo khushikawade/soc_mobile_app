@@ -30,9 +30,6 @@ class SocialPage extends StatefulWidget {
 }
 
 class _SocialPageState extends State<SocialPage> {
-  // static const double _kLabelSpacing = 16.0;
-  // static const double _kSocialIconSize = 30.0;
-  // static const double _kIconSize = 48.0;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
@@ -40,7 +37,6 @@ class _SocialPageState extends State<SocialPage> {
   bool? isCountLoading = true;
   SocialBloc _countSocialBloc = new SocialBloc();
   List socialMainList = [];
-  // GlobalKey _imgkey = GlobalKey();
 
   void initState() {
     super.initState();
@@ -55,7 +51,7 @@ class _SocialPageState extends State<SocialPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     bloc.add(SocialPageEvent());
     _homeBloc.add(FetchBottomNavigationBar());
     _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
@@ -69,25 +65,7 @@ class _SocialPageState extends State<SocialPage> {
     String? imageLink = link != null ? link.attributes['src'] : '';
 
     return Container(
-      // decoration: BoxDecoration(
-      //   border: Border.all(
-
-      //     color: AppTheme.kDividerColor2,
-      //     width: 2,
-      //   ),
-      //   borderRadius: BorderRadius.circular(0.0),
-
-      // ),
       color: Theme.of(context).colorScheme.background,
-      // height: MediaQuery.of(context).size.height * 0.4,
-      // width: MediaQuery.of(context).size.width,
-      // padding: EdgeInsets.symmetric(
-      //   horizontal: _kLabelSpacing,
-      //   vertical: _kLabelSpacing / 2,
-      // ),
-      // color: (index % 2 == 0)
-      //     ? Theme.of(context).colorScheme.background
-      //     : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () async {
           bool result = await Navigator.push(
@@ -118,10 +96,7 @@ class _SocialPageState extends State<SocialPage> {
                   obj.title!["__cdata"].length > 1
               ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}"
               : '',
-          actionIcon: Container(
-              // padding: EdgeInsets.only(
-              //     top: MediaQuery.of(context).size.height * 0.030),
-              child: actionButton(mainObj, obj, index)),
+          actionIcon: Container(child: actionButton(mainObj, obj, index)),
           url: (obj.enclosure != null &&
                   obj.enclosure != '' &&
                   obj.enclosure['url'] != null &&
@@ -130,9 +105,6 @@ class _SocialPageState extends State<SocialPage> {
               : (imageLink != null && imageLink != "")
                   ? imageLink
                   : '',
-          // Globals.splashImageUrl ??
-          //     // Globals.homeObject["App_Logo__c"],
-          //     Globals.appSetting.appLogoC,
           titleIcon: widgetIcon(obj.link),
         ),
         //
