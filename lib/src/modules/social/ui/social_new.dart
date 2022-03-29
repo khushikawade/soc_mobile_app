@@ -242,6 +242,17 @@ class _SocialNewPageState extends State<SocialNewPage> {
                                       connected: connected,
                                     ),
                                   );
+                          } else if (state is SocialInitalState) {
+                            return state.obj != null && state.obj!.length > 0
+                                ? Expanded(child: makeList(state.obj, true))
+                                : Expanded(
+                                    child: NoDataFoundErrorWidget(
+                                      isResultNotFoundMsg: true,
+                                      isNews: false,
+                                      isEvents: false,
+                                      connected: connected,
+                                    ),
+                                  );
                           } else if (state is SocialReload) {
                             return state.obj != null && state.obj!.length > 0
                                 ? Expanded(child: makeList(state.obj, true))

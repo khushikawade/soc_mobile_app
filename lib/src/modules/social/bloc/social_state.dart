@@ -56,6 +56,18 @@ class SocialReload extends SocialState {
   @override
   List<Object> get props => [];
 }
+class SocialInitalState extends SocialState {
+  List<Item>? obj;
+
+  SocialInitalState({this.obj,});
+
+  SocialInitalState copyWith({final obj,}) {
+    return SocialInitalState(obj: obj ?? this.obj,);
+  }
+
+  @override
+  List<Object> get props => [];
+}
 
 class SocialActionSuccess extends SocialState {
   var obj;
