@@ -44,8 +44,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
         //getting both list response
         //social list
-        List<Item> list = [];
-        if (event.action!.contains("inital")) {
+         List<Item> list = [];
+         if (event.action!.contains("inital")) {
           list = await getEventDetails();
           if (_localData.isEmpty) {
           yield  SocialInitalState(obj: list);
