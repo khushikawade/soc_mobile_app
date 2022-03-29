@@ -88,6 +88,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
           }
         },
         child: CommonFeedWidget(
+          isSocial: true,
           title: '',
           description: obj.title!["__cdata"] != null &&
                   obj.title!["__cdata"].length > 1

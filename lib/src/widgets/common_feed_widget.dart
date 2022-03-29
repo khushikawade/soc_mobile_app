@@ -13,8 +13,10 @@ class CommonFeedWidget extends StatefulWidget {
   final Widget actionIcon;
   final String url;
   final Widget titleIcon;
+  final bool isSocial;
   CommonFeedWidget(
       {Key? key,
+      required this.isSocial,
       required this.title,
       required this.description,
       required this.actionIcon,
@@ -184,7 +186,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
       await Utility.launchUrlOnExternalBrowser(obj);
     } else if (obj.toString().contains('mailto')) {
       Utility.launchUrlOnExternalBrowser(obj);
-    } else if (widget.title == "") {
+    } else if (widget.isSocial == true) {
       Utility.launchUrlOnExternalBrowser(obj);
     } else {
       Navigator.push(
