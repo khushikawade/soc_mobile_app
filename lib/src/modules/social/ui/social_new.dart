@@ -35,13 +35,13 @@ class _SocialNewPageState extends State<SocialNewPage> {
 
   void initState() {
     super.initState();
-    bloc.add(SocialPageEvent(reLoad: false));
+    bloc.add(SocialPageEvent(action: "inital"));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    bloc.add(SocialPageEvent(reLoad: true));
+    bloc.add(SocialPageEvent(action: '"inital'));
     _homeBloc.add(FetchBottomNavigationBar());
   }
 
@@ -84,7 +84,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
                         language: Globals.selectedLanguage,
                       )));
           if (result == true) {
-            bloc.add(SocialPageEvent(reLoad: true));
+            bloc.add(SocialPageEvent(action: "refresh"));
           }
         },
         child: CommonFeedWidget(
@@ -147,7 +147,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
                   imageUrl: list[index].enclosure,
                   page: "social",
                   obj: list[index],
-                  isLoading: isCountLoading,
+                  isLoading: true,
                 )),
           );
   }
@@ -215,7 +215,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
 
                 if (connectivity != ConnectivityResult.none) {
                   if (iserrorstate == true) {
-                    bloc.add(SocialPageEvent(reLoad: false));
+                    bloc.add(SocialPageEvent(action: "inital"));
                     iserrorstate = false;
                   }
                 } else if (connectivity == ConnectivityResult.none) {
@@ -232,8 +232,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
                           if (state is SocialDataSucess) {
                             // _countSocialBloc.add(FetchSocialActionCount());
                             return state.obj != null && state.obj!.length > 0
-                                ? Expanded(
-                                    child: makeList(state.obj, state.reload))
+                                ? Expanded(child: makeList(state.obj, false))
                                 : Expanded(
                                     child: NoDataFoundErrorWidget(
                                       isResultNotFoundMsg: true,
@@ -244,8 +243,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
                                   );
                           } else if (state is Reload) {
                             return state.obj != null && state.obj!.length > 0
-                                ? Expanded(
-                                    child: makeList(state.obj, state.reload))
+                                ? Expanded(child: makeList(state.obj, true))
                                 : Expanded(
                                     child: NoDataFoundErrorWidget(
                                       isResultNotFoundMsg: true,

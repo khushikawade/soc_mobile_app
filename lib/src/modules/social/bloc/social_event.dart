@@ -5,21 +5,21 @@ abstract class SocialEvent extends Equatable {
 }
 
 class SocialPageEvent extends SocialEvent {
-  final bool? reLoad;
+  final String? action;
 
-  SocialPageEvent({required this.reLoad});
+  SocialPageEvent({required this.action});
 
-  List<Object> get props => [reLoad!];
+  List<Object> get props => [action!];
 }
 
-class FetchSocialActionCount extends SocialEvent {
-  final bool? isDetailPage;
+// class FetchSocialActionCount extends SocialEvent {
+//   final bool? isDetailPage;
 
-  FetchSocialActionCount({
-    required this.isDetailPage,
-  });
-  List<Object> get props => [isDetailPage!];
-}
+//   FetchSocialActionCount({
+//     required this.isDetailPage,
+//   });
+//   List<Object> get props => [isDetailPage!];
+// }
 
 class SocialAction extends SocialEvent {
   final String? id;
