@@ -39,7 +39,7 @@ class _AppState extends State<App> {
           theme: theme,
           darkTheme: darkTheme,
           //home: StartupPage(),
-          home: SchoolIDLogin(),
+           home: SchoolIDLogin(),
           ),
     );
   }
