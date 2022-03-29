@@ -33,12 +33,13 @@ class NoDataFoundErrorWidget extends StatelessWidget {
             connected: connected,
           )
         : OrientationBuilder(builder: (context, orientation) {
-            print(isCalendarPageOrientationLandscape);
-            print("11111111111111111");
+            // print(isCalendarPageOrientationLandscape);
+            // print("11111111111111111");
             // print(orientation);
             return ListView(
               children: [
                 Container(
+                  
                     margin: EdgeInsets.only(
                       top: isCalendarPageOrientationLandscape == true &&
                               Globals.deviceType == 'phone' &&

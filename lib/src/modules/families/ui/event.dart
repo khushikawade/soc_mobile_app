@@ -51,6 +51,7 @@ class _EventPageState extends State<EventPage>
   final refreshKey1 = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
   double? _ktabmargin = 50;
+  String? lastMonth;
   @override
   bool get wantKeepAlive => true;
   @override
@@ -58,6 +59,7 @@ class _EventPageState extends State<EventPage>
     super.initState();
     // Globals.calendar_Id = widget.calendarId;
     _eventBloc.add(CalendarListEvent(widget.calendarId));
+    // lastMonth = Utility.convertTimestampToDateFormat(DateTime.now(), 'MMMM');
 
     // _ktabmargin = MediaQuery.of(context).size.height * 0.25;
   }
@@ -211,226 +213,157 @@ class _EventPageState extends State<EventPage>
                     )));
       },
       child: Container(
-        decoration: BoxDecoration(
-          border: (index % 2 == 0)
-              ? Border.all(color: Theme.of(context).colorScheme.background)
-              : Border.all(color: Theme.of(context).colorScheme.secondary),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
-        ),
-        child: CommonFeedWidget(
-            actionIcon: Container(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  TranslationWidget(
-                    message: Utility.convertDateFormat2(list.start
-                                .toString()
-                                .contains('dateTime')
-                            ? list.start['dateTime'].toString().substring(0, 10)
-                            : list.start['date'].toString().substring(0, 10)) +
-                        " - " +
-                        Utility.convertDateFormat2(list.end
-                                .toString()
-                                .contains('dateTime')
-                            ? list.end['dateTime'].toString().substring(0, 10)
-                            : list.end['date'].toString().substring(0, 10)),
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(fontWeight: FontWeight.normal, height: 1.5),
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.45,
-                    height: MediaQuery.of(context).orientation ==
-                            Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.07
-                        : MediaQuery.of(context).size.width * 0.07,
-                    padding: Globals.deviceType == "phone"
-                        ? null
-                        : EdgeInsets.only(
-                            right: MediaQuery.of(context).size.width * 0.04),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
+        
+          child: Column(
+        children: [
+          _buildCalendarBanner(_dateTime),
+          CommonFeedWidget(
+              actionIcon: Container(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                            padding: EdgeInsets.only(top: 4),
-                            height: Globals.deviceType == 'phone' ? 35 : 45,
-                            width: Globals.deviceType == 'phone' ? 35 : 45,
-                            //  color: Colors.grey,
-                            child: Center(
-                              child: IconButton(
-                                  padding: EdgeInsets.all(0),
-                                  // constraints: BoxConstraints(),
-                                  onPressed: () {
-                                    UrlLauncherWidget obj =
-                                        new UrlLauncherWidget();
-                                    // obj.callurlLaucher(context, list.htmlLink);
-                                    Utility.launchUrlOnExternalBrowser(
-                                        list.htmlLink);
-                                  },
-                                  icon: Icon(IconData(0xe851,
-                                      fontFamily: Overrides.kFontFam,
-                                      fontPackage: Overrides.kFontPkg))),
-                            )),
-                        Container(
-                            height: Globals.deviceType == 'phone' ? 35 : 45,
-                            width: Globals.deviceType == 'phone' ? 35 : 45,
-                            //  color: Colors.grey,
-                            child: Center(
-                              child: IconButton(
-                                  iconSize: 22,
-                                  padding: EdgeInsets.all(0),
-                                  // constraints: BoxConstraints(),
-                                  onPressed: () {
-                                    SharePopUp obj = new SharePopUp();
-                                    obj.callFunction(
-                                        context,
-                                        list.htmlLink.toString(),
-                                        list.summary.toString());
-                                  },
-                                  icon: Icon(IconData(0xe829,
-                                      fontFamily: Overrides.kFontFam,
-                                      fontPackage: Overrides.kFontPkg))),
-                            )),
-                        Container(
-                            padding: EdgeInsets.only(top: 6),
-                            height: Globals.deviceType == 'phone' ? 35 : 45,
-                            width: Globals.deviceType == 'phone' ? 35 : 45,
-                            //  color: Colors.grey,
-                            child: Center(
-                              child: IconButton(
-                                  padding: EdgeInsets.all(0),
-                                  // constraints: BoxConstraints(),
-                                  onPressed: () {
-                                    Add2Calendar.addEvent2Cal(
-                                      buildEvent(list),
-                                    );
-                                  },
-                                  icon: Icon(IconData(0xe850,
-                                      fontFamily: Overrides.kFontFam,
-                                      fontPackage: Overrides.kFontPkg))),
-                            )),
-                      ],
+                    TranslationWidget(
+                      message: Utility.convertDateFormat2(
+                              list.start.toString().contains('dateTime')
+                                  ? list.start['dateTime']
+                                      .toString()
+                                      .substring(0, 10)
+                                  : list.start['date']
+                                      .toString()
+                                      .substring(0, 10)) +
+                          " - " +
+                          Utility.convertDateFormat2(list.end
+                                  .toString()
+                                  .contains('dateTime')
+                              ? list.end['dateTime'].toString().substring(0, 10)
+                              : list.end['date'].toString().substring(0, 10)),
+                      toLanguage: Globals.selectedLanguage,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline2!.copyWith(
+                            fontWeight: FontWeight.normal, height: 1.5),
+                      ),
                     ),
-                  )
-                ])
-                //  Text('button place'),
-                // child: actionButton(list, obj, index)
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.25,
+                      height: MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                          ? MediaQuery.of(context).size.height * 0.07
+                          : MediaQuery.of(context).size.width * 0.07,
+                      padding: Globals.deviceType == "phone"
+                          ? null
+                          : EdgeInsets.only(
+                              right: MediaQuery.of(context).size.width * 0.04),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                         
+                          Container(
+                              padding: EdgeInsets.only(top: 6),
+                              height: Globals.deviceType == 'phone' ? 35 : 45,
+                              width: Globals.deviceType == 'phone' ? 35 : 45,
+                              //  color: Colors.grey,
+                              child: Center(
+                                child: IconButton(
+                                    padding: EdgeInsets.all(0),
+                                    // constraints: BoxConstraints(),
+                                    onPressed: () {
+                                      Add2Calendar.addEvent2Cal(
+                                        buildEvent(list),
+                                      );
+                                    },
+                                    icon: Icon(IconData(0xe850,
+                                        fontFamily: Overrides.kFontFam,
+                                        fontPackage: Overrides.kFontPkg))),
+                              )),
+                          Container(
+                              height: Globals.deviceType == 'phone' ? 35 : 45,
+                              width: Globals.deviceType == 'phone' ? 35 : 45,
+                              //  color: Colors.grey,
+                              child: Center(
+                                child: IconButton(
+                                    iconSize: 22,
+                                    padding: EdgeInsets.all(0),
+                                    // constraints: BoxConstraints(),
+                                    onPressed: () {
+                                      SharePopUp obj = new SharePopUp();
+                                      obj.callFunction(
+                                          context,
+                                          list.htmlLink.toString(),
+                                          list.summary.toString());
+                                    },
+                                    icon: Icon(IconData(0xe829,
+                                        fontFamily: Overrides.kFontFam,
+                                        fontPackage: Overrides.kFontPkg))),
+                              )),
+                          
+                        ],
+                      ),
+                    )
+                  ])
+                  //  Text('button place'),
+                  // child: actionButton(list, obj, index)
+                  ),
+              title: "",
+              description: list.summary ?? '',
+              titleIcon: Container(
+                padding: EdgeInsets.only(top: 4),
+                child: CalendraIconWidget(
+                  color: Colors.red,
+                  dateTime: _dateTime,
                 ),
-            title: "",
-            description: list.summary ?? '',
-            titleIcon: Container(
-              padding: EdgeInsets.only(top: 4),
-              child: CalendraIconWidget(
-                color: Colors.red,
-                dateTime: _dateTime,
               ),
-            ),
-            url: ''),
+              url: ''),
+        ],
+      )
 
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(
-        //       horizontal: _kLabelSpacing * 1, vertical: _kLabelSpacing / 2),
-        //   child: Row(
-        //     children: <Widget>[
-        //       HorzitalSpacerWidget(_kLabelSpacing / 2),
-        //       Container(
-        //         alignment: Alignment.center,
-        //         width: Globals.deviceType == "phone" ? 40 : 70,
-        //         child: Wrap(alignment: WrapAlignment.center, children: [
-
-        //           // Text(
-        //           //     Utility.getMonthFromDate(list.start
-        //           //                 .toString()
-        //           //                 .contains('dateTime')
-        //           //             ? list.start['dateTime']
-        //           //                 .toString()
-        //           //                 .substring(0, 10)
-        //           //             : list.start['date'].toString().substring(0, 10))
-        //           //         .toString()
-        //           //         .split("/")[0],
-        //           //     style: Theme.of(context).textTheme.headline5!),
-        //           // TranslationWidget(
-        //           //   message: Utility.getMonthFromDate(list.start
-        //           //               .toString()
-        //           //               .contains('dateTime')
-        //           //           ? list.start['dateTime'].toString().substring(0, 10)
-        //           //           : list.start['date'].toString().substring(0, 10))
-        //           //       .toString()
-        //           //       .split("/")[1],
-        //           //   toLanguage: Globals.selectedLanguage,
-        //           //   fromLanguage: "en",
-        //           //   builder: (translatedMessage) => Text(
-        //           //       translatedMessage.toString(),
-        //           //       style: Theme.of(context).textTheme.headline2!.copyWith(
-        //           //             height: 1.5,
-        //           //           ),
-        //           //       textAlign: TextAlign.center),
-        //           // )
-        //         ]),
-        //       ),
-        //       // HorzitalSpacerWidget(_kLabelSpacing),
-        //       // Column(
-        //       //   mainAxisAlignment: MainAxisAlignment.start,
-        //       //   crossAxisAlignment: CrossAxisAlignment.start,
-        //       //   children: [
-        //       //     TranslationWidget(
-        //       //         message: list.summary ?? "",
-        //       //         toLanguage: Globals.selectedLanguage,
-        //       //         fromLanguage: "en",
-        //       //         builder: (translatedMessage) => Container(
-        //       //               width: MediaQuery.of(context).size.width * 0.70,
-        //       //               child: Text(
-        //       //                 translatedMessage.toString(),
-        //       //                 style: Theme.of(context)
-        //       //                     .textTheme
-        //       //                     .headline2! //headline5
-        //       //                 // .copyWith(
-        //       //                 //   fontWeight: FontWeight.w500,
-        //       //                 // )
-        //       //                 ,
-        //       //                 overflow: TextOverflow.ellipsis,
-        //       //               ),
-        //       //             )),
-        //       //     TranslationWidget(
-        //       //       message: Utility.convertDateFormat2(list.start
-        //       //                   .toString()
-        //       //                   .contains('dateTime')
-        //       //               ? list.start['dateTime'].toString().substring(0, 10)
-        //       //               : list.start['date'].toString().substring(0, 10)) +
-        //       //           " - " +
-        //       //           Utility.convertDateFormat2(list.end
-        //       //                   .toString()
-        //       //                   .contains('dateTime')
-        //       //               ? list.end['dateTime'].toString().substring(0, 10)
-        //       //               : list.end['date'].toString().substring(0, 10)),
-        //       //       toLanguage: Globals.selectedLanguage,
-        //       //       fromLanguage: "en",
-        //       //       builder: (translatedMessage) => Text(
-        //       //         translatedMessage.toString(),
-        //       //         style: Theme.of(context)
-        //       //             .textTheme
-        //       //             .headline2!
-        //       //             .copyWith(fontWeight: FontWeight.normal, height: 1.5),
-        //       //       ),
-        //       //     ),
-        //       //   ],
-        //       // ),
-        //     ],
-        //   ),
-        // ),
-      ),
+          
+          ),
     );
+  }
+
+  Widget _buildCalendarBanner(dateTime) {
+    try {
+      String month = Utility.convertTimestampToDateFormat(dateTime, 'MMMM');
+      if (month != lastMonth) {
+        lastMonth = month;
+        return Column(
+          children: [
+            Container(
+              color: Theme.of(context).colorScheme.secondary,
+              child: Center(
+                  child: Container(
+                padding: EdgeInsets.only(left: 8, right: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                  color: Theme.of(context).colorScheme.background,
+                ),
+                // color:
+                child: Text(
+                  month,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(color: Colors.red),
+                ),
+              )),
+            ),
+            Container(
+              color: Theme.of(context).colorScheme.secondary,
+              height: 6,
+            ),
+          ],
+        );
+      } else {
+        // lastMonth = month;
+        return Container();
+      }
+    } catch (e) {
+      return Container();
+    }
   }
 
   Widget _buildTabs(state, bool? currentOrientation) {
@@ -514,32 +447,30 @@ class _EventPageState extends State<EventPage>
                           : new RefreshIndicator(
                               key: refreshKey,
                               onRefresh: refreshPage,
-                              child: ListView(children: [
-                                NoDataFoundErrorWidget(
-                                  isCalendarPageOrientationLandscape:
-                                      currentOrientation,
-                                  isResultNotFoundMsg: false,
-                                  isNews: false,
-                                  isEvents: true,
-                                ),
-                              ])),
+                              child: NoDataFoundErrorWidget(
+                                isCalendarPageOrientationLandscape:
+                                    currentOrientation,
+                                isResultNotFoundMsg: false,
+                                isNews: false,
+                                isEvents: true,
+                              )),
                       state.pastListobj!.length > 0
                           ? Tab(
                               child: new RefreshIndicator(
                               key: refreshKey1,
-                              child:state.pastListobj!.length > 0
-                                        ? 
-                               new ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  padding: Platform.isAndroid
-                                      ? EdgeInsets.only(bottom: 20)
-                                      : EdgeInsets.only(bottom: 60),
-                                  itemCount: state.pastListobj!.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return 
-                                        _buildList(state.pastListobj![index],
-                                            index, state.pastListobj);
+                              child: state.pastListobj!.length > 0
+                                  ? new ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      padding: Platform.isAndroid
+                                          ? EdgeInsets.only(bottom: 20)
+                                          : EdgeInsets.only(bottom: 60),
+                                      itemCount: state.pastListobj!.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return _buildList(
+                                            state.pastListobj![index],
+                                            index,
+                                            state.pastListobj);
                                         // : new RefreshIndicator(
                                         //     // key: refreshKey,
                                         //     onRefresh: refreshPage,
@@ -553,7 +484,8 @@ class _EventPageState extends State<EventPage>
                                         //       ],
                                         //     ),
                                         //   );
-                                  }):NoDataFoundErrorWidget(
+                                      })
+                                  : NoDataFoundErrorWidget(
                                       isResultNotFoundMsg: false,
                                       isNews: false,
                                       isEvents: true,
