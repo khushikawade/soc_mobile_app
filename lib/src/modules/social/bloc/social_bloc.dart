@@ -44,11 +44,13 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
         //getting both list response
         //social list
-         List<Item> list = [];
-         if (event.action!.contains("inital")) {
+        List<Item> list = [];
+        if (event.action!.contains("inital")) {
           list = await getEventDetails();
+          print("social list length=>${list.length}");
           if (_localData.isEmpty) {
-          yield  SocialInitalState(obj: list);
+            print("local database empty sending SocialInitalState");
+            yield SocialInitalState(obj: list);
           }
         } else {
           print(event.action);
@@ -56,7 +58,9 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         }
 
         // Action count list
+        print("now calling count list");
         List<ActionCountList> listActioncount = await fetchSocialActionCount();
+        print("count data response done");
         List<Item> newList = [];
         newList.clear();
         if (listActioncount.length == 0) {
@@ -64,8 +68,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         } else {
           for (int i = 0; i < list.length; i++) {
             for (int j = 0; j < listActioncount.length; j++) {
-              if ("${list[i].id.toString() + list[i].guid['\$t'] + Overrides.SCHOOL_ID}" ==
-                  listActioncount[j].notificationId) {
+              if ("${list[i].guid['\$t'] + Overrides.SCHOOL_ID}" ==
+                  listActioncount[j].id) {
                 newList.add(Item(
                     id: list[i].id,
                     title: list[i].title,
@@ -106,18 +110,23 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         }
 
         // Syncing to local database
+        print("calling local database");
         await _localDb.clear();
         newList.forEach((Item e) {
           _localDb.addData(e);
         });
+        print("calling local database done");
+        print("new list length =>${newList.length}");
         // Syncing end.
-        Globals.socialList.clear();
-        Globals.socialList.addAll(list);
+        // Globals.socialList.clear();
+        // Globals.socialList.addAll(list);
         yield Loading();
+        print("sending SocialDataSucess");
         yield SocialDataSucess(
           obj: newList,
         );
       } catch (e) {
+        print("inside catch");
         // Fetching from the local database instead.
         String? _objectName = "${Strings.socialObjectName}";
         LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
@@ -155,6 +164,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   Future getEventDetails() async {
     try {
       final link = Uri.parse("${Globals.appSetting.socialapiurlc}");
+      print(Globals.appSetting.socialapiurlc);
       Xml2Json xml2json = new Xml2Json();
       http.Response response = await http.get(link);
       if (response.statusCode == 200) {
@@ -189,6 +199,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       final ResponseModel response = await _dbServices.getapi(Uri.parse(
           'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
       if (response.statusCode == 200) {
+        print("200");
         var data = response.data["body"];
         final _allNotificationsAction = data;
         //  listActioncount.clear();
@@ -197,9 +208,11 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             .map<ActionCountList>((i) => ActionCountList.fromJson(i))
             .toList();
       } else {
+        print("xxxxxxxxxxxxxxxxxx");
         throw ('something_went_wrong');
       }
     } catch (e) {
+      print("000000000000");
       throw (e);
     }
   }
