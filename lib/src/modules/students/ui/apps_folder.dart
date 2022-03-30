@@ -79,6 +79,8 @@ class AppsFolderPageState extends State<AppsFolderPage>
   Widget build(BuildContext context) {
     return Center(
       child: Material(
+        // elevation: 99,
+        // shadowColor: Colors.red,
         color: Colors.transparent,
         child: ScaleTransition(
           scale: scaleAnimation!,
@@ -92,6 +94,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
               child: Scaffold(
+                // backgroundColor: Colors.white,
                 body: Padding(
                   padding: const EdgeInsets.only(
                       top: 20, left: 20.0, right: 20, bottom: 20),

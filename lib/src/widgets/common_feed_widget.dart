@@ -32,6 +32,10 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
     return Column(
       children: [
         Container(
+          color: Theme.of(context).colorScheme.secondary,
+          height: 6,
+        ),
+        Container(
           padding: EdgeInsets.only(top: 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,10 +60,6 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
               )
             ],
           ),
-        ),
-        Container(
-          color: Theme.of(context).colorScheme.secondary,
-          height: 6,
         ),
       ],
     );

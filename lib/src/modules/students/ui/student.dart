@@ -47,6 +47,7 @@ class _StudentPageState extends State<StudentPage> {
     if (obj.appUrlC != null) {
       if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
         showDialog(
+          
           context: context,
           builder: (_) => AppsFolderPage(
             obj: subList,

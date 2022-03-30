@@ -174,6 +174,10 @@ class _EventPageState extends State<EventPage>
           children: [
             Container(
               color: Theme.of(context).colorScheme.secondary,
+              height: 6,
+            ),
+            Container(
+              color: Theme.of(context).colorScheme.secondary,
               child: Center(
                   child: Container(
                 padding:
@@ -190,10 +194,6 @@ class _EventPageState extends State<EventPage>
                       .copyWith(color: Colors.red),
                 ),
               )),
-            ),
-            Container(
-              color: Theme.of(context).colorScheme.secondary,
-              height: 6,
             ),
           ],
         );
@@ -325,15 +325,13 @@ class _EventPageState extends State<EventPage>
                           : new RefreshIndicator(
                               key: refreshKey1,
                               onRefresh: refreshPage,
-                              child: ListView(children: [
-                                NoDataFoundErrorWidget(
-                                  isCalendarPageOrientationLandscape:
-                                      currentOrientation,
-                                  isResultNotFoundMsg: false,
-                                  isNews: false,
-                                  isEvents: true,
-                                ),
-                              ]),
+                              child: NoDataFoundErrorWidget(
+                                isCalendarPageOrientationLandscape:
+                                    currentOrientation,
+                                isResultNotFoundMsg: false,
+                                isNews: false,
+                                isEvents: true,
+                              ),
                             ),
                     ])),
               ]))

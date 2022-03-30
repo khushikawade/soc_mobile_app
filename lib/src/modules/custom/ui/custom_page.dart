@@ -2,10 +2,10 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/modules/custom/ui/home_inapp_url_launcher.dart';
-import 'package:Soc/src/modules/custom/ui/home_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +31,7 @@ class _CustomPagesState extends State<CustomPages> {
 
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
+  var pdfViewerKey = UniqueKey();
   bool? iserrorstate = false;
 
   Future refreshPage() async {
@@ -89,7 +90,7 @@ class _CustomPagesState extends State<CustomPages> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.background,
         key: _scaffoldKey,
         appBar: AppBarWidget(
           marginLeft: 30,
@@ -161,7 +162,9 @@ class _CustomPagesState extends State<CustomPages> {
     } else if (obj.typeOfPageC == "PDF URL" || obj.typeOfSectionC == "PDF") {
       return obj.pdfURL != null && obj.pdfURL != ""
           ? Expanded(
-              child: HomePdfViewerPage(
+              child: CommonPdfViewerPage(
+                tittle: '',
+                isHomePage: true,
                 url: obj.pdfURL,
                 isbuttomsheet: true,
                 language: Globals.selectedLanguage,

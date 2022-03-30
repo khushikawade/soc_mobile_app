@@ -19,13 +19,15 @@ class HomePdfViewerPage extends StatefulWidget {
   _HomePdfViewerPageState createState() => _HomePdfViewerPageState();
 }
 
-class _HomePdfViewerPageState extends State<HomePdfViewerPage> {
+class _HomePdfViewerPageState extends State<HomePdfViewerPage>
+    with WidgetsBindingObserver {
   bool isLoading = true;
   final ValueNotifier<String> url = ValueNotifier<String>('');
   Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
   String? pdfPath;
   String? pdfUrl;
   bool stopScroll = true;
+  var pdfViewerKey = UniqueKey();
 
   @override
   void didUpdateWidget(covariant HomePdfViewerPage oldWidget) {
@@ -36,6 +38,22 @@ class _HomePdfViewerPageState extends State<HomePdfViewerPage> {
   void initState() {
     super.initState();
     pdfUrl = widget.url;
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      Future.delayed(Duration(milliseconds: 250), () {
+        setState(() => pdfViewerKey = UniqueKey());
+      });
+    }
   }
 
   @override
@@ -45,13 +63,17 @@ class _HomePdfViewerPageState extends State<HomePdfViewerPage> {
       physics: stopScroll ? NeverScrollableScrollPhysics() : null,
       children: [
         Container(
-          height: 40,
+          height: 25,
         ),
         Container(
-            height: MediaQuery.of(context).size.height * 0.8,
+
+            // Theme.of(context).colorScheme.primaryVariant,
+            height: MediaQuery.of(context).size.height * 4,
             width: MediaQuery.of(context).size.width,
             child: PDF(
-                    pageSnap: true,
+                    //night mode work only with android not ios
+                    // nightMode: true,
+                    // pageSnap: true,
                     pageFling: true,
                     fitPolicy: FitPolicy.WIDTH,
                     swipeHorizontal: false,

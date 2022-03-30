@@ -136,6 +136,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
+                        isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
@@ -224,7 +225,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).primaryColor,
         ),
       ),
     );

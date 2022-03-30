@@ -126,7 +126,9 @@ class _StartupPageState extends State<StartupPage> {
               )
             : Text(
                 "Loading ...",
-                style: TextStyle(fontSize: 28, color: Colors.black),
+                style: TextStyle(
+                    fontSize: 28,
+                    color: Theme.of(context).colorScheme.primaryVariant),
               ));
   }
 
