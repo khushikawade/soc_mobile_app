@@ -57,7 +57,7 @@ class _SocialPageState extends State<SocialPage> {
     refreshKey.currentState?.show(atTop: false);
      await Future.delayed(Duration(seconds: 2));
     bloc.add(SocialPageEvent());
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
     _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
   }
 

@@ -14,8 +14,6 @@ class SharedPreferencesFn {
     return preferences.get(key) as FutureOr<String>? ?? '';
   }
 
-  
-
   void clear() async {
     SharedPreferences prefs = await _getSharedPreference();
     prefs.clear();

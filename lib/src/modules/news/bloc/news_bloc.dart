@@ -65,9 +65,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         Globals.notificationList.addAll(_list);
 
         yield NewsLoading(); // Mimic state change
-
-        
-
         yield NewsLoaded(
           obj: _list,
         );
@@ -107,7 +104,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-        // print(intPrefs.getInt("totalCount"));
         if (_localData.length < _list.length && _localData.isNotEmpty) {
           Globals.indicator.value = true;
         }
@@ -125,7 +121,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         String? _objectName = "news_action";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-        
+
         if (event.isDetailPage == false) {
           if (_localData.isEmpty) {
             yield NewsLoading();
@@ -149,12 +145,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                 newList.add(NotificationList(
                     id: Globals.notificationList[i].id,
                     completedAt: Globals.notificationList[i].completedAt,
-                    contents:
-                        Globals.notificationList[i].contents, //obj.contents,
-                    headings:
-                        Globals.notificationList[i].headings, //obj.headings,
-                    image: Globals.notificationList[i].image, //obj.image,
-                    url: Globals.notificationList[i].url, //obj.url,
+                    contents: Globals.notificationList[i].contents,
+                    headings: Globals.notificationList[i].headings,
+                    image: Globals.notificationList[i].image,
+                    url: Globals.notificationList[i].url,
                     likeCount: list[j].likeCount,
                     thanksCount: list[j].thanksCount,
                     helpfulCount: list[j].helpfulCount,
@@ -167,12 +161,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                 newList.add(NotificationList(
                     id: Globals.notificationList[i].id,
                     completedAt: Globals.notificationList[i].completedAt,
-                    contents:
-                        Globals.notificationList[i].contents, //obj.contents,
-                    headings:
-                        Globals.notificationList[i].headings, //obj.headings,
-                    image: Globals.notificationList[i].image, //obj.image,
-                    url: Globals.notificationList[i].url, //obj.url,
+                    contents: Globals.notificationList[i].contents,
+                    headings: Globals.notificationList[i].headings,
+                    image: Globals.notificationList[i].image,
+                    url: Globals.notificationList[i].url,
                     likeCount: 0,
                     thanksCount: 0,
                     helpfulCount: 0,

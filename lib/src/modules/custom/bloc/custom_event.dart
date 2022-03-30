@@ -4,10 +4,10 @@ abstract class CustomEvent extends Equatable {
   const CustomEvent();
 }
 
-class CustomsEvent extends CustomEvent {
+class CustomEvents extends CustomEvent {
   final String? id;
 
-  CustomsEvent({
+  CustomEvents({
     @required this.id,
   });
   @override

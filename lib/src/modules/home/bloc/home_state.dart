@@ -2,7 +2,6 @@ part of 'home_bloc.dart';
 
 abstract class HomeState extends Equatable {
   const HomeState();
-
   @override
   List<Object> get props => [];
 }
@@ -15,9 +14,7 @@ class SearchLoading extends HomeState {}
 
 class BottomNavigationBarSuccess extends HomeState {
   final obj;
-
   BottomNavigationBarSuccess({this.obj});
-
   BottomNavigationBarSuccess copyWith({final obj}) {
     return BottomNavigationBarSuccess(obj: obj ?? this.obj);
   }
@@ -28,9 +25,7 @@ class BottomNavigationBarSuccess extends HomeState {
 
 class GlobalSearchSuccess extends HomeState {
   final obj;
-
   GlobalSearchSuccess({this.obj});
-
   GlobalSearchSuccess copyWith({final obj}) {
     return GlobalSearchSuccess(obj: obj ?? this.obj);
   }

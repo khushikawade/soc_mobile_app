@@ -39,9 +39,10 @@ class SDevent extends FamilyEvent {
 }
 
 class CalendarListEvent extends FamilyEvent {
-  @required String ?calendarId;
+  @required
+  final String? calendarId;
   CalendarListEvent(this.calendarId);
-  
+
   @override
   List<Object> get props => [];
 

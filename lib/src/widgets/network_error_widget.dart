@@ -63,7 +63,9 @@ class NoInternetErrorWidget extends StatelessWidget {
                                       ? 12.0
                                       : 20.0,
                                   child: CircularProgressIndicator(
-                                    color: Theme.of(context).colorScheme.primaryVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
                                     strokeWidth: 2,
                                   ))
                         ],

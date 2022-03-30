@@ -8,21 +8,12 @@ import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 class ResourcesPage extends StatefulWidget {
-  // final obj;
-  // final searchObj;
-  // ResourcesPage({
-  //   Key? key,
-  //   this.obj,
-  //   this.searchObj,
-  // }) : super(key: key);
-
   @override
   _ResourcesPageState createState() => _ResourcesPageState();
 }
@@ -42,9 +33,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     _bloc.add(ResourcesListEvent());
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Widget _body(String key) => RefreshIndicator(
@@ -79,7 +70,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
                             return Container(
                                 alignment: Alignment.center,
                                 child: CircularProgressIndicator(
-                                  color: Theme.of(context).colorScheme.primaryVariant,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant,
                                 ));
                           } else if (state is ResourcesDataSucess) {
                             return CommonListWidget(
@@ -104,7 +97,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                           if (state is BottomNavigationBarSuccess) {
                             AppTheme.setDynamicTheme(
                                 Globals.appSetting, context);
-                            // Globals.homeObject = state.obj;
+
                             Globals.appSetting = AppSetting.fromJson(state.obj);
                             setState(() {});
                           }
@@ -131,24 +124,15 @@ class _ResourcesPageState extends State<ResourcesPage> {
         ),
         body: Globals.appSetting.resourcesBannerImageC != null &&
                 Globals.appSetting.resourcesBannerImageC != ""
-            // Globals.homeObject["Resources_Banner_Image__c"] != null &&
-            //         Globals.homeObject["Resources_Banner_Image__c"] != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     BannerImageWidget(
                       imageUrl: Globals.appSetting.resourcesBannerImageC!,
-                      // Globals.homeObject["Resources_Banner_Image__c"],
-                      bgColor: Globals
-                                  // .homeObject["Resources_Banner_Color__c"] !=
-                                  .appSetting
-                                  .resourcesBannerColorC !=
-                              null
+                      bgColor: Globals.appSetting.resourcesBannerColorC != null
                           ? Utility.getColorFromHex(
-                              Globals.appSetting.resourcesBannerColorC!
-                              // Globals.homeObject["Resources_Banner_Color__c"]
-                              )
+                              Globals.appSetting.resourcesBannerColorC!)
                           : null,
                     )
                   ];

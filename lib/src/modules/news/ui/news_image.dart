@@ -2,14 +2,15 @@ import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class NewsImagePage extends StatefulWidget {
   final String imageURL;
+
   @override
   NewsImagePage({
     Key? key,
     required this.imageURL,
   }) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => NewsImagePageState();
 }
@@ -18,7 +19,6 @@ class NewsImagePageState extends State<NewsImagePage>
     with SingleTickerProviderStateMixin {
   AnimationController? controller;
   Animation<double>? scaleAnimation;
-  // static const double _kLableSpacing = 10.0;
   static const double _kIconSize = 45.0;
 
   @override
@@ -36,11 +36,6 @@ class NewsImagePageState extends State<NewsImagePage>
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Center(
       child: Material(
@@ -52,7 +47,6 @@ class NewsImagePageState extends State<NewsImagePage>
                 top: 20, left: 20.0, right: 20, bottom: 20),
             height: MediaQuery.of(context).size.height * 0.6,
             decoration: ShapeDecoration(
-                // color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0))),
             child: Padding(

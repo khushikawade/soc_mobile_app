@@ -7,7 +7,6 @@ import 'modules/home/models/custom_setting.dart';
 import 'modules/news/model/notification_list.dart';
 
 class Globals {
-  // static GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   static var iosInfo;
   static var androidInfo;
   static String? token = '';
@@ -16,7 +15,6 @@ class Globals {
   static String? deviceID;
   static int? outerBottombarIndex;
   static int? internalBottombarIndex;
-  // static var homeObject;
   static late AppSetting appSetting;
   static List<CustomSetting>? customSetting;
   static bool? isCustomNavbar = false;
@@ -45,7 +43,6 @@ class Globals {
   static int? homeIndex;
   static bool? isNetworkError = false;
   static bool? callsnackbar = true;
-  // static bool hasShowcaseInitialised = false;
   static ValueNotifier<bool> hasShowcaseInitialised =
       ValueNotifier<bool>(false);
   static String? calendar_Id = "";
@@ -62,8 +59,6 @@ class Globals {
   static List<Item> socialList = [];
   static PackageInfo? packageInfo;
   static bool isNewTap = false;
-  // static PersistentTabController? controller;
-  // static WebViewController? webViewController;
   static BuildContext? context;
   static int? urlIndex;
   static late WebViewController? webViewController1;

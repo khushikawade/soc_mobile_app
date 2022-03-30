@@ -22,16 +22,12 @@ class Newdescription extends StatefulWidget {
     required this.isbuttomsheet,
     required this.language,
     required this.connected,
-    // required this.iconsName,
-    // required this.icons
   }) : super(key: key);
 
   final obj;
   final String date;
   final bool isbuttomsheet;
   final String? language;
-  // final List? icons;
-  // final List? iconsName;
   final bool? connected;
 
   _NewdescriptionState createState() => _NewdescriptionState();
@@ -41,8 +37,6 @@ class _NewdescriptionState extends State<Newdescription> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   static const double _kLabelSpacing = 20.0;
   final HomeBloc _homeBloc = new HomeBloc();
-  // bool _downloadingFile = false;
-  // static const double _KButtonSize = 110.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -91,7 +85,6 @@ class _NewdescriptionState extends State<Newdescription> {
                 iconUrl: widget.obj.image ??
                     Globals.splashImageUrl ??
                     Globals.appSetting.appLogoC,
-                // Globals.homeObject["App_Logo__c"],
                 height: Utility.displayHeight(context) *
                     (AppTheme.kDetailPageImageHeightFactor / 100),
                 fitMethod: BoxFit.contain,
@@ -135,7 +128,6 @@ class _NewdescriptionState extends State<Newdescription> {
                     text: translatedMessage.toString(),
                     style: Theme.of(context).textTheme.headline2!.copyWith(
                           fontWeight: FontWeight.w500,
-                          // fontSize: 16,
                         ),
                   ),
                 )),
@@ -148,13 +140,11 @@ class _NewdescriptionState extends State<Newdescription> {
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     fontSize: 14,
                     color: Colors.grey,
-                    // fontWeight: FontWeight.bold
-                    // fontStyle: FontStyle.italic
                   ),
             ),
 
             SpacerWidget(AppTheme.kBodyPadding / 2),
-            //
+
             Container(
               child: Wrap(
                 children: [
@@ -217,7 +207,7 @@ class _NewdescriptionState extends State<Newdescription> {
           listener: (context, state) async {
             if (state is BottomNavigationBarSuccess) {
               AppTheme.setDynamicTheme(Globals.appSetting, context);
-              // Globals.homeObject = state.obj;
+
               Globals.appSetting = AppSetting.fromJson(state.obj);
             }
           },
@@ -232,8 +222,6 @@ class _NewdescriptionState extends State<Newdescription> {
             title: widget.obj.headings['en'],
             description: widget.obj.contents['en'],
             imageUrl: widget.obj.image,
-            // icons: widget.icons,
-            // iconsName: widget.iconsName,
           ),
         ),
       ],
@@ -256,6 +244,6 @@ class _NewdescriptionState extends State<Newdescription> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

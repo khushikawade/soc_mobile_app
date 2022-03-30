@@ -7,8 +7,8 @@ import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 class HomePdfViewerPage extends StatefulWidget {
   final String? url;
   String? language;
-
   bool isbuttomsheet;
+
   HomePdfViewerPage(
       {Key? key,
       @required this.url,
@@ -24,9 +24,7 @@ class _HomePdfViewerPageState extends State<HomePdfViewerPage>
   bool isLoading = true;
   final ValueNotifier<String> url = ValueNotifier<String>('');
   Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers;
-
   String? pdfPath;
-
   String? pdfUrl;
   bool stopScroll = true;
   var pdfViewerKey = UniqueKey();

@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
-import 'package:Soc/src/modules/custom/ui/custom.dart';
-import 'package:Soc/src/modules/custom/ui/custom_url.dart';
+import 'package:Soc/src/modules/custom/ui/custom_app_section.dart';
+import 'package:Soc/src/modules/custom/ui/custom_page.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
@@ -46,7 +46,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   var item;
   var item2;
   List<Widget> _screens = [];
-  // List<String> _tmp = [];
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
@@ -69,8 +68,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       FlutterError.presentError(details);
       if (details.exception.toString().contains('RangeError')) {
         _controller.index = 0;
-
-        print('finally catch the eroorrrrrrrrrrrrrrrrr');
       }
     };
   }
@@ -85,7 +82,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           String? _objectName = "${Strings.newsObjectName}";
           LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
           List<NotificationList> _localData = await _localDb.getData();
-          // print(intPrefs.getInt("totalCount"));
+
           if (_localData.length < state.obj!.length && _localData.isNotEmpty) {
             intPrefs.setInt("totalCount", Globals.notiCount!);
             prefs.setBool("enableIndicator", true);
@@ -140,7 +137,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   List<Widget> _buildScreens() {
-    // Globals.homeObject["Bottom_Navigation__c"]
     _screens.clear();
 
     Globals.appSetting.isCustomApp!
@@ -191,17 +187,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (Globals.appSetting.isCustomApp!) {
       return Globals.customSetting!.map<PersistentBottomNavBarItem>(
         (item) {
-          //setState(() {});
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(item.selectionTitleC, item.sectionIconC),
-            // title:(''), //("${item.split("_")[0]}"),
             activeColorPrimary: Theme.of(context).primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
           );
         },
       ).toList();
     } else {
-      // _tmp.addAll(Globals.appSetting.bottomNavigationC!.split(";"));
       return Globals.appSetting.bottomNavigationC!
           .split(";")
           .map<PersistentBottomNavBarItem>(
@@ -213,7 +206,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           setState(() {});
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(item.split("_")[0], item.split("_")[1]),
-            // title:(''), //("${item.split("_")[0]}"),
             activeColorPrimary: Theme.of(context).primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
           );
@@ -258,20 +250,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       child: Container(),
                     ),
                     Icon(
-                      IconData(
-                          //   0xe82b,
-                          int.parse(iconData),
+                      IconData(int.parse(iconData),
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
-                      // size: 40,
                     ),
                   ],
                 ),
                 SpacerWidget(2),
                 TranslationWidget(
                   shimmerHeight: 8,
-                  message:
-                      title, //"${item.split("_")[0]=="Student"?"About":item.split("_")[0]=="Families"?"Schools":item.split("_")[0]=="Staff"?"Resources":item.split("_")[0]}",
+                  message: title,
                   fromLanguage: "en",
                   toLanguage: Globals.selectedLanguage,
                   builder: (translatedMessage) => Expanded(
@@ -301,11 +289,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       builder: (translatedMessage) => Text(
             '$translatedMessage',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline1!.copyWith(
-                // color: Colors.red,
-                // color: Theme.of(context).backgroundColor,
-                fontSize: 32,
-                fontStyle: FontStyle.italic),
+            style: Theme.of(context)
+                .textTheme
+                .headline1!
+                .copyWith(fontSize: 32, fontStyle: FontStyle.italic),
           ));
 
   Widget _tabBarBody() {
@@ -379,7 +366,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return mainbody();
-    // );
   }
 
   Widget mainbody() {
@@ -408,18 +394,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             OrientationBuilder(builder: (context, orientation) {
               return AlertDialog(
                 backgroundColor: Colors.white,
-                title:
-                    //Globals.deviceType == 'phone'
-                    //     ? TranslationWidget(
-                    //   message: "Do you want to exit the app?",
-                    //   fromLanguage: "en",
-                    //   toLanguage: Globals.selectedLanguage,
-                    //   builder: (translatedMessage) {
-                    //     return Text(translatedMessage.toString(),
-                    //         style: Theme.of(context).textTheme.headline2!);
-                    //   })
-                    //     :
-                    Container(
+                title: Container(
                   padding: Globals.deviceType == 'phone'
                       ? null
                       : const EdgeInsets.only(top: 10.0),
@@ -497,18 +472,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           _screens.add(ResourcesPage());
         }
       } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-        _screens.add(CustomPage(obj: Globals.customSetting![i]));
+        _screens.add(CustomAppSection(obj: Globals.customSetting![i]));
       } else if (Globals.customSetting![i].typeOfSectionC == 'Custom Type') {
-        _screens.add(CustomUrlPage(obj: Globals.customSetting![i]));
+        _screens.add(CustomPages(obj: Globals.customSetting![i]));
 
         if (Globals.customSetting![i].typeOfPageC == 'URL') {
           Globals.urlIndex = _screens.length - 1;
           Globals.homeUrl = Globals.customSetting![i].appUrlC;
         }
       } else {
-        _screens.add(CustomPage(obj: Globals.customSetting![i]));
+        _screens.add(CustomAppSection(obj: Globals.customSetting![i]));
       }
     }
-    //}
   }
 }

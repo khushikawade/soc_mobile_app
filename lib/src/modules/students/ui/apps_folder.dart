@@ -58,11 +58,6 @@ class AppsFolderPageState extends State<AppsFolderPage>
   _launchURL(obj) async {
     if (obj.deepLinkC == 'NO') {
       if (obj.appUrlC!.toString().split(":")[0] == 'http') {
-        // if (await canLaunch(obj.appUrlC!)) {
-        //   await launch(obj.appUrlC!);
-        // } else {
-        //   throw 'Could not launch ${obj.appUrlC!}';
-        // }
         await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
       } else {
         Navigator.push(
@@ -76,14 +71,12 @@ class AppsFolderPageState extends State<AppsFolderPage>
                     )));
       }
     } else {
-      // await launch(obj.appUrlC!);
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    //List onlyShowList = apps.where((i) => i.status == 'Show').toList();
     return Center(
       child: Material(
         // elevation: 99,
@@ -96,18 +89,6 @@ class AppsFolderPageState extends State<AppsFolderPage>
                 top: 20, left: 20.0, right: 20, bottom: 20),
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: ShapeDecoration(
-                // shadows: [
-                //   BoxShadow(
-                //     color: Theme.of(context)
-                //         .colorScheme
-                //         .primaryVariant
-                //         .withOpacity(0.3),
-                //     spreadRadius: 2,
-                //     blurRadius: 2,
-                //     // changes position of shadow
-                //   ),
-                // ],
-                // color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0))),
             child: ClipRRect(
@@ -171,9 +152,6 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                 Globals.selectedLanguage,
                                             builder: (translatedMessage) =>
                                                 Container(
-                                              // alignment: Alignment.center,
-                                              // padding: EdgeInsets.symmetric(horizontal: 10),
-                                              // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
                                               child: MediaQuery.of(context)
                                                               .orientation ==
                                                           Orientation
@@ -202,8 +180,6 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                             CrossAxisAlignment
                                                                 .start,
                                                         blankSpace: 50,
-                                                        //MediaQuery.of(context).size.width
-                                                        // velocity: 100.0,
                                                         pauseAfterRound:
                                                             Duration(
                                                                 seconds: 5),

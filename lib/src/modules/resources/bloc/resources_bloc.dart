@@ -12,7 +12,6 @@ part 'resources_event.dart';
 part 'resources_state.dart';
 
 class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
-  // var data;
   ResourcesBloc() : super(ResourcesInitial());
   final DbServices _dbServices = DbServices();
 
@@ -117,7 +116,6 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Resources_App__c"));
       if (response.statusCode == 200) {
-        //   dataArray = response.data["records"];
         List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();

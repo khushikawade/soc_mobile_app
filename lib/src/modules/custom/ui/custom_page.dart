@@ -1,4 +1,3 @@
-import 'package:Soc/src/modules/custom/ui/open_external.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
@@ -7,7 +6,6 @@ import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/modules/custom/ui/home_inapp_url_launcher.dart';
-import 'package:Soc/src/modules/custom/ui/home_pdf_viewer_pagr.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -16,20 +14,19 @@ import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 
-class CustomUrlPage extends StatefulWidget {
+class CustomPages extends StatefulWidget {
   final obj;
 
-  CustomUrlPage({
+  CustomPages({
     Key? key,
     this.obj,
   }) : super(key: key);
 
   @override
-  _CustomUrlPageState createState() => _CustomUrlPageState();
+  _CustomPagesState createState() => _CustomPagesState();
 }
 
-class _CustomUrlPageState extends State<CustomUrlPage> {
-  // static const double _kLabelSpacing = 10.0;
+class _CustomPagesState extends State<CustomPages> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -37,19 +34,9 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
   var pdfViewerKey = UniqueKey();
   bool? iserrorstate = false;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Widget _body(String key) => Container(
@@ -86,11 +73,9 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
-                              // Globals.homeObject = state.obj;
                               Globals.appSetting =
                                   AppSetting.fromJson(state.obj);
-
-                              setState(() {});
+                              // setState(() {});
                             }
                           },
                           child: EmptyContainer()),
@@ -121,13 +106,8 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
       return obj.appUrlC != null && obj.appUrlC != ""
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
               // || obj.deepLinkC == 'YES'
-              ? Expanded(
-                  child: UrlNotSecure(
-                    url: obj.appUrlC,
-                    connected: true,
-                  ),
-                )
-              : HomeInAppUrlLauncer(
+              ? Container() // TODO: Add a proper message when links are unable to open
+              : HomeInAppUrlLauncher(
                   url: obj.appUrlC,
                   language: Globals.selectedLanguage,
                 ))
@@ -143,15 +123,15 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
         obj.typeOfSectionC == "RFT_HTML" ||
         obj.typeOfSectionC == "HTML/RTF" ||
         obj.typeOfSectionC == "RTF/HTML") {
-      return obj.rtfHTMLC != null
+      return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
           ? Expanded(
               child: AboutusPage(
                 htmlText: obj.rtfHTMLC.toString(),
                 isbuttomsheet: true,
                 ishtml: true,
                 isAppBar: false,
-                // appbarTitle: obj.titleC!,
-                language: Globals.selectedLanguage, appbarTitle: '',
+                language: Globals.selectedLanguage,
+                appbarTitle: '',
               ),
             )
           : Expanded(
@@ -163,9 +143,9 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                       connected: true)),
             );
     } else if (obj.typeOfPageC == "Embed iFrame") {
-      return obj.rtfHTMLC != null
+      return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
           ? Expanded(
-              child: HomeInAppUrlLauncer(
+              child: HomeInAppUrlLauncher(
                 isiFrame: true,
                 url: obj.rtfHTMLC.toString(),
                 language: Globals.selectedLanguage,
@@ -180,7 +160,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                       connected: true)),
             );
     } else if (obj.typeOfPageC == "PDF URL" || obj.typeOfSectionC == "PDF") {
-      return obj.pdfURL != null
+      return obj.pdfURL != null && obj.pdfURL != ""
           ? Expanded(
               child: CommonPdfViewerPage(
                 tittle: '',
@@ -202,10 +182,10 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
       return Expanded(
         child: ContactPage(
           obj: Globals.appSetting,
-          //  Globals.homeObject,
           isbuttomsheet: true,
           isAppBar: false,
-          language: Globals.selectedLanguage ?? "English", appBarTitle: '',
+          language: Globals.selectedLanguage ?? "English",
+          appBarTitle: '',
         ),
       );
     } else if (obj.typeOfPageC == "Calendar/Events") {

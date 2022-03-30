@@ -19,21 +19,19 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
-import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-// import 'package:http/http.dart' as http;
 part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeInitial());
   final DbServices _dbServices = DbServices();
-  final HiveDbServices _localDbService = HiveDbServices();
+  // final HiveDbServices _localDbService = HiveDbServices();
 
   HomeState get initialState => HomeInitial();
 
@@ -41,10 +39,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Stream<HomeState> mapEventToState(
     HomeEvent event,
   ) async* {
-    if (event is FetchBottomNavigationBar) {
+    if (event is FetchStandardNavigationBar) {
       try {
         yield HomeLoading();
-        final data = await fetchBottomNavigationBar();
+        final data = await fetchStandardNavigationBar();
         // Saving data to the Local DataBase
 
         AppSetting _appSetting = AppSetting.fromJson(data);
@@ -63,9 +61,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             _customSettingDb.addData(e);
           });
         }
-
-        // print(_appSetting);
-        //  Globals.homeObject = Globals.appSetting.toJson();
         // Should send the response first then it will sync data to the Local database.
         yield BottomNavigationBarSuccess(obj: data);
 
@@ -98,9 +93,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           }
           if (Globals.appSetting.bannerHeightFactor != null) {
             AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
-            // print(AppTheme.kBannerHeight);
           }
-          //  Globals.homeObject = Globals.appSetting.toJson();
           yield BottomNavigationBarSuccess(obj: Globals.appSetting.toJson());
         } else {
           // if the School object does not found in the Local database then it will return the received error.
@@ -112,7 +105,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is GlobalSearchEvent) {
       try {
         yield SearchLoading();
-
         List<SearchList> list = await getGlobalSearch(event.keyword);
 
         for (var i = 0; i < list.length; i++) {
@@ -120,7 +112,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             list.removeAt(i);
           }
         }
-
         yield GlobalSearchSuccess(
           obj: list,
         );
@@ -151,18 +142,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             List<SearchList> _list6 = await getGlobalSearchListSchool(
                 Strings.schoolDirectoryObjectName, event.keyword);
             _listGlobal.addAll(_list6);
-            // List<SearchList> _list7 = await getGlobalSearchList(
-            //     Strings.familiesSubListObjectName, event.keyword);
-            // _listGlobal.addAll(_list7);
-            // List<SearchList> _list8 = await getGlobalSearchList(
-            //     Strings.staffSubListObjectName, event.keyword);
-            // _listGlobal.addAll(_list8);
-            // List<SearchList> _list9 = await getGlobalSearchList(
-            //     Strings.aboutSubListObjectName, event.keyword);
-            // _listGlobal.addAll(_list9);
-            // List<SearchList> _list10 = await getGlobalSearchList(
-            //     Strings.resourcesSubListObjectName, event.keyword);
-            // _listGlobal.addAll(_list10);
           }
 
           yield GlobalSearchSuccess(
@@ -187,10 +166,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             .map<CustomSetting>((i) => CustomSetting.fromJson(i))
             .toList();
 
-        // if (Globals.appSetting.bannerHeightFactor != null) {
-        //   AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
-        //   // print(AppTheme.kBannerHeight);
-        // }
         _list.removeWhere((CustomSetting element) => element.status == 'Hide');
         _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
         if (_list.length > 6) {
@@ -206,7 +181,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Future fetchBottomNavigationBar() async {
+  Future fetchStandardNavigationBar() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
         Uri.encodeFull(
@@ -217,14 +192,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final data = response.data['body'][0];
         Globals.appSetting = AppSetting.fromJson(data);
 
-        // if (Globals.appSetting.isCustomApp == false) {
-        //   Globals.controller.index = 1;
-        // }
-        // To take the backup for all the sections.
         _backupAppData();
         if (Globals.appSetting.bannerHeightFactor != null) {
           AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
-          // print(AppTheme.kBannerHeight);
         }
         return data;
       }
@@ -319,7 +289,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               double.parse(_localData[i].sortOrder ?? "0.0");
 
           _searchList.name = _localData[i].name ?? null;
-
           _listSearch.insert(0, _searchList);
         }
       }
@@ -379,9 +348,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (Globals.customSetting != null) {
         for (var i = 0; i < Globals.customSetting!.length; i++) {
           CustomBloc _customBloc = CustomBloc();
-          _customBloc.add(CustomsEvent(id: Globals.customSetting![i].id));
+          _customBloc.add(CustomEvents(id: Globals.customSetting![i].id));
         }
       }
+
       NewsBloc _newsBloc = NewsBloc();
       _newsBloc.add(FetchActionCountList(isDetailPage: false));
       SocialBloc _socialBloc = SocialBloc();

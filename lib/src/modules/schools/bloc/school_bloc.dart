@@ -13,7 +13,6 @@ part 'school_state.dart';
 
 class SchoolDirectoryBloc
     extends Bloc<SchoolDirectoryEvent, SchoolDirectoryState> {
-  // var data;
   SchoolDirectoryBloc() : super(SchoolDirectoryInitial());
   final DbServices _dbServices = DbServices();
 
@@ -73,7 +72,6 @@ class SchoolDirectoryBloc
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c"));
       if (response.statusCode == 200) {
-        //  dataArray = response.data["records"];
         List<SchoolDirectoryList> _list = response.data['body']
             .map<SchoolDirectoryList>((i) => SchoolDirectoryList.fromJson(i))
             .toList();
