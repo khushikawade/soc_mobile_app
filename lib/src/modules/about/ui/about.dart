@@ -230,7 +230,9 @@ class _AboutPageState extends State<AboutPage> {
                                     state is AboutLoading) {
                                   return Container(
                                       alignment: Alignment.center,
-                                      child: CircularProgressIndicator());
+                                      child: CircularProgressIndicator(
+                                        color: Theme.of(context).colorScheme.primaryVariant,
+                                      ));
                                 } else if (state is AboutDataSucess) {
                                   return CommonListWidget(
                                      key: ValueKey(key),

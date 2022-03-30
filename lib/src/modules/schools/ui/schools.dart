@@ -150,7 +150,9 @@ class _SchoolPageState extends State<SchoolPage> {
                                 state is SchoolDirectoryLoading) {
                               return Container(
                                   alignment: Alignment.center,
-                                  child: CircularProgressIndicator());
+                                  child: CircularProgressIndicator(
+                                    color: Theme.of(context).colorScheme.primaryVariant,
+                                  ));
                             } else if (state is SchoolDirectoryDataSucess) {
                               return state.obj!.length > 0
                                   ? ListView.builder(

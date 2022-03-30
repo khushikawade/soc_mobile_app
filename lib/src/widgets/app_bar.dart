@@ -62,7 +62,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
               builder: (translatedMessage) => Text(
                 translatedMessage.toString(),
                 style: Theme.of(context).textTheme.headline2!.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                    // color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w400),
                 textAlign: TextAlign.center,
               ),

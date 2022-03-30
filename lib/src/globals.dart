@@ -53,6 +53,9 @@ class Globals {
       GlobalKey<ScaffoldMessengerState>();
   static int? navIndex = 0;
   static int? socialImageIndex = 0;
+  static bool? isDarkTheme;
+  static bool? systemTheme;
+  static String? themeType;
   static List icons = [0xe823, 0xe824, 0xe825, 0xe829];
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   static List<NotificationList> notificationList = [];

@@ -185,7 +185,9 @@ class _SubListPageState extends State<SubListPage> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.75,
                                 alignment: Alignment.center,
-                                child: CircularProgressIndicator());
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.primaryVariant,
+                                ));
                           } else if (state is FamiliesSublistSucess) {
                             return CommonListWidget(
                                 scaffoldKey: _scaffoldKey,
@@ -232,7 +234,9 @@ class _SubListPageState extends State<SubListPage> {
                                     height: MediaQuery.of(context).size.height *
                                         0.75,
                                     alignment: Alignment.center,
-                                    child: CircularProgressIndicator());
+                                    child: CircularProgressIndicator(
+                                      color: Theme.of(context).colorScheme.primaryVariant,
+                                    ));
                               } else if (state is StaffSubListSucess) {
                                 return CommonListWidget(
                                     scaffoldKey: _scaffoldKey,
@@ -279,7 +283,9 @@ class _SubListPageState extends State<SubListPage> {
                                             MediaQuery.of(context).size.height *
                                                 0.75,
                                         alignment: Alignment.center,
-                                        child: CircularProgressIndicator());
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).colorScheme.primaryVariant,
+                                        ));
                                   } else if (state is ResourcesSubListSucess) {
                                     return CommonListWidget(
                                         scaffoldKey: _scaffoldKey,
@@ -329,7 +335,9 @@ class _SubListPageState extends State<SubListPage> {
                                                     .height *
                                                 0.75,
                                             alignment: Alignment.center,
-                                            child: CircularProgressIndicator());
+                                            child: CircularProgressIndicator(
+                                              color: Theme.of(context).colorScheme.primaryVariant,
+                                            ));
                                       } else if (state is AboutSublistSucess) {
                                         return CommonListWidget(
                                             scaffoldKey: _scaffoldKey,

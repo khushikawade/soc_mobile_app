@@ -31,6 +31,7 @@ class InAppUrlLauncer extends StatefulWidget {
 
 class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   bool? iserrorstate = false;
+  bool isLoading = true;
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
   @override
@@ -93,19 +94,71 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                       //       : widget.url,
                       // )
 
-                       WebView(
-                        gestureNavigationEnabled:
-                            widget.isiFrame == true ? true : false,
-                        initialUrl: widget.isiFrame == true
-                            ? Uri.dataFromString(widget.url,
-                                    mimeType: 'text/html')
-                                .toString()
-                            : widget.url,
-                        javascriptMode: JavascriptMode.unrestricted,
-                        onWebViewCreated:
-                            (WebViewController webViewController) {
-                          _controller.complete(webViewController);
-                        },
+                      //  WebView(
+                      //    backgroundColor: Theme.of(context).backgroundColor,
+                      //       onProgress: (progress) {
+                      //         if (progress >= 50) {
+                      //           setState(() {
+                      //             isLoading = false;
+                      //           });
+                      //         }
+                      //       },
+                      //   gestureNavigationEnabled:
+                      //       widget.isiFrame == true ? true : false,
+                      //   initialUrl: widget.isiFrame == true
+                      //       ? Uri.dataFromString(widget.url,
+                      //               mimeType: 'text/html')
+                      //           .toString()
+                      //       : widget.url,
+                      //   javascriptMode: JavascriptMode.unrestricted,
+                      //   onWebViewCreated:
+                      //       (WebViewController webViewController) {
+                      //     _controller.complete(webViewController);
+                      //   },
+
+                      // ),
+                      Stack(
+
+                        children: [
+                          WebView(
+                            initialCookies: [],
+                           
+                            backgroundColor: Theme.of(context).backgroundColor,
+                            onProgress: (progress) {
+                              if (progress >= 50) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              }
+                            },
+
+                            // onPageFinished: (finish) {
+                            //   setState(() {
+                            //     isLoading = false;
+                            //   });
+                            // },
+                            gestureNavigationEnabled:
+                                widget.isiFrame == true ? true : false,
+                            initialUrl: widget.isiFrame == true
+                                ? Uri.dataFromString('${widget.url}',
+                                        mimeType: 'text/html')
+                                    .toString()
+                                : '${widget.url}',
+                            javascriptMode: JavascriptMode.unrestricted,
+                            onWebViewCreated:
+                                (WebViewController webViewController) {
+                              _controller.complete(webViewController);
+                            },
+                          ),
+                          isLoading
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                    color: Theme.of(context).colorScheme.primaryVariant,
+                                  ),
+                                  
+                                )
+                              : Stack(),
+                        ],
                       ),
                       )
                   : NoInternetErrorWidget(

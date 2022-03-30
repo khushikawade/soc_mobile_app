@@ -84,7 +84,10 @@ class CalendraIconWidget extends StatelessWidget {
               ),
             )),
           ),
-          Padding(padding: EdgeInsets.only(top: 1.7), child: Text(getDate()))
+          Padding(padding: EdgeInsets.only(top: 1.7), child: Text(getDate(),style: Theme.of(context)
+                    .textTheme
+                    .subtitle1!
+                    .copyWith(color: Colors.black),))
         ],
       ),
     );

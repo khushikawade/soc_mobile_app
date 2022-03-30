@@ -78,11 +78,30 @@ class HiveDbServices {
     }
   }
 
-   Future<bool> clearAll(String tableName) async {
+  Future<bool> clearAll(String tableName) async {
     try {
       final hiveBox = await Hive.openBox(tableName);
       await hiveBox.clear();
       return true;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<bool> addSingleData(String tableName, key, value) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
+      await hiveBox.put(key, value);
+      return true;
+    } catch (e) {
+      throw (e);
+    }
+  }
+  Future<String> getSingleData(String tableName, key) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
+      String data = await hiveBox.get(key);
+      return data;
     } catch (e) {
       throw (e);
     }

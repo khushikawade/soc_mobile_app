@@ -103,13 +103,15 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                     Container(
                         height: Globals.deviceType == 'phone' ? 35 : 45,
                         width: Globals.deviceType == 'phone' ? 35 : 45,
-                        //  color: Colors.grey,
+                         // color: Colors.grey,
                         child: Center(
                           child: IconButton(
                               padding: EdgeInsets.all(0),
+                             // color: index == 3 ?  Theme.of(context).colorScheme.primaryVariant :null,
                               // constraints: BoxConstraints(),
                               onPressed: () {},
                               icon: iconListWidget(
+                                
                                   context, index, false, widget.scaffoldKey)),
                         )),
                     widget.isLoading == true
@@ -207,10 +209,12 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                       index ==
                           3 // Id the last button i.e. share button is pressed then it should show loader while the app is downloading the image from the URL.
                   ? CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primaryVariant,
                       strokeWidth: 1,
                     )
                   : Icon(
                       IconData(Globals.icons[index],
+
                           fontFamily: Overrides.kFontFam,
                           fontPackage: Overrides.kFontPkg),
                       color: index == 0
@@ -219,7 +223,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                               ? Colors.blue
                               : index == 2
                                   ? Colors.green
-                                  : Colors.black,
+                                  : Theme.of(context).colorScheme.primaryVariant,
                       size: Globals.deviceType == "phone"
                           ? (index == 0 ? 26 : 21)
                           : (index == 0 ? 30 : 25),

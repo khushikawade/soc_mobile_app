@@ -135,7 +135,8 @@ class _StartupPageState extends State<StartupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Globals.themeType == 'Dark' ? Colors.black : Colors.white,
         body: Stack(
           fit: StackFit.expand,
           children: [

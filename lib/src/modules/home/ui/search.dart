@@ -20,6 +20,7 @@ import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -374,7 +375,9 @@ class _SearchPageState extends State<SearchPage> {
             return Expanded(
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.7,
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primaryVariant,
+                )),
               ),
             );
           } else
@@ -558,6 +561,7 @@ class _SearchPageState extends State<SearchPage> {
                 width: _kIconSize * 1.4,
                 height: _kIconSize * 1.5,
                 child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primaryVariant,
                   strokeWidth: 2,
                 ),
               ),
@@ -570,7 +574,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildLeading(obj) {
     if (obj.appIconUrlC != null) {
-      return CustomIconWidget(
+      return CustomIconMode(
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else if (obj.appIconUrlC != null) {

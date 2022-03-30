@@ -78,7 +78,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
                               state is ResourcesLoading) {
                             return Container(
                                 alignment: Alignment.center,
-                                child: CircularProgressIndicator());
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.primaryVariant,
+                                ));
                           } else if (state is ResourcesDataSucess) {
                             return CommonListWidget(
                                 key: ValueKey(key),

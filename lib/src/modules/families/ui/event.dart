@@ -245,7 +245,9 @@ class _EventPageState extends State<EventPage>
                     indicatorSize: TabBarIndicatorSize.label,
                     labelColor: Theme.of(context).colorScheme.primaryVariant,
                     indicatorColor: Theme.of(context).colorScheme.primary,
-                    unselectedLabelColor: Colors.black,
+                    unselectedLabelColor: Globals.themeType == "Dark"
+                        ? Colors.grey
+                        : Colors.black,
                     unselectedLabelStyle: TextStyle(
                       fontSize: 22.0,
                       fontWeight: FontWeight.normal,
@@ -424,7 +426,9 @@ class _EventPageState extends State<EventPage>
                                 height:
                                     MediaQuery.of(context).size.height * 0.8,
                                 alignment: Alignment.center,
-                                child: CircularProgressIndicator());
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.primaryVariant,
+                                ));
                           } else if (state is CalendarListSuccess) {
                             return _buildTabs(state, currentOrientation);
                           } else if (state is ErrorLoading) {
