@@ -52,7 +52,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     Orientation currentOrientation = MediaQuery.of(context).orientation;
     final scaffoldKey = Scaffold.of(context);
     return PopupMenuButton<IconMenu>(
-      color: Theme.of(context).backgroundColor,
+      color:  Globals.themeType != 'Dark'
+
+          ? Theme.of(context).backgroundColor
+
+          : Theme.of(context).colorScheme.secondary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
       ),

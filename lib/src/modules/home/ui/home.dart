@@ -128,6 +128,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   _checkVersionUpdateStatus(NewVersion newVersion) async {
     newVersion.showAlertIfNecessary(context: context);
+    
   }
 
   @override
