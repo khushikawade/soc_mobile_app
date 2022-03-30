@@ -47,7 +47,7 @@ class _StudentPageState extends State<StudentPage> {
     if (obj.appUrlC != null) {
       if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
         showDialog(
-          
+          barrierColor: Color.fromARGB(96, 73, 73, 75),
           context: context,
           builder: (_) => AppsFolderPage(
             obj: subList,
