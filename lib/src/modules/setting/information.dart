@@ -128,6 +128,7 @@ class _InformationPageState extends State<InformationPage> {
         appBar: CustomAppBarWidget(
           isSearch: false,
           isShare: false,
+          
           appBarTitle: widget.appbarTitle,
           ishtmlpage: widget.ishtml,
           sharedpopBodytext: Globals.appSetting.appInformationC!
