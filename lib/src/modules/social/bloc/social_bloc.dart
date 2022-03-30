@@ -92,9 +92,11 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         } else {
           for (int i = 0; i < Globals.socialList.length; i++) {
             for (int j = 0; j < list.length; j++) {
-              if ("${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t'] + Overrides.SCHOOL_ID}" ==
-                  list[j].notificationId) {
-                //    if (Globals.socialList[i].guid['\$t'] == list[j].notificationId) {
+              if (Globals.socialList[i].guid['\$t'] + Overrides.SCHOOL_ID ==
+                      list[j].id
+                  // "${Globals.socialList[i].id.toString() + Globals.socialList[i].guid['\$t']}" ==list[j].notificationId
+                  ) {
+                //if (Globals.socialList[i].guid['\$t'] == list[j].notificationId) {
                 newList.add(Item(
                     id: Globals.socialList[i].id,
                     title: Globals.socialList[i].title,
@@ -156,13 +158,13 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         yield Loading();
 
         var data = await addSocailAction({
-          "Notification_Id__c": "${event.id.toString() + Overrides.SCHOOL_ID}",
+          "Notification_Id__c": event.id! + Overrides.SCHOOL_ID,
           "Title__c": "${event.title}",
           "Like__c": "${event.like}",
           "Thanks__c": "${event.thanks}",
           "Helpful__c": "${event.helpful}",
           "Share__c": "${event.shared}",
-          "Test_School__c": "${Globals.appSetting.isTestSchool}"
+          "Test_School__c": "${Globals.appSetting.isTestSchool}",
         });
         yield SocialActionSuccess(
           obj: data,
@@ -229,7 +231,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
     try {
       print("body : " + body.toString());
       final ResponseModel response = await _dbServices.postapi(
-          "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social",
+          "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
           body: body);
 
       if (response.statusCode == 200) {
