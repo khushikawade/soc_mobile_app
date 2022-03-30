@@ -86,21 +86,34 @@ class AppsFolderPageState extends State<AppsFolderPage>
     //List onlyShowList = apps.where((i) => i.status == 'Show').toList();
     return Center(
       child: Material(
+        // elevation: 99,
+        // shadowColor: Colors.red,
         color: Colors.transparent,
         child: ScaleTransition(
           scale: scaleAnimation!,
           child: Container(
-            // color: Colors.red,
             margin: const EdgeInsets.only(
                 top: 20, left: 20.0, right: 20, bottom: 20),
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: ShapeDecoration(
+                // shadows: [
+                //   BoxShadow(
+                //     color: Theme.of(context)
+                //         .colorScheme
+                //         .primaryVariant
+                //         .withOpacity(0.3),
+                //     spreadRadius: 2,
+                //     blurRadius: 2,
+                //     // changes position of shadow
+                //   ),
+                // ],
                 // color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0))),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
               child: Scaffold(
+                // backgroundColor: Colors.white,
                 body: Padding(
                   padding: const EdgeInsets.only(
                       top: 20, left: 20.0, right: 20, bottom: 20),

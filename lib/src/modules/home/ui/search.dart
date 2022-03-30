@@ -214,6 +214,7 @@ class _SearchPageState extends State<SearchPage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
+                        isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
@@ -262,15 +263,13 @@ class _SearchPageState extends State<SearchPage> {
 
   _launchURL(obj) async {
     if (obj.urlC.toString().split(":")[0] == 'http' || obj.deepLink == 'YES') {
-      
       if (obj.objectName == "Student_App__c" && obj.appURLC != null) {
-       
         await Utility.launchUrlOnExternalBrowser(obj.appURLC);
       } else if (obj.urlC != null && obj.urlC != "URL__c") {
         await Utility.launchUrlOnExternalBrowser(obj.urlC);
-      }else {
-      Utility.showSnackBar(_scaffoldKey, "No URL available", context);
-    }
+      } else {
+        Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+      }
     } else if (obj.urlC != null || obj.appURLC != null) {
       await Navigator.push(
           context,
@@ -306,7 +305,7 @@ class _SearchPageState extends State<SearchPage> {
                     color: Theme.of(context).colorScheme.primaryVariant),
                 focusNode: myFocusNode,
                 controller: _controller,
-                cursorColor: Colors.black,
+                cursorColor: Theme.of(context).colorScheme.primaryVariant,
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30.0)),
@@ -325,6 +324,7 @@ class _SearchPageState extends State<SearchPage> {
                     const IconData(0xe805,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
+                    color: Theme.of(context).colorScheme.primaryVariant,
                     size: Globals.deviceType == "phone" ? 20 : 28,
                   ),
                   suffixIcon: _controller.text.isEmpty
@@ -339,6 +339,7 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Icon(
                             Icons.clear,
+                            color: Theme.of(context).colorScheme.primaryVariant,
                             size: Globals.deviceType == "phone" ? 20 : 28,
                           ),
                         ),
@@ -375,7 +376,8 @@ class _SearchPageState extends State<SearchPage> {
             return Expanded(
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.7,
-                child: Center(child: CircularProgressIndicator(
+                child: Center(
+                    child: CircularProgressIndicator(
                   color: Theme.of(context).colorScheme.primaryVariant,
                 )),
               ),
@@ -541,16 +543,12 @@ class _SearchPageState extends State<SearchPage> {
                     }).toList(),
                   ))
                 : Expanded(
-                    child: ListView(
-                      children: [
-                        NoDataFoundErrorWidget(
-                          isSearchpage: true,
-                          isResultNotFoundMsg: false,
-                          marginTop: MediaQuery.of(context).size.height * 0.15,
-                          isNews: false,
-                          isEvents: false,
-                        ),
-                      ],
+                    child: NoDataFoundErrorWidget(
+                      isSearchpage: true,
+                      isResultNotFoundMsg: false,
+                      marginTop: MediaQuery.of(context).size.height * 0.15,
+                      isNews: false,
+                      isEvents: false,
                     ),
                   );
           } else if (state is SearchLoading) {

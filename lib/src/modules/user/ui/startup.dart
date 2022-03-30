@@ -61,10 +61,11 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   _onNotificationTap() {
-    OneSignal.shared.setNotificationOpenedHandler((OSNotificationOpenedResult result) {     
-        this.setState(() {
-          Globals.isNewTap = true;
-        });
+    OneSignal.shared
+        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+      this.setState(() {
+        Globals.isNewTap = true;
+      });
     });
   }
 
@@ -128,7 +129,9 @@ class _StartupPageState extends State<StartupPage> {
               )
             : Text(
                 "Loading ...",
-                style: TextStyle(fontSize: 28, color: Colors.black),
+                style: TextStyle(
+                    fontSize: 28,
+                    color: Theme.of(context).colorScheme.primaryVariant),
               ));
   }
 

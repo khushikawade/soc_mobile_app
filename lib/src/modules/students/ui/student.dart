@@ -47,6 +47,7 @@ class _StudentPageState extends State<StudentPage> {
     if (obj.appUrlC != null) {
       if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
         showDialog(
+          
           context: context,
           builder: (_) => AppsFolderPage(
             obj: subList,
@@ -307,7 +308,8 @@ class _StudentPageState extends State<StudentPage> {
                   bloc: _bloc,
                   builder: (BuildContext contxt, StudentState state) {
                     if (state is StudentInitial || state is Loading) {
-                      return Center(child: CircularProgressIndicator(
+                      return Center(
+                          child: CircularProgressIndicator(
                         color: Theme.of(context).colorScheme.primaryVariant,
                       ));
                     } else if (state is StudentDataSucess) {

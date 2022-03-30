@@ -112,8 +112,9 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
             HorzitalSpacerWidget(_kPadding / 1.5),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(bottom: 40),
+        body: Container(
+          color: Colors.white,
+          padding: const EdgeInsets.only(bottom: 25),
           child: WebView(
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (controller) {

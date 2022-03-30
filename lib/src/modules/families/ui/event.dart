@@ -199,9 +199,14 @@ class _EventPageState extends State<EventPage>
           children: [
             Container(
               color: Theme.of(context).colorScheme.secondary,
+              height: 6,
+            ),
+            Container(
+              color: Theme.of(context).colorScheme.secondary,
               child: Center(
                   child: Container(
-                padding: EdgeInsets.only(left: 10, right: 10,top: 2,bottom: 2),
+                padding:
+                    EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(30)),
                   color: Theme.of(context).colorScheme.background,
@@ -215,10 +220,6 @@ class _EventPageState extends State<EventPage>
                       .copyWith(color: Colors.red),
                 ),
               )),
-            ),
-            Container(
-              color: Theme.of(context).colorScheme.secondary,
-              height: 6,
             ),
           ],
         );
@@ -362,15 +363,13 @@ class _EventPageState extends State<EventPage>
                           : new RefreshIndicator(
                               key: refreshKey1,
                               onRefresh: refreshPage,
-                              child: ListView(children: [
-                                NoDataFoundErrorWidget(
-                                  isCalendarPageOrientationLandscape:
-                                      currentOrientation,
-                                  isResultNotFoundMsg: false,
-                                  isNews: false,
-                                  isEvents: true,
-                                ),
-                              ]),
+                              child: NoDataFoundErrorWidget(
+                                isCalendarPageOrientationLandscape:
+                                    currentOrientation,
+                                isResultNotFoundMsg: false,
+                                isNews: false,
+                                isEvents: true,
+                              ),
                             ),
                     ])),
               ]))
@@ -427,7 +426,9 @@ class _EventPageState extends State<EventPage>
                                     MediaQuery.of(context).size.height * 0.8,
                                 alignment: Alignment.center,
                                 child: CircularProgressIndicator(
-                                  color: Theme.of(context).colorScheme.primaryVariant,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant,
                                 ));
                           } else if (state is CalendarListSuccess) {
                             return _buildTabs(state, currentOrientation);

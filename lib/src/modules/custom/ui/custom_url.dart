@@ -1,7 +1,9 @@
+import 'package:Soc/src/modules/custom/ui/open_external.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/modules/custom/ui/home_inapp_url_launcher.dart';
@@ -32,6 +34,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
 
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
+  var pdfViewerKey = UniqueKey();
   bool? iserrorstate = false;
 
   @override
@@ -74,7 +77,6 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     buildPage(widget.obj),
-                    
                     Container(
                       height: 0,
                       width: 0,
@@ -95,7 +97,6 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
                     ),
                   ],
                 );
-                
               },
               child: Container()),
           onRefresh: refreshPage,
@@ -104,7 +105,7 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.background,
         key: _scaffoldKey,
         appBar: AppBarWidget(
           marginLeft: 30,
@@ -120,7 +121,12 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
       return obj.appUrlC != null && obj.appUrlC != ""
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
               // || obj.deepLinkC == 'YES'
-              ? Container()
+              ? Expanded(
+                  child: UrlNotSecure(
+                    url: obj.appUrlC,
+                    connected: true,
+                  ),
+                )
               : HomeInAppUrlLauncer(
                   url: obj.appUrlC,
                   language: Globals.selectedLanguage,
@@ -176,7 +182,9 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
     } else if (obj.typeOfPageC == "PDF URL" || obj.typeOfSectionC == "PDF") {
       return obj.pdfURL != null
           ? Expanded(
-              child: HomePdfViewerPage(
+              child: CommonPdfViewerPage(
+                tittle: '',
+                isHomePage: true,
                 url: obj.pdfURL,
                 isbuttomsheet: true,
                 language: Globals.selectedLanguage,
@@ -229,6 +237,4 @@ class _CustomUrlPageState extends State<CustomUrlPage> {
               connected: true)),
     );
   }
-
- 
 }

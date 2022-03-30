@@ -64,7 +64,7 @@ class LanguageSelector {
               ),
               child: RadioListTile(
                 controlAffinity: ListTileControlAffinity.trailing,
-                activeColor: Theme.of(context).colorScheme.primary,
+                activeColor: Theme.of(context).colorScheme.primaryVariant,
                 contentPadding: EdgeInsets.zero,
                 value: selectedLanguage == language ? true : false,
                 onChanged: (dynamic val) {
@@ -178,6 +178,9 @@ class LanguageSelector {
                                   return TextFormField(
                                       focusNode: myFocusNode,
                                       controller: _controller,
+                                      cursorColor: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
                                       decoration: InputDecoration(
                                         hintText: translatedMessage.toString(),
                                         filled: true,
@@ -206,6 +209,9 @@ class LanguageSelector {
                                           const IconData(0xe805,
                                               fontFamily: Overrides.kFontFam,
                                               fontPackage: Overrides.kFontPkg),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
                                           size: Globals.deviceType == "phone"
                                               ? 20
                                               : 28,
@@ -227,6 +233,9 @@ class LanguageSelector {
                                                           "phone"
                                                       ? 20
                                                       : 28,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primaryVariant,
                                                 ),
                                               ),
                                       ),
