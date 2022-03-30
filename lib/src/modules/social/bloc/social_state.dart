@@ -33,11 +33,11 @@ class SocialError extends SocialState {
 // ignore: must_be_immutable
 class SocialDataSucess extends SocialState {
   List<Item>? obj;
-  bool? reload;
-  SocialDataSucess({this.obj, this.reload});
 
-  SocialDataSucess copyWith({final obj, final reload}) {
-    return SocialDataSucess(obj: obj ?? this.obj, reload: this.reload);
+  SocialDataSucess({this.obj,});
+
+  SocialDataSucess copyWith({final obj}) {
+    return SocialDataSucess(obj: obj ?? this.obj,);
   }
 
   @override
@@ -46,11 +46,23 @@ class SocialDataSucess extends SocialState {
 
 class SocialReload extends SocialState {
   List<Item>? obj;
-  bool? reload;
-  SocialReload({this.obj, this.reload});
 
-  SocialReload copyWith({final obj, final reload}) {
-    return SocialReload(obj: obj ?? this.obj, reload: this.reload);
+  SocialReload({this.obj,});
+
+  SocialReload copyWith({final obj,}) {
+    return SocialReload(obj: obj ?? this.obj,);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+class SocialInitialState extends SocialState {
+  List<Item>? obj;
+
+  SocialInitialState({this.obj,});
+
+  SocialInitialState copyWith({final obj,}) {
+    return SocialInitialState(obj: obj ?? this.obj,);
   }
 
   @override
