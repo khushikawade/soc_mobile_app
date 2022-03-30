@@ -21,7 +21,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   initState() {
     super.initState();
-    
+
     _onNotificationTap();
 
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
@@ -39,12 +39,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
       if (brightness == Brightness.dark) {
         Globals.themeType = 'Dark';
-        
       }
       if (brightness == Brightness.light) {
         Globals.themeType = 'Light';
-        
-      
       }
     };
     WidgetsBinding.instance!.addObserver(this);
@@ -96,14 +93,14 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       dark: AppTheme.darkTheme,
       initial: AdaptiveThemeMode.system,
       builder: (theme, darkTheme) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
-          title: 'Solved',
-          theme: theme,
-          darkTheme: darkTheme,
-          home: StartupPage(),
-          //   home: SchoolIDLogin(),
-          ),
+        debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
+        title: 'Solved',
+        theme: theme,
+        darkTheme: darkTheme,
+        home: StartupPage(),
+        //   home: SchoolIDLogin(),
+      ),
     );
   }
 
@@ -115,6 +112,4 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       });
     });
   }
-
-  
 }
