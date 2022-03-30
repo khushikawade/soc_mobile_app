@@ -7,12 +7,9 @@ class Theme {
   int? hiveobjid;
   @HiveField(1)
   String? themeType;
-  // dynamic appIconC;
-  
-
 
   Theme(
-      this.hiveobjid,
-      this.themeType,
-      );
+    this.hiveobjid,
+    this.themeType,
+  );
 }

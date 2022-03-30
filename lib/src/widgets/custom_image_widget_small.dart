@@ -17,7 +17,6 @@ class CustomIconMode extends StatefulWidget {
 class _CustomIconModeState extends State<CustomIconMode> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
 

@@ -730,7 +730,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Future _setFree() async {

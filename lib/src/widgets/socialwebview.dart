@@ -28,11 +28,9 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
   String url = "";
   static const double _kPadding = 16.0;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
-  // final flutterWebviewPlugin = new FlutterWebviewPlugin();
+
   WebViewController? _webViewController;
   bool? iserrorstate = false;
-  // StreamSubscription<WebViewStateChanged>?
-  //     _onchanged; // here we checked the url state if it loaded or start Load or abort Load
 
   @override
   void initState() {
@@ -43,7 +41,6 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
   @override
   void dispose() {
     super.dispose();
-    // flutterWebviewPlugin.dispose();
   }
 
   @override
@@ -52,8 +49,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
         appBar: AppBar(
           elevation: 0.0,
           leading: BackButtonWidget(),
-          title: //SizedBox(width: 100.0, height: 60.0, child:
-              AppLogoWidget(
+          title: AppLogoWidget(
             marginLeft: 55,
           ),
           //),
@@ -99,7 +95,6 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
                     padding: EdgeInsets.zero,
                     constraints: BoxConstraints(),
                     onPressed: () {
-                      // urlobj.callurlLaucher(context, url);
                       Utility.launchUrlOnExternalBrowser(url);
                     },
                     icon: Icon(

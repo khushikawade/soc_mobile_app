@@ -86,7 +86,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                         )));
             break;
           case IconsMenu.Permissions:
-            // AppSettings.openAppSettings();
             OpenAppsSettings.openAppsSettings(
                 settingsCode: SettingsCode.APP_SETTINGS);
             break;
@@ -129,7 +128,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return AppBar(
-          // automaticallyImplyLeading: true,
           leadingWidth: _kIconSize,
           elevation: 0.0,
           leading: BubbleShowcase(
@@ -137,7 +135,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             enabled: !Globals.hasShowcaseInitialised.value,
             showCloseButton: false,
             bubbleShowcaseId: 'my_bubble_showcase',
-            // doNotReopenOnClose: true,
             bubbleSlides: [
               _firstSlide(context),
               _openSettingsButtonSlide(context)
@@ -174,7 +171,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           ),
           title: AppLogoWidget(
             marginLeft: marginLeft,
-          ), //SizedBox(width: 100.0, height: 60.0, child: AppLogoWidget()),
+          ),
           actions: <Widget>[
             SearchButtonWidget(
               language: 'English',
@@ -225,7 +222,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return Container(
         padding: EdgeInsets.only(left: 5),
         child: IconButton(
-          //  constraints: BoxConstraints(),
           onPressed: () {
             if (Platform.isAndroid) {
               OpenAppsSettings.openAppsSettings(

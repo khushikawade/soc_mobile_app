@@ -1,10 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
-// import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-// import 'package:permission_handler/permission_handler.dart';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -17,37 +13,31 @@ import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
-class HomeInAppUrlLauncer extends StatefulWidget {
+class HomeInAppUrlLauncher extends StatefulWidget {
   final bool? isiFrame;
   final String url;
 
   final String? language;
   @override
-  HomeInAppUrlLauncer(
+  HomeInAppUrlLauncher(
       {Key? key, required this.url, required this.language, this.isiFrame})
       : super(key: key);
-  _HomeInAppUrlLauncerState createState() => new _HomeInAppUrlLauncerState();
+  _HomeInAppUrlLauncherState createState() => new _HomeInAppUrlLauncherState();
 }
 
-class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
+class _HomeInAppUrlLauncherState extends State<HomeInAppUrlLauncher> {
   bool? iserrorstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
   HomeBloc _homeBloc = HomeBloc();
-  // WebViewController webViewController;
   String? checkUrlChange;
+
   @override
   void initState() {
     super.initState();
     checkUrlChange = widget.url;
-    // _getPermission();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -63,7 +53,6 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
                 Widget child,
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
-
                 if (connected) {
                   if (iserrorstate == true) {
                     iserrorstate = false;
@@ -78,11 +67,9 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
                         shrinkWrap: true,
                         children: [
                             Container(
-                              // height: webHight + 20,
                               height: MediaQuery.of(context).size.height,
                               // width: MediaQuery.of(context).size.width,
                               child: WebView(
-                                //gestureRecognizers: Set()..add(Factory<VerticalDragGestureRecognizer>(()=>VerticalDragGestureRecognizer())),
                                 gestureRecognizers: Set()
                                   ..add(Factory<VerticalDragGestureRecognizer>(
                                       () => VerticalDragGestureRecognizer()
@@ -99,7 +86,6 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
                                             }
                                           });
                                         })),
-
                                 gestureNavigationEnabled:
                                     widget.isiFrame == true ? true : false,
                                 initialUrl: widget.isiFrame == true
@@ -125,10 +111,9 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
                                     if (state is BottomNavigationBarSuccess) {
                                       AppTheme.setDynamicTheme(
                                           Globals.appSetting, context);
-                                      // Globals.homeObject = state.obj;
                                       Globals.appSetting =
                                           AppSetting.fromJson(state.obj);
-                                      setState(() {});
+                                      //setState(() {});
                                     }
                                   },
                                   child: EmptyContainer()),
@@ -144,9 +129,8 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
 
   Future refreshPage() async {
     await Future.delayed(Duration(seconds: 2));
-
     refreshKey.currentState?.show(atTop: false);
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
     Globals.webViewController1!.reload();
     if (checkUrlChange == widget.url) {
       Globals.webViewController1!.reload();
@@ -156,6 +140,4 @@ class _HomeInAppUrlLauncerState extends State<HomeInAppUrlLauncer> {
       checkUrlChange = widget.url;
     }
   }
-
-  
 }

@@ -70,14 +70,8 @@ class _StudentPageState extends State<StudentPage> {
           }
         } else {
           try {
-            // await launch(obj.appUrlC!);
             await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
           } catch (e) {}
-          // if (await canLaunch(obj.appUrlC!)) {
-          //   await launch(obj.appUrlC!);
-          // } else {
-          //   throw 'Could not launch ${obj.appUrlC}';
-          // }
         }
       }
     } else {
@@ -88,9 +82,7 @@ class _StudentPageState extends State<StudentPage> {
   Widget _buildGrid(
       List<StudentApp> list, List<StudentApp> subList, String key) {
     return list.length > 0
-        ? //new OrientationBuilder(builder: (context, orientation) {
-        //  print(orientation);
-        GridView.count(
+        ? GridView.count(
             key: ValueKey(key),
             padding: const EdgeInsets.only(
                 bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding),
@@ -149,9 +141,6 @@ class _StudentPageState extends State<StudentPage> {
                                   fromLanguage: "en",
                                   toLanguage: Globals.selectedLanguage,
                                   builder: (translatedMessage) => Container(
-                                    // alignment: Alignment.center,
-                                    // padding: EdgeInsets.symmetric(horizontal: 10),
-                                    // width: orientation == Orientation.portrait?MediaQuery.of(context).size.width*0.3:null,
                                     child: MediaQuery.of(context).orientation ==
                                                 Orientation.portrait &&
                                             translatedMessage
@@ -249,18 +238,14 @@ class _StudentPageState extends State<StudentPage> {
                                                                     : 24)),
                                               ),
                                   ),
-                                )
-
-                                    // ),)))
-                                    ),
+                                )),
                               ],
                             )),
                       )
                     : Container();
               },
             ),
-          ) //;
-        // })
+          )
         : Center(
             child: TranslationWidget(
               message: "No apps available here",
@@ -277,7 +262,7 @@ class _StudentPageState extends State<StudentPage> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     _bloc.add(StudentPageEvent());
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Widget _body(String key) {
@@ -307,7 +292,8 @@ class _StudentPageState extends State<StudentPage> {
                   bloc: _bloc,
                   builder: (BuildContext contxt, StudentState state) {
                     if (state is StudentInitial || state is Loading) {
-                      return Center(child: CircularProgressIndicator(
+                      return Center(
+                          child: CircularProgressIndicator(
                         color: Theme.of(context).colorScheme.primaryVariant,
                       ));
                     } else if (state is StudentDataSucess) {
@@ -340,7 +326,7 @@ class _StudentPageState extends State<StudentPage> {
                     listener: (context, state) async {
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        //  Globals.homeObject = state.obj;
+
                         Globals.appSetting = AppSetting.fromJson(state.obj);
                         setState(() {});
                       } else if (state is HomeErrorReceived) {
@@ -370,39 +356,27 @@ class _StudentPageState extends State<StudentPage> {
             setState(() {});
           },
         ),
-        body:
-            // Globals.homeObject["Student_Banner_Image__c"] != null &&
-            //         Globals.homeObject["Student_Banner_Image__c"] != ''
-            // Globals.appSetting.studentBannerColorC != null &&
-            //         Globals.appSetting.studentBannerColorC != ''
-            Globals.appSetting.studentBannerImageC != null &&
-                    Globals.appSetting.studentBannerImageC != ""
-                ? NestedScrollView(
+        body: Globals.appSetting.studentBannerImageC != null &&
+                Globals.appSetting.studentBannerImageC != ""
+            ? NestedScrollView(
 
-                    // controller: _scrollController,
-                    headerSliverBuilder:
-                        (BuildContext context, bool innerBoxIsScrolled) {
-                      return <Widget>[
-                        Globals.appSetting.studentBannerImageC != null
-                            // Globals.homeObject["Student_Banner_Image__c"] != null
-                            ? BannerImageWidget(
-                                imageUrl:
-                                    Globals.appSetting.studentBannerImageC!,
-                                // Globals.homeObject["Student_Banner_Image__c"],
-                                bgColor:
-                                    // Globals.homeObject["Student_Banner_Color__c"] !=
-                                    Globals.appSetting.studentBannerColorC !=
-                                            null
-                                        ? Utility.getColorFromHex(Globals
-                                                .appSetting.studentBannerColorC!
-                                            // Globals.homeObject["Student_Banner_Color__c"]
-                                            )
-                                        : null,
-                              )
-                            : SliverAppBar(),
-                      ];
-                    },
-                    body: _body('body1'))
-                : _body('body2'));
+                // controller: _scrollController,
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    Globals.appSetting.studentBannerImageC != null
+                        ? BannerImageWidget(
+                            imageUrl: Globals.appSetting.studentBannerImageC!,
+                            bgColor:
+                                Globals.appSetting.studentBannerColorC != null
+                                    ? Utility.getColorFromHex(
+                                        Globals.appSetting.studentBannerColorC!)
+                                    : null,
+                          )
+                        : SliverAppBar(),
+                  ];
+                },
+                body: _body('body1'))
+            : _body('body2'));
   }
 }

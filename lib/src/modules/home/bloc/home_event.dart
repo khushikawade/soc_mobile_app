@@ -6,14 +6,12 @@ abstract class HomeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchBottomNavigationBar extends HomeEvent {
+class FetchStandardNavigationBar extends HomeEvent {
   List<Object> get props => [];
 }
 
 class GlobalSearchEvent extends HomeEvent {
   final String? keyword;
-  // final String? objectName;
-
   GlobalSearchEvent({
     @required this.keyword,
   });
@@ -24,10 +22,9 @@ class GlobalSearchEvent extends HomeEvent {
   @override
   String toString() => 'GlobalSearchEvent { keyword: $keyword}';
 }
+
 class GlobalSearchEventOffline extends HomeEvent {
   final String? keyword;
-  // final String? objectName;
-
   GlobalSearchEventOffline({
     @required this.keyword,
   });

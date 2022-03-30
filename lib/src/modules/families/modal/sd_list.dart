@@ -1,6 +1,4 @@
 import 'package:hive/hive.dart';
-
-import '../../staff_directory/modal/../../families/modal/sd_attributes.dart';
 part 'sd_list.g.dart';
 
 @HiveType(typeId: 3)

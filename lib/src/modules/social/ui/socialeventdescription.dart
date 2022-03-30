@@ -176,7 +176,7 @@ class SocialDescription extends StatelessWidget {
     refreshKey.currentState?.show(atTop: false);
     
      await Future.delayed(Duration(seconds: 2));
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Widget _buildBottomSection(BuildContext context) {

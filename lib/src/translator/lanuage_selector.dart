@@ -53,7 +53,6 @@ class LanguageSelector {
         children: [
           Container(
             margin: EdgeInsets.only(
-              // top: 5,
               left: 10,
               right: 10,
             ),
@@ -258,12 +257,6 @@ class LanguageSelector {
           }
         });
   }
-  // });
-  // future.then((void value) => _closeModal());
-
-  // void _closeModal() {
-  //   SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-  // }
 
   onItemChanged(String value, StateSetter setState) {
     setState(() {

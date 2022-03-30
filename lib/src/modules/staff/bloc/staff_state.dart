@@ -25,10 +25,9 @@ class ErrorInStaffLoading extends StaffState {
   List<Object> get props => [err];
 }
 
-// ignore: must_be_immutable
 class StaffDataSucess extends StaffState {
-  List<SharedList>? obj;
-  List<SharedList>? subFolder;
+  final List<SharedList>? obj;
+  final List<SharedList>? subFolder;
 
   StaffDataSucess({this.obj, this.subFolder});
 
@@ -41,10 +40,9 @@ class StaffDataSucess extends StaffState {
   List<Object> get props => [];
 }
 
-// ignore: must_be_immutable
 class StaffSubListSucess extends StaffState {
-  List<SharedList>? obj;
-  List<SharedList>? subFolder;
+  final List<SharedList>? obj;
+  final List<SharedList>? subFolder;
 
   StaffSubListSucess({this.obj, this.subFolder});
 

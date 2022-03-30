@@ -15,11 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
 
-// ignore: must_be_immutable
-
 class InformationPage extends StatefulWidget {
-  // String htmlText;
-
   final bool isbuttomsheet;
   final bool ishtml;
   final String appbarTitle;
@@ -28,7 +24,6 @@ class InformationPage extends StatefulWidget {
   @override
   InformationPage({
     Key? key,
-    // required this.htmlText,
     required this.isbuttomsheet,
     required this.ishtml,
     required this.appbarTitle,
@@ -50,7 +45,7 @@ class _InformationPageState extends State<InformationPage> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(FetchBottomNavigationBar());
+    _bloc.add(FetchStandardNavigationBar());
     Globals.callsnackbar = true;
   }
 
@@ -143,27 +138,7 @@ class _InformationPageState extends State<InformationPage> {
         ),
         body: RefreshIndicator(
           key: refreshKey,
-          child:
-              // OfflineBuilder(
-              //     connectivityBuilder: (
-              //       BuildContext context,
-              //       ConnectivityResult connectivity,
-              //       Widget child,
-              //     ) {
-              //       final bool connected = connectivity != ConnectivityResult.none;
-
-              //       if (connected) {
-              //         if (iserrorstate == true) {
-              //           iserrorstate = false;
-              //           _bloc.add(FetchBottomNavigationBar());
-              //         }
-              //       } else if (!connected) {
-              //         iserrorstate = true;
-              //       }
-
-              //       return connected
-              //           ?
-              Column(
+          child: Column(
             children: [
               Expanded(
                 child: isloadingstate!
@@ -181,15 +156,14 @@ class _InformationPageState extends State<InformationPage> {
                   listener: (context, state) async {
                     if (state is HomeLoading) {
                       isloadingstate = true;
-                      // print('inloading state :${isloadingstate!}');
                     }
-
                     if (state is BottomNavigationBarSuccess) {
                       AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      // Globals.homeObject = state.obj;
+
                       Globals.appSetting = AppSetting.fromJson(state.obj);
-                      setState(() {});
-                      isloadingstate = false;
+                      setState(() {
+                        isloadingstate = false;
+                      });
                     }
                   },
                   child: Container(),
@@ -197,18 +171,14 @@ class _InformationPageState extends State<InformationPage> {
               ),
             ],
           ),
-          // : NoInternetErrorWidget(
-          //     connected: connected, issplashscreen: false);
-          // },
-          // child: Container()),
           onRefresh: refreshPage,
         ));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
-    _bloc.add(FetchBottomNavigationBar());
+    await Future.delayed(Duration(seconds: 2));
+    _bloc.add(FetchStandardNavigationBar());
   }
 
   _launchURL(obj) async {

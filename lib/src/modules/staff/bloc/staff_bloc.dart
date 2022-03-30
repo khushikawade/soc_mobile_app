@@ -31,7 +31,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
             LocalDatabase(Strings.staffObjectName);
 
         List<SharedList>? _localData = await _localDb.getData();
-         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
           yield StaffLoading();

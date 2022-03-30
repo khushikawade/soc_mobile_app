@@ -20,17 +20,15 @@ part 'custom_event.dart';
 part 'custom_state.dart';
 
 class CustomBloc extends Bloc<CustomEvent, CustomState> {
-  // var data;
   CustomBloc() : super(CustomInitial());
   final DbServices _dbServices = DbServices();
-
   CustomState get initialState => CustomInitial();
 
   @override
   Stream<CustomState> mapEventToState(
     CustomEvent event,
   ) async* {
-    if (event is CustomsEvent) {
+    if (event is CustomEvents) {
       try {
         // yield CustomLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
         String? _objectName = "${Strings.customObjectName}${event.id}";
@@ -165,7 +163,6 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
-
         List<CalendarEventList>? _localData = await _localDb.getData();
 
         if (_localData.isEmpty) {
@@ -178,6 +175,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           final DateFormat formatter = DateFormat('yyyy-MM-dd');
           final DateTime currentDate =
               DateTime.parse(formatter.format(now).toString());
+
           for (int i = 0; i < _localData.length; i++) {
             try {
               var temp = _localData[i].start.toString().contains('dateTime')
@@ -190,6 +188,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
               }
             } catch (e) {}
           }
+
           futureListobj.sort((a, b) {
             var adate = DateTime.parse(a.start.toString().contains('dateTime')
                 ? a.start['dateTime'].split('T')[0]
@@ -201,6 +200,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
             return adate.compareTo(
                 bdate); //to get the order other way just switch `adate & bdate`
           });
+
           pastListobj.sort((a, b) {
             var adate = DateTime.parse(a.start.toString().contains('dateTime')
                 ? a.start['dateTime'].split('T')[0]
@@ -212,11 +212,9 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
             return bdate.compareTo(
                 adate); //to get the order other way just switch `adate & bdate`
           });
+
           yield CalendarListSuccess(
               futureListobj: futureListobj, pastListobj: pastListobj);
-
-          // futureListobj.clear();
-          // pastListobj.clear();
         }
 
         List<CalendarEventList> list =
@@ -227,7 +225,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           _localDb.addData(e);
         });
 
-        List<CalendarEventList>? _localData1 = await _localDb.getData();
+        // List<CalendarEventList>? _localData1 = await _localDb.getData();
         // print(_localData1);
         List<CalendarEventList>? futureListobj = [];
         List<CalendarEventList>? pastListobj = [];
@@ -236,6 +234,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         final DateFormat formatter = DateFormat('yyyy-MM-dd');
         final DateTime currentDate =
             DateTime.parse(formatter.format(now).toString());
+
         for (int i = 0; i < list.length; i++) {
           try {
             var temp = list[i].start.toString().contains('dateTime')
@@ -248,6 +247,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
             }
           } catch (e) {}
         }
+
         futureListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -274,7 +274,6 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {
-       
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
@@ -287,6 +286,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         final DateFormat formatter = DateFormat('yyyy-MM-dd');
         final DateTime currentDate =
             DateTime.parse(formatter.format(now).toString());
+
         for (int i = 0; i < _localData.length; i++) {
           try {
             var temp = _localData[i].start.toString().contains('dateTime')
@@ -299,6 +299,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
             }
           } catch (e) {}
         }
+
         futureListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -310,6 +311,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           return adate.compareTo(
               bdate); //to get the order other way just switch `adate & bdate`
         });
+
         pastListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -321,6 +323,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
+
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
       }
@@ -341,7 +344,6 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           'getSubRecords?parentId=$id&parentName=Custom_App_Section__c&objectName=Custom_App_Menu__c'));
       if (response.statusCode == 200) {
-        //   var dataArray = response.data["records"];
         List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();

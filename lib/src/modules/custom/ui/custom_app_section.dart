@@ -14,11 +14,11 @@ import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 
-class CustomPage extends StatefulWidget {
+class CustomAppSection extends StatefulWidget {
   final id;
   final CustomSetting obj;
   final searchObj;
-  CustomPage({
+  CustomAppSection({
     Key? key,
     required this.obj,
     this.id,
@@ -26,11 +26,10 @@ class CustomPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CustomPageState createState() => _CustomPageState();
+  _CustomAppSectionState createState() => _CustomAppSectionState();
 }
 
-class _CustomPageState extends State<CustomPage> {
-  // static const double _kLabelSpacing = 10.0;
+class _CustomAppSectionState extends State<CustomAppSection> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   CustomBloc _bloc = CustomBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -40,13 +39,13 @@ class _CustomPageState extends State<CustomPage> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(CustomsEvent(id: widget.obj.id));
+    _bloc.add(CustomEvents(id: widget.obj.id));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _bloc.add(CustomsEvent(id: widget.obj.id));
-    _homeBloc.add(FetchBottomNavigationBar());
+    _bloc.add(CustomEvents(id: widget.obj.id));
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Widget _body(String key) => Container(
@@ -61,7 +60,7 @@ class _CustomPageState extends State<CustomPage> {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
                   if (iserrorstate == true) {
-                    _bloc.add(CustomsEvent(id: widget.obj.id));
+                    _bloc.add(CustomEvents(id: widget.obj.id));
                     iserrorstate = false;
                   }
                 } else if (!connected) {
@@ -102,7 +101,6 @@ class _CustomPageState extends State<CustomPage> {
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
-                              // Globals.homeObject = state.obj;
                               Globals.appSetting =
                                   AppSetting.fromJson(state.obj);
                               setState(() {});
@@ -132,7 +130,6 @@ class _CustomPageState extends State<CustomPage> {
       body: widget.obj.customBannerImageC != null &&
               widget.obj.customBannerImageC != ''
           ? NestedScrollView(
-              // controller: _scrollController,
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
@@ -150,5 +147,4 @@ class _CustomPageState extends State<CustomPage> {
           : _body('body1'),
     );
   }
-
 }

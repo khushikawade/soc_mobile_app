@@ -1,11 +1,9 @@
-import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class BannerImageWidget extends StatefulWidget {
   final String imageUrl;
   final Color? bgColor;
@@ -38,7 +36,6 @@ class _BannerImageWidgetState extends State<BannerImageWidget> {
             ),
           ),
           errorWidget: (context, url, error) {
-            
             return Container();
           },
         ),

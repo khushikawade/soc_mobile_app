@@ -17,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../globals.dart';
 
-
 class SettingPage extends StatefulWidget {
   final bool isbuttomsheet;
   final String appbarTitle;
@@ -48,7 +47,7 @@ class _SettingPageState extends State<SettingPage> {
     OneSignal.shared
         .getDeviceState()
         .then((value) => {pushState(value!.pushDisabled)});
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
     Globals.callsnackbar = true;
     // if (Globals.darkTheme != null) {
     //   _theme = Globals.darkTheme!;
@@ -59,10 +58,6 @@ class _SettingPageState extends State<SettingPage> {
     //   Globals.systemTheme = false;
     // }
   }
-
-  // void appversion() async {
-  //   packageInfo = await PackageInfo.fromPlatform();
-  // }
 
   pushState(data) async {
     SharedPreferences pushStatus = await SharedPreferences.getInstance();
@@ -327,7 +322,7 @@ class _SettingPageState extends State<SettingPage> {
     return Container(
         padding: EdgeInsets.all(16),
         child: Text(
-         Globals.packageInfo!.version,
+          Globals.packageInfo!.version,
           style: Theme.of(context).textTheme.headline2!,
         ));
   }
@@ -337,7 +332,6 @@ class _SettingPageState extends State<SettingPage> {
       _buildHeading("Push Notifcation"),
       _buildNotification(),
       // _buildHeading('Display Setting'),
-
       // _buildSystemThemeMode(),
       // _buildThemeMode(),
       _buildHeading("Acknowledgements"),
@@ -367,29 +361,7 @@ class _SettingPageState extends State<SettingPage> {
         body: RefreshIndicator(
           key: refreshKey,
           child: Container(
-              child:
-                  // OfflineBuilder(
-                  //     connectivityBuilder: (
-                  //       BuildContext context,
-                  //       ConnectivityResult connectivity,
-                  //       Widget child,
-                  //     ) {
-                  //       final bool connected =
-                  //           connectivity != ConnectivityResult.none;
-
-                  //       if (connected) {
-                  //         if (iserrorstate == true) {
-                  //           _homeBloc.add(FetchBottomNavigationBar());
-                  //           iserrorstate = false;
-                  //         }
-                  //       } else if (!connected) {
-                  //         iserrorstate = true;
-                  //       }
-
-                  // return
-                  //  connected
-                  //     ?
-                  Column(
+              child: Column(
             children: [
               Expanded(
                   child: isloadingstate!
@@ -407,8 +379,8 @@ class _SettingPageState extends State<SettingPage> {
 
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        //Globals.homeObject = state.obj;
-                          Globals.appSetting = AppSetting.fromJson(state.obj);
+
+                        Globals.appSetting = AppSetting.fromJson(state.obj);
                         isloadingstate = false;
                         setState(() {});
                       }
@@ -417,17 +389,13 @@ class _SettingPageState extends State<SettingPage> {
               ),
             ],
           )),
-          // : NoInternetErrorWidget(
-          //     connected: connected, issplashscreen: false);
-          // },
-          // child: Container())),
           onRefresh: refreshPage,
         ));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
-    _homeBloc.add(FetchBottomNavigationBar());
+    await Future.delayed(Duration(seconds: 2));
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

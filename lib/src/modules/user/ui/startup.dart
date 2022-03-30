@@ -21,7 +21,6 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
-// import '../bloc/user_bloc.dart';
 
 class StartupPage extends StatefulWidget {
   @override
@@ -32,9 +31,9 @@ class _StartupPageState extends State<StartupPage> {
   bool flag = true;
   bool showlogin = true;
   final HomeBloc _bloc = new HomeBloc();
-  // UserBloc _loginBloc = new UserBloc();
+
   final NewsBloc _newsBloc = new NewsBloc();
-  // static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
   AndroidDeviceInfo? androidInfo;
   IosDeviceInfo? ios;
   bool? isnetworkisuue = false;
@@ -43,12 +42,12 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     _onNotificationTap();
-    // print("${Globals.deviceToken}, ${Globals.deviceToken}");
+
     getindicatorValue();
     appversion();
     initPlatformState(context);
-    // _loginBloc.add(PerfomLogin());
-    _bloc.add(FetchBottomNavigationBar());
+
+    _bloc.add(FetchStandardNavigationBar());
     _newsBloc.add(NewsCountLength());
     getindexvalue();
     _showcase();
@@ -61,10 +60,11 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   _onNotificationTap() {
-    OneSignal.shared.setNotificationOpenedHandler((OSNotificationOpenedResult result) {     
-        this.setState(() {
-          Globals.isNewTap = true;
-        });
+    OneSignal.shared
+        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+      this.setState(() {
+        Globals.isNewTap = true;
+      });
     });
   }
 
@@ -84,7 +84,6 @@ class _StartupPageState extends State<StartupPage> {
     setState(() {
       _notification = state;
     });
-    // print(_notification);
   }
 
   void appversion() async {
@@ -100,7 +99,6 @@ class _StartupPageState extends State<StartupPage> {
   @override
   void dispose() {
     _bloc.close();
-    // _loginBloc.close();
     super.dispose();
   }
 
@@ -140,31 +138,6 @@ class _StartupPageState extends State<StartupPage> {
         body: Stack(
           fit: StackFit.expand,
           children: [
-            // Will show the splash screen while the auto login is in the progress
-            // connected
-            //     ?
-            // BlocBuilder<UserBloc, UserState>(
-            //     bloc: _loginBloc,
-            //     builder: (BuildContext contxt, UserState state) {
-            //       if (state is Loading) {
-            //         return _buildSplashScreen();
-            //       }
-            //       if (state is ErrorReceived) {
-            //         // return ListView(children: [
-            //         //   ErrorMsgWidget(),
-            //         // ]);
-            //         return flag ? _buildSplashScreen() : Container();
-            //       }
-            //       return Container();
-            //     }),
-            // : NoInternetErrorWidget(
-            //     connected: connected,
-            //     issplashscreen: true,
-            //   ),
-
-            // Login End
-            // Showing spash screen while fetching App Settings(Bottom Nav items, colors etc.)
-            // connected ?
             BlocBuilder<HomeBloc, HomeState>(
                 bloc: _bloc,
                 builder: (BuildContext contxt, HomeState state) {
@@ -181,7 +154,7 @@ class _StartupPageState extends State<StartupPage> {
                                 connected: false,
                                 issplashscreen: false,
                                 onRefresh: () {
-                                  _bloc.add(FetchBottomNavigationBar());
+                                  _bloc.add(FetchStandardNavigationBar());
                                 },
                               ),
                             ),
@@ -198,40 +171,8 @@ class _StartupPageState extends State<StartupPage> {
                     setState(() {
                       flag = false;
                     });
-                    // if (!connected) {
-                    //   setState(() {
-                    //     flag = false;
-                    //   });
-                    // }
                   }
                 }),
-            // : NoInternetErrorWidget(
-            //     connected: connected,
-            //     issplashscreen: true,
-            //   ),
-            // Fetching App Settings(Bottom Nav items, colors etc.) End.
-            // Container(
-            //   height: 0,
-            //   width: 0,
-            //   child: BlocListener<UserBloc, UserState>(
-            //     bloc: _loginBloc,
-            //     listener: (context, state) async {
-            //       if (state is LoginSuccess) {
-            //         Globals.token != null && Globals.token != " "
-            //             ? _bloc.add(FetchBottomNavigationBar())
-            //             : Container(
-            //                 child: Center(
-            //                     child: Text("Please refresh your application")),
-            //               );
-            //       } else {
-            //         // Local DB Integration
-            //         // Should fetch data even if there's any issue with the SF login.
-            //         _bloc.add(FetchBottomNavigationBar());
-            //       }
-            //     },
-            //     child: Container(),
-            //   ),
-            // ),
             Container(
               height: 0,
               width: 0,
@@ -240,7 +181,7 @@ class _StartupPageState extends State<StartupPage> {
                 listener: (context, state) async {
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
-                    //  Globals.homeObject = state.obj;
+
                     Globals.appSetting = AppSetting.fromJson(state.obj);
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
@@ -279,7 +220,7 @@ class _StartupPageState extends State<StartupPage> {
                         LocalDatabase(_objectName);
                     List<NotificationList> _localData =
                         await _localDb.getData();
-                    // print(intPrefs.getInt("totalCount"));
+
                     if (_localData.length < state.obj!.length &&
                         _localData.isNotEmpty) {
                       intPrefs.setInt("totalCount", Globals.notiCount!);
