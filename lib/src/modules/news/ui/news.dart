@@ -138,7 +138,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   obj.headings != null
               ? '${obj.headings["en"].toString()}'
               : obj.contents["en"] ?? '-',
-          description: '${obj.contents["en"].toString()}',
+          description:obj.url==null? '${obj.contents["en"].toString()}' : '${obj.contents["en"].toString()}\n${obj.url}',
           titleIcon: CalendraIconWidget(dateTime: obj.completedAt),
           // calanderView(obj.completedAt),
           url: obj.image != '' && obj.image != null ? obj.image! : '',
@@ -395,7 +395,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     bloc.add(FetchNotificationList());
     isActionAPICalled = false;
     _homeBloc.add(FetchBottomNavigationBar());
