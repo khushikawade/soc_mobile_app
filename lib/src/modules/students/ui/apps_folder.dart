@@ -295,4 +295,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
       ),
     );
   }
+  showAlart(){
+    
+  }
 }

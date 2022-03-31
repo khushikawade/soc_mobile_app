@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
@@ -13,13 +14,16 @@ import 'package:Soc/src/modules/social/ui/social.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:html/parser.dart';
 import 'package:new_version/new_version.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -46,6 +50,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   var item;
   var item2;
   List<Widget> _screens = [];
+  String? _versionNumber;
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
@@ -105,6 +110,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void _checkNewVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String _packageName = packageInfo.packageName;
+    _versionNumber = packageInfo.version;
     final newVersion = NewVersion(
       iOSId: _packageName,
       androidId: _packageName,
@@ -127,7 +133,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   _checkVersionUpdateStatus(NewVersion newVersion) async {
+    // final VersionStatus? versionStatus = await getVersionStatus();
     newVersion.showAlertIfNecessary(context: context);
+
+    // if (Globals.packageInfo!.version != _versionNumber) {
+    //   _updateAlart();
+    // }
   }
 
   @override
@@ -387,13 +398,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
   }
 
+  // _updateAlart() {
+  //   return showDialog(
+  //       barrierColor: Color.fromARGB(96, 73, 73, 75),
+  //       context: context,
+  //       builder: (_) => updateDialog());
+  // }
+
   _onBackPressed() {
     return showDialog(
         context: context,
         builder: (context) =>
             OrientationBuilder(builder: (context, orientation) {
               return AlertDialog(
-                backgroundColor: Colors.white,
+                backgroundColor: Theme.of(context).colorScheme.background,
                 title: Container(
                   padding: Globals.deviceType == 'phone'
                       ? null
@@ -450,6 +468,94 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             }));
   }
 
+  // Widget updateDialog() {
+  //   return OrientationBuilder(builder: (context, orientation) {
+  //     return AlertDialog(
+  //       backgroundColor: Colors.white,
+  //       title: Column(
+  //         children: [
+  //           Container(
+  //             padding: Globals.deviceType == 'phone'
+  //                 ? null
+  //                 : const EdgeInsets.only(top: 10.0),
+  //             height: Globals.deviceType == 'phone'
+  //                 ? null
+  //                 : orientation == Orientation.portrait
+  //                     ? MediaQuery.of(context).size.height / 15
+  //                     : MediaQuery.of(context).size.width / 15,
+  //             width: Globals.deviceType == 'phone'
+  //                 ? null
+  //                 : orientation == Orientation.portrait
+  //                     ? MediaQuery.of(context).size.width / 2
+  //                     : MediaQuery.of(context).size.height / 2,
+  //             child: TranslationWidget(
+  //                 message: "Update Available",
+  //                 fromLanguage: "en",
+  //                 toLanguage: Globals.selectedLanguage,
+  //                 builder: (translatedMessage) {
+  //                   return Text(translatedMessage.toString(),
+  //                       style: Theme.of(context).textTheme.headline2!);
+  //                 }),
+  //           ),
+  //           Container(
+  //             padding: Globals.deviceType == 'phone'
+  //                 ? null
+  //                 : const EdgeInsets.only(top: 10.0),
+  //             height: Globals.deviceType == 'phone'
+  //                 ? null
+  //                 : orientation == Orientation.portrait
+  //                     ? MediaQuery.of(context).size.height / 15
+  //                     : MediaQuery.of(context).size.width / 15,
+  //             width: Globals.deviceType == 'phone'
+  //                 ? null
+  //                 : orientation == Orientation.portrait
+  //                     ? MediaQuery.of(context).size.width / 2
+  //                     : MediaQuery.of(context).size.height / 2,
+  //             child: TranslationWidget(
+  //                 message:
+  //                     "You can now update this app from ${Globals.packageInfo!.version} to $_versionNumber",
+  //                 fromLanguage: "en",
+  //                 toLanguage: Globals.selectedLanguage,
+  //                 builder: (translatedMessage) {
+  //                   return Text(translatedMessage.toString(),
+  //                       style: Theme.of(context).textTheme.headline2!);
+  //                 }),
+  //           ),
+  //         ],
+  //       ),
+  //       actions: <Widget>[
+  //         FlatButton(
+  //           padding: Globals.deviceType != 'phone'
+  //               ? EdgeInsets.only(bottom: 10.0, right: 10.0)
+  //               : EdgeInsets.all(0),
+  //           onPressed: () => Navigator.pop(context, false),
+  //           child: TranslationWidget(
+  //               message: "No",
+  //               fromLanguage: "en",
+  //               toLanguage: Globals.selectedLanguage,
+  //               builder: (translatedMessage) {
+  //                 return Text(translatedMessage.toString(),
+  //                     style: Theme.of(context).textTheme.headline2!);
+  //               }),
+  //         ),
+  //         FlatButton(
+  //             padding: Globals.deviceType != 'phone'
+  //                 ? EdgeInsets.only(bottom: 10.0, right: 10.0)
+  //                 : EdgeInsets.all(0.0),
+  //             onPressed: () => exit(0),
+  //             child: TranslationWidget(
+  //                 message: "Yes",
+  //                 fromLanguage: "en",
+  //                 toLanguage: Globals.selectedLanguage,
+  //                 builder: (translatedMessage) {
+  //                   return Text(translatedMessage.toString(),
+  //                       style: Theme.of(context).textTheme.headline2!);
+  //                 }))
+  //       ],
+  //     );
+  //   });
+  // }
+
   void addScreen() {
     for (var i = 0; i < Globals.customSetting!.length; i++) {
       if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
@@ -485,4 +591,83 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       }
     }
   }
+
+  // Future<VersionStatus?> getVersionStatus() async {
+  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  //   if (Platform.isIOS) {
+  //     return _getiOSStoreVersion(packageInfo);
+  //   } else if (Platform.isAndroid) {
+  //     return _getAndroidStoreVersion(packageInfo);
+  //   } else {
+  //     debugPrint(
+  //         'The target platform "${Platform.operatingSystem}" is not yet supported by this package.');
+  //   }
+  // }
+
+  // Future<VersionStatus?> _getiOSStoreVersion(PackageInfo packageInfo) async {
+  //   final id = packageInfo.packageName;
+  //   DbServices _dbServices = DbServices();
+  //   final parameters = {"bundleId": "$id"};
+  //   if (iOSAppStoreCountry != null) {
+  //     parameters.addAll({"country": iOSAppStoreCountry!});
+  //   }
+  //   var uri = Uri.https("itunes.apple.com", "/lookup", parameters);
+  //   final response = await _dbServices.getapi(uri);
+  //   // http.get(uri);
+  //   if (response.statusCode != 200) {
+  //     debugPrint('Failed to query iOS App Store');
+  //     return null;
+  //   }
+  //   final jsonObj = json.decode(response.body);
+  //   final List results = jsonObj['results'];
+  //   if (results.isEmpty) {
+  //     debugPrint('Can\'t find an app in the App Store with the id: $id');
+  //     return null;
+  //   }
+  //   return VersionStatus._(
+  //     localVersion: packageInfo.version,
+  //     storeVersion: jsonObj['results'][0]['version'],
+  //     appStoreLink: jsonObj['results'][0]['trackViewUrl'],
+  //     releaseNotes: jsonObj['results'][0]['releaseNotes'],
+  //   );
+  // }
+
+  // Future<String?> _getAndroidStoreVersion(
+  //     PackageInfo packageInfo) async {
+  //   final id = packageInfo.packageName;
+  //   DbServices _dbServices = DbServices();
+  //   final uri =
+  //       Uri.https("play.google.com", "/store/apps/details", {"id": "$id"});
+  //   final response = await _dbServices.getapi(uri);
+  //   // http.get(uri);
+  //   if (response.statusCode != 200) {
+  //     debugPrint('Can\'t find an app in the Play Store with the id: $id');
+  //     return null;
+  //   }
+  //   final document = parse(response.body);
+
+  //   final additionalInfoElements = document.getElementsByClassName('hAyfc');
+  //   final versionElement = additionalInfoElements.firstWhere(
+  //     (elm) => elm.querySelector('.BgcNfc')!.text == 'Current Version',
+  //   );
+  //   final storeVersion = versionElement.querySelector('.htlgb')!.text;
+
+  //   final sectionElements = document.getElementsByClassName('W4P4ne');
+  //   final releaseNotesElement = sectionElements.firstWhereOrNull(
+  //     (elm) => elm.querySelector('.wSaTQd')!.text == 'What\'s New',
+  //   );
+  //   final releaseNotes = releaseNotesElement
+  //       ?.querySelector('.PHBdkd')
+  //       ?.querySelector('.DWPxHb')
+  //       ?.text;
+  //     return
+  //   //  return VersionStatus._(
+  //   //   localVersion: packageInfo.version,
+  //   //   storeVersion: storeVersion,
+  //   //   appStoreLink: uri.toString(),
+  //   //   releaseNotes: releaseNotes,
+  //   // );
+  // }
+
+  // String? iOSAppStoreCountry;
 }
