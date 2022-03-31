@@ -44,7 +44,6 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     _onNotificationTap();
-   
 
     getindicatorValue();
     appversion();
@@ -93,8 +92,6 @@ class _StartupPageState extends State<StartupPage> {
     Globals.packageInfo = await PackageInfo.fromPlatform();
   }
 
-  
-
   getindexvalue() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
@@ -132,8 +129,8 @@ class _StartupPageState extends State<StartupPage> {
             : Text(
                 "Loading ...",
                 style: TextStyle(
-                    fontSize: 28,
-                    color: Theme.of(context).colorScheme.primaryVariant),
+                  fontSize: 28,
+                ),
               ));
   }
 
