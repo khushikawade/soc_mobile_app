@@ -44,7 +44,7 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     _onNotificationTap();
-    getTheme();
+   
 
     getindicatorValue();
     appversion();
@@ -93,11 +93,7 @@ class _StartupPageState extends State<StartupPage> {
     Globals.packageInfo = await PackageInfo.fromPlatform();
   }
 
-  getTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    AdaptiveTheme.of(context).persist();
-  }
+  
 
   getindexvalue() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
