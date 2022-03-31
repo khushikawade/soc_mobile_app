@@ -13,7 +13,6 @@ import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';

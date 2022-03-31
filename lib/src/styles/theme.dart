@@ -611,7 +611,7 @@ class AppTheme {
               // textButtonTheme: Theme.of(context).,
               // dialogBackgroundColor: Colors.grey,
               dialogTheme: DialogTheme(
-                backgroundColor: _darkBackgroundColor,
+                backgroundColor: _darkSecondary,
                 contentTextStyle: TextStyle(color: Colors.white),
               ),
               textButtonTheme: TextButtonThemeData(
