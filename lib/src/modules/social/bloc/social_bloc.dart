@@ -46,14 +46,11 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         //social list
         List<Item> list = [];
         if (event.action!.contains("initial")) {
-          list = await getEventDetails();
-          print("social list length=>${list.length}");
-          if (_localData.isEmpty) {
-            print("local database empty sending SocialInitalState");
+          list = await getEventDetails();      
+          if (_localData.isEmpty) {           
             yield SocialInitialState(obj: list);
           }
-        } else {
-          print(event.action);
+        } else {      
           list = _localData;
         }
 
@@ -69,7 +66,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           for (int i = 0; i < list.length; i++) {
             for (int j = 0; j < listActioncount.length; j++) {
               if (list[i].guid['\$t'] + Overrides.SCHOOL_ID ==
-                      list[j].id
+                      listActioncount[j].id
 
                   //Old method of mapping
                   // Globals.socialList[i].id.toString()+Globals.socialList[i].guid['\$t'] ==
@@ -115,18 +112,17 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         }
 
         // Syncing to local database
-        print("calling local database");
+     
         await _localDb.clear();
         newList.forEach((Item e) {
           _localDb.addData(e);
         });
-        print("calling local database done");
-        print("new list length =>${newList.length}");
+       
         // Syncing end.
         // Globals.socialList.clear();
         // Globals.socialList.addAll(list);
         yield Loading();
-        print("sending SocialDataSucess");
+        
         yield SocialDataSucess(
           obj: newList,
         );
@@ -140,7 +136,6 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           obj: _localData,
         );
         // yield SocialError(err: e);
-
       }
     }
 
@@ -213,11 +208,9 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             .map<ActionCountList>((i) => ActionCountList.fromJson(i))
             .toList();
       } else {
-        print("xxxxxxxxxxxxxxxxxx");
         throw ('something_went_wrong');
       }
     } catch (e) {
-      print("000000000000");
       throw (e);
     }
   }
