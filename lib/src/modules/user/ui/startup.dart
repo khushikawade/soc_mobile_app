@@ -125,12 +125,12 @@ class _StartupPageState extends State<StartupPage> {
                   ),
                 ),
               )
-            : Text(
-                "Loading ...",
-                style: TextStyle(
-                  fontSize: 28,
-                ),
-              ));
+            : Text("Loading ...",
+                style: Theme.of(context).textTheme.headline1!.copyWith(
+                    fontSize: 24,
+                    color: Globals.themeType == 'Dark'
+                        ? Colors.white
+                        : Colors.black)));
   }
 
   @override

@@ -70,6 +70,7 @@ class _HomeInAppUrlLauncherState extends State<HomeInAppUrlLauncher> {
                               height: MediaQuery.of(context).size.height,
                               // width: MediaQuery.of(context).size.width,
                               child: WebView(
+                                
                                 gestureRecognizers: Set()
                                   ..add(Factory<VerticalDragGestureRecognizer>(
                                       () => VerticalDragGestureRecognizer()

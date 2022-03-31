@@ -94,6 +94,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
               child: Scaffold(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 // backgroundColor: Colors.white,
                 body: Padding(
                   padding: const EdgeInsets.only(
@@ -295,7 +296,6 @@ class AppsFolderPageState extends State<AppsFolderPage>
       ),
     );
   }
-  showAlart(){
-    
-  }
+
+  showAlart() {}
 }
