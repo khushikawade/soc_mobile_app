@@ -23,7 +23,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   initState() {
     super.initState();
-    getTheme();
+    // getTheme();
     _onNotificationTap();
 
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
@@ -115,9 +115,5 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     });
   }
 
-  getTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    AdaptiveTheme.of(context).persist();
-  }
+  
 }
