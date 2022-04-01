@@ -13,13 +13,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-
 import '../model/custom_setting.dart';
 
 class CustomAppSection extends StatefulWidget {
-  final id;
-  final CustomSetting obj;
-  final searchObj;
   CustomAppSection({
     Key? key,
     required this.obj,
@@ -27,16 +23,21 @@ class CustomAppSection extends StatefulWidget {
     this.searchObj,
   }) : super(key: key);
 
+  final id;
+  final CustomSetting obj;
+  final searchObj;
+
   @override
   _CustomAppSectionState createState() => _CustomAppSectionState();
 }
 
 class _CustomAppSectionState extends State<CustomAppSection> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  CustomBloc _bloc = CustomBloc();
-  final refreshKey = GlobalKey<RefreshIndicatorState>();
-  HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+
+  CustomBloc _bloc = CustomBloc();
+  HomeBloc _homeBloc = HomeBloc();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -49,6 +50,36 @@ class _CustomAppSectionState extends State<CustomAppSection> {
     refreshKey.currentState?.show(atTop: false);
     _bloc.add(CustomEvents(id: widget.obj.id));
     _homeBloc.add(FetchStandardNavigationBar());
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBarWidget(
+        marginLeft: 30,
+        refresh: (v) {
+          setState(() {});
+        },
+      ),
+      body: widget.obj.customBannerImageC != null &&
+              widget.obj.customBannerImageC != ''
+          ? NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  BannerImageWidget(
+                    imageUrl: widget.obj.customBannerImageC!,
+                    bgColor: widget.obj.customBannerImageC != null
+                        ? Utility.getColorFromHex(
+                            widget.obj.customBannerImageC!)
+                        : null,
+                  )
+                ];
+              },
+              body: _body('body2'),
+            )
+          : _body('body1'),
+    );
   }
 
   Widget _body(String key) => Container(
@@ -85,7 +116,10 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                             } else if (state is CustomDataSucess) {
                               print( widget.obj.gridViewC);
                               return widget.obj.gridViewC == "true"
-                                  ? CommonGridWidget()
+                                  ? CommonGridWidget(scaffoldKey: _scaffoldKey,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "Custom")
                                   : CommonListWidget(
                                       scaffoldKey: _scaffoldKey,
                                       connected: connected,
@@ -123,34 +157,4 @@ class _CustomAppSectionState extends State<CustomAppSection> {
           onRefresh: refreshPage,
         ),
       );
-
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBarWidget(
-        marginLeft: 30,
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: widget.obj.customBannerImageC != null &&
-              widget.obj.customBannerImageC != ''
-          ? NestedScrollView(
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  BannerImageWidget(
-                    imageUrl: widget.obj.customBannerImageC!,
-                    bgColor: widget.obj.customBannerImageC != null
-                        ? Utility.getColorFromHex(
-                            widget.obj.customBannerImageC!)
-                        : null,
-                  )
-                ];
-              },
-              body: _body('body2'),
-            )
-          : _body('body1'),
-    );
-  }
 }

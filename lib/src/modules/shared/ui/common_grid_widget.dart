@@ -1,87 +1,245 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/models/app_setting.dart';
-import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
-import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
-import 'package:Soc/src/modules/students/models/student_app.dart';
-import 'package:Soc/src/modules/students/ui/apps_folder.dart';
+import 'package:Soc/src/modules/families/ui/contact.dart';
+import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/banner_image_widget.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
-import 'package:Soc/src/widgets/empty_container_widget.dart';
-import 'package:Soc/src/widgets/error_widget.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
+import 'package:Soc/src/widgets/custom_image_widget_small.dart';
+import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
-import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:marquee/marquee.dart';
+import '../../../widgets/banner_image_widget.dart';
+import '../../../widgets/custom_icon_widget.dart';
+import '../../../widgets/empty_container_widget.dart';
+import '../../../widgets/no_data_found_error_widget.dart';
 
 class CommonGridWidget extends StatefulWidget {
-  final homeObj;
-
-  CommonGridWidget({Key? key, this.homeObj}) : super(key: key);
+  final List<SharedList> data;
+  final String sectionName;
+  final bool? connected;
+  final scaffoldKey;
+  CommonGridWidget(
+      {Key? key,
+      required this.data,
+      required this.sectionName,
+      required this.scaffoldKey,
+      this.connected})
+      : super(key: key);
+  @override
   _CommonGridWidgetState createState() => _CommonGridWidgetState();
 }
 
 class _CommonGridWidgetState extends State<CommonGridWidget> {
+  bool? tapped = true;
   static const double _kLableSpacing = 12.0;
-  int? gridLength;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final refreshKey = GlobalKey<RefreshIndicatorState>();
-  final HomeBloc _homeBloc = new HomeBloc();
-  bool? iserrorstate = false;
 
-  StudentBloc _bloc = StudentBloc();
 
-  @override
-  void initState() {
-    super.initState();
-    _bloc.add(StudentPageEvent());
-  }
-
-  _launchURL(StudentApp obj, subList) async {
-    if (obj.appUrlC != null) {
-      if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
-        showDialog(
-          // barrierColor: Color.fromARGB(96, 73, 73, 75),
-          context: context,
-          builder: (_) => AppsFolderPage(
-            obj: subList,
-            folderName: obj.titleC!,
-          ),
-        );
-      } else {
-        if (obj.deepLinkC == 'NO') {
-          if (obj.toString().split(":")[0] == 'http') {
-            await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
-          } else {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => InAppUrlLauncer(
-                          title: obj.titleC!,
-                          url: obj.appUrlC!,
-                          isbuttomsheet: true,
-                          language: Globals.selectedLanguage,
-                        )));
-          }
-        } else {
-          try {
-            await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
-          } catch (e) {}
-        }
-      }
+  _launchURL(obj) async {
+    if (obj.appUrlC.toString().split(":")[0] == 'http' ||
+        obj.deepLinkC == 'YES') {
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
+    } else if (await Utility.sslErrorHandler(obj.appUrlC) == "Yes") {
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
     } else {
-      Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+      if (tapped == true) {
+        tapped = false;
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => InAppUrlLauncer(
+                      title: obj.titleC,
+                      url: obj.appUrlC,
+                      isbuttomsheet: true,
+                      language: Globals.selectedLanguage,
+                    )));
+        tapped = true;
+      } else {
+        print("tapped multiple times");
+      }
     }
   }
 
+  _navigate(SharedList obj, index) {
+    if (obj.typeC == "Contact") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ContactPage(
+                    obj: Globals.appSetting,
+                    isbuttomsheet: true,
+                    appBarTitle: obj.titleC!,
+                    language: Globals.selectedLanguage ?? "English",
+                  )));
+    } else if (obj.typeC == "URL") {
+      obj.appUrlC != null && obj.appUrlC != ""
+          ? _launchURL(obj)
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No link available", context);
+    } else if (obj.typeC == "Form") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    staffDirectoryCategoryId: null,
+                    isAbout: true,
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "Calendar/Events") {
+      obj.calendarId != null && obj.calendarId != ""
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => EventPage(
+                        isbuttomsheet: true,
+                        appBarTitle: obj.titleC,
+                        language: Globals.selectedLanguage,
+                        calendarId: obj.calendarId.toString(),
+                      )))
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No calendar/events available", context);
+    } else if (obj.typeC == "RTF_HTML" ||
+        obj.typeC == "RFT_HTML" ||
+        obj.typeC == "HTML/RTF" ||
+        obj.typeC == "RTF/HTML") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AboutusPage(
+                        htmlText: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        ishtml: true,
+                        appbarTitle: obj.titleC!,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "Embed iFrame") {
+      obj.rtfHTMLC != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                        isiFrame: true,
+                        title: obj.titleC!,
+                        url: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
+      obj.pdfURL != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CommonPdfViewerPage(
+                        isHomePage: false,
+                        url: obj.pdfURL,
+                        tittle: obj.titleC,
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No pdf available", context);
+    } else if (obj.typeC == "Sub-Menu") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SubListPage(
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    module: widget.sectionName,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "Staff_Directory") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    staffDirectoryCategoryId: obj.id,
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    isbuttomsheet: true,
+                    isAbout: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else {
+      Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
+    }
+  }
+
+  Widget _buildLeading(SharedList obj) {
+    if (obj.appIconUrlC != null) {
+      return CustomIconMode(
+        iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
+      );
+    } else if (obj.appIconC != null) {
+      return Icon(
+        IconData(
+          int.parse('0x${obj.appIconC!}'),
+          fontFamily: 'FontAwesomeSolid',
+          fontPackage: 'font_awesome_flutter',
+        ),
+        color: Theme.of(context).colorScheme.primary,
+        size: Globals.deviceType == "phone" ? 24 : 32,
+      );
+    } else {
+      return CustomIconMode(
+        iconUrl: Overrides.defaultIconUrl,
+      );
+    }
+  }
+
+  // Widget _buildList(SharedList obj, int index) {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       border: Border.all(
+  //         color: Theme.of(context).colorScheme.background,
+  //         width: 0.65,
+  //       ),
+  //       borderRadius: BorderRadius.circular(0.0),
+  //       color: (index % 2 == 0)
+  //           ? Theme.of(context).colorScheme.background
+  //           : Theme.of(context).colorScheme.secondary,
+  //     ),
+  //     child: ListTile(
+  //       onTap: () {
+  //         _navigate(obj, index);
+  //       },
+  //       visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+  //       // contentPadding:
+  //       //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
+  //       leading: _buildLeading(obj),
+  //       title: TranslationWidget(
+  //           message: obj.titleC ?? "No title",
+  //           fromLanguage: "en",
+  //           toLanguage: Globals.selectedLanguage,
+  //           builder: (translatedMessage) {
+  //             return Text(translatedMessage.toString(),
+  //                 style: Theme.of(context).textTheme.bodyText1!);
+  //           }),
+  //       trailing: Icon(
+  //         Icons.arrow_forward_ios_rounded,
+  //         size: Globals.deviceType == "phone" ? 12 : 20,
+  //         color: Theme.of(context).primaryColor,
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _buildGrid(
-      List<StudentApp> list, List<StudentApp> subList, String key) {
+      List<SharedList> list, List<SharedList> subList, String key) {
     return list.length > 0
         ? GridView.count(
             key: ValueKey(key),
@@ -122,7 +280,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                               : MediaQuery.of(context).size.height * 0.01,
                         ),
                         child: GestureDetector(
-                            onTap: () => _launchURL(list[index], subList),
+                         //   onTap: () => _launchURL(list[index], subList),
                             child: Column(
                               // mainAxisAlignment:MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.max,
@@ -259,125 +417,28 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
           );
   }
 
-  Future refreshPage() async {
-    refreshKey.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 2));
-    _bloc.add(StudentPageEvent());
-    _homeBloc.add(FetchStandardNavigationBar());
-  }
-
-  Widget _body(String key) {
-    return RefreshIndicator(
-      key: refreshKey,
-      child: OfflineBuilder(
-          connectivityBuilder: (
-            BuildContext context,
-            ConnectivityResult connectivity,
-            Widget child,
-          ) {
-            final bool connected = connectivity != ConnectivityResult.none;
-
-            if (connected) {
-              if (iserrorstate == true) {
-                iserrorstate = false;
-                _bloc.add(StudentPageEvent());
-              }
-            } else if (!connected) {
-              iserrorstate = true;
-            }
-
-            return new Stack(fit: StackFit.expand, children: [
-              // connected
-              //     ?
-              BlocBuilder<StudentBloc, StudentState>(
-                  bloc: _bloc,
-                  builder: (BuildContext contxt, StudentState state) {
-                    if (state is StudentInitial || state is Loading) {
-                      return Center(
-                          child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.primaryVariant,
-                      ));
-                    } else if (state is StudentDataSucess) {
-                      return state.obj != null && state.obj!.length > 0
-                          ? Container(
-                              padding: EdgeInsets.symmetric(horizontal: 5),
-                              child:
-                                  _buildGrid(state.obj!, state.subFolder!, key))
-                          :
-                          // ListView(children: [
-                          NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: false,
-                              connected: connected,
-                            );
-                      // ]);
-                    } else if (state is StudentError) {
-                      return ListView(children: [ErrorMsgWidget()]);
-                    }
-                    return Container();
-                  }),
-              // : NoInternetErrorWidget(
-              //     connected: connected, issplashscreen: false),
-              Container(
-                height: 0,
-                width: 0,
-                child: BlocListener<HomeBloc, HomeState>(
-                    bloc: _homeBloc,
-                    listener: (context, state) async {
-                      if (state is BottomNavigationBarSuccess) {
-                        AppTheme.setDynamicTheme(Globals.appSetting, context);
-
-                        Globals.appSetting = AppSetting.fromJson(state.obj);
-                        setState(() {});
-                      } else if (state is HomeErrorReceived) {
-                        Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(child: Text("Unable to load the data")),
-                        );
-                      }
-                    },
-                    child: EmptyContainer()),
-              ),
-            ]);
-          },
-          child: Container()),
-      onRefresh: refreshPage,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBarWidget(
-          marginLeft: 30,
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
-        body: Globals.appSetting.studentBannerImageC != null &&
-                Globals.appSetting.studentBannerImageC != ""
-            ? NestedScrollView(
+    return widget.data.length > 0
+        ? /*ListView.builder(
+            // shrinkWrap: true,
+            padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+            scrollDirection: Axis.vertical,
+            itemCount: widget.data.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _buildList(widget.data[index], index);
+            },
+          )*/
 
-                // controller: _scrollController,
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return <Widget>[
-                    Globals.appSetting.studentBannerImageC != null
-                        ? BannerImageWidget(
-                            imageUrl: Globals.appSetting.studentBannerImageC!,
-                            bgColor:
-                                Globals.appSetting.studentBannerColorC != null
-                                    ? Utility.getColorFromHex(
-                                        Globals.appSetting.studentBannerColorC!)
-                                    : null,
-                          )
-                        : SliverAppBar(),
-                  ];
-                },
-                body: _body('body1'))
-            : _body('body2'));
+          _buildGrid(widget.data, widget.data, widget.scaffoldKey)
+        : Container(
+            child: NoDataFoundErrorWidget(
+                isResultNotFoundMsg: false,
+                isNews: false,
+                isEvents: false,
+                connected: true));
   }
+
+
+  
 }
