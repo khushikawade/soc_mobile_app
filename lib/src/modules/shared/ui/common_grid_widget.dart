@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/shared/ui/common_grid_folder_widget.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/overrides.dart';
@@ -8,16 +9,20 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
-import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marquee/marquee.dart';
-import '../../../widgets/banner_image_widget.dart';
-import '../../../widgets/custom_icon_widget.dart';
 import '../../../widgets/empty_container_widget.dart';
 import '../../../widgets/no_data_found_error_widget.dart';
+import '../../about/bloc/about_bloc.dart';
+import '../../custom/bloc/custom_bloc.dart';
+import '../../families/bloc/family_bloc.dart';
+import '../../resources/bloc/resources_bloc.dart';
+import '../../staff/bloc/staff_bloc.dart';
+import 'common_sublist.dart';
 
 class CommonGridWidget extends StatefulWidget {
   final List<SharedList> data;
@@ -38,14 +43,18 @@ class CommonGridWidget extends StatefulWidget {
 class _CommonGridWidgetState extends State<CommonGridWidget> {
   bool? tapped = true;
   static const double _kLableSpacing = 12.0;
+  FamilyBloc _familyBloc = FamilyBloc();
+  StaffBloc _staffBloc = StaffBloc();
+  AboutBloc _aboutBloc = AboutBloc();
+  CustomBloc _customBloc = CustomBloc();
+  ResourcesBloc _resourceBloc = ResourcesBloc();
 
-
-  _launchURL(obj) async {
+  _launchURL(SharedList obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
-      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
-    } else if (await Utility.sslErrorHandler(obj.appUrlC) == "Yes") {
-      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
+    } else if (await Utility.sslErrorHandler(obj.appUrlC!) == "Yes") {
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
       if (tapped == true) {
         tapped = false;
@@ -53,8 +62,8 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC,
-                      url: obj.appUrlC,
+                      title: obj.titleC!,
+                      url: obj.appUrlC!,
                       isbuttomsheet: true,
                       language: Globals.selectedLanguage,
                     )));
@@ -152,6 +161,8 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
           : Utility.showSnackBar(
               widget.scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
+      // return subList(obj);
+
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -201,43 +212,6 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
     }
   }
 
-  // Widget _buildList(SharedList obj, int index) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       border: Border.all(
-  //         color: Theme.of(context).colorScheme.background,
-  //         width: 0.65,
-  //       ),
-  //       borderRadius: BorderRadius.circular(0.0),
-  //       color: (index % 2 == 0)
-  //           ? Theme.of(context).colorScheme.background
-  //           : Theme.of(context).colorScheme.secondary,
-  //     ),
-  //     child: ListTile(
-  //       onTap: () {
-  //         _navigate(obj, index);
-  //       },
-  //       visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-  //       // contentPadding:
-  //       //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-  //       leading: _buildLeading(obj),
-  //       title: TranslationWidget(
-  //           message: obj.titleC ?? "No title",
-  //           fromLanguage: "en",
-  //           toLanguage: Globals.selectedLanguage,
-  //           builder: (translatedMessage) {
-  //             return Text(translatedMessage.toString(),
-  //                 style: Theme.of(context).textTheme.bodyText1!);
-  //           }),
-  //       trailing: Icon(
-  //         Icons.arrow_forward_ios_rounded,
-  //         size: Globals.deviceType == "phone" ? 12 : 20,
-  //         color: Theme.of(context).primaryColor,
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buildGrid(
       List<SharedList> list, List<SharedList> subList, String key) {
     return list.length > 0
@@ -280,20 +254,13 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                               : MediaQuery.of(context).size.height * 0.01,
                         ),
                         child: GestureDetector(
-                         //   onTap: () => _launchURL(list[index], subList),
+                            onTap: () => _navigate(
+                                list[index], index), //_launchURL(list[index]),
                             child: Column(
                               // mainAxisAlignment:MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
-                                list[index].appIconC != null &&
-                                        list[index].appIconC != ''
-                                    ? Container(
-                                        height: 80,
-                                        width: 80,
-                                        child: CustomIconWidget(
-                                            iconUrl: list[index].appIconC ??
-                                                Overrides.folderDefaultImage))
-                                    : EmptyContainer(),
+                                _buildLeading(list[index]),
                                 Container(
                                     child: TranslationWidget(
                                   message: "${list[index].titleC}",
@@ -420,17 +387,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
   @override
   Widget build(BuildContext context) {
     return widget.data.length > 0
-        ? /*ListView.builder(
-            // shrinkWrap: true,
-            padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
-            scrollDirection: Axis.vertical,
-            itemCount: widget.data.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _buildList(widget.data[index], index);
-            },
-          )*/
-
-          _buildGrid(widget.data, widget.data, widget.scaffoldKey)
+        ? _buildGrid(widget.data, widget.data, "key")
         : Container(
             child: NoDataFoundErrorWidget(
                 isResultNotFoundMsg: false,
@@ -439,6 +396,70 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                 connected: true));
   }
 
-
-  
+  Widget subList(SharedList obj) {
+    if (widget.sectionName == "family") {
+      _familyBloc.add(FamiliesSublistEvent(id: obj.id));
+    } else if (widget.sectionName == "staff") {
+      _staffBloc.add(StaffSubListEvent(id: obj.id));
+    } else if (widget.sectionName == "resources") {
+      _resourceBloc.add(ResourcesSublistEvent(id: obj.id));
+    } else if (widget.sectionName == "about") {
+      _aboutBloc.add(AboutSublistEvent(id: obj.id));
+    } else if (widget.sectionName == "Custom") {
+      _customBloc.add(CustomSublistEvent(id: obj.id));
+    }
+    return Column(
+      children: [
+        BlocListener<FamilyBloc, FamilyState>(
+            bloc: _familyBloc,
+            listener: (context, state) async {
+              if (state is FamiliesSublistSucess) {
+                showDialog(
+                  // barrierColor: Color.fromARGB(96, 73, 73, 75),
+                  context: context,
+                  builder: (_) => CommonGridFolder(
+                    obj: state.obj!,
+                    folderName: obj.titleC!,
+                  ),
+                );
+              } else if (state is FamilyInitial || state is FamilyLoading) {
+                showDialog(
+                    // barrierColor: Color.fromARGB(96, 73, 73, 75),
+                    context: context,
+                    builder: (_) => Container(
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        )));
+              }
+            },
+            child: EmptyContainer()),
+        BlocListener<CustomBloc, CustomState>(
+          bloc: _customBloc,
+          listener: (context, state) async {
+            if (state is CustomSublistSuccess) {
+              showDialog(
+                // barrierColor: Color.fromARGB(96, 73, 73, 75),
+                context: context,
+                builder: (_) => CommonGridFolder(
+                  obj: state.obj!,
+                  folderName: obj.titleC!,
+                ),
+              );
+            } else if (state is CustomInitial || state is CustomLoading) {
+              showDialog(
+                  barrierColor: Color.fromARGB(96, 73, 73, 75),
+                  context: context,
+                  builder: (_) => Container(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                      )));
+            }
+          },
+          //  child: EmptyContainer()
+        ),
+      ],
+    );
+  }
 }
