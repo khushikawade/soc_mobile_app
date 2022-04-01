@@ -62,107 +62,104 @@ class _EventPageState extends State<EventPage>
         ? list.start['dateTime'].toString().substring(0, 10)
         : list.start['date'].toString().substring(0, 10));
 
-    return GestureDetector(
-      child: Container(
-          child: Column(
-        children: [
-          _buildCalendarBanner(_dateTime),
-          CommonFeedWidget(
-              actionIcon: Container(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    TranslationWidget(
-                      message: Utility.convertDateFormat2(
-                              list.start.toString().contains('dateTime')
-                                  ? list.start['dateTime']
-                                      .toString()
-                                      .substring(0, 10)
-                                  : list.start['date']
-                                      .toString()
-                                      .substring(0, 10)) +
-                          " - " +
-                          Utility.convertDateFormat2(list.end
-                                  .toString()
-                                  .contains('dateTime')
-                              ? list.end['dateTime'].toString().substring(0, 10)
-                              : list.end['date'].toString().substring(0, 10)),
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.headline2!.copyWith(
-                            fontWeight: FontWeight.normal, height: 1.5),
-                      ),
+    return Container(
+        child: Column(
+      children: [
+        _buildCalendarBanner(_dateTime),
+        CommonFeedWidget(
+            actionIcon: Container(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  TranslationWidget(
+                    message: Utility.convertDateFormat2(list.start
+                                .toString()
+                                .contains('dateTime')
+                            ? list.start['dateTime'].toString().substring(0, 10)
+                            : list.start['date'].toString().substring(0, 10)) +
+                        " - " +
+                        Utility.convertDateFormat2(list.end
+                                .toString()
+                                .contains('dateTime')
+                            ? list.end['dateTime'].toString().substring(0, 10)
+                            : list.end['date'].toString().substring(0, 10)),
+                    toLanguage: Globals.selectedLanguage,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(fontWeight: FontWeight.normal, height: 1.5),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      height: MediaQuery.of(context).orientation ==
-                              Orientation.portrait
-                          ? MediaQuery.of(context).size.height * 0.07
-                          : MediaQuery.of(context).size.width * 0.07,
-                      padding: Globals.deviceType == "phone"
-                          ? null
-                          : EdgeInsets.only(
-                              right: MediaQuery.of(context).size.width * 0.04),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Container(
-                              padding: EdgeInsets.only(top: 6),
-                              height: Globals.deviceType == 'phone' ? 35 : 45,
-                              width: Globals.deviceType == 'phone' ? 35 : 45,
-                              child: Center(
-                                child: IconButton(
-                                    padding: EdgeInsets.all(0),
-                                    // constraints: BoxConstraints(),
-                                    onPressed: () {
-                                      Add2Calendar.addEvent2Cal(
-                                        buildEvent(list),
-                                      );
-                                    },
-                                    icon: Icon(IconData(0xe850,
-                                        fontFamily: Overrides.kFontFam,
-                                        fontPackage: Overrides.kFontPkg))),
-                              )),
-                          Container(
-                              height: Globals.deviceType == 'phone' ? 35 : 45,
-                              width: Globals.deviceType == 'phone' ? 35 : 45,
-                              child: Center(
-                                child: IconButton(
-                                    iconSize: 22,
-                                    padding: EdgeInsets.all(0),
-                                    // constraints: BoxConstraints(),
-                                    onPressed: () {
-                                      SharePopUp obj = new SharePopUp();
-                                      obj.callFunction(
-                                          context,
-                                          list.htmlLink.toString(),
-                                          list.summary.toString());
-                                    },
-                                    icon: Icon(IconData(0xe829,
-                                        fontFamily: Overrides.kFontFam,
-                                        fontPackage: Overrides.kFontPkg))),
-                              )),
-                        ],
-                      ),
-                    )
-                  ])),
-              title: "",
-              description: list.summary ?? '',
-              titleIcon: Container(
-                padding: EdgeInsets.only(top: 4),
-                child: CalendraIconWidget(
-                  color: Colors.red,
-                  dateTime: _dateTime,
-                ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    height: MediaQuery.of(context).orientation ==
+                            Orientation.portrait
+                        ? MediaQuery.of(context).size.height * 0.07
+                        : MediaQuery.of(context).size.width * 0.07,
+                    padding: Globals.deviceType == "phone"
+                        ? null
+                        : EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * 0.04),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                            padding: EdgeInsets.only(top: 6),
+                            height: Globals.deviceType == 'phone' ? 35 : 45,
+                            width: Globals.deviceType == 'phone' ? 35 : 45,
+                            child: Center(
+                              child: IconButton(
+                                  padding: EdgeInsets.all(0),
+                                  // constraints: BoxConstraints(),
+                                  onPressed: () {
+                                    Add2Calendar.addEvent2Cal(
+                                      buildEvent(list),
+                                    );
+                                  },
+                                  icon: Icon(IconData(0xe850,
+                                      fontFamily: Overrides.kFontFam,
+                                      fontPackage: Overrides.kFontPkg))),
+                            )),
+                        Container(
+                            height: Globals.deviceType == 'phone' ? 35 : 45,
+                            width: Globals.deviceType == 'phone' ? 35 : 45,
+                            child: Center(
+                              child: IconButton(
+                                  iconSize: 22,
+                                  padding: EdgeInsets.all(0),
+                                  // constraints: BoxConstraints(),
+                                  onPressed: () {
+                                    SharePopUp obj = new SharePopUp();
+                                    obj.callFunction(
+                                        context,
+                                        list.htmlLink.toString(),
+                                        list.summary.toString());
+                                  },
+                                  icon: Icon(IconData(0xe829,
+                                      fontFamily: Overrides.kFontFam,
+                                      fontPackage: Overrides.kFontPkg))),
+                            )),
+                      ],
+                    ),
+                  )
+                ])),
+            title: "",
+            description: list.summary ?? '',
+            titleIcon: Container(
+              padding: EdgeInsets.only(top: 4),
+              child: CalendraIconWidget(
+                color: Colors.red,
+                dateTime: _dateTime,
               ),
-              url: ''),
-        ],
-      )),
-    );
+            ),
+            url: ''),
+      ],
+    ));
   }
 
   Widget _buildCalendarBanner(dateTime) {
@@ -269,9 +266,13 @@ class _EventPageState extends State<EventPage>
                               child: state.futureListobj!.length > 0
                                   ? new ListView.builder(
                                       scrollDirection: Axis.vertical,
-                                      padding: Platform.isAndroid
-                                          ? EdgeInsets.only(bottom: 20)
-                                          : EdgeInsets.only(bottom: 60),
+                                      padding: !Platform.isAndroid
+                                          ? EdgeInsets.only(bottom: 60)
+                                          : MediaQuery.of(context)
+                                                      .orientation !=
+                                                  Orientation.portrait
+                                              ? EdgeInsets.only(bottom: 120)
+                                              : EdgeInsets.only(bottom: 20),
                                       itemCount: state.futureListobj!.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
@@ -304,9 +305,13 @@ class _EventPageState extends State<EventPage>
                               child: state.pastListobj!.length > 0
                                   ? new ListView.builder(
                                       scrollDirection: Axis.vertical,
-                                      padding: Platform.isAndroid
-                                          ? EdgeInsets.only(bottom: 20)
-                                          : EdgeInsets.only(bottom: 60),
+                                      padding: !Platform.isAndroid
+                                          ? EdgeInsets.only(bottom: 60)
+                                          : MediaQuery.of(context)
+                                                      .orientation !=
+                                                  Orientation.portrait
+                                              ? EdgeInsets.only(bottom: 120)
+                                              : EdgeInsets.only(bottom: 20),
                                       itemCount: state.pastListobj!.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {

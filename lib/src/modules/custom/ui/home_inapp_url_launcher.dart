@@ -70,38 +70,41 @@ class _HomeInAppUrlLauncherState extends State<HomeInAppUrlLauncher> {
                               padding: EdgeInsets.only(bottom:30),
                               height: MediaQuery.of(context).size.height,
                               // width: MediaQuery.of(context).size.width,
-                              child: WebView(
-                                
-                                gestureRecognizers: Set()
-                                  ..add(Factory<VerticalDragGestureRecognizer>(
-                                      () => VerticalDragGestureRecognizer()
-                                        ..onDown =
-                                            (DragDownDetails dragDownDetails) {
-                                          Globals.webViewController1!
-                                              .getScrollY()
-                                              .then((value) {
-                                            if (value == 0 &&
-                                                dragDownDetails.globalPosition
-                                                        .direction <
-                                                    1) {
-                                              refreshPage();
-                                            }
-                                          });
-                                        })),
-                                gestureNavigationEnabled:
-                                    widget.isiFrame == true ? true : false,
-                                initialUrl: widget.isiFrame == true
-                                    ? Uri.dataFromString(widget.url,
-                                            mimeType: 'text/html')
-                                        .toString()
-                                    : widget.url,
-                                javascriptMode: JavascriptMode.unrestricted,
-                                onWebViewCreated:
-                                    (WebViewController webViewController) {
-                                  _controller.complete(webViewController);
-                                  Globals.webViewController1 =
-                                      webViewController;
-                                },
+                              child: Theme(
+                                data: ThemeData.light(),
+                                child: WebView(
+                                  
+                                  gestureRecognizers: Set()
+                                    ..add(Factory<VerticalDragGestureRecognizer>(
+                                        () => VerticalDragGestureRecognizer()
+                                          ..onDown =
+                                              (DragDownDetails dragDownDetails) {
+                                            Globals.webViewController1!
+                                                .getScrollY()
+                                                .then((value) {
+                                              if (value == 0 &&
+                                                  dragDownDetails.globalPosition
+                                                          .direction <
+                                                      1) {
+                                                refreshPage();
+                                              }
+                                            });
+                                          })),
+                                  gestureNavigationEnabled:
+                                      widget.isiFrame == true ? true : false,
+                                  initialUrl: widget.isiFrame == true
+                                      ? Uri.dataFromString(widget.url,
+                                              mimeType: 'text/html')
+                                          .toString()
+                                      : widget.url,
+                                  javascriptMode: JavascriptMode.unrestricted,
+                                  onWebViewCreated:
+                                      (WebViewController webViewController) {
+                                    _controller.complete(webViewController);
+                                    Globals.webViewController1 =
+                                        webViewController;
+                                  },
+                                ),
                               ),
                             ),
                             Container(
