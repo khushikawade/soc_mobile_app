@@ -249,6 +249,8 @@ class _SearchPageState extends State<SearchPage> {
                                 ? "about"
                                 : obj.name.toString().contains("RES")
                                     ? "resources"
+                                     : obj.name.toString().contains("CAM")?
+                                    "Custom"
                                     : "",
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,

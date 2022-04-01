@@ -67,6 +67,7 @@ class _HomeInAppUrlLauncherState extends State<HomeInAppUrlLauncher> {
                         shrinkWrap: true,
                         children: [
                             Container(
+                              padding: EdgeInsets.only(bottom:30),
                               height: MediaQuery.of(context).size.height,
                               // width: MediaQuery.of(context).size.width,
                               child: WebView(
