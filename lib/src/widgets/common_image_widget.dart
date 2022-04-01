@@ -29,9 +29,7 @@ class CommonImageWidget extends StatelessWidget {
               builder: (_) => ImagePopup(
                   imageURL: iconUrl ??
                       Globals.splashImageUrl ??
-                      // Globals.homeObject["App_Logo__c"]
-                      Globals.appSetting.appLogoC
-                      ));
+                      Globals.appSetting.appLogoC));
         }
       },
       child: ClipRRect(
@@ -66,9 +64,8 @@ class CommonImageWidget extends StatelessWidget {
                     ),
                   )),
               errorWidget: (context, url, error) => CachedNetworkImage(
-                    imageUrl: Globals.splashImageUrl ??
-                        // Globals.homeObject["App_Logo__c"],
-                        Globals.appSetting.appLogoC,
+                    imageUrl:
+                        Globals.splashImageUrl ?? Globals.appSetting.appLogoC,
                     height: height ??
                         (Globals.deviceType == "phone"
                             ? AppTheme.kIconSize

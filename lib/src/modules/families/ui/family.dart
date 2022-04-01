@@ -17,6 +17,7 @@ import '../../../widgets/empty_container_widget.dart';
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
+
   FamilyPage({
     Key? key,
     this.obj,
@@ -28,7 +29,6 @@ class FamilyPage extends StatefulWidget {
 }
 
 class _FamilyPageState extends State<FamilyPage> {
-  // static const double _kLabelSpacing = 10.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -44,22 +44,14 @@ class _FamilyPageState extends State<FamilyPage> {
 
     if (brightness == Brightness.dark) {
       Globals.themeType = 'Dark';
-    } else {
-      
     }
-    // bool isDarkMode = brightness == Brightness.dark;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     _bloc.add(FamiliesEvent());
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Widget _body(String key) => Container(
@@ -93,8 +85,11 @@ class _FamilyPageState extends State<FamilyPage> {
                           builder: (BuildContext contxt, FamilyState state) {
                             if (state is FamilyInitial ||
                                 state is FamilyLoading) {
-                              return Center(child: CircularProgressIndicator(
-                                color: Theme.of(context).colorScheme.primaryVariant,
+                              return Center(
+                                  child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
                               ));
                             } else if (state is FamiliesDataSucess) {
                               return CommonListWidget(
@@ -139,7 +134,7 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-         //backgroundColor: Theme.of(context).backgroundColor,
+        //backgroundColor: Theme.of(context).backgroundColor,
         key: _scaffoldKey,
         appBar: AppBarWidget(
           marginLeft: 30,

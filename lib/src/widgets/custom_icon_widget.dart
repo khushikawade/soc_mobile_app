@@ -1,11 +1,9 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-
 
 class CustomIconWidget extends StatefulWidget {
   late final String? iconUrl;
@@ -18,17 +16,11 @@ class CustomIconWidget extends StatefulWidget {
 class _CustomIconWidgetState extends State<CustomIconWidget> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
     if (brightness == Brightness.dark) {
       Globals.themeType = 'Dark';
-      
-
-    } else {
-      
-
     }
   }
 

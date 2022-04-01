@@ -33,7 +33,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     if (event is FamiliesEvent) {
       try {
         // yield FamilyLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
-       
         LocalDatabase<SharedList> _localDb =
             LocalDatabase(Strings.familiesObjectName);
 
@@ -131,7 +130,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         } else {
           yield SDDataSucess(obj: _localData);
         }
-
         // Local database end
 
         List<SDlist> list = await getStaffList(event.categoryId);
@@ -162,9 +160,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
     if (event is CalendarListEvent) {
       try {
-        
         yield FamilyLoading();
-        String? _objectName = "${Strings.calendarObjectName}${event.calendarId}";
+        String? _objectName =
+            "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
 
         List<CalendarEventList>? _localData = await _localDb.getData();
@@ -173,7 +171,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           yield FamilyLoading();
         } else {
           List<CalendarEventList>? futureListobj = [];
-        List<CalendarEventList>? pastListobj = [];
+          List<CalendarEventList>? pastListobj = [];
 
           DateTime now = new DateTime.now();
           final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -191,6 +189,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
               }
             } catch (e) {}
           }
+
           futureListobj.sort((a, b) {
             var adate = DateTime.parse(a.start.toString().contains('dateTime')
                 ? a.start['dateTime'].split('T')[0]
@@ -202,6 +201,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             return adate.compareTo(
                 bdate); //to get the order other way just switch `adate & bdate`
           });
+
           pastListobj.sort((a, b) {
             var adate = DateTime.parse(a.start.toString().contains('dateTime')
                 ? a.start['dateTime'].split('T')[0]
@@ -215,11 +215,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           });
           yield CalendarListSuccess(
               futureListobj: futureListobj, pastListobj: pastListobj);
-
-          // futureListobj.clear();
-          // pastListobj.clear();
         }
-        List<CalendarEventList> list = await getCalendarEventList(event.calendarId);
+        List<CalendarEventList> list =
+            await getCalendarEventList(event.calendarId);
 
         await _localDb.clear();
         list.forEach((CalendarEventList e) {
@@ -227,7 +225,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         });
 
         List<CalendarEventList>? _localData1 = await _localDb.getData();
-      //  print(_localData1);
+        //  print(_localData1);
         List<CalendarEventList>? futureListobj = [];
         List<CalendarEventList>? pastListobj = [];
 
@@ -235,6 +233,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         final DateFormat formatter = DateFormat('yyyy-MM-dd');
         final DateTime currentDate =
             DateTime.parse(formatter.format(now).toString());
+
         for (int i = 0; i < list.length; i++) {
           try {
             var temp = list[i].start.toString().contains('dateTime')
@@ -247,6 +246,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             }
           } catch (e) {}
         }
+
         futureListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -258,6 +258,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return adate.compareTo(
               bdate); //to get the order other way just switch `adate & bdate`
         });
+
         pastListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -273,21 +274,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {
-        // LocalDatabase<CalendarEventList> _localDbPast =
-        //     LocalDatabase(Strings.calendarPastObjectName);
-
-        // List<CalendarEventList>? _localDataPast = await _localDbPast.getData();
-
-        // LocalDatabase<CalendarEventList> _localDbFuture =
-        //     LocalDatabase(Strings.calendarFutureObjectName);
-
-        // List<CalendarEventList>? _localDataFuture =
-        //     await _localDbFuture.getData();
-
-        // yield CalendarListSuccess(
-        //     futureListobj: _localDataFuture, pastListobj: _localDataPast);
-          // yield ErrorLoading(err: e);
-        String? _objectName = "${Strings.calendarObjectName}${event.calendarId}";
+        String? _objectName =
+            "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
 
         List<CalendarEventList>? _localData = await _localDb.getData();
@@ -298,6 +286,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         final DateFormat formatter = DateFormat('yyyy-MM-dd');
         final DateTime currentDate =
             DateTime.parse(formatter.format(now).toString());
+
         for (int i = 0; i < _localData.length; i++) {
           try {
             var temp = _localData[i].start.toString().contains('dateTime')
@@ -310,6 +299,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             }
           } catch (e) {}
         }
+
         futureListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -321,6 +311,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return adate.compareTo(
               bdate); //to get the order other way just switch `adate & bdate`
         });
+
         pastListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -332,6 +323,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
+
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
       }
@@ -352,7 +344,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Families_App__c'));
       if (response.statusCode == 200) {
-        //   var dataArray = response.data["records"];
         List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
@@ -391,7 +382,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           ? Uri.encodeFull(
               'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c')
           : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId');
-      // "query/?q=${Uri.encodeComponent("SELECT Title__c,Image_URL__c,Id,Name__c,Description__c, Email__c,Sort_Order__c,Phone__c,Active_Status__c FROM Staff_Directory_App__c where About_App__c = '$categoryId'")}");
 
       if (response.statusCode == 200) {
         List<SDlist> _list = response.data['body']
@@ -407,7 +397,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  Future<List<CalendarEventList>> getCalendarEventList(String? calendarId) async {
+  Future<List<CalendarEventList>> getCalendarEventList(
+      String? calendarId) async {
     try {
       final response = await http.get(
         Uri.parse(

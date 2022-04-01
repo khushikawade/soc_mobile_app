@@ -6,7 +6,7 @@ class BackButtonWidget extends StatelessWidget {
   BackButtonWidget({this.isNewsPage, this.isSocialPage});
 
   final bool? isNewsPage;
-  final bool ? isSocialPage;
+  final bool? isSocialPage;
 
   Widget build(BuildContext context) {
     return Row(

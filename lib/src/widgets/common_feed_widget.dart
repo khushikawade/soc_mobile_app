@@ -85,9 +85,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   )),
               errorWidget: (context, url, error) => CachedNetworkImage(
                 fit: BoxFit.fitWidth,
-                imageUrl: Globals.splashImageUrl ??
-                    // Globals.homeObject["App_Logo__c"],
-                    Globals.appSetting.appLogoC,
+                imageUrl: Globals.splashImageUrl ?? Globals.appSetting.appLogoC,
                 placeholder: (context, url) => Container(
                   alignment: Alignment.center,
                   child: ShimmerLoading(
@@ -138,11 +136,6 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                       linkStyle: TextStyle(color: Colors.blue),
                       style: Theme.of(context).textTheme.headline2!.copyWith(),
                       text: translatedMessage.toString());
-
-                  // Text(
-                  //   translatedMessage.toString(),
-                  //   style: Theme.of(context).textTheme.headline2!.copyWith(),
-                  // );
                 },
               )
             ],

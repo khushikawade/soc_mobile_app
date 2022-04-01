@@ -33,7 +33,6 @@ class SchoolDetailPage extends StatefulWidget {
 class _SchoolDetailPageState extends State<SchoolDetailPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
-  // static const double _kIconSize = 48.0;
   bool issuccesstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
@@ -46,7 +45,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   @override
   void initState() {
     super.initState();
-    homebloc.add(FetchBottomNavigationBar());
+    homebloc.add(FetchStandardNavigationBar());
     Globals.callsnackbar = true;
     if (widget.obj.latitude != null && widget.obj.longitude != null) {
       _markers.add(Marker(
@@ -63,7 +62,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         child: CommonImageWidget(
           iconUrl: widget.obj.imageUrlC ??
               Globals.splashImageUrl ??
-              // Globals.homeObject["App_Logo__c"],
               Globals.appSetting.appLogoC,
           height: Utility.displayHeight(context) *
               (AppTheme.kDetailPageImageHeightFactor / 100),
@@ -104,7 +102,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                 data: translatedMessage.toString(),
                 onLinkTap: (String? url, RenderContext context,
                     Map<String, String> attributes, dom.Element? element) {
-                  // _launchURL(url);
                   Utility.launchUrlOnExternalBrowser(url!);
                 },
               ),
@@ -150,7 +147,8 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                         myLocationEnabled: true,
                         initialCameraPosition: CameraPosition(
                             // bearing: 192.8334901395799,
-                            target: LatLng(double.parse(widget.obj.latitude ?? "0.0"),
+                            target: LatLng(
+                                double.parse(widget.obj.latitude ?? "0.0"),
                                 double.parse(widget.obj.longitude ?? "0.0")),
                             zoom: 18,
                             tilt: 59.440717697143555),
@@ -168,7 +166,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         padding: const EdgeInsets.only(bottom: 4.0),
         child: InkWell(
           onTap: () {
-            // urlobj.callurlLaucher(context, "tel:" + widget.obj.phoneC!);
             Utility.launchUrlOnExternalBrowser("tel:" + widget.obj.phoneC!);
           },
           child: Text(
@@ -182,7 +179,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
               color: Colors.blue,
               fontWeight: FontWeight.normal,
               fontFamily: 'Roboto Regular',
-            ), //Theme.of(context).textTheme.bodyText1!,
+            ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -218,7 +215,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         child: GestureDetector(
           onTap: () {
             Utility.launchUrlOnExternalBrowser("mailto:" + widget.obj.emailC!);
-            // urlobj.callurlLaucher(context, 'mailto:"${widget.obj.emailC}"');
           },
           child: Text(
             widget.obj.emailC!,
@@ -276,7 +272,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         _buildTitleWidget(),
         SpacerWidget(_kLabelSpacing / 1.5),
         _buildIcon(),
-        // SpacerWidget(_kLabelSpacing),
         _buildDescriptionWidget(),
         SpacerWidget(_kLabelSpacing * 2),
         widget.obj.latitude != null && widget.obj.longitude != null
@@ -311,7 +306,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   }
 
   Widget build(BuildContext context) {
-    // print(widget.obj.imageUrlC);
     return Scaffold(
         appBar: CustomAppBarWidget(
           isSearch: true,
@@ -340,7 +334,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                       }
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        // Globals.homeObject = state.obj;
+
                         Globals.appSetting = AppSetting.fromJson(state.obj);
                         isloadingstate = false;
                         setState(() {});
@@ -354,7 +348,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                   listener: (context, state) async {
                     if (state is BottomNavigationBarSuccess) {
                       AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      // Globals.homeObject = state.obj;
+
                       Globals.appSetting = AppSetting.fromJson(state.obj);
                       setState(() {});
                     }
@@ -370,7 +364,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
-    homebloc.add(FetchBottomNavigationBar());
+    await Future.delayed(Duration(seconds: 2));
+    homebloc.add(FetchStandardNavigationBar());
   }
 }

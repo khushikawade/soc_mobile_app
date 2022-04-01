@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class ListWidget extends StatelessWidget {
-  // static const double _kLabelSpacing = 17.0;
   int? index;
   Widget? listItem;
   final obj;

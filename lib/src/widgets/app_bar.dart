@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
+
   CustomAppBarWidget({
     Key? key,
     required this.isSearch,
@@ -42,7 +43,6 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
 
 class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
   static const double _kLabelSpacing = 15.0;
-  // static const double _kIconSize = 50.0;
   double lineProgress = 0.0;
   SharePopUp shareobj = new SharePopUp();
 
@@ -61,9 +61,10 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
               toLanguage: Globals.selectedLanguage,
               builder: (translatedMessage) => Text(
                 translatedMessage.toString(),
-                style: Theme.of(context).textTheme.headline2!.copyWith(
-                    // color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w400),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.w400,color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -99,12 +100,4 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       ],
     );
   }
-
-  // _progressBar(double progress, BuildContext context) {
-  //   return LinearProgressIndicator(
-  //     backgroundColor: Colors.white70.withOpacity(0),
-  //     value: progress == 1.0 ? 0 : progress,
-  //     valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-  //   );
-  // }
 }

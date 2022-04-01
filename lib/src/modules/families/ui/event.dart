@@ -14,17 +14,18 @@ import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
-import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 
-// ignore: must_be_immutable
 class EventPage extends StatefulWidget {
-  bool? isAppBar;
+  final bool? isAppBar;
+  final String? language;
+  final bool? isbuttomsheet;
+  final String? appBarTitle;
+  final String calendarId;
 
   EventPage({
     required this.isbuttomsheet,
@@ -33,10 +34,6 @@ class EventPage extends StatefulWidget {
     required this.calendarId,
     this.isAppBar,
   });
-  String? language;
-  bool? isbuttomsheet;
-  String? appBarTitle;
-  String calendarId;
 
   @override
   _EventPageState createState() => _EventPageState();
@@ -44,20 +41,19 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage>
     with AutomaticKeepAliveClientMixin<EventPage> {
-  static const double _kLabelSpacing = 15.0;
   FamilyBloc _eventBloc = FamilyBloc();
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final refreshKey1 = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
-  double? _ktabmargin = 50;
   String? lastMonth;
+
   @override
   bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
-
     _eventBloc.add(CalendarListEvent(widget.calendarId));
   }
 
@@ -65,24 +61,8 @@ class _EventPageState extends State<EventPage>
     DateTime _dateTime = getDate(list.start.toString().contains('dateTime')
         ? list.start['dateTime'].toString().substring(0, 10)
         : list.start['date'].toString().substring(0, 10));
-    // DateTime.parse();
+
     return GestureDetector(
-      // onTap: () {
-      //   Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //           builder: (context) => SliderWidget(
-      //                 obj: mainObj,
-      //                 // iconsName: [],
-      //                 issocialpage: false,
-      //                 isAboutSDPage: false,
-      //                 iseventpage: true,
-      //                 currentIndex: index,
-      //                 date: '',
-      //                 isbuttomsheet: true,
-      //                 language: Globals.selectedLanguage,
-      //               )));
-      // },
       child: Container(
           child: Column(
         children: [
@@ -134,7 +114,6 @@ class _EventPageState extends State<EventPage>
                               padding: EdgeInsets.only(top: 6),
                               height: Globals.deviceType == 'phone' ? 35 : 45,
                               width: Globals.deviceType == 'phone' ? 35 : 45,
-                              //  color: Colors.grey,
                               child: Center(
                                 child: IconButton(
                                     padding: EdgeInsets.all(0),
@@ -151,7 +130,6 @@ class _EventPageState extends State<EventPage>
                           Container(
                               height: Globals.deviceType == 'phone' ? 35 : 45,
                               width: Globals.deviceType == 'phone' ? 35 : 45,
-                              //  color: Colors.grey,
                               child: Center(
                                 child: IconButton(
                                     iconSize: 22,
@@ -171,10 +149,7 @@ class _EventPageState extends State<EventPage>
                         ],
                       ),
                     )
-                  ])
-                  //  Text('button place'),
-                  // child: actionButton(list, obj, index)
-                  ),
+                  ])),
               title: "",
               description: list.summary ?? '',
               titleIcon: Container(
@@ -211,7 +186,6 @@ class _EventPageState extends State<EventPage>
                   borderRadius: BorderRadius.all(Radius.circular(30)),
                   color: Theme.of(context).colorScheme.background,
                 ),
-                // color:
                 child: Text(
                   month,
                   style: Theme.of(context)
@@ -224,7 +198,6 @@ class _EventPageState extends State<EventPage>
           ],
         );
       } else {
-        // lastMonth = month;
         return Container();
       }
     } catch (e) {
@@ -244,7 +217,9 @@ class _EventPageState extends State<EventPage>
                 Container(
                   child: TabBar(
                     indicatorSize: TabBarIndicatorSize.label,
-                    labelColor: Theme.of(context).colorScheme.primaryVariant,
+                    labelColor: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant, //should be : Theme.of(context).colorScheme.primary,
                     indicatorColor: Theme.of(context).colorScheme.primary,
                     unselectedLabelColor: Globals.themeType == "Dark"
                         ? Colors.grey
@@ -339,19 +314,6 @@ class _EventPageState extends State<EventPage>
                                             state.pastListobj![index],
                                             index,
                                             state.pastListobj);
-                                        // : new RefreshIndicator(
-                                        //     // key: refreshKey,
-                                        //     onRefresh: refreshPage,
-                                        //     child: ListView(
-                                        //       children: [
-                                        //         NoDataFoundErrorWidget(
-                                        //           isResultNotFoundMsg: false,
-                                        //           isNews: false,
-                                        //           isEvents: true,
-                                        //         ),
-                                        //       ],
-                                        //     ),
-                                        //   );
                                       })
                                   : NoDataFoundErrorWidget(
                                       isResultNotFoundMsg: false,
@@ -448,7 +410,6 @@ class _EventPageState extends State<EventPage>
                                   Globals.appSetting, context);
                               Globals.appSetting =
                                   AppSetting.fromJson(state.obj);
-                              // Globals.homeObject = state.obj;
                               setState(() {});
                             }
                           },
@@ -468,7 +429,7 @@ class _EventPageState extends State<EventPage>
     refreshKey1.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     _eventBloc.add(CalendarListEvent(widget.calendarId));
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   DateTime getDate(date) {

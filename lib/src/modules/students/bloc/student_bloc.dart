@@ -34,8 +34,6 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         if (_localData.isEmpty) {
           yield Loading();
         } else {
-          // List<StudentApp> appList = [];
-          // List<StudentApp> subList = [];
           appList.clear();
           subList.clear();
           for (int i = 0; i < _localData.length; i++) {
