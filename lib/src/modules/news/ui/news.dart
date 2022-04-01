@@ -93,16 +93,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildListItems(
       List<NotificationList> list, NotificationList obj, int index) {
     return Container(
-      // padding: EdgeInsets.symmetric(
-      //   horizontal: _kLabelSpacing,
-      //   vertical: _kLabelSpacing / 2,
-      // ),
-      // padding: EdgeInsets.symmetric(
-      //   // horizontal: _kLabelSpacing,
-      //   vertical: _kLabelSpacing / 1,
-      // ),
       color: Theme.of(context).colorScheme.background,
-
       child: InkWell(
         onTap: () async {
           if (isCountLoading == true) {
@@ -138,13 +129,11 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   obj.headings != null
               ? '${obj.headings["en"].toString()}'
               : obj.contents["en"] ?? '-',
-          description:obj.url==null? '${obj.contents["en"].toString()}' : '${obj.contents["en"].toString()}\n${obj.url}',
+          description: obj.url == null
+              ? '${obj.contents["en"].toString()}'
+              : '${obj.contents["en"].toString()}\n${obj.url}',
           titleIcon: CalendraIconWidget(dateTime: obj.completedAt),
-          // calanderView(obj.completedAt),
           url: obj.image != '' && obj.image != null ? obj.image! : '',
-          //  Globals.splashImageUrl != '' && Globals.splashImageUrl != null
-          //     ? Globals.splashImageUrl
-          //     : Globals.appSetting.appLogoC,
         ),
       ),
     );
@@ -160,7 +149,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             if (state is ActionCountSuccess) {
               newsMainList.clear();
               newsMainList.addAll(state.obj);
-              // print(newsMainList);
+
               isCountLoading = false;
               Container(
                 alignment: Alignment.centerLeft,
@@ -232,33 +221,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     );
   }
 
-  // marqueesText(String title) {
-  //   return title.length < 50
-  //       ? Text("$title",
-  //           style: Theme.of(context).textTheme.headline2!.copyWith(
-  //                 color: Theme.of(context).colorScheme.primaryVariant,
-  //               ))
-  //       : Marquee(
-  //           text: "$title",
-  //           style: Theme.of(context).textTheme.headline2!.copyWith(
-  //                 color: Theme.of(context).colorScheme.primaryVariant,
-  //               ),
-  //           scrollAxis: Axis.horizontal,
-  //           velocity: 30.0,
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           blankSpace: //50,
-  //               MediaQuery.of(context).size.width * 0.5,
-  //           // velocity: 100.0,
-  //           pauseAfterRound: Duration(seconds: 5),
-  //           showFadingOnlyWhenScrolling: true,
-  //           startPadding: 0.0,
-  //           accelerationDuration: Duration(seconds: 1),
-  //           accelerationCurve: Curves.linear,
-  //           decelerationDuration: Duration(milliseconds: 500),
-  //           decelerationCurve: Curves.easeOut,
-  //         );
-  // }
-
   Widget _buildList(List<NotificationList> obj) {
     return Expanded(
       child: ListView.builder(
@@ -323,7 +285,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                               .add(FetchActionCountList(isDetailPage: false));
                           isActionAPICalled = true;
                         }
-                        // object = state.obj;
+
                         SharedPreferences intPrefs =
                             await SharedPreferences.getInstance();
                         intPrefs.getInt("totalCount") == null
@@ -342,7 +304,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                       listener: (context, state) async {
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          // Globals.homeObject = state.obj;
+
                           Globals.appSetting = AppSetting.fromJson(state.obj);
 
                           // setState(() {});
@@ -371,6 +333,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.8,
                               child: Center(child: CircularProgressIndicator()),
+                              color:
+                                  Theme.of(context).colorScheme.primaryVariant,
                             ),
                           );
                         } else if (state is NewsErrorReceived) {
@@ -380,8 +344,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           return Container();
                         }
                       }),
-
-                  // actionButton(),
                 ],
               );
               // : NoInternetErrorWidget(
@@ -398,6 +360,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     await Future.delayed(Duration(seconds: 2));
     bloc.add(FetchNotificationList());
     isActionAPICalled = false;
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

@@ -176,7 +176,7 @@ class SocialDescription extends StatelessWidget {
     refreshKey.currentState?.show(atTop: false);
     
      await Future.delayed(Duration(seconds: 2));
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Widget _buildBottomSection(BuildContext context) {
@@ -260,6 +260,8 @@ class SocialDescription extends StatelessWidget {
           builder: (translatedMessage) =>
               // SelectableHTMLWidget // Html
               SelectableHtml(
+                
+                
             onLinkTap: (String? url, RenderContext context,
                 Map<String, String> attributes, dom.Element? element) {
               _launchURL(url, context);
@@ -275,6 +277,7 @@ class SocialDescription extends StatelessWidget {
                 fontSize: Globals.deviceType == "phone"
                     ? FontSize(13.0)
                     : FontSize(21.0),
+                    
               ),
             },
           ),

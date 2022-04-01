@@ -57,7 +57,7 @@ class _SocialPageState extends State<SocialPage> {
     refreshKey.currentState?.show(atTop: false);
      await Future.delayed(Duration(seconds: 2));
     bloc.add(SocialPageEvent());
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
     _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
   }
 
@@ -160,6 +160,7 @@ class _SocialPageState extends State<SocialPage> {
             setState(() {});
           },
         ),
+        
         body: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(
@@ -206,7 +207,9 @@ class _SocialPageState extends State<SocialPage> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.8,
                                 child:
-                                    Center(child: CircularProgressIndicator()),
+                                    Center(child: CircularProgressIndicator(
+                                      color: Theme.of(context).colorScheme.primaryVariant,
+                                    )),
                               ),
                             );
                           } else if (state is SocialError) {

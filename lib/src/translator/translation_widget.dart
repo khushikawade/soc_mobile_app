@@ -75,7 +75,6 @@ class _TranslationWidgetState extends State<TranslationWidget> {
           child: Container(
             height: widget.shimmerHeight ?? 20,
             width: 40,
-            // child: Text(widget.message!),
             color: Colors.white,
           ),
         )

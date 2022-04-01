@@ -12,7 +12,6 @@ import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +29,6 @@ class _SchoolPageState extends State<SchoolPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   final HomeBloc _homeBloc = new HomeBloc();
-  // List<SchoolDirectoryList> newList = [];
 
   @override
   void initState() {
@@ -97,7 +95,6 @@ class _SchoolPageState extends State<SchoolPage> {
                       : _kIconSize * 2,
                   iconUrl: obj.imageUrlC ??
                       Globals.splashImageUrl ??
-                      // Globals.homeObject["App_Logo__c"],
                       Globals.appSetting.appLogoC,
                   fitMethod: BoxFit.cover,
                 ))),
@@ -150,7 +147,11 @@ class _SchoolPageState extends State<SchoolPage> {
                                 state is SchoolDirectoryLoading) {
                               return Container(
                                   alignment: Alignment.center,
-                                  child: CircularProgressIndicator());
+                                  child: CircularProgressIndicator(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                  ));
                             } else if (state is SchoolDirectoryDataSucess) {
                               return state.obj!.length > 0
                                   ? ListView.builder(
@@ -187,8 +188,8 @@ class _SchoolPageState extends State<SchoolPage> {
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
-                              // Globals.homeObject = state.obj;
-                              Globals.appSetting = AppSetting.fromJson(state.obj);
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
                               setState(() {});
                             } else if (state is HomeErrorReceived) {
                               ErrorMsgWidget();
@@ -196,19 +197,6 @@ class _SchoolPageState extends State<SchoolPage> {
                           },
                           child: EmptyContainer()),
                     ),
-                    // BlocListener<SchoolDirectoryBloc, SchoolDirectoryState>(
-                    //     bloc: bloc,
-                    //     listener: (context, state) async {
-                    //       if (state is SchoolDirectoryDataSucess) {
-                    //         newList.clear();
-                    //         for (int i = 0; i < state.obj!.length; i++) {
-                    //           if (state.obj![i].statusC != "Hide") {
-                    //             newList.add(state.obj![i]);
-                    //           }
-                    //         }
-                    //       }
-                    //     },
-                    //     child: EmptyContainer()),
                   ],
                 );
                 // : NoInternetErrorWidget(
@@ -229,23 +217,16 @@ class _SchoolPageState extends State<SchoolPage> {
         ),
         body: Globals.appSetting.schoolBannerImageC != null &&
                 Globals.appSetting.schoolBannerImageC != ""
-        //  Globals.homeObject["School_Banner_Image__c"] != null &&
-        //         Globals.homeObject["School_Banner_Image__c"] != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     BannerImageWidget(
                       imageUrl: Globals.appSetting.schoolBannerImageC!,
-                      // Globals.homeObject["School_Banner_Image__c"],
-                      bgColor:
-                      Globals.appSetting.schoolBannerColorC != null
-                          // Globals.homeObject["School_Banner_Color__c"] != null
-                              ? Utility.getColorFromHex(
-                                Globals.appSetting.schoolBannerColorC! 
-                                 // Globals.homeObject["School_Banner_Color__c"]
-                                  )
-                              : null,
+                      bgColor: Globals.appSetting.schoolBannerColorC != null
+                          ? Utility.getColorFromHex(
+                              Globals.appSetting.schoolBannerColorC!)
+                          : null,
                     )
                   ];
                 },
@@ -255,8 +236,8 @@ class _SchoolPageState extends State<SchoolPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     bloc.add(SchoolDirectoryListEvent());
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

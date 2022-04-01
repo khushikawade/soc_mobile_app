@@ -9,7 +9,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +32,6 @@ class CommonListWidget extends StatefulWidget {
 }
 
 class _CommonListWidgetState extends State<CommonListWidget> {
-  // final widget.scaffoldKey = GlobalKey<ScaffoldState>();
   bool? tapped = true;
   _launchURL(obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
@@ -66,7 +65,6 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           MaterialPageRoute(
               builder: (BuildContext context) => ContactPage(
                     obj: Globals.appSetting,
-                    //  Globals.homeObject,
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage ?? "English",
@@ -138,6 +136,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
+                        isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
@@ -175,7 +174,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
 
   Widget _buildLeading(SharedList obj) {
     if (obj.appIconUrlC != null) {
-      return CustomIconWidget(
+      return CustomIconMode(
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else if (obj.appIconC != null) {
@@ -189,7 +188,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
     } else {
-      return CustomIconWidget(
+      return CustomIconMode(
         iconUrl: Overrides.defaultIconUrl,
       );
     }
@@ -199,7 +198,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: AppTheme.kDividerColor2,
+          color: Theme.of(context).colorScheme.background,
           width: 0.65,
         ),
         borderRadius: BorderRadius.circular(0.0),
@@ -226,7 +225,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).primaryColor,
         ),
       ),
     );

@@ -25,9 +25,8 @@ class ErrorLoading extends CustomState {
   List<Object> get props => [err];
 }
 
-// ignore: must_be_immutable
 class CustomDataSucess extends CustomState {
-  List<SharedList>? obj;
+  final List<SharedList>? obj;
   CustomDataSucess({
     this.obj,
   });
@@ -42,7 +41,7 @@ class CustomDataSucess extends CustomState {
 }
 
 class CustomSublistSuccess extends CustomState {
-  List<SharedList>? obj;
+  final List<SharedList>? obj;
 
   CustomSublistSuccess({
     this.obj,
@@ -59,7 +58,7 @@ class CustomSublistSuccess extends CustomState {
 }
 
 class SDDataSuccess extends CustomState {
-  List<SDlist>? obj;
+  final List<SDlist>? obj;
   SDDataSuccess({
     this.obj,
   });
@@ -74,8 +73,8 @@ class SDDataSuccess extends CustomState {
 }
 
 class CalendarListSuccess extends CustomState {
-  List<CalendarEventList>? pastListobj;
-  List<CalendarEventList>? futureListobj;
+  final List<CalendarEventList>? pastListobj;
+  final List<CalendarEventList>? futureListobj;
   CalendarListSuccess({this.pastListobj, this.futureListobj});
   CalendarListSuccess copyWith({
     final obj,

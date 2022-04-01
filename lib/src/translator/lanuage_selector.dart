@@ -53,18 +53,17 @@ class LanguageSelector {
         children: [
           Container(
             margin: EdgeInsets.only(
-              // top: 5,
               left: 10,
               right: 10,
             ),
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.secondary,
             child: Theme(
               data: ThemeData(
                 unselectedWidgetColor: Theme.of(context).colorScheme.onPrimary,
               ),
               child: RadioListTile(
                 controlAffinity: ListTileControlAffinity.trailing,
-                activeColor: Theme.of(context).colorScheme.primary,
+                activeColor: Theme.of(context).colorScheme.primaryVariant,
                 contentPadding: EdgeInsets.zero,
                 value: selectedLanguage == language ? true : false,
                 onChanged: (dynamic val) {
@@ -124,6 +123,7 @@ class LanguageSelector {
               return new OrientationBuilder(builder: (context, orientation) {
                 return SafeArea(
                     child: Container(
+                  color: Theme.of(context).colorScheme.secondary,
                   height: orientation == Orientation.landscape
                       ? MediaQuery.of(context).size.height * 0.82
                       : MediaQuery.of(context).size.height * 0.60,
@@ -177,12 +177,15 @@ class LanguageSelector {
                                   return TextFormField(
                                       focusNode: myFocusNode,
                                       controller: _controller,
+                                      cursorColor: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
                                       decoration: InputDecoration(
                                         hintText: translatedMessage.toString(),
                                         filled: true,
                                         fillColor: Theme.of(context)
                                             .colorScheme
-                                            .secondary,
+                                            .background,
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(30.0)),
@@ -205,6 +208,9 @@ class LanguageSelector {
                                           const IconData(0xe805,
                                               fontFamily: Overrides.kFontFam,
                                               fontPackage: Overrides.kFontPkg),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
                                           size: Globals.deviceType == "phone"
                                               ? 20
                                               : 28,
@@ -226,6 +232,9 @@ class LanguageSelector {
                                                           "phone"
                                                       ? 20
                                                       : 28,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primaryVariant,
                                                 ),
                                               ),
                                       ),
@@ -257,12 +266,6 @@ class LanguageSelector {
           }
         });
   }
-  // });
-  // future.then((void value) => _closeModal());
-
-  // void _closeModal() {
-  //   SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-  // }
 
   onItemChanged(String value, StateSetter setState) {
     setState(() {

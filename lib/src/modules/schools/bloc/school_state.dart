@@ -25,9 +25,8 @@ class SchoolDirectoryErrorLoading extends SchoolDirectoryState {
   List<Object> get props => [err];
 }
 
-// ignore: must_be_immutable
 class SchoolDirectoryDataSucess extends SchoolDirectoryState {
-  List<SchoolDirectoryList>? obj;
+  final List<SchoolDirectoryList>? obj;
   SchoolDirectoryDataSucess({
     this.obj,
   });

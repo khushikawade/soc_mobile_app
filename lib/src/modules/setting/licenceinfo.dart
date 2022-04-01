@@ -118,8 +118,8 @@ class _LicenceinfoState extends State<Licenceinfo> {
                   listener: (context, state) async {
                     if (state is BottomNavigationBarSuccess) {
                       AppTheme.setDynamicTheme(Globals.appSetting, context);
-                      // Globals.homeObject = state.obj;
-                       Globals.appSetting = AppSetting.fromJson(state.obj);
+
+                      Globals.appSetting = AppSetting.fromJson(state.obj);
                       setState(() {});
                     }
                   },
@@ -134,7 +134,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
-    _homeBloc.add(FetchBottomNavigationBar());
+    await Future.delayed(Duration(seconds: 2));
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

@@ -7,6 +7,7 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -16,6 +17,7 @@ import '../../../widgets/empty_container_widget.dart';
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
+
   FamilyPage({
     Key? key,
     this.obj,
@@ -27,7 +29,6 @@ class FamilyPage extends StatefulWidget {
 }
 
 class _FamilyPageState extends State<FamilyPage> {
-  // static const double _kLabelSpacing = 10.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -39,18 +40,18 @@ class _FamilyPageState extends State<FamilyPage> {
   void initState() {
     super.initState();
     _bloc.add(FamiliesEvent());
-  }
+    var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
-  @override
-  void dispose() {
-    super.dispose();
+    if (brightness == Brightness.dark) {
+      Globals.themeType = 'Dark';
+    }
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     _bloc.add(FamiliesEvent());
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Widget _body(String key) => Container(
@@ -84,7 +85,12 @@ class _FamilyPageState extends State<FamilyPage> {
                           builder: (BuildContext contxt, FamilyState state) {
                             if (state is FamilyInitial ||
                                 state is FamilyLoading) {
-                              return Center(child: CircularProgressIndicator());
+                              return Center(
+                                  child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              ));
                             } else if (state is FamiliesDataSucess) {
                               return CommonListWidget(
                                   key: ValueKey(key),
@@ -128,6 +134,7 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+        //backgroundColor: Theme.of(context).backgroundColor,
         key: _scaffoldKey,
         appBar: AppBarWidget(
           marginLeft: 30,

@@ -15,6 +15,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../globals.dart';
+
 class SettingPage extends StatefulWidget {
   final bool isbuttomsheet;
   final String appbarTitle;
@@ -28,6 +30,8 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   static const double _kLabelSpacing = 18.0;
   bool _lights = true;
+  bool _theme = false;
+  bool _themeSystem = false;
   bool? push;
   // PackageInfo? packageInfo;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
@@ -43,13 +47,17 @@ class _SettingPageState extends State<SettingPage> {
     OneSignal.shared
         .getDeviceState()
         .then((value) => {pushState(value!.pushDisabled)});
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
     Globals.callsnackbar = true;
+    // if (Globals.darkTheme != null) {
+    //   _theme = Globals.darkTheme!;
+    // }
+    // if (Globals.systemTheme != null) {
+    //   _themeSystem = Globals.systemTheme!;
+    // } else {
+    //   Globals.systemTheme = false;
+    // }
   }
-
-  // void appversion() async {
-  //   packageInfo = await PackageInfo.fromPlatform();
-  // }
 
   pushState(data) async {
     SharedPreferences pushStatus = await SharedPreferences.getInstance();
@@ -91,6 +99,76 @@ class _SettingPageState extends State<SettingPage> {
       ],
     );
   }
+
+  // Widget _buildSwitchTheme() {
+  //   return Globals.systemTheme! == true
+  //       ? Container()
+  //       : Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           crossAxisAlignment: CrossAxisAlignment.end,
+  //           children: <Widget>[
+  //               Transform.scale(
+  //                 scale: 1.0,
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
+  //                   child: Switch(
+  //                     value: push2 != null ? _theme = !push2! : _theme,
+  //                     onChanged: (bool value) async {
+  //                       setState(() {
+  //                         _theme = value;
+  //                         if (_theme == true) {
+  //                           Globals.darkTheme = _theme;
+  //                           AdaptiveTheme.of(context).setDark();
+  //                         } else {
+  //                           Globals.darkTheme = _theme;
+  //                           AdaptiveTheme.of(context).setLight();
+  //                         }
+  //                       });
+  //                       //
+  //                     },
+  //                     activeColor: AppTheme.kactivebackColor,
+  //                     activeTrackColor: AppTheme.kactiveTrackColor,
+  //                     inactiveThumbColor: AppTheme.kIndicatorColor,
+  //                     inactiveTrackColor: AppTheme.kinactiveTrackColor,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ]);
+  // }
+
+  // Widget _buildSwitchSystemTheme() {
+  //   return Column(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       crossAxisAlignment: CrossAxisAlignment.end,
+  //       children: <Widget>[
+  //         Transform.scale(
+  //           scale: 1.0,
+  //           child: Padding(
+  //             padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
+  //             child: Switch(
+  //               value: push3 != null ? _themeSystem = !push3! : _themeSystem,
+  //               onChanged: (bool value) async {
+  //                 setState(() {
+  //                   _themeSystem = value;
+  //                   if (_themeSystem == true) {
+  //                     Globals.systemTheme = _themeSystem;
+  //                     AdaptiveTheme.of(context).setSystem();
+  //                   } else {
+  //                     Globals.systemTheme = _themeSystem;
+  //                     AdaptiveTheme.of(context).setLight();
+  //                   }
+  //                 });
+  //                 //
+  //               },
+  //               activeColor: AppTheme.kactivebackColor,
+  //               activeTrackColor: AppTheme.kactiveTrackColor,
+  //               inactiveThumbColor: AppTheme.kIndicatorColor,
+  //               inactiveTrackColor: AppTheme.kinactiveTrackColor,
+  //             ),
+  //           ),
+  //         ),
+  //       ]);
+  // }
 
   Widget _buildSwitch() {
     return Column(
@@ -147,6 +225,56 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
+  // Widget _buildSystemThemeMode() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     children: [
+  //       Container(
+  //         padding:
+  //             EdgeInsets.symmetric(horizontal: 0, vertical: _kLabelSpacing / 2),
+  //         child: TranslationWidget(
+  //           message: "Enable System Theme",
+  //           fromLanguage: "en",
+  //           toLanguage: Globals.selectedLanguage,
+  //           builder: (translatedMessage) => Padding(
+  //             padding: const EdgeInsets.only(left: _kLabelSpacing),
+  //             child: Text(translatedMessage.toString(),
+  //                 textAlign: TextAlign.center,
+  //                 style: Theme.of(context).textTheme.headline2!),
+  //           ),
+  //         ),
+  //       ),
+  //       _buildSwitchSystemTheme(),
+  //     ],
+  //   );
+  // }
+
+  // Widget _buildThemeMode() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     children: [
+  //       Container(
+  //         padding:
+  //             EdgeInsets.symmetric(horizontal: 0, vertical: _kLabelSpacing / 2),
+  //         child: TranslationWidget(
+  //           message: "Enable Dark Theme",
+  //           fromLanguage: "en",
+  //           toLanguage: Globals.selectedLanguage,
+  //           builder: (translatedMessage) => Padding(
+  //             padding: const EdgeInsets.only(left: _kLabelSpacing),
+  //             child: Text(translatedMessage.toString(),
+  //                 textAlign: TextAlign.center,
+  //                 style: Theme.of(context).textTheme.headline2!),
+  //           ),
+  //         ),
+  //       ),
+  //       _buildSwitchTheme(),
+  //     ],
+  //   );
+  // }
+
   Widget _buildLicence() {
     return InkWell(
       onTap: () {
@@ -168,11 +296,33 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
+  // Widget _buildThemeMode() {
+  //   return InkWell(
+  //     onTap: () {
+  //       showDialog(
+  //           context: context,
+  //           builder: (BuildContext context) {
+  //             return SelectTheme();
+  //           });
+  //     },
+  //     child: Container(
+  //         padding: EdgeInsets.all(16),
+  //         child: TranslationWidget(
+  //             message: "Theme",
+  //             fromLanguage: "en",
+  //             toLanguage: Globals.selectedLanguage,
+  //             builder: (translatedMessage) => Text(
+  //                   translatedMessage.toString(),
+  //                   style: Theme.of(context).textTheme.headline2!,
+  //                 ))),
+  //   );
+  // }
+
   Widget _appVersion() {
     return Container(
         padding: EdgeInsets.all(16),
         child: Text(
-         Globals.packageInfo!.version,
+          Globals.packageInfo!.version,
           style: Theme.of(context).textTheme.headline2!,
         ));
   }
@@ -181,6 +331,9 @@ class _SettingPageState extends State<SettingPage> {
     return ListView(padding: const EdgeInsets.only(bottom: 25.0), children: [
       _buildHeading("Push Notifcation"),
       _buildNotification(),
+      // _buildHeading('Display Setting'),
+      // _buildSystemThemeMode(),
+      // _buildThemeMode(),
       _buildHeading("Acknowledgements"),
       _buildLicence(),
       _buildHeading("App Version"),
@@ -208,29 +361,7 @@ class _SettingPageState extends State<SettingPage> {
         body: RefreshIndicator(
           key: refreshKey,
           child: Container(
-              child:
-                  // OfflineBuilder(
-                  //     connectivityBuilder: (
-                  //       BuildContext context,
-                  //       ConnectivityResult connectivity,
-                  //       Widget child,
-                  //     ) {
-                  //       final bool connected =
-                  //           connectivity != ConnectivityResult.none;
-
-                  //       if (connected) {
-                  //         if (iserrorstate == true) {
-                  //           _homeBloc.add(FetchBottomNavigationBar());
-                  //           iserrorstate = false;
-                  //         }
-                  //       } else if (!connected) {
-                  //         iserrorstate = true;
-                  //       }
-
-                  // return
-                  //  connected
-                  //     ?
-                  Column(
+              child: Column(
             children: [
               Expanded(
                   child: isloadingstate!
@@ -248,8 +379,8 @@ class _SettingPageState extends State<SettingPage> {
 
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
-                        //Globals.homeObject = state.obj;
-                          Globals.appSetting = AppSetting.fromJson(state.obj);
+
+                        Globals.appSetting = AppSetting.fromJson(state.obj);
                         isloadingstate = false;
                         setState(() {});
                       }
@@ -258,17 +389,13 @@ class _SettingPageState extends State<SettingPage> {
               ),
             ],
           )),
-          // : NoInternetErrorWidget(
-          //     connected: connected, issplashscreen: false);
-          // },
-          // child: Container())),
           onRefresh: refreshPage,
         ));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
-    _homeBloc.add(FetchBottomNavigationBar());
+    await Future.delayed(Duration(seconds: 2));
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

@@ -18,15 +18,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
-// ignore: must_be_immutable
 class StaffDirectory extends StatefulWidget {
   final obj;
-  bool isbuttomsheet;
-  String appBarTitle;
-  String? language;
-  String?
+  final bool isbuttomsheet;
+  final String appBarTitle;
+  final String? language;
+  final String?
       staffDirectoryCategoryId; // To support categories staff list which is used in the District template.
-  bool isAbout;
+  final bool isAbout;
+
   StaffDirectory(
       {Key? key,
       required this.obj,
@@ -71,7 +71,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
-                        // iconsName: [],
                         obj: list,
                         currentIndex: index,
                         issocialpage: false,
@@ -115,7 +114,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   HorzitalSpacerWidget(_kLabelSpacing / 1.5),
-                  // obj.imageUrlC != null && obj.imageUrlC != '' ?
                   CommonImageWidget(
                       height: Globals.deviceType == "phone"
                           ? _kIconSize * 1.4
@@ -126,10 +124,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       fitMethod: BoxFit.cover,
                       iconUrl: obj.imageUrlC ??
                           Globals.splashImageUrl ??
-                          Globals.appSetting.appLogoC
-                      // Globals.homeObject["App_Logo__c"]
-                      ),
-
+                          Globals.appSetting.appLogoC),
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
                     child: Column(
@@ -170,8 +165,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               padding: EdgeInsets.all(8),
                             ),
                             onPressed: () {
-                              // objurl.callurlLaucher(
-                              //     context, "tel:" + obj.phoneC);
                               Utility.launchUrlOnExternalBrowser(
                                   "tel:" + obj.phoneC);
                             },
@@ -193,8 +186,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 padding: EdgeInsets.all(6),
                               ),
                               onPressed: () {
-                                // objurl.callurlLaucher(
-                                //     context, 'mailto:"${obj.emailC}"');
                                 Utility.launchUrlOnExternalBrowser(
                                     "mailto:" + obj.emailC);
                               },
@@ -261,12 +252,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   height:
                                       MediaQuery.of(context).size.height * 0.8,
                                   alignment: Alignment.center,
-                                  child: CircularProgressIndicator());
+                                  child: CircularProgressIndicator(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                  ));
                             } else if (state is SDDataSucess) {
                               return state.obj != null && state.obj!.length > 0
                                   ? ListView.builder(
-                                      // padding: EdgeInsets.only(
-                                      //     bottom: 25.0),
                                       shrinkWrap: true,
                                       scrollDirection: Axis.vertical,
                                       itemCount: state.obj!.length,
@@ -297,7 +290,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
-                              // Globals.homeObject = state.obj;
+
                               Globals.appSetting =
                                   AppSetting.fromJson(state.obj);
                               setState(() {});
@@ -326,6 +319,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     } else {
       _bloc.add(SDevent());
     }
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

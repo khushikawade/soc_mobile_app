@@ -108,8 +108,6 @@ class Utility {
   }
 
   static void showSnackBar(_scaffoldKey, msg, context) {
-    // _scaffoldKey.currentState.removeCurrentSnackBar();
-    // _scaffoldKey.currentState.showSnackBar(SnackBar(
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Container(
@@ -122,12 +120,13 @@ class Utility {
           builder: (translatedMessage) => Text(translatedMessage,
               textAlign: TextAlign.left,
               style: TextStyle(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
                 fontWeight: FontWeight.w600,
               )),
         ),
       ),
-      backgroundColor: Colors.black.withOpacity(0.8),
+      backgroundColor:
+          Theme.of(context).colorScheme.primaryVariant.withOpacity(0.8),
       padding: EdgeInsets.only(
         left: 16,
       ),
@@ -211,8 +210,7 @@ class Utility {
       final dateTime = formatter.parse(string);
       final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
       final String formatted = formatNew.format(dateTime);
-      // return DateTime.parse((dateNew));
-      // print(formatted);
+
       return formatted;
     } catch (e) {
       print(e);
@@ -231,12 +229,11 @@ class Utility {
       final string = dateNew.toString();
       final formatter = DateFormat('yyyy-MM-dd');
       final dateTime = formatter.parse(string);
-      //final DateFormat formatNew = DateFormat('dd/MM/yyyy');
+
       final DateFormat formatNew = DateFormat('MM/dd/yyyy');
 
       final String formatted = formatNew.format(dateTime);
-      // return DateTime.parse((dateNew));
-      // print(formatted);
+
       return formatted;
     } catch (e) {
       print(e);
@@ -260,17 +257,7 @@ class Utility {
           new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(date).toLocal();
       var inputDate = DateTime.parse(parseDate.toString());
       var outputFormat = DateFormat('MM/dd/yyyy hh:mm a');
-      // var outputDate = outputFormat.format(inputDate);
-      // print(outputDate);
-      // String dateNew = date;
-      // final string = dateNew.toString();
-      // final formatter = DateFormat('yyyy-MM-dd');
-      // final dateTime = formatter.parse(string);
-      // final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
-      // final String formatted = dateTime.day.toString();
-      // return DateTime.parse((dateNew));
 
-      // print(formatted);
       return outputFormat;
     } catch (e) {
       print(e);
@@ -284,7 +271,7 @@ class Utility {
     final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
     final String formatted = formatNew.format(dateTime);
-    // print(formatted);
+
     return formatted;
   }
 

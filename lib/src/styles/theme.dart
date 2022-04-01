@@ -608,6 +608,17 @@ class AppTheme {
               backgroundColor: _darkBackgroundColor,
               scaffoldBackgroundColor: _darkBackgroundColor,
               accentColor: _primaryColor,
+              // textButtonTheme: Theme.of(context).,
+              // dialogBackgroundColor: Colors.grey,
+              dialogTheme: DialogTheme(
+                backgroundColor: _darkSecondary,
+                contentTextStyle: TextStyle(color: Colors.white),
+              ),
+              
+              textButtonTheme: TextButtonThemeData(
+                style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all(_primaryColor)),
+              ),
               appBarTheme: AppBarTheme(
                 titleTextStyle: TextStyle(
                     color: _primaryColor,
@@ -758,6 +769,7 @@ class AppTheme {
                   height: 1.2,
                 ),
               ),
+
               checkboxTheme: Theme.of(context).checkboxTheme.copyWith(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),

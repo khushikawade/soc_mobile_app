@@ -115,7 +115,6 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
           "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=About_App__c"));
       if (response.statusCode == 200) {
-        //  dataArray = response.data["records"];
         List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();

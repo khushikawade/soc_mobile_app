@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 class CalendraIconWidget extends StatelessWidget {
   final dateTime;
   final color;
-  CalendraIconWidget({Key? key, required this.dateTime, this.color}) : super(key: key);
+  CalendraIconWidget({Key? key, required this.dateTime, this.color})
+      : super(key: key);
 
   static const double _kPhoneIcon = 36.0;
   static const double _kTabletIcon = 55.0;
@@ -54,15 +55,15 @@ class CalendraIconWidget extends StatelessWidget {
           color: AppTheme.kBackgroundColor,
           borderRadius: BorderRadius.all(Radius.circular(8))),
       height: Globals.deviceType == 'phone' ? _kPhoneIcon : _kTabletIcon,
-      //  MediaQuery.of(context).size.height * 0.043,
       width: Globals.deviceType == 'phone' ? _kPhoneIcon : _kTabletIcon,
-      // MediaQuery.of(context).size.width * 0.09,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             decoration: BoxDecoration(
-                color: color == null || color == '' ? Theme.of(context).primaryColor : color,
+                color: color == null || color == ''
+                    ? Theme.of(context).primaryColor
+                    : color,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8.0),
                   topRight: Radius.circular(8.0),
@@ -70,7 +71,6 @@ class CalendraIconWidget extends StatelessWidget {
             height: Globals.deviceType == 'phone'
                 ? _kPhoneIcon / 2.5
                 : _kTabletIcon / 2.5,
-            //MediaQuery.of(context).size.height * 0.045 / 2.8,
             width: Globals.deviceType == 'phone' ? _kPhoneIcon : _kTabletIcon,
             child: Center(
                 child: Padding(
@@ -84,7 +84,15 @@ class CalendraIconWidget extends StatelessWidget {
               ),
             )),
           ),
-          Padding(padding: EdgeInsets.only(top: 1.7), child: Text(getDate()))
+          Padding(
+              padding: EdgeInsets.only(top: 1.7),
+              child: Text(
+                getDate(),
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle1!
+                    .copyWith(color: Colors.black),
+              ))
         ],
       ),
     );

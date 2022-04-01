@@ -7,20 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
 
-// ignore: must_be_immutable
 class AboutusPage extends StatefulWidget {
-  String htmlText;
-  String? language;
-  bool isbuttomsheet;
-  bool ishtml;
-  String appbarTitle;
-  bool? isAppBar;
+  final String htmlText;
+  final String? language;
+  final bool isbuttomsheet;
+  final bool ishtml;
+  final String appbarTitle;
+  final bool? isAppBar;
 
   @override
   AboutusPage({
     Key? key,
     required this.htmlText,
-    // required this.url,
     required this.isbuttomsheet,
     required this.ishtml,
     required this.appbarTitle,
@@ -36,13 +34,6 @@ class _AboutusPageState extends State<AboutusPage> {
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
   Widget _buildContent1() {
-    // String? htmlData;
-    // if (widget.htmlText.toString().contains("img") == true &&
-    //     widget.htmlText.toString().contains("src=") == true) {
-    //   String img = Utility.getHTMLImgSrc(widget.htmlText);
-    //   htmlData = widget.htmlText.toString().replaceAll("$img ", " ");
-    // }
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: _kLabelSpacing),
       child: Wrap(
@@ -55,7 +46,6 @@ class _AboutusPageState extends State<AboutusPage> {
               data: translatedMessage,
               onLinkTap: (String? url, RenderContext context,
                   Map<String, String> attributes, dom.Element? element) {
-                // print(url);
                 _launchURL(url);
               },
               style: {
