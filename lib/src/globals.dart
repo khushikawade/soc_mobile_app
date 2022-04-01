@@ -3,7 +3,7 @@ import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'modules/home/models/custom_setting.dart';
+import 'modules/custom/model/custom_setting.dart';
 import 'modules/news/model/notification_list.dart';
 
 class Globals {

@@ -1,7 +1,7 @@
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/models/custom_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/modules/shared/ui/common_grid_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
@@ -13,6 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+
+import '../model/custom_setting.dart';
 
 class CustomAppSection extends StatefulWidget {
   final id;
@@ -39,6 +41,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   @override
   void initState() {
     super.initState();
+     print( widget.obj.gridViewC);
     _bloc.add(CustomEvents(id: widget.obj.id));
   }
 
@@ -80,11 +83,14 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                                 state is CustomLoading) {
                               return Center(child: CircularProgressIndicator());
                             } else if (state is CustomDataSucess) {
-                              return CommonListWidget(
-                                  scaffoldKey: _scaffoldKey,
-                                  connected: connected,
-                                  data: state.obj!,
-                                  sectionName: "Custom");
+                              print( widget.obj.gridViewC);
+                              return widget.obj.gridViewC == "true"
+                                  ? CommonGridWidget()
+                                  : CommonListWidget(
+                                      scaffoldKey: _scaffoldKey,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "Custom");
                             } else if (state is ErrorLoading) {
                               return ListView(children: [ErrorMsgWidget()]);
                             } else {

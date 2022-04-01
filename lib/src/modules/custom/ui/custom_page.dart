@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/custom/ui/open_external.dart';
+import 'package:Soc/src/modules/custom/ui/open_external_browser_button.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
@@ -108,11 +108,11 @@ class _CustomPagesState extends State<CustomPages> {
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
               // || obj.deepLinkC == 'YES'
               ? Expanded(
-                child: UrlNotSecure(
-                  url: obj.appUrlC,
-                  connected: true,
-                ),
-              ) // TODO: Add a proper message when links are unable to open
+                  child: OpenExternalBrowser(
+                    url: obj.appUrlC,
+                    connected: true,
+                  ),
+                ) // TODO: Add a proper message when links are unable to open
               : HomeInAppUrlLauncher(
                   url: obj.appUrlC,
                   language: Globals.selectedLanguage,
