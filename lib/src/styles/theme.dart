@@ -614,6 +614,7 @@ class AppTheme {
                 backgroundColor: _darkSecondary,
                 contentTextStyle: TextStyle(color: Colors.white),
               ),
+              
               textButtonTheme: TextButtonThemeData(
                 style: ButtonStyle(
                     foregroundColor: MaterialStateProperty.all(_primaryColor)),

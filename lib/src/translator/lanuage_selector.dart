@@ -56,7 +56,7 @@ class LanguageSelector {
               left: 10,
               right: 10,
             ),
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.secondary,
             child: Theme(
               data: ThemeData(
                 unselectedWidgetColor: Theme.of(context).colorScheme.onPrimary,
@@ -123,7 +123,7 @@ class LanguageSelector {
               return new OrientationBuilder(builder: (context, orientation) {
                 return SafeArea(
                     child: Container(
-                  color: Theme.of(context).backgroundColor,
+                  color: Theme.of(context).colorScheme.secondary,
                   height: orientation == Orientation.landscape
                       ? MediaQuery.of(context).size.height * 0.82
                       : MediaQuery.of(context).size.height * 0.60,
@@ -185,7 +185,7 @@ class LanguageSelector {
                                         filled: true,
                                         fillColor: Theme.of(context)
                                             .colorScheme
-                                            .secondary,
+                                            .background,
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(30.0)),
