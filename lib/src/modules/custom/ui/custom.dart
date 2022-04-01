@@ -105,7 +105,7 @@ class _CustomPageState extends State<CustomPage> {
                               // Globals.homeObject = state.obj;
                               Globals.appSetting =
                                   AppSetting.fromJson(state.obj);
-                              // setState(() {});
+                              setState(() {});
                             }
                           },
                           child: EmptyContainer()),
@@ -147,35 +147,8 @@ class _CustomPageState extends State<CustomPage> {
               },
               body: _body('body2'),
             )
-          : _body('body2'),
+          : _body('body1'),
     );
   }
 
-  // Widget bannerWidget(state) {
-  //   return widget.obj.customBannerImageC != null && widget.obj.customBannerImageC != ''
-  //       // Globals.homeObject["Family_Banner_Image__c"] != null &&
-  //       //         Globals.homeObject["Family_Banner_Image__c"] != ''
-  //       ? NestedScrollView(
-  //           // controller: _scrollController,
-  //           headerSliverBuilder:
-  //               (BuildContext context, bool innerBoxIsScrolled) {
-  //             return <Widget>[
-  //               // Globals.homeObject["Custom_Banner_Image__c"] != null
-  //               BannerImageWidget(
-  //                 imageUrl: widget.obj.customBannerImageC!,
-  //                 // Globals.homeObject["Custom_Banner_Image__c"],
-  //                 bgColor: widget.obj.bannerColorC
-  //                         // Globals.homeObject["Custom_Banner_Color__c"]
-  //                         !=
-  //                         null
-  //                     ? Utility.getColorFromHex(widget.obj.bannerColorC!
-  //                         // Globals.homeObject["Custom_Banner_Color__c"]
-  //                         )
-  //                     : null,
-  //               )
-  //             ];
-  //           },
-  //           body: _body(state, 'body1'))
-  //       : _body(state, 'body2');
-  // }
 }

@@ -225,10 +225,12 @@ class AppSetting {
         schoolBannerColorC: json['School_Banner_Color__c'] as String?,
         resourcesBannerColorC: json['Resources_Banner_Color__c'] as String?,
         contactImageC: json['Contact_Image__c'] as String?,
-        isTestSchool: json['Test_School__c'] ,
+        isTestSchool: json['Test_School__c'].toString().toLowerCase() == 'true'
+            ? true
+            : false as bool?,
         isCustomApp: json['Needs_Custom_App__c'].toString().toLowerCase() == 'true'
             ? true
-            : false as bool? ,
+            : false as bool?,    
       );
 
   Map<String, dynamic> toJson() => {

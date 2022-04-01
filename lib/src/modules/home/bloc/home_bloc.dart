@@ -115,6 +115,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         List<SearchList> list = await getGlobalSearch(event.keyword);
 
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].appURLC == "app-folder") {
+            list.removeAt(i);
+          }
+        }
+
         yield GlobalSearchSuccess(
           obj: list,
         );

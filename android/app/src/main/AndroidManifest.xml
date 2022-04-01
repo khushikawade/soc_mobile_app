@@ -19,9 +19,9 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 	 -->
     
-    <!--android:name="io.flutter.embedding.android.FlutterActivity"  // "io.flutter.embedding.android.FlutterActivity"-->
+     <!--android:name="io.flutter.app.FlutterApplication / io.flutter.embedding.android.FlutterActivity"-->
     <application
-        android:name= "io.flutter.embedding.android.FlutterActivity" 
+        android:name="io.flutter.app.FlutterApplication"
         android:label="SOC App"
         android:icon="@mipmap/ic_launcher">
         <activity

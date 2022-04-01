@@ -14,17 +14,19 @@ class AboutusPage extends StatefulWidget {
   bool isbuttomsheet;
   bool ishtml;
   String appbarTitle;
+  bool? isAppBar;
 
   @override
-  AboutusPage(
-      {Key? key,
-      required this.htmlText,
-      // required this.url,
-      required this.isbuttomsheet,
-      required this.ishtml,
-      required this.appbarTitle,
-      required this.language})
-      : super(key: key);
+  AboutusPage({
+    Key? key,
+    required this.htmlText,
+    // required this.url,
+    required this.isbuttomsheet,
+    required this.ishtml,
+    required this.appbarTitle,
+    required this.language,
+    this.isAppBar,
+  }) : super(key: key);
   @override
   _AboutusPageState createState() => _AboutusPageState();
 }
@@ -82,17 +84,19 @@ class _AboutusPageState extends State<AboutusPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        isSearch: false,
-        isShare: true,
-        appBarTitle: widget.appbarTitle,
-        ishtmlpage: widget.ishtml,
-        sharedpopBodytext: Utility.parseHtml(widget.htmlText
-            .replaceAll('<img src=', ' ')
-            .replaceAll('data-imageguid=', '</')),
-        sharedpopUpheaderText: "Please checkout this link",
-        language: Globals.selectedLanguage,
-      ),
+      appBar: widget.isAppBar == false
+          ? null
+          : CustomAppBarWidget(
+              isSearch: false,
+              isShare: true,
+              appBarTitle: widget.appbarTitle,
+              ishtmlpage: widget.ishtml,
+              sharedpopBodytext: Utility.parseHtml(widget.htmlText
+                  .replaceAll('<img src=', ' ')
+                  .replaceAll('data-imageguid=', '</')),
+              sharedpopUpheaderText: "Please checkout this link",
+              language: Globals.selectedLanguage,
+            ),
       body: ListView(children: [
         Container(
             padding: EdgeInsets.only(bottom: 20), child: _buildContent1()),

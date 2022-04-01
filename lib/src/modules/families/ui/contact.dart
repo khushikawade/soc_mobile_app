@@ -21,12 +21,16 @@ class ContactPage extends StatefulWidget {
   bool isbuttomsheet;
   String appBarTitle;
   String? language;
+   bool? isAppBar;
+  
   ContactPage(
       {Key? key,
       required this.obj,
       required this.isbuttomsheet,
       required this.appBarTitle,
-      required this.language})
+      required this.language,
+      this.isAppBar,
+      })
       : super(key: key);
 
   @override
@@ -383,7 +387,10 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
+        appBar: widget.isAppBar == false
+            ? null
+            :
+        CustomAppBarWidget(
           isSearch: true,
           isShare: false,
           appBarTitle: widget.appBarTitle,

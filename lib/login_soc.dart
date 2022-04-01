@@ -39,28 +39,28 @@ class _SchoolIDLoginState extends State<SchoolIDLogin> {
                 style: Theme.of(context).textTheme.headline2!,
                 onSaved: (e) {},
               )),
-              Container(
-              margin: EdgeInsets.all(20),
-              child: TextFormField(
-                controller: pushAppIdController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Push App ID',
-                ),
-                style: Theme.of(context).textTheme.headline2!,
-                onSaved: (e) {},
-              )),
-              Container(
-              margin: EdgeInsets.all(20),
-              child: TextFormField(
-                controller: restKeyController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Onesignal Rest Key',
-                ),
-                style: Theme.of(context).textTheme.headline2!,
-                onSaved: (e) {},
-              )),
+              // Container(
+              // margin: EdgeInsets.all(20),
+              // child: TextFormField(
+              //   controller: pushAppIdController,
+              //   decoration: InputDecoration(
+              //     border: OutlineInputBorder(),
+              //     labelText: 'Push App ID',
+              //   ),
+              //   style: Theme.of(context).textTheme.headline2!,
+              //   onSaved: (e) {},
+              // )),
+              // Container(
+              // margin: EdgeInsets.all(20),
+              // child: TextFormField(
+              //   controller: restKeyController,
+              //   decoration: InputDecoration(
+              //     border: OutlineInputBorder(),
+              //     labelText: 'Onesignal Rest Key',
+              //   ),
+              //   style: Theme.of(context).textTheme.headline2!,
+              //   onSaved: (e) {},
+              // )),
           ElevatedButton(
               onPressed: () {
                 if (schoolController.text != "") {
@@ -70,23 +70,23 @@ class _SchoolIDLoginState extends State<SchoolIDLogin> {
                       MaterialPageRoute(
                           builder: (context) => StartupPage()));
                 }
-                if (pushAppIdController.text != "") {
-                  Overrides.PUSH_APP_ID = pushAppIdController.text;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => StartupPage()));
-                }
-                if (restKeyController.text != "") {
-                  Overrides.REST_API_KEY = restKeyController.text;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => StartupPage()));
-                } else {
-                  Utility.showSnackBar(
-                      _scaffoldKey, "All fields are required", context);
-                }
+                // if (pushAppIdController.text != "") {
+                //   Overrides.PUSH_APP_ID = pushAppIdController.text;
+                //   Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) => StartupPage()));
+                // }
+                // if (restKeyController.text != "") {
+                //   Overrides.REST_API_KEY = restKeyController.text;
+                //   Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) => StartupPage()));
+                // } else {
+                //   Utility.showSnackBar(
+                //       _scaffoldKey, "All fields are required", context);
+                // }
               },
               child: Text(
                 "Submit",
