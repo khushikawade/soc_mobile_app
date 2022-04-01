@@ -614,7 +614,12 @@ class AppTheme {
                 backgroundColor: _darkSecondary,
                 contentTextStyle: TextStyle(color: Colors.white),
               ),
-              
+              textSelectionTheme: TextSelectionThemeData(
+               
+                selectionColor:_primaryColor,
+                selectionHandleColor: Colors.white,
+              ),
+
               textButtonTheme: TextButtonThemeData(
                 style: ButtonStyle(
                     foregroundColor: MaterialStateProperty.all(_primaryColor)),
