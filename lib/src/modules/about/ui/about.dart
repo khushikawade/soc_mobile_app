@@ -13,12 +13,14 @@ import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 
+import '../../shared/ui/common_grid_widget.dart';
+
 class AboutPage extends StatefulWidget {
-  final obj;
+  final homeObj;
   final searchObj;
   AboutPage({
     Key? key,
-    this.obj,
+    this.homeObj,
     this.searchObj,
   }) : super(key: key);
 
@@ -84,7 +86,11 @@ class _AboutPageState extends State<AboutPage> {
                                       .primaryVariant,
                                 ));
                           } else if (state is AboutDataSucess) {
-                            return CommonListWidget(
+                            return widget.homeObj!.gridViewC == "true"
+                                  ? CommonGridWidget(scaffoldKey: _scaffoldKey,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "about"):CommonListWidget(
                                 key: ValueKey(key),
                                 scaffoldKey: _scaffoldKey,
                                 connected: connected,

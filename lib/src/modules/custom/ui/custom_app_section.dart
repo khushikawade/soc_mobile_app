@@ -18,13 +18,13 @@ import '../model/custom_setting.dart';
 class CustomAppSection extends StatefulWidget {
   CustomAppSection({
     Key? key,
-    required this.obj,
+    required this.homeObj,
     this.id,
     this.searchObj,
   }) : super(key: key);
 
   final id;
-  final CustomSetting obj;
+  final CustomSetting homeObj;
   final searchObj;
 
   @override
@@ -42,13 +42,13 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   @override
   void initState() {
     super.initState();
-     print( widget.obj.gridViewC);
-    _bloc.add(CustomEvents(id: widget.obj.id));
+     print( widget.homeObj.gridViewC);
+    _bloc.add(CustomEvents(id: widget.homeObj.id));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _bloc.add(CustomEvents(id: widget.obj.id));
+    _bloc.add(CustomEvents(id: widget.homeObj.id));
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
@@ -61,17 +61,17 @@ class _CustomAppSectionState extends State<CustomAppSection> {
           setState(() {});
         },
       ),
-      body: widget.obj.customBannerImageC != null &&
-              widget.obj.customBannerImageC != ''
+      body: widget.homeObj.customBannerImageC != null &&
+              widget.homeObj.customBannerImageC != ''
           ? NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   BannerImageWidget(
-                    imageUrl: widget.obj.customBannerImageC!,
-                    bgColor: widget.obj.customBannerImageC != null
+                    imageUrl: widget.homeObj.customBannerImageC!,
+                    bgColor: widget.homeObj.customBannerImageC != null
                         ? Utility.getColorFromHex(
-                            widget.obj.customBannerImageC!)
+                            widget.homeObj.customBannerImageC!)
                         : null,
                   )
                 ];
@@ -94,7 +94,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
                   if (iserrorstate == true) {
-                    _bloc.add(CustomEvents(id: widget.obj.id));
+                    _bloc.add(CustomEvents(id: widget.homeObj.id));
                     iserrorstate = false;
                   }
                 } else if (!connected) {
@@ -114,8 +114,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                                 state is CustomLoading) {
                               return Center(child: CircularProgressIndicator());
                             } else if (state is CustomDataSucess) {
-                              print( widget.obj.gridViewC);
-                              return widget.obj.gridViewC == "true"
+                              return widget.homeObj.gridViewC == "true"
                                   ? CommonGridWidget(scaffoldKey: _scaffoldKey,
                                       connected: connected,
                                       data: state.obj!,

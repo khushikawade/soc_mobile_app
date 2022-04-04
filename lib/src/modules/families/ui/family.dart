@@ -13,15 +13,17 @@ import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import '../../../widgets/empty_container_widget.dart';
+import '../../custom/model/custom_setting.dart';
+import '../../shared/ui/common_grid_widget.dart';
 
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
-
+  final  CustomSetting? homeObj;
   FamilyPage({
     Key? key,
     this.obj,
-    this.searchObj,
+    this.searchObj,this.homeObj
   }) : super(key: key);
 
   @override
@@ -92,7 +94,11 @@ class _FamilyPageState extends State<FamilyPage> {
                                     .primaryVariant,
                               ));
                             } else if (state is FamiliesDataSucess) {
-                              return CommonListWidget(
+                              return widget.homeObj!.gridViewC == "true"
+                                  ? CommonGridWidget(scaffoldKey: _scaffoldKey,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "family"):CommonListWidget(
                                   key: ValueKey(key),
                                   scaffoldKey: _scaffoldKey,
                                   connected: connected,

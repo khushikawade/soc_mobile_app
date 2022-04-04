@@ -561,28 +561,28 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else if (Globals.customSetting![i].standardSectionC == 'Student') {
           _screens.add(StudentPage());
         } else if (Globals.customSetting![i].standardSectionC == 'Staff') {
-          _screens.add(StaffPage());
+          _screens.add(StaffPage(homeObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].standardSectionC == 'Families') {
-          _screens.add(FamilyPage());
+          _screens.add(FamilyPage(homeObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].standardSectionC ==
             'School Directory') {
           _screens.add(SchoolPage());
         } else if (Globals.customSetting![i].standardSectionC == 'About') {
-          _screens.add(AboutPage());
+          _screens.add(AboutPage(homeObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].standardSectionC == 'Resources') {
-          _screens.add(ResourcesPage());
+          _screens.add(ResourcesPage(homeObj: Globals.customSetting![i]));
         }
       } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-        _screens.add(CustomAppSection(obj: Globals.customSetting![i]));
+        _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
       } else if (Globals.customSetting![i].typeOfSectionC == 'Custom Type') {
-        _screens.add(CustomPages(obj: Globals.customSetting![i]));
+        _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
 
         if (Globals.customSetting![i].typeOfPageC == 'URL') {
           Globals.urlIndex = _screens.length - 1;
           Globals.homeUrl = Globals.customSetting![i].appUrlC;
         }
       } else {
-        _screens.add(CustomAppSection(obj: Globals.customSetting![i]));
+        _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
       }
     }
   }

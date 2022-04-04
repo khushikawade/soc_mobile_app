@@ -5,18 +5,28 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marquee/marquee.dart';
+import '../../../widgets/no_data_found_error_widget.dart';
+import '../../about/bloc/about_bloc.dart';
+import '../../custom/bloc/custom_bloc.dart';
+import '../../families/bloc/family_bloc.dart';
+import '../../resources/bloc/resources_bloc.dart';
+import '../../staff/bloc/staff_bloc.dart';
+import '../models/shared_list.dart';
 
 // ignore: must_be_immutable
 class CommonGridFolder extends StatefulWidget {
-  List obj = [];
-  final String folderName;
+  SharedList obj;
+  // final String folderName;
+  final String? sectionName;
   @override
-  CommonGridFolder({
-    Key? key,
-    required this.obj,
-    required this.folderName,
-  }) : super(key: key);
+  CommonGridFolder(
+      {Key? key,
+      required this.obj,
+      // required this.folderName,
+      this.sectionName})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() => CommonGridFolderState();
 }
@@ -26,15 +36,33 @@ class CommonGridFolderState extends State<CommonGridFolder>
   AnimationController? controller;
   Animation<double>? scaleAnimation;
   static const double _kLableSpacing = 10.0;
-  List apps = [];
+  // List subList = [];
+
+  FamilyBloc _familyBloc = FamilyBloc();
+  StaffBloc _staffBloc = StaffBloc();
+  AboutBloc _aboutBloc = AboutBloc();
+  CustomBloc _customBloc = CustomBloc();
+  ResourcesBloc _resourceBloc = ResourcesBloc();
+  // bool? isLoading=true;
   @override
   void initState() {
     super.initState();
-apps.addAll(widget.obj);
+    if (widget.sectionName == "family") {
+      _familyBloc.add(FamiliesSublistEvent(id: widget.obj.id));
+    } else if (widget.sectionName == "staff") {
+      _staffBloc.add(StaffSubListEvent(id: widget.obj.id));
+    } else if (widget.sectionName == "resources") {
+      _resourceBloc.add(ResourcesSublistEvent(id: widget.obj.id));
+    } else if (widget.sectionName == "about") {
+      _aboutBloc.add(AboutSublistEvent(id: widget.obj.id));
+    } else if (widget.sectionName == "Custom") {
+      _customBloc.add(CustomSublistEvent(id: widget.obj.id));
+    }
+// subList.addAll(widget.obj);
     // for (int i = 0; i < widget.obj.length; i++) {
     //   if (widget.obj[i].appFolderc != null &&
     //       widget.obj[i].appFolderc == widget.folderName) {
-    //     apps.add(widget.obj[i]);
+    //     subList.add(widget.obj[i]);
     //   }
     // }
 
@@ -96,199 +124,225 @@ apps.addAll(widget.obj);
               child: Scaffold(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 // backgroundColor: Colors.white,
-                body: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 20, left: 20.0, right: 20, bottom: 20),
-                  child: apps.length > 0
-                      ? GridView.count(
-                          crossAxisCount: MediaQuery.of(context).orientation ==
-                                      Orientation.portrait &&
-                                  Globals.deviceType == "phone"
-                              ? 3
-                              : (MediaQuery.of(context).orientation ==
-                                          Orientation.landscape &&
-                                      Globals.deviceType == "phone")
-                                  ? 4
-                                  : MediaQuery.of(context).orientation ==
-                                              Orientation.portrait &&
-                                          Globals.deviceType != "phone"
-                                      ? 4
-                                      : MediaQuery.of(context).orientation ==
-                                                  Orientation.landscape &&
-                                              Globals.deviceType != "phone"
-                                          ? 5
-                                          : 3,
-                          crossAxisSpacing: _kLableSpacing,
-                          mainAxisSpacing: _kLableSpacing,
-                          children: List.generate(
-                            apps.length,
-                            (index) {
-                              return apps[index].status == null ||
-                                      apps[index].status == 'Show'
-                                  ? InkWell(
-                                      onTap: () => _launchURL(apps[index]),
-                                      child: Column(
-                                        children: [
-                                          apps[index].appIconC != null &&
-                                                  apps[index].appIconC != ''
-                                              ? Container(
-                                                  height: 65,
-                                                  width: 65,
-                                                  child: CustomIconWidget(
-                                                      iconUrl: apps[index]
-                                                              .appIconC ??
-                                                          Overrides
-                                                              .folderDefaultImage))
-                                              : Container(),
-                                          Container(
-                                              child: TranslationWidget(
-                                            message: apps[index].appFolderc !=
-                                                        null &&
-                                                    widget.folderName ==
-                                                        apps[index].appFolderc
-                                                ? "${apps[index].titleC}"
-                                                : '',
-                                            fromLanguage: "en",
-                                            toLanguage:
-                                                Globals.selectedLanguage,
-                                            builder: (translatedMessage) =>
-                                                Container(
-                                              child: MediaQuery.of(context)
-                                                              .orientation ==
-                                                          Orientation
-                                                              .portrait &&
-                                                      translatedMessage
-                                                              .toString()
-                                                              .length >
-                                                          11
-                                                  ? Expanded(
-                                                      child: Marquee(
-                                                        text: translatedMessage
-                                                            .toString(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1!
-                                                            .copyWith(
-                                                                fontSize: Globals
-                                                                            .deviceType ==
-                                                                        "phone"
-                                                                    ? 16
-                                                                    : 24),
-                                                        scrollAxis:
-                                                            Axis.horizontal,
-                                                        velocity: 30.0,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        blankSpace: 50,
-                                                        pauseAfterRound:
-                                                            Duration(
-                                                                seconds: 5),
-                                                        showFadingOnlyWhenScrolling:
-                                                            true,
-                                                        startPadding: 10.0,
-                                                        accelerationDuration:
-                                                            Duration(
-                                                                seconds: 1),
-                                                        accelerationCurve:
-                                                            Curves.linear,
-                                                        decelerationDuration:
-                                                            Duration(
-                                                                milliseconds:
-                                                                    500),
-                                                        decelerationCurve:
-                                                            Curves.easeOut,
-                                                      ),
-                                                    )
-                                                  : MediaQuery.of(context)
-                                                                  .orientation ==
-                                                              Orientation
-                                                                  .landscape &&
-                                                          translatedMessage
-                                                                  .toString()
-                                                                  .length >
-                                                              18
-                                                      ? Expanded(
-                                                          child: Marquee(
-                                                          text:
-                                                              translatedMessage
-                                                                  .toString(),
-                                                          style: Theme.of(
+                body:
+                    //    isLoading==true?Container(
+                    // alignment: Alignment.center,
+                    // child: CircularProgressIndicator(
+                    //   color: Theme.of(context).colorScheme.primaryVariant,
+                    // )):
+                    Padding(
+                        padding: const EdgeInsets.only(
+                            top: 20, left: 20.0, right: 20, bottom: 20),
+                        child:
+                            // subList.length > 0
+                            //     ?
+                            ListView(
+                          shrinkWrap: true,
+                          children: [
+                            widget.sectionName == 'Custom'
+                                ? BlocBuilder<CustomBloc, CustomState>(
+                                    bloc: _customBloc,
+                                    builder: (BuildContext contxt,
+                                        CustomState state) {
+                                      if (state is CustomInitial ||
+                                          state is CustomLoading) {
+                                        return Center(
+                                            child: CircularProgressIndicator(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                        ));
+                                      } else if (state
+                                          is CustomSublistSuccess) {
+                                        return state.obj != null &&
+                                                state.obj!.length > 0
+                                            ? Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 5),
+                                                child: buildGrid(state.obj))
+                                            :
+                                            // ListView(children: [
+                                            NoDataFoundErrorWidget(
+                                                isResultNotFoundMsg: false,
+                                                isNews: false,
+                                                isEvents: false,
+                                                // connected: connected,
+                                              );
+                                        // ]);
+                                      }
+                                      return Container();
+                                    })
+                                : widget.sectionName == 'family'
+                                    ? BlocBuilder<FamilyBloc, FamilyState>(
+                                        bloc: _familyBloc,
+                                        builder: (BuildContext contxt,
+                                            FamilyState state) {
+                                          if (state is CustomInitial ||
+                                              state is CustomLoading) {
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                            ));
+                                          } else if (state
+                                              is FamiliesSublistSucess) {
+                                            return state.obj != null &&
+                                                    state.obj!.length > 0
+                                                ? Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 5),
+                                                    child: buildGrid(state.obj))
+                                                :
+                                                // ListView(children: [
+                                                NoDataFoundErrorWidget(
+                                                    isResultNotFoundMsg: false,
+                                                    isNews: false,
+                                                    isEvents: false,
+                                                    // connected: connected,
+                                                  );
+                                            // ]);
+                                          }
+                                          return Container();
+                                        })
+                                    : widget.sectionName == 'staff'
+                                        ? BlocBuilder<StaffBloc, StaffState>(
+                                            bloc: _staffBloc,
+                                            builder: (BuildContext contxt,
+                                                StaffState state) {
+                                              if (state is CustomInitial ||
+                                                  state is CustomLoading) {
+                                                return Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primaryVariant,
+                                                ));
+                                              } else if (state
+                                                  is StaffSubListSucess) {
+                                                return state.obj != null &&
+                                                        state.obj!.length > 0
+                                                    ? Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 5),
+                                                        child: buildGrid(
+                                                            state.obj))
+                                                    :
+                                                    // ListView(children: [
+                                                    NoDataFoundErrorWidget(
+                                                        isResultNotFoundMsg:
+                                                            false,
+                                                        isNews: false,
+                                                        isEvents: false,
+                                                        // connected: connected,
+                                                      );
+                                                // ]);
+                                              }
+                                              return Container();
+                                            })
+                                        : widget.sectionName == 'resources'
+                                            ? BlocBuilder<ResourcesBloc,
+                                                    ResourcesState>(
+                                                bloc: _resourceBloc,
+                                                builder: (BuildContext contxt,
+                                                    ResourcesState state) {
+                                                  if (state
+                                                          is ResourcesInitial ||
+                                                      state
+                                                          is ResourcesLoading) {
+                                                    return Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primaryVariant,
+                                                    ));
+                                                  } else if (state
+                                                      is ResourcesSubListSucess) {
+                                                    return state.obj != null &&
+                                                            state.obj!.length >
+                                                                0
+                                                        ? Container(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        5),
+                                                            child: buildGrid(
+                                                                state.obj))
+                                                        :
+                                                        // ListView(children: [
+                                                        NoDataFoundErrorWidget(
+                                                            isResultNotFoundMsg:
+                                                                false,
+                                                            isNews: false,
+                                                            isEvents: false,
+                                                            // connected: connected,
+                                                          );
+                                                    // ]);
+                                                  }
+                                                  return Container();
+                                                })
+                                            : widget.sectionName == 'about'
+                                                ? BlocBuilder<AboutBloc,
+                                                        AboutState>(
+                                                    bloc: _aboutBloc,
+                                                    builder:
+                                                        (BuildContext contxt,
+                                                            AboutState state) {
+                                                      if (state
+                                                              is CustomInitial ||
+                                                          state
+                                                              is AboutLoading) {
+                                                        return Center(
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                          color: Theme.of(
                                                                   context)
-                                                              .textTheme
-                                                              .bodyText1!
-                                                              .copyWith(
-                                                                  fontSize:
-                                                                      Globals.deviceType ==
-                                                                              "phone"
-                                                                          ? 16
-                                                                          : 24),
-                                                          scrollAxis:
-                                                              Axis.horizontal,
-                                                          velocity: 30.0,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-
-                                                          blankSpace:
-                                                              50, //MediaQuery.of(context).size.width
-                                                          // velocity: 100.0,
-                                                          pauseAfterRound:
-                                                              Duration(
-                                                                  seconds: 5),
-                                                          showFadingOnlyWhenScrolling:
-                                                              true,
-                                                          startPadding: 10.0,
-                                                          accelerationDuration:
-                                                              Duration(
-                                                                  seconds: 1),
-                                                          accelerationCurve:
-                                                              Curves.linear,
-                                                          decelerationDuration:
-                                                              Duration(
-                                                                  milliseconds:
-                                                                      500),
-                                                          decelerationCurve:
-                                                              Curves.easeOut,
-                                                        ))
-                                                      : SingleChildScrollView(
-                                                          scrollDirection:
-                                                              Axis.horizontal,
-                                                          child: Text(
-                                                              translatedMessage
-                                                                  .toString(),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1!
-                                                                  .copyWith(
-                                                                      fontSize: Globals.deviceType ==
-                                                                              "phone"
-                                                                          ? 16
-                                                                          : 24)),
-                                                        ),
-                                            ),
-                                          )),
-                                        ],
-                                      ))
-                                  : Container();
-                            },
-                          ),
-                        )
-                      : Center(
-                          child: Container(
-                              child: TranslationWidget(
-                          message: "No apps available here",
-                          fromLanguage: "en",
-                          toLanguage: Globals.selectedLanguage,
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                          ),
-                        ))),
-                ),
+                                                              .colorScheme
+                                                              .primaryVariant,
+                                                        ));
+                                                      } else if (state
+                                                          is AboutSublistSucess) {
+                                                        return state.obj !=
+                                                                    null &&
+                                                                state.obj!
+                                                                        .length >
+                                                                    0
+                                                            ? Container(
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        horizontal:
+                                                                            5),
+                                                                child: buildGrid(
+                                                                    state.obj))
+                                                            :
+                                                            // ListView(children: [
+                                                            NoDataFoundErrorWidget(
+                                                                isResultNotFoundMsg:
+                                                                    false,
+                                                                isNews: false,
+                                                                isEvents: false,
+                                                                // connected: connected,
+                                                              );
+                                                        // ]);
+                                                      }
+                                                      return Container();
+                                                    })
+                                                : Expanded(
+                                                    child:
+                                                        NoDataFoundErrorWidget(
+                                                      isResultNotFoundMsg:
+                                                          false,
+                                                      isNews: false,
+                                                      isEvents: false,
+                                                    ),
+                                                  ),
+                          ],
+                        )),
               ),
             ),
           ),
@@ -297,5 +351,134 @@ apps.addAll(widget.obj);
     );
   }
 
-  showAlart() {}
+  buildGrid(subList) {
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: MediaQuery.of(context).orientation ==
+                  Orientation.portrait &&
+              Globals.deviceType == "phone"
+          ? 3
+          : (MediaQuery.of(context).orientation == Orientation.landscape &&
+                  Globals.deviceType == "phone")
+              ? 4
+              : MediaQuery.of(context).orientation == Orientation.portrait &&
+                      Globals.deviceType != "phone"
+                  ? 4
+                  : MediaQuery.of(context).orientation ==
+                              Orientation.landscape &&
+                          Globals.deviceType != "phone"
+                      ? 5
+                      : 3,
+      crossAxisSpacing: _kLableSpacing,
+      mainAxisSpacing: _kLableSpacing,
+      children: List.generate(
+        subList.length,
+        (index) {
+          return subList[index].status == null ||
+                  subList[index].status == 'Show'
+              ? InkWell(
+                  onTap: () => _launchURL(subList[index]),
+                  child: Column(
+                    children: [
+                      subList[index].appIconC != null &&
+                              subList[index].appIconC != ''
+                          ? Container(
+                              height: 65,
+                              width: 65,
+                              child: CustomIconWidget(
+                                  iconUrl: subList[index].appIconC ??
+                                      Overrides.folderDefaultImage))
+                          : Container(),
+                      Container(
+                          child: TranslationWidget(
+                        message: subList[index] != null
+                            ? "${subList[index].titleC}"
+                            : '',
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) => Container(
+                          child: MediaQuery.of(context).orientation ==
+                                      Orientation.portrait &&
+                                  translatedMessage.toString().length > 11
+                              ? Expanded(
+                                  child: Marquee(
+                                    text: translatedMessage.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(
+                                            fontSize:
+                                                Globals.deviceType == "phone"
+                                                    ? 16
+                                                    : 24),
+                                    scrollAxis: Axis.horizontal,
+                                    velocity: 30.0,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    blankSpace: 50,
+                                    pauseAfterRound: Duration(seconds: 5),
+                                    showFadingOnlyWhenScrolling: true,
+                                    startPadding: 10.0,
+                                    accelerationDuration: Duration(seconds: 1),
+                                    accelerationCurve: Curves.linear,
+                                    decelerationDuration:
+                                        Duration(milliseconds: 500),
+                                    decelerationCurve: Curves.easeOut,
+                                  ),
+                                )
+                              : MediaQuery.of(context).orientation ==
+                                          Orientation.landscape &&
+                                      translatedMessage.toString().length > 18
+                                  ? Expanded(
+                                      child: Marquee(
+                                      text: translatedMessage.toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1!
+                                          .copyWith(
+                                              fontSize:
+                                                  Globals.deviceType == "phone"
+                                                      ? 16
+                                                      : 24),
+                                      scrollAxis: Axis.horizontal,
+                                      velocity: 30.0,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+
+                                      blankSpace:
+                                          50, //MediaQuery.of(context).size.width
+                                      // velocity: 100.0,
+                                      pauseAfterRound: Duration(seconds: 5),
+                                      showFadingOnlyWhenScrolling: true,
+                                      startPadding: 10.0,
+                                      accelerationDuration:
+                                          Duration(seconds: 1),
+                                      accelerationCurve: Curves.linear,
+                                      decelerationDuration:
+                                          Duration(milliseconds: 500),
+                                      decelerationCurve: Curves.easeOut,
+                                    ))
+                                  : SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Text(translatedMessage.toString(),
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1!
+                                              .copyWith(
+                                                  fontSize:
+                                                      Globals.deviceType ==
+                                                              "phone"
+                                                          ? 16
+                                                          : 24)),
+                                    ),
+                        ),
+                      )),
+                    ],
+                  ))
+              : Container();
+        },
+      ),
+    );
+  }
 }

@@ -16,11 +16,11 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 
 class CustomPages extends StatefulWidget {
-  final obj;
+  final homeObj;
 
   CustomPages({
     Key? key,
-    this.obj,
+    this.homeObj,
   }) : super(key: key);
 
   @override
@@ -64,7 +64,7 @@ class _CustomPagesState extends State<CustomPages> {
                     Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    buildPage(widget.obj),
+                    buildPage(widget.homeObj),
                     Container(
                       height: 0,
                       width: 0,
