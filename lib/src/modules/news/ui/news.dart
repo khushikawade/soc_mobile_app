@@ -77,7 +77,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent notification) async {
       notification.complete(notification.notification);
-      Globals.indicator.value = true;
+      setState(() {
+        Globals.indicator.value = true;
+      });
       await Future.delayed(Duration(milliseconds: 1500));
       bloc.add(FetchNotificationList());
       isActionAPICalled = false;
@@ -307,7 +309,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
                           Globals.appSetting = AppSetting.fromJson(state.obj);
 
-                          // setState(() {});
+                          setState(() {
+                            
+                          });
                         } else if (state is HomeErrorReceived) {
                           ErrorMsgWidget();
                         }

@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'modules/home/models/custom_setting.dart';
 import 'modules/news/model/notification_list.dart';
@@ -63,4 +64,5 @@ class Globals {
   static int? urlIndex;
   static late WebViewController? webViewController1;
   static String? homeUrl;
+  static PersistentTabController? controller;
 }

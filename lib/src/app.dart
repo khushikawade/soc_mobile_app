@@ -24,7 +24,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   initState() {
     super.initState();
     // getTheme();
-    _onNotificationTap();
+  
 
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
@@ -106,14 +106,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     );
   }
 
-  _onNotificationTap() {
-    OneSignal.shared
-        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      this.setState(() {
-        Globals.isNewTap = true;
-      });
-    });
-  }
+ 
 
   
 }

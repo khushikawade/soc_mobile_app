@@ -97,10 +97,10 @@ class HiveDbServices {
       throw (e);
     }
   }
-  Future<String> getSingleData(String tableName, key) async {
+  Future<int> getSingleData(String tableName, key) async {
     try {
       final hiveBox = await Hive.openBox(tableName);
-      String data = await hiveBox.get(key);
+      int data = await hiveBox.get(key);
       return data;
     } catch (e) {
       throw (e);

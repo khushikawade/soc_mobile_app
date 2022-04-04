@@ -67,6 +67,11 @@ class _StartupPageState extends State<StartupPage> {
         Globals.isNewTap = true;
       });
     });
+    OneSignal.shared.setNotificationWillShowInForegroundHandler((event) {
+     setState(() {
+        Globals.indicator.value = true;
+     });
+    });
   }
 
   Future<void> _showcase() async {
@@ -214,10 +219,10 @@ class _StartupPageState extends State<StartupPage> {
                 bloc: _newsBloc,
                 listener: (context, state) async {
                   if (state is NewsCountLenghtSuccess) {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    SharedPreferences intPrefs =
-                        await SharedPreferences.getInstance();
+                    // SharedPreferences prefs =
+                    //     await SharedPreferences.getInstance();
+                    // SharedPreferences intPrefs =
+                    //     await SharedPreferences.getInstance();
                     String? _objectName = "${Strings.newsObjectName}";
                     LocalDatabase<NotificationList> _localDb =
                         LocalDatabase(_objectName);
@@ -226,8 +231,8 @@ class _StartupPageState extends State<StartupPage> {
 
                     if (_localData.length < state.obj!.length &&
                         _localData.isNotEmpty) {
-                      intPrefs.setInt("totalCount", Globals.notiCount!);
-                      prefs.setBool("enableIndicator", true);
+                      // intPrefs.setInt("totalCount", Globals.notiCount!);
+                      // prefs.setBool("enableIndicator", true);
                       Globals.indicator.value = true;
                     }
                   }
