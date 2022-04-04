@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,6 +72,6 @@ getDeviceType() async {
 
 getTheme() async {
   final prefs = await SharedPreferences.getInstance();
-  await prefs.clear();
+  await prefs.remove(AdaptiveTheme.prefKey);
   // AdaptiveTheme.of(context).persist();
 }
