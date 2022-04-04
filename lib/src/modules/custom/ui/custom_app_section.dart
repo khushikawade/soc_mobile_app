@@ -42,7 +42,6 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   @override
   void initState() {
     super.initState();
-     print( widget.homeObj.gridViewC);
     _bloc.add(CustomEvents(id: widget.homeObj.id));
   }
 
@@ -115,7 +114,8 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                               return Center(child: CircularProgressIndicator());
                             } else if (state is CustomDataSucess) {
                               return widget.homeObj.gridViewC == "true"
-                                  ? CommonGridWidget(scaffoldKey: _scaffoldKey,
+                                  ? CommonGridWidget(
+                                      scaffoldKey: _scaffoldKey,
                                       connected: connected,
                                       data: state.obj!,
                                       sectionName: "Custom")

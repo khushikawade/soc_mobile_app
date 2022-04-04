@@ -17,8 +17,8 @@ import '../custom/model/custom_setting.dart';
 import '../shared/ui/common_grid_widget.dart';
 
 class ResourcesPage extends StatefulWidget {
-  final  CustomSetting? homeObj;
- ResourcesPage({
+  final CustomSetting? homeObj;
+  ResourcesPage({
     Key? key,
     this.homeObj,
   }) : super(key: key);
@@ -84,16 +84,19 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                       .primaryVariant,
                                 ));
                           } else if (state is ResourcesDataSucess) {
-                            return widget.homeObj!.gridViewC == "true"
-                                  ? CommonGridWidget(scaffoldKey: _scaffoldKey,
-                                      connected: connected,
-                                      data: state.obj!,
-                                      sectionName: "resources"):CommonListWidget(
-                                key: ValueKey(key),
-                                scaffoldKey: _scaffoldKey,
-                                data: state.obj!,
-                                connected: connected,
-                                sectionName: "resources");
+                            return widget.homeObj != null &&
+                                    widget.homeObj!.gridViewC == "true"
+                                ? CommonGridWidget(
+                                    scaffoldKey: _scaffoldKey,
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: "resources")
+                                : CommonListWidget(
+                                    key: ValueKey(key),
+                                    scaffoldKey: _scaffoldKey,
+                                    data: state.obj!,
+                                    connected: connected,
+                                    sectionName: "resources");
                           } else if (state is ResourcesErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);
                           } else {

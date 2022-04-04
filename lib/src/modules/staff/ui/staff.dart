@@ -17,8 +17,9 @@ import '../../custom/model/custom_setting.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
-  StaffPage({Key? key, this.title, this.language,this.homeObj}) : super(key: key);
-  final  CustomSetting? homeObj;
+  StaffPage({Key? key, this.title, this.language, this.homeObj})
+      : super(key: key);
+  final CustomSetting? homeObj;
   final String? title;
   final String? language;
 
@@ -72,16 +73,19 @@ class _StaffPageState extends State<StaffPage> {
                             color: Theme.of(context).colorScheme.primaryVariant,
                           ));
                         } else if (state is StaffDataSucess) {
-                          return widget.homeObj!.gridViewC == "true"
-                                  ? CommonGridWidget(scaffoldKey: _scaffoldKey,
-                                      connected: connected,
-                                      data: state.obj!,
-                                      sectionName: "staff"):CommonListWidget(
-                              key: ValueKey(key),
-                              scaffoldKey: _scaffoldKey,
-                              connected: connected,
-                              data: state.obj!,
-                              sectionName: "staff");
+                          return widget.homeObj != null &&
+                                  widget.homeObj!.gridViewC == "true"
+                              ? CommonGridWidget(
+                                  scaffoldKey: _scaffoldKey,
+                                  connected: connected,
+                                  data: state.obj!,
+                                  sectionName: "staff")
+                              : CommonListWidget(
+                                  key: ValueKey(key),
+                                  scaffoldKey: _scaffoldKey,
+                                  connected: connected,
+                                  data: state.obj!,
+                                  sectionName: "staff");
                         } else if (state is ErrorInStaffLoading) {
                           return ListView(children: [ErrorMsgWidget()]);
                         } else {

@@ -86,16 +86,19 @@ class _AboutPageState extends State<AboutPage> {
                                       .primaryVariant,
                                 ));
                           } else if (state is AboutDataSucess) {
-                            return widget.homeObj!.gridViewC == "true"
-                                  ? CommonGridWidget(scaffoldKey: _scaffoldKey,
-                                      connected: connected,
-                                      data: state.obj!,
-                                      sectionName: "about"):CommonListWidget(
-                                key: ValueKey(key),
-                                scaffoldKey: _scaffoldKey,
-                                connected: connected,
-                                data: state.obj!,
-                                sectionName: 'about');
+                            return widget.homeObj != null &&
+                                    widget.homeObj!.gridViewC == "true"
+                                ? CommonGridWidget(
+                                    scaffoldKey: _scaffoldKey,
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: "about")
+                                : CommonListWidget(
+                                    key: ValueKey(key),
+                                    scaffoldKey: _scaffoldKey,
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: 'about');
                           } else if (state is ErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);
                           } else {

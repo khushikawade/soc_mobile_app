@@ -19,12 +19,9 @@ import '../../shared/ui/common_grid_widget.dart';
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
-  final  CustomSetting? homeObj;
-  FamilyPage({
-    Key? key,
-    this.obj,
-    this.searchObj,this.homeObj
-  }) : super(key: key);
+  final CustomSetting? homeObj;
+  FamilyPage({Key? key, this.obj, this.searchObj, this.homeObj})
+      : super(key: key);
 
   @override
   _FamilyPageState createState() => _FamilyPageState();
@@ -94,16 +91,19 @@ class _FamilyPageState extends State<FamilyPage> {
                                     .primaryVariant,
                               ));
                             } else if (state is FamiliesDataSucess) {
-                              return widget.homeObj!.gridViewC == "true"
-                                  ? CommonGridWidget(scaffoldKey: _scaffoldKey,
+                              return widget.homeObj != null &&
+                                      widget.homeObj!.gridViewC == "true"
+                                  ? CommonGridWidget(
+                                      scaffoldKey: _scaffoldKey,
                                       connected: connected,
                                       data: state.obj!,
-                                      sectionName: "family"):CommonListWidget(
-                                  key: ValueKey(key),
-                                  scaffoldKey: _scaffoldKey,
-                                  connected: connected,
-                                  data: state.obj!,
-                                  sectionName: "family");
+                                      sectionName: "family")
+                                  : CommonListWidget(
+                                      key: ValueKey(key),
+                                      scaffoldKey: _scaffoldKey,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "family");
                             } else if (state is ErrorLoading) {
                               return ListView(children: [ErrorMsgWidget()]);
                             } else {
