@@ -41,14 +41,7 @@ void main() async {
       ..registerAdapter(CalendarEventListAdapter())
       ..registerAdapter(CustomSettingAdapter());
   }
-  HiveDbServices _hivedb = HiveDbServices();
-  Globals.disableDarkMode =
-      await _hivedb.getSingleData('disableDarkMode', 'darkMode');
-  print('-------------------dark mode disable----------------------');
-  print(Globals.disableDarkMode);
-  if (Globals.disableDarkMode == true) {
-    Globals.themeType = 'Light';
-  }
+ 
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -75,6 +68,14 @@ getDeviceType() async {
     final deviceType = await getDeviceInfo();
     Globals.deviceType = deviceType == "ipad" ? "tablet" : "phone";
   }
+}
+
+disableDarkMode() async {
+ HiveDbServices _hivedb = HiveDbServices();
+  Globals.disableDarkMode =
+      await _hivedb.getSingleData('disableDarkMode', 'darkMode');
+  // print('-------------------dark mode disable----------------------');
+  // print(Globals.disableDarkMode);
 }
 
 // This function will clean the only theme details from SharedPreferences

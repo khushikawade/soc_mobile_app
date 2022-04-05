@@ -112,8 +112,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   clearTheme() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(AdaptiveTheme.prefKey);
-    HiveDbServices _hivedb = HiveDbServices();
-   
     // AdaptiveTheme.of(context).persist();
   }
 }
