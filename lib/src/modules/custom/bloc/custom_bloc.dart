@@ -74,7 +74,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
 
     if (event is CustomSublistEvent) {
       try {
-        // yield CustomLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
+        yield CustomLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
         String? _objectName = "${Strings.customSubListObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
 

@@ -13,7 +13,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
+import '../custom/model/custom_setting.dart';
+import '../shared/ui/common_grid_widget.dart';
+
 class ResourcesPage extends StatefulWidget {
+  final CustomSetting? homeObj;
+  ResourcesPage({
+    Key? key,
+    this.homeObj,
+  }) : super(key: key);
+
   @override
   _ResourcesPageState createState() => _ResourcesPageState();
 }
@@ -75,12 +84,19 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                       .primaryVariant,
                                 ));
                           } else if (state is ResourcesDataSucess) {
-                            return CommonListWidget(
-                                key: ValueKey(key),
-                                scaffoldKey: _scaffoldKey,
-                                data: state.obj!,
-                                connected: connected,
-                                sectionName: "resources");
+                            return widget.homeObj != null &&
+                                    widget.homeObj!.gridViewC == "true"
+                                ? CommonGridWidget(
+                                    scaffoldKey: _scaffoldKey,
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: "resources")
+                                : CommonListWidget(
+                                    key: ValueKey(key),
+                                    scaffoldKey: _scaffoldKey,
+                                    data: state.obj!,
+                                    connected: connected,
+                                    sectionName: "resources");
                           } else if (state is ResourcesErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);
                           } else {

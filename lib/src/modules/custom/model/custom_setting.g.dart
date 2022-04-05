@@ -46,13 +46,14 @@ class CustomSettingAdapter extends TypeAdapter<CustomSetting> {
       rtfHTMLC: fields[26] as dynamic,
       calendarId: fields[27] as dynamic,
       typeOfPageC: fields[28] as String?,
+      gridViewC: fields[29] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CustomSetting obj) {
     writer
-      ..writeByte(29)
+      ..writeByte(30)
       ..writeByte(0)
       ..write(obj.attributes)
       ..writeByte(1)
@@ -110,7 +111,9 @@ class CustomSettingAdapter extends TypeAdapter<CustomSetting> {
       ..writeByte(27)
       ..write(obj.calendarId)
       ..writeByte(28)
-      ..write(obj.typeOfPageC);
+      ..write(obj.typeOfPageC)
+      ..writeByte(29)
+      ..write(obj.gridViewC);
   }
 
   @override
