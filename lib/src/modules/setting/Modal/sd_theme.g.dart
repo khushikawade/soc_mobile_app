@@ -6,7 +6,7 @@ part of 'sd_theme.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class RecentAdapter extends TypeAdapter<Theme> {
+class ThemeAdapter extends TypeAdapter<Theme> {
   @override
   final int typeId = 7;
 
@@ -25,7 +25,7 @@ class RecentAdapter extends TypeAdapter<Theme> {
   @override
   void write(BinaryWriter writer, Theme obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(2)
       ..writeByte(0)
       ..write(obj.hiveobjid)
       ..writeByte(1)
@@ -38,7 +38,7 @@ class RecentAdapter extends TypeAdapter<Theme> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RecentAdapter &&
+      other is ThemeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

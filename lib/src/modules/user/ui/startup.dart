@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
 
@@ -47,12 +46,10 @@ class _StartupPageState extends State<StartupPage> {
     getindicatorValue();
     appversion();
     initPlatformState(context);
-
     _bloc.add(FetchStandardNavigationBar());
     _newsBloc.add(NewsCountLength());
     getindexvalue();
     _showcase();
-
     if (Platform.isAndroid) {
       Globals.isAndroid = true;
     } else if (Platform.isIOS) {

@@ -496,7 +496,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         _screens.add(CustomAppSection(obj: Globals.customSetting![i]));
       } else if (Globals.customSetting![i].typeOfSectionC == 'Custom Type') {
         _screens.add(CustomPages(obj: Globals.customSetting![i]));
-
         if (Globals.customSetting![i].typeOfPageC == 'URL') {
           Globals.urlIndex = _screens.length - 1;
           Globals.homeUrl = Globals.customSetting![i].appUrlC;

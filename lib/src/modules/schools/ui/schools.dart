@@ -87,6 +87,7 @@ class _SchoolPageState extends State<SchoolPage> {
                     : _kIconSize * 2,
                 child: ClipRRect(
                     child: CommonImageWidget(
+                  darkModeIconUrl: obj.darkModeIconC,
                   height: Globals.deviceType == "phone"
                       ? _kIconSize * 1.4
                       : _kIconSize * 2,

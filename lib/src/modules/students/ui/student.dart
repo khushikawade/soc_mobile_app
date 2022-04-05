@@ -133,6 +133,7 @@ class _StudentPageState extends State<StudentPage> {
                                         height: 80,
                                         width: 80,
                                         child: CustomIconWidget(
+                                          darkModeIconUrl: list[index].darkModeIconC,
                                             iconUrl: list[index].appIconC ??
                                                 Overrides.folderDefaultImage))
                                     : EmptyContainer(),

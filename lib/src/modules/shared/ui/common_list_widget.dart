@@ -175,6 +175,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   Widget _buildLeading(SharedList obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconMode(
+        darkModeIconUrl: obj.darkModeIconC,
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else if (obj.appIconC != null) {
@@ -189,6 +190,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
       );
     } else {
       return CustomIconMode(
+        darkModeIconUrl: obj.darkModeIconC,
         iconUrl: Overrides.defaultIconUrl,
       );
     }

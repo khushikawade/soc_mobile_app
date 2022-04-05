@@ -23,7 +23,7 @@ import 'src/modules/families/modal/calendar_event_list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  clearTheme();
+ 
   if (!kIsWeb) {
     // Not running on the web!
     final appDocumentDirectory =
@@ -71,8 +71,4 @@ getDeviceType() async {
 }
 
 // This function will clean the only theme details from SharedPreferences
-clearTheme() async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.remove(AdaptiveTheme.prefKey);
-  // AdaptiveTheme.of(context).persist();
-}
+

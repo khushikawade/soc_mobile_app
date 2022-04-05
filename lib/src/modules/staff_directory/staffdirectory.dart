@@ -115,6 +115,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 children: [
                   HorzitalSpacerWidget(_kLabelSpacing / 1.5),
                   CommonImageWidget(
+                    darkModeIconUrl: obj.darkModeIconC,
                       height: Globals.deviceType == "phone"
                           ? _kIconSize * 1.4
                           : _kIconSize * 2,

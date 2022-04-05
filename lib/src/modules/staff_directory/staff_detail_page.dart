@@ -40,6 +40,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
   Widget _sdImage() {
     return Container(
         child: CommonImageWidget(
+      darkModeIconUrl: widget.obj.darkModeIconC,
       iconUrl: widget.obj!.imageUrlC ??
           Globals.splashImageUrl ??
           Globals.appSetting.appLogoC,
