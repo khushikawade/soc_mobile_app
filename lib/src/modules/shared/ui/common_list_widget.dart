@@ -79,6 +79,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                isCustom: widget.sectionName == 'Custom' ? true : false,
                     staffDirectoryCategoryId: null,
                     isAbout: true,
                     appBarTitle: obj.titleC!,
@@ -160,6 +161,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                isCustom: false,
                     staffDirectoryCategoryId: obj.id,
                     appBarTitle: obj.titleC!,
                     obj: obj,

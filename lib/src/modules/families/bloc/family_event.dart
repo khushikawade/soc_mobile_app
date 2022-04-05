@@ -26,17 +26,17 @@ class FamiliesSublistEvent extends FamilyEvent {
   String toString() => 'GlobalSearchEvent { keyword: $id}';
 }
 
-class SDevent extends FamilyEvent {
-  final String? categoryId;
-  SDevent({
-    this.categoryId,
-  });
-  @override
-  List<Object> get props => [categoryId!];
+// class SDevent extends FamilyEvent {
+//   final String? categoryId;
+//   SDevent({
+//     this.categoryId,
+//   });
+//   @override
+//   List<Object> get props => [categoryId!];
 
-  @override
-  String toString() => 'SDButtonPressed';
-}
+//   @override
+//   String toString() => 'SDButtonPressed';
+// }
 
 class CalendarListEvent extends FamilyEvent {
   @required
@@ -48,4 +48,15 @@ class CalendarListEvent extends FamilyEvent {
 
   @override
   String toString() => 'Calendar';
+}
+
+class SDevent extends FamilyEvent {
+  final String? categoryId; //About record Id
+
+  final String? customRecordId; //Custom record Id
+
+  SDevent({this.categoryId, this.customRecordId});
+
+  @override
+  List<Object> get props => [categoryId!,customRecordId!];
 }

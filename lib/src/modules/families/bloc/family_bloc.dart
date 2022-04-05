@@ -118,7 +118,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         // yield FamilyLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
         String? _objectName =
-            "${Strings.staffDirectoryObjectName}_${event.categoryId ?? ''}";
+            "${Strings.staffDirectoryObjectName}_${event.categoryId ?? event.customRecordId ?? ''}";
         LocalDatabase<SDlist> _localDb = LocalDatabase(_objectName);
 
         List<SDlist>? _localData = await _localDb.getData();
@@ -132,7 +132,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         }
         // Local database end
 
-        List<SDlist> list = await getStaffList(event.categoryId);
+        List<SDlist> list =
+            await getStaffList(event.categoryId, event.customRecordId);
         // Syncing the remote data to the local database.
         await _localDb.clear();
         list.forEach((SDlist e) {
@@ -146,7 +147,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       } catch (e) {
         // yield ErrorLoading(err: e);
         String? _objectName =
-            "${Strings.staffDirectoryObjectName}_${event.categoryId ?? ''}";
+            "${Strings.staffDirectoryObjectName}_${event.categoryId ?? event.customRecordId ?? ''}";
         LocalDatabase<SDlist> _localDb = LocalDatabase(_objectName);
 
         List<SDlist>? _localData = await _localDb.getData();
@@ -376,18 +377,43 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  Future<List<SDlist>> getStaffList(categoryId) async {
+  // Future<List<SDlist>> getStaffList(categoryId) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.getapi(categoryId == null
+  //         ? Uri.encodeFull(
+  //             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c')
+  //         : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId');
+
+  //     if (response.statusCode == 200) {
+  //       List<SDlist> _list = response.data['body']
+  //           .map<SDlist>((i) => SDlist.fromJson(i))
+  //           .toList();
+  //       _list.removeWhere((SDlist element) => element.status == 'Hide');
+  //       return _list;
+  //     } else {
+  //       throw ('something_went_wrong');
+  //     }
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
+
+  Future<List<SDlist>> getStaffList(categoryId, customrecordId) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(categoryId == null
-          ? Uri.encodeFull(
-              'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c')
-          : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId');
+      final ResponseModel response =
+          await _dbServices.getapi(Uri.encodeFull(customrecordId != null
+              ? 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&Custom_App_Menu__c=$customrecordId'
+              : categoryId != null
+                  ? 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId'
+                  : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c'));
 
       if (response.statusCode == 200) {
         List<SDlist> _list = response.data['body']
             .map<SDlist>((i) => SDlist.fromJson(i))
             .toList();
+
         _list.removeWhere((SDlist element) => element.status == 'Hide');
+
         return _list;
       } else {
         throw ('something_went_wrong');

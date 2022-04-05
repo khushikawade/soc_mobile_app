@@ -19,6 +19,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             _customSettingDb.addData(e);
           });
         }
+        if (_appSetting.disableDarkMode == true) {
+          HiveDbServices _hivedb = HiveDbServices();
+          _hivedb.addSingleData('disableDarkMode', 'darkMode', true);
+        }
+
         // Should send the response first then it will sync data to the Local database.
         yield BottomNavigationBarSuccess(obj: data);
 

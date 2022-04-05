@@ -19,6 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 class StaffDirectory extends StatefulWidget {
+  final bool isCustom;
   final obj;
   final bool isbuttomsheet;
   final String appBarTitle;
@@ -34,7 +35,8 @@ class StaffDirectory extends StatefulWidget {
       required this.appBarTitle,
       required this.language,
       required this.isAbout,
-      this.staffDirectoryCategoryId})
+      this.staffDirectoryCategoryId,
+      required this.isCustom})
       : super(key: key);
 
   @override
@@ -58,7 +60,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     if (widget.staffDirectoryCategoryId != null) {
       _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
     } else {
-      _bloc.add(SDevent());
+      _bloc
+          .add(SDevent(customRecordId: widget.isCustom ? widget.obj.id : null));
     }
     Globals.callsnackbar = true;
   }
@@ -115,7 +118,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 children: [
                   HorzitalSpacerWidget(_kLabelSpacing / 1.5),
                   CommonImageWidget(
-                    darkModeIconUrl: obj.darkModeIconC,
+                      darkModeIconUrl: obj.darkModeIconC,
                       height: Globals.deviceType == "phone"
                           ? _kIconSize * 1.4
                           : _kIconSize * 2,
@@ -232,7 +235,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       _bloc.add(
                           SDevent(categoryId: widget.staffDirectoryCategoryId));
                     } else {
-                      _bloc.add(SDevent());
+                      _bloc.add(SDevent(
+                          customRecordId:
+                              widget.isCustom ? widget.obj.id : null));
                     }
                   }
                 } else if (!connected) {
@@ -318,7 +323,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     if (widget.staffDirectoryCategoryId != null) {
       _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
     } else {
-      _bloc.add(SDevent());
+      _bloc
+          .add(SDevent(customRecordId: widget.isCustom ? widget.obj.id : null));
     }
     _homeBloc.add(FetchStandardNavigationBar());
   }
