@@ -58,9 +58,14 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     }
   }
 
-  _navigate(SharedList obj, index) {
+  _navigate(SharedList obj, index) async {
+    obj.typeC != null && obj.typeC != ""
+        ? //free screen orientation
+        Utility.setFree()
+        : //lock screen orientation
+        Utility.setLocked();
     if (obj.typeC == "Contact") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => ContactPage(
@@ -71,11 +76,11 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                   )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null && obj.appUrlC != ""
-          ? _launchURL(obj)
+          ? await _launchURL(obj)
           : Utility.showSnackBar(
               widget.scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
@@ -88,7 +93,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                   )));
     } else if (obj.typeC == "Calendar/Events") {
       obj.calendarId != null && obj.calendarId != ""
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => EventPage(
@@ -104,7 +109,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
         obj.typeC == "HTML/RTF" ||
         obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
@@ -118,7 +123,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
               widget.scaffoldKey, "No data available", context);
     } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
@@ -132,7 +137,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
               widget.scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
@@ -145,7 +150,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           : Utility.showSnackBar(
               widget.scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => SubListPage(
@@ -156,7 +161,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     language: Globals.selectedLanguage,
                   )));
     } else if (obj.typeC == "Staff_Directory") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
@@ -170,6 +175,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }
+    Utility.setLocked();
   }
 
   Widget _buildLeading(SharedList obj) {

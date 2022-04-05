@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
@@ -44,12 +45,17 @@ class _SocialPageState extends State<SocialPage> {
 
   void initState() {
     super.initState();
+    //lock screen orientation
+   Utility.setLocked();
     bloc.add(SocialPageEvent());
     _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
   }
 
   @override
   void dispose() {
+    //free screen orientation
+    Utility.setFree();
+  
     super.dispose();
   }
 
@@ -90,6 +96,7 @@ class _SocialPageState extends State<SocialPage> {
       //     : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () async {
+          Utility.setFree();
           bool result = await Navigator.push(
               context,
               MaterialPageRoute(
@@ -108,6 +115,7 @@ class _SocialPageState extends State<SocialPage> {
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )));
+                    Utility.setLocked();
           if (result == true) {
             _countSocialBloc.add(FetchSocialActionCount(isDetailPage: true));
           }

@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -34,6 +35,12 @@ class _CustomPagesState extends State<CustomPages> {
   HomeBloc _homeBloc = HomeBloc();
   var pdfViewerKey = UniqueKey();
   bool? iserrorstate = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Utility.setLocked();
+  }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
@@ -108,11 +115,11 @@ class _CustomPagesState extends State<CustomPages> {
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
               // || obj.deepLinkC == 'YES'
               ? Expanded(
-                child: UrlNotSecure(
-                  url: obj.appUrlC,
-                  connected: true,
-                ),
-              ) // TODO: Add a proper message when links are unable to open
+                  child: UrlNotSecure(
+                    url: obj.appUrlC,
+                    connected: true,
+                  ),
+                ) // TODO: Add a proper message when links are unable to open
               : HomeInAppUrlLauncher(
                   url: obj.appUrlC,
                   language: Globals.selectedLanguage,

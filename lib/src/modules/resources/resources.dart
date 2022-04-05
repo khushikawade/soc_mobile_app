@@ -27,6 +27,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   @override
   void initState() {
+      Utility.setLocked();
     super.initState();
     _bloc.add(ResourcesListEvent());
   }

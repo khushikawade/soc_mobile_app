@@ -49,7 +49,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
+   //lock screen orientation
+    Utility.setLocked();
     bloc.add(FetchNotificationList());
     _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
@@ -86,6 +87,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+      //free screen orientation
+    Utility.setFree();
     WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
@@ -100,6 +103,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             Utility.showSnackBar(
                 _scaffoldKey, "Please wait while count is loading", context);
           } else {
+              //free screen orientation
+               Utility.setFree();
             bool result = await Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -116,7 +121,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           isbuttomsheet: true,
                           language: Globals.selectedLanguage,
                         )));
-
+                         //lock screen orientation
+                       Utility.setLocked();
             if (result == true) {
               _countBloc.add(FetchActionCountList(isDetailPage: true));
             }
