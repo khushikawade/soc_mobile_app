@@ -27,10 +27,9 @@ class FamiliesSublistEvent extends FamilyEvent {
 }
 
 class SDevent extends FamilyEvent {
-  final String? categoryId;
-  SDevent({
-    this.categoryId,
-  });
+  final String? categoryId; //About record Id
+  final String? customRecordId; //Custom record Id
+  SDevent({this.categoryId, this.customRecordId});
   @override
   List<Object> get props => [categoryId!];
 
