@@ -33,7 +33,7 @@ class _StaffPageState extends State<StaffPage> {
   @override
   void initState() {
        //lock screen orientation
-   Utility.setLocked();
+   //Utility.setLocked();
     super.initState();
     _bloc.add(StaffPageEvent());
   }

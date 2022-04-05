@@ -54,7 +54,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   @override
   void initState() {
-    Utility.setLocked();
+    //Utility.setLocked();
     super.initState();
     if (widget.staffDirectoryCategoryId != null) {
       _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
@@ -69,7 +69,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
       onTap: () async {
         if (widget.isAbout == true) {
            //lock screen orientation
-     Utility.setLocked();
+    // Utility.setLocked();
         await  Navigator.push(
               context,
               MaterialPageRoute(
@@ -84,7 +84,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         language: Globals.selectedLanguage,
                       )));
                          //lock screen orientation
-   Utility.setLocked();
+  // Utility.setLocked();
         }
       },
       child: Container(

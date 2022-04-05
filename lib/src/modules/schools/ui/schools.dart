@@ -33,7 +33,7 @@ class _SchoolPageState extends State<SchoolPage> {
   @override
   void initState() {
     //lock screen orientation
-    Utility.setLocked();
+    //Utility.setLocked();
     super.initState();
     bloc.add(SchoolDirectoryListEvent());
   }
@@ -73,12 +73,12 @@ class _SchoolPageState extends State<SchoolPage> {
       child: InkWell(
         onTap: () async {
           //free screen orientation
-          Utility.setFree();
+        //  Utility.setFree();
           await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => SchoolDetailPage(obj: obj)));
-           Utility.setLocked();
+           //Utility.setLocked();
         },
         child: Row(
           children: <Widget>[

@@ -39,7 +39,7 @@ class _CustomPagesState extends State<CustomPages> {
   @override
   void initState() {
     super.initState();
-    Utility.setLocked();
+   // Utility.setLocked();
   }
 
   Future refreshPage() async {

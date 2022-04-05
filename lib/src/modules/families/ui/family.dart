@@ -40,7 +40,7 @@ class _FamilyPageState extends State<FamilyPage> {
   void initState() {
     super.initState();
        //lock screen orientation
-     Utility.setLocked();
+    // Utility.setLocked();
     _bloc.add(FamiliesEvent());
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
 

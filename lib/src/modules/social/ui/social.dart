@@ -46,7 +46,7 @@ class _SocialPageState extends State<SocialPage> {
   void initState() {
     super.initState();
     //lock screen orientation
-   Utility.setLocked();
+  // Utility.setLocked();
     bloc.add(SocialPageEvent());
     _countSocialBloc.add(FetchSocialActionCount(isDetailPage: false));
   }
@@ -54,7 +54,7 @@ class _SocialPageState extends State<SocialPage> {
   @override
   void dispose() {
     //free screen orientation
-    Utility.setFree();
+  //  Utility.setFree();
   
     super.dispose();
   }
@@ -96,7 +96,7 @@ class _SocialPageState extends State<SocialPage> {
       //     : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () async {
-          Utility.setFree();
+        //  Utility.setFree();
           bool result = await Navigator.push(
               context,
               MaterialPageRoute(
@@ -115,7 +115,7 @@ class _SocialPageState extends State<SocialPage> {
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )));
-                    Utility.setLocked();
+                   // Utility.setLocked();
           if (result == true) {
             _countSocialBloc.add(FetchSocialActionCount(isDetailPage: true));
           }

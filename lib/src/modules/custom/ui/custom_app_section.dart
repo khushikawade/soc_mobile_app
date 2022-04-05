@@ -39,7 +39,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   @override
   void initState() {
     super.initState();
-      Utility.setLocked();
+     // Utility.setLocked();
     _bloc.add(CustomEvents(id: widget.obj.id));
   }
 

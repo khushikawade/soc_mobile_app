@@ -64,7 +64,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         size: Globals.deviceType == "phone" ? 20 : 28,
       ),
       onSelected: (value) async {
-        Utility.setFree();
+     //   Utility.setFree();
         switch (value) {
           case IconsMenu.Information:
             Globals.appSetting.appInformationC != null
@@ -94,7 +94,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 settingsCode: SettingsCode.APP_SETTINGS);
             break;
         }
-        Utility.setLocked();
+       // Utility.setLocked();
       },
       itemBuilder: (context) => IconsMenu.items
           .map((item) => PopupMenuItem<IconMenu>(

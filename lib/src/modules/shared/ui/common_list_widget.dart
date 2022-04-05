@@ -59,11 +59,11 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   }
 
   _navigate(SharedList obj, index) async {
-    obj.typeC != null && obj.typeC != ""
-        ? //free screen orientation
-        Utility.setFree()
-        : //lock screen orientation
-        Utility.setLocked();
+   //
+       // ? //free screen orientation
+      //  Utility.setFree()
+       // : //lock screen orientation
+      //  Utility.setLocked();
     if (obj.typeC == "Contact") {
       await Navigator.push(
           context,
@@ -175,7 +175,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }
-    Utility.setLocked();
+   // Utility.setLocked();
   }
 
   Widget _buildLeading(SharedList obj) {

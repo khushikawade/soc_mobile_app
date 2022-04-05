@@ -36,7 +36,7 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   void initState() {
-    Utility.setLocked();
+  //  Utility.setLocked();
     super.initState();
     _bloc.add(AboutStaffDirectoryEvent());
   }
