@@ -65,4 +65,5 @@ class Globals {
   static late WebViewController? webViewController1;
   static String? homeUrl;
   static PersistentTabController? controller;
+  static bool? disableDarkMode;
 }

@@ -41,7 +41,7 @@ class _FamilyPageState extends State<FamilyPage> {
     _bloc.add(FamiliesEvent());
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
-    if (brightness == Brightness.dark) {
+    if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
     }
   }
