@@ -235,7 +235,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   Widget build(BuildContext context) {
     return widget.data.length > 0
         ? ListView.builder(
-            // shrinkWrap: true,
+            shrinkWrap: true,
             padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
             scrollDirection: Axis.vertical,
             itemCount: widget.data.length,
