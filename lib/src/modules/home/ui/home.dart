@@ -16,6 +16,7 @@ import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -329,6 +330,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             Globals.indicator.value = false;
           }
         });
+      },
+      selectedTabScreenContext: (index){
+        print("called =================");
+        Utility.setLocked();
       },
       items: _navBarsItems(),
       confineInSafeArea: true,

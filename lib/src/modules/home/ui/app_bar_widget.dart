@@ -53,9 +53,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     final scaffoldKey = Scaffold.of(context);
     return PopupMenuButton<IconMenu>(
       color:  Globals.themeType != 'Dark'
-
           ? Theme.of(context).backgroundColor
-
           : Theme.of(context).colorScheme.secondary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
@@ -65,11 +63,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         size: Globals.deviceType == "phone" ? 20 : 28,
       ),
-      onSelected: (value) {
+      onSelected: (value) async {
+        Utility.setFree();
         switch (value) {
           case IconsMenu.Information:
             Globals.appSetting.appInformationC != null
-                ? Navigator.push(
+                ? await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => InformationPage(
@@ -77,11 +76,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                               isbuttomsheet: true,
                               ishtml: true,
                             )))
+                            
                 : Utility.showSnackBar(
                     scaffoldKey, 'No Information Available', context);
             break;
           case IconsMenu.Setting:
-            Navigator.push(
+          await  Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => SettingPage(
@@ -94,6 +94,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 settingsCode: SettingsCode.APP_SETTINGS);
             break;
         }
+        Utility.setLocked();
       },
       itemBuilder: (context) => IconsMenu.items
           .map((item) => PopupMenuItem<IconMenu>(
