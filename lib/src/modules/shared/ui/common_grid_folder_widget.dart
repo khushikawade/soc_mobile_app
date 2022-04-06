@@ -147,12 +147,18 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                         CustomState state) {
                                       if (state is CustomInitial ||
                                           state is CustomLoading) {
-                                        return Center(
+                                        return Container(
+                                            margin: EdgeInsets.only(
+                                                top: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.18),
+                                            alignment: Alignment.center,
                                             child: CircularProgressIndicator(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant,
-                                        ));
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                            ));
                                       } else if (state
                                           is CustomSublistSuccess) {
                                         return state.obj != null &&

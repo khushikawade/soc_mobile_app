@@ -104,7 +104,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                 return
                     // connected?
                     Stack(
-                 // mainAxisSize: MainAxisSize.max,
+                  // mainAxisSize: MainAxisSize.max,
                   children: [
                     BlocBuilder<CustomBloc, CustomState>(
                         bloc: _bloc,

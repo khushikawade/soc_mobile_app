@@ -79,7 +79,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
-                isCustom: widget.sectionName == 'Custom' ? true : false,
+                    isCustom: widget.sectionName == 'Custom' ? true : false,
                     staffDirectoryCategoryId: null,
                     isAbout: true,
                     appBarTitle: obj.titleC!,
@@ -161,7 +161,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
-                isCustom: false,
+                    isCustom: false,
                     staffDirectoryCategoryId: obj.id,
                     appBarTitle: obj.titleC!,
                     obj: obj,
@@ -239,7 +239,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   Widget build(BuildContext context) {
     return widget.data.length > 0
         ? ListView.builder(
-            // shrinkWrap: true,
+            shrinkWrap: true,
             padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
             scrollDirection: Axis.vertical,
             itemCount: widget.data.length,
