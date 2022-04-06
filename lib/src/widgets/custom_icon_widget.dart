@@ -7,7 +7,8 @@ import 'package:flutter/scheduler.dart';
 
 class CustomIconWidget extends StatefulWidget {
   late final String? iconUrl;
-  CustomIconWidget({Key? key, @required this.iconUrl}) : super(key: key);
+  final String? darkModeIconUrl;
+  CustomIconWidget({Key? key, @required this.iconUrl, this.darkModeIconUrl}) : super(key: key);
 
   @override
   State<CustomIconWidget> createState() => _CustomIconWidgetState();
@@ -19,7 +20,7 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
     super.initState();
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
-    if (brightness == Brightness.dark) {
+    if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
     }
   }
@@ -33,7 +34,7 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
 
   Widget cachedNetworkImage() {
     return CachedNetworkImage(
-        imageUrl: widget.iconUrl!,
+        imageUrl:Globals.themeType == 'Dark'? (widget.darkModeIconUrl == null || widget.darkModeIconUrl == ''? widget.iconUrl! : widget.darkModeIconUrl!) : widget.iconUrl!,
         height: Globals.deviceType == "phone"
             ? AppTheme.kIconSize
             : AppTheme.kTabIconSize,

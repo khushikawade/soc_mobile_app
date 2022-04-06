@@ -22,6 +22,8 @@ class SDlist {
   String? phoneC;
   @HiveField(8)
   String? status;
+  @HiveField(9)
+  String? darkModeIconC;
 
   SDlist(
       {
@@ -34,7 +36,8 @@ class SDlist {
       this.emailC,
       this.sortOrderC,
       this.phoneC,
-      this.status});
+      this.status,
+      this.darkModeIconC});
 
   factory SDlist.fromJson(Map<String, dynamic> json) => SDlist(
       // attributes: json['attributes'] == null
@@ -48,7 +51,8 @@ class SDlist {
       emailC: json['Email__c'] as String?,
       sortOrderC: json['Sort_Order__c'],
       phoneC: json['Phone__c'] as String?,
-      status: json['Active_Status__c'] ?? 'Show');
+      status: json['Active_Status__c'] ?? 'Show',
+      darkModeIconC: json['Dark_Mode_Icon__c']);
 
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
@@ -61,5 +65,6 @@ class SDlist {
         'Sort_Order__c': sortOrderC,
         'Phone__c': phoneC,
         'Active_Status__c': status,
+        'Dark_Mode_Icon__c': darkModeIconC
       };
 }

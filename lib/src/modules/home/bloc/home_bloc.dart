@@ -3,7 +3,6 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
-import 'package:Soc/src/modules/home/models/custom_setting.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
@@ -19,12 +18,14 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../custom/model/custom_setting.dart';
 part 'home_event.dart';
 part 'home_state.dart';
 
@@ -61,6 +62,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             _customSettingDb.addData(e);
           });
         }
+        if (_appSetting.disableDarkMode == true) {
+          HiveDbServices _hivedb = HiveDbServices();
+          _hivedb.addSingleData('disableDarkMode', 'darkMode', true);
+        } else {
+          HiveDbServices _hivedb = HiveDbServices();
+          _hivedb.addSingleData('disableDarkMode', 'darkMode', false);
+        }
+
         // Should send the response first then it will sync data to the Local database.
         yield BottomNavigationBarSuccess(obj: data);
 
@@ -323,7 +332,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _studentBloc.add(StudentPageEvent());
         } else if (element.contains('social')) {
           SocialBloc _socialBloc = SocialBloc();
-          _socialBloc.add(SocialPageEvent());
+          _socialBloc.add(SocialPageEvent(action: 'initial'));
         } else if (element.contains('news')) {
           NewsBloc _newsBloc = NewsBloc();
           _newsBloc.add(FetchNotificationList());
@@ -355,7 +364,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       NewsBloc _newsBloc = NewsBloc();
       _newsBloc.add(FetchActionCountList(isDetailPage: false));
       SocialBloc _socialBloc = SocialBloc();
-      _socialBloc.add(FetchSocialActionCount(isDetailPage: false));
+      // _socialBloc.add(FetchSocialActionCount(isDetailPage: false));
+      _socialBloc.add(SocialPageEvent(action: 'initial'));
     } catch (e) {
       print(e);
     }

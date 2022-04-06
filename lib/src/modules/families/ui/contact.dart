@@ -247,8 +247,9 @@ class _ContactPageState extends State<ContactPage> {
             child: InkWell(
               onTap: () {
                 if (Globals.appSetting.contactPhoneC != null) {
-                  Utility.launchUrlOnExternalBrowser(
-                      "tel:" + Globals.appSetting.contactPhoneC!);
+                  Utility.launchUrlOnExternalBrowser("tel:" +
+                      (Globals.appSetting.contactPhoneC ?? '')
+                          .replaceAll(new RegExp(r'[^\w\s]+'), ''));
                 }
               },
               child: Text(

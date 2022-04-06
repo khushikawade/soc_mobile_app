@@ -18,11 +18,10 @@ part 'social_event.dart';
 part 'social_state.dart';
 
 class SocialBloc extends Bloc<SocialEvent, SocialState> {
-  // final data;
   SocialBloc() : super(SocialInitial());
-
   SocialState get initialState => SocialInitial();
   final DbServices _dbServices = DbServices();
+
   @override
   Stream<SocialState> mapEventToState(
     SocialEvent event,
@@ -36,94 +35,73 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
         if (_localData.isEmpty) {
           yield Loading();
+        } else if (event.action!.contains("returnBack")) {
+          yield SocialReload(obj: _localData);
         } else {
-          //Adding social list local data to global list
-          Globals.socialList.clear();
-          Globals.socialList.addAll(_localData);
           yield SocialDataSucess(obj: _localData);
         }
         // Local database end.
 
-        List<Item> list = await getEventDetails();
-        // Syncing to local database
-        await _localDb.clear();
-        list.forEach((Item e) {
-          _localDb.addData(e);
-        });
-        // Syncing end.
-        yield Loading(); // Mimic state change
-
-        //Adding social list data to global list
-        Globals.socialList.clear();
-        Globals.socialList.addAll(list);
-
-        yield SocialDataSucess(obj: list);
-      } catch (e) {
-        // Fetching from the local database instead.
-        String? _objectName = "${Strings.socialObjectName}";
-        LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
-        List<Item> _localData = await _localDb.getData();
-        yield SocialDataSucess(obj: _localData);
-        // yield SocialError(err: e);
-      }
-    }
-    if (event is FetchSocialActionCount) {
-      try {
-        yield Loading();
-        String? _objectName = "social_action";
-        // String? _objectName = "${Strings.newsObjectName}";
-        LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
-        List<Item> _localData = await _localDb.getData();
-
-        //To fetch the latest count if returning back from detail page
-        if (event.isDetailPage == false) {
+        //getting both list response
+        //social list
+        List<Item> list = [];
+        if (event.action!.contains("initial")) {
+          list = await getEventDetails();
           if (_localData.isEmpty) {
-            yield Loading();
-          } else {
-            yield SocialActionCountSuccess(obj: _localData);
+            yield SocialInitialState(obj: list);
           }
+        } else {
+          list = _localData;
         }
-        List<ActionCountList> list = await fetchSocialActionCount();
+
+        // Action count list
+
+        List<ActionCountList> listActioncount = await fetchSocialActionCount();
 
         List<Item> newList = [];
         newList.clear();
-        if (list.length == 0) {
-          newList.addAll(Globals.socialList);
+        if (listActioncount.length == 0) {
+          newList.addAll(list);
         } else {
-          for (int i = 0; i < Globals.socialList.length; i++) {
-            for (int j = 0; j < list.length; j++) {
-              if (Globals.socialList[i].guid['\$t'] + Overrides.SCHOOL_ID ==
-                  list[j].id) {
+          for (int i = 0; i < list.length; i++) {
+            for (int j = 0; j < listActioncount.length; j++) {
+              if (list[i].guid['\$t'] + Overrides.SCHOOL_ID ==
+                      listActioncount[j].id
+
+                  //Old method of mapping
+                  // Globals.socialList[i].id.toString()+Globals.socialList[i].guid['\$t'] ==
+                  //     list[j].notificationId
+                  ) {
                 newList.add(Item(
-                    id: Globals.socialList[i].id,
-                    title: Globals.socialList[i].title,
-                    description: Globals.socialList[i].description,
-                    link: Globals.socialList[i].link,
-                    guid: Globals.socialList[i].guid,
-                    creator: Globals.socialList[i].creator,
-                    pubDate: Globals.socialList[i].pubDate,
-                    content: Globals.socialList[i].content,
-                    mediaContent: Globals.socialList[i].mediaContent,
-                    enclosure: Globals.socialList[i].enclosure,
-                    likeCount: list[j].likeCount,
-                    thanksCount: list[j].thanksCount,
-                    helpfulCount: list[j].helpfulCount,
-                    shareCount: list[j].shareCount));
+                    id: list[i].id,
+                    title: list[i].title,
+                    description: list[i].description,
+                    link: list[i].link,
+                    guid: list[i].guid,
+                    creator: list[i].creator,
+                    pubDate: list[i].pubDate,
+                    content: list[i].content,
+                    mediaContent: list[i].mediaContent,
+                    enclosure: list[i].enclosure,
+                    likeCount: listActioncount[j].likeCount,
+                    thanksCount: listActioncount[j].thanksCount,
+                    helpfulCount: listActioncount[j].helpfulCount,
+                    shareCount: listActioncount[j].shareCount));
                 break;
               }
 
-              if (list.length - 1 == j) {
+              if (listActioncount.length - 1 == j) {
                 newList.add(Item(
-                    id: Globals.socialList[i].id,
-                    title: Globals.socialList[i].title,
-                    description: Globals.socialList[i].description,
-                    link: Globals.socialList[i].link,
-                    guid: Globals.socialList[i].guid,
-                    creator: Globals.socialList[i].creator,
-                    pubDate: Globals.socialList[i].pubDate,
-                    content: Globals.socialList[i].content,
-                    mediaContent: Globals.socialList[i].mediaContent,
-                    enclosure: Globals.socialList[i].enclosure,
+                    id: list[i].id,
+                    title: list[i].title,
+                    description: list[i].description,
+                    link: list[i].link,
+                    guid: list[i].guid,
+                    creator: list[i].creator,
+                    pubDate: list[i].pubDate,
+                    content: list[i].content,
+                    mediaContent: list[i].mediaContent,
+                    enclosure: list[i].enclosure,
                     likeCount: 0,
                     thanksCount: 0,
                     helpfulCount: 0,
@@ -132,21 +110,32 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             }
           }
         }
+
+        // Syncing to local database
+
         await _localDb.clear();
         newList.forEach((Item e) {
           _localDb.addData(e);
         });
 
-        yield SocialActionCountSuccess(obj: newList);
+        // Syncing end.
+        // Globals.socialList.clear();
+        // Globals.socialList.addAll(list);
+        yield Loading();
+
+        yield SocialDataSucess(
+          obj: newList,
+        );
       } catch (e) {
-        print(e);
-        // yield SocialErrorReceived(err: e);
-        String? _objectName = "social_action";
-        // String? _objectName = "${Strings.newsObjectName}";
+        print("inside catch");
+        // Fetching from the local database instead.
+        String? _objectName = "${Strings.socialObjectName}";
         LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
         List<Item> _localData = await _localDb.getData();
-        // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
-        yield SocialActionCountSuccess(obj: _localData);
+        yield SocialDataSucess(
+          obj: _localData,
+        );
+        // yield SocialError(err: e);
       }
     }
 
@@ -211,6 +200,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       if (response.statusCode == 200) {
         var data = response.data["body"];
         final _allNotificationsAction = data;
+        //  listActioncount.clear();
         final data1 = _allNotificationsAction;
         return data1
             .map<ActionCountList>((i) => ActionCountList.fromJson(i))
@@ -225,7 +215,6 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future addSocailAction(body) async {
     try {
-      print("body : " + body.toString());
       final ResponseModel response = await _dbServices.postapi(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
           body: body);

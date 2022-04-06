@@ -30,6 +30,8 @@ class SharedList {
   final status;
   @HiveField(12)
   String? deepLinkC;
+  @HiveField(13)
+  String? darkModeIconC;
 
   SharedList(
       {
@@ -46,7 +48,8 @@ class SharedList {
       this.calendarId,
       this.sortOrder,
       this.status,
-      this.deepLinkC});
+      this.deepLinkC,
+      this.darkModeIconC});
 
   factory SharedList.fromJson(Map<String, dynamic> json) => SharedList(
       titleC: Utility.utf8convert(json['Title__c'] as String?),
@@ -61,7 +64,8 @@ class SharedList {
       calendarId: json['Calendar_Id__c'] as String?,
       sortOrder: double.parse(json['Sort_Order__c'] ?? '100'),
       status: json['Active_Status__c'] ?? 'Show',
-      deepLinkC: json['Deep_Link__c'] as String?,);
+      deepLinkC: json['Deep_Link__c'] as String?,
+      darkModeIconC: json['Dark_Mode_Icon__c']);
 
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
@@ -78,5 +82,6 @@ class SharedList {
         'App_Icon_URL__c': appIconUrlC,
         'Active_Status__c': status,
         'Deep_Link__c': deepLinkC,
+        'Dark_Mode_Icon__c': darkModeIconC,
       };
 }

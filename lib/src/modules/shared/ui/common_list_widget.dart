@@ -52,18 +52,16 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                       language: Globals.selectedLanguage,
                     )));
         tapped = true;
-      } else {
-        print("tapped multiple times");
       }
     }
   }
 
   _navigate(SharedList obj, index) async {
-   //
-       // ? //free screen orientation
-      //  Utility.setFree()
-       // : //lock screen orientation
-      //  Utility.setLocked();
+    //
+    // ? //free screen orientation
+    //  Utility.setFree()
+    // : //lock screen orientation
+    //  Utility.setLocked();
     if (obj.typeC == "Contact") {
       await Navigator.push(
           context,
@@ -84,6 +82,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    isCustom: widget.sectionName == 'Custom' ? true : false,
                     staffDirectoryCategoryId: null,
                     isAbout: true,
                     appBarTitle: obj.titleC!,
@@ -165,6 +164,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    isCustom: false,
                     staffDirectoryCategoryId: obj.id,
                     appBarTitle: obj.titleC!,
                     obj: obj,
@@ -175,12 +175,13 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }
-   // Utility.setLocked();
+    // Utility.setLocked();
   }
 
   Widget _buildLeading(SharedList obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconMode(
+        darkModeIconUrl: obj.darkModeIconC,
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else if (obj.appIconC != null) {
@@ -195,6 +196,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
       );
     } else {
       return CustomIconMode(
+        darkModeIconUrl: obj.darkModeIconC,
         iconUrl: Overrides.defaultIconUrl,
       );
     }
@@ -241,7 +243,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   Widget build(BuildContext context) {
     return widget.data.length > 0
         ? ListView.builder(
-            // shrinkWrap: true,
+            shrinkWrap: true,
             padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
             scrollDirection: Axis.vertical,
             itemCount: widget.data.length,

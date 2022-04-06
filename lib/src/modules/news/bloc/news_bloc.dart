@@ -5,6 +5,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/model/action_count_list.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -287,6 +288,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   }
 
   Future<void> initPushState(context) async {
+    HiveDbServices _hiveDbServices = HiveDbServices();
+
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -295,9 +298,17 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       notification.complete(notification.notification);
       Globals.indicator.value = true;
     });
-    OneSignal.shared
-        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      pref.setInt(Strings.bottomNavigation, 1);
+    OneSignal.shared.setNotificationOpenedHandler(
+        (OSNotificationOpenedResult result) async {
+      //    Globals.newsIndex =
+      // await _hiveDbServices.getSingleData('newsIndex', 'newsIndex');
+      // pref.setInt(Strings.bottomNavigation, 1);
+      Globals.isNewTap = true;
+      Globals.controller!.index = Globals.newsIndex ?? 0;
+      Globals.newsIndex =
+          await _hiveDbServices.getSingleData('newsIndex', 'newsIndex');
+      Globals.indicator.value = false;
+      Globals.isNewTap = true;
     });
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);

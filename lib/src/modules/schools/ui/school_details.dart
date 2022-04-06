@@ -60,6 +60,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
         child: CommonImageWidget(
+          darkModeIconUrl: widget.obj.darkModeIconC,
           iconUrl: widget.obj.imageUrlC ??
               Globals.splashImageUrl ??
               Globals.appSetting.appLogoC,

@@ -30,6 +30,8 @@ class SchoolDirectoryList {
   dynamic latitude;
   @HiveField(12)
   dynamic longitude;
+  @HiveField(13)
+  String? darkModeIconC;
 
   SchoolDirectoryList(
       {this.titleC,
@@ -44,7 +46,8 @@ class SchoolDirectoryList {
       this.sortOrder,
       this.statusC,
       this.latitude,
-      this.longitude});
+      this.longitude,
+      this.darkModeIconC});
 
   factory SchoolDirectoryList.fromJson(Map<String, dynamic> json) =>
       SchoolDirectoryList(
@@ -60,7 +63,8 @@ class SchoolDirectoryList {
           sortOrder: json['Sort_Order__c'],
           statusC: json['Active_Status__c'],
           latitude: json['Contact_Office_Location__Latitude__s'],
-          longitude: json['Contact_Office_Location__Longitude__s']);
+          longitude: json['Contact_Office_Location__Longitude__s'],
+          darkModeIconC: json['Dark_Mode_Icon__c'] );
 
   Map<String, dynamic> toJson() => {
         'Title__c': titleC,
@@ -75,6 +79,7 @@ class SchoolDirectoryList {
         'Sort_Order__c': sortOrder,
         'Active_Status__c': statusC,
         'Contact_Office_Location__Latitude__s': latitude,
-        'Contact_Office_Location__Longitude__s': longitude
+        'Contact_Office_Location__Longitude__s': longitude,
+        'Dark_Mode_Icon__c':darkModeIconC
       };
 }

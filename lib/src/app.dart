@@ -24,13 +24,14 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   initState() {
     super.initState();
     // getTheme();
-    _onNotificationTap();
 
+    clearTheme();
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
-    if (brightness == Brightness.dark) {
+    if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
-    } else {
+    } else if (brightness == Brightness.light &&
+        Globals.disableDarkMode != true) {
       Globals.themeType = 'Light';
     }
     var window = WidgetsBinding.instance!.window;
@@ -39,10 +40,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       // This callback is called every time the brightness changes.
       var brightness = window.platformBrightness;
 
-      if (brightness == Brightness.dark) {
+      if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
         Globals.themeType = 'Dark';
       }
-      if (brightness == Brightness.light) {
+      if (brightness == Brightness.light && Globals.disableDarkMode != true) {
         Globals.themeType = 'Light';
       }
     };
@@ -69,10 +70,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         var brightness = SchedulerBinding.instance!.window.platformBrightness;
-        if (brightness == Brightness.dark) {
+        if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
           Globals.themeType = 'Dark';
         }
-        if (brightness == Brightness.light) {
+        if (brightness == Brightness.light && Globals.disableDarkMode != true) {
           Globals.themeType = 'Light';
         }
         // widget is resumed
@@ -93,7 +94,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     return AdaptiveTheme(
       light: AppTheme.lightTheme,
       dark: AppTheme.darkTheme,
-      initial: AdaptiveThemeMode.system,
+      initial: Globals.disableDarkMode == true
+          ? AdaptiveThemeMode.light
+          : AdaptiveThemeMode.system,
       builder: (theme, darkTheme) => MaterialApp(
         debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
@@ -106,14 +109,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     );
   }
 
-  _onNotificationTap() {
-    OneSignal.shared
-        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      this.setState(() {
-        Globals.isNewTap = true;
-      });
-    });
+  clearTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(AdaptiveTheme.prefKey);
+    // AdaptiveTheme.of(context).persist();
   }
-
-  
 }

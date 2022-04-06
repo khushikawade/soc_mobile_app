@@ -67,29 +67,30 @@ class _HomeInAppUrlLauncherState extends State<HomeInAppUrlLauncher> {
                         shrinkWrap: true,
                         children: [
                             Container(
-                              padding: EdgeInsets.only(bottom:30),
                               height: MediaQuery.of(context).size.height,
                               // width: MediaQuery.of(context).size.width,
                               child: Theme(
                                 data: ThemeData.light(),
                                 child: WebView(
-                                  
                                   gestureRecognizers: Set()
-                                    ..add(Factory<VerticalDragGestureRecognizer>(
-                                        () => VerticalDragGestureRecognizer()
-                                          ..onDown =
-                                              (DragDownDetails dragDownDetails) {
-                                            Globals.webViewController1!
-                                                .getScrollY()
-                                                .then((value) {
-                                              if (value == 0 &&
-                                                  dragDownDetails.globalPosition
-                                                          .direction <
-                                                      1) {
-                                                refreshPage();
-                                              }
-                                            });
-                                          })),
+                                    ..add(
+                                        Factory<VerticalDragGestureRecognizer>(
+                                            () =>
+                                                VerticalDragGestureRecognizer()
+                                                  ..onDown = (DragDownDetails
+                                                      dragDownDetails) {
+                                                    Globals.webViewController1!
+                                                        .getScrollY()
+                                                        .then((value) {
+                                                      if (value == 0 &&
+                                                          dragDownDetails
+                                                                  .globalPosition
+                                                                  .direction <
+                                                              1) {
+                                                        refreshPage();
+                                                      }
+                                                    });
+                                                  })),
                                   gestureNavigationEnabled:
                                       widget.isiFrame == true ? true : false,
                                   initialUrl: widget.isiFrame == true

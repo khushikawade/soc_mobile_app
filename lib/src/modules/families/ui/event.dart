@@ -544,6 +544,7 @@ class _EventPageState extends State<EventPage>
         ),
           for (var i in map) 
            CommonFeedWidget(
+             isSocial: false,
             actionIcon: Container(
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

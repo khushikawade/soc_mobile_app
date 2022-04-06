@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globals.dart';
 
@@ -47,12 +46,10 @@ class _StartupPageState extends State<StartupPage> {
     getindicatorValue();
     appversion();
     initPlatformState(context);
-
     _bloc.add(FetchStandardNavigationBar());
     _newsBloc.add(NewsCountLength());
     getindexvalue();
     _showcase();
-
     if (Platform.isAndroid) {
       Globals.isAndroid = true;
     } else if (Platform.isIOS) {
@@ -66,6 +63,11 @@ class _StartupPageState extends State<StartupPage> {
       this.setState(() {
         Globals.isNewTap = true;
       });
+    });
+    OneSignal.shared.setNotificationWillShowInForegroundHandler((event) {
+     setState(() {
+        Globals.indicator.value = true;
+     });
     });
   }
 
@@ -118,7 +120,7 @@ class _StartupPageState extends State<StartupPage> {
             ? Padding(
                 padding: const EdgeInsets.all(16),
                 child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl!,
+                  imageUrl: Globals.splashImageUrl! ,
                   fit: BoxFit.cover,
                   errorWidget: (context, url, error) => Icon(
                     Icons.error,
@@ -214,10 +216,10 @@ class _StartupPageState extends State<StartupPage> {
                 bloc: _newsBloc,
                 listener: (context, state) async {
                   if (state is NewsCountLenghtSuccess) {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    SharedPreferences intPrefs =
-                        await SharedPreferences.getInstance();
+                    // SharedPreferences prefs =
+                    //     await SharedPreferences.getInstance();
+                    // SharedPreferences intPrefs =
+                    //     await SharedPreferences.getInstance();
                     String? _objectName = "${Strings.newsObjectName}";
                     LocalDatabase<NotificationList> _localDb =
                         LocalDatabase(_objectName);
@@ -226,8 +228,8 @@ class _StartupPageState extends State<StartupPage> {
 
                     if (_localData.length < state.obj!.length &&
                         _localData.isNotEmpty) {
-                      intPrefs.setInt("totalCount", Globals.notiCount!);
-                      prefs.setBool("enableIndicator", true);
+                      // intPrefs.setInt("totalCount", Globals.notiCount!);
+                      // prefs.setBool("enableIndicator", true);
                       Globals.indicator.value = true;
                     }
                   }

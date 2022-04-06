@@ -1,4 +1,4 @@
-import 'attributes.dart';
+import '../../home/models/attributes.dart';
 import 'package:hive/hive.dart';
 part 'custom_setting.g.dart';
 
@@ -62,6 +62,8 @@ class CustomSetting {
   final calendarId;
   @HiveField(28)
   String? typeOfPageC;
+  @HiveField(29)
+  String? gridViewC;
 
   CustomSetting(
       {this.attributes,
@@ -92,7 +94,8 @@ class CustomSetting {
       this.pdfURL,
       this.rtfHTMLC,
       this.calendarId,
-      this.typeOfPageC});
+      this.typeOfPageC,
+      this.gridViewC});
 
   factory CustomSetting.fromJson(Map<String, dynamic> json) => CustomSetting(
         attributes: json['attributes'] == null
@@ -128,6 +131,7 @@ class CustomSetting {
         rtfHTMLC: json['RTF_HTML__c'] as String?,
         calendarId: json['Calendar_Id__c'] as String?,
         typeOfPageC: json['Type_of_page__c'] as String?,
+        gridViewC: json['Grid_View__c'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -159,7 +163,8 @@ class CustomSetting {
         'PDF_URL__c': pdfURL,
         'RTF_HTML__c': rtfHTMLC,
         'Calendar_Id__c': calendarId,
-        'Type_of_page__c': typeOfPageC
+        'Type_of_page__c': typeOfPageC,
+        'Grid_View__c': gridViewC
       };
 
   CustomSetting copyWith(
@@ -191,7 +196,8 @@ class CustomSetting {
       String? pdfURL,
       String? rtfHTMLC,
       String? calendarId,
-      String? typeOfPageC}) {
+      String? typeOfPageC,
+      String? gridViewC}) {
     return CustomSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,
@@ -221,6 +227,7 @@ class CustomSetting {
         pdfURL: pdfURL ?? this.pdfURL,
         rtfHTMLC: rtfHTMLC ?? this.rtfHTMLC,
         calendarId: calendarId ?? this.calendarId,
-        typeOfPageC: typeOfPageC ?? this.typeOfPageC);
+        typeOfPageC: typeOfPageC ?? this.typeOfPageC,
+        gridViewC: gridViewC ?? this.gridViewC);
   }
 }
