@@ -68,13 +68,14 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       contactImageC: fields[48] as String?,
       isTestSchool: fields[49] as dynamic,
       isCustomApp: fields[50] as bool?,
+      disableDarkMode: fields[51] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AppSetting obj) {
     writer
-      ..writeByte(51)
+      ..writeByte(52)
       ..writeByte(0)
       ..write(obj.attributes)
       ..writeByte(1)
@@ -176,7 +177,9 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       ..writeByte(49)
       ..write(obj.isTestSchool)
       ..writeByte(50)
-      ..write(obj.isCustomApp);
+      ..write(obj.isCustomApp)
+      ..writeByte(51)
+      ..write(obj.disableDarkMode);
   }
 
   @override

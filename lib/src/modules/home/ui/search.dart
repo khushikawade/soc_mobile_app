@@ -145,6 +145,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                   isCustom: false,
                     staffDirectoryCategoryId: null,
                     isAbout: true,
                     appBarTitle: obj.titleC!,
@@ -164,6 +165,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                isCustom: false,
                     staffDirectoryCategoryId: obj.id,
                     isAbout: true,
                     appBarTitle: obj.titleC!,

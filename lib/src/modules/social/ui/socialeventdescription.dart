@@ -174,8 +174,8 @@ class SocialDescription extends StatelessWidget {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    
-     await Future.delayed(Duration(seconds: 2));
+
+    await Future.delayed(Duration(seconds: 2));
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
@@ -260,8 +260,6 @@ class SocialDescription extends StatelessWidget {
           builder: (translatedMessage) =>
               // SelectableHTMLWidget // Html
               SelectableHtml(
-                
-                
             onLinkTap: (String? url, RenderContext context,
                 Map<String, String> attributes, dom.Element? element) {
               _launchURL(url, context);
@@ -277,7 +275,6 @@ class SocialDescription extends StatelessWidget {
                 fontSize: Globals.deviceType == "phone"
                     ? FontSize(13.0)
                     : FontSize(21.0),
-                    
               ),
             },
           ),
@@ -291,6 +288,8 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildnews(BuildContext context) {
+    print(
+        "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}");
     return Wrap(children: [
       Container(
         alignment: Alignment.centerLeft,
@@ -352,6 +351,7 @@ class SocialDescription extends StatelessWidget {
   _buildActionCount(BuildContext context) {
     return NewsActionBasic(
       page: "social",
+
       obj: object,
       title: object.title != "" && object.title != null
           ? object.title['__cdata']

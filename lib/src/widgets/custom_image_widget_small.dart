@@ -8,7 +8,9 @@ import 'package:invert_colors/invert_colors.dart';
 
 class CustomIconMode extends StatefulWidget {
   late final String? iconUrl;
-  CustomIconMode({Key? key, @required this.iconUrl}) : super(key: key);
+  final String? darkModeIconUrl;
+  CustomIconMode({Key? key, @required this.iconUrl, this.darkModeIconUrl})
+      : super(key: key);
 
   @override
   State<CustomIconMode> createState() => _CustomIconModeState();
@@ -20,7 +22,7 @@ class _CustomIconModeState extends State<CustomIconMode> {
     super.initState();
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
-    if (brightness == Brightness.dark) {
+    if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
     } else {
       Globals.themeType = 'Light';
@@ -32,16 +34,18 @@ class _CustomIconModeState extends State<CustomIconMode> {
     return Container(
       child: ClipRRect(
           child: Globals.themeType == 'Dark'
-              ? InvertColors(
-                  child: cachedNetworkImage(),
-                )
-              : cachedNetworkImage()),
+              ? (widget.darkModeIconUrl == null || widget.darkModeIconUrl == ''
+                  ? InvertColors(
+                      child: cachedNetworkImage(widget.iconUrl),
+                    )
+                  : cachedNetworkImage(widget.darkModeIconUrl))
+              : cachedNetworkImage(widget.iconUrl)),
     );
   }
 
-  Widget cachedNetworkImage() {
+  Widget cachedNetworkImage(url) {
     return CachedNetworkImage(
-        imageUrl: widget.iconUrl!,
+        imageUrl: url,
         height: Globals.deviceType == "phone"
             ? AppTheme.kIconSize
             : AppTheme.kTabIconSize,

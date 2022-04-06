@@ -11,13 +11,15 @@ class CommonImageWidget extends StatelessWidget {
   final double? width;
   final BoxFit? fitMethod;
   final bool? isOnTap;
+  final String? darkModeIconUrl;
   CommonImageWidget(
       {Key? key,
       @required this.iconUrl,
       this.height,
       this.width,
       this.fitMethod,
-      this.isOnTap})
+      this.isOnTap,
+      this.darkModeIconUrl})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -27,15 +29,23 @@ class CommonImageWidget extends StatelessWidget {
           showDialog(
               context: context,
               builder: (_) => ImagePopup(
-                  imageURL: iconUrl ??
-                      Globals.splashImageUrl ??
-                      Globals.appSetting.appLogoC));
+                   // Implemented Dark mode image 
+                  imageURL:Globals.themeType == 'Dark'? (darkModeIconUrl == null || darkModeIconUrl == ''? iconUrl ?? Globals.splashImageUrl ??
+                     Globals.appSetting.appLogoC :darkModeIconUrl!) : iconUrl ?? Globals.splashImageUrl ??
+                     Globals.appSetting.appLogoC ,
+                  //  iconUrl ??
+                  //     Globals.splashImageUrl ??
+                  //     Globals.appSetting.appLogoC 
+                      ) );
         }
       },
       child: ClipRRect(
         child: Container(
           child: CachedNetworkImage(
-              imageUrl: iconUrl!,
+            // Implemented Dark mode image that will work with dark mode 
+              imageUrl: Globals.themeType == 'Dark'? (darkModeIconUrl == null || darkModeIconUrl == ''? iconUrl ?? Globals.splashImageUrl ??
+                     Globals.appSetting.appLogoC :darkModeIconUrl!) : iconUrl ?? Globals.splashImageUrl ??
+                     Globals.appSetting.appLogoC ,
               fit: fitMethod ?? BoxFit.cover,
               height: height ??
                   (Globals.deviceType == "phone"

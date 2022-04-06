@@ -103,9 +103,11 @@ class AppSetting {
   @HiveField(48)
   final String? contactImageC;
   @HiveField(49)
-  final  isTestSchool;
+  final isTestSchool;
   @HiveField(50)
-  bool?  isCustomApp;
+  bool? isCustomApp;
+  @HiveField(51)
+  bool? disableDarkMode;
 
   AppSetting(
       {this.attributes,
@@ -158,7 +160,8 @@ class AppSetting {
       this.resourcesBannerColorC,
       this.contactImageC,
       this.isTestSchool,
-      this.isCustomApp});
+      this.isCustomApp,
+      this.disableDarkMode});
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
         attributes: json['attributes'] == null
@@ -228,9 +231,14 @@ class AppSetting {
         isTestSchool: json['Test_School__c'].toString().toLowerCase() == 'true'
             ? true
             : false as bool?,
-        isCustomApp: json['Needs_Custom_App__c'].toString().toLowerCase() == 'true'
-            ? true
-            : false as bool?,    
+        isCustomApp:
+            json['Needs_Custom_App__c'].toString().toLowerCase() == 'true'
+                ? true
+                : false as bool?,
+        disableDarkMode:
+            json['Disable_Dark_Mode__c'].toString().toLowerCase() == 'true'
+                ? true
+                : false as bool?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -284,7 +292,8 @@ class AppSetting {
         'Resources_Banner_Color__c': resourcesBannerColorC,
         'Contact_Image__c': contactImageC,
         'Test_School__c': isTestSchool,
-        'Needs_Custom_App__c':isCustomApp
+        'Needs_Custom_App__c': isCustomApp,
+        'Disable_Dark_Mode__c': disableDarkMode
       };
 
   AppSetting copyWith(
@@ -337,7 +346,8 @@ class AppSetting {
       String? resourcesBannerColorC,
       String? contactImageC,
       bool? isTestSchool,
-      bool? isCustomApp}) {
+      bool? isCustomApp,
+      bool? disableDarkMode}) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,
@@ -392,6 +402,7 @@ class AppSetting {
             resourcesBannerColorC ?? this.resourcesBannerColorC,
         contactImageC: contactImageC ?? this.contactImageC,
         isTestSchool: isTestSchool ?? this.isTestSchool,
-        isCustomApp:isCustomApp ?? this.isCustomApp);
+        isCustomApp: isCustomApp ?? this.isCustomApp,
+        disableDarkMode: disableDarkMode ?? this.disableDarkMode);
   }
 }

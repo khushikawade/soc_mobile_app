@@ -30,13 +30,14 @@ class SchoolDirectoryListAdapter extends TypeAdapter<SchoolDirectoryList> {
       statusC: fields[10] as dynamic,
       latitude: fields[11] as dynamic,
       longitude: fields[12] as dynamic,
+      darkModeIconC: fields[13] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, SchoolDirectoryList obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.titleC)
       ..writeByte(1)
@@ -62,7 +63,9 @@ class SchoolDirectoryListAdapter extends TypeAdapter<SchoolDirectoryList> {
       ..writeByte(11)
       ..write(obj.latitude)
       ..writeByte(12)
-      ..write(obj.longitude);
+      ..write(obj.longitude)
+      ..writeByte(13)
+      ..write(obj.darkModeIconC);
   }
 
   @override
