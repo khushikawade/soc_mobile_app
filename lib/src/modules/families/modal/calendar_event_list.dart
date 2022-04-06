@@ -37,7 +37,7 @@ class CalendarEventList {
   @HiveField(13)
   String? eventType;
   @HiveField(14)
-  String ?month;
+  String? month;
 
   CalendarEventList({
     this.kind,
