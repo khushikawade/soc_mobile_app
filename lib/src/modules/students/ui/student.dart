@@ -39,14 +39,20 @@ class _StudentPageState extends State<StudentPage> {
 
   @override
   void initState() {
+    //lock screen orientation
+   // Utility.setLocked();
     super.initState();
     _bloc.add(StudentPageEvent());
   }
 
   _launchURL(StudentApp obj, subList) async {
     if (obj.appUrlC != null) {
-      if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
-        showDialog(
+      //free screen orientation
+      // obj.appUrlC == 'app_folder' || obj.isFolder == 'true'
+      //     ? Utility.setLocked()
+      //     : Utility.setLocked();
+       if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
+         showDialog(
           // barrierColor: Color.fromARGB(96, 73, 73, 75),
           context: context,
           builder: (_) => AppsFolderPage(
@@ -59,7 +65,7 @@ class _StudentPageState extends State<StudentPage> {
           if (obj.toString().split(":")[0] == 'http') {
             await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
           } else {
-            Navigator.push(
+            await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext context) => InAppUrlLauncer(
@@ -75,9 +81,12 @@ class _StudentPageState extends State<StudentPage> {
           } catch (e) {}
         }
       }
+      //lock screen orientation
+    
     } else {
       Utility.showSnackBar(_scaffoldKey, "No URL available", context);
     }
+    //  Utility.setLocked();
   }
 
   Widget _buildGrid(

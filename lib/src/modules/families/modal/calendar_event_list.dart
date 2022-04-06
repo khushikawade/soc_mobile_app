@@ -1,7 +1,8 @@
+
 import 'package:hive/hive.dart';
 part 'calendar_event_list.g.dart';
 
-@HiveType(typeId: 13)
+@HiveType(typeId: 14)
 class CalendarEventList {
   @HiveField(0)
   String? kind;
@@ -35,6 +36,8 @@ class CalendarEventList {
   int? sequence;
   @HiveField(13)
   String? eventType;
+  @HiveField(14)
+  // String ?month;
 
   CalendarEventList({
     this.kind,
@@ -53,6 +56,7 @@ class CalendarEventList {
     this.iCalUid,
     this.sequence,
     this.eventType,
+    // this.month
   });
 
   factory CalendarEventList.fromJson(Map<String, dynamic> json) =>
@@ -83,6 +87,8 @@ class CalendarEventList {
         iCalUid: json['iCalUID'] as String?,
         sequence: json['sequence'] as int?,
         eventType: json['eventType'] as String?,
+        // month: "month"
+        
       );
 
   Map<String, dynamic> toJson() => {
@@ -106,5 +112,6 @@ class CalendarEventList {
         'iCalUID': iCalUid,
         'sequence': sequence,
         'eventType': eventType,
+        
       };
 }

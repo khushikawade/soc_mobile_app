@@ -256,9 +256,15 @@ class _EventPageState extends State<EventPage>
                   ),
                 ),
                 Container(
-                    height: Globals.deviceType == "phone"
+                    height: Globals.deviceType == "phone" &&
+                            MediaQuery.of(context).orientation ==
+                                Orientation.portrait
                         ? MediaQuery.of(context).size.height * 0.75
-                        : MediaQuery.of(context).size.height * 0.85,
+                        : Globals.deviceType == "phone" &&
+                                MediaQuery.of(context).orientation ==
+                                    Orientation.landscape
+                            ? MediaQuery.of(context).size.height * 0.65
+                            : MediaQuery.of(context).size.height * 0.85,
                     decoration: BoxDecoration(
                         border: Border(
                             top: BorderSide(color: Colors.grey, width: 0.5))),
@@ -270,9 +276,17 @@ class _EventPageState extends State<EventPage>
                               child: state.futureListobj!.length > 0
                                   ? new ListView.builder(
                                       scrollDirection: Axis.vertical,
-                                      padding: Platform.isAndroid
-                                          ? EdgeInsets.only(bottom: 20)
-                                          : EdgeInsets.only(bottom: 60),
+                                      padding: !Platform.isAndroid
+                                          ? EdgeInsets.only(
+                                              bottom: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.1)
+                                          : MediaQuery.of(context)
+                                                      .orientation !=
+                                                  Orientation.portrait
+                                              ? EdgeInsets.only(bottom: 120)
+                                              : EdgeInsets.only(bottom: 20),
                                       itemCount: state.futureListobj!.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
@@ -305,9 +319,17 @@ class _EventPageState extends State<EventPage>
                               child: state.pastListobj!.length > 0
                                   ? new ListView.builder(
                                       scrollDirection: Axis.vertical,
-                                      padding: Platform.isAndroid
-                                          ? EdgeInsets.only(bottom: 20)
-                                          : EdgeInsets.only(bottom: 60),
+                                      padding: !Platform.isAndroid
+                                          ? EdgeInsets.only(
+                                              bottom: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.1)
+                                          : MediaQuery.of(context)
+                                                      .orientation !=
+                                                  Orientation.portrait
+                                              ? EdgeInsets.only(bottom: 120)
+                                              : EdgeInsets.only(bottom: 20),
                                       itemCount: state.pastListobj!.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {

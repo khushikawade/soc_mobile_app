@@ -267,12 +267,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<ActionCountList>> fetchNewsActionCount() async {
     try {
-      final ResponseModel response = await
-          //  _dbServices.postapi(Uri.parse(
-          //         'dummyFunction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'
-          //         ));
-          _dbServices.getapi(Uri.parse(
-              'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'));
+      final ResponseModel response = await _dbServices.getapi(Uri.parse(
+          'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'));
 
       if (response.statusCode == 200) {
         var data = response.data["body"];
@@ -309,13 +305,11 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       // pref.setInt(Strings.bottomNavigation, 1);
       Globals.isNewTap = true;
       Globals.controller!.index = Globals.newsIndex ?? 0;
-      print(Globals.newsIndex);
-      print('---------------news index -----------------------');
-      print(await _hiveDbServices.getSingleData('newsIndex', 'newsIndex'));
       Globals.newsIndex =
           await _hiveDbServices.getSingleData('newsIndex', 'newsIndex');
       Globals.indicator.value = false;
       Globals.isNewTap = true;
+      print('---------------update notification--------------------');
     });
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);

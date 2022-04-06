@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -16,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
+import 'package:collection/collection.dart';
 part 'family_event.dart';
 part 'family_state.dart';
 
@@ -214,12 +216,17 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             return bdate.compareTo(
                 adate); //to get the order other way just switch `adate & bdate`
           });
+
+          // Map<String?, List<CalendarEventList>> futureListMap =
+          //     futureListobj.groupListsBy((element) => element.month);
+          // Map<String?, List<CalendarEventList>> pastListMap =
+          //     pastListobj.groupListsBy((element) => element.month);
           yield CalendarListSuccess(
               futureListobj: futureListobj, pastListobj: pastListobj);
         }
         List<CalendarEventList> list =
             await getCalendarEventList(event.calendarId);
-
+        print(list);
         await _localDb.clear();
         list.forEach((CalendarEventList e) {
           _localDb.addData(e);
@@ -271,6 +278,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
+        // Map<String?, List<CalendarEventList>> futureListMap =
+        //     futureListobj.groupListsBy((element) => element.month);
+        // Map<String?, List<CalendarEventList>> pastListMap =
+        //     pastListobj.groupListsBy((element) => element.month);
 
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
@@ -324,6 +335,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
+        // Map<String?, List<CalendarEventList>> futureListMap =
+        //     futureListobj.groupListsBy((element) => element.month);
+        // Map<String?, List<CalendarEventList>> pastListMap =
+        //     pastListobj.groupListsBy((element) => element.month);
 
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);

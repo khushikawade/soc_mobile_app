@@ -12,8 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:share/share.dart';
 
-class NewsActionBasic extends StatefulWidget {
-  NewsActionBasic({
+class UserActionBasic extends StatefulWidget {
+  UserActionBasic({
     Key? key,
     required this.obj,
     required this.title,
@@ -32,10 +32,10 @@ class NewsActionBasic extends StatefulWidget {
   final bool? isLoading;
   final String page;
   final Key? scaffoldKey;
-  _NewsActionBasicState createState() => _NewsActionBasicState();
+  _UserActionBasicState createState() => _UserActionBasicState();
 }
 
-class _NewsActionBasicState extends State<NewsActionBasic> {
+class _UserActionBasicState extends State<UserActionBasic> {
   NewsBloc _newsBloc = new NewsBloc();
   SocialBloc _socialbBloc = SocialBloc();
   final ValueNotifier<int> like = ValueNotifier<int>(0);
@@ -74,51 +74,49 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         padding: Globals.deviceType == "phone"
             ? null
             : EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.04),
-        child: Center(
-          child: Column(
-            children: [
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(
-                        height: Globals.deviceType == 'phone' ? 35 : 45,
-                        width: Globals.deviceType == 'phone' ? 35 : 45,
-                        child: Center(
-                          child: IconButton(
-                              padding: EdgeInsets.all(0),
-                              onPressed: () {},
-                              icon: iconListWidget(
-                                  context, index, false, widget.scaffoldKey)),
-                        )),
-                    widget.isLoading == true
-                        ? Container()
-                        : Container(
-                            child: _actionCount(index),
-                          )
-                  ],
-                ),
-              ),
-              Expanded(
-                  child: iconNameIndex == index
-                      ? Container(
-                          constraints: BoxConstraints(),
-                          child: TranslationWidget(
-                            message: Globals.iconsName[index],
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) => Text(
-                              translatedMessage,
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ),
-                        )
-                      : Container(
+        child: Column(
+          children: [
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                      height: Globals.deviceType == 'phone' ? 35 : 45,
+                      width: Globals.deviceType == 'phone' ? 35 : 45,
+                      child: IconButton(
                           padding: EdgeInsets.all(0),
-                        ))
-            ],
-          ),
+                          onPressed: () {},
+                          icon: iconListWidget(
+                              context, index, false, widget.scaffoldKey))),
+                  widget.isLoading == true
+                      ? Container()
+                      : Container(
+                        // padding: EdgeInsets.only(top:4),
+                          child: _actionCount(index),
+                        )
+                ],
+              ),
+            ),
+            Expanded(
+                child: iconNameIndex == index
+                    ? Container(
+                        constraints: BoxConstraints(),
+                        child: TranslationWidget(
+                          message: Globals.iconsName[index],
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) => Text(
+                            translatedMessage,
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        padding: EdgeInsets.all(0),
+                      ))
+          ],
         ),
       );
 
@@ -254,7 +252,6 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
           helpful: index == 2 ? 1 : 0,
           shared: index == 3 ? 1 : 0));
     } else if (widget.page == "social") {
-      print(widget.obj.guid['\$t']);
       _socialbBloc.add(SocialAction(
           id: widget.obj
               .guid['\$t'], //widget.obj.id.toString() + widget.obj.guid['\$t'],
@@ -329,8 +326,6 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   }
 
   Widget _actionCount(index) {
-    print(widget.obj.likeCount);
-    print(widget.obj.thanksCount);
     return ValueListenableBuilder(
       builder: (BuildContext context, dynamic value, Widget? child) {
         return Text(

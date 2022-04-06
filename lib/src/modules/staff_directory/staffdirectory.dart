@@ -56,6 +56,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   @override
   void initState() {
+    //Utility.setLocked();
     super.initState();
     if (widget.staffDirectoryCategoryId != null) {
       _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
@@ -68,9 +69,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   Widget listItem(list, obj, index) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         if (widget.isAbout == true) {
-          Navigator.push(
+           //lock screen orientation
+    // Utility.setLocked();
+        await  Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
@@ -83,6 +86,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )));
+                         //lock screen orientation
+  // Utility.setLocked();
         }
       },
       child: Container(

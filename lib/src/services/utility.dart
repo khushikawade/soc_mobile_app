@@ -7,6 +7,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -154,6 +155,23 @@ class Utility {
               .jumpTo(_scrollController.position.maxScrollExtent));
     }
   }
+
+// static void setLocked() async {
+//     await SystemChrome.setPreferredOrientations([
+//       DeviceOrientation.portraitUp,
+//       DeviceOrientation.portraitDown,
+//     ]);
+//   }
+
+// static void setFree() async {
+
+//     await SystemChrome.setPreferredOrientations([
+//       DeviceOrientation.landscapeRight,
+//       DeviceOrientation.landscapeLeft,
+//       DeviceOrientation.portraitUp,
+//       DeviceOrientation.portraitDown,
+//     ]);
+//   }
 
   static showBottomSheet(body, context) {
     return showModalBottomSheet(
@@ -360,4 +378,6 @@ class Utility {
       return 'No';
     }
   }
+
+ 
 }

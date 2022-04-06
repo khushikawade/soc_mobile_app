@@ -65,7 +65,7 @@ class _HomeInAppUrlLauncherState extends State<HomeInAppUrlLauncher> {
                 return connected
                     ? ListView(
                         physics: BouncingScrollPhysics(),
-                       shrinkWrap: true,
+                        shrinkWrap: true,
                         children: [
                             Container(
                                 height: MediaQuery.of(context).size.height,

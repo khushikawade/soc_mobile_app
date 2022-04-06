@@ -145,7 +145,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
-                   isCustom: false,
+                    isCustom: false,
                     staffDirectoryCategoryId: null,
                     isAbout: true,
                     appBarTitle: obj.titleC!,
@@ -165,7 +165,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
-                isCustom: false,
+                    isCustom: false,
                     staffDirectoryCategoryId: obj.id,
                     isAbout: true,
                     appBarTitle: obj.titleC!,
@@ -251,7 +251,9 @@ class _SearchPageState extends State<SearchPage> {
                                 ? "about"
                                 : obj.name.toString().contains("RES")
                                     ? "resources"
-                                    : "",
+                                    : obj.name.toString().contains("CAM")
+                                        ? "Custom"
+                                        : "",
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage,
@@ -367,7 +369,7 @@ class _SearchPageState extends State<SearchPage> {
                           snapshot.data.length < 10 ? snapshot.data.length : 10,
                       itemBuilder: (BuildContext context, int index) {
                         List reverseList = List.from(snapshot.data.reversed);
-                        // print(reverseList);
+
                         // return _buildRecentItem(index, snapshot.data);
                         return _buildRecentItem(index, reverseList);
                       },
@@ -507,7 +509,6 @@ class _SearchPageState extends State<SearchPage> {
 
                               if (idList.contains(data.id)) {
                               } else {
-                                // print(Recent);
                                 if (data != null) {
                                   deleteItem();
                                   final recentitem = Recent(

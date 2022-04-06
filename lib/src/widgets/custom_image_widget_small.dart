@@ -9,7 +9,8 @@ import 'package:invert_colors/invert_colors.dart';
 class CustomIconMode extends StatefulWidget {
   late final String? iconUrl;
   final String? darkModeIconUrl;
-  CustomIconMode({Key? key, @required this.iconUrl, this.darkModeIconUrl}) : super(key: key);
+  CustomIconMode({Key? key, @required this.iconUrl, this.darkModeIconUrl})
+      : super(key: key);
 
   @override
   State<CustomIconMode> createState() => _CustomIconModeState();
@@ -33,9 +34,11 @@ class _CustomIconModeState extends State<CustomIconMode> {
     return Container(
       child: ClipRRect(
           child: Globals.themeType == 'Dark'
-              ? (widget.darkModeIconUrl == null || widget.darkModeIconUrl == ''? InvertColors(
-                  child: cachedNetworkImage(widget.iconUrl),
-                ) :cachedNetworkImage(widget.darkModeIconUrl))  
+              ? (widget.darkModeIconUrl == null || widget.darkModeIconUrl == ''
+                  ? InvertColors(
+                      child: cachedNetworkImage(widget.iconUrl),
+                    )
+                  : cachedNetworkImage(widget.darkModeIconUrl))
               : cachedNetworkImage(widget.iconUrl)),
     );
   }

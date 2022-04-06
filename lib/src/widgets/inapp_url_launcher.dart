@@ -66,7 +66,8 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
               }
 
               return connected
-                  ? Padding(
+                  ? Container(
+                      color: Colors.transparent,
                       padding: const EdgeInsets.only(
                           bottom:
                               30.0), // To manage web page crop issue together with bottom nav bar.

@@ -16,6 +16,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:collection/collection.dart';
 part 'custom_event.dart';
 part 'custom_state.dart';
 
@@ -212,9 +214,13 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
             return bdate.compareTo(
                 adate); //to get the order other way just switch `adate & bdate`
           });
+          // Map<String?, List<CalendarEventList>> futureListMap =
+          //     futureListobj.groupListsBy((element) => element.month);
+          // Map<String?, List<CalendarEventList>> pastListMap =
+          //     pastListobj.groupListsBy((element) => element.month);
 
           yield CalendarListSuccess(
-              futureListobj: futureListobj, pastListobj: pastListobj);
+               futureListobj: futureListobj, pastListobj: pastListobj);
         }
 
         List<CalendarEventList> list =
@@ -270,6 +276,10 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
+        // Map<String?, List<CalendarEventList>> futureListMap =
+        //     futureListobj.groupListsBy((element) => element.month);
+        // Map<String?, List<CalendarEventList>> pastListMap =
+        //     pastListobj.groupListsBy((element) => element.month);
 
         yield CalendarListSuccess(
             futureListobj: futureListobj, pastListobj: pastListobj);
@@ -323,9 +333,12 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
-
+        // Map<String?, List<CalendarEventList>> futureListMap =
+        //     futureListobj.groupListsBy((element) => element.month);
+        // Map<String?, List<CalendarEventList>> pastListMap =
+        //     pastListobj.groupListsBy((element) => element.month);
         yield CalendarListSuccess(
-            futureListobj: futureListobj, pastListobj: pastListobj);
+             futureListobj: futureListobj, pastListobj: pastListobj);
       }
     }
   }
@@ -397,7 +410,16 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     }
   }
 
-  Future<List<CalendarEventList>> getCalendarEventList(id) async {
+  Map<String?, List<CalendarEventList>> groupCalendarEventByMonthMap(lisObj) {
+    Map<String?, List<CalendarEventList>> eventListMap =
+        lisObj.groupListsBy((element) => element.month);
+    return eventListMap;
+    // Map<String?, List<CalendarEventList>> pastListMap =
+    //     p
+    //astListobj.groupListsBy((element) => element.month);
+  }
+
+   Future<List<CalendarEventList>> getCalendarEventList(id) async {
     try {
       final response = await http.get(
         Uri.parse(
