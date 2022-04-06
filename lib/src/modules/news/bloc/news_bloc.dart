@@ -267,12 +267,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<ActionCountList>> fetchNewsActionCount() async {
     try {
-      final ResponseModel response = await 
-       _dbServices.postapi(Uri.parse(
-              'dummyFunction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'
-              ));
-      // _dbServices.getapi(Uri.parse(
-      //     'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'));
+      final ResponseModel response = await
+          //  _dbServices.postapi(Uri.parse(
+          //         'dummyFunction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'
+          //         ));
+          _dbServices.getapi(Uri.parse(
+              'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'));
 
       if (response.statusCode == 200) {
         var data = response.data["body"];
