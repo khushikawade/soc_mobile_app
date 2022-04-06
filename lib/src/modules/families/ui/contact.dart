@@ -246,9 +246,6 @@ class _ContactPageState extends State<ContactPage> {
             padding: const EdgeInsets.only(bottom: 4.0),
             child: InkWell(
               onTap: () {
-                print('-------------string------------');
-                print((Globals.appSetting.contactPhoneC ?? '')
-                    .replaceAll(new RegExp(r'[^\w\s]+'), ''));
                 if (Globals.appSetting.contactPhoneC != null) {
                   Utility.launchUrlOnExternalBrowser("tel:" +
                       (Globals.appSetting.contactPhoneC ?? '')

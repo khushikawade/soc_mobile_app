@@ -49,8 +49,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-   //lock screen orientation
-  //  Utility.setLocked();
+    //lock screen orientation
+    //  Utility.setLocked();
     bloc.add(FetchNotificationList());
     _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
@@ -89,8 +89,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-      //free screen orientation
-  //  Utility.setFree();
+    //free screen orientation
+    //  Utility.setFree();
     WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
@@ -105,8 +105,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             Utility.showSnackBar(
                 _scaffoldKey, "Please wait while count is loading", context);
           } else {
-              //free screen orientation
-             //  Utility.setFree();
+            //free screen orientation
+            //  Utility.setFree();
             bool result = await Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -123,8 +123,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           isbuttomsheet: true,
                           language: Globals.selectedLanguage,
                         )));
-                         //lock screen orientation
-                    //   Utility.setLocked();
+            //lock screen orientation
+            //   Utility.setLocked();
             if (result == true) {
               _countBloc.add(FetchActionCountList(isDetailPage: true));
             }
@@ -162,7 +162,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               isCountLoading = false;
               Container(
                 alignment: Alignment.centerLeft,
-                child: NewsActionBasic(
+                child: UserActionBasic(
                     title: state.obj[index].headings['en'],
                     description: state.obj[index].contents['en'],
                     imageUrl: state.obj[index].image,
@@ -186,7 +186,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   child: state.obj[index] ==
                           null // To make it backward compatible:: If the local database has something different than the real data that has been fetched by the API.
                       ? Container()
-                      : NewsActionBasic(
+                      : UserActionBasic(
                           title: state.obj[index].headings['en'],
                           description: state.obj[index].contents['en'],
                           imageUrl: state.obj[index].image,
@@ -199,7 +199,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   alignment: Alignment.centerLeft,
                   child: ShimmerLoading(
                       isLoading: true,
-                      child: NewsActionBasic(
+                      child: UserActionBasic(
                           title: Globals.notificationList[index].headings['en'],
                           description:
                               Globals.notificationList[index].contents['en'],
@@ -215,7 +215,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   alignment: Alignment.centerLeft,
                   child: ShimmerLoading(
                       isLoading: true,
-                      child: NewsActionBasic(
+                      child: UserActionBasic(
                           title: Globals.notificationList[index].headings['en'],
                           description:
                               Globals.notificationList[index].contents['en'],
@@ -316,9 +316,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
                           Globals.appSetting = AppSetting.fromJson(state.obj);
 
-                          setState(() {
-                            
-                          });
+                          setState(() {});
                         } else if (state is HomeErrorReceived) {
                           ErrorMsgWidget();
                         }

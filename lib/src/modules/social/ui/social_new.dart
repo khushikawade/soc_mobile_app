@@ -119,7 +119,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
   Widget actionButton(List<Item> list, obj, int index, bool reLoad) {
     // ignore: unnecessary_null_comparison
     return reLoad == false
-        ? NewsActionBasic(
+        ? UserActionBasic(
             page: "social",
             obj: list[index],
             isLoading: false,
@@ -142,7 +142,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
             alignment: Alignment.centerLeft,
             child: ShimmerLoading(
                 isLoading: true,
-                child: NewsActionBasic(
+                child: UserActionBasic(
                   title: list[index].title['__cdata'],
                   description: list[index].description['__cdata'],
                   imageUrl: list[index].enclosure,

@@ -339,7 +339,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         });
       },
       // selectedTabScreenContext: (index){
-      //   print("called =================");
       //   Utility.setLocked();
       // },
       items: _navBarsItems(),

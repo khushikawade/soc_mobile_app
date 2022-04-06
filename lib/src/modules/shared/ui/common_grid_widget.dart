@@ -58,8 +58,6 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                       language: Globals.selectedLanguage,
                     )));
         tapped = true;
-      } else {
-        print("tapped multiple times");
       }
     }
   }

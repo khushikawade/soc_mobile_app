@@ -52,18 +52,16 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                       language: Globals.selectedLanguage,
                     )));
         tapped = true;
-      } else {
-        print("tapped multiple times");
       }
     }
   }
 
   _navigate(SharedList obj, index) async {
-   //
-       // ? //free screen orientation
-      //  Utility.setFree()
-       // : //lock screen orientation
-      //  Utility.setLocked();
+    //
+    // ? //free screen orientation
+    //  Utility.setFree()
+    // : //lock screen orientation
+    //  Utility.setLocked();
     if (obj.typeC == "Contact") {
       await Navigator.push(
           context,
@@ -177,7 +175,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }
-   // Utility.setLocked();
+    // Utility.setLocked();
   }
 
   Widget _buildLeading(SharedList obj) {

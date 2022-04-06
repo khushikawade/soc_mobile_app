@@ -55,9 +55,9 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         }
 
         // Action count list
-        print("now calling count list");
+
         List<ActionCountList> listActioncount = await fetchSocialActionCount();
-        print("count data response done");
+
         List<Item> newList = [];
         newList.clear();
         if (listActioncount.length == 0) {
@@ -164,7 +164,6 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   Future getEventDetails() async {
     try {
       final link = Uri.parse("${Globals.appSetting.socialapiurlc}");
-      print(Globals.appSetting.socialapiurlc);
       Xml2Json xml2json = new Xml2Json();
       http.Response response = await http.get(link);
       if (response.statusCode == 200) {
@@ -199,7 +198,6 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       final ResponseModel response = await _dbServices.getapi(Uri.parse(
           'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
       if (response.statusCode == 200) {
-        print("200");
         var data = response.data["body"];
         final _allNotificationsAction = data;
         //  listActioncount.clear();
@@ -217,7 +215,6 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future addSocailAction(body) async {
     try {
-      print("body : " + body.toString());
       final ResponseModel response = await _dbServices.postapi(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
           body: body);

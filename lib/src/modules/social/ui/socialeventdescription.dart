@@ -288,8 +288,6 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildnews(BuildContext context) {
-    print(
-        "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}");
     return Wrap(children: [
       Container(
         alignment: Alignment.centerLeft,
@@ -349,7 +347,7 @@ class SocialDescription extends StatelessWidget {
   }
 
   _buildActionCount(BuildContext context) {
-    return NewsActionBasic(
+    return UserActionBasic(
       page: "social",
 
       obj: object,
