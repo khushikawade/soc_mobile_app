@@ -73,8 +73,8 @@ class SDDataSuccess extends CustomState {
 }
 
 class CalendarListSuccess extends CustomState {
-  final List<CalendarEventList>? pastListobj;
-  final List<CalendarEventList>? futureListobj;
+  final  Map<String?, List<CalendarEventList>>? pastListobj;
+  final Map<String?, List<CalendarEventList>>? futureListobj;
   CalendarListSuccess({this.pastListobj, this.futureListobj});
   CalendarListSuccess copyWith({
     final obj,

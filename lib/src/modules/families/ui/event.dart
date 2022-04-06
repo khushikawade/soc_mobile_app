@@ -58,6 +58,7 @@ class _EventPageState extends State<EventPage>
   void initState() {
     super.initState();
     _eventBloc.add(CalendarListEvent(widget.calendarId));
+    print("calling bloc===========");
   }
 
   // Widget _buildList(list, int index, mainObj) {
