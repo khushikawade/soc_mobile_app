@@ -496,13 +496,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           _screens.add(ResourcesPage(homeObj: Globals.customSetting![i]));
         }
       } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-        _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-      } else if (Globals.customSetting![i].typeOfSectionC == 'Custom Type') {
-        _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
-
-        if (Globals.customSetting![i].typeOfPageC == 'URL') {
-          Globals.urlIndex = _screens.length - 1;
-          Globals.homeUrl = Globals.customSetting![i].appUrlC;
+        if (Globals.customSetting![i].typeOfPageC == 'Menu') {
+          _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
+        } else {
+          _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
+          if (Globals.customSetting![i].typeOfPageC == 'URL') {
+            Globals.urlIndex = _screens.length - 1;
+            Globals.homeUrl = Globals.customSetting![i].appUrlC;
+          }
         }
       } else {
         _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));

@@ -32,6 +32,7 @@ class _HomeInAppUrlLauncherState extends State<HomeInAppUrlLauncher> {
       Completer<WebViewController>();
   HomeBloc _homeBloc = HomeBloc();
   String? checkUrlChange;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -67,14 +68,21 @@ class _HomeInAppUrlLauncherState extends State<HomeInAppUrlLauncher> {
                         shrinkWrap: true,
                         children: [
                             Container(
-                              height: MediaQuery.of(context).size.height,
-                              // width: MediaQuery.of(context).size.width,
-                              child: Theme(
-                                data: ThemeData.light(),
-                                child: WebView(
-                                  gestureRecognizers: Set()
-                                    ..add(
-                                        Factory<VerticalDragGestureRecognizer>(
+                                height: MediaQuery.of(context).size.height,
+                                // width: MediaQuery.of(context).size.width,
+                                child: Stack(
+                                  children: [
+                                    WebView(
+                                      onProgress: (progress) {
+                                        if (progress >= 50) {
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        }
+                                      },
+                                      gestureRecognizers: Set()
+                                        ..add(Factory<
+                                                VerticalDragGestureRecognizer>(
                                             () =>
                                                 VerticalDragGestureRecognizer()
                                                   ..onDown = (DragDownDetails
@@ -91,23 +99,35 @@ class _HomeInAppUrlLauncherState extends State<HomeInAppUrlLauncher> {
                                                       }
                                                     });
                                                   })),
-                                  gestureNavigationEnabled:
-                                      widget.isiFrame == true ? true : false,
-                                  initialUrl: widget.isiFrame == true
-                                      ? Uri.dataFromString(widget.url,
-                                              mimeType: 'text/html')
-                                          .toString()
-                                      : widget.url,
-                                  javascriptMode: JavascriptMode.unrestricted,
-                                  onWebViewCreated:
-                                      (WebViewController webViewController) {
-                                    _controller.complete(webViewController);
-                                    Globals.webViewController1 =
-                                        webViewController;
-                                  },
-                                ),
-                              ),
-                            ),
+                                      gestureNavigationEnabled:
+                                          widget.isiFrame == true
+                                              ? true
+                                              : false,
+                                      initialUrl: widget.isiFrame == true
+                                          ? Uri.dataFromString(widget.url,
+                                                  mimeType: 'text/html')
+                                              .toString()
+                                          : widget.url,
+                                      javascriptMode:
+                                          JavascriptMode.unrestricted,
+                                      onWebViewCreated: (WebViewController
+                                          webViewController) {
+                                        _controller.complete(webViewController);
+                                        Globals.webViewController1 =
+                                            webViewController;
+                                      },
+                                    ),
+                                    isLoading
+                                        ? Center(
+                                            child: CircularProgressIndicator(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                            ),
+                                          )
+                                        : Stack(),
+                                  ],
+                                )),
                             Container(
                               height: 0,
                               width: 0,
@@ -119,7 +139,7 @@ class _HomeInAppUrlLauncherState extends State<HomeInAppUrlLauncher> {
                                           Globals.appSetting, context);
                                       Globals.appSetting =
                                           AppSetting.fromJson(state.obj);
-                                      //setState(() {});
+                                      setState(() {});
                                     }
                                   },
                                   child: EmptyContainer()),
