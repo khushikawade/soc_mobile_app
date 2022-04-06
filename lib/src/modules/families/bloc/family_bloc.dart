@@ -217,14 +217,15 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
                 adate); //to get the order other way just switch `adate & bdate`
           });
 
-          // Map<String?, List<CalendarEventList>> futureListMap =
-          //     futureListobj.groupListsBy((element) => element.month);
-          // Map<String?, List<CalendarEventList>> pastListMap =
-          //     pastListobj.groupListsBy((element) => element.month);
+          Map<String?, List<CalendarEventList>> futureListMap =
+              futureListobj.groupListsBy((element) => element.month);
+          Map<String?, List<CalendarEventList>> pastListMap =
+              pastListobj.groupListsBy((element) => element.month);
 
           yield CalendarListSuccess(
-              futureListobj: groupCalendarEventByMonthMap(futureListobj),
-              pastListobj: groupCalendarEventByMonthMap(pastListobj));
+              futureListobj: futureListMap, pastListobj: pastListMap);
+          // futureListobj: groupCalendarEventByMonthMap(futureListobj),
+          // pastListobj: groupCalendarEventByMonthMap(pastListobj));
         }
         List<CalendarEventList> list =
             await getCalendarEventList(event.calendarId);
@@ -281,14 +282,15 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
               adate); //to get the order other way just switch `adate & bdate`
         });
 
-        // Map<String?, List<CalendarEventList>> futureListMap =
-        //     futureListobj.groupListsBy((element) => element.month);
-        // Map<String?, List<CalendarEventList>> pastListMap =
-        //     pastListobj.groupListsBy((element) => element.month);
+        Map<String?, List<CalendarEventList>> futureListMap =
+            futureListobj.groupListsBy((element) => element.month);
+        Map<String?, List<CalendarEventList>> pastListMap =
+            pastListobj.groupListsBy((element) => element.month);
 
         yield CalendarListSuccess(
-            futureListobj: groupCalendarEventByMonthMap(futureListobj),
-            pastListobj: groupCalendarEventByMonthMap(pastListobj));
+            futureListobj: futureListMap, pastListobj: pastListMap);
+        // futureListobj: groupCalendarEventByMonthMap(futureListobj),
+        // pastListobj: groupCalendarEventByMonthMap(pastListobj));
       } catch (e) {
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
@@ -340,9 +342,14 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
               adate); //to get the order other way just switch `adate & bdate`
         });
 
+        Map<String?, List<CalendarEventList>> futureListMap =
+            futureListobj.groupListsBy((element) => element.month);
+        Map<String?, List<CalendarEventList>> pastListMap =
+            pastListobj.groupListsBy((element) => element.month);
         yield CalendarListSuccess(
-            futureListobj: groupCalendarEventByMonthMap(futureListobj),
-            pastListobj: groupCalendarEventByMonthMap(pastListobj));
+            futureListobj: futureListMap, pastListobj: pastListMap);
+        // futureListobj: groupCalendarEventByMonthMap(futureListobj),
+        // pastListobj: groupCalendarEventByMonthMap(pastListobj));
       }
     }
   }
