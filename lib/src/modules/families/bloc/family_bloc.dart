@@ -221,6 +221,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
               futureListobj.groupListsBy((element) => element.month);
           Map<String?, List<CalendarEventList>> pastListMap =
               pastListobj.groupListsBy((element) => element.month);
+
           yield CalendarListSuccess(
               futureListobj: futureListMap, pastListobj: pastListMap);
         }
@@ -282,7 +283,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             futureListobj.groupListsBy((element) => element.month);
         Map<String?, List<CalendarEventList>> pastListMap =
             pastListobj.groupListsBy((element) => element.month);
-      
+      print(futureListMap);
+      print(pastListMap);
       
 
         yield CalendarListSuccess(
