@@ -18,10 +18,11 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'src/modules/families/modal/calendar_event_list.dart';
+import 'src/services/local_database/hive_db_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
- 
+
   if (!kIsWeb) {
     // Not running on the web!
     final appDocumentDirectory =
@@ -40,6 +41,7 @@ void main() async {
       ..registerAdapter(CalendarEventListAdapter())
       ..registerAdapter(CustomSettingAdapter());
   }
+ 
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -66,6 +68,14 @@ getDeviceType() async {
     final deviceType = await getDeviceInfo();
     Globals.deviceType = deviceType == "ipad" ? "tablet" : "phone";
   }
+}
+
+disableDarkMode() async {
+ HiveDbServices _hivedb = HiveDbServices();
+  Globals.disableDarkMode =
+      await _hivedb.getSingleData('disableDarkMode', 'darkMode');
+  // print('-------------------dark mode disable----------------------');
+  // print(Globals.disableDarkMode);
 }
 
 // This function will clean the only theme details from SharedPreferences

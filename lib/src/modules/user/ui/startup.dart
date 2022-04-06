@@ -120,7 +120,7 @@ class _StartupPageState extends State<StartupPage> {
             ? Padding(
                 padding: const EdgeInsets.all(16),
                 child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl!,
+                  imageUrl: Globals.splashImageUrl! ,
                   fit: BoxFit.cover,
                   errorWidget: (context, url, error) => Icon(
                     Icons.error,
