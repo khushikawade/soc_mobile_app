@@ -28,7 +28,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
   String url = "";
   static const double _kPadding = 16.0;
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
-  bool isLoading = true;
+
   WebViewController? _webViewController;
   bool? iserrorstate = false;
 
@@ -108,30 +108,15 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
           ],
         ),
         body: Container(
-          height: MediaQuery.of(context).size.height-50,
-          child: ListView(
-            shrinkWrap: true,
-            
-            children: [
-              WebView(
-initialCookies: [],
-
-                                backgroundColor: Theme.of(context).backgroundColor,
-                                onProgress: (progress) {
-                                  if (progress >= 50) {
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                  }
-                                },
-
-                javascriptMode: JavascriptMode.unrestricted,
-                onWebViewCreated: (controller) {
-                  _webViewController = controller;
-                },
-                initialUrl: widget.link,
-              ),
-            ],
+          color: Colors.transparent,
+          padding: const EdgeInsets.only(bottom: 25),
+          child: WebView(
+              backgroundColor: Theme.of(context).backgroundColor,
+            javascriptMode: JavascriptMode.unrestricted,
+            onWebViewCreated: (controller) {
+              _webViewController = controller;
+            },
+            initialUrl: widget.link,
           ),
         ));
   }

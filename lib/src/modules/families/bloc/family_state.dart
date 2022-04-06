@@ -73,8 +73,8 @@ class SDDataSucess extends FamilyState {
 }
 
 class CalendarListSuccess extends FamilyState {
-  final Map<String?, List<CalendarEventList>>?pastListobj;
-  final Map<String?, List<CalendarEventList>> ?futureListobj;
+  final List<CalendarEventList>? pastListobj;
+  final List<CalendarEventList>? futureListobj;
 
   CalendarListSuccess({this.pastListobj, this.futureListobj});
 

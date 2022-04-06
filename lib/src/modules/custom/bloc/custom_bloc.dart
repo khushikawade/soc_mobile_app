@@ -214,13 +214,13 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
             return bdate.compareTo(
                 adate); //to get the order other way just switch `adate & bdate`
           });
-            Map<String?, List<CalendarEventList>> futureListMap =
-            futureListobj.groupListsBy((element) => element.month);
-        Map<String?, List<CalendarEventList>> pastListMap =
-            pastListobj.groupListsBy((element) => element.month);
+          // Map<String?, List<CalendarEventList>> futureListMap =
+          //     futureListobj.groupListsBy((element) => element.month);
+          // Map<String?, List<CalendarEventList>> pastListMap =
+          //     pastListobj.groupListsBy((element) => element.month);
 
           yield CalendarListSuccess(
-              futureListobj: futureListMap, pastListobj: pastListMap);
+               futureListobj: futureListobj, pastListobj: pastListobj);
         }
 
         List<CalendarEventList> list =
@@ -276,13 +276,13 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
-          Map<String?, List<CalendarEventList>> futureListMap =
-            futureListobj.groupListsBy((element) => element.month);
-        Map<String?, List<CalendarEventList>> pastListMap =
-            pastListobj.groupListsBy((element) => element.month);
+        // Map<String?, List<CalendarEventList>> futureListMap =
+        //     futureListobj.groupListsBy((element) => element.month);
+        // Map<String?, List<CalendarEventList>> pastListMap =
+        //     pastListobj.groupListsBy((element) => element.month);
 
         yield CalendarListSuccess(
-            futureListobj: futureListMap, pastListobj: pastListMap);
+            futureListobj: futureListobj, pastListobj: pastListobj);
       } catch (e) {
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
@@ -333,12 +333,12 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
-  Map<String?, List<CalendarEventList>> futureListMap =
-            futureListobj.groupListsBy((element) => element.month);
-        Map<String?, List<CalendarEventList>> pastListMap =
-            pastListobj.groupListsBy((element) => element.month);
+        // Map<String?, List<CalendarEventList>> futureListMap =
+        //     futureListobj.groupListsBy((element) => element.month);
+        // Map<String?, List<CalendarEventList>> pastListMap =
+        //     pastListobj.groupListsBy((element) => element.month);
         yield CalendarListSuccess(
-            futureListobj: futureListMap, pastListobj: pastListMap);
+             futureListobj: futureListobj, pastListobj: pastListobj);
       }
     }
   }
@@ -410,8 +410,6 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     }
   }
 
-
-
   Map<String?, List<CalendarEventList>> groupCalendarEventByMonthMap(lisObj) {
     Map<String?, List<CalendarEventList>> eventListMap =
         lisObj.groupListsBy((element) => element.month);
@@ -421,8 +419,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     //astListobj.groupListsBy((element) => element.month);
   }
 
-
-  Future<List<CalendarEventList>> getCalendarEventList(id) async {
+   Future<List<CalendarEventList>> getCalendarEventList(id) async {
     try {
       final response = await http.get(
         Uri.parse(
@@ -431,31 +428,9 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         List dataArray = data["items"];
-      List data1=dataArray
+        return dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
-              return data1.map((i) {
-          var datetime = i.start.toString().contains('dateTime')
-              ? i.start['dateTime'].toString().substring(0, 10)
-              : i.start['date'].toString().substring(0, 10);
-          return CalendarEventList(
-              kind: i.kind,
-              etag: i.etag,
-              id: i.id,
-              status: i.status,
-              htmlLink: i.htmlLink,
-              created: i.created,
-              updated: i.updated,
-              summary: i.summary,
-              description: i.description,
-              start: i.start,
-              end: i.end,
-              iCalUid: i.iCalUid,
-              sequence: i.sequence,
-              eventType: i.eventType,
-              month: Utility.convertTimestampToDateFormat(
-                  DateTime.parse(datetime), 'MMMM'));
-        }).toList();
       } else {
         throw ('something_went_wrong');
       }
