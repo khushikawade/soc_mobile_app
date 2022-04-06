@@ -151,6 +151,7 @@ class _EventPageState extends State<EventPage>
                     )
                   ])),
               title: "",
+              isSocial: false,
               description: list.summary ?? '',
               titleIcon: Container(
                 padding: EdgeInsets.only(top: 4),

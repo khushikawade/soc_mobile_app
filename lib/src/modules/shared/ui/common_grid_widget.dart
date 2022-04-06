@@ -35,7 +35,7 @@ class CommonGridWidget extends StatefulWidget {
 class _CommonGridWidgetState extends State<CommonGridWidget> {
   bool? tapped = true;
   static const double _kLableSpacing = 12.0;
- 
+
   bool? isLoading = false;
   List<SharedList> subList = [];
 
@@ -85,7 +85,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
-                isCustom: widget.sectionName == 'Custom'? true : false,
+                    isCustom: widget.sectionName == 'Custom' ? true : false,
                     staffDirectoryCategoryId: null,
                     isAbout: true,
                     appBarTitle: obj.titleC!,
@@ -152,8 +152,6 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
           : Utility.showSnackBar(
               widget.scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
-   
-      
       return subListDialog(obj);
 
       // Navigator.push(
@@ -171,7 +169,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
-                isCustom: false,
+                    isCustom: false,
                     staffDirectoryCategoryId: obj.id,
                     appBarTitle: obj.titleC!,
                     obj: obj,
@@ -210,20 +208,17 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
   Widget _buildGrid(
       List<SharedList> list, List<SharedList> subList, String key) {
     return list.length > 0
-        ? ListView(
+        ? GridView.count(
             shrinkWrap: true,
-            children: [
-              GridView.count(
-                shrinkWrap: true,
-                key: ValueKey(key),
-                padding: const EdgeInsets.only(
-                    bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding),
-                childAspectRatio:
-                    MediaQuery.of(context).orientation == Orientation.portrait
-                        ? 1
-                        : 3 / 2,
-                crossAxisCount: MediaQuery.of(context).orientation ==
-                            Orientation.portrait &&
+            key: ValueKey(key),
+            padding: const EdgeInsets.only(
+                bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding),
+            childAspectRatio:
+                MediaQuery.of(context).orientation == Orientation.portrait
+                    ? 1
+                    : 3 / 2,
+            crossAxisCount:
+                MediaQuery.of(context).orientation == Orientation.portrait &&
                         Globals.deviceType == "phone"
                     ? 3
                     : (MediaQuery.of(context).orientation ==
@@ -239,42 +234,84 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                                     Globals.deviceType != "phone"
                                 ? 5
                                 : 3,
-                crossAxisSpacing: _kLableSpacing * 1.2,
-                mainAxisSpacing: _kLableSpacing * 1.2,
-                children: List.generate(
-                  list.length,
-                  (index) {
-                    return list[index].status == null ||
-                            list[index].status == 'Show'
-                        ? Container(
-                            padding: EdgeInsets.only(
-                              top: Globals.deviceType == "phone"
-                                  ? MediaQuery.of(context).size.height * 0.001
-                                  : MediaQuery.of(context).size.height * 0.01,
-                            ),
-                            child: GestureDetector(
-                                onTap: () => _navigate(list, list[index],
-                                    index), //_launchURL(list[index]),
-                                child: Column(
-                                  // mainAxisAlignment:MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    _buildLeading(list[index]),
-                                    Container(
-                                        child: TranslationWidget(
-                                      message: "${list[index].titleC}",
-                                      fromLanguage: "en",
-                                      toLanguage: Globals.selectedLanguage,
-                                      builder: (translatedMessage) => Container(
-                                        child: MediaQuery.of(context)
-                                                        .orientation ==
-                                                    Orientation.portrait &&
-                                                translatedMessage
-                                                        .toString()
-                                                        .length >
-                                                    11
-                                            ? Expanded(
-                                                child: Marquee(
+            crossAxisSpacing: _kLableSpacing * 1.2,
+            mainAxisSpacing: _kLableSpacing * 1.2,
+            children: List.generate(
+              list.length,
+              (index) {
+                return list[index].status == null ||
+                        list[index].status == 'Show'
+                    ? Container(
+                        padding: EdgeInsets.only(
+                          top: Globals.deviceType == "phone"
+                              ? MediaQuery.of(context).size.height * 0.001
+                              : MediaQuery.of(context).size.height * 0.01,
+                        ),
+                        child: GestureDetector(
+                            onTap: () => _navigate(list, list[index],
+                                index), //_launchURL(list[index]),
+                            child: Column(
+                              // mainAxisAlignment:MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                _buildLeading(list[index]),
+                                Container(
+                                  child: TranslationWidget(
+                                    message: "${list[index].titleC}",
+                                    fromLanguage: "en",
+                                    toLanguage: Globals.selectedLanguage,
+                                    builder: (translatedMessage) => Container(
+                                      child: MediaQuery.of(context)
+                                                      .orientation ==
+                                                  Orientation.portrait &&
+                                              translatedMessage
+                                                      .toString()
+                                                      .length >
+                                                  11
+                                          ? Expanded(
+                                              child: Marquee(
+                                                text: translatedMessage
+                                                    .toString(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1!
+                                                    .copyWith(
+                                                        fontSize:
+                                                            Globals.deviceType ==
+                                                                    "phone"
+                                                                ? 16
+                                                                : 24),
+                                                scrollAxis: Axis.horizontal,
+                                                velocity: 30.0,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                blankSpace: 50,
+                                                //MediaQuery.of(context).size.width
+                                                // velocity: 100.0,
+                                                pauseAfterRound:
+                                                    Duration(seconds: 5),
+                                                showFadingOnlyWhenScrolling:
+                                                    true,
+                                                startPadding: 10.0,
+                                                accelerationDuration:
+                                                    Duration(seconds: 1),
+                                                accelerationCurve:
+                                                    Curves.linear,
+                                                decelerationDuration:
+                                                    Duration(milliseconds: 500),
+                                                decelerationCurve:
+                                                    Curves.easeOut,
+                                              ),
+                                            )
+                                          : MediaQuery.of(context)
+                                                          .orientation ==
+                                                      Orientation.landscape &&
+                                                  translatedMessage
+                                                          .toString()
+                                                          .length >
+                                                      18
+                                              ? Expanded(
+                                                  child: Marquee(
                                                   text: translatedMessage
                                                       .toString(),
                                                   style: Theme.of(context)
@@ -290,8 +327,9 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                                                   velocity: 30.0,
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
-                                                  blankSpace: 50,
-                                                  //MediaQuery.of(context).size.width
+
+                                                  blankSpace:
+                                                      50, //MediaQuery.of(context).size.width
                                                   // velocity: 100.0,
                                                   pauseAfterRound:
                                                       Duration(seconds: 5),
@@ -307,19 +345,14 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                                                           milliseconds: 500),
                                                   decelerationCurve:
                                                       Curves.easeOut,
-                                                ),
-                                              )
-                                            : MediaQuery.of(context)
-                                                            .orientation ==
-                                                        Orientation.landscape &&
+                                                ))
+                                              : SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  child: Text(
                                                     translatedMessage
-                                                            .toString()
-                                                            .length >
-                                                        18
-                                                ? Expanded(
-                                                    child: Marquee(
-                                                    text: translatedMessage
                                                         .toString(),
+                                                    textAlign: TextAlign.center,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyText1!
@@ -329,59 +362,17 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                                                                         "phone"
                                                                     ? 16
                                                                     : 24),
-                                                    scrollAxis: Axis.horizontal,
-                                                    velocity: 30.0,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-
-                                                    blankSpace:
-                                                        50, //MediaQuery.of(context).size.width
-                                                    // velocity: 100.0,
-                                                    pauseAfterRound:
-                                                        Duration(seconds: 5),
-                                                    showFadingOnlyWhenScrolling:
-                                                        true,
-                                                    startPadding: 10.0,
-                                                    accelerationDuration:
-                                                        Duration(seconds: 1),
-                                                    accelerationCurve:
-                                                        Curves.linear,
-                                                    decelerationDuration:
-                                                        Duration(
-                                                            milliseconds: 500),
-                                                    decelerationCurve:
-                                                        Curves.easeOut,
-                                                  ))
-                                                : SingleChildScrollView(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    child: Text(
-                                                        translatedMessage
-                                                            .toString(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1!
-                                                            .copyWith(
-                                                                fontSize: Globals
-                                                                            .deviceType ==
-                                                                        "phone"
-                                                                    ? 16
-                                                                    : 24),),
                                                   ),
-                                      ),
-                                    ),),
-                                  ],
-                                )),
-                          )
-                        : Container();
-                  },
-                ),
-              ),
-              
-            ],
+                                                ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )),
+                      )
+                    : Container();
+              },
+            ),
           )
         : Center(
             child: TranslationWidget(
@@ -398,7 +389,9 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
   @override
   Widget build(BuildContext context) {
     return widget.data.length > 0
-        ? _buildGrid(widget.data, widget.data, "key")
+        ? Container(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: _buildGrid(widget.data, widget.data, "key"))
         : Container(
             child: NoDataFoundErrorWidget(
                 isResultNotFoundMsg: false,
@@ -408,14 +401,13 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
   }
 
   subListDialog(obj) {
-   
-      showDialog(
-          // barrierColor: Color.fromARGB(96, 73, 73, 75),
-          context: context,
-          builder: (_) => CommonGridFolder(
-                obj: obj,
-                sectionName: widget.sectionName,
-                // folderName: title,
-              ));
+    showDialog(
+        // barrierColor: Color.fromARGB(96, 73, 73, 75),
+        context: context,
+        builder: (_) => CommonGridFolder(
+              obj: obj,
+              sectionName: widget.sectionName,
+              // folderName: title,
+            ));
   }
 }

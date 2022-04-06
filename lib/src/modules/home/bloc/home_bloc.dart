@@ -25,7 +25,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
 import '../../custom/model/custom_setting.dart';
 part 'home_event.dart';
 part 'home_state.dart';
@@ -333,7 +332,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _studentBloc.add(StudentPageEvent());
         } else if (element.contains('social')) {
           SocialBloc _socialBloc = SocialBloc();
-          _socialBloc.add(SocialPageEvent());
+          _socialBloc.add(SocialPageEvent(action: 'initial'));
         } else if (element.contains('news')) {
           NewsBloc _newsBloc = NewsBloc();
           _newsBloc.add(FetchNotificationList());
@@ -365,7 +364,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       NewsBloc _newsBloc = NewsBloc();
       _newsBloc.add(FetchActionCountList(isDetailPage: false));
       SocialBloc _socialBloc = SocialBloc();
-      _socialBloc.add(FetchSocialActionCount(isDetailPage: false));
+      // _socialBloc.add(FetchSocialActionCount(isDetailPage: false));
+      _socialBloc.add(SocialPageEvent(action: 'initial'));
     } catch (e) {
       print(e);
     }
