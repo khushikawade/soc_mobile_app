@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -16,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
+import 'package:collection/collection.dart';
 part 'family_event.dart';
 part 'family_state.dart';
 
@@ -213,12 +215,17 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             return bdate.compareTo(
                 adate); //to get the order other way just switch `adate & bdate`
           });
+
+          Map<String?, List<CalendarEventList>> futureListMap =
+              futureListobj.groupListsBy((element) => element.month);
+          Map<String?, List<CalendarEventList>> pastListMap =
+              pastListobj.groupListsBy((element) => element.month);
           yield CalendarListSuccess(
-              futureListobj: futureListobj, pastListobj: pastListobj);
+              futureListobj: futureListMap, pastListobj: pastListMap);
         }
         List<CalendarEventList> list =
             await getCalendarEventList(event.calendarId);
-
+        print(list);
         await _localDb.clear();
         list.forEach((CalendarEventList e) {
           _localDb.addData(e);
@@ -270,9 +277,15 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
+        Map<String?, List<CalendarEventList>> futureListMap =
+            futureListobj.groupListsBy((element) => element.month);
+        Map<String?, List<CalendarEventList>> pastListMap =
+            pastListobj.groupListsBy((element) => element.month);
+        print(futureListMap);
+        print(pastListMap);
 
         yield CalendarListSuccess(
-            futureListobj: futureListobj, pastListobj: pastListobj);
+            futureListobj: futureListMap, pastListobj: pastListMap);
       } catch (e) {
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
@@ -323,9 +336,13 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
+        Map<String?, List<CalendarEventList>> futureListMap =
+            futureListobj.groupListsBy((element) => element.month);
+        Map<String?, List<CalendarEventList>> pastListMap =
+            pastListobj.groupListsBy((element) => element.month);
 
         yield CalendarListSuccess(
-            futureListobj: futureListobj, pastListobj: pastListobj);
+            futureListobj: futureListMap, pastListobj: pastListMap);
       }
     }
   }
@@ -407,9 +424,34 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         List dataArray = data["items"];
-        return dataArray
+        List data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
+        return data1.map((i) {
+          var datetime = i.start.toString().contains('dateTime')
+              ? i.start['dateTime'].toString().substring(0, 10)
+              : i.start['date'].toString().substring(0, 10);
+          String month = Utility.convertTimestampToDateFormat(
+              DateTime.parse(datetime), 'MMMM');
+          print("=============");
+          print(month);
+          return CalendarEventList(
+              kind: i.kind,
+              etag: i.etag,
+              id: i.id,
+              status: i.status,
+              htmlLink: i.htmlLink,
+              created: i.created,
+              updated: i.updated,
+              summary: i.summary,
+              description: i.description,
+              start: i.start,
+              end: i.end,
+              iCalUid: i.iCalUid,
+              sequence: i.sequence,
+              eventType: i.eventType,
+              month: month);
+        }).toList();
       } else {
         throw ('something_went_wrong');
       }
