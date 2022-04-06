@@ -125,6 +125,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           }
         },
         child: CommonFeedWidget(
+          isSocial: false,
           actionIcon: Container(child: actionButton(list, obj, index)),
           title: obj.headings!.length > 0 &&
                   obj.headings != "" &&

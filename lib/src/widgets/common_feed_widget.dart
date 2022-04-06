@@ -13,8 +13,10 @@ class CommonFeedWidget extends StatefulWidget {
   final Widget actionIcon;
   final String url;
   final Widget titleIcon;
+  final bool isSocial;
   CommonFeedWidget(
       {Key? key,
+      required this.isSocial,
       required this.title,
       required this.description,
       required this.actionIcon,
@@ -145,13 +147,23 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
             fromLanguage: "en",
             toLanguage: Globals.selectedLanguage,
             builder: (translatedMessage) {
-              return Text(
-                translatedMessage.toString(),
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(fontSize: 16),
-              );
+              return Linkify(
+                  onOpen: (link) => _launchURL(link.url),
+                  options: LinkifyOptions(humanize: false),
+                  linkStyle: TextStyle(color: Colors.blue),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontSize: 16),
+                  text: translatedMessage.toString());
+
+              // Text(
+              //   translatedMessage.toString(),
+              //   style: Theme.of(context)
+              //       .textTheme
+              //       .headline2!
+              //       .copyWith(fontSize: 16),
+              // );
             },
           );
   }
@@ -169,7 +181,11 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
       await Utility.launchUrlOnExternalBrowser(obj);
     } else if (obj.toString().contains('mailto')) {
       Utility.launchUrlOnExternalBrowser(obj);
-    } else {
+    } 
+    // else if (widget.isSocial == true) {
+    //   Utility.launchUrlOnExternalBrowser(obj);
+    // } 
+    else {
       Navigator.push(
           context,
           MaterialPageRoute(
