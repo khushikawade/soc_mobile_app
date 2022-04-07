@@ -451,10 +451,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         List dataArray = data["items"];
-        List data1 = dataArray
+        List data1= dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
-        print(data1);
+       // print(data1);
         return data1.map((i) {
           var datetime = i.start.toString().contains('dateTime')
               ? i.start['dateTime'].toString().substring(0, 10)

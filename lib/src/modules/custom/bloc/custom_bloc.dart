@@ -412,14 +412,14 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
 
 
 
-  Map<String?, List<CalendarEventList>> groupCalendarEventByMonthMap(lisObj) {
-    Map<String?, List<CalendarEventList>> eventListMap =
-        lisObj.groupListsBy((element) => element.month);
-    return eventListMap;
-    // Map<String?, List<CalendarEventList>> pastListMap =
-    //     p
-    //astListobj.groupListsBy((element) => element.month);
-  }
+  // Map<String?, List<CalendarEventList>> groupCalendarEventByMonthMap(lisObj) {
+  //   Map<String?, List<CalendarEventList>> eventListMap =
+  //       lisObj.groupListsBy((element) => element.month);
+  //   return eventListMap;
+  //   // Map<String?, List<CalendarEventList>> pastListMap =
+  //   //     p
+  //   //astListobj.groupListsBy((element) => element.month);
+  // }
 
 
   Future<List<CalendarEventList>> getCalendarEventList(id) async {
