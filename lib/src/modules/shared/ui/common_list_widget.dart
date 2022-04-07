@@ -57,11 +57,6 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   }
 
   _navigate(SharedList obj, index) async {
-    //
-    // ? //free screen orientation
-    //  Utility.setFree()
-    // : //lock screen orientation
-    //  Utility.setLocked();
     if (obj.typeC == "Contact") {
       await Navigator.push(
           context,

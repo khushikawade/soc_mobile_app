@@ -82,6 +82,7 @@ dependencies:
   back_button_interceptor: ^5.0.2
   auto_orientation: ^2.2.1
   #flutter_cached_pdfview: ^0.4.1
+  pdf_render: ^1.0.23
   
 
 dev_dependencies:
