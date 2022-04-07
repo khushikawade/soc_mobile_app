@@ -37,7 +37,7 @@ class CalendarEventList {
   @HiveField(13)
   String? eventType;
   @HiveField(14)
-  // String ?month;
+  String? month;
 
   CalendarEventList({
     this.kind,
@@ -56,7 +56,7 @@ class CalendarEventList {
     this.iCalUid,
     this.sequence,
     this.eventType,
-    // this.month
+     this.month
   });
 
   factory CalendarEventList.fromJson(Map<String, dynamic> json) =>
@@ -87,7 +87,7 @@ class CalendarEventList {
         iCalUid: json['iCalUID'] as String?,
         sequence: json['sequence'] as int?,
         eventType: json['eventType'] as String?,
-        // month: "month"
+         month: "month"
         
       );
 
