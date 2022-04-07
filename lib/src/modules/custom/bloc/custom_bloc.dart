@@ -160,6 +160,9 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     }
 
     if (event is CalendarListEvent) {
+      List<CalendarEventList>? futureListobj = [];
+      List<CalendarEventList>? pastListobj = [];
+
       try {
         yield CustomLoading();
         String? _objectName =
@@ -170,8 +173,8 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         if (_localData.isEmpty) {
           yield CustomLoading();
         } else {
-          List<CalendarEventList>? futureListobj = [];
-          List<CalendarEventList>? pastListobj = [];
+          futureListobj.clear();
+          pastListobj.clear();
 
           DateTime now = new DateTime.now();
           final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -214,13 +217,10 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
             return bdate.compareTo(
                 adate); //to get the order other way just switch `adate & bdate`
           });
-            Map<String?, List<CalendarEventList>> futureListMap =
-            futureListobj.groupListsBy((element) => element.month);
-        Map<String?, List<CalendarEventList>> pastListMap =
-            pastListobj.groupListsBy((element) => element.month);
 
           yield CalendarListSuccess(
-              futureListobj: futureListMap, pastListobj: pastListMap);
+              futureListobj: mapListObj(futureListobj),
+              pastListobj: mapListObj(pastListobj));
         }
 
         List<CalendarEventList> list =
@@ -231,10 +231,8 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           _localDb.addData(e);
         });
 
-        // List<CalendarEventList>? _localData1 = await _localDb.getData();
-        // print(_localData1);
-        List<CalendarEventList>? futureListobj = [];
-        List<CalendarEventList>? pastListobj = [];
+        futureListobj.clear();
+        pastListobj.clear();
 
         DateTime now = new DateTime.now();
         final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -276,22 +274,19 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
-          Map<String?, List<CalendarEventList>> futureListMap =
-            futureListobj.groupListsBy((element) => element.month);
-        Map<String?, List<CalendarEventList>> pastListMap =
-            pastListobj.groupListsBy((element) => element.month);
 
         yield CalendarListSuccess(
-            futureListobj: futureListMap, pastListobj: pastListMap);
+            futureListobj: mapListObj(futureListobj),
+            pastListobj: mapListObj(pastListobj));
       } catch (e) {
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
 
         List<CalendarEventList>? _localData = await _localDb.getData();
-        List<CalendarEventList>? futureListobj = [];
-        List<CalendarEventList>? pastListobj = [];
 
+        futureListobj.clear();
+        pastListobj.clear();
         DateTime now = new DateTime.now();
         final DateFormat formatter = DateFormat('yyyy-MM-dd');
         final DateTime currentDate =
@@ -333,14 +328,18 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
-  Map<String?, List<CalendarEventList>> futureListMap =
-            futureListobj.groupListsBy((element) => element.month);
-        Map<String?, List<CalendarEventList>> pastListMap =
-            pastListobj.groupListsBy((element) => element.month);
+
         yield CalendarListSuccess(
-            futureListobj: futureListMap, pastListobj: pastListMap);
+            futureListobj: mapListObj(futureListobj),
+            pastListobj: mapListObj(pastListobj));
       }
     }
+  }
+
+  mapListObj(List<CalendarEventList> listObj) {
+    Map<String?, List<CalendarEventList>> mappingList =
+        listObj.groupListsBy((element) => element.month);
+    return mappingList;
   }
 
   getCalendarId(list) {
@@ -410,18 +409,6 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     }
   }
 
-
-
-  // Map<String?, List<CalendarEventList>> groupCalendarEventByMonthMap(lisObj) {
-  //   Map<String?, List<CalendarEventList>> eventListMap =
-  //       lisObj.groupListsBy((element) => element.month);
-  //   return eventListMap;
-  //   // Map<String?, List<CalendarEventList>> pastListMap =
-  //   //     p
-  //   //astListobj.groupListsBy((element) => element.month);
-  // }
-
-
   Future<List<CalendarEventList>> getCalendarEventList(id) async {
     try {
       final response = await http.get(
@@ -431,10 +418,10 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         List dataArray = data["items"];
-      List data1=dataArray
+        List data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
-              return data1.map((i) {
+        return data1.map((i) {
           var datetime = i.start.toString().contains('dateTime')
               ? i.start['dateTime'].toString().substring(0, 10)
               : i.start['date'].toString().substring(0, 10);

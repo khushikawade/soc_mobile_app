@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-import 'package:collection/collection.dart';
 
 class EventPage extends StatefulWidget {
   final bool? isAppBar;
@@ -49,8 +48,6 @@ class _EventPageState extends State<EventPage>
   bool? iserrorstate = false;
   String? lastMonth;
 
- 
-
   @override
   bool get wantKeepAlive => true;
 
@@ -58,7 +55,6 @@ class _EventPageState extends State<EventPage>
   void initState() {
     super.initState();
     _eventBloc.add(CalendarListEvent(widget.calendarId));
-    print("calling bloc===========");
   }
 
   // Widget _buildList(list, int index, mainObj) {
@@ -206,155 +202,151 @@ class _EventPageState extends State<EventPage>
   //   }
   // }
 
-  Widget _buildTabs(state, bool? currentOrientation,) {
+  Widget _buildTabs(
+    state,
+    bool? currentOrientation,
+  ) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
         Widget>[
       DefaultTabController(
           length: 2,
           initialIndex: 0,
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  child: TabBar(
-                    indicatorSize: TabBarIndicatorSize.label,
-                    labelColor: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant, //should be : Theme.of(context).colorScheme.primary,
-                    indicatorColor: Theme.of(context).colorScheme.primary,
-                    unselectedLabelColor: Globals.themeType == "Dark"
-                        ? Colors.grey
-                        : Colors.black,
-                    unselectedLabelStyle: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.normal,
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                    ),
-                    tabs: [
-                      TranslationWidget(
-                        message: "Upcoming",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Tab(
-                          text: translatedMessage.toString(),
-                        ),
-                      ),
-                      TranslationWidget(
-                        message: "Past",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Tab(
-                          text: translatedMessage.toString(),
-                        ),
-                      ),
-                    ],
-                  ),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
+                  Widget>[
+            Container(
+              child: TabBar(
+                indicatorSize: TabBarIndicatorSize.label,
+                labelColor: Theme.of(context)
+                    .colorScheme
+                    .primaryVariant, //should be : Theme.of(context).colorScheme.primary,
+                indicatorColor: Theme.of(context).colorScheme.primary,
+                unselectedLabelColor:
+                    Globals.themeType == "Dark" ? Colors.grey : Colors.black,
+                unselectedLabelStyle: TextStyle(
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.normal,
+                  color: Theme.of(context).colorScheme.primaryVariant,
                 ),
-                Container(
-                    height: Globals.deviceType == "phone"
-                        ? MediaQuery.of(context).size.height * 0.75
-                        : MediaQuery.of(context).size.height * 0.85,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(color: Colors.grey, width: 0.5))),
-                    child: TabBarView(children: <Widget>[
-                      state.futureListobj!.length  >0
-                          ? Tab(
-                              child: new RefreshIndicator(
-                              key: refreshKey,
-                              child: state.futureListobj!.length > 0 && state.futureListobj!=null
-                                  ?
-                                  new ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      padding: !Platform.isAndroid
-                                          ? EdgeInsets.only(bottom: 60)
-                                          : MediaQuery.of(context)
-                                                      .orientation !=
-                                                  Orientation.portrait
-                                              ? EdgeInsets.only(bottom: 120)
-                                              : EdgeInsets.only(bottom: 20),
-                                      itemCount: state.futureListobj.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        String key =
-                                            state.futureListobj.keys.elementAt(index);
-                                        return _buildListNew(
-                                            key,  state.futureListobj[key]);
+                labelStyle: TextStyle(
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.primaryVariant,
+                ),
+                tabs: [
+                  TranslationWidget(
+                    message: "Upcoming",
+                    toLanguage: Globals.selectedLanguage,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Tab(
+                      text: translatedMessage.toString(),
+                    ),
+                  ),
+                  TranslationWidget(
+                    message: "Past",
+                    toLanguage: Globals.selectedLanguage,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Tab(
+                      text: translatedMessage.toString(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+                height: Globals.deviceType == "phone"
+                    ? MediaQuery.of(context).size.height * 0.75
+                    : MediaQuery.of(context).size.height * 0.85,
+                decoration: BoxDecoration(
+                    border: Border(
+                        top: BorderSide(color: Colors.grey, width: 0.5))),
+                child: TabBarView(children: <Widget>[
+                  state.futureListobj!.length > 0
+                      ? Tab(
+                          child: new RefreshIndicator(
+                          key: refreshKey,
+                          child: state.futureListobj!.length > 0 &&
+                                  state.futureListobj != null
+                              ? new ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  padding: !Platform.isAndroid
+                                      ? EdgeInsets.only(bottom: 60)
+                                      : MediaQuery.of(context).orientation !=
+                                              Orientation.portrait
+                                          ? EdgeInsets.only(bottom: 120)
+                                          : EdgeInsets.only(bottom: 20),
+                                  itemCount: state.futureListobj.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    String key = state.futureListobj.keys
+                                        .elementAt(index);
+                                    return _buildListNew(
+                                        key, state.futureListobj[key]);
 
-                                        //  _buildList(
-                                        //     state.futureListobj![index],
-                                        //     index,
-                                        //     state.futureListobj);
-                                      })
-                                  : NoDataFoundErrorWidget(
-                                      isResultNotFoundMsg: false,
-                                      isNews: false,
-                                      isEvents: true,
-                                    ),
-                              onRefresh: refreshPage,
-                            ))
-                          : new RefreshIndicator(
-                              key: refreshKey,
-                              onRefresh: refreshPage,
-                              child: NoDataFoundErrorWidget(
-                                isCalendarPageOrientationLandscape:
-                                    currentOrientation,
-                                isResultNotFoundMsg: false,
-                                isNews: false,
-                                isEvents: true,
-                              )),
-                      state.pastListobj!.length > 0
-                          ? Tab(
-                              child: new RefreshIndicator(
-                              key: refreshKey1,
-                              child: state.pastListobj!.length > 0 && state.futureListobj!=null
-                                  ? new ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      padding: !Platform.isAndroid
-                                          ? EdgeInsets.only(bottom: 60)
-                                          : MediaQuery.of(context)
-                                                      .orientation !=
-                                                  Orientation.portrait
-                                              ? EdgeInsets.only(bottom: 120)
-                                              : EdgeInsets.only(bottom: 20),
-                                      itemCount: state.pastListobj!.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                             String key =
-                                          state.pastListobj.keys.elementAt(index);
-                                        return _buildListNew(
-                                            key,   state.pastListobj[key]);
-                                        
-                                        //  _buildList(
-                                        //     state.pastListobj![index],
-                                        //     index,
-                                        //     state.pastListobj);
-                                      })
-                                  : NoDataFoundErrorWidget(
-                                      isResultNotFoundMsg: false,
-                                      isNews: false,
-                                      isEvents: true,
-                                    ),
-                              onRefresh: refreshPage,
-                            ))
-                          : new RefreshIndicator(
-                              key: refreshKey1,
-                              onRefresh: refreshPage,
-                              child: NoDataFoundErrorWidget(
-                                isCalendarPageOrientationLandscape:
-                                    currentOrientation,
-                                isResultNotFoundMsg: false,
-                                isNews: false,
-                                isEvents: true,
-                              ),
-                            ),
-                    ])),
-              ]))
+                                    //  _buildList(
+                                    //     state.futureListobj![index],
+                                    //     index,
+                                    //     state.futureListobj);
+                                  })
+                              : NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: true,
+                                ),
+                          onRefresh: refreshPage,
+                        ))
+                      : new RefreshIndicator(
+                          key: refreshKey,
+                          onRefresh: refreshPage,
+                          child: NoDataFoundErrorWidget(
+                            isCalendarPageOrientationLandscape:
+                                currentOrientation,
+                            isResultNotFoundMsg: false,
+                            isNews: false,
+                            isEvents: true,
+                          )),
+                  state.pastListobj!.length > 0
+                      ? Tab(
+                          child: new RefreshIndicator(
+                          key: refreshKey1,
+                          child: state.pastListobj!.length > 0 &&
+                                  state.pastListobj != null
+                              ? new ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  padding: !Platform.isAndroid
+                                      ? EdgeInsets.only(bottom: 60)
+                                      : MediaQuery.of(context).orientation !=
+                                              Orientation.portrait
+                                          ? EdgeInsets.only(bottom: 120)
+                                          : EdgeInsets.only(bottom: 20),
+                                  itemCount: state.pastListobj!.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    String key =
+                                        state.pastListobj.keys.elementAt(index);
+                                    return _buildListNew(
+                                        key, state.pastListobj[key]);
+                                  })
+                              : NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: true,
+                                ),
+                          onRefresh: refreshPage,
+                        ))
+                      : new RefreshIndicator(
+                          key: refreshKey1,
+                          onRefresh: refreshPage,
+                          child: NoDataFoundErrorWidget(
+                            isCalendarPageOrientationLandscape:
+                                currentOrientation,
+                            isResultNotFoundMsg: false,
+                            isNews: false,
+                            isEvents: true,
+                          ),
+                        ),
+                ])),
+          ]))
     ]);
   }
 
@@ -413,7 +405,7 @@ class _EventPageState extends State<EventPage>
                                       .primaryVariant,
                                 ));
                           } else if (state is CalendarListSuccess) {
-                         print(state.futureListobj!);
+                            print(state.futureListobj!);
 
                             // state.futureListobj!.forEach((i) {
                             //   DateTime _dateTime = getDate(
@@ -446,10 +438,10 @@ class _EventPageState extends State<EventPage>
                             //       month: month));
                             // });
 
-                       
-
                             return _buildTabs(
-                                state, currentOrientation,);
+                              state,
+                              currentOrientation,
+                            );
                           } else if (state is ErrorLoading) {
                             return ErrorMsgWidget();
                           }
@@ -516,137 +508,140 @@ class _EventPageState extends State<EventPage>
     return Container(
       child: Column(
         children: [
-        Column(
-          children: [
-            Container(
-              color: Theme.of(context).colorScheme.secondary,
-              height: 6,
-            ),
-            Container(
-              color: Theme.of(context).colorScheme.secondary,
-              child: Center(
-                  child: Container(
-                padding:
-                    EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 2),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                  color: Theme.of(context).colorScheme.background,
-                ),
-                child: Text(
-                  key,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(color: Colors.red),
-                ),
-              )),
-            ),
-          ],
-        ),
-          for (var i in map) 
-           CommonFeedWidget(
-             isSocial: false,
-            actionIcon: Container(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  TranslationWidget(
-                    message: Utility.convertDateFormat2(i.start
-                                .toString()
-                                .contains('dateTime')
-                            ? i.start['dateTime'].toString().substring(0, 10)
-                            : i.start['date'].toString().substring(0, 10)) +
-                        " - " +
-                        Utility.convertDateFormat2(i.end
-                                .toString()
-                                .contains('dateTime')
-                            ? i.end['dateTime'].toString().substring(0, 10)
-                            : i.end['date'].toString().substring(0, 10)),
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(fontWeight: FontWeight.normal, height: 1.5),
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    height: MediaQuery.of(context).orientation ==
-                            Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.07
-                        : MediaQuery.of(context).size.width * 0.07,
-                    padding: Globals.deviceType == "phone"
-                        ? null
-                        : EdgeInsets.only(
-                            right: MediaQuery.of(context).size.width * 0.04),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Container(
-                            padding: EdgeInsets.only(top: 6),
-                            height: Globals.deviceType == 'phone' ? 35 : 45,
-                            width: Globals.deviceType == 'phone' ? 35 : 45,
-                            child: Center(
-                              child: IconButton(
-                                  padding: EdgeInsets.all(0),
-                                  // constraints: BoxConstraints(),
-                                  onPressed: () {
-                                    Add2Calendar.addEvent2Cal(
-                                      buildEvent(i),
-                                    );
-                                  },
-                                  icon: Icon(IconData(0xe850,
-                                      fontFamily: Overrides.kFontFam,
-                                      fontPackage: Overrides.kFontPkg))),
-                            )),
-                        Container(
-                            height: Globals.deviceType == 'phone' ? 35 : 45,
-                            width: Globals.deviceType == 'phone' ? 35 : 45,
-                            child: Center(
-                              child: IconButton(
-                                  iconSize: 22,
-                                  padding: EdgeInsets.all(0),
-                                  // constraints: BoxConstraints(),
-                                  onPressed: () {
-                                    SharePopUp obj = new SharePopUp();
-                                    obj.callFunction(
-                                        context,
-                                        i.htmlLink.toString(),
-                                        i.summary.toString());
-                                  },
-                                  icon: Icon(IconData(0xe829,
-                                      fontFamily: Overrides.kFontFam,
-                                      fontPackage: Overrides.kFontPkg))),
-                            )),
-                      ],
-                    ),
-                  )
-                ])),
-            title: "",
-            description: i.summary ?? '',
-            titleIcon: Container(
-              padding: EdgeInsets.only(top: 4),
-              child: CalendraIconWidget(
-                color: Colors.red,
-                dateTime: _methodDate(i),
+          Column(
+            children: [
+              Container(
+                color: Theme.of(context).colorScheme.secondary,
+                height: 6,
               ),
-            ),
-            url: ''),
+              Container(
+                color: Theme.of(context).colorScheme.secondary,
+                child: Center(
+                    child: Container(
+                  padding:
+                      EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 2),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    color: Theme.of(context).colorScheme.background,
+                  ),
+                  child: Text(
+                    key,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: Colors.red),
+                  ),
+                )),
+              ),
+            ],
+          ),
+          for (var i in map)
+            CommonFeedWidget(
+                isSocial: false,
+                actionIcon: Container(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      TranslationWidget(
+                        message: Utility.convertDateFormat2(i.start
+                                    .toString()
+                                    .contains('dateTime')
+                                ? i.start['dateTime']
+                                    .toString()
+                                    .substring(0, 10)
+                                : i.start['date'].toString().substring(0, 10)) +
+                            " - " +
+                            Utility.convertDateFormat2(i.end
+                                    .toString()
+                                    .contains('dateTime')
+                                ? i.end['dateTime'].toString().substring(0, 10)
+                                : i.end['date'].toString().substring(0, 10)),
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                          translatedMessage.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  fontWeight: FontWeight.normal, height: 1.5),
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).orientation ==
+                                Orientation.portrait
+                            ? MediaQuery.of(context).size.height * 0.07
+                            : MediaQuery.of(context).size.width * 0.07,
+                        padding: Globals.deviceType == "phone"
+                            ? null
+                            : EdgeInsets.only(
+                                right:
+                                    MediaQuery.of(context).size.width * 0.04),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Container(
+                                padding: EdgeInsets.only(top: 6),
+                                height: Globals.deviceType == 'phone' ? 35 : 45,
+                                width: Globals.deviceType == 'phone' ? 35 : 45,
+                                child: Center(
+                                  child: IconButton(
+                                      padding: EdgeInsets.all(0),
+                                      // constraints: BoxConstraints(),
+                                      onPressed: () {
+                                        Add2Calendar.addEvent2Cal(
+                                          buildEvent(i),
+                                        );
+                                      },
+                                      icon: Icon(IconData(0xe850,
+                                          fontFamily: Overrides.kFontFam,
+                                          fontPackage: Overrides.kFontPkg))),
+                                )),
+                            Container(
+                                height: Globals.deviceType == 'phone' ? 35 : 45,
+                                width: Globals.deviceType == 'phone' ? 35 : 45,
+                                child: Center(
+                                  child: IconButton(
+                                      iconSize: 22,
+                                      padding: EdgeInsets.all(0),
+                                      // constraints: BoxConstraints(),
+                                      onPressed: () {
+                                        SharePopUp obj = new SharePopUp();
+                                        obj.callFunction(
+                                            context,
+                                            i.htmlLink.toString(),
+                                            i.summary.toString());
+                                      },
+                                      icon: Icon(IconData(0xe829,
+                                          fontFamily: Overrides.kFontFam,
+                                          fontPackage: Overrides.kFontPkg))),
+                                )),
+                          ],
+                        ),
+                      )
+                    ])),
+                title: "",
+                description: i.summary ?? '',
+                titleIcon: Container(
+                  padding: EdgeInsets.only(top: 4),
+                  child: CalendraIconWidget(
+                    color: Colors.red,
+                    dateTime: _methodDate(i),
+                  ),
+                ),
+                url: ''),
         ],
       ),
     );
   }
 
- DateTime _methodDate(i) {
-   print("hellllllllllllllllllo");
-       DateTime _dateTime = getDate(i.start.toString().contains('dateTime')
+  DateTime _methodDate(i) {
+    DateTime _dateTime = getDate(i.start.toString().contains('dateTime')
         ? i.start['dateTime'].toString().substring(0, 10)
         : i.start['date'].toString().substring(0, 10));
-        return   _dateTime ;
+    return _dateTime;
   }
 }
