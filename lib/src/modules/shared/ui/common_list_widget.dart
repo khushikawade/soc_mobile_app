@@ -251,11 +251,11 @@ class _CommonListWidgetState extends State<CommonListWidget> {
               return _buildList(widget.data[index], index);
             },
           )
-        : Container(
-            child: NoDataFoundErrorWidget(
-                isResultNotFoundMsg: false,
-                isNews: false,
-                isEvents: false,
-                connected: true));
+        : NoDataFoundErrorWidget(
+            isCalendarPageOrientationLandscape: false,
+            isResultNotFoundMsg: false,
+            isNews: false,
+            isEvents: false,
+            connected: true);
   }
 }
