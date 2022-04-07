@@ -176,7 +176,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           List<CalendarEventList>? futureListobj = [];
           List<CalendarEventList>? pastListobj = [];
 
-
           DateTime now = new DateTime.now();
           final DateFormat formatter = DateFormat('yyyy-MM-dd');
           final DateTime currentDate =
@@ -222,7 +221,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
               futureListobj.groupListsBy((element) => element.month);
           Map<String?, List<CalendarEventList>> pastListMap =
               pastListobj.groupListsBy((element) => element.month);
-
+          print(futureListMap);
           yield CalendarListSuccess(
               futureListobj: futureListMap, pastListobj: pastListMap);
         }
@@ -284,9 +283,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             futureListobj.groupListsBy((element) => element.month);
         Map<String?, List<CalendarEventList>> pastListMap =
             pastListobj.groupListsBy((element) => element.month);
-      print(futureListMap);
-      print(pastListMap);
-      
+        print(futureListMap);
+        print(pastListMap);
 
         yield CalendarListSuccess(
             futureListobj: futureListMap, pastListobj: pastListMap);
@@ -456,6 +454,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         List data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
+        print(data1);
         return data1.map((i) {
           var datetime = i.start.toString().contains('dateTime')
               ? i.start['dateTime'].toString().substring(0, 10)
