@@ -442,7 +442,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
               ? i.start['dateTime'].toString().substring(0, 10)
               : i.start['date'].toString().substring(0, 10);
           String month = Utility.convertTimestampToDateFormat(
-              DateTime.parse(datetime), 'MMMM');
+              DateTime.parse(datetime), 'MMM yyyy');
 
           return CalendarEventList(
               kind: i.kind,
