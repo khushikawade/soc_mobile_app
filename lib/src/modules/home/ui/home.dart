@@ -219,6 +219,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           if (item.split("_")[0].toString().toLowerCase().contains("news")) {
             Globals.newsIndex =
                 Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
+
+            addNewsIndex(Globals.newsIndex);
           }
           setState(() {});
           return PersistentBottomNavBarItem(
