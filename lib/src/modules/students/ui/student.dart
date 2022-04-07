@@ -40,7 +40,7 @@ class _StudentPageState extends State<StudentPage> {
   @override
   void initState() {
     //lock screen orientation
-   // Utility.setLocked();
+    // Utility.setLocked();
     super.initState();
     _bloc.add(StudentPageEvent());
   }
@@ -51,8 +51,8 @@ class _StudentPageState extends State<StudentPage> {
       // obj.appUrlC == 'app_folder' || obj.isFolder == 'true'
       //     ? Utility.setLocked()
       //     : Utility.setLocked();
-       if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
-         showDialog(
+      if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
+        showDialog(
           // barrierColor: Color.fromARGB(96, 73, 73, 75),
           context: context,
           builder: (_) => AppsFolderPage(
@@ -82,7 +82,7 @@ class _StudentPageState extends State<StudentPage> {
         }
       }
       //lock screen orientation
-    
+
     } else {
       Utility.showSnackBar(_scaffoldKey, "No URL available", context);
     }

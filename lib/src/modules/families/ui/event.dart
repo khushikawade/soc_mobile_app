@@ -185,7 +185,7 @@ class _EventPageState extends State<EventPage>
                     EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(30)),
-                  color: Theme.of(context).colorScheme.background,
+                  // color: Theme.of(context).colorScheme.background,
                 ),
                 child: Text(
                   month,

@@ -94,7 +94,7 @@ class _FamilyPageState extends State<FamilyPage> {
                               ));
                             } else if (state is FamiliesDataSucess) {
                               return widget.homeObj != null &&
-                                      widget.homeObj!.gridViewC == "true"
+                                      widget.homeObj!.gridViewC == "Grid Menu"
                                   ? CommonGridWidget(
                                       scaffoldKey: _scaffoldKey,
                                       connected: connected,

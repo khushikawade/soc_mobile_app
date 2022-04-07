@@ -113,7 +113,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                               state is CustomLoading) {
                             return Center(child: CircularProgressIndicator());
                           } else if (state is CustomDataSucess) {
-                            return widget.homeObj.gridViewC == "true"
+                            return widget.homeObj.gridViewC == "Grid Menu"
                                 ? CommonGridWidget(
                                     scaffoldKey: _scaffoldKey,
                                     connected: connected,

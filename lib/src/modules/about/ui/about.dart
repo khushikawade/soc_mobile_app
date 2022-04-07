@@ -88,7 +88,7 @@ class _AboutPageState extends State<AboutPage> {
                                 ));
                           } else if (state is AboutDataSucess) {
                             return widget.homeObj != null &&
-                                    widget.homeObj!.gridViewC == "true"
+                                    widget.homeObj!.gridViewC == "Grid Menu"
                                 ? CommonGridWidget(
                                     scaffoldKey: _scaffoldKey,
                                     connected: connected,
