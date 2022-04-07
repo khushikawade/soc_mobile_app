@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -13,8 +14,12 @@ class ShimmerLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return isLoading!
         ? Shimmer.fromColors(
-            baseColor: AppTheme.kShimmerBaseColor!,
-            highlightColor: AppTheme.kShimmerHighlightColor!,
+            baseColor: Globals.themeType == 'Dark'
+                ? Colors.grey.withOpacity(0.4)
+                : AppTheme.kShimmerBaseColor!,
+            highlightColor: Globals.themeType == 'Dark'
+                ? Colors.grey.withOpacity(0.4)
+                : AppTheme.kShimmerHighlightColor!,
             enabled: true,
             child: child!)
         : child;

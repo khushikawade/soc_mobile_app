@@ -309,6 +309,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           await _hiveDbServices.getSingleData('newsIndex', 'newsIndex');
       Globals.indicator.value = false;
       Globals.isNewTap = true;
+      print('---------------update notification--------------------');
     });
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);

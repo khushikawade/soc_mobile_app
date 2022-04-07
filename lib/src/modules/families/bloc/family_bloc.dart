@@ -398,27 +398,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  // Future<List<SDlist>> getStaffList(categoryId) async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.getapi(categoryId == null
-  //         ? Uri.encodeFull(
-  //             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c')
-  //         : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId');
-
-  //     if (response.statusCode == 200) {
-  //       List<SDlist> _list = response.data['body']
-  //           .map<SDlist>((i) => SDlist.fromJson(i))
-  //           .toList();
-  //       _list.removeWhere((SDlist element) => element.status == 'Hide');
-  //       return _list;
-  //     } else {
-  //       throw ('something_went_wrong');
-  //     }
-  //   } catch (e) {
-  //     throw (e);
-  //   }
-  // }
-
   Future<List<SDlist>> getStaffList(categoryId, customrecordId) async {
     try {
       final ResponseModel response =

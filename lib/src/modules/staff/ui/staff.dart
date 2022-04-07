@@ -37,8 +37,8 @@ class _StaffPageState extends State<StaffPage> {
 
   @override
   void initState() {
-       //lock screen orientation
-   //Utility.setLocked();
+    //lock screen orientation
+    //Utility.setLocked();
     super.initState();
     _bloc.add(StaffPageEvent());
   }
@@ -76,7 +76,7 @@ class _StaffPageState extends State<StaffPage> {
                           ));
                         } else if (state is StaffDataSucess) {
                           return widget.homeObj != null &&
-                                  widget.homeObj!.gridViewC == "true"
+                                  widget.homeObj!.gridViewC == "Grid Menu"
                               ? CommonGridWidget(
                                   scaffoldKey: _scaffoldKey,
                                   connected: connected,
