@@ -188,7 +188,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 );
               } else if (element.contains('school')) {
                 _screens.add(
-                  SchoolPage(),
+                  SchoolPage(
+                    isStanderdPage: true,
+                    isSubmenu: false,
+                  ),
                 );
               } else if (element.contains('resource')) {
                 _screens.add(
@@ -491,14 +494,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           _screens.add(FamilyPage(homeObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].standardSectionC ==
             'School Directory') {
-          _screens.add(SchoolPage());
+          _screens.add(SchoolPage(
+            isStanderdPage: true,
+            isSubmenu: false,
+          ));
         } else if (Globals.customSetting![i].standardSectionC == 'About') {
           _screens.add(AboutPage(homeObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].standardSectionC == 'Resources') {
           _screens.add(ResourcesPage(homeObj: Globals.customSetting![i]));
         }
       } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-        if (Globals.customSetting![i].typeOfPageC == 'Menu') {
+        if (Globals.customSetting![i].typeOfPageC == 'List Menu' 
+        || Globals.customSetting![i].typeOfPageC == 'List Menu' ) {
           _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
         } else {
           _screens.add(CustomPages(homeObj: Globals.customSetting![i]));

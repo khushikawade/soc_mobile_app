@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
+import 'package:Soc/src/modules/schools/ui/schools.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -69,8 +70,9 @@ class _CustomPagesState extends State<CustomPages> {
 
                 return
                     // connected?
-                    Column(
-                  mainAxisSize: MainAxisSize.max,
+                    Stack(
+                      fit: StackFit.expand,
+                  //   mainAxisSize: MainAxisSize.max,
                   children: [
                     buildPage(widget.homeObj),
                     Container(
@@ -221,6 +223,12 @@ class _CustomPagesState extends State<CustomPages> {
                       isEvents: false,
                       connected: true)),
             );
+    } else if (obj.typeOfPageC == "School Directory") {
+      return SchoolPage(
+        obj: widget.homeObj,
+        isStanderdPage: false,
+        isSubmenu: false,
+      );
     }
     return Expanded(
       child: Container(

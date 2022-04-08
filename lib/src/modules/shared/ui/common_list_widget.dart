@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/schools/ui/schools.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/overrides.dart';
@@ -171,6 +172,16 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     isbuttomsheet: true,
                     isAbout: true,
                     language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "School Directory") {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SchoolPage(
+                    tittle: obj.titleC,
+                    isSubmenu: true,
+                    obj: obj,
+                    isStanderdPage: false,
                   )));
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
