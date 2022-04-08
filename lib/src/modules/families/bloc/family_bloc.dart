@@ -162,6 +162,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
 
     if (event is CalendarListEvent) {
+      List<CalendarEventList>? futureListobj = [];
+      List<CalendarEventList>? pastListobj = [];
+
       try {
         yield FamilyLoading();
         String? _objectName =
@@ -173,13 +176,14 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         if (_localData.isEmpty) {
           yield FamilyLoading();
         } else {
-          List<CalendarEventList>? futureListobj = [];
-          List<CalendarEventList>? pastListobj = [];
+          futureListobj.clear();
+          pastListobj.clear();
 
           DateTime now = new DateTime.now();
           final DateFormat formatter = DateFormat('yyyy-MM-dd');
           final DateTime currentDate =
               DateTime.parse(formatter.format(now).toString());
+
           for (int i = 0; i < _localData.length; i++) {
             try {
               var temp = _localData[i].start.toString().contains('dateTime')
@@ -217,25 +221,23 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
                 adate); //to get the order other way just switch `adate & bdate`
           });
 
-          // Map<String?, List<CalendarEventList>> futureListMap =
-          //     futureListobj.groupListsBy((element) => element.month);
-          // Map<String?, List<CalendarEventList>> pastListMap =
-          //     pastListobj.groupListsBy((element) => element.month);
           yield CalendarListSuccess(
-              futureListobj: futureListobj, pastListobj: pastListobj);
+              // futureListobj: futureListMap, pastListobj: pastListMap
+              futureListobj: mapListObj(futureListobj),
+              pastListobj: mapListObj(pastListobj));
         }
         List<CalendarEventList> list =
             await getCalendarEventList(event.calendarId);
-        print(list);
+
         await _localDb.clear();
         list.forEach((CalendarEventList e) {
           _localDb.addData(e);
         });
 
-        List<CalendarEventList>? _localData1 = await _localDb.getData();
-        //  print(_localData1);
-        List<CalendarEventList>? futureListobj = [];
-        List<CalendarEventList>? pastListobj = [];
+        // List<CalendarEventList>? _localData1 = await _localDb.getData();
+
+        futureListobj.clear();
+        pastListobj.clear();
 
         DateTime now = new DateTime.now();
         final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -278,22 +280,21 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
-        // Map<String?, List<CalendarEventList>> futureListMap =
-        //     futureListobj.groupListsBy((element) => element.month);
-        // Map<String?, List<CalendarEventList>> pastListMap =
-        //     pastListobj.groupListsBy((element) => element.month);
 
         yield CalendarListSuccess(
-            futureListobj: futureListobj, pastListobj: pastListobj);
+            futureListobj: mapListObj(futureListobj),
+            pastListobj: mapListObj(pastListobj)
+            // futureListobj: futureListMap, pastListobj: pastListMap
+            );
       } catch (e) {
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
 
         List<CalendarEventList>? _localData = await _localDb.getData();
-        List<CalendarEventList>? futureListobj = [];
-        List<CalendarEventList>? pastListobj = [];
 
+        futureListobj.clear();
+        pastListobj.clear();
         DateTime now = new DateTime.now();
         final DateFormat formatter = DateFormat('yyyy-MM-dd');
         final DateTime currentDate =
@@ -335,15 +336,20 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return bdate.compareTo(
               adate); //to get the order other way just switch `adate & bdate`
         });
-        // Map<String?, List<CalendarEventList>> futureListMap =
-        //     futureListobj.groupListsBy((element) => element.month);
-        // Map<String?, List<CalendarEventList>> pastListMap =
-        //     pastListobj.groupListsBy((element) => element.month);
 
         yield CalendarListSuccess(
-            futureListobj: futureListobj, pastListobj: pastListobj);
+            futureListobj: mapListObj(futureListobj),
+            pastListobj: mapListObj(pastListobj));
       }
     }
+  }
+
+  mapListObj(List<CalendarEventList> listObj) {
+    Map<String?, List<CalendarEventList>> mappingList =
+        listObj.groupListsBy((element) => element.month);
+    return mappingList;
+    // Map<String?, List<CalendarEventList>> pastListMap =
+    //     pastListobj.groupListsBy((element) => element.month);
   }
 
   getCalendarId(list) {
@@ -392,27 +398,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  // Future<List<SDlist>> getStaffList(categoryId) async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.getapi(categoryId == null
-  //         ? Uri.encodeFull(
-  //             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c')
-  //         : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId');
-
-  //     if (response.statusCode == 200) {
-  //       List<SDlist> _list = response.data['body']
-  //           .map<SDlist>((i) => SDlist.fromJson(i))
-  //           .toList();
-  //       _list.removeWhere((SDlist element) => element.status == 'Hide');
-  //       return _list;
-  //     } else {
-  //       throw ('something_went_wrong');
-  //     }
-  //   } catch (e) {
-  //     throw (e);
-  //   }
-  // }
-
   Future<List<SDlist>> getStaffList(categoryId, customrecordId) async {
     try {
       final ResponseModel response =
@@ -448,9 +433,34 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         List dataArray = data["items"];
-        return dataArray
+        List data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
+        // print(data1);
+        return data1.map((i) {
+          var datetime = i.start.toString().contains('dateTime')
+              ? i.start['dateTime'].toString().substring(0, 10)
+              : i.start['date'].toString().substring(0, 10);
+          String month = Utility.convertTimestampToDateFormat(
+              DateTime.parse(datetime), 'MMMM');
+
+          return CalendarEventList(
+              kind: i.kind,
+              etag: i.etag,
+              id: i.id,
+              status: i.status,
+              htmlLink: i.htmlLink,
+              created: i.created,
+              updated: i.updated,
+              summary: i.summary,
+              description: i.description,
+              start: i.start,
+              end: i.end,
+              iCalUid: i.iCalUid,
+              sequence: i.sequence,
+              eventType: i.eventType,
+              month: month);
+        }).toList();
       } else {
         throw ('something_went_wrong');
       }

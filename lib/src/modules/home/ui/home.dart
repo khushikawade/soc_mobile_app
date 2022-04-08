@@ -8,23 +8,19 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
-import 'package:Soc/src/modules/schools/ui/schools.dart';
+import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/social/ui/social_new.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
-
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:new_version/new_version.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -188,7 +184,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 );
               } else if (element.contains('school')) {
                 _screens.add(
-                  SchoolPage(),
+                  SchoolDirectoryPage(
+                    isStanderdPage: true,
+                    isSubmenu: false,
+                  ),
                 );
               } else if (element.contains('resource')) {
                 _screens.add(
@@ -219,6 +218,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           if (item.split("_")[0].toString().toLowerCase().contains("news")) {
             Globals.newsIndex =
                 Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
+
+            addNewsIndex(Globals.newsIndex);
           }
           setState(() {});
           return PersistentBottomNavBarItem(
@@ -489,14 +490,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           _screens.add(FamilyPage(homeObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].standardSectionC ==
             'School Directory') {
-          _screens.add(SchoolPage());
+          _screens.add(SchoolDirectoryPage(
+            isStanderdPage: true,
+            isSubmenu: false,
+          ));
         } else if (Globals.customSetting![i].standardSectionC == 'About') {
           _screens.add(AboutPage(homeObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].standardSectionC == 'Resources') {
           _screens.add(ResourcesPage(homeObj: Globals.customSetting![i]));
         }
       } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-        if (Globals.customSetting![i].typeOfPageC == 'Menu') {
+        if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
+            Globals.customSetting![i].typeOfPageC == 'List Menu') {
           _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
         } else {
           _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
