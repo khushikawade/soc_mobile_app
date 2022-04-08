@@ -16,6 +16,8 @@ import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 
+import '../../../widgets/inapp_url_launcher.dart';
+
 class CustomPages extends StatefulWidget {
   final homeObj;
 
@@ -114,17 +116,25 @@ class _CustomPagesState extends State<CustomPages> {
     if (obj.typeOfPageC == "URL") {
       return obj.appUrlC != null && obj.appUrlC != ""
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
-              // || obj.deepLinkC == 'YES'
-              ? Expanded(
-                  child: OpenExternalBrowser(
-                    url: obj.appUrlC,
-                    connected: true,
-                  ),
-                ) // TODO: Add a proper message when links are unable to open
-              : HomeInAppUrlLauncher(
-                  url: obj.appUrlC,
-                  language: Globals.selectedLanguage,
-                ))
+                  // || obj.deepLinkC == 'YES'
+                  ? Expanded(
+                      child: OpenExternalBrowser(
+                        url: obj.appUrlC,
+                        connected: true,
+                      ),
+                    ) // TODO: Add a proper message when links are unable to open
+                  : InAppUrlLauncer(
+                      title: "no scaffold",
+                      url: obj.appUrlC,
+                      isbuttomsheet: true,
+                      language: Globals.selectedLanguage,
+                    )
+
+              //  HomeInAppUrlLauncher(
+              //     url: obj.appUrlC,
+              //     language: Globals.selectedLanguage,
+              //   )
+              )
           : Expanded(
               child: Container(
                   child: NoDataFoundErrorWidget(
@@ -159,11 +169,19 @@ class _CustomPagesState extends State<CustomPages> {
     } else if (obj.typeOfPageC == "Embed iFrame") {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
           ? Expanded(
-              child: HomeInAppUrlLauncher(
+              child: InAppUrlLauncer(
                 isiFrame: true,
-                url: obj.rtfHTMLC.toString(),
+                title: "no scaffold",
+                url: obj.appUrlC,
+                isbuttomsheet: true,
                 language: Globals.selectedLanguage,
               ),
+
+              // child: HomeInAppUrlLauncher(
+              //   isiFrame: true,
+              //   url: obj.rtfHTMLC.toString(),
+              //   language: Globals.selectedLanguage,
+              // ),
             )
           : Expanded(
               child: Container(

@@ -285,7 +285,8 @@ class _SearchPageState extends State<SearchPage> {
                         : obj.urlC,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
-                  )));
+                  )
+                  ));
       // _setLocked();
     } else {
       Utility.showSnackBar(_scaffoldKey, "No URL available", context);

@@ -40,77 +40,85 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: false,
-          isShare: true,
-          appBarTitle: widget.title,
-          sharedpopBodytext: widget.url.toString(),
-          sharedpopUpheaderText: "Please checkout this link",
-          language: Globals.selectedLanguage,
-        ),
-        body: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final bool connected = connectivity != ConnectivityResult.none;
+    return widget.title == "no scaffold"
+        ? Expanded(
+            child: _webViewWidget(),
+          )
+        : Scaffold(
+            appBar: CustomAppBarWidget(
+              isSearch: false,
+              isShare: true,
+              appBarTitle: widget.title,
+              sharedpopBodytext: widget.url.toString(),
+              sharedpopUpheaderText: "Please checkout this link",
+              language: Globals.selectedLanguage,
+            ),
+            body: _webViewWidget());
+  }
 
-              if (connected) {
-                if (iserrorstate == true) {
-                  iserrorstate = false;
-                }
-              } else if (!connected) {
-                iserrorstate = true;
-              }
+  Widget _webViewWidget() {
+    return OfflineBuilder(
+        connectivityBuilder: (
+          BuildContext context,
+          ConnectivityResult connectivity,
+          Widget child,
+        ) {
+          final bool connected = connectivity != ConnectivityResult.none;
 
-              return connected
-                  ? Container(
-                      color: Colors.transparent,
-                      padding: const EdgeInsets.only(
-                          bottom:
-                              30.0), // To manage web page crop issue together with bottom nav bar.
-                      child: Stack(
-                        children: [
-                          WebView(
-                            initialCookies: [],
-                            backgroundColor: Theme.of(context).backgroundColor,
-                            onProgress: (progress) {
-                              if (progress >= 50) {
-                                setState(() {
-                                  isLoading = false;
-                                });
-                              }
-                            },
-                            gestureNavigationEnabled:
-                                widget.isiFrame == true ? true : false,
-                            initialUrl: widget.isiFrame == true
-                                ? Uri.dataFromString('${widget.url}',
-                                        mimeType: 'text/html')
-                                    .toString()
-                                : '${widget.url}',
-                            javascriptMode: JavascriptMode.unrestricted,
-                            onWebViewCreated:
-                                (WebViewController webViewController) {
-                              _controller.complete(webViewController);
-                            },
-                          ),
-                          isLoading
-                              ? Center(
-                                  child: CircularProgressIndicator(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
-                                  ),
-                                )
-                              : Stack(),
-                        ],
+          if (connected) {
+            if (iserrorstate == true) {
+              iserrorstate = false;
+            }
+          } else if (!connected) {
+            iserrorstate = true;
+          }
+
+          return connected
+              ? Container(
+                  color: Colors.transparent,
+                  padding: const EdgeInsets.only(
+                      bottom:
+                          30.0), // To manage web page crop issue together with bottom nav bar.
+                  child: Stack(
+                    children: [
+                      WebView(
+                        initialCookies: [],
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        onProgress: (progress) {
+                          if (progress >= 50) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        },
+                        gestureNavigationEnabled:
+                            widget.isiFrame == true ? true : false,
+                        initialUrl: widget.isiFrame == true
+                            ? Uri.dataFromString('${widget.url}',
+                                    mimeType: 'text/html')
+                                .toString()
+                            : '${widget.url}',
+                        javascriptMode: JavascriptMode.unrestricted,
+                        onWebViewCreated:
+                            (WebViewController webViewController) {
+                          _controller.complete(webViewController);
+                        },
                       ),
-                    )
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
-            },
-            child: Container()));
+                      isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              ),
+                            )
+                          : Stack(),
+                    ],
+                  ),
+                )
+              : NoInternetErrorWidget(
+                  connected: connected, issplashscreen: false);
+        },
+        child: Container());
   }
 }

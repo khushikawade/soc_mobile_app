@@ -24,5 +24,5 @@ class Overrides {
   static const String forgotPasswordUrl = 'https://';
   static String SCHOOL_ID = 'a1f4C000001yM2mQAE';
   // addapp : "a1f4C000001yM2mQAE";
-  // "a1f4W000007DQmlQAG"; //"a1f4W000007DR8nQAG"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
+  // "a1f4W000007DQaNQAW"; //"a1f4W000007DR8nQAG"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
 }
