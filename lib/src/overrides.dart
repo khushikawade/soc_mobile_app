@@ -14,7 +14,7 @@ class Overrides {
   static const folderDefaultImage =
       "https://solved-consulting-images.s3.us-east-2.amazonaws.com/Student+app+logos/Folder.png";
   static const String socialPagexmlUrl =
-      'https://rss.app/feeds/_DawozSyanCYfGaQg.xml';
+      'https://rss.app/feeds/_gAIMsEQj88bnzxmN.xml';
   static const String kFontFam = 'SOC_CustomIcons';
   static const kFontPkg = null;
   static String? API_BASE_URL =
@@ -22,7 +22,8 @@ class Overrides {
   //Production     'https://solvedconsultingdev.my.salesforce.com/services/data/v52.0/';
 //Sandbox : 'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
-  static String SCHOOL_ID = 'a1f4W000007DQvyQAG';
-  // addapp : "a1f4C000001yM2mQAE";
-  // "a1f4W000007DQmlQAG"; //"a1f4W000007DR8nQAG"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
+  static String SCHOOL_ID ='a1f4W000007DQaNQAW';
+     // addapp : "a1f4C000001yM2mQAE"; 
+      // "a1f4W000007DQmlQAG"; //"a1f4W000007DR8nQAG"; // "a1f4W000007DQaNQAW";//"a1f4W000007DQr8QAG";
 }
+  
