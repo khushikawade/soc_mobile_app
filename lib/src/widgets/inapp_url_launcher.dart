@@ -14,6 +14,7 @@ class InAppUrlLauncer extends StatefulWidget {
   final bool? hideHeader;
   final bool isbuttomsheet;
   final String? language;
+  
   @override
   InAppUrlLauncer(
       {Key? key,
@@ -32,6 +33,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   bool isLoading = true;
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
+
   @override
   void initState() {
     super.initState();

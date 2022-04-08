@@ -18,9 +18,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:html/dom.dart' as dom;
-import 'package:html_unescape/html_unescape.dart';
 import '../../home/ui/app_bar_widget.dart';
-import 'package:characters/characters.dart';
 
 class SocialNewPage extends StatefulWidget {
   SocialNewPage({Key? key, this.title}) : super(key: key);
@@ -68,10 +66,6 @@ class _SocialNewPageState extends State<SocialNewPage> {
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
 
-// print("@HTLC154: ⁦     @NYCESPA     ⁩    pre conference dinner with our guests and sponsors.");
-
-  var sanitizer =  HtmlEscape(HtmlEscapeMode.element);
-
     return Container(
       color: Theme.of(context).colorScheme.background,
       child: InkWell(
@@ -98,8 +92,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
         child: CommonFeedWidget(
           isSocial: true,
           title: '',
-          description: //( sanitizer.convert( "HTLC154: ⁦     @NYCESPA     ⁩    pre conference dinner with our guests and sponsors.")).toString(), 
-          obj.title!["__cdata"] != null &&
+          description: obj.title!["__cdata"] != null &&
                   obj.title!["__cdata"].length > 1
               ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}"
               : '',

@@ -42,15 +42,21 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     } else {
       if (tapped == true) {
         tapped = false;
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => InAppUrlLauncer(
+        await  InAppUrlLauncer(
                       title: obj.titleC,
                       url: obj.appUrlC,
                       isbuttomsheet: true,
                       language: Globals.selectedLanguage,
-                    )));
+                    );
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (BuildContext context) => InAppUrlLauncer(
+        //               title: obj.titleC,
+        //               url: obj.appUrlC,
+        //               isbuttomsheet: true,
+        //               language: Globals.selectedLanguage,
+        //             )));
         tapped = true;
       }
     }
