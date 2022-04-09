@@ -83,6 +83,7 @@ dependencies:
   auto_orientation: ^2.2.1
   #flutter_cached_pdfview: ^0.4.1
   pdf_render: ^1.0.23
+  characters: ^1.2.0
   
 
 dev_dependencies:

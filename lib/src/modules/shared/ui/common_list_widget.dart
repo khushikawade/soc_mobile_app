@@ -42,7 +42,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     } else {
       if (tapped == true) {
         tapped = false;
-        await Navigator.push(
+        await  
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => InAppUrlLauncer(

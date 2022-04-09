@@ -128,6 +128,7 @@ class _CustomPagesState extends State<CustomPages> {
                       url: obj.appUrlC,
                       isbuttomsheet: true,
                       language: Globals.selectedLanguage,
+                      isCustomMainPageWebView: true,
                     )
 
               //  HomeInAppUrlLauncher(
