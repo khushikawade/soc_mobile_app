@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
+import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -109,7 +110,7 @@ class _CustomPagesState extends State<CustomPages> {
         body: _body('body1'));
   }
 
-  Widget buildPage(List<SharedList> list, CustomSetting obj, connected) {
+ Widget buildPage(List<SharedList> list, CustomSetting obj, connected) {
     if (obj.sectionTemplate == 'List Menu') {
       return CommonListWidget(
           scaffoldKey: _scaffoldKey,
@@ -133,7 +134,7 @@ class _CustomPagesState extends State<CustomPages> {
                       ),
                     ) // TODO: Add a proper message when links are unable to open
                   : InAppUrlLauncer(
-                      title: "no scaffold",
+                      title: obj.sectionTitleC!,// "no scaffold",
                       url: obj.appUrlC,
                       isbuttomsheet: true,
                       language: Globals.selectedLanguage,
@@ -181,7 +182,7 @@ class _CustomPagesState extends State<CustomPages> {
           ? Expanded(
               child: InAppUrlLauncer(
                 isiFrame: true,
-                title: "no scaffold",
+                title: obj.sectionTitleC!,
                 url: obj.appUrlC,
                 isbuttomsheet: true,
                 language: Globals.selectedLanguage,
@@ -251,13 +252,27 @@ class _CustomPagesState extends State<CustomPages> {
                       connected: true)),
             );
     } else if (obj.sectionTemplate == "Org Directory") {
-      Navigator.push(
+       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => SchoolDirectoryPage(
                     obj: widget.customObj,
                     isStanderdPage: false,
                     isSubmenu: false,
+                  )));
+    }
+    else if (obj.sectionTemplate == "Personnel Directory") {
+     Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    isCustom: true,
+                    staffDirectoryCategoryId: obj.id,
+                    appBarTitle: obj.sectionTitleC!,
+                    obj: widget.customObj,
+                    isbuttomsheet: true,
+                    isAbout: false,
+                    language: Globals.selectedLanguage,
                   )));
     }
     return Expanded(

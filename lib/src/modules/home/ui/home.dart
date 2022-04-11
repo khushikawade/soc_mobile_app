@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/resources/resources.dart';
 import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/social/ui/social_new.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
+import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -206,7 +207,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         (item) {
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(
-                item.selectionTitleC, item.sectionIconC, item.systemReferenceC),
+                item.sectionTitleC, item.sectionIconC, item.systemReferenceC),
             inactiveColorPrimary: CupertinoColors.systemGrey,
           );
         },
@@ -496,12 +497,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else if (Globals.customSetting![i].systemReferenceC == 'Families') {
           _screens.add(FamilyPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC ==
-            'Org Directory') {
+            'Directory - Org') {
           _screens.add(SchoolDirectoryPage(
             isStanderdPage: true,
             isSubmenu: false,
           ));
-        } else if (Globals.customSetting![i].systemReferenceC == 'About') {
+        }  
+        // else if (Globals.customSetting![i].systemReferenceC ==
+        //     'Directory - Personnel') {
+        //   _screens.add(StaffDirectory(
+            
+        //   ));
+        // } 
+        else if (Globals.customSetting![i].systemReferenceC == 'About') {
           _screens.add(AboutPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC == 'Resources') {
           _screens.add(ResourcesPage(customObj: Globals.customSetting![i]));

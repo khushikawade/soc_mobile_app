@@ -24,7 +24,7 @@ class CustomSettingAdapter extends TypeAdapter<CustomSetting> {
       name: fields[4] as String?,
       mobileAppSectionC: fields[5] as String?,
       sectionIconC: fields[6] as String?,
-      selectionTitleC: fields[7] as String?,
+      sectionTitleC: fields[7] as String?,
       sortOrderC: fields[8] as double?,
       systemReferenceC: fields[9] as String?,
       sectionTypeC: fields[10] as String?,
@@ -58,7 +58,7 @@ class CustomSettingAdapter extends TypeAdapter<CustomSetting> {
       ..writeByte(6)
       ..write(obj.sectionIconC)
       ..writeByte(7)
-      ..write(obj.selectionTitleC)
+      ..write(obj.sectionTitleC)
       ..writeByte(8)
       ..write(obj.sortOrderC)
       ..writeByte(9)

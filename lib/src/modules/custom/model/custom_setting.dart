@@ -27,7 +27,7 @@ class CustomSetting {
   @HiveField(6)
   String? sectionIconC;
   @HiveField(7)
-  String? selectionTitleC;
+  String? sectionTitleC;
   @HiveField(8)
   double? sortOrderC;
   @HiveField(9)
@@ -78,7 +78,7 @@ class CustomSetting {
       // this.createdDate,
       this.mobileAppSectionC,
       this.sectionIconC,
-      this.selectionTitleC,
+      this.sectionTitleC,
       this.sortOrderC,
       this.systemReferenceC,
       this.sectionTypeC,
@@ -111,7 +111,7 @@ class CustomSetting {
         name: json['Name'],
         // createdDate: json['CreatedDate'],
         sectionIconC: json['Section_Icon__c'],
-        selectionTitleC: json['Section_Title__c'],
+        sectionTitleC: json['Section_Title__c'],
         sortOrderC: double.parse(json['Sort_Order__c'] ?? '100'),
         systemReferenceC: json['Standard_section__c'],
         sectionTypeC: json['Type_of_section__c'],
@@ -151,7 +151,7 @@ class CustomSetting {
         // 'LastReferencedDate': lastReferencedDate,
         'School_App__c': mobileAppC,
         'Section_Icon__c': sectionIconC,
-        'Section_Title__c': selectionTitleC,
+        'Section_Title__c': sectionTitleC,
         'Sort_Order__c': sortOrderC,
         'Standard_section__c': systemReferenceC,
         'Type_of_section__c': sectionTypeC,
@@ -216,7 +216,7 @@ class CustomSetting {
         // lastReferencedDate: lastReferencedDate ?? this.lastReferencedDate,
         mobileAppC: mobileAppC ?? this.mobileAppC,
         sectionIconC: sectionIconC ?? this.sectionIconC,
-        selectionTitleC: selectionTitleC ?? this.selectionTitleC,
+        sectionTitleC: sectionTitleC ?? this.sectionTitleC,
         sortOrderC: sortOrderC ?? this.sortOrderC,
         systemReferenceC: systemReferenceC ?? this.systemReferenceC,
         sectionTypeC: sectionTypeC ?? this.sectionTypeC,
