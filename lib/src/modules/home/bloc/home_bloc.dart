@@ -349,7 +349,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _aboutBloc.add(AboutStaffDirectoryEvent());
         } else if (element.contains('school')) {
           SchoolDirectoryBloc _schoolBloc = new SchoolDirectoryBloc();
-          _schoolBloc.add(SchoolDirectoryListEvent());
+          _schoolBloc.add(SchoolDirectoryListEvent(isSubMenu: false));
         } else if (element.contains('resource')) {
           ResourcesBloc _resourceBloc = ResourcesBloc();
           _resourceBloc.add(ResourcesListEvent());

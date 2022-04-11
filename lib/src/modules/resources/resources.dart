@@ -17,10 +17,10 @@ import '../custom/model/custom_setting.dart';
 import '../shared/ui/common_grid_widget.dart';
 
 class ResourcesPage extends StatefulWidget {
-  final CustomSetting? homeObj;
+  final CustomSetting? customObj;
   ResourcesPage({
     Key? key,
-    this.homeObj,
+    this.customObj,
   }) : super(key: key);
 
   @override
@@ -85,8 +85,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                       .primaryVariant,
                                 ));
                           } else if (state is ResourcesDataSucess) {
-                            return widget.homeObj != null &&
-                                    widget.homeObj!.sectionTemplate == "Grid Menu"
+                            return widget.customObj != null &&
+                                    widget.customObj!.sectionTemplate == "Grid Menu"
                                 ? CommonGridWidget(
                                     scaffoldKey: _scaffoldKey,
                                     connected: connected,

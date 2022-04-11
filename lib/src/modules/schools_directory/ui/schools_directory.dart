@@ -22,10 +22,10 @@ class SchoolDirectoryPage extends StatefulWidget {
   final obj;
   final bool? isStanderdPage;
   final bool? isSubmenu;
-  final String? tittle;
+  final String? title;
 
   const SchoolDirectoryPage(
-      {Key? key, this.obj, this.isStanderdPage, this.isSubmenu, this.tittle})
+      {Key? key, this.obj, this.isStanderdPage, this.isSubmenu, this.title})
       : super(key: key);
 
   @override
@@ -245,11 +245,12 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                     isShare: false,
                     sharedpopBodytext: '',
                     sharedpopUpheaderText: '',
-                    appBarTitle: widget.tittle ?? '',
+                    appBarTitle: widget.title ?? '',
                     language: Globals.selectedLanguage,
                   )
                 : null),
-        body: Globals.appSetting.schoolBannerImageC != null &&
+        body: widget.isSubmenu == true &&
+                Globals.appSetting.schoolBannerImageC != null &&
                 Globals.appSetting.schoolBannerImageC != "" &&
                 widget.isSubmenu != true
             ? NestedScrollView(

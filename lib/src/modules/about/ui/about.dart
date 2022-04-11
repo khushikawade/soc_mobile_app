@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
+import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
@@ -16,11 +17,11 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class AboutPage extends StatefulWidget {
-  final homeObj;
+  final CustomSetting? customObj;
   final searchObj;
   AboutPage({
     Key? key,
-    this.homeObj,
+    this.customObj,
     this.searchObj,
   }) : super(key: key);
 
@@ -87,8 +88,8 @@ class _AboutPageState extends State<AboutPage> {
                                       .primaryVariant,
                                 ));
                           } else if (state is AboutDataSucess) {
-                            return widget.homeObj != null &&
-                                    widget.homeObj!.gridViewC == "Grid Menu"
+                            return widget.customObj != null &&
+                                    widget.customObj!.sectionTemplate== "Grid Menu"
                                 ? CommonGridWidget(
                                     scaffoldKey: _scaffoldKey,
                                     connected: connected,

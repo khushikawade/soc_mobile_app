@@ -3,8 +3,9 @@ import 'package:Soc/src/modules/custom/ui/open_external_browser_button.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
+import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -15,18 +16,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-
 import '../../../widgets/inapp_url_launcher.dart';
+import '../../shared/ui/common_grid_widget.dart';
 
 class CustomPages extends StatefulWidget {
-  // final homeObj;
-  final customObj;
+  final List<SharedList>? customList;
+  final CustomSetting? customObj;
 
-  CustomPages(
-      {Key? key,
-      // this.homeObj,
-      this.customObj})
-      : super(key: key);
+  CustomPages({Key? key, this.customList, this.customObj}) : super(key: key);
 
   @override
   _CustomPagesState createState() => _CustomPagesState();
@@ -52,71 +49,80 @@ class _CustomPagesState extends State<CustomPages> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
-  Widget _body(String key) => Container(
-        child: RefreshIndicator(
-          key: refreshKey,
-          child: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final bool connected = connectivity != ConnectivityResult.none;
+  Widget _body(String key) => RefreshIndicator(
+        key: refreshKey,
+        child: OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
 
-                if (connected) {
-                  if (iserrorstate == true) {
-                    iserrorstate = false;
-                  }
-                } else if (!connected) {
-                  iserrorstate = true;
+              if (connected) {
+                if (iserrorstate == true) {
+                  iserrorstate = false;
                 }
+              } else if (!connected) {
+                iserrorstate = true;
+              }
 
-                return
-                    // connected?
-                    Stack(
-                  fit: StackFit.expand,
-                  //   mainAxisSize: MainAxisSize.max,
-                  children: [
-                    buildPage(widget.customObj),
-                    Container(
-                      height: 0,
-                      width: 0,
-                      child: BlocListener<HomeBloc, HomeState>(
-                          bloc: _homeBloc,
-                          listener: (context, state) async {
-                            if (state is BottomNavigationBarSuccess) {
-                              AppTheme.setDynamicTheme(
-                                  Globals.appSetting, context);
-                              Globals.appSetting =
-                                  AppSetting.fromJson(state.obj);
-                              // setState(() {});
-                            }
-                          },
-                          child: EmptyContainer()),
-                    ),
-                  ],
-                );
-              },
-              child: Container()),
-          onRefresh: refreshPage,
-        ),
+              return
+                  // connected?
+                  Column(
+                // fit: StackFit.expand,
+                //   mainAxisSize: MainAxisSize.max,
+                children: [
+                  buildPage(widget.customList!, widget.customObj!, connected),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.appSetting = AppSetting.fromJson(state.obj);
+                            // setState(() {});
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                ],
+              );
+            },
+            child: Container()),
+        onRefresh: refreshPage,
       );
 
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         key: _scaffoldKey,
-        appBar: AppBarWidget(
-          marginLeft: 30,
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
+        // appBar: AppBarWidget(
+        //   marginLeft: 30,
+        //   refresh: (v) {
+        //     setState(() {});
+        //   },
+        // ),
         body: _body('body1'));
   }
 
-  Widget buildPage(CustomSetting obj) {
-    if (obj.sectionTemplate == "URL") {
+  Widget buildPage(List<SharedList> list, CustomSetting obj, connected) {
+    if (obj.sectionTemplate == 'List Menu') {
+      return CommonListWidget(
+          scaffoldKey: _scaffoldKey,
+          connected: connected,
+          data: list,
+          sectionName: "Custom");
+    } else if (obj.sectionTemplate == 'Grid Menu') {
+      return CommonGridWidget(
+          scaffoldKey: _scaffoldKey,
+          connected: connected,
+          data: list,
+          sectionName: "Custom");
+    } else if (obj.sectionTemplate == "URL") {
       return obj.appUrlC != null && obj.appUrlC != ""
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
                   // || obj.deepLinkC == 'YES'
@@ -148,9 +154,9 @@ class _CustomPagesState extends State<CustomPages> {
                       connected: true)),
             );
     } else if (obj.sectionTemplate == "RTF_HTML" ||
-        obj.sectionTypeC == "RFT_HTML" ||
-        obj.sectionTypeC == "HTML/RTF" ||
-        obj.sectionTypeC == "RTF/HTML") {
+        obj.sectionTemplate == "RFT_HTML" ||
+        obj.sectionTemplate == "HTML/RTF" ||
+        obj.sectionTemplate == "RTF/HTML") {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
           ? Expanded(
               child: AboutusPage(
@@ -195,7 +201,8 @@ class _CustomPagesState extends State<CustomPages> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.sectionTemplate == "PDF URL" || obj.sectionTypeC == "PDF") {
+    } else if (obj.sectionTemplate == "PDF URL" ||
+        obj.sectionTemplate == "PDF") {
       return obj.pdfURL != null && obj.pdfURL != ""
           ? Expanded(
               child: CommonPdfViewerPage(
@@ -243,20 +250,22 @@ class _CustomPagesState extends State<CustomPages> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.sectionTemplate == "School Directory") {
-      return SchoolDirectoryPage(
-        obj: widget.customObj,
-        isStanderdPage: false,
-        isSubmenu: false,
-      );
+    } else if (obj.sectionTemplate == "Org Directory") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SchoolDirectoryPage(
+                    obj: widget.customObj,
+                    isStanderdPage: false,
+                    isSubmenu: false,
+                  )));
     }
     return Expanded(
-      child: Container(
-          child: NoDataFoundErrorWidget(
-              isResultNotFoundMsg: false,
-              isNews: false,
-              isEvents: false,
-              connected: true)),
-    );
+        child: Container(
+            child: NoDataFoundErrorWidget(
+                isResultNotFoundMsg: false,
+                isNews: false,
+                isEvents: false,
+                connected: true)));
   }
 }

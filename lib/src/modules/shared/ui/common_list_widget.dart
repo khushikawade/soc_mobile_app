@@ -168,13 +168,14 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     isAbout: true,
                     language: Globals.selectedLanguage,
                   )));
-    } else if (obj.typeC == "School Directory") {
+    } else if (obj.typeC == "School Directory" ||
+        obj.typeC == 'Org Directory') {
       await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => SchoolDirectoryPage(
-                    tittle: obj.titleC,
-                    isSubmenu: true,
+                    title: obj.titleC,
+                    isSubmenu: obj.typeC == 'Org Directory' ? true : false,
                     obj: obj,
                     isStanderdPage: false,
                   )));

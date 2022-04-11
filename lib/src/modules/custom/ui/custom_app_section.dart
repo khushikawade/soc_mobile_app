@@ -2,8 +2,6 @@ import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/custom/ui/custom_page.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
-import 'package:Soc/src/modules/shared/ui/common_grid_widget.dart';
-import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -19,13 +17,13 @@ import '../model/custom_setting.dart';
 class CustomAppSection extends StatefulWidget {
   CustomAppSection({
     Key? key,
-    required this.homeObj,
+    required this.customObj,
     this.id,
     this.searchObj,
   }) : super(key: key);
 
   final id;
-  final CustomSetting homeObj;
+  final CustomSetting customObj;
   final searchObj;
 
   @override
@@ -43,13 +41,13 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(CustomEvents(id: widget.homeObj.id));
+    _bloc.add(CustomEvents(id: widget.customObj.id));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    _bloc.add(CustomEvents(id: widget.homeObj.id));
+    _bloc.add(CustomEvents(id: widget.customObj.id));
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
@@ -62,17 +60,17 @@ class _CustomAppSectionState extends State<CustomAppSection> {
           setState(() {});
         },
       ),
-      body: widget.homeObj.customBannerImageC != null &&
-              widget.homeObj.customBannerImageC != ''
+      body: widget.customObj.customBannerImageC != null &&
+              widget.customObj.customBannerImageC != ''
           ? NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   BannerImageWidget(
-                    imageUrl: widget.homeObj.customBannerImageC!,
-                    bgColor: widget.homeObj.customBannerImageC != null
+                    imageUrl: widget.customObj.customBannerImageC!,
+                    bgColor: widget.customObj.customBannerImageC != null
                         ? Utility.getColorFromHex(
-                            widget.homeObj.customBannerImageC!)
+                            widget.customObj.customBannerImageC!)
                         : null,
                   )
                 ];
@@ -95,7 +93,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
                   if (iserrorstate == true) {
-                    _bloc.add(CustomEvents(id: widget.homeObj.id));
+                    _bloc.add(CustomEvents(id: widget.customObj.id));
                     iserrorstate = false;
                   }
                 } else if (!connected) {
@@ -114,9 +112,12 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                               state is CustomLoading) {
                             return Center(child: CircularProgressIndicator());
                           } else if (state is CustomDataSucess) {
-                            return CustomPages(customObj: state.obj);
-                            
-                            // widget.homeObj.gridViewC == "Grid Menu"
+                            return CustomPages(
+                              customList: state.obj,
+                              customObj: widget.customObj,
+                            );
+
+                            // widget.customObj.gridViewC == "Grid Menu"
                             //     ? CommonGridWidget(
                             //         scaffoldKey: _scaffoldKey,
                             //         connected: connected,
@@ -129,8 +130,8 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                             //               connected: connected,
                             //               data: state.obj!,
                             //               sectionName: "Custom"),
-                                    // ],
-                                  // );
+                            // ],
+                            // );
                           } else if (state is ErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);
                           } else {

@@ -19,8 +19,8 @@ import '../../shared/ui/common_grid_widget.dart';
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
-  final CustomSetting? homeObj;
-  FamilyPage({Key? key, this.obj, this.searchObj, this.homeObj})
+  final CustomSetting? customObj;
+  FamilyPage({Key? key, this.obj, this.searchObj, this.customObj})
       : super(key: key);
 
   @override
@@ -93,8 +93,8 @@ class _FamilyPageState extends State<FamilyPage> {
                                     .primaryVariant,
                               ));
                             } else if (state is FamiliesDataSucess) {
-                              return widget.homeObj != null &&
-                                      widget.homeObj!.sectionTemplate == "Grid Menu"
+                              return widget.customObj != null &&
+                                      widget.customObj!.sectionTemplate == "Grid Menu"
                                   ? CommonGridWidget(
                                       scaffoldKey: _scaffoldKey,
                                       connected: connected,

@@ -17,9 +17,9 @@ import '../../custom/model/custom_setting.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
-  StaffPage({Key? key, this.title, this.language, this.homeObj})
+  StaffPage({Key? key, this.title, this.language, this.customObj})
       : super(key: key);
-  final CustomSetting? homeObj;
+  final CustomSetting? customObj;
   final String? title;
   final String? language;
 
@@ -75,8 +75,8 @@ class _StaffPageState extends State<StaffPage> {
                             color: Theme.of(context).colorScheme.primaryVariant,
                           ));
                         } else if (state is StaffDataSucess) {
-                          return widget.homeObj != null &&
-                                  widget.homeObj!.sectionTemplate == "Grid Menu"
+                          return widget.customObj != null &&
+                                  widget.customObj!.sectionTemplate == "Grid Menu"
                               ? CommonGridWidget(
                                   scaffoldKey: _scaffoldKey,
                                   connected: connected,

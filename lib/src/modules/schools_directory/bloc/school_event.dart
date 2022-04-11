@@ -12,7 +12,7 @@ class SchoolDirectoryListEvent extends SchoolDirectoryEvent {
   final String? customRecordId; //Custom record Id
   final bool? isSubMenu;
 
-  SchoolDirectoryListEvent({this.customRecordId,this.isSubMenu});
+  SchoolDirectoryListEvent({this.customRecordId,required this.isSubMenu});
 
   @override
   List<Object> get props => [customRecordId!,isSubMenu!];

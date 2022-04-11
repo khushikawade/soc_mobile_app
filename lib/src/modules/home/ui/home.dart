@@ -17,6 +17,7 @@ import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -474,20 +475,26 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void addScreen() {
-    for (var i = 0; i < Globals.customSetting!.length; i++) {
-      // if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
+    if (Globals.customSetting!.length > 0) {
+      for (var i = 0; i < Globals.customSetting!.length; i++) {
+        // if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
         if (Globals.customSetting![i].systemReferenceC == 'News') {
           _screens.add(NewsPage());
           Globals.newsIndex = i;
           addNewsIndex(i);
-        } else if (Globals.customSetting![i].systemReferenceC == 'Social') {
+        } else if (Globals.customSetting![i].systemReferenceC == 'Social' ||
+            Globals.customSetting![i].sectionTemplate == 'RSS Feed') {
+          if (Globals.customSetting![i].sectionTemplate == 'RSS Feed') {
+            Globals.appSetting.socialapiurlc =
+                Globals.customSetting![i].rssFeed;
+          }
           _screens.add(SocialNewPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Student') {
           _screens.add(StudentPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
-          _screens.add(StaffPage(homeObj: Globals.customSetting![i]));
+          _screens.add(StaffPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC == 'Families') {
-          _screens.add(FamilyPage(homeObj: Globals.customSetting![i]));
+          _screens.add(FamilyPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC ==
             'Org Directory') {
           _screens.add(SchoolDirectoryPage(
@@ -495,30 +502,33 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             isSubmenu: false,
           ));
         } else if (Globals.customSetting![i].systemReferenceC == 'About') {
-          _screens.add(AboutPage(homeObj: Globals.customSetting![i]));
+          _screens.add(AboutPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC == 'Resources') {
-          _screens.add(ResourcesPage(homeObj: Globals.customSetting![i]));
-        }else if (Globals.customSetting![i].sectionTypeC == 'Other') {
-        // if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
-        //     Globals.customSetting![i].typeOfPageC == 'List Menu') {
-          _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-        }else{
-          _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
+          _screens.add(ResourcesPage(customObj: Globals.customSetting![i]));
+        } else if (Globals.customSetting![i].systemReferenceC == 'Other') {
+          // if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
+          //     Globals.customSetting![i].typeOfPageC == 'List Menu') {
+          _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
+        } else {
+          _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
         }
-      // } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-      //   if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
-      //       Globals.customSetting![i].typeOfPageC == 'List Menu') {
-      //     _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-      //   } else {
-      //     _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
-      //     if (Globals.customSetting![i].typeOfPageC == 'URL') {
-      //       Globals.urlIndex = _screens.length - 1;
-      //       Globals.homeUrl = Globals.customSetting![i].appUrlC;
-      //     }
-      //   }
-      // } else {
-      //   _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-      // }
+        // } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
+        //   if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
+        //       Globals.customSetting![i].typeOfPageC == 'List Menu') {
+        //     _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
+        //   } else {
+        //     _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
+        //     if (Globals.customSetting![i].typeOfPageC == 'URL') {
+        //       Globals.urlIndex = _screens.length - 1;
+        //       Globals.homeUrl = Globals.customSetting![i].appUrlC;
+        //     }
+        //   }
+        // } else {
+        //   _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
+        // }
+      }
+    } else {
+      EmptyContainer();
     }
   }
 

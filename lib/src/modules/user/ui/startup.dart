@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -196,7 +197,7 @@ class _StartupPageState extends State<StartupPage> {
                             state.obj["App_Logo__c"]);
                     state.obj != null
                         ? Navigator.of(context)
-                            .pushReplacement(_createRoute(state))
+                            .pushReplacement(_createRoute(state.obj))
                         : NoDataFoundErrorWidget(
                             isResultNotFoundMsg: false,
                             isNews: false,
@@ -241,11 +242,11 @@ class _StartupPageState extends State<StartupPage> {
         ));
   }
 
-  Route _createRoute(state) {
+  Route _createRoute(obj) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => HomePage(
         title: "SOC",
-        homeObj: state.obj,
+        homeObj: obj,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return child;
