@@ -2,27 +2,37 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
-import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
-import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
-import 'package:Soc/src/modules/schools/ui/school_details.dart';
+import 'package:Soc/src/modules/schools_directory/bloc/school_bloc.dart';
+import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
+import 'package:Soc/src/modules/schools_directory/ui/school_details.dart';
+import 'package:Soc/src/modules/shared/ui/common_school_directory_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
-import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
-class SchoolPage extends StatefulWidget {
+class SchoolDirectoryPage extends StatefulWidget {
+  final obj;
+  final bool? isStanderdPage;
+  final bool? isSubmenu;
+  final String? tittle;
+
+  const SchoolDirectoryPage(
+      {Key? key, this.obj, this.isStanderdPage, this.isSubmenu, this.tittle})
+      : super(key: key);
+
   @override
-  _SchoolPageState createState() => _SchoolPageState();
+  _SchoolDirectoryPageState createState() => _SchoolDirectoryPageState();
 }
 
-class _SchoolPageState extends State<SchoolPage> {
+class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
   static const double _kIconSize = 48.0;
   static const double _kLabelSpacing = 16.0;
   SchoolDirectoryBloc bloc = new SchoolDirectoryBloc();
@@ -35,7 +45,9 @@ class _SchoolPageState extends State<SchoolPage> {
     //lock screen orientation
     //Utility.setLocked();
     super.initState();
-    bloc.add(SchoolDirectoryListEvent());
+    bloc.add(SchoolDirectoryListEvent(
+        customRecordId: widget.isStanderdPage == true ? null : widget.obj.id,
+        isSubMenu: widget.isSubmenu));
   }
 
   Widget _buildnewsHeading(SchoolDirectoryList obj) {
@@ -73,12 +85,12 @@ class _SchoolPageState extends State<SchoolPage> {
       child: InkWell(
         onTap: () async {
           //free screen orientation
-        //  Utility.setFree();
+          //  Utility.setFree();
           await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => SchoolDetailPage(obj: obj)));
-           //Utility.setLocked();
+          //Utility.setLocked();
         },
         child: Row(
           children: <Widget>[
@@ -130,7 +142,11 @@ class _SchoolPageState extends State<SchoolPage> {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
                   if (iserrorstate == true) {
-                    bloc.add(SchoolDirectoryListEvent());
+                    bloc.add(SchoolDirectoryListEvent(
+                        customRecordId: widget.isStanderdPage == true
+                            ? null
+                            : widget.obj.id,
+                        isSubMenu: widget.isSubmenu));
                     iserrorstate = false;
                   }
                 } else if (!connected) {
@@ -138,53 +154,54 @@ class _SchoolPageState extends State<SchoolPage> {
                 }
                 return
                     // connected ?
-                    Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                    Stack(
+                  // mainAxisSize: MainAxisSize.max,
+                  // mainAxisAlignment: MainAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: BlocBuilder<SchoolDirectoryBloc,
-                              SchoolDirectoryState>(
-                          bloc: bloc,
-                          builder: (BuildContext contxt,
-                              SchoolDirectoryState state) {
-                            if (state is SchoolDirectoryInitial ||
-                                state is SchoolDirectoryLoading) {
-                              return Container(
-                                  alignment: Alignment.center,
-                                  child: CircularProgressIndicator(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
-                                  ));
-                            } else if (state is SchoolDirectoryDataSucess) {
-                              return state.obj!.length > 0
-                                  ? ListView.builder(
-                                      key: ValueKey(key),
-                                      padding: EdgeInsets.only(
-                                          bottom: AppTheme.klistPadding),
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: state.obj!.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return _buildList(
-                                            state.obj![index], index);
-                                      },
-                                    )
-                                  : NoDataFoundErrorWidget(
-                                      isResultNotFoundMsg: false,
-                                      isNews: false,
-                                      isEvents: false,
-                                      connected: connected,
-                                    );
-                            } else if (state is SchoolDirectoryErrorLoading) {
-                              return ListView(children: [ErrorMsgWidget()]);
-                            } else {
-                              return Container();
-                            }
-                          }),
-                    ),
+                    BlocBuilder<SchoolDirectoryBloc, SchoolDirectoryState>(
+                        bloc: bloc,
+                        builder:
+                            (BuildContext contxt, SchoolDirectoryState state) {
+                          if (state is SchoolDirectoryInitial ||
+                              state is SchoolDirectoryLoading) {
+                            return Container(
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant,
+                                ));
+                          } else if (state is SchoolDirectoryDataSucess) {
+                            return CommonSchoolDirectoryWidget(
+                              data: state.obj!,
+                            );
+                            // state.obj!.length > 0
+                            //     ? ListView.builder(
+                            //         key: ValueKey(key),
+                            //         padding: EdgeInsets.only(
+                            //             bottom: AppTheme.klistPadding),
+                            //         scrollDirection: Axis.vertical,
+                            //         itemCount: state.obj!.length,
+                            //         itemBuilder:
+                            //             (BuildContext context, int index) {
+                            //           return _buildList(
+                            //               state.obj![index], index);
+                            //         },
+                            //       )
+                            //     : NoDataFoundErrorWidget(
+                            //         isCalendarPageOrientationLandscape: false,
+                            //         isResultNotFoundMsg: false,
+                            //         isNews: false,
+                            //         isEvents: false,
+                            //         connected: connected,
+                            //       );
+                          } else if (state is SchoolDirectoryErrorLoading) {
+                            return ListView(children: [ErrorMsgWidget()]);
+                          } else {
+                            return Container();
+                          }
+                        }),
                     Container(
                       height: 0,
                       width: 0,
@@ -215,14 +232,26 @@ class _SchoolPageState extends State<SchoolPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWidget(
-          marginLeft: 30,
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
+        appBar: widget.isStanderdPage == true
+            ? AppBarWidget(
+                marginLeft: 30,
+                refresh: (v) {
+                  setState(() {});
+                },
+              )
+            : (widget.isSubmenu == true
+                ? CustomAppBarWidget(
+                    isSearch: true,
+                    isShare: false,
+                    sharedpopBodytext: '',
+                    sharedpopUpheaderText: '',
+                    appBarTitle: widget.tittle ?? '',
+                    language: Globals.selectedLanguage,
+                  )
+                : null),
         body: Globals.appSetting.schoolBannerImageC != null &&
-                Globals.appSetting.schoolBannerImageC != ""
+                Globals.appSetting.schoolBannerImageC != "" &&
+                widget.isSubmenu != true
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
@@ -243,7 +272,9 @@ class _SchoolPageState extends State<SchoolPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    bloc.add(SchoolDirectoryListEvent());
+    bloc.add(SchoolDirectoryListEvent(
+        customRecordId: widget.isStanderdPage == true ? null : widget.obj.id,
+        isSubMenu: widget.isSubmenu));
     _homeBloc.add(FetchStandardNavigationBar());
   }
 }

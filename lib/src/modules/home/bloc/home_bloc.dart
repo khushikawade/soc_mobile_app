@@ -7,8 +7,8 @@ import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
-import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
-import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
+import 'package:Soc/src/modules/schools_directory/bloc/school_bloc.dart';
+
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
@@ -26,6 +26,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../custom/model/custom_setting.dart';
+import '../../schools_directory/modal/school_directory_list.dart';
+
 part 'home_event.dart';
 part 'home_state.dart';
 

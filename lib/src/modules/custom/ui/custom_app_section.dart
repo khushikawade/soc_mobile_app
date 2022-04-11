@@ -120,14 +120,14 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                                     data: state.obj!,
                                     sectionName: "Custom")
                                 : ListView(
-                                  children: [
-                                    CommonListWidget(
-                                        scaffoldKey: _scaffoldKey,
-                                        connected: connected,
-                                        data: state.obj!,
-                                        sectionName: "Custom"),
-                                  ],
-                                );
+                                    children: [
+                                      CommonListWidget(
+                                          scaffoldKey: _scaffoldKey,
+                                          connected: connected,
+                                          data: state.obj!,
+                                          sectionName: "Custom"),
+                                    ],
+                                  );
                           } else if (state is ErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);
                           } else {

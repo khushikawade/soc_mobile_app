@@ -14,6 +14,7 @@ import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/no_data_found_error_widget.dart';
+import '../../schools_directory/ui/schools_directory.dart';
 
 class CommonListWidget extends StatefulWidget {
   final List<SharedList> data;
@@ -42,8 +43,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     } else {
       if (tapped == true) {
         tapped = false;
-        await  
-        Navigator.push(
+        await Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => InAppUrlLauncer(
@@ -168,6 +168,16 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     isAbout: true,
                     language: Globals.selectedLanguage,
                   )));
+    } else if (obj.typeC == "School Directory") {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SchoolDirectoryPage(
+                    tittle: obj.titleC,
+                    isSubmenu: true,
+                    obj: obj,
+                    isStanderdPage: false,
+                  )));
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }
@@ -247,11 +257,11 @@ class _CommonListWidgetState extends State<CommonListWidget> {
               return _buildList(widget.data[index], index);
             },
           )
-        : Container(
-            child: NoDataFoundErrorWidget(
-                isResultNotFoundMsg: false,
-                isNews: false,
-                isEvents: false,
-                connected: true));
+        : NoDataFoundErrorWidget(
+            isCalendarPageOrientationLandscape: false,
+            isResultNotFoundMsg: false,
+            isNews: false,
+            isEvents: false,
+            connected: true);
   }
 }
