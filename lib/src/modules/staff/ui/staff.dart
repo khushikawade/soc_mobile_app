@@ -76,7 +76,7 @@ class _StaffPageState extends State<StaffPage> {
                           ));
                         } else if (state is StaffDataSucess) {
                           return widget.homeObj != null &&
-                                  widget.homeObj!.gridViewC == "Grid Menu"
+                                  widget.homeObj!.sectionTemplate == "Grid Menu"
                               ? CommonGridWidget(
                                   scaffoldKey: _scaffoldKey,
                                   connected: connected,

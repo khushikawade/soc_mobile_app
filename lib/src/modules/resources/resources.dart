@@ -86,7 +86,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                 ));
                           } else if (state is ResourcesDataSucess) {
                             return widget.homeObj != null &&
-                                    widget.homeObj!.gridViewC == "Grid Menu"
+                                    widget.homeObj!.sectionTemplate == "Grid Menu"
                                 ? CommonGridWidget(
                                     scaffoldKey: _scaffoldKey,
                                     connected: connected,

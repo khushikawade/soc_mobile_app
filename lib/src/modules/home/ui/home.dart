@@ -205,7 +205,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         (item) {
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(
-                item.selectionTitleC, item.sectionIconC, item.standardSectionC),
+                item.selectionTitleC, item.sectionIconC, item.systemReferenceC),
             inactiveColorPrimary: CupertinoColors.systemGrey,
           );
         },
@@ -475,44 +475,50 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   void addScreen() {
     for (var i = 0; i < Globals.customSetting!.length; i++) {
-      if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
-        if (Globals.customSetting![i].standardSectionC == 'News') {
+      // if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
+        if (Globals.customSetting![i].systemReferenceC == 'News') {
           _screens.add(NewsPage());
           Globals.newsIndex = i;
           addNewsIndex(i);
-        } else if (Globals.customSetting![i].standardSectionC == 'Social') {
+        } else if (Globals.customSetting![i].systemReferenceC == 'Social') {
           _screens.add(SocialNewPage());
-        } else if (Globals.customSetting![i].standardSectionC == 'Student') {
+        } else if (Globals.customSetting![i].systemReferenceC == 'Student') {
           _screens.add(StudentPage());
-        } else if (Globals.customSetting![i].standardSectionC == 'Staff') {
+        } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
           _screens.add(StaffPage(homeObj: Globals.customSetting![i]));
-        } else if (Globals.customSetting![i].standardSectionC == 'Families') {
+        } else if (Globals.customSetting![i].systemReferenceC == 'Families') {
           _screens.add(FamilyPage(homeObj: Globals.customSetting![i]));
-        } else if (Globals.customSetting![i].standardSectionC ==
-            'School Directory') {
+        } else if (Globals.customSetting![i].systemReferenceC ==
+            'Org Directory') {
           _screens.add(SchoolDirectoryPage(
             isStanderdPage: true,
             isSubmenu: false,
           ));
-        } else if (Globals.customSetting![i].standardSectionC == 'About') {
+        } else if (Globals.customSetting![i].systemReferenceC == 'About') {
           _screens.add(AboutPage(homeObj: Globals.customSetting![i]));
-        } else if (Globals.customSetting![i].standardSectionC == 'Resources') {
+        } else if (Globals.customSetting![i].systemReferenceC == 'Resources') {
           _screens.add(ResourcesPage(homeObj: Globals.customSetting![i]));
-        }
-      } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-        if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
-            Globals.customSetting![i].typeOfPageC == 'List Menu') {
+        }else if (Globals.customSetting![i].sectionTypeC == 'Other') {
+        // if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
+        //     Globals.customSetting![i].typeOfPageC == 'List Menu') {
           _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-        } else {
-          _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
-          if (Globals.customSetting![i].typeOfPageC == 'URL') {
-            Globals.urlIndex = _screens.length - 1;
-            Globals.homeUrl = Globals.customSetting![i].appUrlC;
-          }
+        }else{
+          _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
         }
-      } else {
-        _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-      }
+      // } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
+      //   if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
+      //       Globals.customSetting![i].typeOfPageC == 'List Menu') {
+      //     _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
+      //   } else {
+      //     _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
+      //     if (Globals.customSetting![i].typeOfPageC == 'URL') {
+      //       Globals.urlIndex = _screens.length - 1;
+      //       Globals.homeUrl = Globals.customSetting![i].appUrlC;
+      //     }
+      //   }
+      // } else {
+      //   _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
+      // }
     }
   }
 

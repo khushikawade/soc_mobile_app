@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/custom/ui/open_external_browser_button.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
@@ -7,7 +8,6 @@ import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/modules/custom/ui/home_inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +19,14 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import '../../../widgets/inapp_url_launcher.dart';
 
 class CustomPages extends StatefulWidget {
-  final homeObj;
+  // final homeObj;
+  final customObj;
 
-  CustomPages({
-    Key? key,
-    this.homeObj,
-  }) : super(key: key);
+  CustomPages(
+      {Key? key,
+      // this.homeObj,
+      this.customObj})
+      : super(key: key);
 
   @override
   _CustomPagesState createState() => _CustomPagesState();
@@ -72,10 +74,10 @@ class _CustomPagesState extends State<CustomPages> {
                 return
                     // connected?
                     Stack(
-                      fit: StackFit.expand,
+                  fit: StackFit.expand,
                   //   mainAxisSize: MainAxisSize.max,
                   children: [
-                    buildPage(widget.homeObj),
+                    buildPage(widget.customObj),
                     Container(
                       height: 0,
                       width: 0,
@@ -113,8 +115,8 @@ class _CustomPagesState extends State<CustomPages> {
         body: _body('body1'));
   }
 
-  Widget buildPage(obj) {
-    if (obj.typeOfPageC == "URL") {
+  Widget buildPage(CustomSetting obj) {
+    if (obj.sectionTemplate == "URL") {
       return obj.appUrlC != null && obj.appUrlC != ""
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
                   // || obj.deepLinkC == 'YES'
@@ -145,10 +147,10 @@ class _CustomPagesState extends State<CustomPages> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.typeOfPageC == "RTF_HTML" ||
-        obj.typeOfSectionC == "RFT_HTML" ||
-        obj.typeOfSectionC == "HTML/RTF" ||
-        obj.typeOfSectionC == "RTF/HTML") {
+    } else if (obj.sectionTemplate == "RTF_HTML" ||
+        obj.sectionTypeC == "RFT_HTML" ||
+        obj.sectionTypeC == "HTML/RTF" ||
+        obj.sectionTypeC == "RTF/HTML") {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
           ? Expanded(
               child: AboutusPage(
@@ -168,7 +170,7 @@ class _CustomPagesState extends State<CustomPages> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.typeOfPageC == "Embed iFrame") {
+    } else if (obj.sectionTemplate == "Embed iFrame") {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
           ? Expanded(
               child: InAppUrlLauncer(
@@ -193,7 +195,7 @@ class _CustomPagesState extends State<CustomPages> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.typeOfPageC == "PDF URL" || obj.typeOfSectionC == "PDF") {
+    } else if (obj.sectionTemplate == "PDF URL" || obj.sectionTypeC == "PDF") {
       return obj.pdfURL != null && obj.pdfURL != ""
           ? Expanded(
               child: CommonPdfViewerPage(
@@ -212,7 +214,7 @@ class _CustomPagesState extends State<CustomPages> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.typeOfPageC == "Contact") {
+    } else if (obj.sectionTemplate == "Contact") {
       return Expanded(
         child: ContactPage(
           obj: Globals.appSetting,
@@ -222,7 +224,7 @@ class _CustomPagesState extends State<CustomPages> {
           appBarTitle: '',
         ),
       );
-    } else if (obj.typeOfPageC == "Calendar/Events") {
+    } else if (obj.sectionTemplate == "Calendar/Events") {
       return obj.calendarId != null && obj.calendarId != ""
           ? Expanded(
               child: EventPage(
@@ -241,9 +243,9 @@ class _CustomPagesState extends State<CustomPages> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.typeOfPageC == "School Directory") {
+    } else if (obj.sectionTemplate == "School Directory") {
       return SchoolDirectoryPage(
-        obj: widget.homeObj,
+        obj: widget.customObj,
         isStanderdPage: false,
         isSubmenu: false,
       );

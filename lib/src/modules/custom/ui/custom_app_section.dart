@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
+import 'package:Soc/src/modules/custom/ui/custom_page.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_grid_widget.dart';
@@ -113,21 +114,23 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                               state is CustomLoading) {
                             return Center(child: CircularProgressIndicator());
                           } else if (state is CustomDataSucess) {
-                            return widget.homeObj.gridViewC == "Grid Menu"
-                                ? CommonGridWidget(
-                                    scaffoldKey: _scaffoldKey,
-                                    connected: connected,
-                                    data: state.obj!,
-                                    sectionName: "Custom")
-                                : ListView(
-                                    children: [
-                                      CommonListWidget(
-                                          scaffoldKey: _scaffoldKey,
-                                          connected: connected,
-                                          data: state.obj!,
-                                          sectionName: "Custom"),
-                                    ],
-                                  );
+                            return CustomPages(customObj: state.obj);
+                            
+                            // widget.homeObj.gridViewC == "Grid Menu"
+                            //     ? CommonGridWidget(
+                            //         scaffoldKey: _scaffoldKey,
+                            //         connected: connected,
+                            //         data: state.obj!,
+                            //         sectionName: "Custom")
+                            //     : ListView(
+                            //         children: [
+                            //           CommonListWidget(
+                            //               scaffoldKey: _scaffoldKey,
+                            //               connected: connected,
+                            //               data: state.obj!,
+                            //               sectionName: "Custom"),
+                                    // ],
+                                  // );
                           } else if (state is ErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);
                           } else {
