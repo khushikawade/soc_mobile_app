@@ -172,17 +172,19 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                     staffDirectoryCategoryId: obj.id,
                     appBarTitle: obj.titleC!,
                     obj: obj,
+                    isSubmenu: true,
                     isbuttomsheet: true,
                     isAbout: true,
                     language: Globals.selectedLanguage,
                   )));
-    }else if (obj.typeC == "School Directory") {
+    } else if (obj.typeC == "School Directory" ||
+        obj.typeC == 'Org Directory') {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => SchoolDirectoryPage(
                     title: obj.titleC,
-                    isSubmenu: false,
+                    isSubmenu: obj.typeC == 'Org Directory' ? true : false,
                     obj: obj,
                     isStanderdPage: false,
                   )));

@@ -484,8 +484,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           Globals.newsIndex = i;
           addNewsIndex(i);
         } else if (Globals.customSetting![i].systemReferenceC == 'Social' ||
-            Globals.customSetting![i].sectionTemplate == 'Rss social feed') {
-          if (Globals.customSetting![i].sectionTemplate == 'Rss social feed') {
+            Globals.customSetting![i].sectionTemplate == 'RSS Feed') {
+          if (Globals.customSetting![i].sectionTemplate == 'RSS Feed') {
             Globals.appSetting.socialapiurlc =
                 Globals.customSetting![i].rssFeed;
           }

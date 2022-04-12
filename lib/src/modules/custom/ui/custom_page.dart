@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
+import 'package:Soc/src/modules/social/ui/social_new.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -249,7 +250,13 @@ class _CustomPagesState extends State<CustomPages> {
                       isEvents: false,
                       connected: true)),
             );
-    } else if (obj.sectionTemplate == "Org Directory") {
+    }
+    else if (obj.sectionTemplate == "RSS Feed") {
+            Globals.appSetting.socialapiurlc =
+                obj.rssFeed;
+      return Expanded(child: SocialNewPage());
+    } 
+     else if (obj.sectionTemplate == "Org Directory") {
       return SchoolDirectoryPage(
         obj: widget.customObj,
         isStanderdPage: null, //To omit the appbar
