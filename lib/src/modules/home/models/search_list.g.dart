@@ -40,13 +40,14 @@ class SearchListAdapter extends TypeAdapter<SearchList> {
       objectName: fields[20] as String?,
       latitude: fields[21] as dynamic,
       longitude: fields[23] as dynamic,
+      darkModeIconC: fields[24] as dynamic,
     );
   }
 
   @override
   void write(BinaryWriter writer, SearchList obj) {
     writer
-      ..writeByte(23)
+      ..writeByte(24)
       ..writeByte(0)
       ..write(obj.titleC)
       ..writeByte(1)
@@ -92,7 +93,9 @@ class SearchListAdapter extends TypeAdapter<SearchList> {
       ..writeByte(21)
       ..write(obj.latitude)
       ..writeByte(23)
-      ..write(obj.longitude);
+      ..write(obj.longitude)
+      ..writeByte(24)
+      ..write(obj.darkModeIconC);
   }
 
   @override

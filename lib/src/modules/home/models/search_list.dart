@@ -50,6 +50,8 @@ class SearchList {
   dynamic latitude;
   @HiveField(23)
   dynamic longitude;
+  @HiveField(24)
+  dynamic darkModeIconC;
 
   SearchList(
       {this.titleC,
@@ -74,7 +76,8 @@ class SearchList {
       this.calendarId,
       this.objectName,
       this.latitude,
-      this.longitude});
+      this.longitude,
+      this.darkModeIconC});
 
   factory SearchList.fromJson(Map<String, dynamic> json) => SearchList(
       titleC: Utility.utf8convert(json['Title__c'] as String?),
@@ -99,7 +102,8 @@ class SearchList {
       calendarId: json['Calendar_Id__c'] as String?,
       objectName: json['ObjectName'] as String?,
       latitude: json['Contact_Office_Location__Latitude__s'],
-      longitude: json['Contact_Office_Location__Longitude__s']);
+      longitude: json['Contact_Office_Location__Longitude__s'],
+      darkModeIconC: '');
 
   Map<String, dynamic> toJson() => {
         'Title__c': titleC,
@@ -124,6 +128,7 @@ class SearchList {
         'Calendar_Id__c': calendarId,
         'ObjectName': objectName,
         'Contact_Office_Location__Latitude__s': latitude,
-        'Contact_Office_Location__Longitude__s': longitude
+        'Contact_Office_Location__Longitude__s': longitude,
+        '': darkModeIconC
       };
 }
