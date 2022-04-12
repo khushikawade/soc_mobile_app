@@ -490,7 +490,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 Globals.customSetting![i].rssFeed;
           }
           _screens.add(SocialNewPage());
-        } else if (Globals.customSetting![i].systemReferenceC == 'Student') {
+        } else if (Globals.customSetting![i].systemReferenceC == 'Students') {
           _screens.add(StudentPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
           _screens.add(StaffPage(customObj: Globals.customSetting![i]));

@@ -224,14 +224,12 @@ class _CustomPagesState extends State<CustomPages> {
                       connected: true)),
             );
     } else if (obj.sectionTemplate == "Contact") {
-      return Expanded(
-        child: ContactPage(
-          obj: Globals.appSetting,
-          isbuttomsheet: true,
-          isAppBar: false,
-          language: Globals.selectedLanguage ?? "English",
-          appBarTitle: '',
-        ),
+      return ContactPage(
+        obj: Globals.appSetting,
+        isbuttomsheet: true,
+        isAppBar: false,
+        language: Globals.selectedLanguage ?? "English",
+        appBarTitle: '',
       );
     } else if (obj.sectionTemplate == "Calendar/Events") {
       return obj.calendarId != null && obj.calendarId != ""
