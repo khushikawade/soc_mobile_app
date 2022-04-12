@@ -24,8 +24,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   initState() {
     super.initState();
     // getTheme();
+    // clearLocalDataBase();
 
-   
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {

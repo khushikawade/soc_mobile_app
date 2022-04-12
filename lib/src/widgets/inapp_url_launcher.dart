@@ -35,6 +35,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   bool isLoading = true;
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
+  // Globals.webViewController1 = Completer<WebViewController>();
 
   @override
   void initState() {
@@ -103,6 +104,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated:
                             (WebViewController webViewController) {
+                          Globals.webViewController1 = webViewController;
                           _controller.complete(webViewController);
                         },
                       ),

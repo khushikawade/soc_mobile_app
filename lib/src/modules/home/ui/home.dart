@@ -520,6 +520,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else if (Globals.customSetting![i].systemReferenceC == 'Other') {
           // if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
           //     Globals.customSetting![i].typeOfPageC == 'List Menu') {
+          if (Globals.customSetting![i].sectionTemplate == 'URL') {
+            Globals.urlIndex = _screens.length;
+            Globals.homeUrl = Globals.customSetting![i].appUrlC;
+          }
           _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
         } else {
           _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
