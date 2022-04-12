@@ -83,6 +83,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,
+                    isSubmenu: true,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
@@ -164,6 +165,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     staffDirectoryCategoryId: obj.id,
                     appBarTitle: obj.titleC!,
                     obj: obj,
+                    isSubmenu: true,
                     isbuttomsheet: true,
                     isAbout: true,
                     language: Globals.selectedLanguage,

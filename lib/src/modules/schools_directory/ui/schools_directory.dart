@@ -46,7 +46,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     //Utility.setLocked();
     super.initState();
     bloc.add(SchoolDirectoryListEvent(
-        customRecordId: widget.isStanderdPage == true ? null : widget.obj.id,
+        customRecordId: widget.isStanderdPage !=false ? null : widget.obj.id,
         isSubMenu: widget.isSubmenu));
   }
 

@@ -65,7 +65,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
       _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
     } else {
       _bloc.add(SDevent(
-          customRecordId: widget.isCustom && widget.isSubmenu != false
+          customRecordId: widget.isCustom && widget.isSubmenu == true
               ? widget.obj.id
               : null));
     }
@@ -219,7 +219,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: widget.isSubmenu != false
+        appBar: widget.isSubmenu == true
             ? CustomAppBarWidget(
                 marginLeft: 30,
                 appBarTitle: widget.appBarTitle,
@@ -230,12 +230,14 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 isCenterIcon: true,
                 language: Globals.selectedLanguage,
               )
-            : AppBarWidget(
-                marginLeft: 30,
-                refresh: (v) {
-                  setState(() {});
-                },
-              ),
+            : widget.isSubmenu == false
+                ? AppBarWidget(
+                    marginLeft: 30,
+                    refresh: (v) {
+                      setState(() {});
+                    },
+                  )
+                : null,
         body: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(

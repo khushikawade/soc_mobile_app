@@ -71,7 +71,7 @@ class _CustomPagesState extends State<CustomPages> {
               return
                   // connected?
                   Stack(
-                // fit: StackFit.expand,
+                fit: StackFit.expand,
                 //   mainAxisSize: MainAxisSize.max,
                 children: [
                   buildPage(widget.customList!, widget.customObj!, connected),
@@ -235,12 +235,12 @@ class _CustomPagesState extends State<CustomPages> {
     } else if (obj.sectionTemplate == "Calendar/Events") {
       return obj.calendarId != null && obj.calendarId != ""
           ? EventPage(
-            appBarTitle: '',
-            isAppBar: false,
-            isbuttomsheet: true,
-            language: Globals.selectedLanguage,
-            calendarId: obj.calendarId.toString(),
-          )
+              appBarTitle: '',
+              isAppBar: false,
+              isbuttomsheet: true,
+              language: Globals.selectedLanguage,
+              calendarId: obj.calendarId.toString(),
+            )
           : Expanded(
               child: Container(
                   child: NoDataFoundErrorWidget(
@@ -250,34 +250,30 @@ class _CustomPagesState extends State<CustomPages> {
                       connected: true)),
             );
     } else if (obj.sectionTemplate == "Org Directory") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => SchoolDirectoryPage(
-                    obj: widget.customObj,
-                    isStanderdPage: false,
-                    isSubmenu: false,
-                  )));
+      return SchoolDirectoryPage(
+        obj: widget.customObj,
+        isStanderdPage: null, //To omit the appbar
+        isSubmenu: false,
+      );
     } else if (obj.sectionTemplate == "Personnel Directory") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => StaffDirectory(
-                    isCustom: true,
-                    staffDirectoryCategoryId: obj.id,
-                    appBarTitle: obj.sectionTitleC!,
-                    obj: widget.customObj,
-                    isbuttomsheet: true,
-                    isAbout: false,
-                    language: Globals.selectedLanguage,
-                  )));
+      return StaffDirectory(
+        isCustom: true,
+        // staffDirectoryCategoryId: obj.id,
+        appBarTitle: obj.sectionTitleC!,
+        obj: widget.customObj,
+        isbuttomsheet: true,
+        isAbout: false,
+        isSubmenu: null, //To omit the appbar
+        language: Globals.selectedLanguage,
+      );
     }
     return Expanded(
-        child: Container(
-            child: NoDataFoundErrorWidget(
-                isResultNotFoundMsg: false,
-                isNews: false,
-                isEvents: false,
-                connected: true)));
+      child: Container(
+          child: NoDataFoundErrorWidget(
+              isResultNotFoundMsg: false,
+              isNews: false,
+              isEvents: false,
+              connected: true)),
+    );
   }
 }
