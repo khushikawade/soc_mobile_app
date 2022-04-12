@@ -234,15 +234,13 @@ class _CustomPagesState extends State<CustomPages> {
       );
     } else if (obj.sectionTemplate == "Calendar/Events") {
       return obj.calendarId != null && obj.calendarId != ""
-          ? Expanded(
-              child: EventPage(
-                appBarTitle: '',
-                isAppBar: false,
-                isbuttomsheet: true,
-                language: Globals.selectedLanguage,
-                calendarId: obj.calendarId.toString(),
-              ),
-            )
+          ? EventPage(
+            appBarTitle: '',
+            isAppBar: false,
+            isbuttomsheet: true,
+            language: Globals.selectedLanguage,
+            calendarId: obj.calendarId.toString(),
+          )
           : Expanded(
               child: Container(
                   child: NoDataFoundErrorWidget(

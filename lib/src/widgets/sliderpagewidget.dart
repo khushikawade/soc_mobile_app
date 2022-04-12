@@ -74,10 +74,10 @@ class _SliderWidgetState extends State<SliderWidget> {
   bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
     if (isDeviceBackButton == true) {
       isDeviceBackButton = false;
-      bool isNewsPage =
-          // widget.iseventpage == false ||
-          widget.issocialpage == true ? true : false;
-      Navigator.of(context).pop(isNewsPage);
+      // bool isNewsPage =
+      //     // widget.iseventpage == false ||
+      //     widget.issocialpage == true ? true : false;
+      Navigator.of(context).pop(widget.isNewsPage);
       return true;
     }
     return false;
@@ -89,9 +89,9 @@ class _SliderWidgetState extends State<SliderWidget> {
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
           leading: BackButtonWidget(
-            isNewsPage:
+            isNewsPage:widget.isNewsPage
                 // widget.iseventpage == false ||
-                widget.issocialpage == true ? true : false,
+                // widget.issocialpage == true ? true : false,
           ),
           title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             AppLogoWidget(
