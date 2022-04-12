@@ -46,7 +46,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     //Utility.setLocked();
     super.initState();
     bloc.add(SchoolDirectoryListEvent(
-        customRecordId: widget.isStanderdPage !=false ? null : widget.obj.id,
+        customRecordId: widget.isStanderdPage != false ? null : widget.obj.id,
         isSubMenu: widget.isSubmenu));
   }
 
@@ -143,7 +143,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                 if (connected) {
                   if (iserrorstate == true) {
                     bloc.add(SchoolDirectoryListEvent(
-                        customRecordId: widget.isStanderdPage == true
+                        customRecordId: widget.isStanderdPage != false
                             ? null
                             : widget.obj.id,
                         isSubMenu: widget.isSubmenu));
@@ -274,7 +274,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     bloc.add(SchoolDirectoryListEvent(
-        customRecordId: widget.isStanderdPage == true ? null : widget.obj.id,
+        customRecordId: widget.isStanderdPage != false ? null : widget.obj.id,
         isSubMenu: widget.isSubmenu));
     _homeBloc.add(FetchStandardNavigationBar());
   }

@@ -256,8 +256,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                           SDevent(categoryId: widget.staffDirectoryCategoryId));
                     } else {
                       _bloc.add(SDevent(
-                          customRecordId:
-                              widget.isCustom ? widget.obj.id : null));
+          customRecordId: widget.isCustom && widget.isSubmenu == true
+              ? widget.obj.id
+              : null));
                     }
                   }
                 } else if (!connected) {
@@ -343,8 +344,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     if (widget.staffDirectoryCategoryId != null) {
       _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
     } else {
-      _bloc
-          .add(SDevent(customRecordId: widget.isCustom ? widget.obj.id : null));
+       _bloc.add(SDevent(
+          customRecordId: widget.isCustom && widget.isSubmenu == true
+              ? widget.obj.id
+              : null));
     }
     _homeBloc.add(FetchStandardNavigationBar());
   }
