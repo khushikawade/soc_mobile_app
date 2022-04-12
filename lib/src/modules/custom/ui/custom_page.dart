@@ -250,13 +250,10 @@ class _CustomPagesState extends State<CustomPages> {
                       isEvents: false,
                       connected: true)),
             );
-    }
-    else if (obj.sectionTemplate == "RSS Feed") {
-            Globals.appSetting.socialapiurlc =
-                obj.rssFeed;
+    } else if (obj.sectionTemplate == "RSS Feed") {
+      Globals.appSetting.socialapiurlc = obj.rssFeed;
       return Expanded(child: SocialNewPage());
-    } 
-     else if (obj.sectionTemplate == "Org Directory") {
+    } else if (obj.sectionTemplate == "Org Directory") {
       return SchoolDirectoryPage(
         obj: widget.customObj,
         isStanderdPage: null, //To omit the appbar
