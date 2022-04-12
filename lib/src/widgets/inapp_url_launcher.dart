@@ -45,9 +45,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   @override
   Widget build(BuildContext context) {
     return widget.isCustomMainPageWebView == true
-        ? Expanded(
-            child: _webViewWidget(),
-          )
+        ? _webViewWidget()
         : Scaffold(
             appBar: CustomAppBarWidget(
               isSearch: false,

@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 import 'package:flutter/material.dart';
@@ -17,22 +18,23 @@ class SliderWidget extends StatefulWidget {
   int currentIndex;
   bool? issocialpage;
   bool? isAboutSDPage;
+  bool? isNewsPage;
   String date;
   bool isbuttomsheet;
   String? language;
-  final iseventpage;
+  // final iseventpage;
   bool? connected;
 
-  SliderWidget({
-    required this.obj,
-    required this.currentIndex,
-    required this.iseventpage,
-    required this.date,
-    required this.isbuttomsheet,
-    required this.language,
-    this.issocialpage,
-    this.isAboutSDPage,
-  });
+  SliderWidget(
+      {required this.obj,
+      required this.currentIndex,
+      // required this.iseventpage,
+      required this.date,
+      required this.isbuttomsheet,
+      required this.language,
+      this.issocialpage,
+      this.isAboutSDPage,
+      this.isNewsPage});
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -73,9 +75,8 @@ class _SliderWidgetState extends State<SliderWidget> {
     if (isDeviceBackButton == true) {
       isDeviceBackButton = false;
       bool isNewsPage =
-          widget.iseventpage == false || widget.issocialpage == true
-              ? true
-              : false;
+          // widget.iseventpage == false ||
+          widget.issocialpage == true ? true : false;
       Navigator.of(context).pop(isNewsPage);
       return true;
     }
@@ -89,9 +90,8 @@ class _SliderWidgetState extends State<SliderWidget> {
           elevation: 0.0,
           leading: BackButtonWidget(
             isNewsPage:
-                widget.iseventpage == false || widget.issocialpage == true
-                    ? true
-                    : false,
+                // widget.iseventpage == false ||
+                widget.issocialpage == true ? true : false,
           ),
           title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             AppLogoWidget(
@@ -164,23 +164,25 @@ class _SliderWidgetState extends State<SliderWidget> {
                       language: Globals.selectedLanguage,
                       index: pageinitialIndex,
                     )
-                  : widget.isAboutSDPage!
-                      ? AboutSDDetailPage(
-                          obj: object[pageinitialIndex],
-                        )
-                      // : widget.iseventpage
-                      //     ? EventDescription(
-                      //         obj: object[pageinitialIndex],
-                      //         isbuttomsheet: true,
-                      //         language: Globals.selectedLanguage,
-                      //       )
-                      : Newdescription(
+                  : widget.isNewsPage!
+                      ? Newdescription(
                           obj: object[pageinitialIndex],
                           date: widget.date,
                           isbuttomsheet: true,
                           language: Globals.selectedLanguage,
                           connected: widget.connected,
-                        );
+                        )
+                      : widget.isAboutSDPage != null
+                          ? AboutSDDetailPage(
+                              obj: object[pageinitialIndex],
+                            )
+                          // : widget.iseventpage             //Removed due to new UI
+                          //     ? EventDescription(
+                          //         obj: object[pageinitialIndex],
+                          //         isbuttomsheet: true,
+                          //         language: Globals.selectedLanguage,
+                          //       )
+                          : EmptyContainer();
             },
           ),
         )

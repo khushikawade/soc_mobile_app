@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/custom/ui/custom_app_section.dart';
-import 'package:Soc/src/modules/custom/ui/custom_page.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
@@ -28,6 +27,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../overrides.dart';
+import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
@@ -484,8 +484,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           Globals.newsIndex = i;
           addNewsIndex(i);
         } else if (Globals.customSetting![i].systemReferenceC == 'Social' ||
-            Globals.customSetting![i].sectionTemplate == 'RSS Feed') {
-          if (Globals.customSetting![i].sectionTemplate == 'RSS Feed') {
+            Globals.customSetting![i].sectionTemplate == 'Rss social feed') {
+          if (Globals.customSetting![i].sectionTemplate == 'Rss social feed') {
             Globals.appSetting.socialapiurlc =
                 Globals.customSetting![i].rssFeed;
           }
@@ -497,19 +497,23 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else if (Globals.customSetting![i].systemReferenceC == 'Families') {
           _screens.add(FamilyPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC ==
-            'Directory - Org') {
+            'Directory Org') {
           _screens.add(SchoolDirectoryPage(
             isStanderdPage: true,
             isSubmenu: false,
           ));
-        }  
-        // else if (Globals.customSetting![i].systemReferenceC ==
-        //     'Directory - Personnel') {
-        //   _screens.add(StaffDirectory(
-            
-        //   ));
-        // } 
-        else if (Globals.customSetting![i].systemReferenceC == 'About') {
+        } else if (Globals.customSetting![i].systemReferenceC ==
+            'Directory Personnel') {
+          _screens.add(StaffDirectory(
+            appBarTitle: '',
+            isAbout: false,
+            isCustom: true,
+            isSubmenu: false,
+            isbuttomsheet: true,
+            language: Globals.selectedLanguage,
+            obj: Globals.customSetting![i],
+          ));
+        } else if (Globals.customSetting![i].systemReferenceC == 'About') {
           _screens.add(AboutPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC == 'Resources') {
           _screens.add(ResourcesPage(customObj: Globals.customSetting![i]));

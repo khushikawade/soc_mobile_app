@@ -34,7 +34,7 @@ class CustomSetting {
   String? systemReferenceC;
   @HiveField(10)
   String? sectionTypeC;
-   @HiveField(11)
+  @HiveField(11)
   String? sectionTemplate;
   // @HiveField(15)
   // bool? isDeleted;

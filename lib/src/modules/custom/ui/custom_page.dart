@@ -70,7 +70,7 @@ class _CustomPagesState extends State<CustomPages> {
 
               return
                   // connected?
-                  Column(
+                  Stack(
                 // fit: StackFit.expand,
                 //   mainAxisSize: MainAxisSize.max,
                 children: [
@@ -110,7 +110,7 @@ class _CustomPagesState extends State<CustomPages> {
         body: _body('body1'));
   }
 
- Widget buildPage(List<SharedList> list, CustomSetting obj, connected) {
+  Widget buildPage(List<SharedList> list, CustomSetting obj, connected) {
     if (obj.sectionTemplate == 'List Menu') {
       return CommonListWidget(
           scaffoldKey: _scaffoldKey,
@@ -134,7 +134,7 @@ class _CustomPagesState extends State<CustomPages> {
                       ),
                     ) // TODO: Add a proper message when links are unable to open
                   : InAppUrlLauncer(
-                      title: obj.sectionTitleC!,// "no scaffold",
+                      title: obj.sectionTitleC!, // "no scaffold",
                       url: obj.appUrlC,
                       isbuttomsheet: true,
                       language: Globals.selectedLanguage,
@@ -252,7 +252,7 @@ class _CustomPagesState extends State<CustomPages> {
                       connected: true)),
             );
     } else if (obj.sectionTemplate == "Org Directory") {
-       Navigator.push(
+      Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => SchoolDirectoryPage(
@@ -260,9 +260,8 @@ class _CustomPagesState extends State<CustomPages> {
                     isStanderdPage: false,
                     isSubmenu: false,
                   )));
-    }
-    else if (obj.sectionTemplate == "Personnel Directory") {
-     Navigator.push(
+    } else if (obj.sectionTemplate == "Personnel Directory") {
+      Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
