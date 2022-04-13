@@ -41,13 +41,14 @@ class RecentAdapter extends TypeAdapter<Recent> {
       fields[22] as dynamic,
       fields[23] as dynamic,
       fields[24] as dynamic,
+      fields[25] as dynamic,
     );
   }
 
   @override
   void write(BinaryWriter writer, Recent obj) {
     writer
-      ..writeByte(24)
+      ..writeByte(25)
       ..writeByte(0)
       ..write(obj.hiveobjid)
       ..writeByte(1)
@@ -95,7 +96,9 @@ class RecentAdapter extends TypeAdapter<Recent> {
       ..writeByte(23)
       ..write(obj.latitude)
       ..writeByte(24)
-      ..write(obj.longitude);
+      ..write(obj.longitude)
+      ..writeByte(25)
+      ..write(obj.darkModeIconC);
   }
 
   @override

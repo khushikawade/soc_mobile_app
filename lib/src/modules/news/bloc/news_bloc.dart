@@ -58,8 +58,16 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         _list.forEach((NotificationList e) {
           _localDb.addData(e);
         });
-        _list.sort(
-            (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+
+        _list.forEach((element) {
+          if (element.completedAtTimestamp != null) {
+            _list.sort((a, b) =>
+                b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+          }
+        });
+
+        // _list.sort(
+        //     (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
         // Syncing end.
         //Adding push notification list data to global list
         Globals.notificationList.clear();

@@ -196,7 +196,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
               }
             } catch (e) {}
           }
-
+          // futureListobj.whereNot((element) => element.status != "cancelled");
           futureListobj.sort((a, b) {
             var adate = DateTime.parse(a.start.toString().contains('dateTime')
                 ? a.start['dateTime'].split('T')[0]
@@ -208,7 +208,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             return adate.compareTo(
                 bdate); //to get the order other way just switch `adate & bdate`
           });
-
+          // pastListobj.whereNot((element) => element.status != "cancelled");
           pastListobj.sort((a, b) {
             var adate = DateTime.parse(a.start.toString().contains('dateTime')
                 ? a.start['dateTime'].split('T')[0]
@@ -256,7 +256,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             }
           } catch (e) {}
         }
-
+        // futureListobj.whereNot((element) => element.status != "cancelled");
         futureListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -268,7 +268,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return adate.compareTo(
               bdate); //to get the order other way just switch `adate & bdate`
         });
-
+        // pastListobj.whereNot((element) => element.status != "cancelled");
         pastListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -287,6 +287,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             // futureListobj: futureListMap, pastListobj: pastListMap
             );
       } catch (e) {
+        print(e);
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
@@ -312,7 +313,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             }
           } catch (e) {}
         }
-
+        // futureListobj.whereNot((element) => element.status != "cancelled");
         futureListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -324,7 +325,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           return adate.compareTo(
               bdate); //to get the order other way just switch `adate & bdate`
         });
-
+        // pastListobj.whereNot((element) => element.status != "cancelled");
         pastListobj.sort((a, b) {
           var adate = DateTime.parse(a.start.toString().contains('dateTime')
               ? a.start['dateTime'].split('T')[0]
@@ -428,19 +429,23 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://www.googleapis.com/calendar/v3/calendars/$calendarId/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
+            'https://www.googleapis.com/calendar/v3/calendars/ms50website@gmail.com/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         List dataArray = data["items"];
-        List data1 = dataArray
+        List<CalendarEventList> data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
         // print(data1);
         return data1.map((i) {
-          var datetime = i.start.toString().contains('dateTime')
-              ? i.start['dateTime'].toString().substring(0, 10)
-              : i.start['date'].toString().substring(0, 10);
+          var datetime = i.start != null
+              ? (i.start.toString().contains('dateTime')
+                  ? i.start['dateTime'].toString().substring(0, 10)
+                  : i.start['date'].toString().substring(0, 10))
+              : (i.originalStartTime.toString().contains('dateTime')
+                  ? i.originalStartTime['dateTime'].toString().substring(0, 10)
+                  : '1950-01-01');
           String month = Utility.convertTimestampToDateFormat(
               DateTime.parse(datetime), 'MMM yyyy');
 
