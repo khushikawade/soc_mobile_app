@@ -138,7 +138,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                       iconUrl: apps[index]
                                                               .appIconC ??
                                                           Overrides
-                                                              .folderDefaultImage))
+                                                              .folderDefaultImage, darkModeIconUrl: apps[index].darkModeIconC,))
                                               : Container(),
                                           Container(
                                               child: TranslationWidget(
