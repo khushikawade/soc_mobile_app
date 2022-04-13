@@ -423,10 +423,17 @@ class _SearchPageState extends State<SearchPage> {
                 _buildLeading(items[index]),
                 HorzitalSpacerWidget(_kLabelSpacing),
                 TranslationWidget(
-                  message: items[index].titleC != null &&
-                          items[index].titleC.isNotEmpty
-                      ? '${items[index].titleC} '
-                      : '',
+                  message: items[index].objectName == 'Staff_Directory_App__c'
+                      ? (items[index].name != null &&
+                              items[index].name != 'null' &&
+                              items[index].name.isNotEmpty
+                          ? '${items[index].name} '
+                          : '')
+                      : (items[index].titleC != null &&
+                              items[index].titleC != 'null' &&
+                              items[index].titleC.isNotEmpty
+                          ? '${items[index].titleC} '
+                          : ''),
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Expanded(
@@ -452,7 +459,13 @@ class _SearchPageState extends State<SearchPage> {
               if (state.obj![i].typeC == null && state.obj![i].urlC != null) {
                 state.obj![i].typeC = "URL";
               }
-              if (state.obj[i].titleC != null && state.obj[i].titleC != "") {
+              if (state.obj[i].objectName == 'Staff_Directory_App__c'
+                  ? (state.obj[i].name != null &&
+                      state.obj[i].name != 'null' &&
+                      state.obj[i].name != "")
+                  : state.obj[i].titleC != null &&
+                      state.obj[i].titleC != 'null' &&
+                      state.obj[i].titleC != "") {
                 searchList.add(state.obj![i]);
                 // }
               }
@@ -486,7 +499,10 @@ class _SearchPageState extends State<SearchPage> {
                         child: ListTile(
                             leading: _buildLeading(data),
                             title: TranslationWidget(
-                              message: data.titleC ?? "-",
+                              message:
+                                  data.objectName == 'Staff_Directory_App__c'
+                                      ? data.name
+                                      : data.titleC ?? "-",
                               toLanguage: Globals.selectedLanguage,
                               fromLanguage: "en",
                               builder: (translatedMessage) => Text(
@@ -537,7 +553,8 @@ class _SearchPageState extends State<SearchPage> {
                                       data.geoLocation,
                                       data.descriptionC,
                                       data.latitude,
-                                      data.longitude);
+                                      data.longitude,
+                                      data.darkModeIconC);
                                   addtoDataBase(recentitem);
                                 }
                               }

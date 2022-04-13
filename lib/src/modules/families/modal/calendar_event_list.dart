@@ -37,6 +37,8 @@ class CalendarEventList {
   String? eventType;
   @HiveField(14)
   String? month;
+  @HiveField(15)
+  final originalStartTime;
 
   CalendarEventList(
       {this.kind,
@@ -55,23 +57,26 @@ class CalendarEventList {
       this.iCalUid,
       this.sequence,
       this.eventType,
-      this.month});
+      this.month,
+      this.originalStartTime});
 
   factory CalendarEventList.fromJson(Map<String, dynamic> json) =>
       CalendarEventList(
-          kind: json['kind'] as String?,
-          etag: json['etag'] as String?,
-          id: json['id'] as String?,
-          status: json['status'] as String?,
-          htmlLink: json['htmlLink'] as String?,
-          summary: json['summary'] as String?,
-          description: json['description'] as String?,
-          start: json['start'],
-          end: json['end'],
-          iCalUid: json['iCalUID'] as String?,
-          sequence: json['sequence'] as int?,
-          eventType: json['eventType'] as String?,
-          month: "");
+        kind: json['kind'] as String?,
+        etag: json['etag'] as String?,
+        id: json['id'] as String?,
+        status: json['status'] as String?,
+        htmlLink: json['htmlLink'] as String?,
+        summary: json['summary'] as String?,
+        description: json['description'] as String?,
+        start: json['start'] ?? null,
+        originalStartTime: json['originalStartTime'] ?? null,
+        end: json['end'],
+        iCalUid: json['iCalUID'] as String?,
+        sequence: json['sequence'] as int?,
+        eventType: json['eventType'] as String?,
+        month: "",
+      );
 
   Map<String, dynamic> toJson() => {
         'kind': kind,
@@ -82,12 +87,13 @@ class CalendarEventList {
         'created': created,
         'updated': updated,
         'summary': summary,
-
         'description': description,
         'start': start, //?.toJson(),
+        'originalStartTime': originalStartTime,
         'end': end, //?.toJson(),
         'iCalUID': iCalUid,
         'sequence': sequence,
         'eventType': eventType,
+        '': month
       };
 }
