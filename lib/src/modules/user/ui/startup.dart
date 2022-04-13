@@ -14,6 +14,7 @@ import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -66,9 +67,9 @@ class _StartupPageState extends State<StartupPage> {
     //   });
     // });
     OneSignal.shared.setNotificationWillShowInForegroundHandler((event) {
-     setState(() {
+      setState(() {
         Globals.indicator.value = true;
-     });
+      });
     });
   }
 
@@ -121,7 +122,7 @@ class _StartupPageState extends State<StartupPage> {
             ? Padding(
                 padding: const EdgeInsets.all(16),
                 child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl! ,
+                  imageUrl: Globals.splashImageUrl!,
                   fit: BoxFit.cover,
                   errorWidget: (context, url, error) => Icon(
                     Icons.error,
@@ -189,6 +190,8 @@ class _StartupPageState extends State<StartupPage> {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
 
                     Globals.appSetting = AppSetting.fromJson(state.obj);
+
+                
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString(

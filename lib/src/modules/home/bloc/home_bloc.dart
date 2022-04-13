@@ -64,13 +64,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             _customSettingDb.addData(e);
           });
         }
-        if (_appSetting.disableDarkMode == true) {
-          HiveDbServices _hivedb = HiveDbServices();
-          _hivedb.addSingleData('disableDarkMode', 'darkMode', true);
-        } else {
-          HiveDbServices _hivedb = HiveDbServices();
-          _hivedb.addSingleData('disableDarkMode', 'darkMode', false);
-        }
+        saveDarkModeField(_appSetting);
 
         // Should send the response first then it will sync data to the Local database.
         yield BottomNavigationBarSuccess(obj: data);
@@ -370,6 +364,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       _socialBloc.add(SocialPageEvent(action: 'initial'));
     } catch (e) {
       print(e);
+    }
+  }
+
+  saveDarkModeField(AppSetting _appSetting) {
+    if (_appSetting.disableDarkMode == true) {
+      HiveDbServices _hivedb = HiveDbServices();
+      _hivedb.addSingleData('disableDarkMode', 'darkMode', true);
+    } else {
+      HiveDbServices _hivedb = HiveDbServices();
+      _hivedb.addSingleData('disableDarkMode', 'darkMode', false);
     }
   }
 }
