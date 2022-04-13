@@ -191,13 +191,7 @@ class _StartupPageState extends State<StartupPage> {
 
                     Globals.appSetting = AppSetting.fromJson(state.obj);
 
-                    // if (Globals.appSetting.disableDarkMode == true) {
-                    //   AdaptiveTheme.of(context).setLight();
-                    //   Globals.themeType = 'Light';
-                    //   Globals.disableDarkMode = true;
-                    // }else{
-                    //    Globals.disableDarkMode = false;
-                    // }
+                
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString(
