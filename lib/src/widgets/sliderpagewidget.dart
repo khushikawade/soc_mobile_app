@@ -7,7 +7,6 @@ import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
@@ -77,7 +76,11 @@ class _SliderWidgetState extends State<SliderWidget> {
       // bool isNewsPage =
       //     // widget.iseventpage == false ||
       //     widget.issocialpage == true ? true : false;
-      Navigator.of(context).pop(widget.isNewsPage);
+      Navigator.of(context).pop(widget.isNewsPage == true
+          ? widget.isNewsPage
+          : widget.issocialpage == true
+              ? widget.issocialpage
+              : null);
       return true;
     }
     return false;
@@ -89,10 +92,14 @@ class _SliderWidgetState extends State<SliderWidget> {
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
           leading: BackButtonWidget(
-            isNewsPage:widget.isNewsPage
-                // widget.iseventpage == false ||
-                // widget.issocialpage == true ? true : false,
-          ),
+              isNewsPage: widget.isNewsPage == true
+                  ? widget.isNewsPage
+                  : widget.issocialpage == true
+                      ? widget.issocialpage
+                      : null
+              // widget.iseventpage == false ||
+              // widget.issocialpage == true ? true : false,
+              ),
           title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             AppLogoWidget(
               marginLeft: 57,
