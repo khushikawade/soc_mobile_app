@@ -576,6 +576,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildLeading(obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconMode(
+        darkModeIconUrl: obj.darkModeIconC,
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else if (obj.appIconUrlC != null) {
@@ -590,7 +591,7 @@ class _SearchPageState extends State<SearchPage> {
       );
     } else {
       return CustomIconWidget(
-        iconUrl: Overrides.defaultIconUrl,
+        iconUrl: Overrides.defaultIconUrl, darkModeIconUrl: '',
       );
     }
   }
