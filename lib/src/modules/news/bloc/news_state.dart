@@ -32,6 +32,8 @@ class NewsActionSuccess extends NewsState {
   @override
   List<Object> get props => [];
 }
+
+// ignore: must_be_immutable
 class NewsCountLenghtSuccess extends NewsState {
   List<NotificationList>? obj;
   NewsCountLenghtSuccess({this.obj});
@@ -43,6 +45,7 @@ class NewsCountLenghtSuccess extends NewsState {
   List<Object> get props => [];
 }
 
+// ignore: must_be_immutable
 class ActionCountSuccess extends NewsState {
   var obj;
   ActionCountSuccess({this.obj});
@@ -51,7 +54,7 @@ class ActionCountSuccess extends NewsState {
   }
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [obj];
 }
 
 class NewsErrorReceived extends NewsState {

@@ -315,7 +315,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       Globals.controller!.index = Globals.newsIndex ?? 0;
       Globals.newsIndex =
           await _hiveDbServices.getSingleData('newsIndex', 'newsIndex');
-      Globals.indicator.value = false;
+      // Globals.indicator.value = false;
       Globals.isNewTap = true;
       // print('---------------update notification--------------------');
     });

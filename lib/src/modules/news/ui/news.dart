@@ -56,6 +56,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     hideIndicator();
     WidgetsBinding.instance!.addObserver(this);
     Globals.isNewTap = false;
+    Globals.indicator.value = false;
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
