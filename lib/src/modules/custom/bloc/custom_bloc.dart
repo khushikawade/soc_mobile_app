@@ -25,6 +25,8 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
   CustomBloc() : super(CustomInitial());
   final DbServices _dbServices = DbServices();
   CustomState get initialState => CustomInitial();
+  List<CalendarEventList>? futureListobj = [];
+  List<CalendarEventList>? pastListobj = [];
 
   @override
   Stream<CustomState> mapEventToState(
@@ -52,7 +54,6 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         list.forEach((SharedList e) {
           _localDb.addData(e);
         });
-
         getCalendarId(list);
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
@@ -160,8 +161,10 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     }
 
     if (event is CalendarListEvent) {
-      List<CalendarEventList>? futureListobj = [];
-      List<CalendarEventList>? pastListobj = [];
+      DateTime now = new DateTime.now();
+      final DateFormat formatter = DateFormat('yyyy-MM-dd');
+      final DateTime currentDate =
+          DateTime.parse(formatter.format(now).toString());
 
       try {
         yield CustomLoading();
@@ -173,54 +176,13 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         if (_localData.isEmpty) {
           yield CustomLoading();
         } else {
-          futureListobj.clear();
-          pastListobj.clear();
-
-          DateTime now = new DateTime.now();
-          final DateFormat formatter = DateFormat('yyyy-MM-dd');
-          final DateTime currentDate =
-              DateTime.parse(formatter.format(now).toString());
-
-          for (int i = 0; i < _localData.length; i++) {
-            try {
-              var temp = _localData[i].start.toString().contains('dateTime')
-                  ? _localData[i].start['dateTime'].toString().substring(0, 10)
-                  : _localData[i].start['date'].toString().substring(0, 10);
-              if (DateTime.parse(temp).isBefore(currentDate)) {
-                pastListobj.add(_localData[i]);
-              } else {
-                futureListobj.add(_localData[i]);
-              }
-            } catch (e) {}
-          }
-
-          futureListobj.sort((a, b) {
-            var adate = DateTime.parse(a.start.toString().contains('dateTime')
-                ? a.start['dateTime'].split('T')[0]
-                : a.start['date'].toString());
-            //before -> var adate = a.expiry;
-            var bdate = DateTime.parse(b.start.toString().contains('dateTime')
-                ? b.start['dateTime'].split('T')[0]
-                : b.start['date'].toString()); //before -> var bdate = b.expiry;
-            return adate.compareTo(
-                bdate); //to get the order other way just switch `adate & bdate`
-          });
-
-          pastListobj.sort((a, b) {
-            var adate = DateTime.parse(a.start.toString().contains('dateTime')
-                ? a.start['dateTime'].split('T')[0]
-                : a.start['date'].toString());
-            //before -> var adate = a.expiry;
-            var bdate = DateTime.parse(b.start.toString().contains('dateTime')
-                ? b.start['dateTime'].split('T')[0]
-                : b.start['date'].toString()); //before -> var bdate = b.expiry;
-            return bdate.compareTo(
-                adate); //to get the order other way just switch `adate & bdate`
-          });
+          filterFutureAndPastEvents(_localData, currentDate);
+          futureListobj = sortCalendarEvents(futureListobj!);
+          pastListobj = sortCalendarEvents(pastListobj!);
 
           yield CalendarListSuccess(
-              futureListobj: mapListObj(futureListobj),
-              pastListobj: mapListObj(pastListobj));
+              futureListobj: mapListObj(futureListobj!),
+              pastListobj: mapListObj(pastListobj!));
         }
 
         List<CalendarEventList> list =
@@ -231,109 +193,67 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           _localDb.addData(e);
         });
 
-        futureListobj.clear();
-        pastListobj.clear();
-
-        DateTime now = new DateTime.now();
-        final DateFormat formatter = DateFormat('yyyy-MM-dd');
-        final DateTime currentDate =
-            DateTime.parse(formatter.format(now).toString());
-
-        for (int i = 0; i < list.length; i++) {
-          try {
-            var temp = list[i].start.toString().contains('dateTime')
-                ? list[i].start['dateTime'].toString().substring(0, 10)
-                : list[i].start['date'].toString().substring(0, 10);
-            if (DateTime.parse(temp).isBefore(currentDate)) {
-              pastListobj.add(list[i]);
-            } else {
-              futureListobj.add(list[i]);
-            }
-          } catch (e) {}
-        }
-
-        futureListobj.sort((a, b) {
-          var adate = DateTime.parse(a.start.toString().contains('dateTime')
-              ? a.start['dateTime'].split('T')[0]
-              : a.start['date'].toString());
-          //before -> var adate = a.expiry;
-          var bdate = DateTime.parse(b.start.toString().contains('dateTime')
-              ? b.start['dateTime'].split('T')[0]
-              : b.start['date'].toString()); //before -> var bdate = b.expiry;
-          return adate.compareTo(
-              bdate); //to get the order other way just switch `adate & bdate`
-        });
-        pastListobj.sort((a, b) {
-          var adate = DateTime.parse(a.start.toString().contains('dateTime')
-              ? a.start['dateTime'].split('T')[0]
-              : a.start['date'].toString());
-          //before -> var adate = a.expiry;
-          var bdate = DateTime.parse(b.start.toString().contains('dateTime')
-              ? b.start['dateTime'].split('T')[0]
-              : b.start['date'].toString()); //before -> var bdate = b.expiry;
-          return bdate.compareTo(
-              adate); //to get the order other way just switch `adate & bdate`
-        });
+        filterFutureAndPastEvents(
+            list, currentDate); //Filter the furure and past events
+        sortCalendarEvents(futureListobj!); //Sort the events date wise
+        sortCalendarEvents(pastListobj!); //Sort the events date wise
 
         yield CalendarListSuccess(
-            futureListobj: mapListObj(futureListobj),
-            pastListobj: mapListObj(pastListobj));
+            futureListobj:
+                mapListObj(futureListobj!), //Grouping the events by month
+            pastListobj: mapListObj(pastListobj!)
+            // futureListobj: futureListMap, pastListobj: pastListMap
+            );
       } catch (e) {
+        print(e);
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
-
         List<CalendarEventList>? _localData = await _localDb.getData();
 
-        futureListobj.clear();
-        pastListobj.clear();
-        DateTime now = new DateTime.now();
-        final DateFormat formatter = DateFormat('yyyy-MM-dd');
-        final DateTime currentDate =
-            DateTime.parse(formatter.format(now).toString());
-
-        for (int i = 0; i < _localData.length; i++) {
-          try {
-            var temp = _localData[i].start.toString().contains('dateTime')
-                ? _localData[i].start['dateTime'].toString().substring(0, 10)
-                : _localData[i].start['date'].toString().substring(0, 10);
-            if (DateTime.parse(temp).isBefore(currentDate)) {
-              pastListobj.add(_localData[i]);
-            } else {
-              futureListobj.add(_localData[i]);
-            }
-          } catch (e) {}
-        }
-
-        futureListobj.sort((a, b) {
-          var adate = DateTime.parse(a.start.toString().contains('dateTime')
-              ? a.start['dateTime'].split('T')[0]
-              : a.start['date'].toString());
-          //before -> var adate = a.expiry;
-          var bdate = DateTime.parse(b.start.toString().contains('dateTime')
-              ? b.start['dateTime'].split('T')[0]
-              : b.start['date'].toString()); //before -> var bdate = b.expiry;
-          return adate.compareTo(
-              bdate); //to get the order other way just switch `adate & bdate`
-        });
-
-        pastListobj.sort((a, b) {
-          var adate = DateTime.parse(a.start.toString().contains('dateTime')
-              ? a.start['dateTime'].split('T')[0]
-              : a.start['date'].toString());
-          //before -> var adate = a.expiry;
-          var bdate = DateTime.parse(b.start.toString().contains('dateTime')
-              ? b.start['dateTime'].split('T')[0]
-              : b.start['date'].toString()); //before -> var bdate = b.expiry;
-          return bdate.compareTo(
-              adate); //to get the order other way just switch `adate & bdate`
-        });
+        filterFutureAndPastEvents(_localData, currentDate);
+        // futureListobj.whereNot((element) => element.status != "cancelled");
+        futureListobj = sortCalendarEvents(futureListobj!);
+        pastListobj = sortCalendarEvents(pastListobj!);
 
         yield CalendarListSuccess(
-            futureListobj: mapListObj(futureListobj),
-            pastListobj: mapListObj(pastListobj));
+            futureListobj: mapListObj(futureListobj!),
+            pastListobj: mapListObj(pastListobj!));
       }
     }
+  }
+
+  filterFutureAndPastEvents(eventList, currentDate) {
+    futureListobj!.clear();
+    pastListobj!.clear();
+    for (int i = 0; i < eventList.length; i++) {
+      try {
+        var temp = eventList[i].start.toString().contains('dateTime')
+            ? eventList[i].start['dateTime'].toString().substring(0, 10)
+            : eventList[i].start['date'].toString().substring(0, 10);
+        if (DateTime.parse(temp).isBefore(currentDate)) {
+          pastListobj!.add(eventList[i]);
+        } else {
+          futureListobj!.add(eventList[i]);
+        }
+      } catch (e) {
+        throw (e);
+      }
+    }
+  }
+
+  sortCalendarEvents(List<CalendarEventList> list) {
+    return list.sort((a, b) {
+      var adate = DateTime.parse(a.start.toString().contains('dateTime')
+          ? a.start['dateTime'].split('T')[0]
+          : a.start['date'].toString());
+      //before -> var adate = a.expiry;
+      var bdate = DateTime.parse(b.start.toString().contains('dateTime')
+          ? b.start['dateTime'].split('T')[0]
+          : b.start['date'].toString()); //before -> var bdate = b.expiry;
+      return adate.compareTo(
+          bdate); //to get the order other way just switch `adate & bdate`
+    });
   }
 
   mapListObj(List<CalendarEventList> listObj) {
@@ -422,9 +342,16 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
         return data1.map((i) {
-          var datetime = i.start.toString().contains('dateTime')
-              ? i.start['dateTime'].toString().substring(0, 10)
-              : i.start['date'].toString().substring(0, 10);
+          var datetime = i.start != null
+              ? (i.start.toString().contains('dateTime')
+                  ? i.start['dateTime'].toString().substring(0, 10)
+                  : i.start['date'].toString().substring(0, 10))
+              : (i.originalStartTime.toString().contains('dateTime')
+                  ? i.originalStartTime['dateTime'].toString().substring(0, 10)
+                  : '1950-01-01');
+          String month = Utility.convertTimestampToDateFormat(
+              DateTime.parse(datetime), 'MMM yyyy');
+
           return CalendarEventList(
               kind: i.kind,
               etag: i.etag,
@@ -440,8 +367,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
               iCalUid: i.iCalUid,
               sequence: i.sequence,
               eventType: i.eventType,
-              month: Utility.convertTimestampToDateFormat(
-                  DateTime.parse(datetime), 'MMMM'));
+              month: month);
         }).toList();
       } else {
         throw ('something_went_wrong');

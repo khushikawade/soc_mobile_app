@@ -15,17 +15,16 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import '../model/custom_setting.dart';
 
 class CustomAppSection extends StatefulWidget {
+  final id;
+  final CustomSetting customObj;
+  final searchObj;
+
   CustomAppSection({
     Key? key,
     required this.customObj,
     this.id,
     this.searchObj,
   }) : super(key: key);
-
-  final id;
-  final CustomSetting customObj;
-  final searchObj;
-
   @override
   _CustomAppSectionState createState() => _CustomAppSectionState();
 }
@@ -33,7 +32,6 @@ class CustomAppSection extends StatefulWidget {
 class _CustomAppSectionState extends State<CustomAppSection> {
   bool? iserrorstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-
   CustomBloc _bloc = CustomBloc();
   HomeBloc _homeBloc = HomeBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -116,22 +114,6 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                               customList: state.obj,
                               customObj: widget.customObj,
                             );
-
-                            // widget.customObj.gridViewC == "Grid Menu"
-                            //     ? CommonGridWidget(
-                            //         scaffoldKey: _scaffoldKey,
-                            //         connected: connected,
-                            //         data: state.obj!,
-                            //         sectionName: "Custom")
-                            //     : ListView(
-                            //         children: [
-                            //           CommonListWidget(
-                            //               scaffoldKey: _scaffoldKey,
-                            //               connected: connected,
-                            //               data: state.obj!,
-                            //               sectionName: "Custom"),
-                            // ],
-                            // );
                           } else if (state is ErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);
                           } else {
@@ -156,8 +138,6 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                     ),
                   ],
                 );
-                // : NoInternetErrorWidget(
-                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

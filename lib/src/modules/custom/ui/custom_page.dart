@@ -33,7 +33,6 @@ class CustomPages extends StatefulWidget {
 
 class _CustomPagesState extends State<CustomPages> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   var pdfViewerKey = UniqueKey();
@@ -128,12 +127,10 @@ class _CustomPagesState extends State<CustomPages> {
       return obj.appUrlC != null && obj.appUrlC != ""
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
                   // || obj.deepLinkC == 'YES'
-                  ? Expanded(
-                      child: OpenExternalBrowser(
-                        url: obj.appUrlC,
-                        connected: true,
-                      ),
-                    ) // TODO: Add a proper message when links are unable to open
+                  ? OpenExternalBrowser(
+                    url: obj.appUrlC,
+                    connected: true,
+                  ) // TODO: Add a proper message when links are unable to open
                   : InAppUrlLauncer(
                       title: obj.sectionTitleC!, // "no scaffold",
                       url: obj.appUrlC,
