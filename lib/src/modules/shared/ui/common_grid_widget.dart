@@ -152,17 +152,6 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
               widget.scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
       return subListDialog(obj);
-
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (BuildContext context) => SubListPage(
-      //               appBarTitle: obj.titleC!,
-      //               obj: obj,
-      //               module: widget.sectionName,
-      //               isbuttomsheet: true,
-      //               language: Globals.selectedLanguage,
-      //             )));
     } else if (obj.typeC == "Staff_Directory") {
       Navigator.push(
           context,

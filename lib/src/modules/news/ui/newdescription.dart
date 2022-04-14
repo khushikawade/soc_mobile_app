@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -11,7 +12,6 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-
 import 'dart:io' show Platform;
 
 class Newdescription extends StatefulWidget {
@@ -24,7 +24,7 @@ class Newdescription extends StatefulWidget {
     required this.connected,
   }) : super(key: key);
 
-  final obj;
+  final NotificationList obj;
   final String date;
   final bool isbuttomsheet;
   final String? language;

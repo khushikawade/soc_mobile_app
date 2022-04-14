@@ -60,37 +60,6 @@ class SocialDescription extends StatelessWidget {
     this.currentindex++;
   }
 
-  // void htmlparser() {
-  //   List<String> data = [];
-
-  //   data.add(object.description != null && object.description != ""
-  //       ? object.description["__cdata"]
-  //           .getElementsByClassName("time")[0]
-  //           .innerHtml
-  //       : "");
-
-  //   final temp = object.description != null && object.description != ""
-  //       ? object.description["__cdata"].getElementsByClassName("temp")[0]
-  //       : "";
-  //   data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<span>")));
-  //   data.add(temp
-  //       .getElementsByTagName("small")[0]
-  //       .innerHtml
-  //       .replaceAll(RegExp("[(|)|℃]"), ""));
-
-  //   final rows = object.description != null && object.description != ""
-  //       ? object.description["__cdata"]
-  //           .getElementsByTagName("table")[0]
-  //           .getElementsByTagName("td")
-  //       : "";
-
-  //   rows.map((e) => e.innerHtml).forEach((element) {
-  //     if (element != "-") {
-  //       data.add(element);
-  //     }
-  //   });
-  // }
-
   Widget _buildItem(BuildContext context) {
     return RefreshIndicator(
       key: refreshKey,

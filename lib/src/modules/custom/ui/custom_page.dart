@@ -128,9 +128,9 @@ class _CustomPagesState extends State<CustomPages> {
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
                   // || obj.deepLinkC == 'YES'
                   ? OpenExternalBrowser(
-                    url: obj.appUrlC,
-                    connected: true,
-                  ) // TODO: Add a proper message when links are unable to open
+                      url: obj.appUrlC,
+                      connected: true,
+                    ) // TODO: Add a proper message when links are unable to open
                   : InAppUrlLauncer(
                       title: obj.sectionTitleC!, // "no scaffold",
                       url: obj.appUrlC,

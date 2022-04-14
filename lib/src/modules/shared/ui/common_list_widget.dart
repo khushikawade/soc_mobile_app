@@ -34,12 +34,13 @@ class CommonListWidget extends StatefulWidget {
 
 class _CommonListWidgetState extends State<CommonListWidget> {
   bool? tapped = true;
-  _launchURL(obj) async {
+
+  _launchURL(SharedList obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
-      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
-    } else if (await Utility.sslErrorHandler(obj.appUrlC) == "Yes") {
-      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
+    } else if (await Utility.sslErrorHandler(obj.appUrlC!) == "Yes") {
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
       if (tapped == true) {
         tapped = false;
@@ -47,8 +48,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC,
-                      url: obj.appUrlC,
+                      title: obj.titleC!,
+                      url: obj.appUrlC!,
                       isbuttomsheet: true,
                       language: Globals.selectedLanguage,
                     )));

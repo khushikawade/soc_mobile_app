@@ -12,7 +12,6 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-
 import '../../custom/model/custom_setting.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
@@ -37,8 +36,6 @@ class _StaffPageState extends State<StaffPage> {
 
   @override
   void initState() {
-    //lock screen orientation
-    //Utility.setLocked();
     super.initState();
     _bloc.add(StaffPageEvent());
   }
@@ -76,7 +73,8 @@ class _StaffPageState extends State<StaffPage> {
                           ));
                         } else if (state is StaffDataSucess) {
                           return widget.customObj != null &&
-                                  widget.customObj!.sectionTemplate == "Grid Menu"
+                                  widget.customObj!.sectionTemplate ==
+                                      "Grid Menu"
                               ? CommonGridWidget(
                                   scaffoldKey: _scaffoldKey,
                                   connected: connected,
@@ -112,8 +110,6 @@ class _StaffPageState extends State<StaffPage> {
                 ),
               ]),
             );
-            // : NoInternetErrorWidget(
-            //     connected: connected, issplashscreen: false);
           },
           child: Container()),
       onRefresh: refreshPage);

@@ -111,7 +111,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
           color: Colors.transparent,
           padding: const EdgeInsets.only(bottom: 25),
           child: WebView(
-              backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).backgroundColor,
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (controller) {
               _webViewController = controller;

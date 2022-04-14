@@ -6,9 +6,7 @@ abstract class SocialEvent extends Equatable {
 
 class SocialPageEvent extends SocialEvent {
   final String? action;
-
   SocialPageEvent({required this.action});
-
   List<Object> get props => [action!];
 }
 
