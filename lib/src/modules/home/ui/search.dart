@@ -607,8 +607,9 @@ class _SearchPageState extends State<SearchPage> {
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
     } else {
-      return CustomIconWidget(
-        iconUrl: Overrides.defaultIconUrl, darkModeIconUrl: '',
+      return CustomIconMode(
+        iconUrl: Overrides.defaultIconUrl,
+        darkModeIconUrl: '',
       );
     }
   }
