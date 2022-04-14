@@ -119,8 +119,6 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         });
 
         // Syncing end.
-        // Globals.socialList.clear();
-        // Globals.socialList.addAll(list);
         yield Loading();
 
         yield SocialDataSucess(

@@ -39,18 +39,12 @@ class _StudentPageState extends State<StudentPage> {
 
   @override
   void initState() {
-    //lock screen orientation
-    // Utility.setLocked();
     super.initState();
     _bloc.add(StudentPageEvent());
   }
 
   _launchURL(StudentApp obj, subList) async {
     if (obj.appUrlC != null) {
-      //free screen orientation
-      // obj.appUrlC == 'app_folder' || obj.isFolder == 'true'
-      //     ? Utility.setLocked()
-      //     : Utility.setLocked();
       if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
         showDialog(
           // barrierColor: Color.fromARGB(96, 73, 73, 75),
@@ -328,11 +322,7 @@ class _StudentPageState extends State<StudentPage> {
                     }
                     return Container();
                   }),
-              // : NoInternetErrorWidget(
-              //     connected: connected, issplashscreen: false),
               Container(
-                height: 0,
-                width: 0,
                 child: BlocListener<HomeBloc, HomeState>(
                     bloc: _homeBloc,
                     listener: (context, state) async {

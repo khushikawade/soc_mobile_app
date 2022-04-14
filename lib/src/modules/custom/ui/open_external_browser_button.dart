@@ -19,9 +19,9 @@ class OpenExternalBrowser extends StatefulWidget {
 }
 
 class _OpenExternalBrowserState extends State<OpenExternalBrowser> {
-    static const double _kPadding = 16.0;
+  static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
-  
+
   Widget build(BuildContext context) {
     return widget.connected == false
         ? NoInternetErrorWidget(
@@ -82,6 +82,4 @@ class _OpenExternalBrowserState extends State<OpenExternalBrowser> {
   launchUrl(url) async {
     await Utility.launchUrlOnExternalBrowser(url);
   }
-
-
 }

@@ -9,15 +9,8 @@ import '../../schools_directory/ui/school_details.dart';
 
 class CommonSchoolDirectoryWidget extends StatefulWidget {
   final List<SchoolDirectoryList> data;
- // final String sectionName;
   final bool? connected;
-  // final scaffoldKey;
-  CommonSchoolDirectoryWidget(
-      {Key? key,
-      required this.data,
-      // required this.sectionName,
-      // required this.scaffoldKey,
-      this.connected})
+  CommonSchoolDirectoryWidget({Key? key, required this.data, this.connected})
       : super(key: key);
   @override
   _CommonSchoolDirectoryWidgetState createState() =>
@@ -41,13 +34,10 @@ class _CommonSchoolDirectoryWidgetState
           : Theme.of(context).colorScheme.secondary,
       child: InkWell(
         onTap: () async {
-          //free screen orientation
-          //  Utility.setFree();
           await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => SchoolDetailPage(obj: obj)));
-          //Utility.setLocked();
         },
         child: Row(
           children: <Widget>[

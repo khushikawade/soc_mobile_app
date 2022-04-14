@@ -139,8 +139,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           }
         }
         List<ActionCountList> list = await fetchNewsActionCount();
-
         List<NotificationList> newList = [];
+
         newList.clear();
         if (list.length == 0) {
           //If no action added yet for school, Adding onsignal list as it is with no action counts
@@ -317,7 +317,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           await _hiveDbServices.getSingleData('newsIndex', 'newsIndex');
       // Globals.indicator.value = false;
       Globals.isNewTap = true;
-      // print('---------------update notification--------------------');
     });
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);

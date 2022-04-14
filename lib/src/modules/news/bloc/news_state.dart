@@ -12,7 +12,7 @@ class NewsInitial extends NewsState {}
 class NewsLoading extends NewsState {}
 
 class NewsLoaded extends NewsState {
-  List<NotificationList>? obj;
+  final List<NotificationList>? obj;
   NewsLoaded({this.obj});
   NewsLoaded copyWith({final obj}) {
     return NewsLoaded(obj: obj ?? this.obj);
@@ -33,9 +33,8 @@ class NewsActionSuccess extends NewsState {
   List<Object> get props => [];
 }
 
-// ignore: must_be_immutable
 class NewsCountLenghtSuccess extends NewsState {
-  List<NotificationList>? obj;
+  final List<NotificationList>? obj;
   NewsCountLenghtSuccess({this.obj});
   NewsCountLenghtSuccess copyWith({final obj}) {
     return NewsCountLenghtSuccess(obj: obj ?? this.obj);
@@ -47,14 +46,14 @@ class NewsCountLenghtSuccess extends NewsState {
 
 // ignore: must_be_immutable
 class ActionCountSuccess extends NewsState {
-  var obj;
+  final List<NotificationList>? obj;
   ActionCountSuccess({this.obj});
   ActionCountSuccess copyWith({final obj}) {
     return ActionCountSuccess(obj: obj ?? this.obj);
   }
 
   @override
-  List<Object> get props => [obj];
+  List<Object> get props => [];
 }
 
 class NewsErrorReceived extends NewsState {

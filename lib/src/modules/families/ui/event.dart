@@ -46,7 +46,7 @@ class _EventPageState extends State<EventPage>
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final refreshKey1 = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
-  String? lastMonth;
+  // String? lastMonth;
 
   @override
   bool get wantKeepAlive => true;
@@ -127,116 +127,38 @@ class _EventPageState extends State<EventPage>
                                     top: BorderSide(
                                         color: Colors.grey, width: 0.5))),
                             child: TabBarView(children: <Widget>[
-                              state.futureListobj!.length > 0
-                                  ? Tab(
-                                      child: new RefreshIndicator(
-                                      key: refreshKey,
-                                      child: state.futureListobj!.length > 0 &&
-                                              state.futureListobj != null
-                                          ? new ListView.builder(
-                                              scrollDirection: Axis.vertical,
-                                              padding: !Platform.isAndroid
-                                                  ? EdgeInsets.only(
-                                                      bottom:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.1)
-                                                  : MediaQuery.of(context)
-                                                              .orientation !=
-                                                          Orientation.portrait
-                                                      ? EdgeInsets.only(
-                                                          bottom: 120)
-                                                      : EdgeInsets.only(
-                                                          bottom: 20),
-                                              itemCount:
-                                                  state.futureListobj.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                String key = state
-                                                    .futureListobj.keys
-                                                    .elementAt(index);
-                                                return _buildListNew(key,
-                                                    state.futureListobj[key]);
-
-                                                //  _buildList(
-                                                //     state.futureListobj![index],
-                                                //     index,
-                                                //     state.futureListobj);
-                                              })
-                                          : NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false,
-                                              isNews: false,
-                                              isEvents: true,
-                                            ),
-                                      onRefresh: refreshPage,
-                                    ))
-                                  : new RefreshIndicator(
-                                      key: refreshKey,
-                                      onRefresh: refreshPage,
-                                      child: NoDataFoundErrorWidget(
-                                        isCalendarPageOrientationLandscape:
-                                            currentOrientation,
-                                        isResultNotFoundMsg: false,
-                                        isNews: false,
-                                        isEvents: true,
-                                      )),
-                              state.pastListobj!.length > 0
-                                  ? Tab(
-                                      child: new RefreshIndicator(
-                                      key: refreshKey1,
-                                      child: state.pastListobj!.length > 0 &&
-                                              state.pastListobj != null
-                                          ? new ListView.builder(
-                                              scrollDirection: Axis.vertical,
-                                              padding: !Platform.isAndroid
-                                                  ? EdgeInsets.only(
-                                                      bottom:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.1)
-                                                  : MediaQuery.of(context)
-                                                              .orientation !=
-                                                          Orientation.portrait
-                                                      ? EdgeInsets.only(
-                                                          bottom: 120)
-                                                      : EdgeInsets.only(
-                                                          bottom: 20),
-                                              itemCount:
-                                                  state.pastListobj!.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                String key = state
-                                                    .pastListobj.keys
-                                                    .elementAt(index);
-                                                return _buildListNew(key,
-                                                    state.pastListobj[key]);
-                                              })
-                                          : NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: false,
-                                              isNews: false,
-                                              isEvents: true,
-                                            ),
-                                      onRefresh: refreshPage,
-                                    ))
-                                  : new RefreshIndicator(
-                                      key: refreshKey1,
-                                      onRefresh: refreshPage,
-                                      child: NoDataFoundErrorWidget(
+                              Tab(
+                                  child: new RefreshIndicator(
+                                key: refreshKey,
+                                child: state.futureListobj != null &&
+                                        state.futureListobj!.length > 0
+                                    ? buildTabBody(state.futureListobj)
+                                    : NoDataFoundErrorWidget(
                                         isCalendarPageOrientationLandscape:
                                             currentOrientation,
                                         isResultNotFoundMsg: false,
                                         isNews: false,
                                         isEvents: true,
                                       ),
-                                    ),
+                                onRefresh: refreshPage,
+                              )),
+                              Tab(
+                                  child: new RefreshIndicator(
+                                key: refreshKey1,
+                                child: state.pastListobj != null &&
+                                        state.pastListobj!.length > 0
+                                    ? buildTabBody(state.pastListobj)
+                                    : NoDataFoundErrorWidget(
+                                        isCalendarPageOrientationLandscape:
+                                            currentOrientation,
+                                        isResultNotFoundMsg: false,
+                                        isNews: false,
+                                        isEvents: true,
+                                      ),
+                                onRefresh: refreshPage,
+                              ))
                             ])),
                         Container(
-                          height: 0,
-                          width: 0,
                           child: BlocListener<HomeBloc, HomeState>(
                               bloc: _homeBloc,
                               listener: (context, state) async {
@@ -254,7 +176,21 @@ class _EventPageState extends State<EventPage>
                     ),
                   ),
                 ]));
-    // ]);
+  }
+
+  buildTabBody(eventsList) {
+    return ListView.builder(
+        scrollDirection: Axis.vertical,
+        padding: !Platform.isAndroid
+            ? EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1)
+            : MediaQuery.of(context).orientation != Orientation.portrait
+                ? EdgeInsets.only(bottom: 120)
+                : EdgeInsets.only(bottom: 20),
+        itemCount: eventsList!.length,
+        itemBuilder: (BuildContext context, int index) {
+          String key = eventsList.keys.elementAt(index);
+          return _buildListNew(key, eventsList[key]);
+        });
   }
 
   @override
@@ -314,11 +250,6 @@ class _EventPageState extends State<EventPage>
                       }
                       return Container();
                     });
-                //  connected
-                //     ?
-
-                // : NoInternetErrorWidget(
-                //     connected: connected, issplashscreen: false);
               },
               child: Container());
         }));
@@ -330,15 +261,6 @@ class _EventPageState extends State<EventPage>
     await Future.delayed(Duration(seconds: 2));
     _eventBloc.add(CalendarListEvent(widget.calendarId));
     _homeBloc.add(FetchStandardNavigationBar());
-  }
-
-  DateTime getDate(date) {
-    try {
-      DateTime dateTime = DateTime.parse(date);
-      return dateTime;
-    } catch (e) {
-      return DateTime.now();
-    }
   }
 
   Event buildEvent(CalendarEventList list) {
@@ -356,7 +278,7 @@ class _EventPageState extends State<EventPage>
     );
   }
 
-  Widget _buildListNew(key, map) {
+  Widget _buildListNew(month, map) {
     return Column(
       children: [
         Column(
@@ -376,7 +298,7 @@ class _EventPageState extends State<EventPage>
                 // color: Theme.of(context).colorScheme.background,
                 // ),
                 child: Text(
-                  key,
+                  month,
                   style: Theme.of(context)
                       .textTheme
                       .headline2!
@@ -386,15 +308,14 @@ class _EventPageState extends State<EventPage>
             ),
           ],
         ),
-        for (var i in map)
+        for (CalendarEventList i in map)
           CommonFeedWidget(
               isSocial: false,
-              actionIcon: Container(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    TranslationWidget(
-                      message: Utility.convertDateFormat2(i.start
+              actionIcon: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      Utility.convertDateFormat2(i.start
                                   .toString()
                                   .contains('dateTime')
                               ? i.start['dateTime'].toString().substring(0, 10)
@@ -405,13 +326,10 @@ class _EventPageState extends State<EventPage>
                                   .contains('dateTime')
                               ? i.end['dateTime'].toString().substring(0, 10)
                               : i.end['date'].toString().substring(0, 10)),
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                        translatedMessage.toString(),
-                        style: Theme.of(context).textTheme.headline2!.copyWith(
-                            fontWeight: FontWeight.normal, height: 1.5),
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(fontWeight: FontWeight.normal, height: 1.5),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.25,
@@ -467,7 +385,7 @@ class _EventPageState extends State<EventPage>
                         ],
                       ),
                     )
-                  ])),
+                  ]),
               title: "",
               description: i.summary ?? '',
               titleIcon: Container(
@@ -482,7 +400,16 @@ class _EventPageState extends State<EventPage>
     );
   }
 
-  DateTime _methodDate(i) {
+  DateTime getDate(date) {
+    try {
+      DateTime dateTime = DateTime.parse(date);
+      return dateTime;
+    } catch (e) {
+      return DateTime.now();
+    }
+  }
+
+  DateTime _methodDate(CalendarEventList i) {
     DateTime _dateTime = getDate(i.start.toString().contains('dateTime')
         ? i.start['dateTime'].toString().substring(0, 10)
         : i.start['date'].toString().substring(0, 10));
