@@ -1,3 +1,4 @@
+import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -104,7 +105,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         theme: theme,
         darkTheme: darkTheme,
         home: StartupPage(),
-        //   home: SchoolIDLogin(),
+        // home: SchoolIDLogin(),
       ),
     );
   }
