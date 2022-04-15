@@ -61,7 +61,8 @@ dependencies:
   persistent_bottom_nav_bar: ^4.0.2
   flutter_oss_licenses: ^1.0.1
   shimmer: ^2.0.0
-  adaptive_theme: ^2.2.0
+  # adaptive_theme: ^2.2.0
+  adaptive_theme: ^2.3.1
   flutter_offline: ^2.0.0
   flutter_svg: ^0.23.0+1
   mailto: ^2.0.0

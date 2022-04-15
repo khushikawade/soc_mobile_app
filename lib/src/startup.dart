@@ -138,8 +138,9 @@ class _StartupPageState extends State<StartupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor:
-            Globals.themeType == 'Dark' ? Colors.black : Colors.white,
+        // backgroundColor:
+        //     Globals.themeType == 'Dark' ? Colors.black : Colors.white,
+        backgroundColor: Colors.white,
         body: Stack(
           fit: StackFit.expand,
           children: [
@@ -188,13 +189,13 @@ class _StartupPageState extends State<StartupPage> {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
 
                     Globals.appSetting = AppSetting.fromJson(state.obj);
-
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString(
                         Strings.SplashUrl,
                         state.obj["Splash_Screen__c"] ??
                             state.obj["App_Logo__c"]);
+                    await Future.delayed(Duration(milliseconds: 200));
                     state.obj != null
                         ? Navigator.of(context)
                             .pushReplacement(_createRoute(state.obj))
