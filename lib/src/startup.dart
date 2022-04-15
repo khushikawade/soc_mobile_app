@@ -138,8 +138,9 @@ class _StartupPageState extends State<StartupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor:
-            Globals.themeType == 'Dark' ? Colors.black : Colors.white,
+        // backgroundColor:
+        //     Globals.themeType == 'Dark' ? Colors.black : Colors.white,
+        backgroundColor: Colors.white,
         body: Stack(
           fit: StackFit.expand,
           children: [
@@ -185,8 +186,7 @@ class _StartupPageState extends State<StartupPage> {
                 bloc: _bloc,
                 listener: (context, state) async {
                   if (state is BottomNavigationBarSuccess) {
-                    AppTheme.setDynamicTheme(
-                        Globals.appSetting, context); 
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
 
                     Globals.appSetting = AppSetting.fromJson(state.obj);
                     SharedPreferences prefs =
@@ -195,7 +195,7 @@ class _StartupPageState extends State<StartupPage> {
                         Strings.SplashUrl,
                         state.obj["Splash_Screen__c"] ??
                             state.obj["App_Logo__c"]);
-                    await Future.delayed(Duration(milliseconds: 200));        
+                    await Future.delayed(Duration(milliseconds: 200));
                     state.obj != null
                         ? Navigator.of(context)
                             .pushReplacement(_createRoute(state.obj))
