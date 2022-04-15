@@ -125,161 +125,147 @@ class AppsFolderPageState extends State<AppsFolderPage>
                           children: List.generate(
                             apps.length,
                             (index) {
-                              return apps[index].status == null ||
-                                      apps[index].status == 'Show'
-                                  ? InkWell(
-                                      onTap: () => _launchURL(apps[index]),
-                                      child: Column(
-                                        children: [
-                                          apps[index].appIconC != null &&
-                                                  apps[index].appIconC != ''
-                                              ? Container(
-                                                  height: 65,
-                                                  width: 65,
-                                                  child: CustomIconWidget(
-                                                    iconUrl: apps[index]
-                                                            .appIconC ??
-                                                        Overrides
-                                                            .folderDefaultImage,
-                                                    darkModeIconUrl: apps[index]
-                                                        .darkModeIconC,
-                                                  ))
-                                              : Container(),
-                                          Container(
-                                              child: TranslationWidget(
-                                            message: apps[index].appFolderc !=
-                                                        null &&
+                              return InkWell(
+                                  onTap: () => _launchURL(apps[index]),
+                                  child: Column(
+                                    children: [
+                                      apps[index].appIconC != null &&
+                                              apps[index].appIconC != ''
+                                          ? Container(
+                                              height: 65,
+                                              width: 65,
+                                              child: CustomIconWidget(
+                                                iconUrl: apps[index].appIconC ??
+                                                    Overrides
+                                                        .folderDefaultImage,
+                                                darkModeIconUrl:
+                                                    apps[index].darkModeIconC,
+                                              ))
+                                          : Container(),
+                                      Container(
+                                          child: TranslationWidget(
+                                        message:
+                                            apps[index].appFolderc != null &&
                                                     widget.folderName ==
                                                         apps[index].appFolderc
                                                 ? "${apps[index].titleC}"
                                                 : '',
-                                            fromLanguage: "en",
-                                            toLanguage:
-                                                Globals.selectedLanguage,
-                                            builder: (translatedMessage) =>
-                                                Container(
-                                              child: MediaQuery.of(context)
-                                                              .orientation ==
-                                                          Orientation
-                                                              .portrait &&
-                                                      translatedMessage
-                                                              .toString()
-                                                              .length >
-                                                          11
-                                                  ? Expanded(
-                                                      child: Marquee(
-                                                        text: translatedMessage
-                                                            .toString(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1!
-                                                            .copyWith(
-                                                                fontSize: Globals
-                                                                            .deviceType ==
+                                        fromLanguage: "en",
+                                        toLanguage: Globals.selectedLanguage,
+                                        builder: (translatedMessage) =>
+                                            Container(
+                                          child: MediaQuery.of(context)
+                                                          .orientation ==
+                                                      Orientation.portrait &&
+                                                  translatedMessage
+                                                          .toString()
+                                                          .length >
+                                                      11
+                                              ? Expanded(
+                                                  child: Marquee(
+                                                    text: translatedMessage
+                                                        .toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText1!
+                                                        .copyWith(
+                                                            fontSize:
+                                                                Globals.deviceType ==
                                                                         "phone"
                                                                     ? 16
                                                                     : 24),
-                                                        scrollAxis:
-                                                            Axis.horizontal,
-                                                        velocity: 30.0,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        blankSpace: 50,
-                                                        pauseAfterRound:
-                                                            Duration(
-                                                                seconds: 5),
-                                                        showFadingOnlyWhenScrolling:
-                                                            true,
-                                                        startPadding: 10.0,
-                                                        accelerationDuration:
-                                                            Duration(
-                                                                seconds: 1),
-                                                        accelerationCurve:
-                                                            Curves.linear,
-                                                        decelerationDuration:
-                                                            Duration(
-                                                                milliseconds:
-                                                                    500),
-                                                        decelerationCurve:
-                                                            Curves.easeOut,
-                                                      ),
-                                                    )
-                                                  : MediaQuery.of(context)
-                                                                  .orientation ==
-                                                              Orientation
-                                                                  .landscape &&
+                                                    scrollAxis: Axis.horizontal,
+                                                    velocity: 30.0,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    blankSpace: 50,
+                                                    pauseAfterRound:
+                                                        Duration(seconds: 5),
+                                                    showFadingOnlyWhenScrolling:
+                                                        true,
+                                                    startPadding: 10.0,
+                                                    accelerationDuration:
+                                                        Duration(seconds: 1),
+                                                    accelerationCurve:
+                                                        Curves.linear,
+                                                    decelerationDuration:
+                                                        Duration(
+                                                            milliseconds: 500),
+                                                    decelerationCurve:
+                                                        Curves.easeOut,
+                                                  ),
+                                                )
+                                              : MediaQuery.of(context)
+                                                              .orientation ==
+                                                          Orientation
+                                                              .landscape &&
+                                                      translatedMessage
+                                                              .toString()
+                                                              .length >
+                                                          18
+                                                  ? Expanded(
+                                                      child: Marquee(
+                                                      text: translatedMessage
+                                                          .toString(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText1!
+                                                          .copyWith(
+                                                              fontSize:
+                                                                  Globals.deviceType ==
+                                                                          "phone"
+                                                                      ? 16
+                                                                      : 24),
+                                                      scrollAxis:
+                                                          Axis.horizontal,
+                                                      velocity: 30.0,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+
+                                                      blankSpace:
+                                                          50, //MediaQuery.of(context).size.width
+                                                      // velocity: 100.0,
+                                                      pauseAfterRound:
+                                                          Duration(seconds: 5),
+                                                      showFadingOnlyWhenScrolling:
+                                                          true,
+                                                      startPadding: 10.0,
+                                                      accelerationDuration:
+                                                          Duration(seconds: 1),
+                                                      accelerationCurve:
+                                                          Curves.linear,
+                                                      decelerationDuration:
+                                                          Duration(
+                                                              milliseconds:
+                                                                  500),
+                                                      decelerationCurve:
+                                                          Curves.easeOut,
+                                                    ))
+                                                  : SingleChildScrollView(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      child: Text(
                                                           translatedMessage
-                                                                  .toString()
-                                                                  .length >
-                                                              18
-                                                      ? Expanded(
-                                                          child: Marquee(
-                                                          text:
-                                                              translatedMessage
-                                                                  .toString(),
+                                                              .toString(),
+                                                          textAlign:
+                                                              TextAlign.center,
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
                                                               .bodyText1!
                                                               .copyWith(
-                                                                  fontSize:
-                                                                      Globals.deviceType ==
-                                                                              "phone"
-                                                                          ? 16
-                                                                          : 24),
-                                                          scrollAxis:
-                                                              Axis.horizontal,
-                                                          velocity: 30.0,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-
-                                                          blankSpace:
-                                                              50, //MediaQuery.of(context).size.width
-                                                          // velocity: 100.0,
-                                                          pauseAfterRound:
-                                                              Duration(
-                                                                  seconds: 5),
-                                                          showFadingOnlyWhenScrolling:
-                                                              true,
-                                                          startPadding: 10.0,
-                                                          accelerationDuration:
-                                                              Duration(
-                                                                  seconds: 1),
-                                                          accelerationCurve:
-                                                              Curves.linear,
-                                                          decelerationDuration:
-                                                              Duration(
-                                                                  milliseconds:
-                                                                      500),
-                                                          decelerationCurve:
-                                                              Curves.easeOut,
-                                                        ))
-                                                      : SingleChildScrollView(
-                                                          scrollDirection:
-                                                              Axis.horizontal,
-                                                          child: Text(
-                                                              translatedMessage
-                                                                  .toString(),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1!
-                                                                  .copyWith(
-                                                                      fontSize: Globals.deviceType ==
-                                                                              "phone"
-                                                                          ? 16
-                                                                          : 24)),
-                                                        ),
-                                            ),
-                                          )),
-                                        ],
-                                      ))
-                                  : Container();
+                                                                  fontSize: Globals
+                                                                              .deviceType ==
+                                                                          "phone"
+                                                                      ? 16
+                                                                      : 24)),
+                                                    ),
+                                        ),
+                                      )),
+                                    ],
+                                  ));
                             },
                           ),
                         )

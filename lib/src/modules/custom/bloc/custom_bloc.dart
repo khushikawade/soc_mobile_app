@@ -182,7 +182,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
 
           yield CalendarListSuccess(
               futureListobj: mapListObj(futureListobj!),
-              pastListobj: mapListObj(pastListobj!));
+              pastListobj: mapListObj(pastListobj!.reversed.toList()));
         }
 
         List<CalendarEventList> list =
@@ -201,7 +201,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         yield CalendarListSuccess(
             futureListobj:
                 mapListObj(futureListobj!), //Grouping the events by month
-            pastListobj: mapListObj(pastListobj!)
+            pastListobj: mapListObj(pastListobj!.reversed.toList())
             // futureListobj: futureListMap, pastListobj: pastListMap
             );
       } catch (e) {
@@ -218,7 +218,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
 
         yield CalendarListSuccess(
             futureListobj: mapListObj(futureListobj!),
-            pastListobj: mapListObj(pastListobj!));
+            pastListobj: mapListObj(pastListobj!.reversed.toList()));
       }
     }
   }

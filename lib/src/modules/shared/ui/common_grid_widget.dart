@@ -239,138 +239,118 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
             children: List.generate(
               list.length,
               (index) {
-                return list[index].status == null ||
-                        list[index].status == 'Show'
-                    ? Container(
-                        padding: EdgeInsets.only(
-                          top: Globals.deviceType == "phone"
-                              ? MediaQuery.of(context).size.height * 0.001
-                              : MediaQuery.of(context).size.height * 0.01,
-                        ),
-                        child: GestureDetector(
-                            onTap: () => _navigate(list, list[index],
-                                index), //_launchURL(list[index]),
-                            child: Column(
-                              // mainAxisAlignment:MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                _buildLeading(list[index]),
-                                Container(
-                                  child: TranslationWidget(
-                                    message: "${list[index].titleC}",
-                                    fromLanguage: "en",
-                                    toLanguage: Globals.selectedLanguage,
-                                    builder: (translatedMessage) => Container(
-                                      child: MediaQuery.of(context)
-                                                      .orientation ==
-                                                  Orientation.portrait &&
-                                              translatedMessage
-                                                      .toString()
-                                                      .length >
-                                                  11
-                                          ? Expanded(
-                                              child: Marquee(
-                                                text: translatedMessage
-                                                    .toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1!
-                                                    .copyWith(
-                                                        fontSize:
-                                                            Globals.deviceType ==
-                                                                    "phone"
-                                                                ? 16
-                                                                : 24),
-                                                scrollAxis: Axis.horizontal,
-                                                velocity: 30.0,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                blankSpace: 50,
-                                                //MediaQuery.of(context).size.width
-                                                // velocity: 100.0,
-                                                pauseAfterRound:
-                                                    Duration(seconds: 5),
-                                                showFadingOnlyWhenScrolling:
-                                                    true,
-                                                startPadding: 10.0,
-                                                accelerationDuration:
-                                                    Duration(seconds: 1),
-                                                accelerationCurve:
-                                                    Curves.linear,
-                                                decelerationDuration:
-                                                    Duration(milliseconds: 500),
-                                                decelerationCurve:
-                                                    Curves.easeOut,
-                                              ),
-                                            )
-                                          : MediaQuery.of(context)
-                                                          .orientation ==
-                                                      Orientation.landscape &&
-                                                  translatedMessage
-                                                          .toString()
-                                                          .length >
-                                                      18
-                                              ? Expanded(
-                                                  child: Marquee(
-                                                  text: translatedMessage
-                                                      .toString(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1!
-                                                      .copyWith(
-                                                          fontSize:
-                                                              Globals.deviceType ==
-                                                                      "phone"
-                                                                  ? 16
-                                                                  : 24),
-                                                  scrollAxis: Axis.horizontal,
-                                                  velocity: 30.0,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                return Container(
+                  padding: EdgeInsets.only(
+                    top: Globals.deviceType == "phone"
+                        ? MediaQuery.of(context).size.height * 0.001
+                        : MediaQuery.of(context).size.height * 0.01,
+                  ),
+                  child: GestureDetector(
+                      onTap: () => _navigate(
+                          list, list[index], index), //_launchURL(list[index]),
+                      child: Column(
+                        // mainAxisAlignment:MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          _buildLeading(list[index]),
+                          Container(
+                            child: TranslationWidget(
+                              message: "${list[index].titleC}",
+                              fromLanguage: "en",
+                              toLanguage: Globals.selectedLanguage,
+                              builder: (translatedMessage) => Container(
+                                child: MediaQuery.of(context).orientation ==
+                                            Orientation.portrait &&
+                                        translatedMessage.toString().length > 11
+                                    ? Expanded(
+                                        child: Marquee(
+                                          text: translatedMessage.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1!
+                                              .copyWith(
+                                                  fontSize:
+                                                      Globals.deviceType ==
+                                                              "phone"
+                                                          ? 16
+                                                          : 24),
+                                          scrollAxis: Axis.horizontal,
+                                          velocity: 30.0,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          blankSpace: 50,
+                                          //MediaQuery.of(context).size.width
+                                          // velocity: 100.0,
+                                          pauseAfterRound: Duration(seconds: 5),
+                                          showFadingOnlyWhenScrolling: true,
+                                          startPadding: 10.0,
+                                          accelerationDuration:
+                                              Duration(seconds: 1),
+                                          accelerationCurve: Curves.linear,
+                                          decelerationDuration:
+                                              Duration(milliseconds: 500),
+                                          decelerationCurve: Curves.easeOut,
+                                        ),
+                                      )
+                                    : MediaQuery.of(context).orientation ==
+                                                Orientation.landscape &&
+                                            translatedMessage
+                                                    .toString()
+                                                    .length >
+                                                18
+                                        ? Expanded(
+                                            child: Marquee(
+                                            text: translatedMessage.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    fontSize:
+                                                        Globals.deviceType ==
+                                                                "phone"
+                                                            ? 16
+                                                            : 24),
+                                            scrollAxis: Axis.horizontal,
+                                            velocity: 30.0,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
 
-                                                  blankSpace:
-                                                      50, //MediaQuery.of(context).size.width
-                                                  // velocity: 100.0,
-                                                  pauseAfterRound:
-                                                      Duration(seconds: 5),
-                                                  showFadingOnlyWhenScrolling:
-                                                      true,
-                                                  startPadding: 10.0,
-                                                  accelerationDuration:
-                                                      Duration(seconds: 1),
-                                                  accelerationCurve:
-                                                      Curves.linear,
-                                                  decelerationDuration:
-                                                      Duration(
-                                                          milliseconds: 500),
-                                                  decelerationCurve:
-                                                      Curves.easeOut,
-                                                ))
-                                              : SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: Text(
-                                                    translatedMessage
-                                                        .toString(),
-                                                    textAlign: TextAlign.center,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText1!
-                                                        .copyWith(
-                                                            fontSize:
-                                                                Globals.deviceType ==
-                                                                        "phone"
-                                                                    ? 16
-                                                                    : 24),
-                                                  ),
-                                                ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )),
-                      )
-                    : Container();
+                                            blankSpace:
+                                                50, //MediaQuery.of(context).size.width
+                                            // velocity: 100.0,
+                                            pauseAfterRound:
+                                                Duration(seconds: 5),
+                                            showFadingOnlyWhenScrolling: true,
+                                            startPadding: 10.0,
+                                            accelerationDuration:
+                                                Duration(seconds: 1),
+                                            accelerationCurve: Curves.linear,
+                                            decelerationDuration:
+                                                Duration(milliseconds: 500),
+                                            decelerationCurve: Curves.easeOut,
+                                          ))
+                                        : SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Text(
+                                              translatedMessage.toString(),
+                                              textAlign: TextAlign.center,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .copyWith(
+                                                      fontSize:
+                                                          Globals.deviceType ==
+                                                                  "phone"
+                                                              ? 16
+                                                              : 24),
+                                            ),
+                                          ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
+                );
               },
             ),
           )

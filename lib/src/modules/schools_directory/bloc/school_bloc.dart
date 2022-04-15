@@ -71,15 +71,13 @@ class SchoolDirectoryBloc
   Future<List<SchoolDirectoryList>> getSchoolDirectorySDList(
       parentId, isSubMenu) async {
     try {
-      // final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
-      //     "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c"));
       final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(parentId ==
               null
           ? "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c"
           : (isSubMenu == true
-              ? 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c&Custom_App_Menu__c=$parentId'
+              ? //'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c&Custom_App_Menu__c=$parentId'
+              'getSubRecords?parentId=$parentId&parentName=Custom_App_Menu__c&objectName=School_Directory_App__c'
               : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c&Custom_App_Section__c=$parentId')));
-      //   getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c&Custom_App_Menu__c=a224C000000tIG7QAM
       if (response.statusCode == 200) {
         List<SchoolDirectoryList> _list = response.data['body']
             .map<SchoolDirectoryList>((i) => SchoolDirectoryList.fromJson(i))

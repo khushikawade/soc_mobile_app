@@ -116,9 +116,7 @@ class _StudentPageState extends State<StudentPage> {
             children: List.generate(
               list.length,
               (index) {
-                return list[index].status == null ||
-                        list[index].status == 'Show'
-                    ? Container(
+                return Container(
                         padding: EdgeInsets.only(
                           top: Globals.deviceType == "phone"
                               ? MediaQuery.of(context).size.height * 0.001
@@ -247,8 +245,7 @@ class _StudentPageState extends State<StudentPage> {
                                 )),
                               ],
                             )),
-                      )
-                    : Container();
+                      );
               },
             ),
           )

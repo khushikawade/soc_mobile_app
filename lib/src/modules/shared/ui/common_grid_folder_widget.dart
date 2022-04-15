@@ -353,9 +353,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
       children: List.generate(
         subList.length,
         (index) {
-          return subList[index].status == null ||
-                  subList[index].status == 'Show'
-              ? InkWell(
+          return  InkWell(
                   onTap: () => _launchURL(subList[index]),
                   child: Column(
                     children: [
@@ -452,8 +450,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                         ),
                       )),
                     ],
-                  ))
-              : Container();
+                  ));
         },
       ),
     );

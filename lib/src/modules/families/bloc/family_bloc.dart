@@ -314,12 +314,13 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<SDlist>> getStaffList(categoryId, customrecordId) async {
     try {
-      final ResponseModel response =
-          await _dbServices.getapi(Uri.encodeFull(customrecordId != null
-              ? 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&Custom_App_Menu__c=$customrecordId'
-              : categoryId != null
-                  ? 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId'
-                  : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c'));
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(customrecordId !=
+              null
+          ? //'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&Custom_App_Menu__c=$customrecordId'
+          'getSubRecords?parentId=$customrecordId&parentName=Custom_App_Menu__c&objectName=Staff_Directory_App__c'
+          : categoryId != null
+              ? 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId'
+              : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c'));
 
       if (response.statusCode == 200) {
         List<SDlist> _list = response.data['body']
