@@ -33,7 +33,6 @@ class CustomPages extends StatefulWidget {
 
 class _CustomPagesState extends State<CustomPages> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   var pdfViewerKey = UniqueKey();
@@ -128,11 +127,9 @@ class _CustomPagesState extends State<CustomPages> {
       return obj.appUrlC != null && obj.appUrlC != ""
           ? (obj.appUrlC.toString().split(":")[0] == 'http'
                   // || obj.deepLinkC == 'YES'
-                  ? Expanded(
-                      child: OpenExternalBrowser(
-                        url: obj.appUrlC,
-                        connected: true,
-                      ),
+                  ? OpenExternalBrowser(
+                      url: obj.appUrlC,
+                      connected: true,
                     ) // TODO: Add a proper message when links are unable to open
                   : InAppUrlLauncer(
                       title: obj.sectionTitleC!, // "no scaffold",
@@ -147,14 +144,11 @@ class _CustomPagesState extends State<CustomPages> {
               //     language: Globals.selectedLanguage,
               //   )
               )
-          : Expanded(
-              child: Container(
-                  child: NoDataFoundErrorWidget(
-                      isResultNotFoundMsg: false,
-                      isNews: false,
-                      isEvents: false,
-                      connected: true)),
-            );
+          : NoDataFoundErrorWidget(
+              isResultNotFoundMsg: false,
+              isNews: false,
+              isEvents: false,
+              connected: true);
     } else if (obj.sectionTemplate == "RTF_HTML" ||
         obj.sectionTemplate == "RFT_HTML" ||
         obj.sectionTemplate == "HTML/RTF" ||
@@ -170,14 +164,11 @@ class _CustomPagesState extends State<CustomPages> {
                 appbarTitle: '',
               ),
             )
-          : Expanded(
-              child: Container(
-                  child: NoDataFoundErrorWidget(
-                      isResultNotFoundMsg: false,
-                      isNews: false,
-                      isEvents: false,
-                      connected: true)),
-            );
+          : NoDataFoundErrorWidget(
+              isResultNotFoundMsg: false,
+              isNews: false,
+              isEvents: false,
+              connected: true);
     } else if (obj.sectionTemplate == "Embed iFrame") {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
           ? Expanded(
@@ -195,14 +186,11 @@ class _CustomPagesState extends State<CustomPages> {
               //   language: Globals.selectedLanguage,
               // ),
             )
-          : Expanded(
-              child: Container(
-                  child: NoDataFoundErrorWidget(
-                      isResultNotFoundMsg: false,
-                      isNews: false,
-                      isEvents: false,
-                      connected: true)),
-            );
+          : NoDataFoundErrorWidget(
+              isResultNotFoundMsg: false,
+              isNews: false,
+              isEvents: false,
+              connected: true);
     } else if (obj.sectionTemplate == "PDF URL" ||
         obj.sectionTemplate == "PDF") {
       return obj.pdfURL != null && obj.pdfURL != ""
@@ -215,14 +203,11 @@ class _CustomPagesState extends State<CustomPages> {
                 language: Globals.selectedLanguage,
               ),
             )
-          : Expanded(
-              child: Container(
-                  child: NoDataFoundErrorWidget(
-                      isResultNotFoundMsg: false,
-                      isNews: false,
-                      isEvents: false,
-                      connected: true)),
-            );
+          : NoDataFoundErrorWidget(
+              isResultNotFoundMsg: false,
+              isNews: false,
+              isEvents: false,
+              connected: true);
     } else if (obj.sectionTemplate == "Contact") {
       return ContactPage(
         obj: Globals.appSetting,
@@ -240,14 +225,11 @@ class _CustomPagesState extends State<CustomPages> {
               language: Globals.selectedLanguage,
               calendarId: obj.calendarId.toString(),
             )
-          : Expanded(
-              child: Container(
-                  child: NoDataFoundErrorWidget(
-                      isResultNotFoundMsg: false,
-                      isNews: false,
-                      isEvents: false,
-                      connected: true)),
-            );
+          : NoDataFoundErrorWidget(
+              isResultNotFoundMsg: false,
+              isNews: false,
+              isEvents: false,
+              connected: true);
     } else if (obj.sectionTemplate == "RSS Feed") {
       Globals.appSetting.socialapiurlc = obj.rssFeed;
       return Expanded(child: SocialNewPage());
@@ -269,13 +251,10 @@ class _CustomPagesState extends State<CustomPages> {
         language: Globals.selectedLanguage,
       );
     }
-    return Expanded(
-      child: Container(
-          child: NoDataFoundErrorWidget(
-              isResultNotFoundMsg: false,
-              isNews: false,
-              isEvents: false,
-              connected: true)),
-    );
+    return NoDataFoundErrorWidget(
+        isResultNotFoundMsg: false,
+        isNews: false,
+        isEvents: false,
+        connected: true);
   }
 }

@@ -7,9 +7,11 @@ import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 
+import '../models/student_app.dart';
+
 // ignore: must_be_immutable
 class AppsFolderPage extends StatefulWidget {
-  List obj = [];
+  List<StudentApp> obj = [];
   final String folderName;
   @override
   AppsFolderPage({
@@ -26,7 +28,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
   AnimationController? controller;
   Animation<double>? scaleAnimation;
   static const double _kLableSpacing = 10.0;
-  List apps = [];
+  List<StudentApp> apps = [];
   @override
   void initState() {
     super.initState();
@@ -55,7 +57,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
     super.dispose();
   }
 
-  _launchURL(obj) async {
+  _launchURL(StudentApp obj) async {
     if (obj.deepLinkC == 'NO') {
       if (obj.appUrlC!.toString().split(":")[0] == 'http') {
         await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
@@ -135,10 +137,13 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                   height: 65,
                                                   width: 65,
                                                   child: CustomIconWidget(
-                                                      iconUrl: apps[index]
-                                                              .appIconC ??
-                                                          Overrides
-                                                              .folderDefaultImage))
+                                                    iconUrl: apps[index]
+                                                            .appIconC ??
+                                                        Overrides
+                                                            .folderDefaultImage,
+                                                    darkModeIconUrl: apps[index]
+                                                        .darkModeIconC,
+                                                  ))
                                               : Container(),
                                           Container(
                                               child: TranslationWidget(
@@ -296,6 +301,4 @@ class AppsFolderPageState extends State<AppsFolderPage>
       ),
     );
   }
-
-  showAlart() {}
 }

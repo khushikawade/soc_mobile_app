@@ -103,7 +103,7 @@ class SearchList {
       objectName: json['ObjectName'] as String?,
       latitude: json['Contact_Office_Location__Latitude__s'],
       longitude: json['Contact_Office_Location__Longitude__s'],
-      darkModeIconC: '');
+      darkModeIconC: json['Dark_Mode_Icon__c'] as String?);
 
   Map<String, dynamic> toJson() => {
         'Title__c': titleC,
@@ -129,6 +129,6 @@ class SearchList {
         'ObjectName': objectName,
         'Contact_Office_Location__Latitude__s': latitude,
         'Contact_Office_Location__Longitude__s': longitude,
-        '': darkModeIconC
+        'Dark_Mode_Icon__c': darkModeIconC
       };
 }

@@ -26,6 +26,7 @@ class AppLogoWidget extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 0.0),
                   child: ClipRRect(
                       child: CustomIconWidget(
+                        darkModeIconUrl: null,
                           iconUrl: Globals.appSetting.appLogoC)))),
         ],
       ),

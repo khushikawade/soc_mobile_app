@@ -32,13 +32,14 @@ class CalendarEventListAdapter extends TypeAdapter<CalendarEventList> {
       sequence: fields[12] as int?,
       eventType: fields[13] as String?,
       month: fields[14] as String?,
+      originalStartTime: fields[15] as dynamic,
     );
   }
 
   @override
   void write(BinaryWriter writer, CalendarEventList obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.kind)
       ..writeByte(1)
@@ -68,7 +69,9 @@ class CalendarEventListAdapter extends TypeAdapter<CalendarEventList> {
       ..writeByte(13)
       ..write(obj.eventType)
       ..writeByte(14)
-      ..write(obj.month);
+      ..write(obj.month)
+      ..writeByte(15)
+      ..write(obj.originalStartTime);
   }
 
   @override

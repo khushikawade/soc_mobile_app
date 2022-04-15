@@ -61,6 +61,8 @@ class Recent {
   final latitude;
   @HiveField(24)
   final longitude;
+  @HiveField(25)
+  final darkModeIconC;
 
   Recent(
       this.hiveobjid,
@@ -90,5 +92,6 @@ class Recent {
       this.geoLocation,
       this.descriptionC,
       this.latitude,
-      this.longitude);
+      this.longitude,
+      this.darkModeIconC);
 }

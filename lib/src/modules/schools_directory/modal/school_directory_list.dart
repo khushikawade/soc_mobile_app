@@ -60,11 +60,11 @@ class SchoolDirectoryList {
           geoLocation: json['Contact_Office_Location__c'],
           urlC: json['Website_URL__c'] as String?,
           id: json['Id'] as String?,
-          sortOrder: json['Sort_Order__c'],
+          sortOrder: double.parse(json['Sort_Order__c'] ?? '100'),
           statusC: json['Active_Status__c'],
           latitude: json['Contact_Office_Location__Latitude__s'],
           longitude: json['Contact_Office_Location__Longitude__s'],
-          darkModeIconC: json['Dark_Mode_Icon__c'] );
+          darkModeIconC: json['Dark_Mode_Icon__c']);
 
   Map<String, dynamic> toJson() => {
         'Title__c': titleC,
@@ -80,6 +80,6 @@ class SchoolDirectoryList {
         'Active_Status__c': statusC,
         'Contact_Office_Location__Latitude__s': latitude,
         'Contact_Office_Location__Longitude__s': longitude,
-        'Dark_Mode_Icon__c':darkModeIconC
+        'Dark_Mode_Icon__c': darkModeIconC
       };
 }

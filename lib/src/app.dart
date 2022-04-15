@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'modules/user/ui/startup.dart';
+import 'startup.dart';
 
 class App extends StatefulWidget {
   @override
@@ -104,7 +102,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         theme: theme,
         darkTheme: darkTheme,
         home: StartupPage(),
-        //   home: SchoolIDLogin(),
+        // home: SchoolIDLogin(),
       ),
     );
   }

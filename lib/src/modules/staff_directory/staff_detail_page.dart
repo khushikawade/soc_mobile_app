@@ -57,7 +57,10 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         horizontal: _kLabelSpacing,
       ),
       child: TranslationWidget(
-        message: widget.obj!.designation ?? "",
+        message:
+            widget.obj!.designation != 'null' && widget.obj!.designation != null
+                ? widget.obj!.designation
+                : "",
         toLanguage: Globals.selectedLanguage,
         fromLanguage: "en",
         builder: (translatedMessage) => Text(

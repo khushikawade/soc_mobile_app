@@ -23,7 +23,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_version/new_version.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../overrides.dart';
@@ -63,6 +62,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     });
     if (_notification == AppLifecycleState.resumed)
       _newsBloc.add(NewsCountLength());
+    setState(() {});
   }
 
   void restart() {
@@ -97,15 +97,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> _getNotificationIntance() async {
-    OneSignal.shared.setNotificationWillShowInForegroundHandler(
-        (OSNotificationReceivedEvent notification) async {
-      notification.complete(notification.notification);
-      setState(() {
-        Globals.indicator.value = true;
-      });
-    });
-  }
+  // Future<void> _getNotificationIntance() async {
+  //   OneSignal.shared.setNotificationWillShowInForegroundHandler(
+  //       (OSNotificationReceivedEvent notification) async {
+  //     notification.complete(notification.notification);
+  //     setState(() {
+  //       Globals.indicator.value = true;
+  //     });
+  //   });
+  // }
 
   void _checkNewVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _getNotificationIntance();
+    // _getNotificationIntance();
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
     restart();

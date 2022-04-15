@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -14,7 +13,6 @@ import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../globals.dart';
+import 'globals.dart';
 
 class StartupPage extends StatefulWidget {
   @override
@@ -43,7 +41,7 @@ class _StartupPageState extends State<StartupPage> {
 
   void initState() {
     super.initState();
-    _onNotificationTap();
+    // _onNotificationTap();
 
     getindicatorValue();
     appversion();
@@ -59,19 +57,19 @@ class _StartupPageState extends State<StartupPage> {
     }
   }
 
-  _onNotificationTap() {
-    // OneSignal.shared
-    //     .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-    //   this.setState(() {
-    //     Globals.isNewTap = true;
-    //   });
-    // });
-    OneSignal.shared.setNotificationWillShowInForegroundHandler((event) {
-      setState(() {
-        Globals.indicator.value = true;
-      });
-    });
-  }
+  // _onNotificationTap() {
+  //   // OneSignal.shared
+  //   //     .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+  //   //   this.setState(() {
+  //   //     Globals.isNewTap = true;
+  //   //   });
+  //   // });
+  //   OneSignal.shared.setNotificationWillShowInForegroundHandler((event) {
+  //     setState(() {
+  //       Globals.indicator.value = true;
+  //     });
+  //   });
+  // }
 
   Future<void> _showcase() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -191,13 +189,6 @@ class _StartupPageState extends State<StartupPage> {
 
                     Globals.appSetting = AppSetting.fromJson(state.obj);
 
-                    // if (Globals.appSetting.disableDarkMode == true) {
-                    //   AdaptiveTheme.of(context).setLight();
-                    //   Globals.themeType = 'Light';
-                    //   Globals.disableDarkMode = true;
-                    // }else{
-                    //    Globals.disableDarkMode = false;
-                    // }
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString(

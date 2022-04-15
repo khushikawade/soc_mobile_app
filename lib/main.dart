@@ -78,14 +78,17 @@ disableDarkMode() async {
     HiveDbServices _hivedb = HiveDbServices();
     Globals.disableDarkMode =
         await _hivedb.getSingleData('disableDarkMode', 'darkMode');
-    print('-------------------dark mode disable----------------------');
-    print(Globals.disableDarkMode);
+    // print('-------------------dark mode disable----------------------');
+    // print(Globals.disableDarkMode);
+
   } catch (e) {}
 }
 
 // This function will clean the only theme details from SharedPreferences
 clearTheme() async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.remove(AdaptiveTheme.prefKey);
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(AdaptiveTheme.prefKey);
+  } catch (e) {}
   // AdaptiveTheme.of(context).persist();
 }

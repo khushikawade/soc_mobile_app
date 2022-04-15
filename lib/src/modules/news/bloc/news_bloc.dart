@@ -58,8 +58,16 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         _list.forEach((NotificationList e) {
           _localDb.addData(e);
         });
-        _list.sort(
-            (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+
+        _list.forEach((element) {
+          if (element.completedAtTimestamp != null) {
+            _list.sort((a, b) =>
+                b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+          }
+        });
+
+        // _list.sort(
+        //     (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
         // Syncing end.
         //Adding push notification list data to global list
         Globals.notificationList.clear();
@@ -131,8 +139,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           }
         }
         List<ActionCountList> list = await fetchNewsActionCount();
-
         List<NotificationList> newList = [];
+
         newList.clear();
         if (list.length == 0) {
           //If no action added yet for school, Adding onsignal list as it is with no action counts
@@ -307,9 +315,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       Globals.controller!.index = Globals.newsIndex ?? 0;
       Globals.newsIndex =
           await _hiveDbServices.getSingleData('newsIndex', 'newsIndex');
-      Globals.indicator.value = false;
+      // Globals.indicator.value = false;
       Globals.isNewTap = true;
-      // print('---------------update notification--------------------');
     });
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);
