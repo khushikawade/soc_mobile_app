@@ -181,7 +181,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
           yield CalendarListSuccess(
               futureListobj: mapListObj(futureListobj!),
-              pastListobj: mapListObj(pastListobj!));
+              pastListobj: mapListObj(pastListobj!.reversed.toList()));
         }
 
         List<CalendarEventList> list =
@@ -200,7 +200,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         yield CalendarListSuccess(
             futureListobj:
                 mapListObj(futureListobj!), //Grouping the events by month
-            pastListobj: mapListObj(pastListobj!)
+            pastListobj: mapListObj(pastListobj!.reversed.toList())
             // futureListobj: futureListMap, pastListobj: pastListMap
             );
       } catch (e) {
@@ -217,7 +217,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         yield CalendarListSuccess(
             futureListobj: mapListObj(futureListobj!),
-            pastListobj: mapListObj(pastListobj!));
+            pastListobj: mapListObj(pastListobj!.reversed.toList()));
       }
     }
   }
