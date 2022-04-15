@@ -185,16 +185,17 @@ class _StartupPageState extends State<StartupPage> {
                 bloc: _bloc,
                 listener: (context, state) async {
                   if (state is BottomNavigationBarSuccess) {
-                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+                    AppTheme.setDynamicTheme(
+                        Globals.appSetting, context); 
 
                     Globals.appSetting = AppSetting.fromJson(state.obj);
-
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString(
                         Strings.SplashUrl,
                         state.obj["Splash_Screen__c"] ??
                             state.obj["App_Logo__c"]);
+                    await Future.delayed(Duration(milliseconds: 200));        
                     state.obj != null
                         ? Navigator.of(context)
                             .pushReplacement(_createRoute(state.obj))

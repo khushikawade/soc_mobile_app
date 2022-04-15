@@ -585,13 +585,13 @@ class AppTheme {
                   height: 1.2,
                 ),
               ),
-              checkboxTheme: Theme.of(context).checkboxTheme.copyWith(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  side: BorderSide(
-                      width: 1.5, color: Theme.of(context).primaryColor),
-                  splashRadius: 0),
+              // checkboxTheme: Theme.of(context).checkboxTheme.copyWith(
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(20),
+              //     ),
+              //     side: BorderSide(
+              //         width: 1.5, color: Theme.of(context).primaryColor),
+              //     splashRadius: 0),
 
               //Text theme ends
             ),
@@ -775,13 +775,13 @@ class AppTheme {
                 ),
               ),
 
-              checkboxTheme: Theme.of(context).checkboxTheme.copyWith(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  side: BorderSide(
-                      width: 1.5, color: Theme.of(context).primaryColor),
-                  splashRadius: 0),
+              // checkboxTheme: Theme.of(context).checkboxTheme.copyWith(
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(20),
+              //     ),
+              //     side: BorderSide(
+              //         width: 1.5, color: Theme.of(context).primaryColor),
+              //     splashRadius: 0),
 
               //Text theme ends
             ));
