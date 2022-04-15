@@ -44,7 +44,7 @@ void main() async {
       ..registerAdapter(CustomSettingAdapter());
   }
   clearTheme();
-  disableDarkMode();
+  await disableDarkMode();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -74,11 +74,13 @@ getDeviceType() async {
 }
 
 disableDarkMode() async {
-  HiveDbServices _hivedb = HiveDbServices();
-  Globals.disableDarkMode =
-      await _hivedb.getSingleData('disableDarkMode', 'darkMode');
-  print('-------------------dark mode disable----------------------');
-  print(Globals.disableDarkMode);
+  try {
+    HiveDbServices _hivedb = HiveDbServices();
+    Globals.disableDarkMode =
+        await _hivedb.getSingleData('disableDarkMode', 'darkMode');
+    print('-------------------dark mode disable----------------------');
+    print(Globals.disableDarkMode);
+  } catch (e) {}
 }
 
 // This function will clean the only theme details from SharedPreferences
