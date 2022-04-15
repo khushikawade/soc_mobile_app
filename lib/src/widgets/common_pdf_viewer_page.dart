@@ -99,20 +99,22 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                     valueColor:
                         new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
                   ))
-                : PDFViewer(
-
-                   
-                    document: document!,
-                    enableSwipeNavigation: true,
-                    lazyLoad: false,
-                    progressIndicator: CircularProgressIndicator(
-                      color: Theme.of(context).colorScheme.primaryVariant,
+                : Padding(
+                    // Todo: padding from bottom by which user can view long pdf to.
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: PDFViewer(
+                      document: document!,
+                      enableSwipeNavigation: true,
+                      lazyLoad: false,
+                      progressIndicator: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                      ),
+                      showIndicator: true,
+                      showNavigation: false,
+                      showPicker: false,
+                      zoomSteps: 2,
+                      scrollDirection: Axis.vertical,
                     ),
-                    showIndicator: true,
-                    showNavigation: false,
-                    showPicker: false,
-                    zoomSteps: 2,
-                    scrollDirection: Axis.vertical,
                   )
             : NoDataFoundErrorWidget(
                 isResultNotFoundMsg: false,

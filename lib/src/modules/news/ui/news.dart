@@ -27,21 +27,15 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
-  // static const double _kLabelSpacing = 16.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  // static const double _kIconSize = 48.0;
-  // static const double _kPhoneIcon = 36.0;
-  // static const double _kTabletIcon = 55.0;
-
-  // static const double _kLabelSpacing = 16.0;
   NewsBloc bloc = new NewsBloc();
   NewsBloc _countBloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   final HomeBloc _homeBloc = new HomeBloc();
   String newsTimeStamp = '';
-  late AppLifecycleState _notification;
-  List newsMainList = [];
+  // late AppLifecycleState _notification;
+  List<NotificationList> newsMainList = [];
   bool? isCountLoading = true;
   bool? isActionAPICalled = false;
   bool? result;
@@ -49,13 +43,12 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    //lock screen orientation
-    //  Utility.setLocked();
     bloc.add(FetchNotificationList());
     _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
     WidgetsBinding.instance!.addObserver(this);
     Globals.isNewTap = false;
+    Globals.indicator.value = false;
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -118,7 +111,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           currentIndex: index,
                           issocialpage: false,
                           isAboutSDPage: false,
-                          iseventpage: false,
+                          // iseventpage: false,
+                          isNewsPage: true,
                           date: "$newsTimeStamp",
                           isbuttomsheet: true,
                           language: Globals.selectedLanguage,
@@ -157,16 +151,16 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           listener: (context, state) async {
             if (state is ActionCountSuccess) {
               newsMainList.clear();
-              newsMainList.addAll(state.obj);
+              newsMainList.addAll(state.obj!);
 
               isCountLoading = false;
               Container(
                 alignment: Alignment.centerLeft,
                 child: UserActionBasic(
-                    title: state.obj[index].headings['en'],
-                    description: state.obj[index].contents['en'],
-                    imageUrl: state.obj[index].image,
-                    obj: state.obj[index],
+                    title: state.obj![index].headings['en'],
+                    description: state.obj![index].contents['en'],
+                    imageUrl: state.obj![index].image,
+                    obj: state.obj![index],
                     page: "news",
                     isLoading: isCountLoading),
               );
@@ -179,18 +173,18 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             builder: (BuildContext context, NewsState state) {
               if (state is ActionCountSuccess) {
                 newsMainList.clear();
-                newsMainList.addAll(state.obj);
+                newsMainList.addAll(state.obj!);
                 isCountLoading = false;
                 return Container(
                   alignment: Alignment.centerLeft,
-                  child: state.obj[index] ==
+                  child: state.obj![index] ==
                           null // To make it backward compatible:: If the local database has something different than the real data that has been fetched by the API.
                       ? Container()
                       : UserActionBasic(
-                          title: state.obj[index].headings['en'],
-                          description: state.obj[index].contents['en'],
-                          imageUrl: state.obj[index].image,
-                          obj: state.obj[index],
+                          title: state.obj![index].headings['en'],
+                          description: state.obj![index].contents['en'],
+                          imageUrl: state.obj![index].image,
+                          obj: state.obj![index],
                           page: "news",
                           isLoading: isCountLoading),
                 );

@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -20,6 +21,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 
 class StaffDirectory extends StatefulWidget {
   final bool isCustom;
+  final bool? isSubmenu;
   final obj;
   final bool isbuttomsheet;
   final String appBarTitle;
@@ -36,7 +38,8 @@ class StaffDirectory extends StatefulWidget {
       required this.language,
       required this.isAbout,
       this.staffDirectoryCategoryId,
-      required this.isCustom})
+      required this.isCustom,
+      this.isSubmenu})
       : super(key: key);
 
   @override
@@ -61,8 +64,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     if (widget.staffDirectoryCategoryId != null) {
       _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
     } else {
-      _bloc
-          .add(SDevent(customRecordId: widget.isCustom ? widget.obj.id : null));
+      _bloc.add(SDevent(
+          customRecordId: widget.isCustom && widget.isSubmenu == true
+              ? widget.obj.id
+              : null));
     }
     Globals.callsnackbar = true;
   }
@@ -70,25 +75,26 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   Widget listItem(list, obj, index) {
     return GestureDetector(
       onTap: () async {
-        if (widget.isAbout == true) {
-           //lock screen orientation
-    // Utility.setLocked();
-        await  Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SliderWidget(
-                        obj: list,
-                        currentIndex: index,
-                        issocialpage: false,
-                        isAboutSDPage: true,
-                        iseventpage: false,
-                        date: "",
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )));
-                         //lock screen orientation
-  // Utility.setLocked();
-        }
+        // if (widget.isAbout == true) {
+        //lock screen orientation
+        // Utility.setLocked();
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SliderWidget(
+                      obj: list,
+                      currentIndex: index,
+                      issocialpage: false,
+                      isAboutSDPage: widget.isAbout, // true,
+                      isNewsPage: false,
+                      // iseventpage: false,
+                      date: "",
+                      isbuttomsheet: true,
+                      language: Globals.selectedLanguage,
+                    )));
+        //lock screen orientation
+        // Utility.setLocked();
+        // }
       },
       child: Container(
         margin: EdgeInsets.symmetric(
@@ -213,16 +219,25 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          marginLeft: 30,
-          appBarTitle: widget.appBarTitle,
-          isSearch: true,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
-          isShare: false,
-          isCenterIcon: true,
-          language: Globals.selectedLanguage,
-        ),
+        appBar: widget.isSubmenu == true
+            ? CustomAppBarWidget(
+                marginLeft: 30,
+                appBarTitle: widget.appBarTitle,
+                isSearch: true,
+                sharedpopBodytext: '',
+                sharedpopUpheaderText: '',
+                isShare: false,
+                isCenterIcon: true,
+                language: Globals.selectedLanguage,
+              )
+            : widget.isSubmenu == false
+                ? AppBarWidget(
+                    marginLeft: 30,
+                    refresh: (v) {
+                      setState(() {});
+                    },
+                  )
+                : null,
         body: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(
@@ -242,7 +257,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     } else {
                       _bloc.add(SDevent(
                           customRecordId:
-                              widget.isCustom ? widget.obj.id : null));
+                              widget.isCustom && widget.isSubmenu == true
+                                  ? widget.obj.id
+                                  : null));
                     }
                   }
                 } else if (!connected) {
@@ -328,8 +345,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     if (widget.staffDirectoryCategoryId != null) {
       _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
     } else {
-      _bloc
-          .add(SDevent(customRecordId: widget.isCustom ? widget.obj.id : null));
+      _bloc.add(SDevent(
+          customRecordId: widget.isCustom && widget.isSubmenu == true
+              ? widget.obj.id
+              : null));
     }
     _homeBloc.add(FetchStandardNavigationBar());
   }

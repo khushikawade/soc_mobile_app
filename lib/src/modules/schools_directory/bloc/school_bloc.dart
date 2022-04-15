@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
+import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
@@ -25,8 +25,8 @@ class SchoolDirectoryBloc
     if (event is SchoolDirectoryListEvent) {
       try {
         // yield SchoolDirectoryLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
-        LocalDatabase<SchoolDirectoryList> _localDb =
-            LocalDatabase(Strings.schoolDirectoryObjectName);
+        LocalDatabase<SchoolDirectoryList> _localDb = LocalDatabase(
+            '${Strings.schoolDirectoryObjectName}${event.customRecordId}');
 
         List<SchoolDirectoryList>? _localData = await _localDb.getData();
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
@@ -38,7 +38,8 @@ class SchoolDirectoryBloc
         }
         //Local database end.
 
-        List<SchoolDirectoryList> list = await getSchoolDirectorySDList();
+        List<SchoolDirectoryList> list = await getSchoolDirectorySDList(
+            event.customRecordId, event.isSubMenu);
 
         // Syncing the Local database with remote data
         await _localDb.clear();
@@ -52,8 +53,8 @@ class SchoolDirectoryBloc
         yield SchoolDirectoryLoading(); // Mimic state change
         yield SchoolDirectoryDataSucess(obj: list);
       } catch (e) {
-        LocalDatabase<SchoolDirectoryList> _localDb =
-            LocalDatabase(Strings.schoolDirectoryObjectName);
+        LocalDatabase<SchoolDirectoryList> _localDb = LocalDatabase(
+            '${Strings.schoolDirectoryObjectName}${event.customRecordId}');
 
         List<SchoolDirectoryList>? _localData = await _localDb.getData();
         _localDb.close();
@@ -67,16 +68,25 @@ class SchoolDirectoryBloc
     }
   }
 
-  Future<List<SchoolDirectoryList>> getSchoolDirectorySDList() async {
+  Future<List<SchoolDirectoryList>> getSchoolDirectorySDList(
+      parentId, isSubMenu) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
-          "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c"));
+      // final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      //     "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c"));
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(parentId ==
+              null
+          ? "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c"
+          : (isSubMenu == true
+              ? 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c&Custom_App_Menu__c=$parentId'
+              : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c&Custom_App_Section__c=$parentId')));
+      //   getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c&Custom_App_Menu__c=a224C000000tIG7QAM
       if (response.statusCode == 200) {
         List<SchoolDirectoryList> _list = response.data['body']
             .map<SchoolDirectoryList>((i) => SchoolDirectoryList.fromJson(i))
             .toList();
         _list.removeWhere(
             (SchoolDirectoryList element) => element.statusC == 'Hide');
+
         return _list;
       } else {
         throw ('something_went_wrong');

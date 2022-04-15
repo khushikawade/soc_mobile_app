@@ -19,8 +19,8 @@ import '../../shared/ui/common_grid_widget.dart';
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
-  final CustomSetting? homeObj;
-  FamilyPage({Key? key, this.obj, this.searchObj, this.homeObj})
+  final CustomSetting? customObj;
+  FamilyPage({Key? key, this.obj, this.searchObj, this.customObj})
       : super(key: key);
 
   @override
@@ -38,7 +38,7 @@ class _FamilyPageState extends State<FamilyPage> {
   @override
   void initState() {
     super.initState();
-       //lock screen orientation
+    //lock screen orientation
     // Utility.setLocked();
     _bloc.add(FamiliesEvent());
     var brightness = SchedulerBinding.instance!.window.platformBrightness;
@@ -65,7 +65,6 @@ class _FamilyPageState extends State<FamilyPage> {
                 Widget child,
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
-
                 if (connected) {
                   if (iserrorstate == true) {
                     _bloc.add(FamiliesEvent());
@@ -93,8 +92,9 @@ class _FamilyPageState extends State<FamilyPage> {
                                     .primaryVariant,
                               ));
                             } else if (state is FamiliesDataSucess) {
-                              return widget.homeObj != null &&
-                                      widget.homeObj!.gridViewC == "Grid Menu"
+                              return widget.customObj != null &&
+                                      widget.customObj!.sectionTemplate ==
+                                          "Grid Menu"
                                   ? CommonGridWidget(
                                       scaffoldKey: _scaffoldKey,
                                       connected: connected,
@@ -132,8 +132,6 @@ class _FamilyPageState extends State<FamilyPage> {
                     ),
                   ],
                 );
-                // : NoInternetErrorWidget(
-                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

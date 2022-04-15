@@ -29,23 +29,35 @@ class CommonImageWidget extends StatelessWidget {
           showDialog(
               context: context,
               builder: (_) => ImagePopup(
-                   // Implemented Dark mode image 
-                  imageURL:Globals.themeType == 'Dark'? (darkModeIconUrl == null || darkModeIconUrl == ''? iconUrl ?? Globals.splashImageUrl ??
-                     Globals.appSetting.appLogoC :darkModeIconUrl!) : iconUrl ?? Globals.splashImageUrl ??
-                     Globals.appSetting.appLogoC ,
-                  //  iconUrl ??
-                  //     Globals.splashImageUrl ??
-                  //     Globals.appSetting.appLogoC 
-                      ) );
+                    // Implemented Dark mode image
+                    imageURL: Globals.themeType == 'Dark'
+                        ? (darkModeIconUrl == null || darkModeIconUrl == ''
+                            ? iconUrl ??
+                                Globals.splashImageUrl ??
+                                Globals.appSetting.appLogoC
+                            : darkModeIconUrl!)
+                        : iconUrl ??
+                            Globals.splashImageUrl ??
+                            Globals.appSetting.appLogoC,
+                    //  iconUrl ??
+                    //     Globals.splashImageUrl ??
+                    //     Globals.appSetting.appLogoC
+                  ));
         }
       },
       child: ClipRRect(
         child: Container(
           child: CachedNetworkImage(
-            // Implemented Dark mode image that will work with dark mode 
-              imageUrl: Globals.themeType == 'Dark'? (darkModeIconUrl == null || darkModeIconUrl == ''? iconUrl ?? Globals.splashImageUrl ??
-                     Globals.appSetting.appLogoC :darkModeIconUrl!) : iconUrl ?? Globals.splashImageUrl ??
-                     Globals.appSetting.appLogoC ,
+              // Implemented Dark mode image that will work with dark mode
+              imageUrl: Globals.themeType == 'Dark'
+                  ? (darkModeIconUrl == null || darkModeIconUrl == ''
+                      ? iconUrl ??
+                          Globals.splashImageUrl ??
+                          Globals.appSetting.appLogoC
+                      : darkModeIconUrl!)
+                  : iconUrl ??
+                      Globals.splashImageUrl ??
+                      Globals.appSetting.appLogoC,
               fit: fitMethod ?? BoxFit.cover,
               height: height ??
                   (Globals.deviceType == "phone"

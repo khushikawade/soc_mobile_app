@@ -17,7 +17,7 @@ class SDlist {
   @HiveField(5)
   String? emailC;
   @HiveField(6)
-  dynamic sortOrderC;
+  final sortOrderC;
   @HiveField(7)
   String? phoneC;
   @HiveField(8)
@@ -49,7 +49,7 @@ class SDlist {
       name: json['Name__c'] as String?,
       descriptionC: json['Description__c'],
       emailC: json['Email__c'] as String?,
-      sortOrderC: json['Sort_Order__c'],
+      sortOrderC: double.parse(json['Sort_Order__c'] ?? '100'),
       phoneC: json['Phone__c'] as String?,
       status: json['Active_Status__c'] ?? 'Show',
       darkModeIconC: json['Dark_Mode_Icon__c']);

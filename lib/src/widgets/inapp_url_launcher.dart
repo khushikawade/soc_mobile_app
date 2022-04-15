@@ -14,8 +14,8 @@ class InAppUrlLauncer extends StatefulWidget {
   final bool? hideHeader;
   final bool isbuttomsheet;
   final String? language;
-  final bool ?isCustomMainPageWebView;
-  
+  final bool? isCustomMainPageWebView;
+
   @override
   InAppUrlLauncer(
       {Key? key,
@@ -24,8 +24,7 @@ class InAppUrlLauncer extends StatefulWidget {
       required this.isbuttomsheet,
       required this.language,
       this.hideHeader,
-      this.isiFrame
-      ,
+      this.isiFrame,
       this.isCustomMainPageWebView})
       : super(key: key);
   _InAppUrlLauncerState createState() => new _InAppUrlLauncerState();
@@ -36,6 +35,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   bool isLoading = true;
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
+  // Globals.webViewController1 = Completer<WebViewController>();
 
   @override
   void initState() {
@@ -45,10 +45,8 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.isCustomMainPageWebView ==true
-        ? Expanded(
-            child: _webViewWidget(),
-          )
+    return widget.isCustomMainPageWebView == true
+        ? _webViewWidget()
         : Scaffold(
             appBar: CustomAppBarWidget(
               isSearch: false,
@@ -106,6 +104,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated:
                             (WebViewController webViewController) {
+                          Globals.webViewController1 = webViewController;
                           _controller.complete(webViewController);
                         },
                       ),

@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/user/ui/startup.dart';
+import 'package:Soc/src/startup.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 

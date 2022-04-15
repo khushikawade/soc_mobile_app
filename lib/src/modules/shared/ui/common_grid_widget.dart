@@ -15,6 +15,7 @@ import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 import '../../../widgets/no_data_found_error_widget.dart';
+import '../../schools_directory/ui/schools_directory.dart';
 
 class CommonGridWidget extends StatefulWidget {
   final List<SharedList> data;
@@ -151,17 +152,6 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
               widget.scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
       return subListDialog(obj);
-
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (BuildContext context) => SubListPage(
-      //               appBarTitle: obj.titleC!,
-      //               obj: obj,
-      //               module: widget.sectionName,
-      //               isbuttomsheet: true,
-      //               language: Globals.selectedLanguage,
-      //             )));
     } else if (obj.typeC == "Staff_Directory") {
       Navigator.push(
           context,
@@ -171,9 +161,21 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                     staffDirectoryCategoryId: obj.id,
                     appBarTitle: obj.titleC!,
                     obj: obj,
+                    isSubmenu: true,
                     isbuttomsheet: true,
                     isAbout: true,
                     language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "School Directory" ||
+        obj.typeC == 'Org Directory') {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SchoolDirectoryPage(
+                    title: obj.titleC,
+                    isSubmenu: obj.typeC == 'Org Directory' ? true : false,
+                    obj: obj,
+                    isStanderdPage: false,
                   )));
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);

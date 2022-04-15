@@ -14,6 +14,7 @@ import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/no_data_found_error_widget.dart';
+import '../../schools_directory/ui/schools_directory.dart';
 
 class CommonListWidget extends StatefulWidget {
   final List<SharedList> data;
@@ -33,22 +34,22 @@ class CommonListWidget extends StatefulWidget {
 
 class _CommonListWidgetState extends State<CommonListWidget> {
   bool? tapped = true;
-  _launchURL(obj) async {
+
+  _launchURL(SharedList obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
-      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
-    } else if (await Utility.sslErrorHandler(obj.appUrlC) == "Yes") {
-      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
+    } else if (await Utility.sslErrorHandler(obj.appUrlC!) == "Yes") {
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
       if (tapped == true) {
         tapped = false;
-        await  
-        Navigator.push(
+        await Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC,
-                      url: obj.appUrlC,
+                      title: obj.titleC!,
+                      url: obj.appUrlC!,
                       isbuttomsheet: true,
                       language: Globals.selectedLanguage,
                     )));
@@ -83,6 +84,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,
+                    isSubmenu: true,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
@@ -164,9 +166,21 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     staffDirectoryCategoryId: obj.id,
                     appBarTitle: obj.titleC!,
                     obj: obj,
+                    isSubmenu: true,
                     isbuttomsheet: true,
                     isAbout: true,
                     language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "School Directory" ||
+        obj.typeC == 'Org Directory') {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SchoolDirectoryPage(
+                    title: obj.titleC,
+                    isSubmenu: obj.typeC == 'Org Directory' ? true : false,
+                    obj: obj,
+                    isStanderdPage: false,
                   )));
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
@@ -247,11 +261,11 @@ class _CommonListWidgetState extends State<CommonListWidget> {
               return _buildList(widget.data[index], index);
             },
           )
-        : Container(
-            child: NoDataFoundErrorWidget(
-                isResultNotFoundMsg: false,
-                isNews: false,
-                isEvents: false,
-                connected: true));
+        : NoDataFoundErrorWidget(
+            isCalendarPageOrientationLandscape: false,
+            isResultNotFoundMsg: false,
+            isNews: false,
+            isEvents: false,
+            connected: true);
   }
 }

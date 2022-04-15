@@ -2,34 +2,31 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/custom/ui/custom_app_section.dart';
-import 'package:Soc/src/modules/custom/ui/custom_page.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
-import 'package:Soc/src/modules/schools/ui/schools.dart';
+import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/social/ui/social_new.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
+import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
-
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:new_version/new_version.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../overrides.dart';
+import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
@@ -65,6 +62,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     });
     if (_notification == AppLifecycleState.resumed)
       _newsBloc.add(NewsCountLength());
+    setState(() {});
   }
 
   void restart() {
@@ -99,15 +97,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> _getNotificationIntance() async {
-    OneSignal.shared.setNotificationWillShowInForegroundHandler(
-        (OSNotificationReceivedEvent notification) async {
-      notification.complete(notification.notification);
-      setState(() {
-        Globals.indicator.value = true;
-      });
-    });
-  }
+  // Future<void> _getNotificationIntance() async {
+  //   OneSignal.shared.setNotificationWillShowInForegroundHandler(
+  //       (OSNotificationReceivedEvent notification) async {
+  //     notification.complete(notification.notification);
+  //     setState(() {
+  //       Globals.indicator.value = true;
+  //     });
+  //   });
+  // }
 
   void _checkNewVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -123,7 +121,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _getNotificationIntance();
+    // _getNotificationIntance();
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
     restart();
@@ -188,7 +186,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 );
               } else if (element.contains('school')) {
                 _screens.add(
-                  SchoolPage(),
+                  SchoolDirectoryPage(
+                    isStanderdPage: true,
+                    isSubmenu: false,
+                  ),
                 );
               } else if (element.contains('resource')) {
                 _screens.add(
@@ -206,7 +207,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         (item) {
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(
-                item.selectionTitleC, item.sectionIconC, item.standardSectionC),
+                item.sectionTitleC, item.sectionIconC, item.systemReferenceC),
             inactiveColorPrimary: CupertinoColors.systemGrey,
           );
         },
@@ -219,6 +220,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           if (item.split("_")[0].toString().toLowerCase().contains("news")) {
             Globals.newsIndex =
                 Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
+
+            addNewsIndex(Globals.newsIndex);
           }
           setState(() {});
           return PersistentBottomNavBarItem(
@@ -473,41 +476,75 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   void addScreen() {
-    for (var i = 0; i < Globals.customSetting!.length; i++) {
-      if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
-        if (Globals.customSetting![i].standardSectionC == 'News') {
+    if (Globals.customSetting!.length > 0) {
+      for (var i = 0; i < Globals.customSetting!.length; i++) {
+        // if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
+        if (Globals.customSetting![i].systemReferenceC == 'News') {
           _screens.add(NewsPage());
           Globals.newsIndex = i;
           addNewsIndex(i);
-        } else if (Globals.customSetting![i].standardSectionC == 'Social') {
+        } else if (Globals.customSetting![i].systemReferenceC == 'Social' ||
+            Globals.customSetting![i].sectionTemplate == 'RSS Feed') {
+          if (Globals.customSetting![i].sectionTemplate == 'RSS Feed') {
+            Globals.appSetting.socialapiurlc =
+                Globals.customSetting![i].rssFeed;
+          }
           _screens.add(SocialNewPage());
-        } else if (Globals.customSetting![i].standardSectionC == 'Student') {
+        } else if (Globals.customSetting![i].systemReferenceC == 'Students') {
           _screens.add(StudentPage());
-        } else if (Globals.customSetting![i].standardSectionC == 'Staff') {
-          _screens.add(StaffPage(homeObj: Globals.customSetting![i]));
-        } else if (Globals.customSetting![i].standardSectionC == 'Families') {
-          _screens.add(FamilyPage(homeObj: Globals.customSetting![i]));
-        } else if (Globals.customSetting![i].standardSectionC ==
-            'School Directory') {
-          _screens.add(SchoolPage());
-        } else if (Globals.customSetting![i].standardSectionC == 'About') {
-          _screens.add(AboutPage(homeObj: Globals.customSetting![i]));
-        } else if (Globals.customSetting![i].standardSectionC == 'Resources') {
-          _screens.add(ResourcesPage(homeObj: Globals.customSetting![i]));
-        }
-      } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-        if (Globals.customSetting![i].typeOfPageC == 'Menu') {
-          _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-        } else {
-          _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
-          if (Globals.customSetting![i].typeOfPageC == 'URL') {
-            Globals.urlIndex = _screens.length - 1;
+        } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
+          _screens.add(StaffPage(customObj: Globals.customSetting![i]));
+        } else if (Globals.customSetting![i].systemReferenceC == 'Families') {
+          _screens.add(FamilyPage(customObj: Globals.customSetting![i]));
+        } else if (Globals.customSetting![i].systemReferenceC ==
+            'Directory Org') {
+          _screens.add(SchoolDirectoryPage(
+            isStanderdPage: true,
+            isSubmenu: false,
+          ));
+        } else if (Globals.customSetting![i].systemReferenceC ==
+            'Directory Personnel') {
+          _screens.add(StaffDirectory(
+            appBarTitle: '',
+            isAbout: false,
+            isCustom: true,
+            isSubmenu: false,
+            isbuttomsheet: true,
+            language: Globals.selectedLanguage,
+            obj: Globals.customSetting![i],
+          ));
+        } else if (Globals.customSetting![i].systemReferenceC == 'About') {
+          _screens.add(AboutPage(customObj: Globals.customSetting![i]));
+        } else if (Globals.customSetting![i].systemReferenceC == 'Resources') {
+          _screens.add(ResourcesPage(customObj: Globals.customSetting![i]));
+        } else if (Globals.customSetting![i].systemReferenceC == 'Other') {
+          // if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
+          //     Globals.customSetting![i].typeOfPageC == 'List Menu') {
+          if (Globals.customSetting![i].sectionTemplate == 'URL') {
+            Globals.urlIndex = _screens.length;
             Globals.homeUrl = Globals.customSetting![i].appUrlC;
           }
+          _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
+        } else {
+          _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
         }
-      } else {
-        _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
+        // } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
+        //   if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
+        //       Globals.customSetting![i].typeOfPageC == 'List Menu') {
+        //     _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
+        //   } else {
+        //     _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
+        //     if (Globals.customSetting![i].typeOfPageC == 'URL') {
+        //       Globals.urlIndex = _screens.length - 1;
+        //       Globals.homeUrl = Globals.customSetting![i].appUrlC;
+        //     }
+        //   }
+        // } else {
+        //   _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
+        // }
       }
+    } else {
+      EmptyContainer();
     }
   }
 

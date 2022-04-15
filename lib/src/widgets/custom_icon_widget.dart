@@ -8,7 +8,7 @@ import 'package:flutter/scheduler.dart';
 class CustomIconWidget extends StatefulWidget {
   late final String? iconUrl;
   final String? darkModeIconUrl;
-  CustomIconWidget({Key? key, @required this.iconUrl, this.darkModeIconUrl}) : super(key: key);
+  CustomIconWidget({Key? key, @required this.iconUrl, @required this.darkModeIconUrl}) : super(key: key);
 
   @override
   State<CustomIconWidget> createState() => _CustomIconWidgetState();

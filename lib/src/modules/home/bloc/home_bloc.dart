@@ -7,8 +7,7 @@ import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
-import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
-import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
+import 'package:Soc/src/modules/schools_directory/bloc/school_bloc.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
@@ -26,6 +25,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../custom/model/custom_setting.dart';
+import '../../schools_directory/modal/school_directory_list.dart';
 part 'home_event.dart';
 part 'home_state.dart';
 
@@ -33,7 +33,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeInitial());
   final DbServices _dbServices = DbServices();
   // final HiveDbServices _localDbService = HiveDbServices();
-
   HomeState get initialState => HomeInitial();
 
   @override
@@ -45,7 +44,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         yield HomeLoading();
         final data = await fetchStandardNavigationBar();
         // Saving data to the Local DataBase
-
         AppSetting _appSetting = AppSetting.fromJson(data);
         Globals.isCustomNavbar = false;
 
@@ -62,13 +60,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             _customSettingDb.addData(e);
           });
         }
-        if (_appSetting.disableDarkMode == true) {
-          HiveDbServices _hivedb = HiveDbServices();
-          _hivedb.addSingleData('disableDarkMode', 'darkMode', true);
-        } else {
-          HiveDbServices _hivedb = HiveDbServices();
-          _hivedb.addSingleData('disableDarkMode', 'darkMode', false);
-        }
+        saveDarkModeField(_appSetting);
 
         // Should send the response first then it will sync data to the Local database.
         yield BottomNavigationBarSuccess(obj: data);
@@ -283,9 +275,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     List<SearchList> _listSearch = [];
     try {
       LocalDatabase<StudentApp> _localDb = LocalDatabase(dataBaseName);
-
       List<StudentApp>? _localData = await _localDb.getData();
       _listSearch.clear();
+
       for (var i = 0; i < _localData.length; i++) {
         if (_localData[i].titleC!.contains(keyword!)) {
           _searchList.id = _localData[i].id ?? null;
@@ -347,7 +339,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _aboutBloc.add(AboutStaffDirectoryEvent());
         } else if (element.contains('school')) {
           SchoolDirectoryBloc _schoolBloc = new SchoolDirectoryBloc();
-          _schoolBloc.add(SchoolDirectoryListEvent());
+          _schoolBloc.add(SchoolDirectoryListEvent(isSubMenu: false));
         } else if (element.contains('resource')) {
           ResourcesBloc _resourceBloc = ResourcesBloc();
           _resourceBloc.add(ResourcesListEvent());
@@ -368,6 +360,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       _socialBloc.add(SocialPageEvent(action: 'initial'));
     } catch (e) {
       print(e);
+    }
+  }
+
+  saveDarkModeField(AppSetting _appSetting) {
+    if (_appSetting.disableDarkMode == true) {
+      HiveDbServices _hivedb = HiveDbServices();
+      _hivedb.addSingleData('disableDarkMode', 'darkMode', true);
+    } else {
+      HiveDbServices _hivedb = HiveDbServices();
+      _hivedb.addSingleData('disableDarkMode', 'darkMode', false);
     }
   }
 }

@@ -59,7 +59,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
     );
   }
 
-  Widget _buildlist(obj, int index, mainObj, bool reLoad) {
+  Widget _buildlist(Item obj, int index, mainObj, bool reLoad) {
     final document = obj.description != null && obj.description != ""
         ? parse(obj.description["__cdata"])
         : parse("");
@@ -80,7 +80,8 @@ class _SocialNewPageState extends State<SocialNewPage> {
                         currentIndex: index,
                         issocialpage: true,
                         isAboutSDPage: false,
-                        iseventpage: false,
+                        isNewsPage: false,
+                        // iseventpage: false,
                         date: '1',
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
@@ -94,7 +95,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
           title: '',
           description: obj.title!["__cdata"] != null &&
                   obj.title!["__cdata"].length > 1
-              ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n")}"
+              ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n").replaceAll('⁦', '').replaceAll('⁩', '')}"
               : '',
           actionIcon: Container(
               // padding: EdgeInsets.only(

@@ -63,6 +63,6 @@ class StudentApp {
         'Sort_Order__c': sortOrder,
         'Active_Status__c': status,
         'Is_Folder__c': isFolder,
-        'Dark_Mode_Icon__c':darkModeIconC
+        'Dark_Mode_Icon__c': darkModeIconC
       };
 }

@@ -1,13 +1,14 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marquee/marquee.dart';
+import 'package:share/share.dart';
 import '../../../widgets/no_data_found_error_widget.dart';
 import '../../about/bloc/about_bloc.dart';
 import '../../custom/bloc/custom_bloc.dart';
@@ -59,13 +60,6 @@ class CommonGridFolderState extends State<CommonGridFolder>
     } else if (widget.sectionName == "Custom") {
       _customBloc.add(CustomSublistEvent(id: widget.obj.id));
     }
-// subList.addAll(widget.obj);
-    // for (int i = 0; i < widget.obj.length; i++) {
-    //   if (widget.obj[i].appFolderc != null &&
-    //       widget.obj[i].appFolderc == widget.folderName) {
-    //     subList.add(widget.obj[i]);
-    //   }
-    // }
 
     controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 450));
@@ -84,7 +78,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
     super.dispose();
   }
 
-  _launchURL(obj) async {
+  _launchURL(SharedList obj) async {
     if (obj.deepLinkC == 'NO') {
       if (obj.appUrlC!.toString().split(":")[0] == 'http') {
         await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
@@ -125,48 +119,74 @@ class CommonGridFolderState extends State<CommonGridFolder>
               child: Scaffold(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 // backgroundColor: Colors.white,
-                body:
-                    //    isLoading==true?Container(
-                    // alignment: Alignment.center,
-                    // child: CircularProgressIndicator(
-                    //   color: Theme.of(context).colorScheme.primaryVariant,
-                    // )):
-                    Padding(
-                        padding: const EdgeInsets.only(
-                            top: 20, left: 20.0, right: 20, bottom: 20),
-                        child:
-                            // subList.length > 0
-                            //     ?
-                            ListView(
-                          shrinkWrap: true,
-                          children: [
-                            widget.sectionName == 'Custom'
-                                ? BlocBuilder<CustomBloc, CustomState>(
-                                    bloc: _customBloc,
+                body: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 20, left: 20.0, right: 20, bottom: 20),
+                    child:
+                        // subList.length > 0
+                        //     ?
+                        ListView(
+                      shrinkWrap: true,
+                      children: [
+                        widget.sectionName == 'Custom'
+                            ? BlocBuilder<CustomBloc, CustomState>(
+                                bloc: _customBloc,
+                                builder:
+                                    (BuildContext contxt, CustomState state) {
+                                  if (state is CustomInitial ||
+                                      state is CustomLoading) {
+                                    return Container(
+                                        margin: EdgeInsets.only(
+                                            top: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.18),
+                                        alignment: Alignment.center,
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                        ));
+                                  } else if (state is CustomSublistSuccess) {
+                                    return state.obj != null &&
+                                            state.obj!.length > 0
+                                        ? Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 5),
+                                            child: buildGrid(state.obj!))
+                                        :
+                                        // ListView(children: [
+                                        NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                            isEvents: false,
+                                            // connected: connected,
+                                          );
+                                    // ]);
+                                  }
+                                  return Container();
+                                })
+                            : widget.sectionName == 'family'
+                                ? BlocBuilder<FamilyBloc, FamilyState>(
+                                    bloc: _familyBloc,
                                     builder: (BuildContext contxt,
-                                        CustomState state) {
+                                        FamilyState state) {
                                       if (state is CustomInitial ||
                                           state is CustomLoading) {
-                                        return Container(
-                                            margin: EdgeInsets.only(
-                                                top: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.18),
-                                            alignment: Alignment.center,
+                                        return Center(
                                             child: CircularProgressIndicator(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant,
-                                            ));
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                        ));
                                       } else if (state
-                                          is CustomSublistSuccess) {
+                                          is FamiliesSublistSucess) {
                                         return state.obj != null &&
                                                 state.obj!.length > 0
                                             ? Container(
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 5),
-                                                child: buildGrid(state.obj))
+                                                child: buildGrid(state.obj!))
                                             :
                                             // ListView(children: [
                                             NoDataFoundErrorWidget(
@@ -179,11 +199,11 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                       }
                                       return Container();
                                     })
-                                : widget.sectionName == 'family'
-                                    ? BlocBuilder<FamilyBloc, FamilyState>(
-                                        bloc: _familyBloc,
+                                : widget.sectionName == 'staff'
+                                    ? BlocBuilder<StaffBloc, StaffState>(
+                                        bloc: _staffBloc,
                                         builder: (BuildContext contxt,
-                                            FamilyState state) {
+                                            StaffState state) {
                                           if (state is CustomInitial ||
                                               state is CustomLoading) {
                                             return Center(
@@ -194,14 +214,15 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                   .primaryVariant,
                                             ));
                                           } else if (state
-                                              is FamiliesSublistSucess) {
+                                              is StaffSubListSucess) {
                                             return state.obj != null &&
                                                     state.obj!.length > 0
                                                 ? Container(
                                                     padding:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 5),
-                                                    child: buildGrid(state.obj))
+                                                    child:
+                                                        buildGrid(state.obj!))
                                                 :
                                                 // ListView(children: [
                                                 NoDataFoundErrorWidget(
@@ -214,13 +235,14 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                           }
                                           return Container();
                                         })
-                                    : widget.sectionName == 'staff'
-                                        ? BlocBuilder<StaffBloc, StaffState>(
-                                            bloc: _staffBloc,
+                                    : widget.sectionName == 'resources'
+                                        ? BlocBuilder<ResourcesBloc,
+                                                ResourcesState>(
+                                            bloc: _resourceBloc,
                                             builder: (BuildContext contxt,
-                                                StaffState state) {
-                                              if (state is CustomInitial ||
-                                                  state is CustomLoading) {
+                                                ResourcesState state) {
+                                              if (state is ResourcesInitial ||
+                                                  state is ResourcesLoading) {
                                                 return Center(
                                                     child:
                                                         CircularProgressIndicator(
@@ -229,7 +251,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                       .primaryVariant,
                                                 ));
                                               } else if (state
-                                                  is StaffSubListSucess) {
+                                                  is ResourcesSubListSucess) {
                                                 return state.obj != null &&
                                                         state.obj!.length > 0
                                                     ? Container(
@@ -237,7 +259,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                             .symmetric(
                                                                 horizontal: 5),
                                                         child: buildGrid(
-                                                            state.obj))
+                                                            state.obj!))
                                                     :
                                                     // ListView(children: [
                                                     NoDataFoundErrorWidget(
@@ -251,16 +273,14 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                               }
                                               return Container();
                                             })
-                                        : widget.sectionName == 'resources'
-                                            ? BlocBuilder<ResourcesBloc,
-                                                    ResourcesState>(
-                                                bloc: _resourceBloc,
+                                        : widget.sectionName == 'about'
+                                            ? BlocBuilder<AboutBloc,
+                                                    AboutState>(
+                                                bloc: _aboutBloc,
                                                 builder: (BuildContext contxt,
-                                                    ResourcesState state) {
-                                                  if (state
-                                                          is ResourcesInitial ||
-                                                      state
-                                                          is ResourcesLoading) {
+                                                    AboutState state) {
+                                                  if (state is CustomInitial ||
+                                                      state is AboutLoading) {
                                                     return Center(
                                                         child:
                                                             CircularProgressIndicator(
@@ -269,7 +289,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                           .primaryVariant,
                                                     ));
                                                   } else if (state
-                                                      is ResourcesSubListSucess) {
+                                                      is AboutSublistSucess) {
                                                     return state.obj != null &&
                                                             state.obj!.length >
                                                                 0
@@ -279,7 +299,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                                     horizontal:
                                                                         5),
                                                             child: buildGrid(
-                                                                state.obj))
+                                                                state.obj!))
                                                         :
                                                         // ListView(children: [
                                                         NoDataFoundErrorWidget(
@@ -293,63 +313,15 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                   }
                                                   return Container();
                                                 })
-                                            : widget.sectionName == 'about'
-                                                ? BlocBuilder<AboutBloc,
-                                                        AboutState>(
-                                                    bloc: _aboutBloc,
-                                                    builder:
-                                                        (BuildContext contxt,
-                                                            AboutState state) {
-                                                      if (state
-                                                              is CustomInitial ||
-                                                          state
-                                                              is AboutLoading) {
-                                                        return Center(
-                                                            child:
-                                                                CircularProgressIndicator(
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .colorScheme
-                                                              .primaryVariant,
-                                                        ));
-                                                      } else if (state
-                                                          is AboutSublistSucess) {
-                                                        return state.obj !=
-                                                                    null &&
-                                                                state.obj!
-                                                                        .length >
-                                                                    0
-                                                            ? Container(
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
-                                                                        horizontal:
-                                                                            5),
-                                                                child: buildGrid(
-                                                                    state.obj))
-                                                            :
-                                                            // ListView(children: [
-                                                            NoDataFoundErrorWidget(
-                                                                isResultNotFoundMsg:
-                                                                    false,
-                                                                isNews: false,
-                                                                isEvents: false,
-                                                                // connected: connected,
-                                                              );
-                                                        // ]);
-                                                      }
-                                                      return Container();
-                                                    })
-                                                : Expanded(
-                                                    child:
-                                                        NoDataFoundErrorWidget(
-                                                      isResultNotFoundMsg:
-                                                          false,
-                                                      isNews: false,
-                                                      isEvents: false,
-                                                    ),
-                                                  ),
-                          ],
-                        )),
+                                            : Expanded(
+                                                child: NoDataFoundErrorWidget(
+                                                  isResultNotFoundMsg: false,
+                                                  isNews: false,
+                                                  isEvents: false,
+                                                ),
+                                              ),
+                      ],
+                    )),
               ),
             ),
           ),
@@ -358,7 +330,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
     );
   }
 
-  buildGrid(subList) {
+  buildGrid(List<SharedList> subList) {
     return GridView.count(
       shrinkWrap: true,
       crossAxisCount: MediaQuery.of(context).orientation ==
@@ -387,9 +359,6 @@ class CommonGridFolderState extends State<CommonGridFolder>
                   onTap: () => _launchURL(subList[index]),
                   child: Column(
                     children: [
-                      // subList[index].appIconC != null &&
-                      //         subList[index].appIconC != ''
-                      //  ?
                       Container(
                           height: 65,
                           width: 65,
@@ -397,7 +366,6 @@ class CommonGridFolderState extends State<CommonGridFolder>
                               darkModeIconUrl: subList[index].darkModeIconC,
                               iconUrl: subList[index].appIconC ??
                                   Overrides.defaultIconUrl)),
-                      // : Container(),
                       Container(
                           child: TranslationWidget(
                         message: subList[index] != null

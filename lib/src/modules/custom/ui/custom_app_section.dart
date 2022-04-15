@@ -1,8 +1,7 @@
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
+import 'package:Soc/src/modules/custom/ui/custom_page.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
-import 'package:Soc/src/modules/shared/ui/common_grid_widget.dart';
-import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -16,17 +15,16 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import '../model/custom_setting.dart';
 
 class CustomAppSection extends StatefulWidget {
+  final id;
+  final CustomSetting customObj;
+  final searchObj;
+
   CustomAppSection({
     Key? key,
-    required this.homeObj,
+    required this.customObj,
     this.id,
     this.searchObj,
   }) : super(key: key);
-
-  final id;
-  final CustomSetting homeObj;
-  final searchObj;
-
   @override
   _CustomAppSectionState createState() => _CustomAppSectionState();
 }
@@ -34,7 +32,6 @@ class CustomAppSection extends StatefulWidget {
 class _CustomAppSectionState extends State<CustomAppSection> {
   bool? iserrorstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-
   CustomBloc _bloc = CustomBloc();
   HomeBloc _homeBloc = HomeBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -42,13 +39,13 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(CustomEvents(id: widget.homeObj.id));
+    _bloc.add(CustomEvents(id: widget.customObj.id));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    _bloc.add(CustomEvents(id: widget.homeObj.id));
+    _bloc.add(CustomEvents(id: widget.customObj.id));
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
@@ -61,17 +58,17 @@ class _CustomAppSectionState extends State<CustomAppSection> {
           setState(() {});
         },
       ),
-      body: widget.homeObj.customBannerImageC != null &&
-              widget.homeObj.customBannerImageC != ''
+      body: widget.customObj.customBannerImageC != null &&
+              widget.customObj.customBannerImageC != ''
           ? NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   BannerImageWidget(
-                    imageUrl: widget.homeObj.customBannerImageC!,
-                    bgColor: widget.homeObj.customBannerImageC != null
+                    imageUrl: widget.customObj.customBannerImageC!,
+                    bgColor: widget.customObj.customBannerImageC != null
                         ? Utility.getColorFromHex(
-                            widget.homeObj.customBannerImageC!)
+                            widget.customObj.customBannerImageC!)
                         : null,
                   )
                 ];
@@ -94,7 +91,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
                   if (iserrorstate == true) {
-                    _bloc.add(CustomEvents(id: widget.homeObj.id));
+                    _bloc.add(CustomEvents(id: widget.customObj.id));
                     iserrorstate = false;
                   }
                 } else if (!connected) {
@@ -113,21 +110,10 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                               state is CustomLoading) {
                             return Center(child: CircularProgressIndicator());
                           } else if (state is CustomDataSucess) {
-                            return widget.homeObj.gridViewC == "Grid Menu"
-                                ? CommonGridWidget(
-                                    scaffoldKey: _scaffoldKey,
-                                    connected: connected,
-                                    data: state.obj!,
-                                    sectionName: "Custom")
-                                : ListView(
-                                  children: [
-                                    CommonListWidget(
-                                        scaffoldKey: _scaffoldKey,
-                                        connected: connected,
-                                        data: state.obj!,
-                                        sectionName: "Custom"),
-                                  ],
-                                );
+                            return CustomPages(
+                              customList: state.obj,
+                              customObj: widget.customObj,
+                            );
                           } else if (state is ErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);
                           } else {
@@ -152,8 +138,6 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                     ),
                   ],
                 );
-                // : NoInternetErrorWidget(
-                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

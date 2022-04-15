@@ -4,11 +4,10 @@ import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
+import 'package:Soc/src/modules/schools_directory/ui/school_details.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
-import 'package:Soc/src/modules/schools/ui/school_details.dart';
-import 'package:Soc/src/modules/students/ui/apps_folder.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -19,7 +18,6 @@ import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -135,7 +133,8 @@ class _SearchPageState extends State<SearchPage> {
                     currentIndex: 0,
                     issocialpage: false,
                     isAboutSDPage: true,
-                    iseventpage: false,
+                    isNewsPage: false,
+                    // iseventpage: false,
                     date: "",
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
@@ -285,8 +284,7 @@ class _SearchPageState extends State<SearchPage> {
                         : obj.urlC,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
-                  )
-                  ));
+                  )));
       // _setLocked();
     } else {
       Utility.showSnackBar(_scaffoldKey, "No URL available", context);
@@ -370,7 +368,6 @@ class _SearchPageState extends State<SearchPage> {
                           snapshot.data.length < 10 ? snapshot.data.length : 10,
                       itemBuilder: (BuildContext context, int index) {
                         List reverseList = List.from(snapshot.data.reversed);
-
                         // return _buildRecentItem(index, snapshot.data);
                         return _buildRecentItem(index, reverseList);
                       },
@@ -424,10 +421,17 @@ class _SearchPageState extends State<SearchPage> {
                 _buildLeading(items[index]),
                 HorzitalSpacerWidget(_kLabelSpacing),
                 TranslationWidget(
-                  message: items[index].titleC != null &&
-                          items[index].titleC.isNotEmpty
-                      ? '${items[index].titleC} '
-                      : '',
+                  message: items[index].objectName == 'Staff_Directory_App__c'
+                      ? (items[index].name != null &&
+                              items[index].name != 'null' &&
+                              items[index].name.isNotEmpty
+                          ? '${items[index].name} '
+                          : '')
+                      : (items[index].titleC != null &&
+                              items[index].titleC != 'null' &&
+                              items[index].titleC.isNotEmpty
+                          ? '${items[index].titleC} '
+                          : ''),
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => Expanded(
@@ -453,7 +457,13 @@ class _SearchPageState extends State<SearchPage> {
               if (state.obj![i].typeC == null && state.obj![i].urlC != null) {
                 state.obj![i].typeC = "URL";
               }
-              if (state.obj[i].titleC != null && state.obj[i].titleC != "") {
+              if (state.obj[i].objectName == 'Staff_Directory_App__c'
+                  ? (state.obj[i].name != null &&
+                      state.obj[i].name != 'null' &&
+                      state.obj[i].name != "")
+                  : state.obj[i].titleC != null &&
+                      state.obj[i].titleC != 'null' &&
+                      state.obj[i].titleC != "") {
                 searchList.add(state.obj![i]);
                 // }
               }
@@ -487,7 +497,10 @@ class _SearchPageState extends State<SearchPage> {
                         child: ListTile(
                             leading: _buildLeading(data),
                             title: TranslationWidget(
-                              message: data.titleC ?? "-",
+                              message:
+                                  data.objectName == 'Staff_Directory_App__c'
+                                      ? data.name
+                                      : data.titleC ?? "-",
                               toLanguage: Globals.selectedLanguage,
                               fromLanguage: "en",
                               builder: (translatedMessage) => Text(
@@ -538,7 +551,8 @@ class _SearchPageState extends State<SearchPage> {
                                       data.geoLocation,
                                       data.descriptionC,
                                       data.latitude,
-                                      data.longitude);
+                                      data.longitude,
+                                      data.darkModeIconC);
                                   addtoDataBase(recentitem);
                                 }
                               }
@@ -577,6 +591,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildLeading(obj) {
     if (obj.appIconUrlC != null) {
       return CustomIconMode(
+        darkModeIconUrl: obj.darkModeIconC,
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else if (obj.appIconUrlC != null) {
@@ -590,8 +605,9 @@ class _SearchPageState extends State<SearchPage> {
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
     } else {
-      return CustomIconWidget(
+      return CustomIconMode(
         iconUrl: Overrides.defaultIconUrl,
+        darkModeIconUrl: '',
       );
     }
   }
@@ -722,8 +738,6 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ]),
                 );
-                // : NoInternetErrorWidget(
-                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,

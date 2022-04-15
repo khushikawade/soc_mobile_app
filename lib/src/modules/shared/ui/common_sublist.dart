@@ -198,10 +198,11 @@ class _SubListPageState extends State<SubListPage> {
                                           } else if (state
                                               is CustomSublistSuccess) {
                                             return CommonListWidget(
-                                                scaffoldKey: _scaffoldKey,
-                                                connected: connected,
-                                                data: state.obj!,
-                                                sectionName: 'Custom');
+                                              scaffoldKey: _scaffoldKey,
+                                              connected: connected,
+                                              data: state.obj!,
+                                              sectionName: 'Custom',
+                                            );
                                           } else {
                                             return Container();
                                           }

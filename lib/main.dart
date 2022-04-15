@@ -7,7 +7,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
+import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
@@ -44,7 +44,7 @@ void main() async {
       ..registerAdapter(CustomSettingAdapter());
   }
   clearTheme();
-  disableDarkMode();
+  await disableDarkMode();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -74,16 +74,21 @@ getDeviceType() async {
 }
 
 disableDarkMode() async {
-  HiveDbServices _hivedb = HiveDbServices();
-  Globals.disableDarkMode =
-      await _hivedb.getSingleData('disableDarkMode', 'darkMode');
-  // print('-------------------dark mode disable----------------------');
-  // print(Globals.disableDarkMode);
+  try {
+    HiveDbServices _hivedb = HiveDbServices();
+    Globals.disableDarkMode =
+        await _hivedb.getSingleData('disableDarkMode', 'darkMode');
+    // print('-------------------dark mode disable----------------------');
+    // print(Globals.disableDarkMode);
+
+  } catch (e) {}
 }
 
 // This function will clean the only theme details from SharedPreferences
 clearTheme() async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.remove(AdaptiveTheme.prefKey);
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(AdaptiveTheme.prefKey);
+  } catch (e) {}
   // AdaptiveTheme.of(context).persist();
 }

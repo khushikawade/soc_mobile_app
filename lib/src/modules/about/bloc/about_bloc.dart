@@ -27,7 +27,6 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
         // yield AboutLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
         LocalDatabase<SharedList> _localDb =
             LocalDatabase(Strings.aboutObjectName);
-
         List<SharedList>? _localData = await _localDb.getData();
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
@@ -71,9 +70,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
         // yield FamilyLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
         String? _objectName = "${Strings.aboutSubListObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
-
         List<SharedList>? _localData = await _localDb.getData();
-
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {

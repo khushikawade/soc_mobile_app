@@ -320,12 +320,11 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
         ),
         body: RefreshIndicator(
           key: refreshKey,
-          child: Column(
+          child: ListView(
             children: [
-              Expanded(
-                  child: isloadingstate!
-                      ? ShimmerLoading(isLoading: true, child: _buildItem())
-                      : _buildItem()),
+              isloadingstate!
+                  ? ShimmerLoading(isLoading: true, child: _buildItem())
+                  : _buildItem(),
               Container(
                 child: BlocListener<HomeBloc, HomeState>(
                     bloc: homebloc,
