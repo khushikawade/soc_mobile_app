@@ -394,6 +394,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
         builder: (_) => CommonGridFolder(
               obj: obj,
               sectionName: widget.sectionName,
+              scaffoldKey: widget.scaffoldKey,
               // folderName: title,
             ));
   }
