@@ -85,6 +85,10 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
                     isCustom: widget.sectionName == 'Custom' ? true : false,
+                    isSubmenu:
+                        obj.typeC == 'Org Directory' || obj.typeC == "Form"
+                            ? true
+                            : false,
                     staffDirectoryCategoryId: null,
                     isAbout: true,
                     appBarTitle: obj.titleC!,
@@ -173,7 +177,10 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
           MaterialPageRoute(
               builder: (BuildContext context) => SchoolDirectoryPage(
                     title: obj.titleC,
-                    isSubmenu: obj.typeC == 'Org Directory' ? true : false,
+                    isSubmenu: obj.typeC == 'Org Directory' ||
+                            obj.typeC == "School Directory"
+                        ? true
+                        : false,
                     obj: obj,
                     isStanderdPage: false,
                   )));
@@ -387,6 +394,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
         builder: (_) => CommonGridFolder(
               obj: obj,
               sectionName: widget.sectionName,
+              scaffoldKey: widget.scaffoldKey,
               // folderName: title,
             ));
   }

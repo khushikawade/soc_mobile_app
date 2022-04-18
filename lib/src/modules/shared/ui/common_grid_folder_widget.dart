@@ -1,31 +1,36 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/custom_image_widget_small.dart';
+import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marquee/marquee.dart';
-import 'package:share/share.dart';
 import '../../../widgets/no_data_found_error_widget.dart';
 import '../../about/bloc/about_bloc.dart';
 import '../../custom/bloc/custom_bloc.dart';
 import '../../families/bloc/family_bloc.dart';
+import '../../families/ui/contact.dart';
+import '../../families/ui/event.dart';
 import '../../resources/bloc/resources_bloc.dart';
 import '../../staff/bloc/staff_bloc.dart';
+import '../../staff_directory/staffdirectory.dart';
 import '../models/shared_list.dart';
 
 // ignore: must_be_immutable
 class CommonGridFolder extends StatefulWidget {
   SharedList obj;
+  final scaffoldKey;
   // final String folderName;
   final String? sectionName;
   @override
   CommonGridFolder(
       {Key? key,
       required this.obj,
+      required this.scaffoldKey,
       // required this.folderName,
       this.sectionName})
       : super(key: key);
@@ -79,7 +84,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
   }
 
   _launchURL(SharedList obj) async {
-    if (obj.deepLinkC == 'NO') {
+    if (obj.deepLinkC == 'NO' || obj.deepLinkC == null) {
       if (obj.appUrlC!.toString().split(":")[0] == 'http') {
         await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
       } else {
@@ -95,6 +100,85 @@ class CommonGridFolderState extends State<CommonGridFolder>
       }
     } else {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
+    }
+  }
+
+  _navigate(List<SharedList> list, SharedList obj, index) async {
+    if (obj.typeC == "Contact") {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ContactPage(
+                    obj: Globals.appSetting,
+                    isbuttomsheet: true,
+                    appBarTitle: obj.titleC!,
+                    language: Globals.selectedLanguage ?? "English",
+                  )));
+    } else if (obj.typeC == "URL") {
+      obj.appUrlC != null && obj.appUrlC != ""
+          ? await _launchURL(obj)
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No link available", context);
+    } else if (obj.typeC == "Calendar/Events") {
+      obj.calendarId != null && obj.calendarId != ""
+          ? await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => EventPage(
+                        isbuttomsheet: true,
+                        appBarTitle: obj.titleC,
+                        language: Globals.selectedLanguage,
+                        calendarId: obj.calendarId.toString(),
+                      )))
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No calendar/events available", context);
+    } else if (obj.typeC == "RTF_HTML" ||
+        obj.typeC == "RFT_HTML" ||
+        obj.typeC == "HTML/RTF" ||
+        obj.typeC == "RTF/HTML") {
+      obj.rtfHTMLC != null
+          ? await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AboutusPage(
+                        htmlText: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        ishtml: true,
+                        appbarTitle: obj.titleC!,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "Embed iFrame") {
+      obj.rtfHTMLC != null
+          ? await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => InAppUrlLauncer(
+                        isiFrame: true,
+                        title: obj.titleC!,
+                        url: obj.rtfHTMLC.toString(),
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No data available", context);
+    } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
+      obj.pdfURL != null
+          ? await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CommonPdfViewerPage(
+                        isHomePage: false,
+                        url: obj.pdfURL,
+                        tittle: obj.titleC,
+                        isbuttomsheet: true,
+                        language: Globals.selectedLanguage,
+                      )))
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No pdf available", context);
+    } else {
+      Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }
   }
 
@@ -353,60 +437,87 @@ class CommonGridFolderState extends State<CommonGridFolder>
       children: List.generate(
         subList.length,
         (index) {
-          return  InkWell(
-                  onTap: () => _launchURL(subList[index]),
-                  child: Column(
-                    children: [
-                      Container(
-                          height: 65,
-                          width: 65,
-                          child: CustomIconMode(
-                              darkModeIconUrl: subList[index].darkModeIconC,
-                              iconUrl: subList[index].appIconC ??
-                                  Overrides.defaultIconUrl)),
-                      Container(
-                          child: TranslationWidget(
-                        message: subList[index] != null
-                            ? "${subList[index].titleC}"
-                            : '',
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) => Container(
-                          child: MediaQuery.of(context).orientation ==
-                                      Orientation.portrait &&
-                                  translatedMessage.toString().length > 11
+          return InkWell(
+              onTap: () => _navigate(subList, subList[index], index),
+              // _launchURL(subList[index]),
+              child: Column(
+                children: [
+                  Container(
+                      height: 65,
+                      width: 65,
+                      child: CustomIconMode(
+                          darkModeIconUrl: subList[index].darkModeIconC,
+                          iconUrl: subList[index].appIconC ??
+                              Overrides.defaultIconUrl)),
+                  Container(
+                      child: TranslationWidget(
+                    message: subList[index] != null
+                        ? "${subList[index].titleC}"
+                        : '',
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) => Container(
+                      child: MediaQuery.of(context).orientation ==
+                                  Orientation.portrait &&
+                              translatedMessage.toString().length > 11
+                          ? Expanded(
+                              child: Marquee(
+                                text: translatedMessage.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .copyWith(
+                                        fontSize: Globals.deviceType == "phone"
+                                            ? 16
+                                            : 24),
+                                scrollAxis: Axis.horizontal,
+                                velocity: 30.0,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                blankSpace: 50,
+                                pauseAfterRound: Duration(seconds: 5),
+                                showFadingOnlyWhenScrolling: true,
+                                startPadding: 10.0,
+                                accelerationDuration: Duration(seconds: 1),
+                                accelerationCurve: Curves.linear,
+                                decelerationDuration:
+                                    Duration(milliseconds: 500),
+                                decelerationCurve: Curves.easeOut,
+                              ),
+                            )
+                          : MediaQuery.of(context).orientation ==
+                                      Orientation.landscape &&
+                                  translatedMessage.toString().length > 18
                               ? Expanded(
                                   child: Marquee(
-                                    text: translatedMessage.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .copyWith(
-                                            fontSize:
-                                                Globals.deviceType == "phone"
-                                                    ? 16
-                                                    : 24),
-                                    scrollAxis: Axis.horizontal,
-                                    velocity: 30.0,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    blankSpace: 50,
-                                    pauseAfterRound: Duration(seconds: 5),
-                                    showFadingOnlyWhenScrolling: true,
-                                    startPadding: 10.0,
-                                    accelerationDuration: Duration(seconds: 1),
-                                    accelerationCurve: Curves.linear,
-                                    decelerationDuration:
-                                        Duration(milliseconds: 500),
-                                    decelerationCurve: Curves.easeOut,
-                                  ),
-                                )
-                              : MediaQuery.of(context).orientation ==
-                                          Orientation.landscape &&
-                                      translatedMessage.toString().length > 18
-                                  ? Expanded(
-                                      child: Marquee(
-                                      text: translatedMessage.toString(),
+                                  text: translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(
+                                          fontSize:
+                                              Globals.deviceType == "phone"
+                                                  ? 16
+                                                  : 24),
+                                  scrollAxis: Axis.horizontal,
+                                  velocity: 30.0,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                                  blankSpace:
+                                      50, //MediaQuery.of(context).size.width
+                                  // velocity: 100.0,
+                                  pauseAfterRound: Duration(seconds: 5),
+                                  showFadingOnlyWhenScrolling: true,
+                                  startPadding: 10.0,
+                                  accelerationDuration: Duration(seconds: 1),
+                                  accelerationCurve: Curves.linear,
+                                  decelerationDuration:
+                                      Duration(milliseconds: 500),
+                                  decelerationCurve: Curves.easeOut,
+                                ))
+                              : SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Text(translatedMessage.toString(),
+                                      textAlign: TextAlign.center,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyText1!
@@ -414,43 +525,12 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                               fontSize:
                                                   Globals.deviceType == "phone"
                                                       ? 16
-                                                      : 24),
-                                      scrollAxis: Axis.horizontal,
-                                      velocity: 30.0,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-
-                                      blankSpace:
-                                          50, //MediaQuery.of(context).size.width
-                                      // velocity: 100.0,
-                                      pauseAfterRound: Duration(seconds: 5),
-                                      showFadingOnlyWhenScrolling: true,
-                                      startPadding: 10.0,
-                                      accelerationDuration:
-                                          Duration(seconds: 1),
-                                      accelerationCurve: Curves.linear,
-                                      decelerationDuration:
-                                          Duration(milliseconds: 500),
-                                      decelerationCurve: Curves.easeOut,
-                                    ))
-                                  : SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Text(translatedMessage.toString(),
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1!
-                                              .copyWith(
-                                                  fontSize:
-                                                      Globals.deviceType ==
-                                                              "phone"
-                                                          ? 16
-                                                          : 24)),
-                                    ),
-                        ),
-                      )),
-                    ],
-                  ));
+                                                      : 24)),
+                                ),
+                    ),
+                  )),
+                ],
+              ));
         },
       ),
     );
