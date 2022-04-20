@@ -42,7 +42,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
     with SingleTickerProviderStateMixin {
   AnimationController? controller;
   Animation<double>? scaleAnimation;
-  static const double _kLableSpacing = 10.0;
+  static const double _kLableSpacing = 6.0;
   // List subList = [];
 
   FamilyBloc _familyBloc = FamilyBloc();

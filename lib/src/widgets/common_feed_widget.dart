@@ -136,7 +136,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                       onOpen: (link) => _launchURL(link.url),
                       options: LinkifyOptions(humanize: false),
                       linkStyle: TextStyle(color: Colors.blue),
-                      style: Theme.of(context).textTheme.headline2!.copyWith(),
+                      style: Theme.of(context).textTheme.headline2!,
                       text: translatedMessage.toString());
                 },
               )
@@ -154,7 +154,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   style: Theme.of(context)
                       .textTheme
                       .headline2!
-                      .copyWith(fontSize: 16),
+                      ,
                   text: translatedMessage.toString());
 
               // Text(
