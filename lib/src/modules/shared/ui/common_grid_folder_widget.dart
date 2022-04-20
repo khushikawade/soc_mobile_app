@@ -17,7 +17,6 @@ import '../../families/ui/contact.dart';
 import '../../families/ui/event.dart';
 import '../../resources/bloc/resources_bloc.dart';
 import '../../staff/bloc/staff_bloc.dart';
-import '../../staff_directory/staffdirectory.dart';
 import '../models/shared_list.dart';
 
 // ignore: must_be_immutable
@@ -82,13 +81,12 @@ class CommonGridFolderState extends State<CommonGridFolder>
   void dispose() {
     super.dispose();
   }
-
-  _launchURL(SharedList obj) async {
-    if (obj.deepLinkC == 'NO' || obj.deepLinkC == null) {
-      if (obj.appUrlC!.toString().split(":")[0] == 'http') {
-        await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
-      } else {
-        Navigator.push(
+ _launchURL(SharedList obj) async {
+    if (obj.appUrlC.toString().split(":")[0] == 'http' ||
+        obj.deepLinkC == 'YES') {
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
+    } else {
+      await  Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) => InAppUrlLauncer(
@@ -97,9 +95,6 @@ class CommonGridFolderState extends State<CommonGridFolder>
                       isbuttomsheet: true,
                       language: Globals.selectedLanguage,
                     )));
-      }
-    } else {
-      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     }
   }
 

@@ -58,22 +58,19 @@ class AppsFolderPageState extends State<AppsFolderPage>
   }
 
   _launchURL(StudentApp obj) async {
-    if (obj.deepLinkC == 'NO') {
-      if (obj.appUrlC!.toString().split(":")[0] == 'http') {
-        await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
-      } else {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC!,
-                      url: obj.appUrlC!,
-                      isbuttomsheet: true,
-                      language: Globals.selectedLanguage,
-                    )));
-      }
-    } else {
+    if (obj.appUrlC.toString().split(":")[0] == 'http' ||
+        obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
+    } else {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC!,
+                    url: obj.appUrlC!,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
     }
   }
 

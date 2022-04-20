@@ -362,22 +362,22 @@ class Utility {
     return utf8.decode(bytes);
   }
 
-  static Future<String> sslErrorHandler(String url) async {
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        return "No";
-      } else {
-        return "No";
-      }
-    } catch (e) {
-      print(e.toString());
-      if (e.toString().contains('HandshakeException')) {
-        return 'Yes';
-      }
-      return 'No';
-    }
-  }
+  // static Future<String> sslErrorHandler(String url) async {
+  //   try {
+  //     final response = await http.get(Uri.parse(url));
+  //     if (response.statusCode == 200) {
+  //       return "No";
+  //     } else {
+  //       return "No";
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //     if (e.toString().contains('HandshakeException')) {
+  //       return 'Yes';
+  //     }
+  //     return 'No';
+  //   }
+  // }
 
  
 }
