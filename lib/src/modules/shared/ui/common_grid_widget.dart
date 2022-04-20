@@ -252,7 +252,8 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         // mainAxisAlignment:MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
-                          _buildLeading(list[index]),
+                          Container(   height: 80,
+                                  width: 80,child: _buildLeading(list[index])),
                           Container(
                             child: TranslationWidget(
                               message: "${list[index].titleC}",
