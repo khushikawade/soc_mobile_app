@@ -275,7 +275,7 @@ class _AboutPageState extends State<AboutPage> {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
                                   Globals.homeObject = state.obj;
-                                  setState(() {});
+                                 // setState(() {});
                                 }
                               },
                               child: EmptyContainer()),
