@@ -17,10 +17,6 @@ import '../../../widgets/no_data_found_error_widget.dart';
 import '../../schools_directory/ui/schools_directory.dart';
 
 class CommonListWidget extends StatefulWidget {
-  final List<SharedList> data;
-  final String sectionName;
-  final bool? connected;
-  final scaffoldKey;
   CommonListWidget(
       {Key? key,
       required this.data,
@@ -28,33 +24,31 @@ class CommonListWidget extends StatefulWidget {
       required this.scaffoldKey,
       this.connected})
       : super(key: key);
+
+  final bool? connected;
+  final List<SharedList> data;
+  final scaffoldKey;
+  final String sectionName;
+
   @override
   _CommonListWidgetState createState() => _CommonListWidgetState();
 }
 
 class _CommonListWidgetState extends State<CommonListWidget> {
-  bool? tapped = true;
-
   _launchURL(SharedList obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
-    } else if (await Utility.sslErrorHandler(obj.appUrlC!) == "Yes") {
-      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
-      if (tapped == true) {
-        tapped = false;
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC!,
-                      url: obj.appUrlC!,
-                      isbuttomsheet: true,
-                      language: Globals.selectedLanguage,
-                    )));
-        tapped = true;
-      }
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC!,
+                    url: obj.appUrlC!,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
     }
   }
 

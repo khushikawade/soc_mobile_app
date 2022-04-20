@@ -169,23 +169,16 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
   }
 
   void _launchURL(obj) async {
-    if (!obj.toString().contains('http') || obj.toString().contains('mailto')) {
+    if (!obj.toString().contains('http') ||
+        obj.toString().contains('mailto') ||
+        obj.toString().split(":")[0] == 'http') {
       await Utility.launchUrlOnExternalBrowser(obj);
       return;
-    }
-    if (obj.toString().contains(
+    } else if (obj.toString().contains(
             "zoom.us") || // Checking here for zoom/google meet app URLs to open these specific URLs Externally(In browser/Related App if installed already)
         obj.toString().contains("meet.google.com")) {
       await Utility.launchUrlOnExternalBrowser(obj);
-    } else if (obj.toString().split(":")[0] == 'http') {
-      await Utility.launchUrlOnExternalBrowser(obj);
-    } else if (obj.toString().contains('mailto')) {
-      Utility.launchUrlOnExternalBrowser(obj);
-    } 
-    // else if (widget.isSocial == true) {
-    //   Utility.launchUrlOnExternalBrowser(obj);
-    // } 
-    else {
+    } else {
       Navigator.push(
           context,
           MaterialPageRoute(

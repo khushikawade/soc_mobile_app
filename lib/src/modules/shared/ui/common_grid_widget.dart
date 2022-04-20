@@ -14,6 +14,7 @@ import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import '../../../widgets/custom_icon_widget.dart';
 import '../../../widgets/no_data_found_error_widget.dart';
 import '../../schools_directory/ui/schools_directory.dart';
 
@@ -34,32 +35,24 @@ class CommonGridWidget extends StatefulWidget {
 }
 
 class _CommonGridWidgetState extends State<CommonGridWidget> {
-  bool? tapped = true;
   static const double _kLableSpacing = 12.0;
-
-  bool? isLoading = false;
+  // bool? isLoading = false;
   List<SharedList> subList = [];
 
   _launchURL(SharedList obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
-    } else if (await Utility.sslErrorHandler(obj.appUrlC!) == "Yes") {
-      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
-      if (tapped == true) {
-        tapped = false;
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC!,
-                      url: obj.appUrlC!,
-                      isbuttomsheet: true,
-                      language: Globals.selectedLanguage,
-                    )));
-        tapped = true;
-      }
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC!,
+                    url: obj.appUrlC!,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
     }
   }
 
@@ -191,7 +184,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
 
   Widget _buildLeading(SharedList obj) {
     if (obj.appIconUrlC != null) {
-      return CustomIconMode(
+      return CustomIconWidget(//CustomIconMode(
         darkModeIconUrl: obj.darkModeIconC,
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
@@ -259,7 +252,8 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         // mainAxisAlignment:MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
-                          _buildLeading(list[index]),
+                          Container(   height: 80,
+                                  width: 80,child: _buildLeading(list[index])),
                           Container(
                             child: TranslationWidget(
                               message: "${list[index].titleC}",
