@@ -1,12 +1,12 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
-import 'package:Soc/src/modules/families/ui/eventdescition.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
+import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import '../overrides.dart';
 import 'package:html/parser.dart' show parse;
@@ -17,26 +17,29 @@ class SliderWidget extends StatefulWidget {
   int currentIndex;
   bool? issocialpage;
   bool? isAboutSDPage;
+  bool? isNewsPage;
   String date;
   bool isbuttomsheet;
   String? language;
-  bool isEvent;
+  // final iseventpage;
+  bool? connected;
+
   SliderWidget(
       {required this.obj,
       required this.currentIndex,
-      this.issocialpage,
-      required this.isAboutSDPage,
+      // required this.iseventpage,
       required this.date,
       required this.isbuttomsheet,
       required this.language,
-      required this.isEvent});
+      this.issocialpage,
+      this.isAboutSDPage,
+      this.isNewsPage});
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
 }
 
 class _SliderWidgetState extends State<SliderWidget> {
-  static const double _kPadding = 16.0;
   var _controller = new PageController();
   static const _kDuration = const Duration(milliseconds: 400);
   int pageinitialIndex = 0;
@@ -47,6 +50,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   var link;
   var link2;
   bool first = false;
+  bool? isDeviceBackButton = true;
 
   @override
   void initState() {
@@ -56,33 +60,54 @@ class _SliderWidgetState extends State<SliderWidget> {
     pageinitialIndex = widget.currentIndex;
     _controller = PageController(initialPage: widget.currentIndex);
     Globals.callsnackbar = false;
+    BackButtonInterceptor.add(updateAction);
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+    BackButtonInterceptor.remove(updateAction);
+  }
+
+  bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
+    if (isDeviceBackButton == true) {
+      isDeviceBackButton = false;
+      // bool isNewsPage =
+      //     // widget.iseventpage == false ||
+      //     widget.issocialpage == true ? true : false;
+      Navigator.of(context).pop(widget.isNewsPage == true
+          ? widget.isNewsPage
+          : widget.issocialpage == true
+              ? widget.issocialpage
+              : null);
+      return true;
+    }
+    return false;
   }
 
   Widget build(BuildContext context) {
-    print(widget.obj.length);
     return Scaffold(
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
-          leading: BackButtonWidget(),
-          title: //SizedBox(width: 100.0, height: 60.0, child:
-              AppLogoWidget(
-            marginLeft: 57,
-          ),
+          leading: BackButtonWidget(
+              isNewsPage: widget.isNewsPage == true
+                  ? widget.isNewsPage
+                  : widget.issocialpage == true
+                      ? widget.issocialpage
+                      : null
+              // widget.iseventpage == false ||
+              // widget.issocialpage == true ? true : false,
+              ),
+          title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            AppLogoWidget(
+              marginLeft: 57,
+            ),
+          ]),
           actions: <Widget>[
             IconButton(
               onPressed: () async {
-                // setState(() {});
-                // if (widget.currentIndex > 0) {
-                //   _controller.previousPage(
-                //       duration: _kDuration, curve: _kCurve);
-                // }
                 if (pageinitialIndex > 0) {
                   _controller.previousPage(
                       duration: _kDuration, curve: _kCurve);
@@ -97,13 +122,8 @@ class _SliderWidgetState extends State<SliderWidget> {
                 size: Globals.deviceType == "phone" ? 18 : 26,
               ),
             ),
-            HorzitalSpacerWidget(_kPadding / 3),
             IconButton(
               onPressed: () async {
-                // setState(() {});
-                // if (widget.currentIndex < object.length - 1) {
-                //   _controller.nextPage(duration: _kDuration, curve: _kCurve);
-                // }
                 if (pageinitialIndex < widget.obj.length) {
                   _controller.nextPage(duration: _kDuration, curve: _kCurve);
                 }
@@ -129,7 +149,7 @@ class _SliderWidgetState extends State<SliderWidget> {
               pageinitialIndex = sliderIndex;
               setState(() {});
               // if (first) {
-              //   pageinitialIndex < sliderIndex
+              //   pageinitialIndex <= sliderIndex
               //       ? ++widget.currentIndex
               //       : --widget.currentIndex;
               //   pageViewCurrentIndex = sliderIndex;
@@ -151,22 +171,25 @@ class _SliderWidgetState extends State<SliderWidget> {
                       language: Globals.selectedLanguage,
                       index: pageinitialIndex,
                     )
-                  : widget.isAboutSDPage!
-                      ? AboutSDDetailPage(
+                  : widget.isNewsPage!
+                      ? Newdescription(
                           obj: object[pageinitialIndex],
+                          date: widget.date,
+                          isbuttomsheet: true,
+                          language: Globals.selectedLanguage,
+                          connected: widget.connected,
                         )
-                      : widget.isEvent
-                          ? EventDescription(
+                      : widget.isAboutSDPage != null
+                          ? AboutSDDetailPage(
                               obj: object[pageinitialIndex],
-                              isbuttomsheet: true,
-                              language: Globals.selectedLanguage,
                             )
-                          : Newdescription(
-                              obj: object[pageinitialIndex],
-                              date: widget.date,
-                              isbuttomsheet: true,
-                              language: Globals.selectedLanguage,
-                            );
+                          // : widget.iseventpage             //Removed due to new UI
+                          //     ? EventDescription(
+                          //         obj: object[pageinitialIndex],
+                          //         isbuttomsheet: true,
+                          //         language: Globals.selectedLanguage,
+                          //       )
+                          : EmptyContainer();
             },
           ),
         )

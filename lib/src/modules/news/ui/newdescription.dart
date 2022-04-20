@@ -1,7 +1,8 @@
-import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -11,32 +12,32 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:share/share.dart';
+import 'dart:io' show Platform;
 
 class Newdescription extends StatefulWidget {
-  Newdescription(
-      {Key? key,
-      required this.obj,
-      required this.date,
-      required this.isbuttomsheet,
-      required this.language})
-      : super(key: key);
+  Newdescription({
+    Key? key,
+    required this.obj,
+    required this.date,
+    required this.isbuttomsheet,
+    required this.language,
+    required this.connected,
+  }) : super(key: key);
 
+  final NotificationList obj;
   final String date;
   final bool isbuttomsheet;
   final String? language;
-  final obj;
+  final bool? connected;
 
   _NewdescriptionState createState() => _NewdescriptionState();
 }
 
 class _NewdescriptionState extends State<Newdescription> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  static const double _kIconSize = 45.0;
   static const double _kLabelSpacing = 20.0;
   final HomeBloc _homeBloc = new HomeBloc();
-  bool _downloadingFile = false;
-  static const double _KButtonSize = 110.0;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -81,13 +82,14 @@ class _NewdescriptionState extends State<Newdescription> {
               // height: MediaQuery.of(context).size.width * 0.5,
               child: ClipRRect(
                   child: CommonImageWidget(
-                    iconUrl: widget.obj.image ??
-                        Globals.splashImageUrl ??
-                        Globals.homeObject["App_Logo__c"],
-                    height: Utility.displayHeight(context) *
-                        (AppTheme.kDetailPageImageHeightFactor / 100),isOnTap: true,
-                  )
-                  ),
+                iconUrl: widget.obj.image ??
+                    Globals.splashImageUrl ??
+                    Globals.appSetting.appLogoC,
+                height: Utility.displayHeight(context) *
+                    (AppTheme.kDetailPageImageHeightFactor / 100),
+                fitMethod: BoxFit.contain,
+                isOnTap: true,
+              )),
             ),
             SpacerWidget(_kLabelSpacing),
             Row(
@@ -115,19 +117,34 @@ class _NewdescriptionState extends State<Newdescription> {
                           : widget.obj.contents["en"],
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
-                  builder: (translatedMessage) => Linkify(
+                  builder: (translatedMessage) => SelectableLinkify(
+                    toolbarOptions: Platform.isAndroid
+                        ? ToolbarOptions(copy: true, selectAll: true)
+                        : ToolbarOptions(copy: true),
+                    selectionControls: materialTextSelectionControls,
                     onOpen: (link) => _launchURL(link.url),
                     options: LinkifyOptions(humanize: false),
                     linkStyle: TextStyle(color: Colors.blue),
                     text: translatedMessage.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(fontWeight: FontWeight.w500),
+                    style: Theme.of(context).textTheme.headline2!.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                 )),
               ],
             ),
+            //
+            Text(
+              Utility.convertTimestampToDateFormat(
+                  widget.obj.completedAt, "MM/dd/yy"),
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+            ),
+
+            SpacerWidget(AppTheme.kBodyPadding / 2),
+
             Container(
               child: Wrap(
                 children: [
@@ -135,12 +152,17 @@ class _NewdescriptionState extends State<Newdescription> {
                     message: widget.obj.contents["en"].toString(),
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
-                    builder: (translatedMessage) => Linkify(
+                    builder: (translatedMessage) => SelectableLinkify(
+                      toolbarOptions: Platform.isAndroid
+                          ? ToolbarOptions(copy: true, selectAll: true)
+                          : ToolbarOptions(copy: true),
+                      selectionControls: materialTextSelectionControls,
                       onOpen: (link) => _launchURL(link.url),
+                      enableInteractiveSelection: true,
                       options: LinkifyOptions(humanize: false),
                       linkStyle: TextStyle(color: Colors.blue),
                       text: translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.bodyText1!,
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(),
                       textAlign: TextAlign.left,
                     ),
                   ),
@@ -155,7 +177,10 @@ class _NewdescriptionState extends State<Newdescription> {
                           message: widget.obj.url.toString(),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
-                          builder: (translatedMessage) => Linkify(
+                          builder: (translatedMessage) => SelectableLinkify(
+                            toolbarOptions: Platform.isAndroid
+                                ? ToolbarOptions(copy: true, selectAll: true)
+                                : ToolbarOptions(copy: true),
                             onOpen: (link) => _launchURL(link.url),
                             linkStyle: TextStyle(color: Colors.blue),
                             options: LinkifyOptions(humanize: false),
@@ -177,99 +202,48 @@ class _NewdescriptionState extends State<Newdescription> {
             ),
           ],
         ),
-        Container(
-          height: 0,
-          width: 0,
-          child: BlocListener<HomeBloc, HomeState>(
-            bloc: _homeBloc,
-            listener: (context, state) async {
-              if (state is BottomNavigationBarSuccess) {
-                AppTheme.setDynamicTheme(Globals.appSetting, context);
-                Globals.homeObject = state.obj;
-              }
-            },
-            child: Container(),
-          ),
+        BlocListener<HomeBloc, HomeState>(
+          bloc: _homeBloc,
+          listener: (context, state) async {
+            if (state is BottomNavigationBarSuccess) {
+              AppTheme.setDynamicTheme(Globals.appSetting, context);
+
+              Globals.appSetting = AppSetting.fromJson(state.obj);
+            }
+          },
+          child: Container(),
         ),
         SpacerWidget(AppTheme.kBodyPadding),
-        Row(
-          children: [
-            Container(
-              constraints: BoxConstraints(
-                minWidth: _KButtonSize,
-                maxWidth: 130.0,
-              ),
-              child: ElevatedButton(
-                  onPressed: () async {
-                    _shareNews();
-                  },
-                  child: _downloadingFile == true
-                      ? SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: CircularProgressIndicator(
-                            valueColor: new AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).backgroundColor),
-                          ),
-                        )
-                      : TranslationWidget(
-                          message: "Share".toString(),
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                          ),
-                        )),
-            ),
-          ],
-        )
+        Container(
+          alignment: Alignment.centerLeft,
+          child: UserActionBasic(
+            page: "news",
+            obj: widget.obj,
+            title: widget.obj.headings['en'],
+            description: widget.obj.contents['en'],
+            imageUrl: widget.obj.image,
+          ),
+        ),
       ],
     );
   }
 
-  _shareNews() async {
-    try {
-      if (_downloadingFile == true) return;
-      setState(() {
-        _downloadingFile = true;
-      });
-      String _title = widget.obj.headings["en"] ?? "";
-      String _description = widget.obj.contents["en"] ?? "";
-      String _imageUrl = widget.obj.image != null
-          ? widget.obj.image
-          : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
-              ? Globals.splashImageUrl
-              : Globals.homeObject["App_Logo__c"];
-      File _image = await Utility.createFileFromUrl(_imageUrl);
-      setState(() {
-        _downloadingFile = false;
-      });
-      Share.shareFiles(
-        [_image.path],
-        subject: '$_title',
-        text: '$_description',
-      );
-    } catch (e) {
-      setState(() {
-        _downloadingFile = false;
-      });
-    }
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         body: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
-      child: RefreshIndicator(
-        key: refreshKey,
-        child: _buildNewsDescription(),
-        onRefresh: refreshPage,
-      ),
-    ));
+          padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
+          child: RefreshIndicator(
+            key: refreshKey,
+            child: _buildNewsDescription(),
+            onRefresh: refreshPage,
+          ),
+        ));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _homeBloc.add(FetchBottomNavigationBar());
+    await Future.delayed(Duration(seconds: 2));
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

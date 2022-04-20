@@ -1,44 +1,61 @@
-import '../../staff_directory/modal/../../families/modal/sd_attributes.dart';
+import 'package:hive/hive.dart';
+part 'sd_list.g.dart';
 
+@HiveType(typeId: 3)
 class SDlist {
-  SDAttributes? attributes;
+  // SDAttributes? attributes;
+  @HiveField(0)
   dynamic designation;
+  @HiveField(1)
   String? imageUrlC;
+  @HiveField(2)
   String? id;
+  @HiveField(3)
   String? name;
+  @HiveField(4)
   dynamic descriptionC;
+  @HiveField(5)
   String? emailC;
-  dynamic sortOrderC;
+  @HiveField(6)
+  final sortOrderC;
+  @HiveField(7)
   String? phoneC;
+  @HiveField(8)
+  String? status;
+  @HiveField(9)
+  String? darkModeIconC;
 
-  SDlist({
-    this.attributes,
-    this.designation,
-    this.imageUrlC,
-    this.id,
-    this.name,
-    this.descriptionC,
-    this.emailC,
-    this.sortOrderC,
-    this.phoneC,
-  });
+  SDlist(
+      {
+      // this.attributes,
+      this.designation,
+      this.imageUrlC,
+      this.id,
+      this.name,
+      this.descriptionC,
+      this.emailC,
+      this.sortOrderC,
+      this.phoneC,
+      this.status,
+      this.darkModeIconC});
 
   factory SDlist.fromJson(Map<String, dynamic> json) => SDlist(
-        attributes: json['attributes'] == null
-            ? null
-            : SDAttributes.fromJson(json['attributes'] as Map<String, dynamic>),
-        designation: json['Title__c'],
-        imageUrlC: json['Image_URL__c'] as String?,
-        id: json['Id'] as String?,
-        name: json['Name__c'] as String?,
-        descriptionC: json['Description__c'],
-        emailC: json['Email__c'] as String?,
-        sortOrderC: json['Sort_Order__c'],
-        phoneC: json['Phone__c'] as String?,
-      );
+      // attributes: json['attributes'] == null
+      //     ? null
+      //     : SDAttributes.fromJson(json['attributes'] as Map<String, dynamic>),
+      designation: json['Title__c'],
+      imageUrlC: json['Image_URL__c'] as String?,
+      id: json['Id'] as String?,
+      name: json['Name__c'] as String?,
+      descriptionC: json['Description__c'],
+      emailC: json['Email__c'] as String?,
+      sortOrderC: double.parse(json['Sort_Order__c'] ?? '100'),
+      phoneC: json['Phone__c'] as String?,
+      status: json['Active_Status__c'] ?? 'Show',
+      darkModeIconC: json['Dark_Mode_Icon__c']);
 
   Map<String, dynamic> toJson() => {
-        'attributes': attributes?.toJson(),
+        // 'attributes': attributes?.toJson(),
         'Title__c': designation,
         'Image_URL__c': imageUrlC,
         'Id': id,
@@ -47,5 +64,7 @@ class SDlist {
         'Email__c': emailC,
         'Sort_Order__c': sortOrderC,
         'Phone__c': phoneC,
+        'Active_Status__c': status,
+        'Dark_Mode_Icon__c': darkModeIconC
       };
 }

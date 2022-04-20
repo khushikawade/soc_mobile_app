@@ -21,7 +21,7 @@ class MyCustomIcon {
   static const _kFontFam = 'MyCustomIcon';
   static const String? _kFontPkg = null;
 
-  static const IconData language_icon = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData group_60 = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData news_iocn = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData nyc_icon = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData resource_icon = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);

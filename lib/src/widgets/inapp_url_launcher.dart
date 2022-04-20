@@ -14,6 +14,8 @@ class InAppUrlLauncer extends StatefulWidget {
   final bool? hideHeader;
   final bool isbuttomsheet;
   final String? language;
+  final bool? isCustomMainPageWebView;
+
   @override
   InAppUrlLauncer(
       {Key? key,
@@ -22,15 +24,19 @@ class InAppUrlLauncer extends StatefulWidget {
       required this.isbuttomsheet,
       required this.language,
       this.hideHeader,
-      this.isiFrame})
+      this.isiFrame,
+      this.isCustomMainPageWebView})
       : super(key: key);
   _InAppUrlLauncerState createState() => new _InAppUrlLauncerState();
 }
 
 class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   bool? iserrorstate = false;
+  bool isLoading = true;
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
+  // Globals.webViewController1 = Completer<WebViewController>();
+
   @override
   void initState() {
     super.initState();
@@ -38,42 +44,56 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
+  Widget build(BuildContext context) {
+    return widget.isCustomMainPageWebView == true
+        ? _webViewWidget()
+        : Scaffold(
+            appBar: CustomAppBarWidget(
+              isSearch: false,
+              isShare: true,
+              appBarTitle: widget.title,
+              sharedpopBodytext: widget.url.toString(),
+              sharedpopUpheaderText: "Please checkout this link",
+              language: Globals.selectedLanguage,
+            ),
+            body: _webViewWidget());
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: false,
-          isShare: true,
-          appBarTitle: widget.title,
-          sharedpopBodytext: widget.url.toString(),
-          sharedpopUpheaderText: "Please checkout this link",
-          language: Globals.selectedLanguage,
-        ),
-        body: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final bool connected = connectivity != ConnectivityResult.none;
+  Widget _webViewWidget() {
+    return OfflineBuilder(
+        connectivityBuilder: (
+          BuildContext context,
+          ConnectivityResult connectivity,
+          Widget child,
+        ) {
+          final bool connected = connectivity != ConnectivityResult.none;
 
-              if (connected) {
-                if (iserrorstate == true) {
-                  iserrorstate = false;
-                }
-              } else if (!connected) {
-                iserrorstate = true;
-              }
+          if (connected) {
+            if (iserrorstate == true) {
+              iserrorstate = false;
+            }
+          } else if (!connected) {
+            iserrorstate = true;
+          }
 
-              return connected
-                  ? Container(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height * 0.032),
-                      child: WebView(
+          return connected
+              ? Container(
+                  color: Colors.transparent,
+                  padding: const EdgeInsets.only(
+                      bottom:
+                          30.0), // To manage web page crop issue together with bottom nav bar.
+                  child: Stack(
+                    children: [
+                      WebView(
+                        initialCookies: [],
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        onProgress: (progress) {
+                          if (progress >= 50) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        },
                         gestureNavigationEnabled:
                             widget.isiFrame == true ? true : false,
                         initialUrl: widget.isiFrame == true
@@ -84,13 +104,25 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated:
                             (WebViewController webViewController) {
+                          Globals.webViewController1 = webViewController;
                           _controller.complete(webViewController);
                         },
                       ),
-                    )
-                  : NoInternetErrorWidget(
-                      connected: connected, issplashscreen: false);
-            },
-            child: Container()));
+                      isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              ),
+                            )
+                          : Stack(),
+                    ],
+                  ),
+                )
+              : NoInternetErrorWidget(
+                  connected: connected, issplashscreen: false);
+        },
+        child: Container());
   }
 }

@@ -2,10 +2,8 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class BannerImageWidget extends StatefulWidget {
   final String imageUrl;
   final Color? bgColor;
@@ -18,6 +16,10 @@ class BannerImageWidget extends StatefulWidget {
 class _BannerImageWidgetState extends State<BannerImageWidget> {
   Widget build(BuildContext context) {
     return SliverAppBar(
+      // expandedHeight: Globals.deviceType == "phone"
+      //     ? Utility.displayHeight(context) * (AppTheme.kBannerHeight / 100)
+      //     : Utility.displayHeight(context) *
+      //         (AppTheme.kBannerHeight * 1.3 / 100),
       expandedHeight:
           Utility.displayHeight(context) * (AppTheme.kBannerHeight / 100),
       floating: false,
@@ -37,6 +39,9 @@ class _BannerImageWidgetState extends State<BannerImageWidget> {
               width: Utility.displayWidth(context),
             ),
           ),
+          errorWidget: (context, url, error) {
+            return Container();
+          },
         ),
       )),
     );

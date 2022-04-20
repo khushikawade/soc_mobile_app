@@ -5,10 +5,13 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
+
+import '../models/student_app.dart';
 
 // ignore: must_be_immutable
 class AppsFolderPage extends StatefulWidget {
-  List obj = [];
+  List<StudentApp> obj = [];
   final String folderName;
   @override
   AppsFolderPage({
@@ -25,7 +28,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
   AnimationController? controller;
   Animation<double>? scaleAnimation;
   static const double _kLableSpacing = 10.0;
-  List apps = [];
+  List<StudentApp> apps = [];
   @override
   void initState() {
     super.initState();
@@ -54,29 +57,20 @@ class AppsFolderPageState extends State<AppsFolderPage>
     super.dispose();
   }
 
-  _launchURL(obj) async {
-    if (obj.deepLinkC == 'NO') {
-      if (obj.appUrlC!.toString().split(":")[0] == 'http') {
-        // if (await canLaunch(obj.appUrlC!)) {
-        //   await launch(obj.appUrlC!);
-        // } else {
-        //   throw 'Could not launch ${obj.appUrlC!}';
-        // }
-        await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
-      } else {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC!,
-                      url: obj.appUrlC!,
-                      isbuttomsheet: true,
-                      language: Globals.selectedLanguage,
-                    )));
-      }
-    } else {
-      // await launch(obj.appUrlC!);
+  _launchURL(StudentApp obj) async {
+    if (obj.appUrlC.toString().split(":")[0] == 'http' ||
+        obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
+    } else {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC!,
+                    url: obj.appUrlC!,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
     }
   }
 
@@ -84,92 +78,191 @@ class AppsFolderPageState extends State<AppsFolderPage>
   Widget build(BuildContext context) {
     return Center(
       child: Material(
+        // elevation: 99,
+        // shadowColor: Colors.red,
         color: Colors.transparent,
         child: ScaleTransition(
           scale: scaleAnimation!,
           child: Container(
-            // color: Colors.red,
             margin: const EdgeInsets.only(
                 top: 20, left: 20.0, right: 20, bottom: 20),
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: ShapeDecoration(
-                // color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0))),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
               child: Scaffold(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                // backgroundColor: Colors.white,
                 body: Padding(
                   padding: const EdgeInsets.only(
                       top: 20, left: 20.0, right: 20, bottom: 20),
                   child: apps.length > 0
                       ? GridView.count(
-                          crossAxisCount: 3,
+                          crossAxisCount: MediaQuery.of(context).orientation ==
+                                      Orientation.portrait &&
+                                  Globals.deviceType == "phone"
+                              ? 3
+                              : (MediaQuery.of(context).orientation ==
+                                          Orientation.landscape &&
+                                      Globals.deviceType == "phone")
+                                  ? 4
+                                  : MediaQuery.of(context).orientation ==
+                                              Orientation.portrait &&
+                                          Globals.deviceType != "phone"
+                                      ? 4
+                                      : MediaQuery.of(context).orientation ==
+                                                  Orientation.landscape &&
+                                              Globals.deviceType != "phone"
+                                          ? 5
+                                          : 3,
                           crossAxisSpacing: _kLableSpacing,
                           mainAxisSpacing: _kLableSpacing,
                           children: List.generate(
                             apps.length,
                             (index) {
-                              return apps[index].status == null ||
-                                      apps[index].status == 'Show'
-                                  ? InkWell(
-                                      onTap: () => _launchURL(apps[index]),
-                                      child: Column(
-                                        children: [
-                                          apps[index].appIconC != null &&
-                                                  apps[index].appIconC != ''
-                                              ? Container(
-                                                  height: 65,
-                                                  width: 65,
-                                                  child: CustomIconWidget(
-                                                      iconUrl: apps[index]
-                                                              .appIconC ??
-                                                          Overrides
-                                                              .folderDefaultImage))
-                                              : Container(),
-                                          TranslationWidget(
-                                              message: apps[index].appFolderc !=
-                                                          null &&
-                                                      widget.folderName ==
-                                                          apps[index].appFolderc
-                                                  ? "${apps[index].titleC}"
-                                                  : '',
-                                              fromLanguage: "en",
-                                              toLanguage:
-                                                  Globals.selectedLanguage,
-                                              builder: (translatedMessage) =>
-                                                  Container(
-                                                    alignment: Alignment.center,
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10),
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.3,
-                                                    child:
-                                                        SingleChildScrollView(
+                              return InkWell(
+                                  onTap: () => _launchURL(apps[index]),
+                                  child: Column(
+                                    children: [
+                                      apps[index].appIconC != null &&
+                                              apps[index].appIconC != ''
+                                          ? Container(
+                                              height: 65,
+                                              width: 65,
+                                              child: CustomIconWidget(
+                                                iconUrl: apps[index].appIconC ??
+                                                    Overrides
+                                                        .folderDefaultImage,
+                                                darkModeIconUrl:
+                                                    apps[index].darkModeIconC,
+                                              ))
+                                          : Container(),
+                                      Container(
+                                          child: TranslationWidget(
+                                        message:
+                                            apps[index].appFolderc != null &&
+                                                    widget.folderName ==
+                                                        apps[index].appFolderc
+                                                ? "${apps[index].titleC}"
+                                                : '',
+                                        fromLanguage: "en",
+                                        toLanguage: Globals.selectedLanguage,
+                                        builder: (translatedMessage) =>
+                                            Container(
+                                          child: MediaQuery.of(context)
+                                                          .orientation ==
+                                                      Orientation.portrait &&
+                                                  translatedMessage
+                                                          .toString()
+                                                          .length >
+                                                      11
+                                              ? Expanded(
+                                                  child: Marquee(
+                                                    text: translatedMessage
+                                                        .toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText1!
+                                                        .copyWith(
+                                                            fontSize:
+                                                                Globals.deviceType ==
+                                                                        "phone"
+                                                                    ? 16
+                                                                    : 24),
+                                                    scrollAxis: Axis.horizontal,
+                                                    velocity: 30.0,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    blankSpace: 50,
+                                                    pauseAfterRound:
+                                                        Duration(seconds: 5),
+                                                    showFadingOnlyWhenScrolling:
+                                                        true,
+                                                    startPadding: 10.0,
+                                                    accelerationDuration:
+                                                        Duration(seconds: 1),
+                                                    accelerationCurve:
+                                                        Curves.linear,
+                                                    decelerationDuration:
+                                                        Duration(
+                                                            milliseconds: 500),
+                                                    decelerationCurve:
+                                                        Curves.easeOut,
+                                                  ),
+                                                )
+                                              : MediaQuery.of(context)
+                                                              .orientation ==
+                                                          Orientation
+                                                              .landscape &&
+                                                      translatedMessage
+                                                              .toString()
+                                                              .length >
+                                                          18
+                                                  ? Expanded(
+                                                      child: Marquee(
+                                                      text: translatedMessage
+                                                          .toString(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText1!
+                                                          .copyWith(
+                                                              fontSize:
+                                                                  Globals.deviceType ==
+                                                                          "phone"
+                                                                      ? 16
+                                                                      : 24),
+                                                      scrollAxis:
+                                                          Axis.horizontal,
+                                                      velocity: 30.0,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+
+                                                      blankSpace:
+                                                          50, //MediaQuery.of(context).size.width
+                                                      // velocity: 100.0,
+                                                      pauseAfterRound:
+                                                          Duration(seconds: 5),
+                                                      showFadingOnlyWhenScrolling:
+                                                          true,
+                                                      startPadding: 10.0,
+                                                      accelerationDuration:
+                                                          Duration(seconds: 1),
+                                                      accelerationCurve:
+                                                          Curves.linear,
+                                                      decelerationDuration:
+                                                          Duration(
+                                                              milliseconds:
+                                                                  500),
+                                                      decelerationCurve:
+                                                          Curves.easeOut,
+                                                    ))
+                                                  : SingleChildScrollView(
                                                       scrollDirection:
                                                           Axis.horizontal,
                                                       child: Text(
-                                                        translatedMessage
-                                                            .toString(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2!
-                                                            .copyWith(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .primaryVariant,
-                                                            ),
-                                                      ),
+                                                          translatedMessage
+                                                              .toString(),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyText1!
+                                                              .copyWith(
+                                                                  fontSize: Globals
+                                                                              .deviceType ==
+                                                                          "phone"
+                                                                      ? 16
+                                                                      : 24)),
                                                     ),
-                                                  ))
-                                        ],
-                                      ))
-                                  : Container();
+                                        ),
+                                      )),
+                                    ],
+                                  ));
                             },
                           ),
                         )

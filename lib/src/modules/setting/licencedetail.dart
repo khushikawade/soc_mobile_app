@@ -1,6 +1,7 @@
 import 'package:Soc/oss_licenses.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -21,7 +22,6 @@ class LicenceDetailPage extends StatefulWidget {
 }
 
 class _LicenceDetailPageState extends State<LicenceDetailPage> {
-  // static const double _kIconSize = 188;
   static const double _kLabelSpacing = 20.0;
   FocusNode myFocusNode = new FocusNode();
   OSSLicensesInfo obj = new OSSLicensesInfo();
@@ -38,8 +38,6 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
     index = int.parse(widget.index.toString());
     Globals.callsnackbar = true;
   }
-
-  // UI Widget
 
   Widget description(list) {
     return Padding(
@@ -107,7 +105,6 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           Expanded(
             child: InkWell(
               onTap: () {
-                // urlobj.callurlLaucher(context, "${list["homepage"]}");
                 Utility.launchUrlOnExternalBrowser(list["homepage"]);
               },
               child: TranslationWidget(
@@ -148,7 +145,6 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                   .textTheme
                   .headline3!
                   .copyWith(color: Colors.black),
-              // textAlign: TextAlign.start,
             ),
           ),
           HorzitalSpacerWidget(_kLabelSpacing / 2),
@@ -310,7 +306,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                                 if (state is BottomNavigationBarSuccess) {
                                   AppTheme.setDynamicTheme(
                                       Globals.appSetting, context);
-                                  Globals.homeObject = state.obj;
+                                  Globals.appSetting =
+                                      AppSetting.fromJson(state.obj);
                                   setState(() {});
                                 }
                               },
@@ -327,6 +324,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    _homeBloc.add(FetchBottomNavigationBar());
+    await Future.delayed(Duration(seconds: 2));
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

@@ -26,24 +26,21 @@ class ShareButtonWidget extends StatelessWidget {
         children: <Widget>[
           isSettingPage
               ? Globals.isAndroid == true &&
-                      Globals.homeObject["Play_Store_URL__c"] != null
-                  ? shareButton(
-                      context, Globals.homeObject["Play_Store_URL__c"])
+                      Globals.appSetting.playStoreUrlC != null
+                  ? shareButton(context, Globals.appSetting.playStoreUrlC)
                   : Globals.isAndroid == false &&
-                          Globals.homeObject["App_Store_URL__c"] != null
-                      ? shareButton(
-                          context, Globals.homeObject["App_Store_URL__c"])
+                          Globals.appSetting.appStoreUrlC != null
+                      ? shareButton(context, Globals.appSetting.appStoreUrlC)
                       : Container()
               : Container(),
           SizedBox(
             width: _kLabelSpacing / 2,
           ),
           Expanded(
-            // flex: 1,
             child: NeedSupportWidget(),
           ),
-          Globals.homeObject["Play_Store_URL__c"] == null &&
-                  Globals.homeObject["App_Store_URL__c"] == null
+          Globals.appSetting.playStoreUrlC == null &&
+                  Globals.appSetting.appStoreUrlC == null
               ? Container(
                   width: MediaQuery.of(context).size.width * 0.5,
                 )
@@ -59,9 +56,9 @@ class ShareButtonWidget extends StatelessWidget {
         onPressed: () {
           obj.callFunction(
               context,
-              "Hi, I downloaded the ${Globals.homeObject["Contact_Name__c"] ?? ""}app. You should check it out! Download the app now at $url",
-              Globals.homeObject["Contact_Name__c"] != null
-                  ? "Love the ${Globals.homeObject["Contact_Name__c"]} app!"
+              "Hi, I downloaded the ${Globals.appSetting.contactNameC ?? ""}app. You should check it out! Download the app now at $url",
+              Globals.appSetting.contactNameC != null
+                  ? "Love the ${Globals.appSetting.contactNameC} app!"
                   : "");
         },
         child: Container(

@@ -1,12 +1,4 @@
 class Translations {
-  // static final Translations _application = Translations._internal();
-
-  // factory Translations() {
-  //   return _application;
-  // }
-
-  // Translations._internal();
-
   static final List<String> supportedLanguages = [
     'Afrikaans',
     'Albanian',

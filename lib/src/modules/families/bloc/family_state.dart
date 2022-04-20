@@ -25,14 +25,13 @@ class ErrorLoading extends FamilyState {
   List<Object> get props => [err];
 }
 
-// ignore: must_be_immutable
 class FamiliesDataSucess extends FamilyState {
-  List<SharedList>? obj;
+  final List<SharedList>? obj;
   FamiliesDataSucess({
     this.obj,
   });
   FamiliesDataSucess copyWith({
-    final obj,
+    obj,
   }) {
     return FamiliesDataSucess(obj: obj ?? this.obj);
   }
@@ -42,7 +41,7 @@ class FamiliesDataSucess extends FamilyState {
 }
 
 class FamiliesSublistSucess extends FamilyState {
-  List<SharedList>? obj;
+  final List<SharedList>? obj;
 
   FamiliesSublistSucess({
     this.obj,
@@ -59,7 +58,7 @@ class FamiliesSublistSucess extends FamilyState {
 }
 
 class SDDataSucess extends FamilyState {
-  List<SDlist>? obj;
+  final List<SDlist>? obj;
   SDDataSucess({
     this.obj,
   });
@@ -74,9 +73,11 @@ class SDDataSucess extends FamilyState {
 }
 
 class CalendarListSuccess extends FamilyState {
-  List<CalendarEventList>? pastListobj;
-  List<CalendarEventList>? futureListobj;
+  final Map<String?, List<CalendarEventList>>?pastListobj;
+  final Map<String?, List<CalendarEventList>> ?futureListobj;
+
   CalendarListSuccess({this.pastListobj, this.futureListobj});
+
   CalendarListSuccess copyWith({
     final obj,
   }) {

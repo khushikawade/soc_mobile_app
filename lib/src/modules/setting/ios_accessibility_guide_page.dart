@@ -32,18 +32,20 @@ class _IosAccessibilityGuidePageState extends State<IosAccessibilityGuidePage> {
                 }),
             Center(
               child: Container(
-                  // padding: EdgeInsets.all(30.0),
                   child: Image.asset(
-                    '$imagePath',
-                    fit: BoxFit.cover,
-                  )),
+                '$imagePath',
+                fit: BoxFit.cover,
+              )),
             ),
           ],
         ),
       );
 
   Widget _body() => Container(
-        padding: EdgeInsets.all(AppTheme.kBodyPadding),
+        padding: EdgeInsets.only(
+            left: AppTheme.kBodyPadding,
+            right: AppTheme.kBodyPadding,
+            bottom: AppTheme.kBodyPadding),
         child: ListView(
           children: [
             TranslationWidget(

@@ -12,6 +12,7 @@ class CommonPdfViewerPage extends StatefulWidget {
   final String? url;
   String? tittle = '';
   String? language;
+  bool? isHomePage;
 
   bool isbuttomsheet;
   CommonPdfViewerPage(
@@ -19,7 +20,8 @@ class CommonPdfViewerPage extends StatefulWidget {
       @required this.url,
       @required this.tittle,
       required this.isbuttomsheet,
-      required this.language})
+      required this.language,
+      required this.isHomePage})
       : super(key: key);
   @override
   _CommonPdfViewerPageState createState() => _CommonPdfViewerPageState();
@@ -78,30 +80,41 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: false,
-          isShare: true,
-          appBarTitle: widget.tittle!,
-          sharedpopBodytext: widget.url.toString(),
-          sharedpopUpheaderText: "Please check out this",
-          language: Globals.selectedLanguage,
-        ),
+        // backgroundColor: Colors.white,
+        appBar: widget.isHomePage == true
+            ? null
+            : CustomAppBarWidget(
+                isSearch: false,
+                isShare: true,
+                appBarTitle: widget.tittle!,
+                sharedpopBodytext: widget.url.toString(),
+                sharedpopUpheaderText: "Please check out this",
+                language: Globals.selectedLanguage,
+              ),
         body: widget.url != null && widget.url != ""
             ? document == null
                 ? Center(
                     child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primaryVariant,
                     valueColor:
                         new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
                   ))
-                : PDFViewer(
-                    document: document!,
-                    enableSwipeNavigation: true,
-                    showIndicator: true,
-                    lazyLoad: false,
-                    showNavigation: false,
-                    showPicker: false,
-                    zoomSteps: 2,
-                    scrollDirection: Axis.vertical,
+                : Padding(
+                    // Todo: padding from bottom by which user can view long pdf to.
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: PDFViewer(
+                      document: document!,
+                      enableSwipeNavigation: true,
+                      lazyLoad: false,
+                      progressIndicator: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                      ),
+                      showIndicator: true,
+                      showNavigation: false,
+                      showPicker: false,
+                      zoomSteps: 2,
+                      scrollDirection: Axis.vertical,
+                    ),
                   )
             : NoDataFoundErrorWidget(
                 isResultNotFoundMsg: false,

@@ -5,9 +5,40 @@ abstract class SocialEvent extends Equatable {
 }
 
 class SocialPageEvent extends SocialEvent {
-  @override
-  List<Object> get props => [];
+  final String? action;
+  SocialPageEvent({required this.action});
+  List<Object> get props => [action!];
+}
+
+// class FetchSocialActionCount extends SocialEvent {
+//   final bool? isDetailPage;
+
+//   FetchSocialActionCount({
+//     required this.isDetailPage,
+//   });
+//   List<Object> get props => [isDetailPage!];
+// }
+
+class SocialAction extends SocialEvent {
+  final context;
+  final scaffoldKey;
+  final String? id;
+  final String? title;
+  final int? like;
+  final int? thanks;
+  final int? helpful;
+  final int? shared;
+
+  SocialAction(
+      {required this.id,
+      required this.title,
+      this.like,
+      this.thanks,
+      this.helpful,
+      this.shared,
+      required this.context,
+      required this.scaffoldKey});
 
   @override
-  String toString() => 'SocialButtonPressed';
+  List<Object> get props => [id!, title!, like!, thanks!, helpful!, shared!];
 }

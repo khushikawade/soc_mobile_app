@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'hori_spacerwidget.dart';
 
@@ -17,11 +16,8 @@ class ListBorderWidget extends StatefulWidget {
 }
 
 class _ListBorderWidgetState extends State<ListBorderWidget> {
-//  static const double _kPadding = 16.0;
-//   static const double _KButtonSize = 110.0;
   static const double _kLabelSpacing = 16.0;
-  // static const double _kboxheight = 60.0;
-  // static const double _kIconSize = 48.0;
+
   static const double _kboxborderwidth = 0.75;
   bool issuccesstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();

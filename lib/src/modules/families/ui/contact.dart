@@ -5,32 +5,31 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
-
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 
-// ignore: must_be_immutable
 class ContactPage extends StatefulWidget {
   final obj;
-  bool isbuttomsheet;
-  String appBarTitle;
-  String? language;
-  ContactPage(
-      {Key? key,
-      required this.obj,
-      required this.isbuttomsheet,
-      required this.appBarTitle,
-      required this.language})
-      : super(key: key);
+  final bool isbuttomsheet;
+  final String appBarTitle;
+  final String? language;
+  final bool? isAppBar;
+
+  ContactPage({
+    Key? key,
+    required this.obj,
+    required this.isbuttomsheet,
+    required this.appBarTitle,
+    required this.language,
+    this.isAppBar,
+  }) : super(key: key);
 
   @override
   _ContactPageState createState() => _ContactPageState();
@@ -39,7 +38,6 @@ class ContactPage extends StatefulWidget {
 class _ContactPageState extends State<ContactPage> {
   static const double _kLabelSpacing = 16.0;
   static const double _kboxheight = 60.0;
-  static const double _kIconSize = 48.0;
   bool issuccesstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
@@ -52,19 +50,13 @@ class _ContactPageState extends State<ContactPage> {
   @override
   void initState() {
     super.initState();
-    homebloc.add(FetchBottomNavigationBar());
+    homebloc.add(FetchStandardNavigationBar());
     Globals.callsnackbar = true;
     _markers.add(Marker(
         markerId: MarkerId("Your location"),
         draggable: false,
-        position: LatLng(
-            Globals.homeObject["Contact_Office_Location__Latitude__s"],
-            Globals.homeObject["Contact_Office_Location__Longitude__s"])));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+        position: LatLng(Globals.appSetting.contactOfficeLocationLatitudeS!,
+            Globals.appSetting.contactOfficeLocationLongitudeS!)));
   }
 
   Widget _buildIcon() {
@@ -76,9 +68,9 @@ class _ContactPageState extends State<ContactPage> {
               isOnTap: true,
               height: Utility.displayHeight(context) *
                   (AppTheme.kDetailPageImageHeightFactor / 100),
-              iconUrl: Globals.homeObject["Contact_Image__c"] ??
+              iconUrl: Globals.appSetting.contactImageC ??
                   Globals.splashImageUrl ??
-                  Globals.homeObject["App_Logo__c"],
+                  Globals.appSetting.appLogoC,
             )));
   }
 
@@ -88,7 +80,7 @@ class _ContactPageState extends State<ContactPage> {
           horizontal: _kLabelSpacing,
         ),
         child: TranslationWidget(
-          message: Globals.homeObject["Contact_Name__c"] ?? "-",
+          message: Globals.appSetting.contactImageC ?? "",
           toLanguage: Globals.selectedLanguage,
           fromLanguage: "en",
           builder: (translatedMessage) => Text(
@@ -127,10 +119,8 @@ class _ContactPageState extends State<ContactPage> {
         decoration: BoxDecoration(
             color: AppTheme.kmapBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
-        child: Globals.homeObject["Contact_Office_Location__Latitude__s"] !=
-                    null &&
-                Globals.homeObject["Contact_Office_Location__Longitude__s"] !=
-                    null
+        child: Globals.appSetting.contactOfficeLocationLatitudeS != null &&
+                Globals.appSetting.contactOfficeLocationLongitudeS != null
             ? SizedBox(
                 height: _kboxheight * 2,
                 child: GoogleMap(
@@ -147,15 +137,12 @@ class _ContactPageState extends State<ContactPage> {
                     initialCameraPosition: CameraPosition(
                         // bearing: 192.8334901395799,
                         target: LatLng(
-                            Globals.homeObject[
-                                "Contact_Office_Location__Latitude__s"],
-                            Globals.homeObject[
-                                "Contact_Office_Location__Longitude__s"]),
+                            Globals.appSetting.contactOfficeLocationLatitudeS!,
+                            Globals
+                                .appSetting.contactOfficeLocationLongitudeS!),
                         zoom: 18,
                         tilt: 59.440717697143555),
-                    markers: Set.from(
-                        _markers) //_markers.toSet(), //   values.toSet(),
-                    ),
+                    markers: Set.from(_markers)),
               )
             : EmptyContainer());
   }
@@ -196,12 +183,7 @@ class _ContactPageState extends State<ContactPage> {
 
   void _launchMapsUrl() async {
     final url =
-        'https://www.google.com/maps/search/?api=1&query=${Globals.homeObject["Contact_Office_Location__Latitude__s"]},${Globals.homeObject["Contact_Office_Location__Longitude__s"]}';
-    // if (await canLaunch(url)) {
-    //   await launch(url);
-    // } else {
-    //   throw 'Could not launch $url';
-    // }
+        'https://www.google.com/maps/search/?api=1&query=${Globals.appSetting.contactOfficeLocationLatitudeS},${Globals.appSetting.contactOfficeLocationLongitudeS}';
     await Utility.launchUrlOnExternalBrowser(url);
   }
 
@@ -230,7 +212,7 @@ class _ContactPageState extends State<ContactPage> {
             child: GestureDetector(
               onTap: _launchMapsUrl,
               child: Text(
-                Globals.homeObject["Contact_Address__c"] ?? '-',
+                Globals.appSetting.contactAddressC ?? '-',
                 style: AppTheme
                     .linkStyle, //Theme.of(context).textTheme.bodyText1!,
                 textAlign: TextAlign.start,
@@ -264,15 +246,14 @@ class _ContactPageState extends State<ContactPage> {
             padding: const EdgeInsets.only(bottom: 4.0),
             child: InkWell(
               onTap: () {
-                if (Globals.homeObject["Contact_Phone__c"] != null) {
-                  // urlobj.callurlLaucher(
-                  //     context, "tel:" + Globals.homeObject["Contact_Phone__c"]);
-                  Utility.launchUrlOnExternalBrowser(
-                      "tel:" + Globals.homeObject["Contact_Phone__c"]);
+                if (Globals.appSetting.contactPhoneC != null) {
+                  Utility.launchUrlOnExternalBrowser("tel:" +
+                      (Globals.appSetting.contactPhoneC ?? '')
+                          .replaceAll(new RegExp(r'[^\w\s]+'), ''));
                 }
               },
               child: Text(
-                Globals.homeObject["Contact_Phone__c"] ?? '-',
+                Globals.appSetting.contactPhoneC ?? '-',
                 style: AppTheme.linkStyle,
                 textAlign: TextAlign.center,
               ),
@@ -324,16 +305,13 @@ class _ContactPageState extends State<ContactPage> {
             padding: const EdgeInsets.only(bottom: 4.0),
             child: InkWell(
               onTap: () {
-                Globals.homeObject["Contact_Email__c"] != null
-                    ?
-                    // urlobj.callurlLaucher(context,
-                    //     'mailto:"${Globals.homeObject["Contact_Email__c"]}"')
-                    Utility.launchUrlOnExternalBrowser(
-                        "mailto:" + Globals.homeObject["Contact_Email__c"])
+                Globals.appSetting.contactEmailC != null
+                    ? Utility.launchUrlOnExternalBrowser(
+                        "mailto:" + Globals.appSetting.contactEmailC!)
                     : print("null value");
               },
               child: Text(
-                Globals.homeObject["Contact_Email__c"] ?? '-',
+                Globals.appSetting.contactEmailC ?? '-',
                 style: Theme.of(context).textTheme.bodyText1!,
               ),
             ),
@@ -352,11 +330,11 @@ class _ContactPageState extends State<ContactPage> {
       _buildMapWidget(),
       _buildAddressWidget(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      Globals.homeObject["Contact_Phone__c"] != null
+      Globals.appSetting.contactPhoneC != null
           ? _buildPhoneWidget()
           : Container(),
       SpacerWidget(_kLabelSpacing / 1.25),
-      Globals.homeObject["Contact_Email__c"] != null
+      Globals.appSetting.contactEmailC != null
           ? _buildEmailWidget()
           : Container(),
     ]);
@@ -364,91 +342,74 @@ class _ContactPageState extends State<ContactPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          isSearch: true,
-          isShare: false,
-          appBarTitle: widget.appBarTitle,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
-          language: Globals.selectedLanguage,
-          marginLeft: 30,
-        ),
+        appBar: widget.isAppBar == false
+            ? null
+            : CustomAppBarWidget(
+                isSearch: true,
+                isShare: false,
+                appBarTitle: widget.appBarTitle,
+                sharedpopBodytext: '',
+                sharedpopUpheaderText: '',
+                language: Globals.selectedLanguage,
+                marginLeft: 30,
+              ),
         body: RefreshIndicator(
           key: refreshKey,
-          child: OfflineBuilder(
-              connectivityBuilder: (
-                BuildContext context,
-                ConnectivityResult connectivity,
-                Widget child,
-              ) {
-                final bool connected = connectivity != ConnectivityResult.none;
-                Globals.isNetworkError = !connected;
-
-                if (connected) {
-                  if (iserrorstate == true) {
-                    homebloc.add(FetchBottomNavigationBar());
-                    iserrorstate = false;
-                  }
-                } else if (!connected) {
-                  iserrorstate = true;
-                }
-
-                return new Stack(fit: StackFit.expand, children: [
-                  connected
-                      ? Column(
-                          children: [
-                            Expanded(
-                                child: isloadingstate!
-                                    ? ShimmerLoading(
-                                        isLoading: true, child: _buildItem())
-                                    : _buildItem()),
-                            Container(
-                              height: 0,
-                              width: 0,
-                              child: BlocListener<HomeBloc, HomeState>(
-                                  bloc: homebloc,
-                                  listener: (context, state) async {
-                                    if (state is HomeLoading) {
-                                      isloadingstate = true;
-                                    }
-                                    if (state is BottomNavigationBarSuccess) {
-                                      AppTheme.setDynamicTheme(
-                                          Globals.appSetting, context);
-                                      Globals.homeObject = state.obj;
-                                      isloadingstate = false;
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: EmptyContainer()),
-                            ),
-                          ],
-                        )
-                      : NoInternetErrorWidget(
-                          connected: connected, issplashscreen: false),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
+          child: Stack(fit: StackFit.expand, children: [
+            //         connected
+            //             ?
+            Column(
+              children: [
+                Expanded(
+                    child: isloadingstate!
+                        ? ShimmerLoading(isLoading: true, child: _buildItem())
+                        : _buildItem()),
+                Container(
+                  height: 0,
+                  width: 0,
+                  child: BlocListener<HomeBloc, HomeState>(
                       bloc: homebloc,
                       listener: (context, state) async {
+                        if (state is HomeLoading) {
+                          isloadingstate = true;
+                        }
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.homeObject = state.obj;
+                          Globals.appSetting = AppSetting.fromJson(state.obj);
+                          isloadingstate = false;
                           setState(() {});
                         }
                       },
-                      child: EmptyContainer(),
-                    ),
-                  ),
-                ]);
-              },
-              child: EmptyContainer()),
+                      child: EmptyContainer()),
+                ),
+              ],
+            ),
+            // : NoInternetErrorWidget(
+            //     connected: connected, issplashscreen: false),
+            Container(
+              height: 0,
+              width: 0,
+              child: BlocListener<HomeBloc, HomeState>(
+                bloc: homebloc,
+                listener: (context, state) async {
+                  if (state is BottomNavigationBarSuccess) {
+                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+
+                    Globals.appSetting = AppSetting.fromJson(state.obj);
+                    setState(() {});
+                  }
+                },
+                child: EmptyContainer(),
+              ),
+            ),
+          ]),
           onRefresh: refreshPage,
         ));
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    homebloc.add(FetchBottomNavigationBar());
+    await Future.delayed(Duration(seconds: 2));
+    homebloc.add(FetchStandardNavigationBar());
   }
 }

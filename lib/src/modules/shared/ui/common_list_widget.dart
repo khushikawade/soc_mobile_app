@@ -9,86 +9,98 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
-import 'package:Soc/src/widgets/custom_icon_widget.dart';
+import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:flutter/material.dart';
-
 import '../../../widgets/no_data_found_error_widget.dart';
+import '../../schools_directory/ui/schools_directory.dart';
 
 class CommonListWidget extends StatefulWidget {
+  CommonListWidget(
+      {Key? key,
+      required this.data,
+      required this.sectionName,
+      required this.scaffoldKey,
+      this.connected})
+      : super(key: key);
+
+  final bool? connected;
   final List<SharedList> data;
+  final scaffoldKey;
   final String sectionName;
-  CommonListWidget({required this.data, required this.sectionName});
+
   @override
   _CommonListWidgetState createState() => _CommonListWidgetState();
 }
 
 class _CommonListWidgetState extends State<CommonListWidget> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
- 
-
-  _launchURL(obj) async {
-    if (obj.appUrlC.toString().split(":")[0] == 'http') {
-      await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
+  _launchURL(SharedList obj) async {
+    if (obj.appUrlC.toString().split(":")[0] == 'http' ||
+        obj.deepLinkC == 'YES') {
+      await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
-                    title: obj.titleC,
-                    url: obj.appUrlC,
+                    title: obj.titleC!,
+                    url: obj.appUrlC!,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
   }
 
-  _navigate(SharedList obj, index) {
+  _navigate(SharedList obj, index) async {
     if (obj.typeC == "Contact") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => ContactPage(
-                    obj: Globals.homeObject,
+                    obj: Globals.appSetting,
                     isbuttomsheet: true,
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage ?? "English",
                   )));
     } else if (obj.typeC == "URL") {
-      obj.appUrlC != null
-          ? _launchURL(obj)
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+      obj.appUrlC != null && obj.appUrlC != ""
+          ? await _launchURL(obj)
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    isCustom: widget.sectionName == 'Custom' ? true : false,
                     staffDirectoryCategoryId: null,
-                    isAbout: false,
+                    isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,
+                    isSubmenu: true,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
     } else if (obj.typeC == "Calendar/Events") {
       obj.calendarId != null && obj.calendarId != ""
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => EventPage(
                         isbuttomsheet: true,
                         appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
-                        // calendarId: obj.calendarId.toString(),
+                        calendarId: obj.calendarId.toString(),
                       )))
           : Utility.showSnackBar(
-              _scaffoldKey, "No calendar/events available", context);
-    } else if (obj.typeC == "RFT_HTML" ||
+              widget.scaffoldKey, "No calendar/events available", context);
+    } else if (obj.typeC == "RTF_HTML" ||
+        obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
         obj.typeC == "RTF/HTML") {
       obj.rtfHTMLC != null
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
@@ -98,10 +110,11 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         appbarTitle: obj.titleC!,
                         language: Globals.selectedLanguage,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No data available", context);
     } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => InAppUrlLauncer(
@@ -111,21 +124,24 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No data available", context);
     } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
-          ? Navigator.push(
+          ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
+                        isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No pdf available", context);
     } else if (obj.typeC == "Sub-Menu") {
-      Navigator.push(
+      await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => SubListPage(
@@ -135,14 +151,41 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
+    } else if (obj.typeC == "Staff_Directory") {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => StaffDirectory(
+                    isCustom: false,
+                    staffDirectoryCategoryId: obj.id,
+                    appBarTitle: obj.titleC!,
+                    obj: obj,
+                    isSubmenu: true,
+                    isbuttomsheet: true,
+                    isAbout: true,
+                    language: Globals.selectedLanguage,
+                  )));
+    } else if (obj.typeC == "School Directory" ||
+        obj.typeC == 'Org Directory') {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => SchoolDirectoryPage(
+                    title: obj.titleC,
+                    isSubmenu: obj.typeC == 'Org Directory' ? true : false,
+                    obj: obj,
+                    isStanderdPage: false,
+                  )));
     } else {
-      Utility.showSnackBar(_scaffoldKey, "No data available", context);
+      Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }
+    // Utility.setLocked();
   }
 
   Widget _buildLeading(SharedList obj) {
     if (obj.appIconUrlC != null) {
-      return CustomIconWidget(
+      return CustomIconMode(
+        darkModeIconUrl: obj.darkModeIconC,
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
     } else if (obj.appIconC != null) {
@@ -156,7 +199,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
         size: Globals.deviceType == "phone" ? 24 : 32,
       );
     } else {
-      return CustomIconWidget(
+      return CustomIconMode(
+        darkModeIconUrl: obj.darkModeIconC,
         iconUrl: Overrides.defaultIconUrl,
       );
     }
@@ -166,7 +210,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: AppTheme.kDividerColor2,
+          color: Theme.of(context).colorScheme.background,
           width: 0.65,
         ),
         borderRadius: BorderRadius.circular(0.0),
@@ -193,7 +237,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           size: Globals.deviceType == "phone" ? 12 : 20,
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).primaryColor,
         ),
       ),
     );
@@ -201,22 +245,21 @@ class _CommonListWidgetState extends State<CommonListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        body: widget.data.length > 0
-            ? ListView.builder(
-                padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
-                scrollDirection: Axis.vertical,
-                itemCount: widget.data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildList(widget.data[index], index);
-                },
-              )
-            : Container(
-                child: NoDataFoundErrorWidget(
-                isResultNotFoundMsg: false,
-                isNews: false,
-                isEvents: false,
-              )));
+    return widget.data.length > 0
+        ? ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+            scrollDirection: Axis.vertical,
+            itemCount: widget.data.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _buildList(widget.data[index], index);
+            },
+          )
+        : NoDataFoundErrorWidget(
+            isCalendarPageOrientationLandscape: false,
+            isResultNotFoundMsg: false,
+            isNews: false,
+            isEvents: false,
+            connected: true);
   }
 }
