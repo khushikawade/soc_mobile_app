@@ -154,6 +154,10 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           obj: data,
         );
       } catch (e) {
+        if (e.toString().contains('NO_CONNECTION')) {
+          Utility.showSnackBar(event.scaffoldKey,
+              'Make sure you have a proper Internet connection', event.context);
+        }
         yield SocialErrorReceived(err: e);
       }
     }

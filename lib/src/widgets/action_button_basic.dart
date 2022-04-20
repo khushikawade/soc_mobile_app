@@ -134,7 +134,7 @@ class _UserActionBasicState extends State<UserActionBasic> {
                 if (index == 3) {
                   await _shareNews();
                 }
-                return countIncrement(index);
+                return countIncrement(index, scaffoldKey);
               } else {
                 Utility.showSnackBar(scaffoldKey,
                     'Make sure you have a proper Internet connection', context);
@@ -210,7 +210,7 @@ class _UserActionBasicState extends State<UserActionBasic> {
     return !isLiked;
   }
 
-  Future<bool> countIncrement(index) async {
+  Future<bool> countIncrement(index, scaffoldKey) async {
     bool? isliked = true;
     setState(() {
       iconNameIndex = index;
@@ -245,6 +245,8 @@ class _UserActionBasicState extends State<UserActionBasic> {
                 : widget.obj.shareCount = share.value;
     if (widget.page == "news") {
       _newsBloc.add(NewsAction(
+          context: context,
+          scaffoldKey: scaffoldKey,
           notificationId: widget.obj.id,
           notificationTitle: widget.title,
           like: index == 0 ? 1 : 0,
@@ -253,6 +255,8 @@ class _UserActionBasicState extends State<UserActionBasic> {
           shared: index == 3 ? 1 : 0));
     } else if (widget.page == "social") {
       _socialbBloc.add(SocialAction(
+          context: context,
+          scaffoldKey: scaffoldKey,
           id: widget.obj
               .guid['\$t'], //widget.obj.id.toString() + widget.obj.guid['\$t'],
           title: widget.title.toString(),

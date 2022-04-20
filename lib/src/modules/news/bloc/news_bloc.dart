@@ -103,6 +103,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           obj: data,
         );
       } catch (e) {
+        if (e.toString().contains('NO_CONNECTION')) {
+          Utility.showSnackBar(event.scaffoldKey,
+              'Make sure you have a proper Internet connection', event.context);
+        }
         yield NewsErrorReceived(err: e);
       }
     }

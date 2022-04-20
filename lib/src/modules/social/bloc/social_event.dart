@@ -20,6 +20,8 @@ class SocialPageEvent extends SocialEvent {
 // }
 
 class SocialAction extends SocialEvent {
+  final context;
+  final scaffoldKey;
   final String? id;
   final String? title;
   final int? like;
@@ -33,7 +35,9 @@ class SocialAction extends SocialEvent {
       this.like,
       this.thanks,
       this.helpful,
-      this.shared});
+      this.shared,
+      required this.context,
+      required this.scaffoldKey});
 
   @override
   List<Object> get props => [id!, title!, like!, thanks!, helpful!, shared!];
