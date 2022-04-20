@@ -17,10 +17,6 @@ import '../../../widgets/no_data_found_error_widget.dart';
 import '../../schools_directory/ui/schools_directory.dart';
 
 class CommonListWidget extends StatefulWidget {
-  final List<SharedList> data;
-  final String sectionName;
-  final bool? connected;
-  final scaffoldKey;
   CommonListWidget(
       {Key? key,
       required this.data,
@@ -28,6 +24,12 @@ class CommonListWidget extends StatefulWidget {
       required this.scaffoldKey,
       this.connected})
       : super(key: key);
+
+  final bool? connected;
+  final List<SharedList> data;
+  final scaffoldKey;
+  final String sectionName;
+
   @override
   _CommonListWidgetState createState() => _CommonListWidgetState();
 }
