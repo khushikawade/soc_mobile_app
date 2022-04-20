@@ -47,8 +47,8 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       contactPhoneC: fields[27] as String?,
       contactAddressC: fields[28] as String?,
       socialapiurlc: fields[29] as String?,
-      contactOfficeLocationLatitudeS: fields[30] as double?,
-      contactOfficeLocationLongitudeS: fields[31] as double?,
+      contactOfficeLocationLatitudeS: fields[30] as dynamic,
+      contactOfficeLocationLongitudeS: fields[31] as dynamic,
       bannerHeightFactor: fields[32] as dynamic,
       familyBannerImageC: fields[33] as String?,
       staffBannerImageC: fields[34] as String?,
@@ -65,13 +65,17 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       aboutBannerColorC: fields[45] as String?,
       schoolBannerColorC: fields[46] as String?,
       resourcesBannerColorC: fields[47] as String?,
+      contactImageC: fields[48] as String?,
+      isTestSchool: fields[49] as dynamic,
+      isCustomApp: fields[50] as bool?,
+      disableDarkMode: fields[51] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AppSetting obj) {
     writer
-      ..writeByte(48)
+      ..writeByte(52)
       ..writeByte(0)
       ..write(obj.attributes)
       ..writeByte(1)
@@ -167,7 +171,15 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       ..writeByte(46)
       ..write(obj.schoolBannerColorC)
       ..writeByte(47)
-      ..write(obj.resourcesBannerColorC);
+      ..write(obj.resourcesBannerColorC)
+      ..writeByte(48)
+      ..write(obj.contactImageC)
+      ..writeByte(49)
+      ..write(obj.isTestSchool)
+      ..writeByte(50)
+      ..write(obj.isCustomApp)
+      ..writeByte(51)
+      ..write(obj.disableDarkMode);
   }
 
   @override

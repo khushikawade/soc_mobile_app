@@ -3,51 +3,56 @@ import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
+import '../../../widgets/empty_container_widget.dart';
+import '../../custom/model/custom_setting.dart';
+import '../../shared/ui/common_grid_widget.dart';
 
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
-  FamilyPage({
-    Key? key,
-    this.obj,
-    this.searchObj,
-  }) : super(key: key);
+  final CustomSetting? customObj;
+  FamilyPage({Key? key, this.obj, this.searchObj, this.customObj})
+      : super(key: key);
 
   @override
   _FamilyPageState createState() => _FamilyPageState();
 }
 
 class _FamilyPageState extends State<FamilyPage> {
-  // static const double _kLabelSpacing = 10.0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   FamilyBloc _bloc = FamilyBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
+  bool? isCustomApp;
 
   @override
   void initState() {
     super.initState();
+    //lock screen orientation
+    // Utility.setLocked();
     _bloc.add(FamiliesEvent());
-  }
+    var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
-  @override
-  void dispose() {
-    super.dispose();
+    if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
+      Globals.themeType = 'Dark';
+    }
   }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
     _bloc.add(FamiliesEvent());
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Widget _body(String key) => Container(
@@ -60,7 +65,6 @@ class _FamilyPageState extends State<FamilyPage> {
                 Widget child,
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
-
                 if (connected) {
                   if (iserrorstate == true) {
                     _bloc.add(FamiliesEvent());
@@ -81,16 +85,27 @@ class _FamilyPageState extends State<FamilyPage> {
                           builder: (BuildContext contxt, FamilyState state) {
                             if (state is FamilyInitial ||
                                 state is FamilyLoading) {
-                              return Center(child: CircularProgressIndicator());
+                              return Center(
+                                  child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              ));
                             } else if (state is FamiliesDataSucess) {
-                              // print('List data......');
-                              // print(state.obj);
-                              return CommonListWidget(
-                                  key: ValueKey(key),
-                                  scaffoldKey: _scaffoldKey,
-                                  connected: connected,
-                                  data: state.obj!,
-                                  sectionName: "family");
+                              return widget.customObj != null &&
+                                      widget.customObj!.sectionTemplate ==
+                                          "Grid Menu"
+                                  ? CommonGridWidget(
+                                      scaffoldKey: _scaffoldKey,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "family")
+                                  : CommonListWidget(
+                                      key: ValueKey(key),
+                                      scaffoldKey: _scaffoldKey,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "family");
                             } else if (state is ErrorLoading) {
                               return ListView(children: [ErrorMsgWidget()]);
                             } else {
@@ -107,8 +122,9 @@ class _FamilyPageState extends State<FamilyPage> {
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
-                              Globals.homeObject = state.obj;
-
+                              // Globals.homeObject = state.obj;
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
                               setState(() {});
                             }
                           },
@@ -116,8 +132,6 @@ class _FamilyPageState extends State<FamilyPage> {
                     ),
                   ],
                 );
-                // : NoInternetErrorWidget(
-                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,
@@ -126,6 +140,7 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+        //backgroundColor: Theme.of(context).backgroundColor,
         key: _scaffoldKey,
         appBar: AppBarWidget(
           marginLeft: 30,
@@ -133,22 +148,19 @@ class _FamilyPageState extends State<FamilyPage> {
             setState(() {});
           },
         ),
-        body: Globals.homeObject["Family_Banner_Image__c"] != null &&
-                Globals.homeObject["Family_Banner_Image__c"] != ''
+        body: Globals.appSetting.familyBannerImageC != null &&
+                Globals.appSetting.familyBannerImageC != ''
             ? NestedScrollView(
-                // controller: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    Globals.homeObject["Family_Banner_Image__c"] != null
+                    Globals.appSetting.familyBannerImageC != null
                         ? BannerImageWidget(
-                            imageUrl:
-                                Globals.homeObject["Family_Banner_Image__c"],
+                            imageUrl: Globals.appSetting.familyBannerImageC!,
                             bgColor:
-                                Globals.homeObject["Family_Banner_Color__c"] !=
-                                        null
-                                    ? Utility.getColorFromHex(Globals
-                                        .homeObject["Family_Banner_Color__c"])
+                                Globals.appSetting.familyBannerColorC != null
+                                    ? Utility.getColorFromHex(
+                                        Globals.appSetting.familyBannerColorC!)
                                     : null,
                           )
                         : SliverAppBar(),

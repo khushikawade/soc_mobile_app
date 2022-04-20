@@ -3,6 +3,11 @@ import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 
 class BackButtonWidget extends StatelessWidget {
+  BackButtonWidget({this.isNewsPage, this.isSocialPage});
+
+  final bool? isNewsPage;
+  final bool? isSocialPage;
+
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -18,7 +23,7 @@ class BackButtonWidget extends StatelessWidget {
             width: 40.0,
             child: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context, isNewsPage);
               },
               icon: Icon(
                 const IconData(0xe80d,

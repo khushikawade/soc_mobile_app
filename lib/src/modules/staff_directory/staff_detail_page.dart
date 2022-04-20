@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -10,12 +11,10 @@ import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 
-// ignore: must_be_immutable
 class AboutSDDetailPage extends StatefulWidget {
   final obj;
   AboutSDDetailPage({
@@ -29,7 +28,6 @@ class AboutSDDetailPage extends StatefulWidget {
 
 class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
   static const double _kLabelSpacing = 16.0;
-  // static const double _kboxheight = 60.0;
   static const double _kIconSize = 48.0;
   bool issuccesstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -42,9 +40,10 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
   Widget _sdImage() {
     return Container(
         child: CommonImageWidget(
+      darkModeIconUrl: widget.obj.darkModeIconC,
       iconUrl: widget.obj!.imageUrlC ??
           Globals.splashImageUrl ??
-          Globals.homeObject["App_Logo__c"],
+          Globals.appSetting.appLogoC,
       height: Utility.displayHeight(context) *
           (AppTheme.kDetailPageImageHeightFactor / 100),
       fitMethod: BoxFit.fitHeight,
@@ -54,16 +53,24 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Widget _buildTitleWidget() {
     return Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: _kLabelSpacing,
-        ),
-        child: Text(
-          widget.obj!.designation ?? "",
-          textAlign: TextAlign.left,
+      padding: const EdgeInsets.symmetric(
+        horizontal: _kLabelSpacing,
+      ),
+      child: TranslationWidget(
+        message:
+            widget.obj!.designation != 'null' && widget.obj!.designation != null
+                ? widget.obj!.designation
+                : "",
+        toLanguage: Globals.selectedLanguage,
+        fromLanguage: "en",
+        builder: (translatedMessage) => Text(
+          translatedMessage.toString(),
           style: Theme.of(context).textTheme.headline2!.copyWith(
                 fontWeight: FontWeight.w500,
               ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _buildNameWidget() {
@@ -71,12 +78,16 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         padding: const EdgeInsets.symmetric(
           horizontal: _kLabelSpacing,
         ),
-        child: Text(
-          widget.obj!.name ?? "",
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline2!.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+        child: TranslationWidget(
+          message: widget.obj!.name ?? "",
+          toLanguage: Globals.selectedLanguage,
+          fromLanguage: "en",
+          builder: (translatedMessage) => Text(
+            translatedMessage.toString(),
+            style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+          ),
         ));
   }
 
@@ -86,13 +97,19 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
           horizontal: _kLabelSpacing,
         ),
         // TODO: Replace text with HTML // text: widget.obj!.descriptionC ?? "",
-        child: Linkify(
-          onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
-          options: LinkifyOptions(humanize: false),
-          linkStyle: TextStyle(color: Colors.blue),
-          text: widget.obj!.descriptionC ?? "",
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-        ));
+        child: TranslationWidget(
+            message: widget.obj!.descriptionC ?? "",
+            toLanguage: Globals.selectedLanguage,
+            fromLanguage: "en",
+            builder: (translatedMessage) => Linkify(
+                  onOpen: (link) =>
+                      Utility.launchUrlOnExternalBrowser(link.url),
+                  options: LinkifyOptions(humanize: false),
+                  linkStyle: TextStyle(color: Colors.blue),
+                  text: translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                  // )
+                )));
   }
 
   Widget _buildPhoneWidget() {
@@ -129,7 +146,6 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: InkWell(
                   onTap: () {
-                    // urlobj.callurlLaucher(context, "tel:" + widget.obj!.phoneC);
                     Utility.launchUrlOnExternalBrowser(
                         "tel:" + widget.obj!.phoneC);
                   },
@@ -145,7 +161,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                       fontWeight: FontWeight.normal,
                       fontFamily: 'Roboto Regular',
                       height: 1.5,
-                    ), //Theme.of(context).textTheme.bodyText1!,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -203,8 +219,6 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: InkWell(
                     onTap: () {
-                      // urlobj.callurlLaucher(
-                      //     context, 'mailto:"${widget.obj!.emailC}"');
                       Utility.launchUrlOnExternalBrowser(
                           "mailto:" + widget.obj!.emailC);
                     },
@@ -220,7 +234,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                         fontWeight: FontWeight.normal,
                         fontFamily: 'Roboto Regular',
                         height: 1.5,
-                      ), //Theme.of(context).textTheme.bodyText1!,
+                      ),
                     ),
                   ),
                 )
@@ -240,15 +254,13 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
       _buildTitleWidget(),
       SpacerWidget(_kLabelSpacing),
       _buildDescriptionWidget(),
-      // SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj!.phoneC != null
+      widget.obj!.phoneC != null && widget.obj!.phoneC != ""
           ? Padding(
               padding: const EdgeInsets.only(top: _kLabelSpacing / 1.25),
               child: _buildPhoneWidget(),
             )
           : Container(),
-      // SpacerWidget(_kLabelSpacing / 1.25),
-      widget.obj!.emailC != null
+      widget.obj!.emailC != null && widget.obj!.emailC != ""
           ? Padding(
               padding: const EdgeInsets.only(top: _kLabelSpacing / 1.25),
               child: _buildEmailWidget(),
@@ -260,7 +272,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         buttonTitle: "Share",
         obj: widget.obj,
         body:
-            "${widget.obj!.descriptionC != null ? widget.obj!.descriptionC.toString() : ""}" +
+            "${widget.obj!.descriptionC != null && widget.obj!.descriptionC != "" ? widget.obj!.descriptionC.toString() : ""}" +
                 "\n" +
                 "${widget.obj!.imageUrlC ?? ""}" +
                 "\n" +
@@ -293,7 +305,8 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   }
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
-                    Globals.homeObject = state.obj;
+
+                    Globals.appSetting = AppSetting.fromJson(state.obj);
                     isloadingstate = false;
                     setState(() {});
                   }
@@ -308,7 +321,8 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
               listener: (context, state) async {
                 if (state is BottomNavigationBarSuccess) {
                   AppTheme.setDynamicTheme(Globals.appSetting, context);
-                  Globals.homeObject = state.obj;
+
+                  Globals.appSetting = AppSetting.fromJson(state.obj);
                   setState(() {});
                 }
               },
@@ -323,6 +337,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    homebloc.add(FetchBottomNavigationBar());
+    await Future.delayed(Duration(seconds: 2));
+    homebloc.add(FetchStandardNavigationBar());
   }
 }

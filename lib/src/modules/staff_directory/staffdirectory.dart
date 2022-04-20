@@ -1,35 +1,35 @@
-import 'dart:ui';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
-
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
-import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/weburllauncher.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
-// ignore: must_be_immutable
 class StaffDirectory extends StatefulWidget {
+  final bool isCustom;
+  final bool? isSubmenu;
   final obj;
-  bool isbuttomsheet;
-  String appBarTitle;
-  String? language;
-  String?
+  final bool isbuttomsheet;
+  final String appBarTitle;
+  final String? language;
+  final String?
       staffDirectoryCategoryId; // To support categories staff list which is used in the District template.
-  bool isAbout;
+  final bool isAbout;
+
   StaffDirectory(
       {Key? key,
       required this.obj,
@@ -37,7 +37,9 @@ class StaffDirectory extends StatefulWidget {
       required this.appBarTitle,
       required this.language,
       required this.isAbout,
-      this.staffDirectoryCategoryId})
+      this.staffDirectoryCategoryId,
+      required this.isCustom,
+      this.isSubmenu})
       : super(key: key);
 
   @override
@@ -57,61 +59,43 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   @override
   void initState() {
+    //Utility.setLocked();
     super.initState();
     if (widget.staffDirectoryCategoryId != null) {
       _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
     } else {
-      _bloc.add(SDevent());
+      _bloc.add(SDevent(
+          customRecordId: widget.isCustom && widget.isSubmenu == true
+              ? widget.obj.id
+              : null));
     }
     Globals.callsnackbar = true;
   }
 
-  // Widget _buildHeading(String tittle) {
-  //   return Container(
-  //     padding: EdgeInsets.symmetric(vertical: _kLabelSpacing * 1.2),
-  //     width: MediaQuery.of(context).size.width,
-  //     decoration: BoxDecoration(
-  //       border: Border.all(
-  //         width: 0,
-  //       ),
-  //       color: Theme.of(context).colorScheme.primary,
-  //     ),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: [
-  //         TranslationWidget(
-  //           message: tittle,
-  //           toLanguage: Globals.selectedLanguage,
-  //           fromLanguage: "en",
-  //           builder: (translatedMessage) => Text(
-  //             translatedMessage.toString(),
-  //             style: Theme.of(context).textTheme.headline6!,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget listItem(list, obj, index) {
     return GestureDetector(
-       onTap: () {
-          // if (widget.isAbout == true) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SliderWidget(
-                        obj: list,
-                        currentIndex: index,
-                        issocialpage: false,
-                        isAboutSDPage: true,
-                        isEvent: false,
-                        date: "",
-                        isbuttomsheet: true,
-                        language: Globals.selectedLanguage,
-                      )));
-          // }
-        },
+      onTap: () async {
+        // if (widget.isAbout == true) {
+        //lock screen orientation
+        // Utility.setLocked();
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SliderWidget(
+                      obj: list,
+                      currentIndex: index,
+                      issocialpage: false,
+                      isAboutSDPage: widget.isAbout, // true,
+                      isNewsPage: false,
+                      // iseventpage: false,
+                      date: "",
+                      isbuttomsheet: true,
+                      language: Globals.selectedLanguage,
+                    )));
+        //lock screen orientation
+        // Utility.setLocked();
+        // }
+      },
       child: Container(
         margin: EdgeInsets.symmetric(
             horizontal: _kLabelSpacing, vertical: _kLabelSpacing / 2),
@@ -144,8 +128,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   HorzitalSpacerWidget(_kLabelSpacing / 1.5),
-                  // obj.imageUrlC != null && obj.imageUrlC != '' ?
                   CommonImageWidget(
+                      darkModeIconUrl: obj.darkModeIconC,
                       height: Globals.deviceType == "phone"
                           ? _kIconSize * 1.4
                           : _kIconSize * 2,
@@ -155,8 +139,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       fitMethod: BoxFit.cover,
                       iconUrl: obj.imageUrlC ??
                           Globals.splashImageUrl ??
-                          Globals.homeObject["App_Logo__c"]),
-
+                          Globals.appSetting.appLogoC),
                   HorzitalSpacerWidget(_kLabelSpacing),
                   Expanded(
                     child: Column(
@@ -172,7 +155,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               textAlign: TextAlign.start,
                               style: Theme.of(context).textTheme.headline2!),
                         ),
-                        obj.designation != null
+                        obj.designation != null && obj.designation != ""
                             ? TranslationWidget(
                                 message: obj.designation,
                                 toLanguage: Globals.selectedLanguage,
@@ -187,7 +170,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       ],
                     ),
                   ),
-                  obj.phoneC != null
+                  obj.phoneC != null && obj.phoneC != ""
                       ? Container(
                           height: _KButtonMinSize,
                           width: _KButtonMinSize,
@@ -197,8 +180,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                               padding: EdgeInsets.all(8),
                             ),
                             onPressed: () {
-                              // objurl.callurlLaucher(
-                              //     context, "tel:" + obj.phoneC);
                               Utility.launchUrlOnExternalBrowser(
                                   "tel:" + obj.phoneC);
                             },
@@ -210,7 +191,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         )
                       : EmptyContainer(),
                   HorzitalSpacerWidget(_kLabelSpacing / 2),
-                  obj.emailC != null
+                  obj.emailC != null && obj.emailC != ""
                       ? Container(
                           height: _KButtonMinSize,
                           width: _KButtonMinSize,
@@ -220,8 +201,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                 padding: EdgeInsets.all(6),
                               ),
                               onPressed: () {
-                                // objurl.callurlLaucher(
-                                //     context, 'mailto:"${obj.emailC}"');
                                 Utility.launchUrlOnExternalBrowser(
                                     "mailto:" + obj.emailC);
                               },
@@ -232,27 +211,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                         )
                       : EmptyContainer()
                 ]),
-            // widget.isAbout
-            //     ? Container()
-            //     : obj.descriptionC != null
-            //         ? Column(
-            //             children: [
-            //               SpacerWidget(_kLabelSpacing / 1.2),
-            //               TranslationWidget(
-            //                   message: obj.descriptionC,
-            //                   toLanguage: Globals.selectedLanguage,
-            //                   fromLanguage: "en",
-            //                   builder: (translatedMessage) => Align(
-            //                     alignment: Alignment.centerLeft,
-            //                     child: Text(
-            //                         translatedMessage.toString(),
-            //                         textAlign: TextAlign.start,
-            //                         style:
-            //                             Theme.of(context).textTheme.bodyText1!),
-            //                   )),
-            //             ],
-            //           )
-            //         : Container(),
           ],
         ),
       ),
@@ -261,16 +219,25 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBarWidget(
-          marginLeft: 30,
-          appBarTitle: widget.appBarTitle,
-          isSearch: true,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
-          isShare: false,
-          isCenterIcon: true,
-          language: Globals.selectedLanguage,
-        ),
+        appBar: widget.isSubmenu == true
+            ? CustomAppBarWidget(
+                marginLeft: 30,
+                appBarTitle: widget.appBarTitle,
+                isSearch: true,
+                sharedpopBodytext: '',
+                sharedpopUpheaderText: '',
+                isShare: false,
+                isCenterIcon: true,
+                language: Globals.selectedLanguage,
+              )
+            : widget.isSubmenu == false
+                ? AppBarWidget(
+                    marginLeft: 30,
+                    refresh: (v) {
+                      setState(() {});
+                    },
+                  )
+                : null,
         body: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(
@@ -288,7 +255,11 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       _bloc.add(
                           SDevent(categoryId: widget.staffDirectoryCategoryId));
                     } else {
-                      _bloc.add(SDevent());
+                      _bloc.add(SDevent(
+                          customRecordId:
+                              widget.isCustom && widget.isSubmenu == true
+                                  ? widget.obj.id
+                                  : null));
                     }
                   }
                 } else if (!connected) {
@@ -309,21 +280,23 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                                   height:
                                       MediaQuery.of(context).size.height * 0.8,
                                   alignment: Alignment.center,
-                                  child: CircularProgressIndicator());
+                                  child: CircularProgressIndicator(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                  ));
                             } else if (state is SDDataSucess) {
                               return state.obj != null && state.obj!.length > 0
                                   ? ListView.builder(
-                                    // padding: EdgeInsets.only(
-                                    //     bottom: 25.0),
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: state.obj!.length,
-                                    itemBuilder: (BuildContext context,
-                                        int index) {
-                                      return listItem(state.obj,
-                                          state.obj![index], index);
-                                    },
-                                  )
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: state.obj!.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return listItem(state.obj,
+                                            state.obj![index], index);
+                                      },
+                                    )
                                   : NoDataFoundErrorWidget(
                                       isResultNotFoundMsg: false,
                                       isNews: false,
@@ -345,7 +318,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
-                              Globals.homeObject = state.obj;
+
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
                               setState(() {});
                             } else if (state is HomeErrorReceived) {
                               ErrorMsgWidget();
@@ -366,11 +341,15 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
     if (widget.staffDirectoryCategoryId != null) {
       _bloc.add(SDevent(categoryId: widget.staffDirectoryCategoryId));
     } else {
-      _bloc.add(SDevent());
+      _bloc.add(SDevent(
+          customRecordId: widget.isCustom && widget.isSubmenu == true
+              ? widget.obj.id
+              : null));
     }
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

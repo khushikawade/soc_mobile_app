@@ -1,41 +1,65 @@
-import 'package:Soc/src/modules/home/models/search_attributes.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:hive/hive.dart';
+part 'search_list.g.dart';
 
+@HiveType(typeId: 12)
 class SearchList {
-  SearchAttributes? attributes;
+  @HiveField(0)
   String? titleC;
-  // dynamic appIconC;
+  @HiveField(1)
+  dynamic appIconUrlC;
+  @HiveField(2)
   dynamic appURLC;
+  @HiveField(3)
   dynamic urlC;
+  @HiveField(4)
   String? id;
+  @HiveField(5)
   String? rtfHTMLC;
-  String? schoolId;
-  String? dept;
+  @HiveField(6)
   dynamic descriptionC;
+  @HiveField(7)
   String? emailC;
+  @HiveField(8)
   String? imageUrlC;
+  @HiveField(9)
   String? phoneC;
+  @HiveField(10)
   String? webURLC;
+  @HiveField(11)
   String? address;
-  final geoLocation;
-  final statusC;
-  final sortOrder;
+  @HiveField(12)
+  var geoLocation;
+  @HiveField(13)
+  var statusC;
+  @HiveField(14)
+  double? sortOrder;
+  @HiveField(15)
   String? name;
+  @HiveField(16)
   String? typeC;
+  @HiveField(17)
   String? pdfURL;
+  @HiveField(18)
   String? deepLink;
+  @HiveField(19)
   String? calendarId;
-
+  @HiveField(20)
+  String? objectName;
+  @HiveField(21)
+  dynamic latitude;
+  @HiveField(23)
+  dynamic longitude;
+  @HiveField(24)
+  dynamic darkModeIconC;
 
   SearchList(
-      {this.attributes,
-      this.titleC,
-      // this.appIconC,
+      {this.titleC,
+      this.appIconUrlC,
       this.appURLC,
       this.urlC,
       this.id,
       this.rtfHTMLC,
-      this.schoolId,
-      this.dept,
       this.descriptionC,
       this.emailC,
       this.imageUrlC,
@@ -49,48 +73,45 @@ class SearchList {
       this.typeC,
       this.pdfURL,
       this.deepLink,
-      this.calendarId
-      });
+      this.calendarId,
+      this.objectName,
+      this.latitude,
+      this.longitude,
+      this.darkModeIconC});
 
   factory SearchList.fromJson(Map<String, dynamic> json) => SearchList(
-        attributes: json['attributes'] == null
-            ? null
-            : SearchAttributes.fromJson(
-                json['attributes'] as Map<String, dynamic>),
-        titleC: json['Title__c'] as String?,
-        // appIconC: json['App_Icon__c'] as String?,
-        appURLC: json['App_URL__c'] as String?,
-        urlC: json['URL__c'] as String?,
-        id: json['Id'] as String?,
-        rtfHTMLC: json['RTF_HTML__c'] as String?,
-        schoolId: json['School_App__c'] as String?,
-        dept: json['Department__c'] as String?,
-        descriptionC: json['Description__c'],
-        emailC: json['Email__c'] as String?,
-        imageUrlC: json['Image_URL__c'] as String?,
-        phoneC: json['Phone__c'] as String?,
-        webURLC: json['Website_URL__c'] as String?,
-        address: json['Contact_Address__c'] as String?,
-        geoLocation: json['Contact_Office_Location__c'],
-        statusC: json['Active_Status__c'],
-        sortOrder: json['Sort_Order__c'],
-        name: json['Name'] as String?,
-        typeC: json['Type__c'] as String?,
-        pdfURL: json['PDF_URL__c'] as String?,
-        deepLink: json['Deep_Link__c'] as String?,
-        calendarId: json['Calendar_Id__c'] as String?,
-      );
+      titleC: Utility.utf8convert(json['Title__c'] as String?),
+      appIconUrlC: json['Icon_URL'] as String?,
+      appURLC: json['App_URL__c'] as String?,
+      urlC: json['URL__c'] as String?,
+      id: json['Id'] as String?,
+      rtfHTMLC: json['RTF_HTML__c'] as String?,
+      descriptionC: json['Description__c'],
+      emailC: json['Email__c'] as String?,
+      imageUrlC: json['Image_URL__c'] as String?,
+      phoneC: json['Phone__c'] as String?,
+      webURLC: json['Website_URL__c'] as String?,
+      address: json['Contact_Address__c'] as String?,
+      geoLocation: json['Contact_Office_Location__c'],
+      statusC: json['Active_Status__c'],
+      sortOrder: double.parse(json['Sort_Order__c'] ?? "0.0"),
+      name: json['Name'] as String?,
+      typeC: json['Type__c'] as String?,
+      pdfURL: json['PDF_URL__c'] as String?,
+      deepLink: json['Deep_Link__c'] as String?,
+      calendarId: json['Calendar_Id__c'] as String?,
+      objectName: json['ObjectName'] as String?,
+      latitude: json['Contact_Office_Location__Latitude__s'],
+      longitude: json['Contact_Office_Location__Longitude__s'],
+      darkModeIconC: json['Dark_Mode_Icon__c'] as String?);
 
   Map<String, dynamic> toJson() => {
-        'attributes': attributes?.toJson(),
         'Title__c': titleC,
-        // 'App_Icon__c': appIconC,
+        'Icon_URL': appIconUrlC,
         "App_URL__c": appURLC,
         'URL__c': urlC,
         'Id': id,
         'RTF_HTML__c': rtfHTMLC,
-        'School_App__c': schoolId,
-        'Department__c': dept,
         'Description__c': descriptionC,
         'Email__c': emailC,
         'Image_URL__c': imageUrlC,
@@ -105,5 +126,9 @@ class SearchList {
         'Type__c': typeC,
         'Deep_Link__c': deepLink,
         'Calendar_Id__c': calendarId,
+        'ObjectName': objectName,
+        'Contact_Office_Location__Latitude__s': latitude,
+        'Contact_Office_Location__Longitude__s': longitude,
+        'Dark_Mode_Icon__c': darkModeIconC
       };
 }

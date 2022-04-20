@@ -12,7 +12,6 @@ part 'resources_event.dart';
 part 'resources_state.dart';
 
 class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
-  // var data;
   ResourcesBloc() : super(ResourcesInitial());
   final DbServices _dbServices = DbServices();
 
@@ -114,11 +113,10 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
   Future<List<SharedList>> getResourcesSDList() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,Id,Sort_Order__c,URL__c,App_Icon_URL__c,Active_Status__c,Type__c,RTF_HTML__c,PDF_URL__c FROM Resources_App__c where School_App__c = '${Overrides.SCHOOL_ID}'")}");
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+          "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Resources_App__c"));
       if (response.statusCode == 200) {
-        dataArray = response.data["records"];
-        List<SharedList> _list = response.data["records"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');
@@ -133,10 +131,10 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
   Future<List<SharedList>> getResourcesSubList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          "query/?q=${Uri.encodeComponent("SELECT Title__c,URL__c,Id,Name, Type__c, PDF_URL__c, RTF_HTML__c,Sort_Order__c,App_Icon_URL__c,Active_Status__c FROM Resources_Sub_Menu_App__c where Resources_App__c='$id'")}");
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+          "getSubRecords?parentId=$id&parentName=Resources_App__c&objectName=Resources_Sub_Menu_App__c"));
       if (response.statusCode == 200) {
-        List<SharedList> _list = response.data["records"]
+        List<SharedList> _list = response.data['body']
             .map<SharedList>((i) => SharedList.fromJson(i))
             .toList();
         _list.removeWhere((SharedList element) => element.status == 'Hide');

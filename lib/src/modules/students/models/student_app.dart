@@ -23,6 +23,8 @@ class StudentApp {
   final status;
   @HiveField(9)
   final isFolder;
+  @HiveField(10)
+  String? darkModeIconC;
 
   StudentApp(
       {this.titleC,
@@ -34,7 +36,8 @@ class StudentApp {
       this.appFolderc,
       this.sortOrder,
       this.status,
-      this.isFolder});
+      this.isFolder,
+      this.darkModeIconC});
 
   factory StudentApp.fromJson(Map<String, dynamic> json) => StudentApp(
       titleC: json['Title__c'] as String?,
@@ -44,9 +47,10 @@ class StudentApp {
       id: json['Id'] as String?,
       name: json['Name'] as String?,
       appFolderc: json['App_Folder__c'] as String?,
-      sortOrder: json['Sort_Order__c'],
+      sortOrder: double.parse(json['Sort_Order__c'] ?? '100'),
       status: json['Active_Status__c'],
-      isFolder: json['Is_Folder__c']);
+      isFolder: json['Is_Folder__c'],
+      darkModeIconC: json['Dark_Mode_Icon__c']);
 
   Map<String, dynamic> toJson() => {
         'Title__c': titleC,
@@ -58,6 +62,7 @@ class StudentApp {
         'App_Folder__c': appFolderc,
         'Sort_Order__c': sortOrder,
         'Active_Status__c': status,
-        'Is_Folder__c': isFolder
+        'Is_Folder__c': isFolder,
+        'Dark_Mode_Icon__c': darkModeIconC
       };
 }

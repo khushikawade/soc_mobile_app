@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
-// ignore: must_be_immutable
 class ImagePopup extends StatefulWidget {
   final String imageURL;
   @override
@@ -60,8 +59,8 @@ class ImagePopupState extends State<ImagePopup>
                       backgroundDecoration: BoxDecoration(
                         color: Colors.transparent,
                       ),
-                      imageProvider: CachedNetworkImageProvider(
-                          widget.imageURL), //NetworkImage(widget.imageURL),
+                      imageProvider:
+                          CachedNetworkImageProvider(widget.imageURL),
                       maxScale: PhotoViewComputedScale.covered,
                       initialScale: PhotoViewComputedScale.contained * 0.8,
                       minScale: PhotoViewComputedScale.contained * 0.8,
@@ -87,7 +86,7 @@ class ImagePopupState extends State<ImagePopup>
                           minScale: PhotoViewComputedScale.contained * 0.8,
                           imageProvider: CachedNetworkImageProvider(
                             Globals.splashImageUrl ??
-                                Globals.homeObject["App_Logo__c"],
+                                Globals.appSetting.appLogoC,
                           ),
                         ));
                       },
