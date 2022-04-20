@@ -184,7 +184,8 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
 
   Widget _buildLeading(SharedList obj) {
     if (obj.appIconUrlC != null) {
-      return CustomIconWidget(//CustomIconMode(
+      return CustomIconWidget(
+        //CustomIconMode(
         darkModeIconUrl: obj.darkModeIconC,
         iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
       );
@@ -252,8 +253,10 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         // mainAxisAlignment:MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
-                          Container(   height: 80,
-                                  width: 80,child: _buildLeading(list[index])),
+                          Container(
+                              height: 80,
+                              width: 80,
+                              child: _buildLeading(list[index])),
                           Container(
                             child: TranslationWidget(
                               message: "${list[index].titleC}",
