@@ -37,7 +37,6 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         // yield CustomLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
         String? _objectName = "${Strings.customObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
-
         List<SharedList>? _localData = await _localDb.getData();
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
@@ -62,7 +61,6 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
       } catch (e) {
         String? _objectName = "${Strings.customObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
-
         List<SharedList>? _localData = await _localDb.getData();
         _localDb.close();
 
@@ -80,9 +78,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         // yield CustomLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
         String? _objectName = "${Strings.customSubListObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
-
         List<SharedList>? _localData = await _localDb.getData();
-
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
@@ -104,7 +100,6 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
       } catch (e) {
         String? _objectName = "${Strings.customSubListObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
-
         List<SharedList>? _localData = await _localDb.getData();
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         _localDb.close();
@@ -121,9 +116,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         String? _objectName =
             "${Strings.staffDirectoryObjectName}_${event.categoryId ?? ''}";
         LocalDatabase<SDlist> _localDb = LocalDatabase(_objectName);
-
         List<SDlist>? _localData = await _localDb.getData();
-
         _localData.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
 
         if (_localData.isEmpty) {
@@ -150,7 +143,6 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         String? _objectName =
             "${Strings.staffDirectoryObjectName}_${event.categoryId ?? ''}";
         LocalDatabase<SDlist> _localDb = LocalDatabase(_objectName);
-
         List<SDlist>? _localData = await _localDb.getData();
         _localData.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
         _localDb.close();
@@ -223,7 +215,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     }
   }
 
-  filterFutureAndPastEvents(eventList, currentDate) {
+  filterFutureAndPastEvents(List<CalendarEventList> eventList, currentDate) {
     futureListobj!.clear();
     pastListobj!.clear();
     for (int i = 0; i < eventList.length; i++) {
@@ -338,7 +330,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         List dataArray = data["items"];
-        List data1 = dataArray
+        List<CalendarEventList> data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
         return data1.map((i) {

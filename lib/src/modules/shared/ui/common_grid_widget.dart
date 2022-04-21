@@ -174,7 +174,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         ? true
                         : false,
                     obj: obj,
-                    isStanderdPage: false,
+                    isStandardPage: false,
                   )));
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);

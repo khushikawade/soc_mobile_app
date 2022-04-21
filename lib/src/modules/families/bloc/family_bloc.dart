@@ -222,13 +222,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  filterFutureAndPastEvents(eventList, currentDate) {
-    // if (futureListobj!.length > 0) {
+  filterFutureAndPastEvents(List<CalendarEventList> eventList, currentDate) {
     futureListobj!.clear();
-    // }
-    // if (pastListobj!.length > 0) {
     pastListobj!.clear();
-    // }
 
     for (int i = 0; i < eventList.length; i++) {
       try {
@@ -266,7 +262,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     return mappingList;
   }
 
-  getCalendarId(list) {
+  getCalendarId(List<SharedList> list) {
     for (int i = 0; i < list.length; i++) {
       if (list[i].calendarId != null && list[i].calendarId != "") {
         Globals.calendar_Id = list[i].calendarId;

@@ -236,7 +236,7 @@ class _CustomPagesState extends State<CustomPages> {
     } else if (obj.sectionTemplate == "Org Directory") {
       return SchoolDirectoryPage(
         obj: widget.customObj,
-        isStanderdPage: null, //To omit the appbar
+        isStandardPage: null, //To omit the appbar
         isSubmenu: false,
       );
     } else if (obj.sectionTemplate == "Personnel Directory") {

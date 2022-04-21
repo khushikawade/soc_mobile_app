@@ -75,9 +75,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   Widget listItem(list, obj, index) {
     return GestureDetector(
       onTap: () async {
-        // if (widget.isAbout == true) {
-        //lock screen orientation
-        // Utility.setLocked();
         await Navigator.push(
             context,
             MaterialPageRoute(
@@ -92,9 +89,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                       isbuttomsheet: true,
                       language: Globals.selectedLanguage,
                     )));
-        //lock screen orientation
-        // Utility.setLocked();
-        // }
       },
       child: Container(
         margin: EdgeInsets.symmetric(
