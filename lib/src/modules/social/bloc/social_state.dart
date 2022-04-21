@@ -14,6 +14,11 @@ class Loading extends SocialState {
   List<Object> get props => [];
 }
 
+class LoadingActionCount extends SocialState {
+  @override
+  List<Object> get props => [];
+}
+
 class SocialError extends SocialState {
   final err;
   SocialError({this.err});
@@ -29,10 +34,52 @@ class SocialError extends SocialState {
 class SocialDataSucess extends SocialState {
   List<Item>? obj;
 
-  SocialDataSucess({this.obj});
+  SocialDataSucess({
+    this.obj,
+  });
 
   SocialDataSucess copyWith({final obj}) {
-    return SocialDataSucess(obj: obj ?? this.obj);
+    return SocialDataSucess(
+      obj: obj ?? this.obj,
+    );
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class SocialReload extends SocialState {
+  List<Item>? obj;
+
+  SocialReload({
+    this.obj,
+  });
+
+  SocialReload copyWith({
+    final obj,
+  }) {
+    return SocialReload(
+      obj: obj ?? this.obj,
+    );
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class SocialInitialState extends SocialState {
+  List<Item>? obj;
+
+  SocialInitialState({
+    this.obj,
+  });
+
+  SocialInitialState copyWith({
+    final obj,
+  }) {
+    return SocialInitialState(
+      obj: obj ?? this.obj,
+    );
   }
 
   @override

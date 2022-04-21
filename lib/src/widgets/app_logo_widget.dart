@@ -12,7 +12,6 @@ class AppLogoWidget extends StatelessWidget {
   static const double _kIconSize = 50;
 
   Widget build(BuildContext context) {
-    // print(Globals.homeObject["App_Logo__c"]);
     return Container(
       padding: EdgeInsets.only(right: 35),
       child: Row(
@@ -23,17 +22,12 @@ class AppLogoWidget extends StatelessWidget {
               padding: EdgeInsets.only(left: marginLeft ?? 0),
               height:
                   Globals.deviceType == "phone" ? _kIconSize : _kIconSize * 1.2,
-              // width: Globals.deviceType == "phone"
-              //     ? _kIconSize * 1.75
-              //     : _kIconSize * 1.95,
               child: Padding(
                   padding: const EdgeInsets.only(top: 0.0),
                   child: ClipRRect(
                       child: CustomIconWidget(
-                          iconUrl: 
-                          Globals.appSetting.appLogoC
-                          // Globals.homeObject["App_Logo__c"]
-                          )))),
+                        darkModeIconUrl: null,
+                          iconUrl: Globals.appSetting.appLogoC)))),
         ],
       ),
     );

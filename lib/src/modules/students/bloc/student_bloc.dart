@@ -34,13 +34,10 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         if (_localData.isEmpty) {
           yield Loading();
         } else {
-          // List<StudentApp> appList = [];
-          // List<StudentApp> subList = [];
           appList.clear();
           subList.clear();
           for (int i = 0; i < _localData.length; i++) {
-            if (_localData[i].status == "Show" ||
-                _localData[i].status == null) {
+            if (_localData[i].status !='Hide') {
               subList.add(_localData[i]);
               // list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
               if (_localData[i].appFolderc == null ||

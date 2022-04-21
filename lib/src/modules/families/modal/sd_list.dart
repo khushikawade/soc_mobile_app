@@ -1,6 +1,4 @@
 import 'package:hive/hive.dart';
-
-import '../../staff_directory/modal/../../families/modal/sd_attributes.dart';
 part 'sd_list.g.dart';
 
 @HiveType(typeId: 3)
@@ -19,11 +17,13 @@ class SDlist {
   @HiveField(5)
   String? emailC;
   @HiveField(6)
-  dynamic sortOrderC;
+  final sortOrderC;
   @HiveField(7)
   String? phoneC;
   @HiveField(8)
   String? status;
+  @HiveField(9)
+  String? darkModeIconC;
 
   SDlist(
       {
@@ -36,7 +36,8 @@ class SDlist {
       this.emailC,
       this.sortOrderC,
       this.phoneC,
-      this.status});
+      this.status,
+      this.darkModeIconC});
 
   factory SDlist.fromJson(Map<String, dynamic> json) => SDlist(
       // attributes: json['attributes'] == null
@@ -48,9 +49,10 @@ class SDlist {
       name: json['Name__c'] as String?,
       descriptionC: json['Description__c'],
       emailC: json['Email__c'] as String?,
-      sortOrderC: json['Sort_Order__c'],
+      sortOrderC: double.parse(json['Sort_Order__c'] ?? '100'),
       phoneC: json['Phone__c'] as String?,
-      status: json['Active_Status__c'] ?? 'Show');
+      status: json['Active_Status__c'] ?? 'Show',
+      darkModeIconC: json['Dark_Mode_Icon__c']);
 
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
@@ -63,5 +65,6 @@ class SDlist {
         'Sort_Order__c': sortOrderC,
         'Phone__c': phoneC,
         'Active_Status__c': status,
+        'Dark_Mode_Icon__c': darkModeIconC
       };
 }

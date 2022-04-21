@@ -31,7 +31,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
             LocalDatabase(Strings.staffObjectName);
 
         List<SharedList>? _localData = await _localDb.getData();
-         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
           yield StaffLoading();
@@ -59,7 +59,6 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         // yield ErrorInStaffLoading(err: e);
         LocalDatabase<SharedList> _localDb =
             LocalDatabase(Strings.staffObjectName);
-
         List<SharedList>? _localData = await _localDb.getData();
 
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
@@ -77,7 +76,6 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         String? _objectName = "${Strings.staffSubListObjectName}${event.id}";
 
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
-
         List<SharedList>? _localData = await _localDb.getData();
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 

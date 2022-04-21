@@ -7,6 +7,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -108,8 +109,6 @@ class Utility {
   }
 
   static void showSnackBar(_scaffoldKey, msg, context) {
-    // _scaffoldKey.currentState.removeCurrentSnackBar();
-    // _scaffoldKey.currentState.showSnackBar(SnackBar(
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Container(
@@ -122,12 +121,13 @@ class Utility {
           builder: (translatedMessage) => Text(translatedMessage,
               textAlign: TextAlign.left,
               style: TextStyle(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
                 fontWeight: FontWeight.w600,
               )),
         ),
       ),
-      backgroundColor: Colors.black.withOpacity(0.8),
+      backgroundColor:
+          Theme.of(context).colorScheme.primaryVariant.withOpacity(0.8),
       padding: EdgeInsets.only(
         left: 16,
       ),
@@ -155,6 +155,23 @@ class Utility {
               .jumpTo(_scrollController.position.maxScrollExtent));
     }
   }
+
+// static void setLocked() async {
+//     await SystemChrome.setPreferredOrientations([
+//       DeviceOrientation.portraitUp,
+//       DeviceOrientation.portraitDown,
+//     ]);
+//   }
+
+// static void setFree() async {
+
+//     await SystemChrome.setPreferredOrientations([
+//       DeviceOrientation.landscapeRight,
+//       DeviceOrientation.landscapeLeft,
+//       DeviceOrientation.portraitUp,
+//       DeviceOrientation.portraitDown,
+//     ]);
+//   }
 
   static showBottomSheet(body, context) {
     return showModalBottomSheet(
@@ -211,8 +228,7 @@ class Utility {
       final dateTime = formatter.parse(string);
       final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
       final String formatted = formatNew.format(dateTime);
-      // return DateTime.parse((dateNew));
-      // print(formatted);
+
       return formatted;
     } catch (e) {
       print(e);
@@ -231,12 +247,11 @@ class Utility {
       final string = dateNew.toString();
       final formatter = DateFormat('yyyy-MM-dd');
       final dateTime = formatter.parse(string);
-      //final DateFormat formatNew = DateFormat('dd/MM/yyyy');
+
       final DateFormat formatNew = DateFormat('MM/dd/yyyy');
 
       final String formatted = formatNew.format(dateTime);
-      // return DateTime.parse((dateNew));
-      // print(formatted);
+
       return formatted;
     } catch (e) {
       print(e);
@@ -260,17 +275,7 @@ class Utility {
           new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(date).toLocal();
       var inputDate = DateTime.parse(parseDate.toString());
       var outputFormat = DateFormat('MM/dd/yyyy hh:mm a');
-      // var outputDate = outputFormat.format(inputDate);
-      // print(outputDate);
-      // String dateNew = date;
-      // final string = dateNew.toString();
-      // final formatter = DateFormat('yyyy-MM-dd');
-      // final dateTime = formatter.parse(string);
-      // final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
-      // final String formatted = dateTime.day.toString();
-      // return DateTime.parse((dateNew));
 
-      // print(formatted);
       return outputFormat;
     } catch (e) {
       print(e);
@@ -284,7 +289,7 @@ class Utility {
     final dateTime = formatter.parse(string);
     final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
     final String formatted = formatNew.format(dateTime);
-    // print(formatted);
+
     return formatted;
   }
 
@@ -357,20 +362,22 @@ class Utility {
     return utf8.decode(bytes);
   }
 
-  static Future<String> sslErrorHandler(String url) async {
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        return "No";
-      } else {
-        return "No";
-      }
-    } catch (e) {
-      print(e.toString());
-      if (e.toString().contains('HandshakeException')) {
-        return 'Yes';
-      }
-      return 'No';
-    }
-  }
+  // static Future<String> sslErrorHandler(String url) async {
+  //   try {
+  //     final response = await http.get(Uri.parse(url));
+  //     if (response.statusCode == 200) {
+  //       return "No";
+  //     } else {
+  //       return "No";
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //     if (e.toString().contains('HandshakeException')) {
+  //       return 'Yes';
+  //     }
+  //     return 'No';
+  //   }
+  // }
+
+ 
 }

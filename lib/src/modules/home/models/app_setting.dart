@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'attributes.dart';
 import 'package:hive/hive.dart';
 part 'app_setting.g.dart';
@@ -105,7 +103,11 @@ class AppSetting {
   @HiveField(48)
   final String? contactImageC;
   @HiveField(49)
-  final bool? isTestSchool;
+  final isTestSchool;
+  @HiveField(50)
+  bool? isCustomApp;
+  @HiveField(51)
+  bool? disableDarkMode;
 
   AppSetting(
       {this.attributes,
@@ -157,7 +159,9 @@ class AppSetting {
       this.schoolBannerColorC,
       this.resourcesBannerColorC,
       this.contactImageC,
-      this.isTestSchool});
+      this.isTestSchool,
+      this.isCustomApp,
+      this.disableDarkMode});
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
         attributes: json['attributes'] == null
@@ -204,7 +208,7 @@ class AppSetting {
                 : "0.0"),
         bannerHeightFactor: double.parse(json['Banner_Height_Factor__c'] != null
             ? json['Banner_Height_Factor__c'].toString()
-            : "0.0"),
+            : "12.0"),
         familyBannerImageC: json['Family_Banner_Image__c'] as String?,
         staffBannerImageC: json['Staff_Banner_Image__c'] as String?,
         studentBannerImageC: json['Student_Banner_Image__c'] as String?,
@@ -216,7 +220,7 @@ class AppSetting {
         bannerHeightFactorC: double.parse(
             json['Banner_Height_Factor__c'] != null
                 ? json['Banner_Height_Factor__c'].toString()
-                : "0.0"),
+                : "12.0"),
         familyBannerColorC: json['Family_Banner_Color__c'] as String?,
         staffBannerColorC: json['Staff_Banner_Color__c'] as String?,
         studentBannerColorC: json['Student_Banner_Color__c'] as String?,
@@ -224,7 +228,17 @@ class AppSetting {
         schoolBannerColorC: json['School_Banner_Color__c'] as String?,
         resourcesBannerColorC: json['Resources_Banner_Color__c'] as String?,
         contactImageC: json['Contact_Image__c'] as String?,
-        isTestSchool: json['Test_School__c'] as bool?,
+        isTestSchool: json['Test_School__c'].toString().toLowerCase() == 'true'
+            ? true
+            : false as bool?,
+        isCustomApp:
+            json['Needs_Custom_App__c'].toString().toLowerCase() == 'true'
+                ? true
+                : false as bool?,
+        disableDarkMode:
+            json['Disable_Dark_Mode__c'].toString().toLowerCase() == 'true'
+                ? true
+                : false as bool?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -277,7 +291,9 @@ class AppSetting {
         'School_Banner_Color__c': schoolBannerColorC,
         'Resources_Banner_Color__c': resourcesBannerColorC,
         'Contact_Image__c': contactImageC,
-        'Test_School__c': isTestSchool
+        'Test_School__c': isTestSchool,
+        'Needs_Custom_App__c': isCustomApp,
+        'Disable_Dark_Mode__c': disableDarkMode
       };
 
   AppSetting copyWith(
@@ -329,7 +345,9 @@ class AppSetting {
       String? schoolBannerColorC,
       String? resourcesBannerColorC,
       String? contactImageC,
-      bool? isTestSchool}) {
+      bool? isTestSchool,
+      bool? isCustomApp,
+      bool? disableDarkMode}) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,
@@ -383,6 +401,8 @@ class AppSetting {
         resourcesBannerColorC:
             resourcesBannerColorC ?? this.resourcesBannerColorC,
         contactImageC: contactImageC ?? this.contactImageC,
-        isTestSchool: isTestSchool ?? this.isTestSchool);
+        isTestSchool: isTestSchool ?? this.isTestSchool,
+        isCustomApp: isCustomApp ?? this.isCustomApp,
+        disableDarkMode: disableDarkMode ?? this.disableDarkMode);
   }
 }

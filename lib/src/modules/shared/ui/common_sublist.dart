@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
+import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
@@ -38,11 +39,8 @@ class _SubListPageState extends State<SubListPage> {
   FamilyBloc _bloc = FamilyBloc();
   StaffBloc _staffBloc = StaffBloc();
   AboutBloc _aboutBloc = AboutBloc();
+  CustomBloc _customBloc = CustomBloc();
   bool? iserrorstate = false;
-  // List<SharedList> mainSubList = [];
-  // List<SharedList> staffList = [];
-  // List<SharedList> resourceList = [];
-  // List<SharedList> aboutList = [];
 
   final refreshKey = GlobalKey<RefreshIndicatorState>();
 
@@ -57,112 +55,10 @@ class _SubListPageState extends State<SubListPage> {
       _resourceBloc.add(ResourcesSublistEvent(id: widget.obj.id));
     } else if (widget.module == "about") {
       _aboutBloc.add(AboutSublistEvent(id: widget.obj.id));
+    } else if (widget.module == "Custom") {
+      _customBloc.add(CustomSublistEvent(id: widget.obj.id));
     }
   }
-
-  // _route(obj, index) {
-  //   if (obj.typeC == "URL") {
-  //     obj.appUrlC != null
-  //         ? _launchURL(obj)
-  //         : Utility.showSnackBar(_scaffoldKey, "No link available", context);
-  //   } else if (obj.typeC == "RFT_HTML" ||
-  //       obj.typeC == "RTF/HTML" ||
-  //       obj.typeC == "HTML/RTF") {
-  //     obj.rtfHTMLC != null
-  //         ? Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //                 builder: (BuildContext context) => AboutusPage(
-  //                       htmlText: obj.rtfHTMLC.toString(),
-  //                       isbuttomsheet: true,
-  //                       ishtml: true,
-  //                       appbarTitle: obj.titleC,
-  //                       language: Globals.selectedLanguage,
-  //                     )))
-  //         : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-  //   } else if (obj.typeC == "Embed iFrame") {
-  //     obj.rtfHTMLC != null
-  //         ? Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //                 builder: (BuildContext context) => InAppUrlLauncer(
-  //                       isiFrame: true,
-  //                       title: obj.titleC!,
-  //                       url: obj.rtfHTMLC.toString(),
-  //                       isbuttomsheet: true,
-  //                       language: Globals.selectedLanguage,
-  //                     )))
-  //         : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-  //   } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
-  //     obj.pdfURL != null
-  //         ? Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //                 builder: (BuildContext context) => CommonPdfViewerPage(
-  //                       url: obj.pdfURL,
-  //                       tittle: obj.titleC,
-  //                       isbuttomsheet: true,
-  //                       language: Globals.selectedLanguage,
-  //                     )))
-  //         : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
-  //   } else {}
-  // }
-
-  // _launchURL(obj) async {
-  //   if (obj.appUrlC.toString().split(":")[0] == 'http') {
-  //     await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
-  //   } else {
-  //     Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //             builder: (BuildContext context) => InAppUrlLauncer(
-  //                   title:
-  //                       obj.titleC, //?? widget.obj.headings["en"].toString(),
-  //                   url: obj.appUrlC,
-  //                   isbuttomsheet: true,
-  //                   language: Globals.selectedLanguage,
-  //                 )));
-  //   }
-  // }
-
-  // Widget _buildList(list, obj, int index) {
-  //   return obj.status == null || obj.status == 'Show'
-  //       ? GestureDetector(
-  //           onTap: () {
-  //             _route(obj, index);
-  //           },
-  //           child: Container(
-  //               decoration: BoxDecoration(
-  //                 border: (index % 2 == 0)
-  //                     ? Border.all(
-  //                         color: Theme.of(context).colorScheme.secondary)
-  //                     : Border.all(
-  //                         color: Theme.of(context).colorScheme.background),
-  //                 borderRadius: BorderRadius.circular(0.0),
-  //                 color: (index % 2 == 0)
-  //                     ? Theme.of(context).colorScheme.secondary
-  //                     : Theme.of(context).colorScheme.background,
-  //               ),
-  //               child: Container(
-  //                 child: ListTile(
-  //                   leading: CustomIconWidget(
-  //                     iconUrl: obj.appIconUrlC ?? Overrides.defaultIconUrl,
-  //                   ),
-  //                   title: TranslationWidget(
-  //                     message: obj.titleC.toString(),
-  //                     fromLanguage: "en",
-  //                     toLanguage: Globals.selectedLanguage,
-  //                     builder: (translatedMessage) => Text(
-  //                       translatedMessage.toString(),
-  //                       style: Theme.of(context).textTheme.bodyText1!.copyWith(
-  //                             fontWeight: FontWeight.w400,
-  //                           ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ))) //ListWidget(index, _buildFormName(index, obj), obj))
-  //       : Container();
-  // }
 
   _body(bool connected) => RefreshIndicator(
         key: refreshKey,
@@ -181,37 +77,17 @@ class _SubListPageState extends State<SubListPage> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.75,
                                 alignment: Alignment.center,
-                                child: CircularProgressIndicator());
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant,
+                                ));
                           } else if (state is FamiliesSublistSucess) {
                             return CommonListWidget(
                                 scaffoldKey: _scaffoldKey,
                                 connected: connected,
                                 data: state.obj!,
                                 sectionName: 'family');
-                            // return state.obj!.length > 0
-                            //     ? Expanded(
-                            //         child: ListView.builder(
-                            //           scrollDirection: Axis.vertical,
-                            //           shrinkWrap: true,
-                            //           padding: EdgeInsets.only(bottom: 45),
-                            //           itemCount: state.obj!.length,
-                            //           itemBuilder:
-                            //               (BuildContext context, int index) {
-                            //             return _buildList(
-                            //                 state.obj!, state.obj![index], index
-                            //                 //   _buildFormName(index, resourceList[index]),
-                            //                 //  resourceList[index]
-                            //                 );
-                            //           },
-                            //         ),
-                            //       )
-                            //     : Expanded(
-                            //         child: NoDataFoundErrorWidget(
-                            //           isResultNotFoundMsg: false,
-                            //           isNews: false,
-                            //           isEvents: false,
-                            //         ),
-                            //       );
                           } else {
                             return Container();
                           }
@@ -228,35 +104,17 @@ class _SubListPageState extends State<SubListPage> {
                                     height: MediaQuery.of(context).size.height *
                                         0.75,
                                     alignment: Alignment.center,
-                                    child: CircularProgressIndicator());
+                                    child: CircularProgressIndicator(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    ));
                               } else if (state is StaffSubListSucess) {
                                 return CommonListWidget(
                                     scaffoldKey: _scaffoldKey,
                                     connected: connected,
                                     data: state.obj!,
                                     sectionName: 'staff');
-                                // return state.obj!.length > 0
-                                //     ? Expanded(
-                                //         child: ListView.builder(
-                                //           scrollDirection: Axis.vertical,
-                                //           shrinkWrap: true,
-                                //           padding: EdgeInsets.only(bottom: 45),
-                                //           itemCount: state.obj!.length,
-                                //           itemBuilder:
-                                //               (BuildContext context, int index) {
-                                //             return _buildList(
-                                //                 state.obj!, state.obj![index], index
-                                //                 //   _buildFormName(index, resourceList[index]),
-                                //                 //  resourceList[index]
-                                //                 );
-                                //           },
-                                //         ),
-                                //       )
-                                //     : NoDataFoundErrorWidget(
-                                //         isResultNotFoundMsg: false,
-                                //         isNews: false,
-                                //         isEvents: false,
-                                //       );
                               } else {
                                 return Container();
                               }
@@ -275,37 +133,17 @@ class _SubListPageState extends State<SubListPage> {
                                             MediaQuery.of(context).size.height *
                                                 0.75,
                                         alignment: Alignment.center,
-                                        child: CircularProgressIndicator());
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                        ));
                                   } else if (state is ResourcesSubListSucess) {
                                     return CommonListWidget(
                                         scaffoldKey: _scaffoldKey,
                                         connected: connected,
                                         data: state.obj!,
                                         sectionName: 'resources');
-                                    // return state.obj!.length > 0
-                                    //     ? Expanded(
-                                    //         child: ListView.builder(
-                                    //           scrollDirection: Axis.vertical,
-                                    //           shrinkWrap: true,
-                                    //           padding: EdgeInsets.only(bottom: 45),
-                                    //           itemCount: state.obj!.length,
-                                    //           itemBuilder: (BuildContext context,
-                                    //               int index) {
-                                    //             return _buildList(state.obj!,
-                                    //                 state.obj![index], index
-                                    //                 //   _buildFormName(index, resourceList[index]),
-                                    //                 //  resourceList[index]
-                                    //                 );
-                                    //           },
-                                    //         ),
-                                    //       )
-                                    //     : Expanded(
-                                    //         child: NoDataFoundErrorWidget(
-                                    //           isResultNotFoundMsg: false,
-                                    //           isNews: false,
-                                    //           isEvents: false,
-                                    //         ),
-                                    //       );
                                   } else {
                                     return Container();
                                   }
@@ -325,103 +163,58 @@ class _SubListPageState extends State<SubListPage> {
                                                     .height *
                                                 0.75,
                                             alignment: Alignment.center,
-                                            child: CircularProgressIndicator());
+                                            child: CircularProgressIndicator(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                            ));
                                       } else if (state is AboutSublistSucess) {
                                         return CommonListWidget(
                                             scaffoldKey: _scaffoldKey,
                                             connected: connected,
                                             data: state.obj!,
                                             sectionName: 'about');
-                                        // return state.obj!.length > 0
-                                        //     ? Expanded(
-                                        //         child: ListView.builder(
-                                        //           scrollDirection: Axis.vertical,
-                                        //           shrinkWrap: true,
-                                        //           padding:
-                                        //               EdgeInsets.only(bottom: 45),
-                                        //           itemCount: state.obj!.length,
-                                        //           itemBuilder:
-                                        //               (BuildContext context,
-                                        //                   int index) {
-                                        //             return _buildList(state.obj!,
-                                        //                 state.obj![index], index
-                                        //                 //   _buildFormName(index, resourceList[index]),
-                                        //                 //  resourceList[index]
-                                        //                 );
-                                        //           },
-                                        //         ),
-                                        //       )
-                                        //     : Expanded(
-                                        //         child: NoDataFoundErrorWidget(
-                                        //           isResultNotFoundMsg: false,
-                                        //           isNews: false,
-                                        //           isEvents: false,
-                                        //         ),
-                                        //       );
                                       } else {
                                         return Container();
                                       }
                                     }),
                               )
-                            : Expanded(
-                                child: NoDataFoundErrorWidget(
-                                  isResultNotFoundMsg: false,
-                                  isNews: false,
-                                  isEvents: false,
-                                ),
-                              ),
-            // BlocListener<FamilyBloc, FamilyState>(
-            //     bloc: _bloc,
-            //     listener: (context, state) async {
-            //       if (state is FamiliesSublistSucess) {
-            //         mainSubList.clear();
-            //         for (int i = 0; i < state.obj!.length; i++) {
-            //           if (state.obj![i].status != "Hide") {
-            //             mainSubList.add(state.obj![i]);
-            //           }
-            //         }
-            //       }
-            //     },
-            //     child: EmptyContainer()),
-            // BlocListener<StaffBloc, StaffState>(
-            //     bloc: _staffBloc,
-            //     listener: (context, state) async {
-            //       if (state is StaffSubListSucess) {
-            //         mainSubList.clear();
-            //         for (int i = 0; i < state.obj!.length; i++) {
-            //           if (state.obj![i].status != "Hide") {
-            //             mainSubList.add(state.obj![i]);
-            //           }
-            //         }
-            //       }
-            //     },
-            //     child: EmptyContainer()),
-            // BlocListener<ResourcesBloc, ResourcesState>(
-            //     bloc: _resourceBloc,
-            //     listener: (context, state) async {
-            //       if (state is ResourcesSubListSucess) {
-            //         mainSubList.clear();
-            //         for (int i = 0; i < state.obj!.length; i++) {
-            //           if (state.obj![i].status != "Hide") {
-            //             mainSubList.add(state.obj![i]);
-            //           }
-            //         }
-            //       }
-            //     },
-            //     child: EmptyContainer()),
-            // BlocListener<AboutBloc, AboutState>(
-            //     bloc: _aboutBloc,
-            //     listener: (context, state) async {
-            //       if (state is AboutSublistSucess) {
-            //         mainSubList.clear();
-            //         for (int i = 0; i < state.obj!.length; i++) {
-            //           if (state.obj![i].status != "Hide") {
-            //             mainSubList.add(state.obj![i]);
-            //           }
-            //         }
-            //       }
-            //     },
-            //     child: EmptyContainer()),
+                            : widget.module == "Custom"
+                                ? Expanded(
+                                    child: BlocBuilder<CustomBloc, CustomState>(
+                                        bloc: _customBloc,
+                                        builder: (BuildContext contxt,
+                                            CustomState state) {
+                                          if (state is CustomInitial ||
+                                              state is CustomLoading) {
+                                            return Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.75,
+                                                alignment: Alignment.center,
+                                                child:
+                                                    CircularProgressIndicator());
+                                          } else if (state
+                                              is CustomSublistSuccess) {
+                                            return CommonListWidget(
+                                              scaffoldKey: _scaffoldKey,
+                                              connected: connected,
+                                              data: state.obj!,
+                                              sectionName: 'Custom',
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        }),
+                                  )
+                                : Expanded(
+                                    child: NoDataFoundErrorWidget(
+                                      isResultNotFoundMsg: false,
+                                      isNews: false,
+                                      isEvents: false,
+                                    ),
+                                  ),
           ],
         ),
       );
@@ -468,7 +261,7 @@ class _SubListPageState extends State<SubListPage> {
     } else if (widget.module == "about") {
       _aboutBloc.add(AboutSublistEvent(id: widget.obj.id));
     }
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     refreshKey.currentState?.show(atTop: false);
   }
 }

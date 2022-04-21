@@ -12,9 +12,13 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import '../../custom/model/custom_setting.dart';
+import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
-  StaffPage({Key? key, this.title, this.language}) : super(key: key);
+  StaffPage({Key? key, this.title, this.language, this.customObj})
+      : super(key: key);
+  final CustomSetting? customObj;
   final String? title;
   final String? language;
 
@@ -23,7 +27,6 @@ class StaffPage extends StatefulWidget {
 }
 
 class _StaffPageState extends State<StaffPage> {
-  // static const double _kLabelSpacing = 16.0;
   FocusNode myFocusNode = new FocusNode();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -64,14 +67,25 @@ class _StaffPageState extends State<StaffPage> {
                       bloc: _bloc,
                       builder: (BuildContext contxt, StaffState state) {
                         if (state is StaffInitial || state is StaffLoading) {
-                          return Center(child: CircularProgressIndicator());
+                          return Center(
+                              child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                          ));
                         } else if (state is StaffDataSucess) {
-                          return CommonListWidget(
-                              key: ValueKey(key),
-                              scaffoldKey: _scaffoldKey,
-                              connected: connected,
-                              data: state.obj!,
-                              sectionName: "staff");
+                          return widget.customObj != null &&
+                                  widget.customObj!.sectionTemplate ==
+                                      "Grid Menu"
+                              ? CommonGridWidget(
+                                  scaffoldKey: _scaffoldKey,
+                                  connected: connected,
+                                  data: state.obj!,
+                                  sectionName: "staff")
+                              : CommonListWidget(
+                                  key: ValueKey(key),
+                                  scaffoldKey: _scaffoldKey,
+                                  connected: connected,
+                                  data: state.obj!,
+                                  sectionName: "staff");
                         } else if (state is ErrorInStaffLoading) {
                           return ListView(children: [ErrorMsgWidget()]);
                         } else {
@@ -87,7 +101,6 @@ class _StaffPageState extends State<StaffPage> {
                       listener: (context, state) async {
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
-                     //     Globals.homeObject = state.obj;
                           Globals.appSetting = AppSetting.fromJson(state.obj);
 
                           setState(() {});
@@ -95,23 +108,8 @@ class _StaffPageState extends State<StaffPage> {
                       },
                       child: EmptyContainer()),
                 ),
-                // BlocListener<StaffBloc, StaffState>(
-                //     bloc: _bloc,
-                //     listener: (context, state) async {
-                //       if (state is StaffDataSucess) {
-                //         newList.clear();
-                //         for (int i = 0; i < state.obj!.length; i++) {
-                //           if (state.obj![i].status != "Hide") {
-                //             newList.add(state.obj![i]);
-                //           }
-                //         }
-                //       }
-                //     },
-                //     child: EmptyContainer()),
               ]),
             );
-            // : NoInternetErrorWidget(
-            //     connected: connected, issplashscreen: false);
           },
           child: Container()),
       onRefresh: refreshPage);
@@ -126,22 +124,16 @@ class _StaffPageState extends State<StaffPage> {
         },
       ),
       body: Globals.appSetting.staffBannerImageC != null &&
-              Globals.appSetting.staffBannerImageC  != ''
-      //  Globals.homeObject["Staff_Banner_Image__c"] != null &&
-      //         Globals.homeObject["Staff_Banner_Image__c"] != ''
+              Globals.appSetting.staffBannerImageC != ''
           ? NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   BannerImageWidget(
-                    imageUrl: Globals.appSetting.staffBannerImageC!, 
-                    //Globals.homeObject["Staff_Banner_Image__c"],
+                    imageUrl: Globals.appSetting.staffBannerImageC!,
                     bgColor: Globals.appSetting.studentBannerColorC != null
-                    // Globals.homeObject["Staff_Banner_Color__c"] != null
                         ? Utility.getColorFromHex(
-                          Globals.appSetting.studentBannerColorC!
-                            // Globals.homeObject["Staff_Banner_Color__c"]
-                            )
+                            Globals.appSetting.studentBannerColorC!)
                         : null,
                   )
                 ];
@@ -154,8 +146,8 @@ class _StaffPageState extends State<StaffPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-     await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     _bloc.add(StaffPageEvent());
-    _homeBloc.add(FetchBottomNavigationBar());
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 }

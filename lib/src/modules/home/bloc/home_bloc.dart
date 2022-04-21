@@ -1,16 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:ffi';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
+import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
-import 'package:Soc/src/modules/schools/bloc/school_bloc.dart';
-import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
+import 'package:Soc/src/modules/schools_directory/bloc/school_bloc.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
+import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
@@ -25,29 +24,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-// import 'package:http/http.dart' as http;
+import '../../custom/model/custom_setting.dart';
+import '../../schools_directory/modal/school_directory_list.dart';
 part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc() : super(HomeInitial());
   final DbServices _dbServices = DbServices();
-  final HiveDbServices _localDbService = HiveDbServices();
-
+  // final HiveDbServices _localDbService = HiveDbServices();
   HomeState get initialState => HomeInitial();
 
   @override
   Stream<HomeState> mapEventToState(
     HomeEvent event,
   ) async* {
-    if (event is FetchBottomNavigationBar) {
+    if (event is FetchStandardNavigationBar) {
       try {
         yield HomeLoading();
-        final data = await fetchBottomNavigationBar();
+        final data = await fetchStandardNavigationBar();
         // Saving data to the Local DataBase
         AppSetting _appSetting = AppSetting.fromJson(data);
-        // print(_appSetting);
-        //  Globals.homeObject = Globals.appSetting.toJson();
+        Globals.isCustomNavbar = false;
+
+        // fatch custom bottom navbar and update to localdata base
+        if (_appSetting.isCustomApp!) {
+          List<CustomSetting> data1 = await fetchCustomNavigationBar();
+          data1.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
+          Globals.customSetting = data1;
+          Globals.isCustomNavbar = true;
+          LocalDatabase<CustomSetting> _customSettingDb =
+              LocalDatabase(Strings.customSettingObjectName);
+          await _customSettingDb.clear();
+          data1.forEach((CustomSetting e) {
+            _customSettingDb.addData(e);
+          });
+        }
+        saveDarkModeField(_appSetting);
+
         // Should send the response first then it will sync data to the Local database.
         yield BottomNavigationBarSuccess(obj: data);
 
@@ -65,13 +79,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             LocalDatabase(Strings.schoolObjectName);
         List<AppSetting>? _appSettings = await _appSettingDb.getData();
         await _appSettingDb.close();
+
         if (_appSettings.length > 0) {
           Globals.appSetting = _appSettings.last;
+          if (Globals.appSetting.isCustomApp!) {
+            Globals.isCustomNavbar = true;
+
+            LocalDatabase<CustomSetting> _customSettingDb =
+                LocalDatabase(Strings.customSettingObjectName);
+            List<CustomSetting>? _localData = await _customSettingDb.getData();
+            _localData.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
+            Globals.customSetting = _localData;
+            _customSettingDb.close();
+          }
           if (Globals.appSetting.bannerHeightFactor != null) {
-          AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
-          // print(AppTheme.kBannerHeight);
-        }
-          //  Globals.homeObject = Globals.appSetting.toJson();
+            AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
+          }
           yield BottomNavigationBarSuccess(obj: Globals.appSetting.toJson());
         } else {
           // if the School object does not found in the Local database then it will return the received error.
@@ -83,9 +106,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is GlobalSearchEvent) {
       try {
         yield SearchLoading();
-
         List<SearchList> list = await getGlobalSearch(event.keyword);
 
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].appURLC == "app-folder") {
+            list.removeAt(i);
+          }
+        }
         yield GlobalSearchSuccess(
           obj: list,
         );
@@ -116,18 +143,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             List<SearchList> _list6 = await getGlobalSearchListSchool(
                 Strings.schoolDirectoryObjectName, event.keyword);
             _listGlobal.addAll(_list6);
-            // List<SearchList> _list7 = await getGlobalSearchList(
-            //     Strings.familiesSubListObjectName, event.keyword);
-            // _listGlobal.addAll(_list7);
-            // List<SearchList> _list8 = await getGlobalSearchList(
-            //     Strings.staffSubListObjectName, event.keyword);
-            // _listGlobal.addAll(_list8);
-            // List<SearchList> _list9 = await getGlobalSearchList(
-            //     Strings.aboutSubListObjectName, event.keyword);
-            // _listGlobal.addAll(_list9);
-            // List<SearchList> _list10 = await getGlobalSearchList(
-            //     Strings.resourcesSubListObjectName, event.keyword);
-            // _listGlobal.addAll(_list10);
           }
 
           yield GlobalSearchSuccess(
@@ -140,7 +155,34 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Future fetchBottomNavigationBar() async {
+  Future fetchCustomNavigationBar() async {
+    try {
+      final ResponseModel response = await _dbServices.getapi(
+        Uri.encodeFull(
+            'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Custom_App_Section__c'),
+      );
+
+      if (response.statusCode == 200) {
+        List<CustomSetting> _list = response.data['body']
+            .map<CustomSetting>((i) => CustomSetting.fromJson(i))
+            .toList();
+
+        _list.removeWhere((CustomSetting element) => element.status == 'Hide');
+        _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
+        if (_list.length > 6) {
+          _list.removeRange(6, _list.length);
+        }
+        Globals.customSetting = _list;
+        // To take the backup for all the sections.
+        _backupAppData();
+        return _list;
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future fetchStandardNavigationBar() async {
     try {
       final ResponseModel response = await _dbServices.getapi(
         Uri.encodeFull(
@@ -150,11 +192,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (response.statusCode == 200) {
         final data = response.data['body'][0];
         Globals.appSetting = AppSetting.fromJson(data);
-        // To take the backup for all the sections.
+
         _backupAppData();
         if (Globals.appSetting.bannerHeightFactor != null) {
           AppTheme.kBannerHeight = Globals.appSetting.bannerHeightFactor;
-          // print(AppTheme.kBannerHeight);
         }
         return data;
       }
@@ -234,9 +275,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     List<SearchList> _listSearch = [];
     try {
       LocalDatabase<StudentApp> _localDb = LocalDatabase(dataBaseName);
-
       List<StudentApp>? _localData = await _localDb.getData();
       _listSearch.clear();
+
       for (var i = 0; i < _localData.length; i++) {
         if (_localData[i].titleC!.contains(keyword!)) {
           _searchList.id = _localData[i].id ?? null;
@@ -249,7 +290,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               double.parse(_localData[i].sortOrder ?? "0.0");
 
           _searchList.name = _localData[i].name ?? null;
-
           _listSearch.insert(0, _searchList);
         }
       }
@@ -282,6 +322,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (element.contains('student')) {
           StudentBloc _studentBloc = StudentBloc();
           _studentBloc.add(StudentPageEvent());
+        } else if (element.contains('social')) {
+          SocialBloc _socialBloc = SocialBloc();
+          _socialBloc.add(SocialPageEvent(action: 'initial'));
+        } else if (element.contains('news')) {
+          NewsBloc _newsBloc = NewsBloc();
+          _newsBloc.add(FetchNotificationList());
         } else if (element.contains('families')) {
           FamilyBloc _familyBloc = FamilyBloc();
           _familyBloc.add(FamiliesEvent());
@@ -293,14 +339,37 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _aboutBloc.add(AboutStaffDirectoryEvent());
         } else if (element.contains('school')) {
           SchoolDirectoryBloc _schoolBloc = new SchoolDirectoryBloc();
-          _schoolBloc.add(SchoolDirectoryListEvent());
+          _schoolBloc.add(SchoolDirectoryListEvent(isSubMenu: false));
         } else if (element.contains('resource')) {
           ResourcesBloc _resourceBloc = ResourcesBloc();
           _resourceBloc.add(ResourcesListEvent());
         }
       });
+
+      if (Globals.customSetting != null) {
+        for (var i = 0; i < Globals.customSetting!.length; i++) {
+          CustomBloc _customBloc = CustomBloc();
+          _customBloc.add(CustomEvents(id: Globals.customSetting![i].id));
+        }
+      }
+
+      NewsBloc _newsBloc = NewsBloc();
+      _newsBloc.add(FetchActionCountList(isDetailPage: false));
+      SocialBloc _socialBloc = SocialBloc();
+      // _socialBloc.add(FetchSocialActionCount(isDetailPage: false));
+      _socialBloc.add(SocialPageEvent(action: 'initial'));
     } catch (e) {
       print(e);
+    }
+  }
+
+  saveDarkModeField(AppSetting _appSetting) {
+    if (_appSetting.disableDarkMode == true) {
+      HiveDbServices _hivedb = HiveDbServices();
+      _hivedb.addSingleData('disableDarkMode', 'darkMode', true);
+    } else {
+      HiveDbServices _hivedb = HiveDbServices();
+      _hivedb.addSingleData('disableDarkMode', 'darkMode', false);
     }
   }
 }

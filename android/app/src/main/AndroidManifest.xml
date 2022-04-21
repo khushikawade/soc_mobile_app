@@ -18,12 +18,15 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 	 -->
+    
+    <!--android:name="io.flutter.app.FlutterApplication / io.flutter.embedding.android.FlutterActivity" android:name="${applicationName}"-->
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name="io.flutter.embedding.android.FlutterActivity"
         android:label="SOC App"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

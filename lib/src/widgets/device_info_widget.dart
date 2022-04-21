@@ -18,7 +18,6 @@ Future<void> initPlatformState(BuildContext context) async {
       Globals.baseOS =
           Platform.operatingSystem + " " + androidInfo!.version.release;
 
-      // androidInfo!.version.baseOS;
       Globals.release = androidInfo!.version.release;
       Globals.deviceToken = androidInfo!.androidId;
       Globals.versionRelease = androidInfo!.version.release;

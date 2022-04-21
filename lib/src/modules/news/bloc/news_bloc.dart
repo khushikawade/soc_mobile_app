@@ -5,6 +5,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/model/action_count_list.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -57,16 +58,22 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         _list.forEach((NotificationList e) {
           _localDb.addData(e);
         });
-        _list.sort(
-            (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+
+        _list.forEach((element) {
+          if (element.completedAtTimestamp != null) {
+            _list.sort((a, b) =>
+                b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+          }
+        });
+
+        // _list.sort(
+        //     (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
         // Syncing end.
-
-        yield NewsLoading(); // Mimic state change
-
         //Adding push notification list data to global list
         Globals.notificationList.clear();
         Globals.notificationList.addAll(_list);
 
+        yield NewsLoading(); // Mimic state change
         yield NewsLoaded(
           obj: _list,
         );
@@ -96,6 +103,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           obj: data,
         );
       } catch (e) {
+        if (e.toString().contains('NO_CONNECTION')) {
+          Utility.showSnackBar(event.scaffoldKey,
+              'Make sure you have a proper Internet connection', event.context);
+        }
         yield NewsErrorReceived(err: e);
       }
     }
@@ -106,7 +117,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-        // print(intPrefs.getInt("totalCount"));
         if (_localData.length < _list.length && _localData.isNotEmpty) {
           Globals.indicator.value = true;
         }
@@ -124,7 +134,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         String? _objectName = "news_action";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-        
+
         if (event.isDetailPage == false) {
           if (_localData.isEmpty) {
             yield NewsLoading();
@@ -133,8 +143,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           }
         }
         List<ActionCountList> list = await fetchNewsActionCount();
-
         List<NotificationList> newList = [];
+
         newList.clear();
         if (list.length == 0) {
           //If no action added yet for school, Adding onsignal list as it is with no action counts
@@ -148,12 +158,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                 newList.add(NotificationList(
                     id: Globals.notificationList[i].id,
                     completedAt: Globals.notificationList[i].completedAt,
-                    contents:
-                        Globals.notificationList[i].contents, //obj.contents,
-                    headings:
-                        Globals.notificationList[i].headings, //obj.headings,
-                    image: Globals.notificationList[i].image, //obj.image,
-                    url: Globals.notificationList[i].url, //obj.url,
+                    contents: Globals.notificationList[i].contents,
+                    headings: Globals.notificationList[i].headings,
+                    image: Globals.notificationList[i].image,
+                    url: Globals.notificationList[i].url,
                     likeCount: list[j].likeCount,
                     thanksCount: list[j].thanksCount,
                     helpfulCount: list[j].helpfulCount,
@@ -166,12 +174,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                 newList.add(NotificationList(
                     id: Globals.notificationList[i].id,
                     completedAt: Globals.notificationList[i].completedAt,
-                    contents:
-                        Globals.notificationList[i].contents, //obj.contents,
-                    headings:
-                        Globals.notificationList[i].headings, //obj.headings,
-                    image: Globals.notificationList[i].image, //obj.image,
-                    url: Globals.notificationList[i].url, //obj.url,
+                    contents: Globals.notificationList[i].contents,
+                    headings: Globals.notificationList[i].headings,
+                    image: Globals.notificationList[i].image,
+                    url: Globals.notificationList[i].url,
                     likeCount: 0,
                     thanksCount: 0,
                     helpfulCount: 0,
@@ -294,6 +300,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   }
 
   Future<void> initPushState(context) async {
+    HiveDbServices _hiveDbServices = HiveDbServices();
+
     bool _requireConsent = false;
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -302,9 +310,17 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       notification.complete(notification.notification);
       Globals.indicator.value = true;
     });
-    OneSignal.shared
-        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      pref.setInt(Strings.bottomNavigation, 1);
+    OneSignal.shared.setNotificationOpenedHandler(
+        (OSNotificationOpenedResult result) async {
+      //    Globals.newsIndex =
+      // await _hiveDbServices.getSingleData('newsIndex', 'newsIndex');
+      // pref.setInt(Strings.bottomNavigation, 1);
+      Globals.isNewTap = true;
+      Globals.controller!.index = Globals.newsIndex ?? 0;
+      Globals.newsIndex =
+          await _hiveDbServices.getSingleData('newsIndex', 'newsIndex');
+      // Globals.indicator.value = false;
+      Globals.isNewTap = true;
     });
 
     OneSignal.shared.setAppId(Overrides.PUSH_APP_ID);

@@ -15,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 
-// ignore: must_be_immutable
 class AboutSDDetailPage extends StatefulWidget {
   final obj;
   AboutSDDetailPage({
@@ -29,7 +28,6 @@ class AboutSDDetailPage extends StatefulWidget {
 
 class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
   static const double _kLabelSpacing = 16.0;
-  // static const double _kboxheight = 60.0;
   static const double _kIconSize = 48.0;
   bool issuccesstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -42,9 +40,9 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
   Widget _sdImage() {
     return Container(
         child: CommonImageWidget(
+      darkModeIconUrl: widget.obj.darkModeIconC,
       iconUrl: widget.obj!.imageUrlC ??
           Globals.splashImageUrl ??
-          // Globals.homeObject["App_Logo__c"],
           Globals.appSetting.appLogoC,
       height: Utility.displayHeight(context) *
           (AppTheme.kDetailPageImageHeightFactor / 100),
@@ -59,7 +57,10 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
         horizontal: _kLabelSpacing,
       ),
       child: TranslationWidget(
-        message: widget.obj!.designation ?? "",
+        message:
+            widget.obj!.designation != 'null' && widget.obj!.designation != null
+                ? widget.obj!.designation
+                : "",
         toLanguage: Globals.selectedLanguage,
         fromLanguage: "en",
         builder: (translatedMessage) => Text(
@@ -69,14 +70,6 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
               ),
         ),
       ),
-
-      //  Text(
-      //   widget.obj!.designation ?? "",
-      //   textAlign: TextAlign.left,
-      //   style: Theme.of(context).textTheme.headline2!.copyWith(
-      //         fontWeight: FontWeight.w500,
-      //       ),
-      // )
     );
   }
 
@@ -96,14 +89,6 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                 ),
           ),
         ));
-
-    //  Text(
-    //   widget.obj!.name ?? "",
-    //   textAlign: TextAlign.center,
-    //   style: Theme.of(context).textTheme.headline2!.copyWith(
-    //         fontWeight: FontWeight.w500,
-    //       ),
-    // ));
   }
 
   Widget _buildDescriptionWidget() {
@@ -125,14 +110,6 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
                   // )
                 )));
-
-    //  Linkify(
-    //   onOpen: (link) => Utility.launchUrlOnExternalBrowser(link.url),
-    //   options: LinkifyOptions(humanize: false),
-    //   linkStyle: TextStyle(color: Colors.blue),
-    //   text: widget.obj!.descriptionC ?? "",
-    //   style: Theme.of(context).textTheme.bodyText1!.copyWith(),
-    // ));
   }
 
   Widget _buildPhoneWidget() {
@@ -169,7 +146,6 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: InkWell(
                   onTap: () {
-                    // urlobj.callurlLaucher(context, "tel:" + widget.obj!.phoneC);
                     Utility.launchUrlOnExternalBrowser(
                         "tel:" + widget.obj!.phoneC);
                   },
@@ -185,7 +161,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                       fontWeight: FontWeight.normal,
                       fontFamily: 'Roboto Regular',
                       height: 1.5,
-                    ), //Theme.of(context).textTheme.bodyText1!,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -243,8 +219,6 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: InkWell(
                     onTap: () {
-                      // urlobj.callurlLaucher(
-                      //     context, 'mailto:"${widget.obj!.emailC}"');
                       Utility.launchUrlOnExternalBrowser(
                           "mailto:" + widget.obj!.emailC);
                     },
@@ -260,7 +234,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                         fontWeight: FontWeight.normal,
                         fontFamily: 'Roboto Regular',
                         height: 1.5,
-                      ), //Theme.of(context).textTheme.bodyText1!,
+                      ),
                     ),
                   ),
                 )
@@ -280,14 +254,12 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
       _buildTitleWidget(),
       SpacerWidget(_kLabelSpacing),
       _buildDescriptionWidget(),
-      // SpacerWidget(_kLabelSpacing / 1.25),
       widget.obj!.phoneC != null && widget.obj!.phoneC != ""
           ? Padding(
               padding: const EdgeInsets.only(top: _kLabelSpacing / 1.25),
               child: _buildPhoneWidget(),
             )
           : Container(),
-      // SpacerWidget(_kLabelSpacing / 1.25),
       widget.obj!.emailC != null && widget.obj!.emailC != ""
           ? Padding(
               padding: const EdgeInsets.only(top: _kLabelSpacing / 1.25),
@@ -333,7 +305,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                   }
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
-                    //  Globals.homeObject = state.obj;
+
                     Globals.appSetting = AppSetting.fromJson(state.obj);
                     isloadingstate = false;
                     setState(() {});
@@ -349,7 +321,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
               listener: (context, state) async {
                 if (state is BottomNavigationBarSuccess) {
                   AppTheme.setDynamicTheme(Globals.appSetting, context);
-                  //  Globals.homeObject = state.obj;
+
                   Globals.appSetting = AppSetting.fromJson(state.obj);
                   setState(() {});
                 }
@@ -366,6 +338,6 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    homebloc.add(FetchBottomNavigationBar());
+    homebloc.add(FetchStandardNavigationBar());
   }
 }

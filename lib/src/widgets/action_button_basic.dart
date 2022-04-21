@@ -12,8 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:share/share.dart';
 
-class NewsActionBasic extends StatefulWidget {
-  NewsActionBasic({
+class UserActionBasic extends StatefulWidget {
+  UserActionBasic({
     Key? key,
     required this.obj,
     required this.title,
@@ -32,10 +32,10 @@ class NewsActionBasic extends StatefulWidget {
   final bool? isLoading;
   final String page;
   final Key? scaffoldKey;
-  _NewsActionBasicState createState() => _NewsActionBasicState();
+  _UserActionBasicState createState() => _UserActionBasicState();
 }
 
-class _NewsActionBasicState extends State<NewsActionBasic> {
+class _UserActionBasicState extends State<UserActionBasic> {
   NewsBloc _newsBloc = new NewsBloc();
   SocialBloc _socialbBloc = SocialBloc();
   final ValueNotifier<int> like = ValueNotifier<int>(0);
@@ -47,30 +47,12 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
   bool _isDownloadingFile = false;
   var f = NumberFormat.compact();
 
-  // Widget build(BuildContext context) {
-  //   return Container(
-  //     height: MediaQuery.of(context).size.height * 0.045,
-  //     child: Row(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: Globals.icons
-  //           .map<Widget>(
-  //               (element) => _iconButton(Globals.icons.indexOf(element)))
-  //           .toList(),
-  //     ),
-  //   );
-  // }
-
   Widget build(BuildContext context) {
     return Container(
         width: MediaQuery.of(context).size.width * 0.65,
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.07
             : MediaQuery.of(context).size.width * 0.07,
-        // width: MediaQuery.of(context).size.width * 0.60,
-        // height: MediaQuery.of(context).orientation == Orientation.portrait
-        //     ? MediaQuery.of(context).size.height * 0.045
-        //     : MediaQuery.of(context).size.width * 0.045,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,56 +74,49 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
         padding: Globals.deviceType == "phone"
             ? null
             : EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.04),
-        child: Center(
-          child: Column(
-            children: [
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(
-                        height: Globals.deviceType == 'phone' ? 35 : 45,
-                        width: Globals.deviceType == 'phone' ? 35 : 45,
-                        //  color: Colors.grey,
-                        child: Center(
-                          child: IconButton(
-                              padding: EdgeInsets.all(0),
-                              // constraints: BoxConstraints(),
-                              onPressed: () {},
-                              icon: iconListWidget(
-                                  context, index, false, widget.scaffoldKey)),
-                        )),
-                    widget.isLoading == true
-                        ? Container()
-                        : Container(
-                            //  padding: const EdgeInsets.only(left: 5, top: 1),
-                            // padding: const EdgeInsets.only(left: 0, top: 0),
-                            child: _actionCount(index),
-                          )
-                  ],
-                ),
-              ),
-              Expanded(
-                  child: iconNameIndex == index
-                      ? Container(
-                          constraints: BoxConstraints(),
-                          // padding: EdgeInsets.all(0),
-                          child: TranslationWidget(
-                            message: Globals.iconsName[index],
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) => Text(
-                              translatedMessage,
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ),
-                        )
-                      : Container(
+        child: Column(
+          children: [
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                      height: Globals.deviceType == 'phone' ? 35 : 45,
+                      width: Globals.deviceType == 'phone' ? 35 : 45,
+                      child: IconButton(
                           padding: EdgeInsets.all(0),
-                        ))
-            ],
-          ),
+                          onPressed: () {},
+                          icon: iconListWidget(
+                              context, index, false, widget.scaffoldKey))),
+                  widget.isLoading == true
+                      ? Container()
+                      : Container(
+                          // padding: EdgeInsets.only(top:4),
+                          child: _actionCount(index),
+                        )
+                ],
+              ),
+            ),
+            Expanded(
+                child: iconNameIndex == index
+                    ? Container(
+                        constraints: BoxConstraints(),
+                        child: TranslationWidget(
+                          message: Globals.iconsName[index],
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) => Text(
+                            translatedMessage,
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        padding: EdgeInsets.all(0),
+                      ))
+          ],
         ),
       );
 
@@ -150,18 +125,16 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       debounceDuration: Duration.zero,
       connectivityBuilder: (BuildContext context,
           ConnectivityResult connectivity, Widget child) {
+        final bool connected = connectivity != ConnectivityResult.none;
         return Container(
-          // color: Colors.yellow,
           child: LikeButton(
             isLiked: null,
             onTap: (onActionButtonTapped) async {
-              final bool connected = connectivity != ConnectivityResult.none;
-
               if (connected) {
                 if (index == 3) {
                   await _shareNews();
                 }
-                return countIncrement(index);
+                return countIncrement(index, scaffoldKey);
               } else {
                 Utility.showSnackBar(scaffoldKey,
                     'Make sure you have a proper Internet connection', context);
@@ -205,6 +178,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                       index ==
                           3 // Id the last button i.e. share button is pressed then it should show loader while the app is downloading the image from the URL.
                   ? CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.primaryVariant,
                       strokeWidth: 1,
                     )
                   : Icon(
@@ -217,7 +191,9 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                               ? Colors.blue
                               : index == 2
                                   ? Colors.green
-                                  : Colors.black,
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant,
                       size: Globals.deviceType == "phone"
                           ? (index == 0 ? 26 : 21)
                           : (index == 0 ? 30 : 25),
@@ -234,7 +210,7 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
     return !isLiked;
   }
 
-  Future<bool> countIncrement(index) async {
+  Future<bool> countIncrement(index, scaffoldKey) async {
     bool? isliked = true;
     setState(() {
       iconNameIndex = index;
@@ -269,6 +245,8 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
                 : widget.obj.shareCount = share.value;
     if (widget.page == "news") {
       _newsBloc.add(NewsAction(
+          context: context,
+          scaffoldKey: scaffoldKey,
           notificationId: widget.obj.id,
           notificationTitle: widget.title,
           like: index == 0 ? 1 : 0,
@@ -277,7 +255,10 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
           shared: index == 3 ? 1 : 0));
     } else if (widget.page == "social") {
       _socialbBloc.add(SocialAction(
-          id: widget.obj.guid['\$t'],//widget.obj.id.toString() + widget.obj.guid['\$t'],
+          context: context,
+          scaffoldKey: scaffoldKey,
+          id: widget.obj
+              .guid['\$t'], //widget.obj.id.toString() + widget.obj.guid['\$t'],
           title: widget.title.toString(),
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
@@ -314,7 +295,6 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
             _imageUrl, widget.page == "social" ? widget.imageExtType : "");
       }
 
-      //  await Utility.createFileFromUrl(_imageUrl);
       setState(() {
         _downloadingFile = false;
       });
@@ -336,7 +316,6 @@ class _NewsActionBasicState extends State<NewsActionBasic> {
       });
       // It should only call the fallback function if there's error with the hosted image and it should not run idefinately. Just 3 retries only.
       if (_totalRetry < 3 && e.toString().contains('403')) {
-        // print('Current retry :: $_totalRetry');
         _totalRetry++;
         String _fallBackImageUrl =
             Globals.splashImageUrl != null && Globals.splashImageUrl != ""

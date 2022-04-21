@@ -60,37 +60,6 @@ class SocialDescription extends StatelessWidget {
     this.currentindex++;
   }
 
-  // void htmlparser() {
-  //   List<String> data = [];
-
-  //   data.add(object.description != null && object.description != ""
-  //       ? object.description["__cdata"]
-  //           .getElementsByClassName("time")[0]
-  //           .innerHtml
-  //       : "");
-
-  //   final temp = object.description != null && object.description != ""
-  //       ? object.description["__cdata"].getElementsByClassName("temp")[0]
-  //       : "";
-  //   data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<span>")));
-  //   data.add(temp
-  //       .getElementsByTagName("small")[0]
-  //       .innerHtml
-  //       .replaceAll(RegExp("[(|)|℃]"), ""));
-
-  //   final rows = object.description != null && object.description != ""
-  //       ? object.description["__cdata"]
-  //           .getElementsByTagName("table")[0]
-  //           .getElementsByTagName("td")
-  //       : "";
-
-  //   rows.map((e) => e.innerHtml).forEach((element) {
-  //     if (element != "-") {
-  //       data.add(element);
-  //     }
-  //   });
-  // }
-
   Widget _buildItem(BuildContext context) {
     return RefreshIndicator(
       key: refreshKey,
@@ -174,9 +143,9 @@ class SocialDescription extends StatelessWidget {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    
-     await Future.delayed(Duration(seconds: 2));
-    _homeBloc.add(FetchBottomNavigationBar());
+
+    await Future.delayed(Duration(seconds: 2));
+    _homeBloc.add(FetchStandardNavigationBar());
   }
 
   Widget _buildBottomSection(BuildContext context) {
@@ -253,7 +222,7 @@ class SocialDescription extends StatelessWidget {
         SpacerWidget(_kPadding),
         TranslationWidget(
           message:
-              "${object.description != null && object.description != "" ? object.description["__cdata"].replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "") : ""}",
+              "${object.description != null && object.description != "" ? object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "").replaceAll('⁦', '').replaceAll('⁩', '') : ""}",
           // "${data + "#" + data2}",
           fromLanguage: "en",
           toLanguage: language,
@@ -293,7 +262,7 @@ class SocialDescription extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: TranslationWidget(
             message: object.title != null && object.title != ""
-                ? "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n")}"
+                ? "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll('⁦', '').replaceAll('⁩', '')}"
                 : "",
             fromLanguage: "en",
             toLanguage: language,
@@ -347,8 +316,9 @@ class SocialDescription extends StatelessWidget {
   }
 
   _buildActionCount(BuildContext context) {
-    return NewsActionBasic(
+    return UserActionBasic(
       page: "social",
+
       obj: object,
       title: object.title != "" && object.title != null
           ? object.title['__cdata']

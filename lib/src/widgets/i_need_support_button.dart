@@ -6,7 +6,6 @@ import 'package:mailto/mailto.dart';
 
 class NeedSupportWidget extends StatelessWidget {
   @override
-  // final UrlLauncherWidget objurl = new UrlLauncherWidget();
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
@@ -41,7 +40,6 @@ class NeedSupportWidget extends StatelessWidget {
       subject: subject,
       body: body,
     );
-    // await launch('$mailtoLink');
     await Utility.launchUrlOnExternalBrowser('$mailtoLink');
   }
 }

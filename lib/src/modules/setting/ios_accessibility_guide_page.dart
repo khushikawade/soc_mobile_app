@@ -32,7 +32,6 @@ class _IosAccessibilityGuidePageState extends State<IosAccessibilityGuidePage> {
                 }),
             Center(
               child: Container(
-                  // padding: EdgeInsets.all(30.0),
                   child: Image.asset(
                 '$imagePath',
                 fit: BoxFit.cover,

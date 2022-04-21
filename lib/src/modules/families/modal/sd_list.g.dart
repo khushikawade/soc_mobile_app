@@ -26,13 +26,14 @@ class SDlistAdapter extends TypeAdapter<SDlist> {
       sortOrderC: fields[6] as dynamic,
       phoneC: fields[7] as String?,
       status: fields[8] as String?,
+      darkModeIconC: fields[9] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, SDlist obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.designation)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class SDlistAdapter extends TypeAdapter<SDlist> {
       ..writeByte(7)
       ..write(obj.phoneC)
       ..writeByte(8)
-      ..write(obj.status);
+      ..write(obj.status)
+      ..writeByte(9)
+      ..write(obj.darkModeIconC);
   }
 
   @override

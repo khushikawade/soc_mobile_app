@@ -1,25 +1,29 @@
 import 'dart:io';
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/modules/schools/modal/school_directory_list.dart';
+import 'package:Soc/src/modules/ocr/image_to_text.dart';
+import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
-import 'package:Soc/src/modules/Camera/image_to_text.dart';
+
 import 'package:camera/camera.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flutter/foundation.dart' show kIsWeb;
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'src/modules/families/modal/calendar_event_list.dart';
+import 'src/services/local_database/hive_db_services.dart';
 
 void main() async {
    WidgetsFlutterBinding.ensureInitialized();
@@ -41,8 +45,11 @@ void main() async {
       ..registerAdapter(NotificationListAdapter())
       ..registerAdapter(ItemAdapter())
       ..registerAdapter(AppSettingAdapter())
-      ..registerAdapter(CalendarEventListAdapter());
+      ..registerAdapter(CalendarEventListAdapter())
+      ..registerAdapter(CustomSettingAdapter());
   }
+  clearTheme();
+  await disableDarkMode();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -70,4 +77,24 @@ getDeviceType() async {
     final deviceType = await getDeviceInfo();
     Globals.deviceType = deviceType == "ipad" ? "tablet" : "phone";
   }
+}
+
+disableDarkMode() async {
+  try {
+    HiveDbServices _hivedb = HiveDbServices();
+    Globals.disableDarkMode =
+        await _hivedb.getSingleData('disableDarkMode', 'darkMode');
+    // print('-------------------dark mode disable----------------------');
+    // print(Globals.disableDarkMode);
+
+  } catch (e) {}
+}
+
+// This function will clean the only theme details from SharedPreferences
+clearTheme() async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(AdaptiveTheme.prefKey);
+  } catch (e) {}
+  // AdaptiveTheme.of(context).persist();
 }

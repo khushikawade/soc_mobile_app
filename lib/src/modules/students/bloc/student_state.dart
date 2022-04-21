@@ -25,10 +25,9 @@ class StudentError extends StudentState {
   List<Object> get props => [err];
 }
 
-// ignore: must_be_immutable
 class StudentDataSucess extends StudentState {
-  List<StudentApp>? obj;
-  List<StudentApp>? subFolder;
+  final List<StudentApp>? obj;
+  final List<StudentApp>? subFolder;
 
   StudentDataSucess({this.obj, this.subFolder});
 
