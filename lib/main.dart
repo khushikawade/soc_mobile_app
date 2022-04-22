@@ -7,7 +7,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/modules/ocr/image_to_text.dart';
+import 'package:Soc/src/modules/ocr/ui/image_to_text.dart';
 import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';

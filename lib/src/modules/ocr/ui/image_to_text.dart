@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
@@ -18,7 +21,7 @@ Future<void>? cameravalue;
 
 class _ImageToTextState extends State<ImageToText> {
   String pathOfImage = '';
-  String finalText = ' ';
+  String finalText = '';
   bool isLoaded = false;
   late File myImagePath;
   @override
@@ -44,57 +47,78 @@ class _ImageToTextState extends State<ImageToText> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: CustomAppBarWidget(
+        appBarTitle: 'OCR',
+        isSearch: true,
+        isShare: false,
+        language: Globals.selectedLanguage,
+        isCenterIcon: false,
+        ishtmlpage: false,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
+      ),
+      // backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(
-              height: 100,
-            ),
             Container(
-              height: MediaQuery.of(context).size.height * 0.5,
+              height: MediaQuery.of(context).size.height * 0.35,
               width: MediaQuery.of(context).size.width,
-              color: Colors.teal,
+              // color: Colors.teal,
               child: isLoaded
                   ? Image.file(
                       myImagePath,
                       fit: BoxFit.fill,
                     )
-                  : Text("This is image section "),
+                  : Center(child: Text("This is image section ")),
             ),
             Center(
                 child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                TextButton(
-                  onPressed: () {
-                    getImage();
+                Container(
+                  height: 40,
+                  width: 120,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      getImage();
 
-                    // Future.delayed(Duration(seconds: 15), () {
-                    //   reconizeText(pathOfImage);
-                    // });
-                  },
-                  child: Text(
-                    "gallary Image",
+                      // Future.delayed(Duration(seconds: 15), () {
+                      //   reconizeText(pathOfImage);
+                      // });
+                    },
+                    child: Text(
+                      "gallary Image",
+                    ),
                   ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    getCameraImage();
+                Container(
+                  height: 40,
+                  width: 130,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      getCameraImage();
 
-                    // Future.delayed(Duration(seconds: 15), () {
-                    //   reconizeText(pathOfImage);
-                    // });
-                  },
-                  child: Text(
-                    "Camera Image",
+                      // Future.delayed(Duration(seconds: 15), () {
+                      //   reconizeText(pathOfImage);
+                      // });
+                    },
+                    child: Text(
+                      "Camera Image",
+                    ),
                   ),
                 ),
               ],
             )),
-            Text(
-              finalText != null ? finalText : "This is my text",
+            SizedBox(
+              height: 30,
+            ),
+            Center(
+              child: Text(
+                finalText != '' ? finalText : "This is my text",
+              ),
             ),
           ],
         ),
@@ -148,6 +172,4 @@ class _ImageToTextState extends State<ImageToText> {
       }
     } catch (e) {}
   }
-
-  
 }

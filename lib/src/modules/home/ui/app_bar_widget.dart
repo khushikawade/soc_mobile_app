@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/ocr/image_to_text.dart';
+
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
+import 'package:Soc/src/modules/ocr/ui/image_to_text.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
@@ -54,7 +56,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     Orientation currentOrientation = MediaQuery.of(context).orientation;
     final scaffoldKey = Scaffold.of(context);
     return PopupMenuButton<IconMenu>(
-      color:  Globals.themeType != 'Dark'
+      color: Globals.themeType != 'Dark'
           ? Theme.of(context).backgroundColor
           : Theme.of(context).colorScheme.secondary,
       shape: RoundedRectangleBorder(
@@ -66,7 +68,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         size: Globals.deviceType == "phone" ? 20 : 28,
       ),
       onSelected: (value) async {
-     //   Utility.setFree();
+        //   Utility.setFree();
         switch (value) {
           case IconsMenu.Information:
             Globals.appSetting.appInformationC != null
@@ -78,12 +80,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                               isbuttomsheet: true,
                               ishtml: true,
                             )))
-                            
                 : Utility.showSnackBar(
                     scaffoldKey, 'No Information Available', context);
             break;
           case IconsMenu.Setting:
-          await  Navigator.push(
+            await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => SettingPage(
@@ -97,14 +98,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             break;
           case IconsMenu.Camera:
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ImageToText(
-                          
-                        )));
+                context, MaterialPageRoute(builder: (context) => Ocr()));
             break;
         }
-       // Utility.setLocked();
+        // Utility.setLocked();
       },
       itemBuilder: (context) => IconsMenu.items
           .map((item) => PopupMenuItem<IconMenu>(

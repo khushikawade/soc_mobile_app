@@ -31,10 +31,10 @@ class DbServices {
     }
   }
 
-  postapi(api, {body, headers}) async {
+  postapi(api, {body, headers,bool? isGoogleApi}) async {
     try {
       final response = await httpClient.post(
-          Uri.parse('${Overrides.API_BASE_URL}$api'),
+         isGoogleApi == true ? Uri.parse('$api') :Uri.parse('${Overrides.API_BASE_URL}$api'),
           headers: headers ??
               {
                 'Content-Type': 'application/json',

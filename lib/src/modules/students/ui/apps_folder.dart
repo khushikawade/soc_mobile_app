@@ -59,7 +59,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
 
   _launchURL(StudentApp obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
-        obj.deepLinkC == 'YES') {
+        obj.deepLinkC == 'YES'  ) {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
       await Navigator.push(
