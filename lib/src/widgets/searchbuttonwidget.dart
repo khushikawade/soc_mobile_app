@@ -3,6 +3,8 @@ import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 
+import '../modules/home/ui/search_new.dart';
+
 class SearchButtonWidget extends StatelessWidget {
   final String? language;
   SearchButtonWidget({

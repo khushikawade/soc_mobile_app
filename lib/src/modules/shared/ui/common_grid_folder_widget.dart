@@ -204,8 +204,8 @@ class CommonGridFolderState extends State<CommonGridFolder>
                     child:
                         // subList.length > 0
                         //     ?
-                        ListView(
-                      shrinkWrap: true,
+                        Stack(
+                      // shrinkWrap: true,
                       children: [
                         widget.sectionName == 'Custom'
                             ? BlocBuilder<CustomBloc, CustomState>(
