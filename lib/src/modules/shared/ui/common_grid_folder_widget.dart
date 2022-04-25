@@ -25,6 +25,7 @@ class CommonGridFolder extends StatefulWidget {
   final scaffoldKey;
   // final String folderName;
   final String? sectionName;
+
   @override
   CommonGridFolder(
       {Key? key,
@@ -81,20 +82,21 @@ class CommonGridFolderState extends State<CommonGridFolder>
   void dispose() {
     super.dispose();
   }
- _launchURL(SharedList obj) async {
+
+  _launchURL(SharedList obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
-      await  Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC!,
-                      url: obj.appUrlC!,
-                      isbuttomsheet: true,
-                      language: Globals.selectedLanguage,
-                    )));
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC!,
+                    url: obj.appUrlC!,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                  )));
     }
   }
 
@@ -201,11 +203,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                 body: Padding(
                     padding: const EdgeInsets.only(
                         top: 20, left: 20.0, right: 20, bottom: 20),
-                    child:
-                        // subList.length > 0
-                        //     ?
-                        Stack(
-                      // shrinkWrap: true,
+                    child: Stack(
                       children: [
                         widget.sectionName == 'Custom'
                             ? BlocBuilder<CustomBloc, CustomState>(
@@ -215,11 +213,11 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                   if (state is CustomInitial ||
                                       state is CustomLoading) {
                                     return Container(
-                                        margin: EdgeInsets.only(
-                                            top: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.18),
+                                        // margin: EdgeInsets.only(
+                                        //     top: MediaQuery.of(context)
+                                        //             .size
+                                        //             .height *
+                                        //         0.18),
                                         alignment: Alignment.center,
                                         child: CircularProgressIndicator(
                                           color: Theme.of(context)
@@ -236,6 +234,10 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                         :
                                         // ListView(children: [
                                         NoDataFoundErrorWidget(
+                                            marginTop: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                10,
                                             isResultNotFoundMsg: false,
                                             isNews: false,
                                             isEvents: false,
@@ -250,8 +252,8 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                     bloc: _familyBloc,
                                     builder: (BuildContext contxt,
                                         FamilyState state) {
-                                      if (state is CustomInitial ||
-                                          state is CustomLoading) {
+                                      if (state is FamilyInitial ||
+                                          state is FamilyLoading) {
                                         return Center(
                                             child: CircularProgressIndicator(
                                           color: Theme.of(context)
@@ -269,6 +271,11 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                             :
                                             // ListView(children: [
                                             NoDataFoundErrorWidget(
+                                                marginTop:
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .height /
+                                                        10,
                                                 isResultNotFoundMsg: false,
                                                 isNews: false,
                                                 isEvents: false,
@@ -283,8 +290,8 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                         bloc: _staffBloc,
                                         builder: (BuildContext contxt,
                                             StaffState state) {
-                                          if (state is CustomInitial ||
-                                              state is CustomLoading) {
+                                          if (state is StaffInitial ||
+                                              state is StaffLoading) {
                                             return Center(
                                                 child:
                                                     CircularProgressIndicator(
@@ -305,6 +312,11 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                 :
                                                 // ListView(children: [
                                                 NoDataFoundErrorWidget(
+                                                    marginTop:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            10,
                                                     isResultNotFoundMsg: false,
                                                     isNews: false,
                                                     isEvents: false,
@@ -342,6 +354,12 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                     :
                                                     // ListView(children: [
                                                     NoDataFoundErrorWidget(
+                                                        marginTop:
+                                                            MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height /
+                                                                10,
                                                         isResultNotFoundMsg:
                                                             false,
                                                         isNews: false,
@@ -358,7 +376,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                 bloc: _aboutBloc,
                                                 builder: (BuildContext contxt,
                                                     AboutState state) {
-                                                  if (state is CustomInitial ||
+                                                  if (state is AboutInitial ||
                                                       state is AboutLoading) {
                                                     return Center(
                                                         child:
@@ -382,6 +400,11 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                         :
                                                         // ListView(children: [
                                                         NoDataFoundErrorWidget(
+                                                            marginTop: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height /
+                                                                10,
                                                             isResultNotFoundMsg:
                                                                 false,
                                                             isNews: false,
