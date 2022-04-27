@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/ocr/modal/ocr_modal.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +18,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     OcrEvent event,
   ) async* {
     if (event is FetchTextFromImage) {
+      yield OcrLoading();
       await fatchTextFromImage();
       try {} catch (e) {}
     }
@@ -25,34 +27,39 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future fatchTextFromImage() async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-          Uri.encodeFull(
-              'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'),
-          isGoogleApi: true,
-          body: {
-            "requests": [
-              {
-                "image": {
-                  "source": {
-                    "imageUri":
-                        "https://www.mockofun.com/wp-content/uploads/2020/03/text-to-picture-generator.jpg"
-                  }
-                },
-                "features": [
-                  {"type": "DOCUMENT_TEXT_DETECTION"}
-                ]
-              }
-            ]
-          },
-          headers: {
-            'Content-Type': 'application/json',
-            'authorization': 'Bearer AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'
-          });
+        Uri.encodeFull(
+            'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'),
+        isGoogleApi: true,
+        body: {
+          "requests": [
+            {
+              "image": {
+                "source": {
+                  "imageUri":
+                      "https://www.mockofun.com/wp-content/uploads/2020/03/text-to-picture-generator.jpg"
+                }
+              },
+              "features": [
+                {"type": "DOCUMENT_TEXT_DETECTION"}
+              ]
+            }
+          ]
+        },
+
+        // headers: {
+        //   'Content-Type': 'application/json',
+        //   'authorization': 'Bearer AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'
+        // }
+      );
 
       if (response.statusCode == 200) {
-        // List<CustomSetting> _list = response.data['body']
-        //     .map<CustomSetting>((i) => CustomSetting.fromJson(i))
-        //     .toList();
+        List<Response> _list = response.data['responses']
+            .map<Response>((i) => Response.fromJson(i))
+            .toList();
 
+        print(_list);
+        print(
+            '------------------------------------test-----------------------------------');
         // _list.removeWhere((CustomSetting element) => element.status == 'Hide');
         // _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
         // if (_list.length > 6) {
@@ -63,6 +70,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         // _backupAppData();
         // return _list;
       }
-    } catch (e) {}
+    } catch (e) {
+      print(
+          '------------------------------------test-----------------------------------');
+      print(e);
+    }
   }
 }

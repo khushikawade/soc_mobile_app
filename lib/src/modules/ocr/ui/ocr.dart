@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/image_to_text.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_google.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,12 @@ class _OcrState extends State<Ocr> {
         SizedBox(
           height: 20,
         ),
-        button(onPressed: null, title: 'Paid Method')
+        button(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => GoogleOcr()));
+            },
+            title: 'Paid Method')
       ])),
     );
   }

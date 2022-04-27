@@ -23,7 +23,6 @@ class FetchTextFromImageSuccess extends OcrState {
   List<Object> get props => [];
 }
 
-
 class OcrErrorReceived extends OcrState {
   final err;
   OcrErrorReceived({this.err});
