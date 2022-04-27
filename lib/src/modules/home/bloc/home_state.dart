@@ -12,6 +12,8 @@ class HomeLoading extends HomeState {}
 
 class SearchLoading extends HomeState {}
 
+class RefrenceSearchLoading extends HomeState {}
+
 class BottomNavigationBarSuccess extends HomeState {
   final obj;
   BottomNavigationBarSuccess({this.obj});
@@ -43,4 +45,18 @@ class HomeErrorReceived extends HomeState {
 
   @override
   List<Object> get props => [err];
+}
+
+class ReferenceGlobalSearchSucess extends HomeState {
+  final String? objectName;
+  final String? objectType;
+  final obj;
+  ReferenceGlobalSearchSucess({this.obj, this.objectName, this.objectType});
+  ReferenceGlobalSearchSucess copyWith(
+      {final obj, final objectName, final objectType}) {
+    return ReferenceGlobalSearchSucess(
+        obj: obj ?? this.obj,
+        objectName: objectName ?? this.objectName,
+        objectType: objectType ?? this.objectType);
+  }
 }
