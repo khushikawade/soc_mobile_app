@@ -35,3 +35,19 @@ class GlobalSearchEventOffline extends HomeEvent {
   @override
   String toString() => 'GlobalSearchEvent { keyword: $keyword}';
 }
+
+class GetRecordByID extends HomeEvent {
+  final String ?recordType;
+  final String? recordId;
+  final String? objectName;
+
+  GetRecordByID(
+      {@required this.recordId, required this.objectName, required this.recordType});
+
+  @override
+  List<Object> get props => [recordId!, objectName!,recordType!];
+
+  @override
+  String toString() =>
+      'GlobalSearchEvent { referenceId: $recordId!,referenceTitle: ${objectName!},objectType:$recordType }';
+}

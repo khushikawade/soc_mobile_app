@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
+import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
@@ -126,31 +128,84 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           if (event.keyword!.isNotEmpty) {
             _listGlobal.clear();
             List<SearchList> _list1 = await getGlobalSearchList(
-                Strings.familiesObjectName, event.keyword);
+                Strings.familiesObjectName, event.keyword, 'Families_App__c');
             _listGlobal.addAll(_list1);
             List<SearchList> _list2 = await getGlobalSearchList(
-                Strings.staffObjectName, event.keyword);
+                Strings.staffObjectName,
+                event.keyword,
+                'Staff_Directory_App__c');
             _listGlobal.addAll(_list2);
             List<SearchList> _list3 = await getGlobalSearchList(
-                Strings.resourcesObjectName, event.keyword);
+                Strings.resourcesObjectName, event.keyword, 'Resources_App__c');
             _listGlobal.addAll(_list3);
             List<SearchList> _list4 = await getGlobalSearchList(
-                Strings.aboutObjectName, event.keyword);
+                Strings.aboutObjectName, event.keyword, 'About_App__c');
             _listGlobal.addAll(_list4);
             List<SearchList> _list5 = await getGlobalSearchListStudent(
-                Strings.studentsObjectName, event.keyword);
+                Strings.studentsObjectName, event.keyword, 'Student_App__c');
             _listGlobal.addAll(_list5);
             List<SearchList> _list6 = await getGlobalSearchListSchool(
-                Strings.schoolDirectoryObjectName, event.keyword);
+                Strings.schoolDirectoryObjectName,
+                event.keyword,
+                'School_Directory_App__c');
             _listGlobal.addAll(_list6);
           }
-
+          print(_listGlobal.length);
           yield GlobalSearchSuccess(
             obj: _listGlobal,
           );
         } catch (e) {
           yield HomeErrorReceived(err: e);
         }
+      }
+    }
+
+//ReferenceGlobalSearchREvent
+
+    if (event is GetRecordByID) {
+      try {
+        yield RefrenceSearchLoading();
+        dynamic recordObject = await getrecordByID_API(
+            event.recordId, event.objectName, event.recordType!);
+
+        if (recordObject != null) {
+          yield RecordDetailSuccess(
+              recordObject: recordObject,
+              objectName: event.objectName,
+              objectType: event.recordType);
+        }
+      } catch (e) {
+        if (event.recordId!.isNotEmpty &&
+            event.objectName!.isNotEmpty &&
+            event.recordType!.isNotEmpty) {
+          //       }
+          dynamic recordObject = await getRecordByID_localDatabase(
+              event.objectName == "Families_App__c"
+                  ? Strings.familiesObjectName
+                  : event.objectName == 'Staff_Directory_App__c'
+                      ? Strings.staffObjectName
+                      : event.objectName == 'Resources_App__c'
+                          ? Strings.resourcesObjectName
+                          : event.objectName == 'About_App__c'
+                              ? Strings.aboutObjectName
+                              : event.objectName == 'Student_App__c'
+                                  ? Strings.studentsObjectName
+                                  : event.objectName ==
+                                          'School_Directory_App__c'
+                                      ? Strings.schoolDirectoryObjectName
+                                      : "",
+              event.recordId);
+
+          if (recordObject != null) {
+            yield RecordDetailSuccess(
+                recordObject: recordObject,
+                objectName: event.objectName,
+                objectType: event.recordType);
+          }
+        }
+
+        // yield HomeErrorReceived(err: e);
+
       }
     }
   }
@@ -204,7 +259,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Future<List<SearchList>> getGlobalSearchList(dataBaseName, keyword) async {
+  Future<List<SearchList>> getGlobalSearchList(
+      dataBaseName, keyword, objectName) async {
     try {
       LocalDatabase<SharedList> _localDb = LocalDatabase(dataBaseName);
 
@@ -225,6 +281,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _searchList.pdfURL = _localData[i].pdfURL ?? null;
           _searchList.name = _localData[i].name ?? null;
           _searchList.calendarId = _localData[i].calendarId ?? null;
+          _searchList.objectName = objectName;
           listSearch.insert(listSearch.length, _searchList);
         }
       }
@@ -235,8 +292,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+  Future<dynamic> getRecordByID_localDatabase(dataBaseName, id) async {
+    try {
+      LocalDatabase<dynamic> _localDb = LocalDatabase(dataBaseName);
+
+      List<dynamic>? _localData = await _localDb.getData();
+      dynamic object;
+      // listSearch.clear();
+      for (var i = 0; i < _localData.length; i++) {
+        if (_localData[i].id = id) {
+          object = _localData[i];
+        }
+      }
+      return object;
+    } catch (e) {
+      print(e);
+      throw Exception('Something went wrong');
+    }
+  }
+
   Future<List<SearchList>> getGlobalSearchListSchool(
-      dataBaseName, keyword) async {
+      dataBaseName, keyword, objectName) async {
     SearchList _searchList = SearchList();
     List<SearchList> _listSearch = [];
     try {
@@ -270,7 +346,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<List<SearchList>> getGlobalSearchListStudent(
-      dataBaseName, keyword) async {
+      dataBaseName, keyword, objectName) async {
     SearchList _searchList = SearchList();
     List<SearchList> _listSearch = [];
     try {
@@ -370,6 +446,43 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } else {
       HiveDbServices _hivedb = HiveDbServices();
       _hivedb.addSingleData('disableDarkMode', 'darkMode', false);
+    }
+  }
+
+  Future<dynamic> getrecordByID_API(
+      String? recordId, String? objectName, String recordType) async {
+    try {
+      final ResponseModel response = await _dbServices.getapi(
+          'getRecord/$objectName/$recordId'
+
+          // 'searchRecords?schoolId=${Overrides.SCHOOL_ID}&keyword=$keyword'
+
+          );
+      if (response.statusCode == 200) {
+        // print(response.data['body']);
+        dynamic data;
+        if (objectName == "Staff_Directory_App__c") {
+          return data = SDlist.fromJson(response.data['body']);
+        } else if (objectName == "About_App__c" ||
+            objectName == "Families_App__c" ||
+            objectName == "Resources_App__c" ||
+            objectName == "Staff_App__c" ||
+            objectName == "Custom_App_Menu__c") {
+          return data = SharedList.fromJson(response.data['body']);
+        } else if (objectName == "School_Directory_App__c") {
+          return data = SchoolDirectoryList.fromJson(response.data['body']);
+        } else if (objectName == "Student_App__c") {
+          return data = StudentApp.fromJson(response.data['body']);
+        }
+
+        //jsonDecode(response.data['body']);
+        // print(data);
+        // print(data);
+        return null;
+        // return response.data.map<SearchList>((i) => SearchList.fromJson(i));
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 }
