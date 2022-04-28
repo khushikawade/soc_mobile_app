@@ -425,7 +425,6 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildRecentItem(int index, items) {
     return InkWell(
       onTap: () async {
-        
         List<dynamic> refrenceList = await HiveDbServices()
             .getReferenceListData(Strings.hiveReferenceLogName);
         //  Navigator.pop(context);
@@ -807,28 +806,33 @@ class _SearchPageState extends State<SearchPage> {
                             } else if (state is ReferenceGlobalSearchSucess) {
                               //Navigator.of(context, rootNavigator: true).pop();
                               Navigator.pop(context);
-                              _route(
-                                  obj: state.obj,
-                                  objectType: state.objectType!,
-                                  objectName: state.objectName!);
+                              if (state.obj!.isNotEmpty && state.obj != null) {
+                                _route(
+                                    obj: state.obj,
+                                    objectType: state.objectType!,
+                                    objectName: state.objectName!);
 
-                              List<dynamic> itemListData =
-                                  await getReferenceListData();
+                                List<dynamic> itemListData =
+                                    await getReferenceListData();
 
-                              List<dynamic> idReferenceList = [];
-                              for (int i = 0; i < itemListData.length; i++) {
-                                idReferenceList.add(itemListData[i].id);
-                              }
-
-                              if (idReferenceList.contains(state.obj.id)) {
-                              } else {
-                                if (state.obj != null) {
-                                  deleteItem();
-                                  referenceaddtoDataBase(state.obj);
+                                List<dynamic> idReferenceList = [];
+                                for (int i = 0; i < itemListData.length; i++) {
+                                  idReferenceList.add(itemListData[i].id);
                                 }
-                              }
 
-                            
+                                if (idReferenceList.contains(state.obj.id)) {
+                                } else {
+                                  if (state.obj != null) {
+                                    deleteItem();
+                                    referenceaddtoDataBase(state.obj);
+                                  }
+                                }
+                              } else {
+                                Utility.showSnackBar(
+                                    _scaffoldKey,
+                                    "please make sure you have a proper internet connection ",
+                                    context);
+                              }
                             } else if (state is RefrenceSearchLoading) {
                               return showLoadingDialog(context);
                             } else if (state is HomeErrorReceived) {}

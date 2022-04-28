@@ -294,7 +294,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<dynamic> getRefrenceGlobalSearchList(dataBaseName, id) async {
     try {
-      print(dataBaseName);
       LocalDatabase<dynamic> _localDb = LocalDatabase(dataBaseName);
 
       List<dynamic>? _localData = await _localDb.getData();
