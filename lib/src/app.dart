@@ -102,8 +102,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         title: 'Solved',
         theme: theme,
         darkTheme: darkTheme,
-        home: StartupPage(),
-        // home: SchoolIDLogin(),
+        // home: StartupPage(),
+        home: SchoolIDLogin(),
       ),
     );
   }
