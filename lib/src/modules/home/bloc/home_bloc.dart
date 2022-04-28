@@ -201,9 +201,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 obj: object,
                 objectName: event.objectName,
                 objectType: event.objectType);
-          } else {
-            print('------------------->');
-            print(e);
           }
         }
 
@@ -466,17 +463,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         print(response.data['body']);
         dynamic data;
         if (objectName == "Staff_Directory_App__c") {
-          return SDlist.fromJson(response.data['body']);
+          return data = SDlist.fromJson(response.data['body']);
         } else if (objectName == "About_App__c" ||
             objectName == "Families_App__c" ||
             objectName == "Resources_App__c" ||
             objectName == "Staff_App__c" ||
             objectName == "Custom_App_Menu__c") {
-          return SharedList.fromJson(response.data['body']);
+          return data = SharedList.fromJson(response.data['body']);
         } else if (objectName == "School_Directory_App__c") {
-          return SchoolDirectoryList.fromJson(response.data['body']);
+          return data = SchoolDirectoryList.fromJson(response.data['body']);
         } else if (objectName == "Student_App__c") {
-          return StudentApp.fromJson(response.data['body']);
+          return data = StudentApp.fromJson(response.data['body']);
         }
 
         //jsonDecode(response.data['body']);

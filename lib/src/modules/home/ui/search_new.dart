@@ -828,48 +828,7 @@ class _SearchPageState extends State<SearchPage> {
                                 }
                               }
 
-                              //  for(int i=0;i<=itemListData.length;i++){
-                              //    if(itemListData[i].objectName=='Staff_Directory_App__c'){
-                              //      SDlist(designation: state.obj.designation,
-                              //      imageUrlC: state.obj.imageUrlC,
-                              //      id: state.obj.id
-
-                              //       );  addtoDataBase(recentReferenceitem);
-
-                              //    }
-                              //  }
-
-                              //  Recent(
-                              //     1,
-                              //     state.obj.titleC,
-                              //     state.obj.appIconUrlC,
-                              //     state.obj.id,
-                              //     state.obj.name,
-                              //     state.obj.objectName,
-                              //     state.obj.rtfHTMLC,
-                              //     state.obj.typeC,
-                              //     // data.schoolId,
-                              //     // data.dept,
-                              //     state.obj.statusC,
-                              //     state.obj.urlC,
-                              //     state.obj.pdfURL,
-                              //     state.obj.sortOrder,
-                              //     state.obj.deepLink,
-                              //     state.obj.appURLC,
-                              //     state.obj.calendarId,
-                              //     state.obj.emailC,
-                              //     state.obj.imageUrlC,
-                              //     state.obj.phoneC,
-                              //     state.obj.webURLC,
-                              //     state.obj.address,
-                              //     state.obj.geoLocation,
-                              //     state.obj.descriptionC,
-                              //     state.obj.latitude,
-                              //     state.obj.longitude,
-                              //     state.obj.darkModeIconC);
-                              // addtoDataBase(recentReferenceitem);
-                              //  }
-                              // }
+                            
                             } else if (state is RefrenceSearchLoading) {
                               return showLoadingDialog(context);
                             } else if (state is HomeErrorReceived) {}
