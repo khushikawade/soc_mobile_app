@@ -23,6 +23,9 @@ import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 
+import '../../ocr/ui/ocr_login.dart';
+import '../../staff/ui/stafflogin.dart';
+
 // ignore: must_be_immutable
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final double _kIconSize = Globals.deviceType == "phone" ? 100 : 100.0;
@@ -99,6 +102,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           case IconsMenu.Camera:
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => Ocr()));
+            break;
+          case IconsMenu.Login:
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => SignInDemo()));
             break;
         }
         // Utility.setLocked();
