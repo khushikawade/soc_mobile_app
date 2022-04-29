@@ -88,6 +88,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                   child: Stack(
                     children: [
                       WebView(
+                        // userAgent: 'random',
                         initialCookies: [],
                         backgroundColor: Theme.of(context).backgroundColor,
                         onProgress: (progress) {
@@ -110,6 +111,10 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                           Globals.webViewController1 = webViewController;
                           _controller.complete(webViewController);
                         },
+                        // navigationDelegate: (NavigationRequest request) {
+                        //   widget.callBackFunction(request.url);      
+                        //   return NavigationDecision.navigate;
+                        // },
                       ),
                       isLoading
                           ? Center(
