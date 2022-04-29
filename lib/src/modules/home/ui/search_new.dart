@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -55,6 +56,7 @@ class _SearchPageState extends State<SearchPage> {
   bool? isDBListEmpty = true;
   List<dynamic> searchList = [];
   String? searchId;
+  dynamic recordObject;
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -83,23 +85,35 @@ class _SearchPageState extends State<SearchPage> {
     length < 1 ? isDBListEmpty = true : isDBListEmpty = false;
   }
 
-  getListData() async {
-    List listItem = await HiveDbServices().getListData(Strings.hiveLogName);
+  getListData(String localDatalogName) async {
+    List listItem = await HiveDbServices().getListData(localDatalogName);
     return listItem;
   }
 
-  getReferenceListData() async {
-    List listItem =
-        await HiveDbServices().getRecordObject(Strings.hiveReferenceLogName);
-    return listItem;
-  }
+  // getReferenceListData() async {
+  //   List listItem =
+  //       await HiveDbServices().getRecordObject(Strings.hiveReferenceLogName);
+  //   return listItem;
+  // }
 
-  deleteItem() async {
-    int itemcount = await HiveDbServices().getListLength(Strings.hiveLogName);
+  deleteItem(String localDatalogName) async {
+    int itemcount = await HiveDbServices().getListLength(localDatalogName);
     if (itemcount > 5) {
-      await HiveDbServices().deleteData(Strings.hiveLogName, 0);
+      await HiveDbServices().deleteData(localDatalogName, 0);
     }
   }
+
+  // cleanList() async {
+  //   await HiveDbServices().clearAll(Strings.hiveReferenceLogName);
+  // }
+
+  // deleteItemReference() async {
+  //   int itemcount =
+  //       await HiveDbServices().getListLength(Strings.hiveReferenceLogName);
+  //   if (itemcount > 5) {
+  //     await HiveDbServices().deleteData(Strings.hiveReferenceLogName, 0);
+  //   }
+  // }
 
   Future<void> _route(
       {required obj,
@@ -422,22 +436,31 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildRecentItem(int index, items) {
     return InkWell(
       onTap: () async {
-        List<dynamic> refrenceList = await HiveDbServices()
-            .getRecordObject(Strings.hiveReferenceLogName);
-        //  Navigator.pop(context);
-        List<dynamic> reversedList = new List.from(refrenceList.reversed);
-        //Navigator.pop(context);
-        if (items[index].id == reversedList[index].id) {
+        List<dynamic> recentDetailDbList =
+            await getListData(Strings.hiveReferenceLogName);
+        List<dynamic> reversedRecentDetailDbList =
+            new List.from(recentDetailDbList.reversed);
+
+        if (items[index].id == reversedRecentDetailDbList[index].id) {
+          //updateing currrent record object
+          _homeBloc.add(GetRecordByID(
+              isRecentRecord: true,
+              // title: data.titleC,
+              recordType: items[index].typeC,
+              recordId: items[index].id,
+              objectName: items[index].objectName));
+
           _route(
-              obj: reversedList[index],
+              obj: reversedRecentDetailDbList[index],
               objectName: items[index].objectName,
               objectType: items[index].typeC);
         } else {
           _homeBloc.add(GetRecordByID(
+              isRecentRecord: false,
               // title: data.titleC,
-              recordType: items.typeC,
-              recordId: items.id,
-              objectName: items.objectName));
+              recordType: items[index].typeC,
+              recordId: items[index].id,
+              objectName: items[index].objectName));
         }
 
         //  _route( obj: items[index], objectName: '', objectType: '');
@@ -564,12 +587,15 @@ class _SearchPageState extends State<SearchPage> {
                             onTap: () async {
                               //  _route(data);
                               _homeBloc.add(GetRecordByID(
+                                  isRecentRecord: false,
                                   // title: data.titleC,
                                   recordType: data.typeC,
                                   recordId: data.id,
                                   objectName: data.objectName));
 
-                              List itemListData = await getListData();
+                              List itemListData =
+                                  await getListData(Strings.hiveLogName);
+
                               List idList = [];
                               for (int i = 0; i < itemListData.length; i++) {
                                 idList.add(itemListData[i].id);
@@ -578,7 +604,7 @@ class _SearchPageState extends State<SearchPage> {
                               if (idList.contains(data.id)) {
                               } else {
                                 if (data != null) {
-                                  deleteItem();
+                                  deleteItem(Strings.hiveLogName);
                                   final recentitem = Recent(
                                       1,
                                       data.titleC,
@@ -723,10 +749,21 @@ class _SearchPageState extends State<SearchPage> {
     isDBListEmpty = false;
   }
 
-  void referenceaddtoDataBase(dynamic log) async {
-    bool isSuccess =
-        await HiveDbServices().addData(log, Strings.hiveReferenceLogName);
-    isDBListEmpty = false;
+  void addRecordDetailtoLocalDb(dynamic log) async {
+    await HiveDbServices().addData(log, Strings.hiveReferenceLogName);
+  }
+
+  void updateRecordList(List<dynamic> log) async {
+    LocalDatabase<dynamic>? _localDb =
+        LocalDatabase(Strings.hiveReferenceLogName);
+    log.forEach((dynamic e) {
+      print("local database");
+      _localDb.addData(e);
+    });
+    _localDb.close();
+
+    // bool isSuccess =
+    //     await HiveDbServices().addData(log, Strings.hiveReferenceLogName);
   }
 
   @override
@@ -801,31 +838,46 @@ class _SearchPageState extends State<SearchPage> {
                                   AppSetting.fromJson(state.obj);
                               setState(() {});
                             } else if (state is RecordDetailSuccess) {
+                              print("return bloc response ===========>");
                               //Navigator.of(context, rootNavigator: true).pop();
-                              Navigator.pop(context);
-                              if (state.recordObject!.isNotEmpty &&
-                                  state.recordObject != null) {
+
+                              if (state.recordObject != '' &&
+                                  state.recordObject != null &&
+                                  state.isRecentRecod == false) {
+                                Navigator.pop(context);
                                 _route(
                                     obj: state.recordObject,
                                     objectType: state.objectType!,
                                     objectName: state.objectName!);
 
-                                List<dynamic> itemListData =
-                                    await getReferenceListData();
+                                // List<dynamic> recordDetailList =
+                                //     await getListData(
+                                //         Strings.hiveReferenceLogName);
+                                // print(
+                                //     "recent list length =======> ${recordDetailList.length}");
+                                // List<dynamic> idReferenceList = [];
+                                // for (int i = 0;
+                                //     i < recordDetailList.length;
+                                //     i++) {
+                                //   idReferenceList.add(recordDetailList[i].id);
+                                //   if (recordDetailList[i].id ==
+                                //       state.recordObject.id) {
+                                //     recordDetailList[i] = state.recordObject;
+                                //   }
+                                // }
 
-                                List<dynamic> idReferenceList = [];
-                                for (int i = 0; i < itemListData.length; i++) {
-                                  idReferenceList.add(itemListData[i].id);
-                                }
-
-                                if (idReferenceList
-                                    .contains(state.recordObject.id)) {
-                                } else {
-                                  if (state.recordObject != null) {
-                                    deleteItem();
-                                    referenceaddtoDataBase(state.recordObject);
-                                  }
-                                }
+                                // if (idReferenceList
+                                //     .contains(state.recordObject.id)) {
+                                //   print("clean list");
+                                //   cleanList();
+                                //   updateRecordList(recordDetailList);
+                                // } else {
+                                //   if (state.recordObject != null) {
+                                //     deleteItem(Strings.hiveReferenceLogName);
+                                //     addRecordDetailtoLocalDb(
+                                //         state.recordObject);
+                                //   }
+                                // }
                               } else {
                                 Utility.showSnackBar(
                                     _scaffoldKey,

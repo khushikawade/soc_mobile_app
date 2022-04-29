@@ -163,41 +163,95 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 //ReferenceGlobalSearchREvent
 
     if (event is GetRecordByID) {
+      print("calling =====================>");
       try {
-        yield RefrenceSearchLoading();
+        if (event.isRecentRecord == false) {
+          yield RefrenceSearchLoading();
+        }
         dynamic recordObject = await getrecordByID_API(
             event.recordId, event.objectName, event.recordType!);
 
         if (recordObject != null) {
-          yield RecordDetailSuccess(
-              recordObject: recordObject,
-              objectName: event.objectName,
-              objectType: event.recordType);
+          List<dynamic> recordDetailList = [];
+          recordDetailList = await getListData(Strings.hiveReferenceLogName);
+          //  print("recent list length =======> ${recordDetailList.length}");
+          List<dynamic> idReferenceList = [];
+          for (int i = 0; i < recordDetailList.length; i++) {
+            idReferenceList.add(recordDetailList[i].id);
+            if (recordDetailList[i].id.toString() ==
+                recordObject.id.toString()) {
+              // recordDetailList[i] = recordObject;
+              await HiveDbServices().updateListData(
+                  Strings.hiveReferenceLogName, i, recordObject);
+            }
+          }
+
+          if (idReferenceList.contains(recordObject.id)) {
+            //  cleanList();
+            //updateRecordList(recordDetailList);
+          } else {
+            if (recordObject != null) {
+              deleteItem(Strings.hiveReferenceLogName);
+              addRecordDetailtoLocalDb(recordObject);
+            }
+          }
+          List<dynamic> d = await getListData(Strings.hiveReferenceLogName);
+          print(d.length);
+          print("sending data back");
+          if (event.isRecentRecord == false) {
+            yield RecordDetailSuccess(
+                isRecentRecod: event.isRecentRecord,
+                recordObject: recordObject,
+                objectName: event.objectName,
+                objectType: event.recordType);
+          }
         }
       } catch (e) {
         if (event.recordId!.isNotEmpty &&
             event.objectName!.isNotEmpty &&
             event.recordType!.isNotEmpty) {
           //       }
-          dynamic recordObject = await getRecordByID_localDatabase(
-              event.objectName == "Families_App__c"
-                  ? Strings.familiesObjectName
-                  : event.objectName == 'Staff_Directory_App__c'
-                      ? Strings.staffObjectName
-                      : event.objectName == 'Resources_App__c'
-                          ? Strings.resourcesObjectName
-                          : event.objectName == 'About_App__c'
-                              ? Strings.aboutObjectName
-                              : event.objectName == 'Student_App__c'
-                                  ? Strings.studentsObjectName
-                                  : event.objectName ==
-                                          'School_Directory_App__c'
-                                      ? Strings.schoolDirectoryObjectName
-                                      : "",
-              event.recordId);
+          dynamic recordObject;
+          if (event.objectName == "Families_App__c") {
+            getRecordByID_localDatabase(
+                Strings.familiesObjectName, event.recordId);
+          } else if (event.objectName == 'Staff_Directory_App__c') {
+            getRecordByID_localDatabase(
+                Strings.staffObjectName, event.recordId);
+          } else if (event.objectName == 'Resources_App__c') {
+            getRecordByID_localDatabase(
+                Strings.resourcesObjectName, event.recordId);
+          } else if (event.objectName == 'About_App__c') {
+            getRecordByID_localDatabase(
+                Strings.aboutObjectName, event.recordId);
+          } else if (event.objectName == 'Student_App__c') {
+            getRecordByID_localDatabase(
+                Strings.studentsObjectName, event.recordId);
+          } else if (event.objectName == 'School_Directory_App__c') {
+            getRecordByID_localDatabase(
+                Strings.schoolDirectoryObjectName, event.recordId);
+          }
+
+          // dynamic recordObject = await getRecordByID_localDatabase(
+          //     event.objectName == "Families_App__c"
+          //         ? Strings.familiesObjectName
+          //         : event.objectName == 'Staff_Directory_App__c'
+          //             ? Strings.staffObjectName
+          //             : event.objectName == 'Resources_App__c'
+          //                 ? Strings.resourcesObjectName
+          //                 : event.objectName == 'About_App__c'
+          //                     ? Strings.aboutObjectName
+          //                     : event.objectName == 'Student_App__c'
+          //                         ? Strings.studentsObjectName
+          //                         : event.objectName ==
+          //                                 'School_Directory_App__c'
+          //                             ? Strings.schoolDirectoryObjectName
+          //                             : "",
+          //     event.recordId);
 
           if (recordObject != null) {
             yield RecordDetailSuccess(
+                isRecentRecod: event.isRecentRecord,
                 recordObject: recordObject,
                 objectName: event.objectName,
                 objectType: event.recordType);
@@ -333,6 +387,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _searchList.statusC = _localData[i].statusC ?? null;
           _searchList.latitude = _localData[i].latitude ?? null;
           _searchList.longitude = _localData[i].longitude ?? null;
+          _searchList.objectName = objectName;
           _searchList.sortOrder =
               double.parse(_localData[i].sortOrder ?? "0.0");
 
@@ -362,6 +417,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _searchList.titleC = _localData[i].titleC ?? null;
           _searchList.deepLink = _localData[i].deepLinkC ?? null;
           _searchList.statusC = _localData[i].status ?? null;
+          _searchList.objectName = objectName;
           _searchList.sortOrder =
               double.parse(_localData[i].sortOrder ?? "0.0");
 
@@ -484,5 +540,46 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } catch (e) {
       throw (e);
     }
+  }
+
+  getListData(String localDatalogName) async {
+    List listItem = await HiveDbServices().getListData(localDatalogName);
+    return listItem;
+  }
+
+  // cleanList() async {
+  //   await HiveDbServices().clearAll(Strings.hiveReferenceLogName);
+  // }
+
+  void updateRecordList(List<dynamic> log) async {
+    LocalDatabase<dynamic> _localDb =
+        LocalDatabase(Strings.hiveReferenceLogName);
+    // List<dynamic> _localData = await _localDb.getData();
+    try {
+      _localDb.clear();
+      log.forEach((dynamic e) {
+        print("local database");
+        _localDb.addData(e);
+      });
+    } catch (e) {
+      print(e);
+      print("inside catch");
+    }
+
+    //_localDb.close();
+
+    // bool isSuccess =
+    //     await HiveDbServices().addData(log, Strings.hiveReferenceLogName);
+  }
+
+  deleteItem(String localDatalogName) async {
+    int itemcount = await HiveDbServices().getListLength(localDatalogName);
+    if (itemcount > 5) {
+      await HiveDbServices().deleteData(localDatalogName, 0);
+    }
+  }
+
+  void addRecordDetailtoLocalDb(dynamic log) async {
+    await HiveDbServices().addData(log, Strings.hiveReferenceLogName);
   }
 }

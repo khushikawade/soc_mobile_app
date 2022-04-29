@@ -51,12 +51,19 @@ class RecordDetailSuccess extends HomeState {
   final String? objectName;
   final String? objectType;
   final recordObject;
-  RecordDetailSuccess({this.recordObject, this.objectName, this.objectType});
+  final bool? isRecentRecod;
+  RecordDetailSuccess(
+      {this.recordObject,
+      this.objectName,
+      this.objectType,
+      required this.isRecentRecod});
   RecordDetailSuccess copyWith(
       {final obj, final objectName, final objectType}) {
     return RecordDetailSuccess(
-        recordObject: recordObject ?? this.recordObject,
-        objectName: objectName ?? this.objectName,
-        objectType: objectType ?? this.objectType);
+      recordObject: recordObject ?? this.recordObject,
+      objectName: objectName ?? this.objectName,
+      objectType: objectType ?? this.objectType,
+      isRecentRecod: isRecentRecod ?? this.isRecentRecod,
+    );
   }
 }
