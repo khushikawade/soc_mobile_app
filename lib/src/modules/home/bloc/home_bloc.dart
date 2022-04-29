@@ -249,7 +249,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           //                             : "",
           //     event.recordId);
 
-          if (recordObject != null) {
+          if (recordObject != null && recordObject.isNotEmpty) {
             yield RecordDetailSuccess(
                 isRecentRecod: event.isRecentRecord,
                 recordObject: recordObject,
