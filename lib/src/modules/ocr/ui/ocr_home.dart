@@ -1,17 +1,74 @@
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/ocr/ui/image_to_text.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_google.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 
-class StaffLoginPage extends StatefulWidget {
-  StaffLoginPage({Key? key, this.title}) : super(key: key);
-  final String? title;
+class OpticalCharacterRecognition extends StatefulWidget {
+  const OpticalCharacterRecognition({Key? key}) : super(key: key);
+
   @override
-  _StaffLoginPageState createState() => _StaffLoginPageState();
+  State<OpticalCharacterRecognition> createState() =>
+      _OpticalCharacterRecognitionPageState();
 }
 
-class _StaffLoginPageState extends State<StaffLoginPage> {
-  
- @override
+class _OpticalCharacterRecognitionPageState
+    extends State<OpticalCharacterRecognition> {
+  static const double _KButtonSize = 110.0;
+  @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      appBar: CustomAppBarWidget(
+        appBarTitle: 'OCR',
+        isSearch: true,
+        isShare: false,
+        language: Globals.selectedLanguage,
+        isCenterIcon: false,
+        ishtmlpage: false,
+        sharedpopBodytext: '',
+        sharedpopUpheaderText: '',
+      ),
+      body: Center(
+          child: Column(children: [
+        button(
+            title: 'Free Method',
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ImageToText()));
+            }),
+        SizedBox(
+          height: 20,
+        ),
+        button(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => GoogleOcr()));
+            },
+            title: 'Paid Method')
+      ])),
+    );
+  }
+
+  Widget button({required onPressed, required String title}) {
+    return Container(
+      constraints: BoxConstraints(
+        minWidth: _KButtonSize,
+        maxWidth: 230.0,
+        minHeight: _KButtonSize / 2,
+        maxHeight: _KButtonSize / 2,
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        child: TranslationWidget(
+          message: title,
+          toLanguage: Globals.selectedLanguage,
+          fromLanguage: "en",
+          builder: (translatedMessage) => Text(
+            translatedMessage.toString(),
+          ),
+        ),
+      ),
+    );
   }
 }

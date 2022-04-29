@@ -4,14 +4,14 @@ import '../../../globals.dart';
 import '../../../translator/translation_widget.dart';
 import '../../../widgets/custom_icon_widget.dart';
 
-class StaffLoginPage extends StatefulWidget {
-  StaffLoginPage({Key? key, this.title}) : super(key: key);
+class LoginSecured extends StatefulWidget {
+  LoginSecured({Key? key, this.title}) : super(key: key);
   final String? title;
   @override
-  _StaffLoginPageState createState() => _StaffLoginPageState();
+  _LoginSecuredPageState createState() => _LoginSecuredPageState();
 }
 
-class _StaffLoginPageState extends State<StaffLoginPage> {
+class _LoginSecuredPageState extends State<LoginSecured> {
   static const double _kIconSize = 188;
   static const double _kLabelSpacing = 20.0;
   FocusNode myFocusNode = new FocusNode();
@@ -19,17 +19,20 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
   // UI Widget
   Widget _buildIcon() {
     return Container(
-      height: MediaQuery.of(context).size.height*0.25,
-      width: MediaQuery.of(context).size.width*0.55,
+        height: MediaQuery.of(context).size.height * 0.25,
+        width: MediaQuery.of(context).size.width * 0.55,
         child: CustomIconWidget(
-      iconUrl: Globals.appSetting.appLogoC,
-      darkModeIconUrl: null,
-    ));
+          iconUrl: Globals.appSetting.appLogoC,
+          darkModeIconUrl: null,
+        ));
   }
 
   Widget _buildHeading() {
     return Text("This content has beeen locked.",
-        style: Theme.of(context).textTheme.headline2!.copyWith(fontWeight: FontWeight.bold));
+        style: Theme.of(context)
+            .textTheme
+            .headline2!
+            .copyWith(fontWeight: FontWeight.bold));
   }
 
   Widget _buildcontent() {
@@ -59,23 +62,25 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
   //     ),
   //   );
   // }
-Widget authenticate(){
-  return Container(
-    margin: EdgeInsets.symmetric(horizontal: 20),
-    child: ElevatedButton(
-        onPressed: () {
-        },
+  Widget authenticate() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      child: ElevatedButton(
+        onPressed: () {},
         child: TranslationWidget(
           message: "Authenticate Now",
           fromLanguage: "en",
           toLanguage: Globals.selectedLanguage,
-          builder: (translatedMessage) => Text(
-            translatedMessage.toString(), style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white,fontWeight: FontWeight.bold)
-          ),
+          builder: (translatedMessage) => Text(translatedMessage.toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .headline3!
+                  .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
         ),
       ),
-  );
-}
+    );
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(children: [

@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/overrides.dart';
@@ -12,6 +13,7 @@ import 'package:Soc/src/modules/shared/ui/common_sublist.dart';
 import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/html_description.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/no_data_found_error_widget.dart';
 import '../../schools_directory/ui/schools_directory.dart';
@@ -48,11 +50,16 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     url: obj.appUrlC!,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
-                    callBackFunction: (value){
-                    print(value);
-                    if(value.toString().contains('displayName')){
-                      Navigator.pop(context);
-                    }
+                    callBackFunction: (value) {
+                      print(value);
+                      if (value.toString().contains('displayName')) {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    OpticalCharacterRecognition()));
+                      }
                     },
                   )));
     }
@@ -182,16 +189,18 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     obj: obj,
                     isStanderdPage: false,
                   )));
-    } else if (obj.typeC == "OCR" ) {
-      if(obj.isSecure=='true'){
-           obj.appUrlC != null && obj.appUrlC != ""
-          ? await _launchURL(obj)
-          : Utility.showSnackBar(
-              widget.scaffoldKey, "No authentication URL available", context);
-      }
-      else{
-
-      }     
+    } else if (obj.typeC == "OCR") {
+      if (obj.isSecure == 'true') {
+        obj.appUrlC != null && obj.appUrlC != ""
+            ? await _launchURL(obj)
+            : Utility.showSnackBar(
+                widget.scaffoldKey, "No authentication URL available", context);
+      } else { 
+         await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    OpticalCharacterRecognition()));}
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }

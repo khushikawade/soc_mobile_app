@@ -2,8 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
-import 'package:Soc/src/modules/ocr/ui/image_to_text.dart';
-import 'package:Soc/src/modules/ocr/ui/ocr.dart';
+
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
@@ -22,8 +21,8 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
 import 'package:speech_bubble/speech_bubble.dart';
+import '../../ocr/ui/ocr_home.dart';
 import '../../ocr/ui/ocr_login.dart';
-
 
 // ignore: must_be_immutable
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
@@ -100,11 +99,13 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             break;
           case IconsMenu.Camera:
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Ocr()));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => OpticalCharacterRecognition()));
             break;
           case IconsMenu.Login:
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => StaffLoginPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => LoginSecured()));
             break;
         }
         // Utility.setLocked();
