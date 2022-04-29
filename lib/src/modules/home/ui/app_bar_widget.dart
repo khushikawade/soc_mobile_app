@@ -22,9 +22,8 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
 import 'package:speech_bubble/speech_bubble.dart';
-
 import '../../ocr/ui/ocr_login.dart';
-import '../../staff/ui/stafflogin.dart';
+
 
 // ignore: must_be_immutable
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
@@ -105,7 +104,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             break;
           case IconsMenu.Login:
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => SignInDemo()));
+                context, MaterialPageRoute(builder: (context) => StaffLoginPage()));
             break;
         }
         // Utility.setLocked();

@@ -48,6 +48,12 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     url: obj.appUrlC!,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
+                    callBackFunction: (value){
+                    print(value);
+                    if(value.toString().contains('displayName')){
+                      Navigator.pop(context);
+                    }
+                    },
                   )));
     }
   }
@@ -176,6 +182,16 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     obj: obj,
                     isStanderdPage: false,
                   )));
+    } else if (obj.typeC == "OCR" ) {
+      if(obj.isSecure=='true'){
+           obj.appUrlC != null && obj.appUrlC != ""
+          ? await _launchURL(obj)
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No authentication URL available", context);
+      }
+      else{
+
+      }     
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }

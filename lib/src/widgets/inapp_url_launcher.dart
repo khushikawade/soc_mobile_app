@@ -15,6 +15,7 @@ class InAppUrlLauncer extends StatefulWidget {
   final bool isbuttomsheet;
   final String? language;
   final bool? isCustomMainPageWebView;
+   final callBackFunction;
 
   @override
   InAppUrlLauncer(
@@ -25,7 +26,7 @@ class InAppUrlLauncer extends StatefulWidget {
       required this.language,
       this.hideHeader,
       this.isiFrame,
-      this.isCustomMainPageWebView})
+      this.isCustomMainPageWebView,this.callBackFunction})
       : super(key: key);
   _InAppUrlLauncerState createState() => new _InAppUrlLauncerState();
 }
@@ -85,6 +86,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                   child: Stack(
                     children: [
                       WebView(
+                          userAgent: 'random',
                         initialCookies: [],
                         backgroundColor: Theme.of(context).backgroundColor,
                         onProgress: (progress) {
@@ -106,6 +108,10 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                             (WebViewController webViewController) {
                           Globals.webViewController1 = webViewController;
                           _controller.complete(webViewController);
+                        },
+                        navigationDelegate: (NavigationRequest request) {
+                          widget.callBackFunction(request.url);      
+                          return NavigationDecision.navigate;
                         },
                       ),
                       isLoading

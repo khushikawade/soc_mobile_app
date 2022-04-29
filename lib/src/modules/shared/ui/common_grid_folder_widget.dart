@@ -81,20 +81,27 @@ class CommonGridFolderState extends State<CommonGridFolder>
   void dispose() {
     super.dispose();
   }
- _launchURL(SharedList obj) async {
+
+  _launchURL(SharedList obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
-      await  Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => InAppUrlLauncer(
-                      title: obj.titleC!,
-                      url: obj.appUrlC!,
-                      isbuttomsheet: true,
-                      language: Globals.selectedLanguage,
-                    )));
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => InAppUrlLauncer(
+                    title: obj.titleC!,
+                    url: obj.appUrlC!,
+                    isbuttomsheet: true,
+                    language: Globals.selectedLanguage,
+                    callBackFunction: (value) {
+                      print(value);
+                      if (value.toString().contains('displayName')) {
+                        Navigator.pop(context);
+                      }
+                    },
+                  )));
     }
   }
 
@@ -172,6 +179,15 @@ class CommonGridFolderState extends State<CommonGridFolder>
                       )))
           : Utility.showSnackBar(
               widget.scaffoldKey, "No pdf available", context);
+    } else if (obj.typeC == "OCR" ) {
+      if(obj.isSecure=='true'){
+           obj.appUrlC != null && obj.appUrlC != ""
+          ? await _launchURL(obj)
+          : Utility.showSnackBar(
+              widget.scaffoldKey, "No authentication URL available", context);
+      }
+
+     
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }

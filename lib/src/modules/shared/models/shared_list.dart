@@ -32,6 +32,8 @@ class SharedList {
   String? deepLinkC;
   @HiveField(13)
   String? darkModeIconC;
+  @HiveField(14)
+  String? isSecure;
 
   SharedList(
       {
@@ -49,7 +51,7 @@ class SharedList {
       this.sortOrder,
       this.status,
       this.deepLinkC,
-      this.darkModeIconC});
+      this.darkModeIconC,this.isSecure});
 
   factory SharedList.fromJson(Map<String, dynamic> json) => SharedList(
       titleC: Utility.utf8convert(json['Title__c'] as String?),
@@ -65,7 +67,8 @@ class SharedList {
       sortOrder: double.parse(json['Sort_Order__c'] ?? '100'),
       status: json['Active_Status__c'] ?? 'Show',
       deepLinkC: json['Deep_Link__c'] as String?,
-      darkModeIconC: json['Dark_Mode_Icon__c']);
+      darkModeIconC: json['Dark_Mode_Icon__c'],
+      isSecure: json['Is_Secure__c']);
 
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
@@ -83,5 +86,6 @@ class SharedList {
         'Active_Status__c': status,
         'Deep_Link__c': deepLinkC,
         'Dark_Mode_Icon__c': darkModeIconC,
+        'Is_Secure__c':isSecure
       };
 }
