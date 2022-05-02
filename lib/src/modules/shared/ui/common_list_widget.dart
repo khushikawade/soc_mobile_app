@@ -37,24 +37,25 @@ class CommonListWidget extends StatefulWidget {
 }
 
 class _CommonListWidgetState extends State<CommonListWidget> {
-  _launchURL(SharedList obj) async {
+  _launchURL(SharedList obj, String queryParameter) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
+      print(queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter);
       await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC!,
-                    url: obj.appUrlC!,
+                    url: queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                     callBackFunction: (value) {
-                      print(value);
+                      // print(value);
                       if (value.toString().contains('displayName')) {
-                        Navigator.pop(context);
-                        Navigator.push(
+                        // Navigator.pop(context);
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
@@ -78,7 +79,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                   )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null && obj.appUrlC != ""
-          ? await _launchURL(obj)
+          ? await _launchURL(obj, '')
           : Utility.showSnackBar(
               widget.scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Form") {
@@ -192,7 +193,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     } else if (obj.typeC == "OCR") {
       if (obj.isSecure == 'true') {
         obj.appUrlC != null && obj.appUrlC != ""
-            ? await _launchURL(obj)
+            ? await _launchURL(obj,Globals.appSetting.appLogoC)
             : Utility.showSnackBar(
                 widget.scaffoldKey, "No authentication URL available", context);
       } else { 
