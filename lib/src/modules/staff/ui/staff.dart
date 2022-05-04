@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
@@ -12,7 +13,12 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import '../../../services/local_database/local_db.dart';
+import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
+import '../../ocr/modal/user_info.dart';
+import '../../ocr/ui/ocr_home.dart';
+import '../../shared/models/shared_list.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
@@ -38,6 +44,57 @@ class _StaffPageState extends State<StaffPage> {
   void initState() {
     super.initState();
     _bloc.add(StaffPageEvent());
+  }
+
+//To authenticate the user via google
+  _launchURL(String? title) async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => GoogleAuthWebview(
+                  title: title!,
+                  url: Overrides.secureLoginURL +
+                      '?' +
+                      Globals.appSetting
+                          .appLogoC, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
+                  isbuttomsheet: true,
+                  language: Globals.selectedLanguage,
+                  hideAppbar: false,
+                  hideShare: true,
+                  zoomEnabled: false,
+                  callBackFunction: (value) async{
+                    // https://034d-111-118-246-106.in.ngrok.io/success/?displayName=Test%20account+userEmail=testmystuffss@gmail.com+picture=https://lh3.googleusercontent.com/a-/AOh14Ghhyn8_YWCM_qOlFpbhOqM9keF0xvIHJ6PmVP72=s96-c
+                    // print(value);
+                    if (value.toString().contains('displayName')) {
+                      List<UserInfo> userinfo = [];
+                      userinfo.add(UserInfo(
+                          userName: value[1].split('+')[0],
+                          userEmail: value[2].split('+')[0],
+                          profilePicture: value[3].split('+')[0]));
+                      // Navigator.pop(context);
+
+                      //store user profile in local database
+                      LocalDatabase<UserInfo> _localUserInfo =
+                          LocalDatabase('user_profile');
+
+                      _localUserInfo.addData(UserInfo(
+                          userName: value[1].split('+')[0],
+                          userEmail: value[2].split('+')[0],
+                          profilePicture: value[3].split('+')[0]));
+
+print(_localUserInfo);
+                          List<UserInfo>? _localData = await _localUserInfo.getData();
+
+                      Future.delayed(const Duration(milliseconds: 5000), () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    OpticalCharacterRecognition()));
+                      });
+                    }
+                  },
+                )));
   }
 
   Widget _body(String key) => RefreshIndicator(
@@ -141,6 +198,36 @@ class _StaffPageState extends State<StaffPage> {
               body: _body('body1'),
             )
           : _body('body2'),
+      floatingActionButton: Container(
+        height: Globals.deviceType == 'phone' ? 80 : 100.0,
+        width: Globals.deviceType == 'phone' ? 80 : 100.0,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height * 0.03,
+        ),
+        child: FloatingActionButton(
+          onPressed: () async {
+            // var url='https://034d-111-118-246-106.in.ngrok.io/success/?displayName=Test%20account+userEmail=testmystuffss@gmail.com+picture=https://lh3.googleusercontent.com/a-/AOh14Ghhyn8_YWCM_qOlFpbhOqM9keF0xvIHJ6PmVP72=s96-c';
+            //  var data = url.split('=');
+            // //  var data1 = data.toString().split('=');
+            //           print(data);
+            //           List<UserInfo> userinfo = [];
+            //           userinfo.add(UserInfo(
+            //               userName: data[1].split('+')[0],
+            //               userEmail: data[2].split('+')[0],
+            //               profilePicture: data[3].split('+')[0]));
+
+            await _launchURL('Google Authentication');
+
+            // Add your onPressed code here!
+          },
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 40,
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+      ),
     );
   }
 

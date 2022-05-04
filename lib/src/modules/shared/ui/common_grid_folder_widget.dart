@@ -15,7 +15,6 @@ import '../../custom/bloc/custom_bloc.dart';
 import '../../families/bloc/family_bloc.dart';
 import '../../families/ui/contact.dart';
 import '../../families/ui/event.dart';
-import '../../ocr/ui/ocr_home.dart';
 import '../../resources/bloc/resources_bloc.dart';
 import '../../staff/bloc/staff_bloc.dart';
 import '../models/shared_list.dart';
@@ -83,7 +82,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
     super.dispose();
   }
 
-  _launchURL(SharedList obj,String queryParameter) async {
+  _launchURL(SharedList obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
@@ -93,28 +92,9 @@ class CommonGridFolderState extends State<CommonGridFolder>
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC!,
-                       url: queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
+                       url: obj.appUrlC!,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
-                     hideAppbar: false,
-                    hideShare: true,
-                    zoomEnabled: false, 
-                    callBackFunction: (value) {
-                      print(value);
-                     
-                      if (value.toString().contains('displayName')) {
-                        // Navigator.pop(context);
-                       Future.delayed(const Duration(milliseconds: 2000), () {
-
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OpticalCharacterRecognition()));
-                                    });
-                      }
-                    
-                    },
                   )));
     }
   }
@@ -132,7 +112,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                   )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null && obj.appUrlC != ""
-          ? await _launchURL(obj,'')
+          ? await _launchURL(obj)
           : Utility.showSnackBar(
               widget.scaffoldKey, "No link available", context);
     } else if (obj.typeC == "Calendar/Events") {
@@ -193,13 +173,13 @@ class CommonGridFolderState extends State<CommonGridFolder>
                       )))
           : Utility.showSnackBar(
               widget.scaffoldKey, "No pdf available", context);
-    } else if (obj.typeC == "OCR" ) {
-      if(obj.isSecure=='true'){
-           obj.appUrlC != null && obj.appUrlC != ""
-          ? await _launchURL(obj,Globals.appSetting.appLogoC)
-          : Utility.showSnackBar(
-              widget.scaffoldKey, "No authentication URL available", context);
-      }
+    // } else if (obj.typeC == "OCR" ) {
+    //   if(obj.isSecure=='true'){
+    //        obj.appUrlC != null && obj.appUrlC != ""
+    //       ? await _launchURL(obj)
+    //       : Utility.showSnackBar(
+    //           widget.scaffoldKey, "No authentication URL available", context);
+    //   }
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
     }

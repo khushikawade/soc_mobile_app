@@ -7,36 +7,36 @@ import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
-class InAppUrlLauncer extends StatefulWidget {
+class GoogleAuthWebview extends StatefulWidget {
   final bool? isiFrame;
   final String title;
   final String url;
-  // final bool? hideAppbar; //To hide the appbar
-  // final bool? hideShare; //To hide share icon only from appbar
+  final bool? hideAppbar; //To hide the appbar
+  final bool? hideShare; //To hide share icon only from appbar
   final bool isbuttomsheet;
   final String? language;
   final bool? isCustomMainPageWebView;
-  // final callBackFunction;
-  // final bool? zoomEnabled; //To enable or disable the zoom functionality
+  final callBackFunction;
+  final bool? zoomEnabled; //To enable or disable the zoom functionality
 
   @override
-  InAppUrlLauncer({
-    Key? key,
-    required this.title,
-    required this.url,
-    required this.isbuttomsheet,
-    required this.language,
-    // this.hideAppbar,
-    // this.hideShare,
-    // this.zoomEnabled,
-    this.isiFrame,
-    this.isCustomMainPageWebView,
-    // this.callBackFunction
-  }) : super(key: key);
-  _InAppUrlLauncerState createState() => new _InAppUrlLauncerState();
+  GoogleAuthWebview(
+      {Key? key,
+      required this.title,
+      required this.url,
+      required this.isbuttomsheet,
+      required this.language,
+      this.hideAppbar,
+      this.hideShare,
+      this.zoomEnabled,
+      this.isiFrame,
+      this.isCustomMainPageWebView,
+      this.callBackFunction})
+      : super(key: key);
+  _GoogleAuthWebviewState createState() => new _GoogleAuthWebviewState();
 }
 
-class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
+class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
   bool? iserrorstate = false;
   bool isLoading = true;
   final Completer<WebViewController> _controller =
@@ -54,18 +54,16 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
     return widget.isCustomMainPageWebView == true
         ? _webViewWidget()
         : Scaffold(
-            appBar:
-                // widget.hideAppbar != true
-                //     ?
-                CustomAppBarWidget(
-              isSearch: false,
-              isShare: true, //widget.hideShare != true ? true : false,
-              appBarTitle: widget.title,
-              sharedpopBodytext: widget.url.toString(),
-              sharedpopUpheaderText: "Please checkout this link",
-              language: Globals.selectedLanguage,
-            ),
-            // : null,
+            appBar: widget.hideAppbar != true
+                ? CustomAppBarWidget(
+                    isSearch: false,
+                    isShare: widget.hideShare != true ? true : false,
+                    appBarTitle: widget.title,
+                    sharedpopBodytext: widget.url.toString(),
+                    sharedpopUpheaderText: "Please checkout this link",
+                    language: Globals.selectedLanguage,
+                  )
+                : null,
             body: _webViewWidget());
   }
 
@@ -95,10 +93,10 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                   child: Stack(
                     children: [
                       WebView(
-                        // userAgent: 'random',
-                        // zoomEnabled: widget.zoomEnabled == null
-                        //     ? true
-                        //     : widget.zoomEnabled!,
+                        userAgent: 'random',
+                        zoomEnabled: widget.zoomEnabled == null
+                            ? true
+                            : widget.zoomEnabled!,
                         initialCookies: [],
                         backgroundColor: Theme.of(context).backgroundColor,
                         onProgress: (progress) {
@@ -120,11 +118,16 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                             (WebViewController webViewController) {
                           Globals.webViewController1 = webViewController;
                           _controller.complete(webViewController);
+                          
+                            webViewController.clearCache();
+                            final cookieManager = CookieManager();
+                            cookieManager.clearCookies();
+                          
                         },
-                        // navigationDelegate: (NavigationRequest request) {
-                        //   widget.callBackFunction(request.url);
-                        //   return NavigationDecision.navigate;
-                        // },
+                        navigationDelegate: (NavigationRequest request) {
+                          widget.callBackFunction(request.url);
+                          return NavigationDecision.navigate;
+                        },
                       ),
                       isLoading
                           ? Center(
