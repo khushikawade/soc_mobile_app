@@ -51,15 +51,21 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     url: queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
+                     hideAppbar: false,
+                    hideShare: true,
+                    zoomEnabled: false,                    
                     callBackFunction: (value) {
                       // print(value);
                       if (value.toString().contains('displayName')) {
                         // Navigator.pop(context);
+                      Future.delayed(const Duration(milliseconds: 2000), () {
+
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     OpticalCharacterRecognition()));
+                                    });
                       }
                     },
                   )));

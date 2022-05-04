@@ -103,10 +103,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 MaterialPageRoute(
                     builder: (context) => OpticalCharacterRecognition()));
             break;
-          case IconsMenu.Login:
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => LoginSecured()));
-            break;
+          // case IconsMenu.Login:
+          //   Navigator.push(context,
+          //       MaterialPageRoute(builder: (context) => LoginSecured()));
+          //   break;
         }
         // Utility.setLocked();
       },

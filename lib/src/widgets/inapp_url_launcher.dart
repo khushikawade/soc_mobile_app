@@ -11,11 +11,13 @@ class InAppUrlLauncer extends StatefulWidget {
   final bool? isiFrame;
   final String title;
   final String url;
-  final bool? hideHeader;
+  final bool? hideAppbar; //To hide the appbar
+  final bool? hideShare; //To hide share icon only from appbar
   final bool isbuttomsheet;
   final String? language;
   final bool? isCustomMainPageWebView;
    final callBackFunction;
+   final bool? zoomEnabled; //To enable or disable the zoom functionality
 
   @override
   InAppUrlLauncer(
@@ -24,7 +26,9 @@ class InAppUrlLauncer extends StatefulWidget {
       required this.url,
       required this.isbuttomsheet,
       required this.language,
-      this.hideHeader,
+      this.hideAppbar,
+      this.hideShare,
+      this.zoomEnabled,
       this.isiFrame,
       this.isCustomMainPageWebView,this.callBackFunction})
       : super(key: key);
@@ -49,14 +53,14 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
     return widget.isCustomMainPageWebView == true
         ? _webViewWidget()
         : Scaffold(
-            appBar: CustomAppBarWidget(
+            appBar:widget.hideAppbar!=true? CustomAppBarWidget(
               isSearch: false,
-              isShare: true,
+              isShare: widget.hideShare!=true?true:false,
               appBarTitle: widget.title,
               sharedpopBodytext: widget.url.toString(),
               sharedpopUpheaderText: "Please checkout this link",
               language: Globals.selectedLanguage,
-            ),
+            ):null,
             body: _webViewWidget());
   }
 
@@ -82,11 +86,13 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                   color: Colors.transparent,
                   padding: const EdgeInsets.only(
                       bottom:
-                          30.0), // To manage web page crop issue together with bottom nav bar.
+                          30.0,
+                         ), // To manage web page crop issue together with bottom nav bar.
                   child: Stack(
                     children: [
                       WebView(
                           userAgent: 'random',
+                          zoomEnabled: widget.zoomEnabled==null?true:widget.zoomEnabled!,
                         initialCookies: [],
                         backgroundColor: Theme.of(context).backgroundColor,
                         onProgress: (progress) {
