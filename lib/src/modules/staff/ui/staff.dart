@@ -33,6 +33,8 @@ class StaffPage extends StatefulWidget {
 }
 
 class _StaffPageState extends State<StaffPage> {
+  LocalDatabase<UserInfo> _localUserInfo = LocalDatabase('user_profile');
+  List<UserInfo> _localData = [];
   FocusNode myFocusNode = new FocusNode();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -44,6 +46,13 @@ class _StaffPageState extends State<StaffPage> {
   void initState() {
     super.initState();
     _bloc.add(StaffPageEvent());
+    localdb();
+  }
+
+  localdb() async {
+    _localData = await _localUserInfo.getData();
+    print('test++++++++++++++++++++++');
+    print(_localData[0].userName);
   }
 
 //To authenticate the user via google
@@ -62,28 +71,25 @@ class _StaffPageState extends State<StaffPage> {
                   hideAppbar: false,
                   hideShare: true,
                   zoomEnabled: false,
-                  callBackFunction: (value) async{
+                  callBackFunction: (value) async {
                     // https://034d-111-118-246-106.in.ngrok.io/success/?displayName=Test%20account+userEmail=testmystuffss@gmail.com+picture=https://lh3.googleusercontent.com/a-/AOh14Ghhyn8_YWCM_qOlFpbhOqM9keF0xvIHJ6PmVP72=s96-c
-                    // print(value);
+
+                    // if (_localData.isEmpty) {
                     if (value.toString().contains('displayName')) {
-                      List<UserInfo> userinfo = [];
-                      userinfo.add(UserInfo(
-                          userName: value[1].split('+')[0],
-                          userEmail: value[2].split('+')[0],
-                          profilePicture: value[3].split('+')[0]));
+                      // List<UserInfo> userinfo = [];
+                      // userinfo.add(UserInfo(
+                      //     userName: value[1].split('+')[0],
+                      //     userEmail: value[2].split('+')[0],
+                      //     profilePicture: value[3].split('+')[0]));
                       // Navigator.pop(context);
 
                       //store user profile in local database
-                      LocalDatabase<UserInfo> _localUserInfo =
-                          LocalDatabase('user_profile');
 
                       _localUserInfo.addData(UserInfo(
                           userName: value[1].split('+')[0],
                           userEmail: value[2].split('+')[0],
                           profilePicture: value[3].split('+')[0]));
-
-print(_localUserInfo);
-                          List<UserInfo>? _localData = await _localUserInfo.getData();
+                      print(_localUserInfo);
 
                       Future.delayed(const Duration(milliseconds: 5000), () {
                         Navigator.pushReplacement(
@@ -93,6 +99,16 @@ print(_localUserInfo);
                                     OpticalCharacterRecognition()));
                       });
                     }
+                    // }
+                    // else{
+                    //   Future.delayed(const Duration(milliseconds: 5000), () {
+                    //     Navigator.pushReplacement(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: (BuildContext context) =>
+                    //                 OpticalCharacterRecognition()));
+                    //   });
+                    // }
                   },
                 )));
   }
@@ -216,7 +232,15 @@ print(_localUserInfo);
             //               userEmail: data[2].split('+')[0],
             //               profilePicture: data[3].split('+')[0]));
 
-            await _launchURL('Google Authentication');
+            if (_localData.isEmpty) {
+              await _launchURL('Google Authentication');
+            } else {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          OpticalCharacterRecognition()));
+            }
 
             // Add your onPressed code here!
           },
