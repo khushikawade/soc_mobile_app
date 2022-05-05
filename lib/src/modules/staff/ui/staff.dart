@@ -84,12 +84,13 @@ class _StaffPageState extends State<StaffPage> {
                       // Navigator.pop(context);
 
                       //store user profile in local database
-
                       _localUserInfo.addData(UserInfo(
                           userName: value[1].split('+')[0],
                           userEmail: value[2].split('+')[0],
                           profilePicture: value[3].split('+')[0]));
-                      print(_localUserInfo);
+                      // print(_localUserInfo);
+                      print(_localData.length);
+                      print(_localData[0]);
 
                       Future.delayed(const Duration(milliseconds: 5000), () {
                         Navigator.pushReplacement(
