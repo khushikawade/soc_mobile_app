@@ -31,15 +31,21 @@ class DbServices {
     }
   }
 
-  postapi(api, {body, headers,bool? isGoogleApi}) async {
+  postapi(api, {body, headers, bool? isGoogleApi}) async {
     try {
       final response = await httpClient.post(
-         isGoogleApi == true ? Uri.parse('$api') :Uri.parse('${Overrides.API_BASE_URL}$api'),
-          headers: headers ??
-              {
-                'Content-Type': 'application/json',
-                'authorization': 'Bearer ${Globals.token}'
-              },
+          isGoogleApi == true
+              ? Uri.parse('$api')
+              : Uri.parse('${Overrides.API_BASE_URL}$api'),
+          headers: isGoogleApi == true
+              ? {
+                  'Content-Type' : 'application/json',
+                }
+              : headers ??
+                  {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'authorization': 'Bearer ${Globals.token}'
+                  },
           body: json.encode(body));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

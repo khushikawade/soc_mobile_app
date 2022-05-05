@@ -18,48 +18,45 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     OcrEvent event,
   ) async* {
     if (event is FetchTextFromImage) {
+      String? schoolIdNew;
+      String? grade;
       yield OcrLoading();
-      await fatchTextFromImage();
+      List data = await fatchDetails(base64: event.base64);
+      for (var i = 0; i < data.length; i++) {
+        if (data[i]['description'].toString().length == 9) {
+          schoolIdNew = data[i]['description'];
+        }
+      }
+      grade = data[data.length - 1]['description'];
+      print(data);
+      yield FetchTextFromImageSuccess(schoolId: schoolIdNew ?? '', grade: grade ?? '');
       try {} catch (e) {}
     }
   }
 
-  Future fatchTextFromImage() async {
+  Future fatchDetails({required String base64}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-        Uri.encodeFull(
-            'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'),
-        isGoogleApi: true,
-        body: {
-          "requests": [
-            {
-              "image": {
-                "source": {
-                  "imageUri":
-                      "https://www.mockofun.com/wp-content/uploads/2020/03/text-to-picture-generator.jpg"
-                }
-              },
-              "features": [
-                {"type": "DOCUMENT_TEXT_DETECTION"}
-              ]
-            }
-          ]
-        },
+          Uri.encodeFull('https://1e71-111-118-246-106.in.ngrok.io'),
+          body: {'data': '$base64'},
+          isGoogleApi: true
 
-        // headers: {
-        //   'Content-Type': 'application/json',
-        //   'authorization': 'Bearer AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'
-        // }
-      );
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'authorization': 'Bearer AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'
+          // }
+          );
 
       if (response.statusCode == 200) {
-        List<Response> _list = response.data['responses']
-            .map<Response>((i) => Response.fromJson(i))
-            .toList();
+        // List<FullTextAnnotation> _list = response.data['text']['responses'][0]
+        //     .map<FullTextAnnotation>((i) => FullTextAnnotation.fromJson(i))
+        //     .toList();
 
-        print(_list);
+        print(response.data['text']['responses'][0]['textAnnotations']);
         print(
-            '------------------------------------test-----------------------------------');
+            '------------------------------------test111111-----------------------------------');
+        List text = response.data['text']['responses'][0]['textAnnotations'];
+
         // _list.removeWhere((CustomSetting element) => element.status == 'Hide');
         // _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
         // if (_list.length > 6) {
@@ -69,6 +66,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         // // To take the backup for all the sections.
         // _backupAppData();
         // return _list;
+        return text;
       }
     } catch (e) {
       print(

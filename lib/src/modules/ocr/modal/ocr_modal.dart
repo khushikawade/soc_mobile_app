@@ -1,295 +1,457 @@
 // To parse this JSON data, do
 //
-//     final ocrModal = ocrModalFromJson(jsonString);
+//     final ocrImageModal = ocrImageModalFromJson(jsonString);
 
 import 'dart:convert';
 
-OcrModal ocrModalFromJson(String str) => OcrModal.fromJson(json.decode(str));
+class OcrImageModal {
+    OcrImageModal({
+        this.responses,
+    });
 
-String ocrModalToJson(OcrModal data) => json.encode(data.toJson());
+    List<Response>? responses;
 
-class OcrModal {
-  OcrModal({
-    this.responses,
-  });
+    factory OcrImageModal.fromRawJson(String str) => OcrImageModal.fromJson(json.decode(str));
 
-  List<Response>? responses;
+    String toRawJson() => json.encode(toJson());
 
-  factory OcrModal.fromJson(Map<String, dynamic> json) => OcrModal(
-        responses: List<Response>.from(
-            json["responses"].map((x) => Response.fromJson(x))),
-      );
+    factory OcrImageModal.fromJson(Map<String, dynamic> json) => OcrImageModal(
+        responses: json["responses"] == null ? null : List<Response>.from(json["responses"].map((x) => Response.fromJson(x))),
+    );
 
-  Map<String, dynamic> toJson() => {
-        "responses": List<dynamic>.from(responses!.map((x) => x.toJson())),
-      };
+    Map<String, dynamic> toJson() => {
+        "responses": responses == null ? null : List<dynamic>.from(responses!.map((x) => x.toJson())),
+    };
 }
 
 class Response {
-  Response({
-    this.textAnnotations,
-    this.fullTextAnnotation,
-  });
+    Response({
+        this.textAnnotations,
+        this.fullTextAnnotation,
+    });
 
-  List<TextAnnotation>? textAnnotations;
-  FullTextAnnotation? fullTextAnnotation;
+    List<TextAnnotation>? textAnnotations;
+    FullTextAnnotation? fullTextAnnotation;
 
-  factory Response.fromJson(Map<String, dynamic> json) => Response(
-        textAnnotations: List<TextAnnotation>.from(
-            json["textAnnotations"].map((x) => TextAnnotation.fromJson(x))),
-        fullTextAnnotation:
-            FullTextAnnotation.fromJson(json["fullTextAnnotation"]),
-      );
+    factory Response.fromRawJson(String str) => Response.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "textAnnotations":
-            List<dynamic>.from(textAnnotations!.map((x) => x.toJson())),
-        "fullTextAnnotation": fullTextAnnotation!.toJson(),
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory Response.fromJson(Map<String, dynamic> json) => Response(
+        textAnnotations: json["textAnnotations"] == null ? null : List<TextAnnotation>.from(json["textAnnotations"].map((x) => TextAnnotation.fromJson(x))),
+        fullTextAnnotation: json["fullTextAnnotation"] == null ? null : FullTextAnnotation.fromJson(json["fullTextAnnotation"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "textAnnotations": textAnnotations == null ? null : List<dynamic>.from(textAnnotations!.map((x) => x.toJson())),
+        "fullTextAnnotation": fullTextAnnotation == null ? null : fullTextAnnotation!.toJson(),
+    };
 }
 
 class FullTextAnnotation {
-  FullTextAnnotation({
-    this.pages,
-    this.text,
-  });
+    FullTextAnnotation({
+        this.pages,
+        this.text,
+    });
 
-  List<Page>? pages;
-  String? text;
+    List<Page>? pages;
+    String? text;
 
-  factory FullTextAnnotation.fromJson(Map<String, dynamic> json) =>
-      FullTextAnnotation(
-        pages: List<Page>.from(json["pages"].map((x) => Page.fromJson(x))),
-        text: json["text"],
-      );
+    factory FullTextAnnotation.fromRawJson(String str) => FullTextAnnotation.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "pages": List<dynamic>.from(pages!.map((x) => x.toJson())),
-        "text": text,
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory FullTextAnnotation.fromJson(Map<String, dynamic> json) => FullTextAnnotation(
+        pages: json["pages"] == null ? null : List<Page>.from(json["pages"].map((x) => Page.fromJson(x))),
+        text: json["text"] == null ? null : json["text"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "pages": pages == null ? null : List<dynamic>.from(pages!.map((x) => x.toJson())),
+        "text": text == null ? null : text,
+    };
 }
 
 class Page {
-  Page({
-    this.width,
-    this.height,
-    this.blocks,
-  });
+    Page({
+        this.property,
+        this.width,
+        this.height,
+        this.blocks,
+    });
 
-  int? width;
-  int? height;
-  List<Block>? blocks;
+    ParagraphProperty? property;
+    int? width;
+    int? height;
+    List<Block>? blocks;
 
-  factory Page.fromJson(Map<String, dynamic> json) => Page(
-        width: json["width"],
-        height: json["height"],
-        blocks: List<Block>.from(json["blocks"].map((x) => Block.fromJson(x))),
-      );
+    factory Page.fromRawJson(String str) => Page.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "width": width,
-        "height": height,
-        "blocks": List<dynamic>.from(blocks!.map((x) => x.toJson())),
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory Page.fromJson(Map<String, dynamic> json) => Page(
+        property: json["property"] == null ? null : ParagraphProperty.fromJson(json["property"]),
+        width: json["width"] == null ? null : json["width"],
+        height: json["height"] == null ? null : json["height"],
+        blocks: json["blocks"] == null ? null : List<Block>.from(json["blocks"].map((x) => Block.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "property": property == null ? null : property!.toJson(),
+        "width": width == null ? null : width,
+        "height": height == null ? null : height,
+        "blocks": blocks == null ? null : List<dynamic>.from(blocks!.map((x) => x.toJson())),
+    };
 }
 
 class Block {
-  Block({
-    this.boundingBox,
-    this.paragraphs,
-    this.blockType,
-    this.confidence,
-  });
+    Block({
+        this.property,
+        this.boundingBox,
+        this.paragraphs,
+        this.blockType,
+        this.confidence,
+    });
 
-  Bounding? boundingBox;
-  List<Paragraph>? paragraphs;
-  String? blockType;
-  double? confidence;
+    ParagraphProperty? property;
+    Bounding? boundingBox;
+    List<Paragraph>? paragraphs;
+    String? blockType;
+    double? confidence;
 
-  factory Block.fromJson(Map<String, dynamic> json) => Block(
-        boundingBox: Bounding.fromJson(json["boundingBox"]),
-        paragraphs: List<Paragraph>.from(
-            json["paragraphs"].map((x) => Paragraph.fromJson(x))),
-        blockType: json["blockType"],
-        confidence: json["confidence"].toDouble(),
-      );
+    factory Block.fromRawJson(String str) => Block.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "boundingBox": boundingBox!.toJson(),
-        "paragraphs": List<dynamic>.from(paragraphs!.map((x) => x.toJson())),
-        "blockType": blockType,
-        "confidence": confidence,
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory Block.fromJson(Map<String, dynamic> json) => Block(
+        property: json["property"] == null ? null : ParagraphProperty.fromJson(json["property"]),
+        boundingBox: json["boundingBox"] == null ? null : Bounding.fromJson(json["boundingBox"]),
+        paragraphs: json["paragraphs"] == null ? null : List<Paragraph>.from(json["paragraphs"].map((x) => Paragraph.fromJson(x))),
+        blockType: json["blockType"] == null ? null : json["blockType"],
+        confidence: json["confidence"] == null ? null : json["confidence"].toDouble(),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "property": property == null ? null : property!.toJson(),
+        "boundingBox": boundingBox == null ? null : boundingBox!.toJson(),
+        "paragraphs": paragraphs == null ? null : List<dynamic>.from(paragraphs!.map((x) => x.toJson())),
+        "blockType": blockType == null ? null : blockType,
+        "confidence": confidence == null ? null : confidence,
+    };
 }
 
 class Bounding {
-  Bounding({
-    this.vertices,
-  });
+    Bounding({
+        this.vertices,
+    });
 
-  List<Vertex>? vertices;
+    List<Vertex>? vertices;
 
-  factory Bounding.fromJson(Map<String, dynamic> json) => Bounding(
-        vertices:
-            List<Vertex>.from(json["vertices"].map((x) => Vertex.fromJson(x))),
-      );
+    factory Bounding.fromRawJson(String str) => Bounding.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "vertices": List<dynamic>.from(vertices!.map((x) => x.toJson())),
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory Bounding.fromJson(Map<String, dynamic> json) => Bounding(
+        vertices: json["vertices"] == null ? null : List<Vertex>.from(json["vertices"].map((x) => Vertex.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "vertices": vertices == null ? null : List<dynamic>.from(vertices!.map((x) => x.toJson())),
+    };
 }
 
 class Vertex {
-  Vertex({
-    this.x,
-    this.y,
-  });
+    Vertex({
+        this.x,
+        this.y,
+    });
 
-  int? x;
-  int? y;
+    int? x;
+    int? y;
 
-  factory Vertex.fromJson(Map<String, dynamic> json) => Vertex(
-        x: json["x"],
-        y: json["y"],
-      );
+    factory Vertex.fromRawJson(String str) => Vertex.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "x": x,
-        "y": y,
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory Vertex.fromJson(Map<String, dynamic> json) => Vertex(
+        x: json["x"] == null ? null : json["x"],
+        y: json["y"] == null ? null : json["y"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "x": x == null ? null : x,
+        "y": y == null ? null : y,
+    };
 }
 
 class Paragraph {
-  Paragraph({
-    this.boundingBox,
-    this.words,
-    this.confidence,
-  });
+    Paragraph({
+        this.property,
+        this.boundingBox,
+        this.words,
+        this.confidence,
+    });
 
-  Bounding? boundingBox;
-  List<Word>? words;
-  double? confidence;
+    ParagraphProperty? property;
+    Bounding? boundingBox;
+    List<Word>? words;
+    double? confidence;
 
-  factory Paragraph.fromJson(Map<String, dynamic> json) => Paragraph(
-        boundingBox: Bounding.fromJson(json["boundingBox"]),
-        words: List<Word>.from(json["words"].map((x) => Word.fromJson(x))),
-        confidence: json["confidence"].toDouble(),
-      );
+    factory Paragraph.fromRawJson(String str) => Paragraph.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "boundingBox": boundingBox!.toJson(),
-        "words": List<dynamic>.from(words!.map((x) => x.toJson())),
-        "confidence": confidence,
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory Paragraph.fromJson(Map<String, dynamic> json) => Paragraph(
+        property: json["property"] == null ? null : ParagraphProperty.fromJson(json["property"]),
+        boundingBox: json["boundingBox"] == null ? null : Bounding.fromJson(json["boundingBox"]),
+        words: json["words"] == null ? null : List<Word>.from(json["words"].map((x) => Word.fromJson(x))),
+        confidence: json["confidence"] == null ? null : json["confidence"].toDouble(),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "property": property == null ? null : property!.toJson(),
+        "boundingBox": boundingBox == null ? null : boundingBox!.toJson(),
+        "words": words == null ? null : List<dynamic>.from(words!.map((x) => x.toJson())),
+        "confidence": confidence == null ? null : confidence,
+    };
 }
 
+class ParagraphProperty {
+    ParagraphProperty({
+        this.detectedLanguages,
+    });
+
+    List<PurpleDetectedLanguage>? detectedLanguages;
+
+    factory ParagraphProperty.fromRawJson(String str) => ParagraphProperty.fromJson(json.decode(str));
+
+    String toRawJson() => json.encode(toJson());
+
+    factory ParagraphProperty.fromJson(Map<String, dynamic> json) => ParagraphProperty(
+        detectedLanguages: json["detectedLanguages"] == null ? null : List<PurpleDetectedLanguage>.from(json["detectedLanguages"].map((x) => PurpleDetectedLanguage.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "detectedLanguages": detectedLanguages == null ? null : List<dynamic>.from(detectedLanguages!.map((x) => x.toJson())),
+    };
+}
+
+class PurpleDetectedLanguage {
+    PurpleDetectedLanguage({
+        this.languageCode,
+        this.confidence,
+    });
+
+    Locale? languageCode;
+    double? confidence;
+
+    factory PurpleDetectedLanguage.fromRawJson(String str) => PurpleDetectedLanguage.fromJson(json.decode(str));
+
+    String toRawJson() => json.encode(toJson());
+
+    factory PurpleDetectedLanguage.fromJson(Map<String, dynamic> json) => PurpleDetectedLanguage(
+        languageCode: json["languageCode"] == null ? null : localeValues.map[json["languageCode"]],
+        confidence: json["confidence"] == null ? null : json["confidence"].toDouble(),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "languageCode": languageCode == null ? null : localeValues.reverse[languageCode],
+        "confidence": confidence == null ? null : confidence,
+    };
+}
+
+enum Locale { EN }
+
+final localeValues = EnumValues({
+    "en": Locale.EN
+});
+
 class Word {
-  Word({
-    this.boundingBox,
-    this.symbols,
-    this.confidence,
-  });
+    Word({
+        this.property,
+        this.boundingBox,
+        this.symbols,
+        this.confidence,
+    });
 
-  Bounding? boundingBox;
-  List<Symbol>? symbols;
-  double? confidence;
+    WordProperty? property;
+    Bounding? boundingBox;
+    List<Symbol>? symbols;
+    double? confidence;
 
-  factory Word.fromJson(Map<String, dynamic> json) => Word(
-        boundingBox: Bounding.fromJson(json["boundingBox"]),
-        symbols:
-            List<Symbol>.from(json["symbols"].map((x) => Symbol.fromJson(x))),
-        confidence: json["confidence"].toDouble(),
-      );
+    factory Word.fromRawJson(String str) => Word.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "boundingBox": boundingBox!.toJson(),
-        "symbols": List<dynamic>.from(symbols!.map((x) => x.toJson())),
-        "confidence": confidence,
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory Word.fromJson(Map<String, dynamic> json) => Word(
+        property: json["property"] == null ? null : WordProperty.fromJson(json["property"]),
+        boundingBox: json["boundingBox"] == null ? null : Bounding.fromJson(json["boundingBox"]),
+        symbols: json["symbols"] == null ? null : List<Symbol>.from(json["symbols"].map((x) => Symbol.fromJson(x))),
+        confidence: json["confidence"] == null ? null : json["confidence"].toDouble(),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "property": property == null ? null : property!.toJson(),
+        "boundingBox": boundingBox == null ? null : boundingBox!.toJson(),
+        "symbols": symbols == null ? null : List<dynamic>.from(symbols!.map((x) => x.toJson())),
+        "confidence": confidence == null ? null : confidence,
+    };
+}
+
+class WordProperty {
+    WordProperty({
+        this.detectedLanguages,
+    });
+
+    List<FluffyDetectedLanguage>? detectedLanguages;
+
+    factory WordProperty.fromRawJson(String str) => WordProperty.fromJson(json.decode(str));
+
+    String toRawJson() => json.encode(toJson());
+
+    factory WordProperty.fromJson(Map<String, dynamic> json) => WordProperty(
+        detectedLanguages: json["detectedLanguages"] == null ? null : List<FluffyDetectedLanguage>.from(json["detectedLanguages"].map((x) => FluffyDetectedLanguage.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "detectedLanguages": detectedLanguages == null ? null : List<dynamic>.from(detectedLanguages!.map((x) => x.toJson())),
+    };
+}
+
+class FluffyDetectedLanguage {
+    FluffyDetectedLanguage({
+        this.languageCode,
+    });
+
+    Locale? languageCode;
+
+    factory FluffyDetectedLanguage.fromRawJson(String str) => FluffyDetectedLanguage.fromJson(json.decode(str));
+
+    String toRawJson() => json.encode(toJson());
+
+    factory FluffyDetectedLanguage.fromJson(Map<String, dynamic> json) => FluffyDetectedLanguage(
+        languageCode: json["languageCode"] == null ? null : localeValues.map[json["languageCode"]],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "languageCode": languageCode == null ? null : localeValues.reverse[languageCode],
+    };
 }
 
 class Symbol {
-  Symbol({
-    this.boundingBox,
-    this.text,
-    this.confidence,
-    this.property,
-  });
+    Symbol({
+        this.property,
+        this.boundingBox,
+        this.text,
+        this.confidence,
+    });
 
-  Bounding? boundingBox;
-  String? text;
-  double? confidence;
-  Property? property;
+    SymbolProperty? property;
+    Bounding? boundingBox;
+    String? text;
+    double? confidence;
 
-  factory Symbol.fromJson(Map<String, dynamic> json) => Symbol(
-        boundingBox: Bounding.fromJson(json["boundingBox"]),
-        text: json["text"],
-        confidence: json["confidence"].toDouble(),
-        property: json["property"] == null
-            ? null
-            : Property.fromJson(json["property"]),
-      );
+    factory Symbol.fromRawJson(String str) => Symbol.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "boundingBox": boundingBox!.toJson(),
-        "text": text,
-        "confidence": confidence,
+    String toRawJson() => json.encode(toJson());
+
+    factory Symbol.fromJson(Map<String, dynamic> json) => Symbol(
+        property: json["property"] == null ? null : SymbolProperty.fromJson(json["property"]),
+        boundingBox: json["boundingBox"] == null ? null : Bounding.fromJson(json["boundingBox"]),
+        text: json["text"] == null ? null : json["text"],
+        confidence: json["confidence"] == null ? null : json["confidence"].toDouble(),
+    );
+
+    Map<String, dynamic> toJson() => {
         "property": property == null ? null : property!.toJson(),
-      };
+        "boundingBox": boundingBox == null ? null : boundingBox!.toJson(),
+        "text": text == null ? null : text,
+        "confidence": confidence == null ? null : confidence,
+    };
 }
 
-class Property {
-  Property({
-    this.detectedBreak,
-  });
+class SymbolProperty {
+    SymbolProperty({
+        this.detectedLanguages,
+        this.detectedBreak,
+    });
 
-  DetectedBreak? detectedBreak;
+    List<FluffyDetectedLanguage>? detectedLanguages;
+    DetectedBreak? detectedBreak;
 
-  factory Property.fromJson(Map<String, dynamic> json) => Property(
-        detectedBreak: DetectedBreak.fromJson(json["detectedBreak"]),
-      );
+    factory SymbolProperty.fromRawJson(String str) => SymbolProperty.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "detectedBreak": detectedBreak!.toJson(),
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory SymbolProperty.fromJson(Map<String, dynamic> json) => SymbolProperty(
+        detectedLanguages: json["detectedLanguages"] == null ? null : List<FluffyDetectedLanguage>.from(json["detectedLanguages"].map((x) => FluffyDetectedLanguage.fromJson(x))),
+        detectedBreak: json["detectedBreak"] == null ? null : DetectedBreak.fromJson(json["detectedBreak"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "detectedLanguages": detectedLanguages == null ? null : List<dynamic>.from(detectedLanguages!.map((x) => x.toJson())),
+        "detectedBreak": detectedBreak == null ? null : detectedBreak!.toJson(),
+    };
 }
 
 class DetectedBreak {
-  DetectedBreak({
-    this.type,
-  });
+    DetectedBreak({
+        this.type,
+    });
 
-  String? type;
+    String? type;
 
-  factory DetectedBreak.fromJson(Map<String, dynamic> json) => DetectedBreak(
-        type: json["type"],
-      );
+    factory DetectedBreak.fromRawJson(String str) => DetectedBreak.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "type": type,
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory DetectedBreak.fromJson(Map<String, dynamic> json) => DetectedBreak(
+        type: json["type"] == null ? null : json["type"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "type": type == null ? null : type,
+    };
 }
 
 class TextAnnotation {
-  TextAnnotation({
-    this.locale,
-    this.description,
-    this.boundingPoly,
-  });
+    TextAnnotation({
+        this.locale,
+        this.description,
+        this.boundingPoly,
+    });
 
-  String? locale;
-  String? description;
-  Bounding? boundingPoly;
+    Locale? locale;
+    String? description;
+    Bounding? boundingPoly;
 
-  factory TextAnnotation.fromJson(Map<String, dynamic> json) => TextAnnotation(
-        locale: json["locale"] == null ? null : json["locale"],
-        description: json["description"],
-        boundingPoly: Bounding.fromJson(json["boundingPoly"]),  
-      );
+    factory TextAnnotation.fromRawJson(String str) => TextAnnotation.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "locale": locale == null ? null : locale,
-        "description": description,
-        "boundingPoly": boundingPoly!.toJson(),
-      };
+    String toRawJson() => json.encode(toJson());
+
+    factory TextAnnotation.fromJson(Map<String, dynamic> json) => TextAnnotation(
+        locale: json["locale"] == null ? null : localeValues.map[json["locale"]],
+        description: json["description"] == null ? null : json["description"],
+        boundingPoly: json["boundingPoly"] == null ? null : Bounding.fromJson(json["boundingPoly"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "locale": locale == null ? null : localeValues.reverse[locale],
+        "description": description == null ? null : description,
+        "boundingPoly": boundingPoly == null ? null : boundingPoly!.toJson(),
+    };
+}
+
+class EnumValues<T> {
+    Map<String, T> map;
+    late Map<T, String> reverseMap;
+
+    EnumValues(this.map);
+
+    Map<T, String> get reverse {
+        if (reverseMap == null) {
+            reverseMap = map.map((k, v) => new MapEntry(v, k));
+        }
+        return reverseMap;
+    }
 }

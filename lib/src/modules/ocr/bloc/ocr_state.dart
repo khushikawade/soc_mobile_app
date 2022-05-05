@@ -13,10 +13,11 @@ class OcrLoading extends OcrState {}
 class SearchLoading extends OcrState {}
 
 class FetchTextFromImageSuccess extends OcrState {
-  final obj;
-  FetchTextFromImageSuccess({this.obj});
-  FetchTextFromImageSuccess copyWith({final obj}) {
-    return FetchTextFromImageSuccess(obj: obj ?? this.obj);
+  String? schoolId;
+  String? grade;
+  FetchTextFromImageSuccess({required this.schoolId,required this.grade});
+  FetchTextFromImageSuccess copyWith({final schoolId}) {
+    return FetchTextFromImageSuccess(schoolId: schoolId ?? this.schoolId, grade: grade ?? this.grade);
   }
 
   @override

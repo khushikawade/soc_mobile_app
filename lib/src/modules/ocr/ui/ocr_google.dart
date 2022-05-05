@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
@@ -51,26 +52,41 @@ class _GoogleOcrState extends State<GoogleOcr> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  width: MediaQuery.of(context).size.width,
-                  child: isLoading == true
-                      ? Center(child: Text('DATA'))
-                      : Row(
-                          children: [
-                            Text('data'),
-                            Text('data'),
-                          ],
-                        ),
-                  // color: Colors.teal,
-                  // child:
-                  //  isLoaded
-                  //     ? Image.file(
-                  //         myImagePath,
-                  //         fit: BoxFit.fill,
-                  //       )
-                  //     : Center(child: Text("This is image section ")),
-                ),
+                BlocBuilder<OcrBloc, OcrState>(
+                    bloc: _bloc, // provide the local bloc instance
+                    builder: (context, state) {
+                      if (state is OcrLoading) {
+                        return CircularProgressIndicator(
+                          color: Colors.white,
+                        );
+                      } else if (state is FetchTextFromImageSuccess) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.05,
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                'OSIS :',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              Text(state.schoolId!,style: TextStyle(fontSize: 18),),
+                              Text('Result :',style: TextStyle(fontSize: 18),),
+                              Text(state.grade!,style: TextStyle(fontSize: 18),),
+                            ],
+                          ),
+                          // color: Colors.teal,
+                          // child:
+                          //  isLoaded
+                          //     ? Image.file(
+                          //         myImagePath,
+                          //         fit: BoxFit.fill,
+                          //       )
+                          //     : Center(child: Text("This is image section ")),
+                        );
+                      }
+                      return Container();
+                    }),
                 InkWell(
                   onTap: () {
                     _showbottomSheet(context);
@@ -96,12 +112,17 @@ class _GoogleOcrState extends State<GoogleOcr> {
   void getGallaryImage() async {
     ImagePicker _imagePicker = ImagePicker();
     XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
-
+    final bytes = File(image!.path).readAsBytesSync();
+    String img64 = base64Encode(bytes);
     setState(() {
-      myImagePath = File(image!.path);
+      myImagePath = File(image.path);
       isLoading2 = false;
       pathOfImage = image.path.toString();
     });
+
+    if (myImagePath != null) {
+      _bloc.add(FetchTextFromImage(base64: img64));
+    }
     // reconizeText(pathOfImage);
   }
 
@@ -202,14 +223,16 @@ class _GoogleOcrState extends State<GoogleOcr> {
   void getCameraImage() async {
     ImagePicker _imagePicker = ImagePicker();
     XFile? image = await _imagePicker.pickImage(source: ImageSource.camera);
+    final bytes = File(image!.path).readAsBytesSync();
+    String img64 = base64Encode(bytes);
 
     setState(() {
-      myImagePath = File(image!.path);
+      myImagePath = File(image.path);
       isLoading2 = false;
       pathOfImage = image.path.toString();
     });
     if (myImagePath != null) {
-      _bloc.add(FetchTextFromImage());
+      _bloc.add(FetchTextFromImage(base64: img64));
     }
     // reconizeText(pathOfImage);
   }
