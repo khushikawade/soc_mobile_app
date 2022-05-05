@@ -22,6 +22,23 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       await fatchTextFromImage();
       try {} catch (e) {}
     }
+
+    if (event is AuthenticateEmail) {
+     try {
+        yield OcrLoading();
+        var data = await authenticateEmail({"email":event.email.toString()});
+
+        yield EmailAuthenticationSuccess(
+          obj: data,
+        );
+      } catch (e) {
+        // if (e.toString().contains('NO_CONNECTION')) {
+        //   Utility.showSnackBar(event.scaffoldKey,
+        //       'Make sure you have a proper Internet connection', event.context);
+        // }
+        yield OcrErrorReceived(err: e);
+      }
+  }
   }
 
   Future fatchTextFromImage() async {
@@ -74,6 +91,25 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       print(
           '------------------------------------test-----------------------------------');
       print(e);
+    }
+  }
+
+
+    Future authenticateEmail(body) async {
+    try {
+      final ResponseModel response = await _dbServices.postapi(
+          "authorizeEmail?objectName=Contact",
+          body: body);
+
+      if (response.statusCode == 200) {
+        var res = response.data;
+        var data = res["body"];
+        return data;
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 }

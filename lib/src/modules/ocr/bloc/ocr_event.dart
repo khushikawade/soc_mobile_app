@@ -10,6 +10,13 @@ class FetchTextFromImage extends OcrEvent {
   List<Object> get props => [];
 }
 
+class AuthenticateEmail extends OcrEvent {
+  final String? email;
+  AuthenticateEmail({required this.email});
+  
+  @override
+  List<Object> get props => [email!];
+}
 
 
 // class GlobalSearchEventOffline extends OcrEvent {

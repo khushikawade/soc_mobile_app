@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
+import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -18,7 +19,6 @@ import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../ocr/modal/user_info.dart';
 import '../../ocr/ui/ocr_home.dart';
-import '../../shared/models/shared_list.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
@@ -41,6 +41,9 @@ class _StaffPageState extends State<StaffPage> {
   StaffBloc _bloc = StaffBloc();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
+  OcrBloc ocrBloc = new OcrBloc();
+  bool? authSuccess = false;
+  dynamic userData;
 
   @override
   void initState() {
@@ -52,7 +55,9 @@ class _StaffPageState extends State<StaffPage> {
   localdb() async {
     _localData = await _localUserInfo.getData();
     print('test++++++++++++++++++++++');
-    print(_localData[0].userName);
+    if (_localData.isNotEmpty) {
+      print(_localData[0].userName);
+    }
   }
 
 //To authenticate the user via google
@@ -76,6 +81,14 @@ class _StaffPageState extends State<StaffPage> {
 
                     // if (_localData.isEmpty) {
                     if (value.toString().contains('displayName')) {
+                      value = value.split('?')[1];
+                      print(value.split('+')[1].toString().split('=')[1]);
+                      ocrBloc.add(AuthenticateEmail(
+                          email: value.split('+')[1].toString().split('=')[1]));
+                      setState(() {
+                        userData = value;
+                      });
+
                       // List<UserInfo> userinfo = [];
                       // userinfo.add(UserInfo(
                       //     userName: value[1].split('+')[0],
@@ -84,32 +97,33 @@ class _StaffPageState extends State<StaffPage> {
                       // Navigator.pop(context);
 
                       //store user profile in local database
-                      _localUserInfo.addData(UserInfo(
-                          userName: value[1].split('+')[0],
-                          userEmail: value[2].split('+')[0],
-                          profilePicture: value[3].split('+')[0]));
-                      // print(_localUserInfo);
-                      print(_localData.length);
-                      print(_localData[0]);
 
-                      Future.delayed(const Duration(milliseconds: 5000), () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OpticalCharacterRecognition()));
-                      });
+// _localUserInfo.addData(UserInfo(
+//                           userName: value[1].split('+')[0],
+//                           userEmail: value[2].split('+')[0],
+//                           profilePicture: value[3].split('+')[0]));
+//                       // print(_localUserInfo);
+//                       print(_localData.length);
+//                       print(_localData[0]);
+
+                      //   Future.delayed(const Duration(milliseconds: 5000), () {
+                      //     Navigator.pushReplacement(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //             builder: (BuildContext context) =>
+                      //                 OpticalCharacterRecognition()));
+                      //   });
+                      // }
+                      // }
+                      // else{
+                      //   Future.delayed(const Duration(milliseconds: 5000), () {
+                      //     Navigator.pushReplacement(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //             builder: (BuildContext context) =>
+                      //                 OpticalCharacterRecognition()));
+                      //   });
                     }
-                    // }
-                    // else{
-                    //   Future.delayed(const Duration(milliseconds: 5000), () {
-                    //     Navigator.pushReplacement(
-                    //         context,
-                    //         MaterialPageRoute(
-                    //             builder: (BuildContext context) =>
-                    //                 OpticalCharacterRecognition()));
-                    //   });
-                    // }
                   },
                 )));
   }
@@ -182,6 +196,39 @@ class _StaffPageState extends State<StaffPage> {
                       },
                       child: EmptyContainer()),
                 ),
+                BlocListener<OcrBloc, OcrState>(
+                    bloc: ocrBloc,
+                    listener: (context, state) async {
+                      if (state is EmailAuthenticationSuccess) {
+                        if (state.obj == "true") {
+                          _localUserInfo.addData(UserInfo(
+                              userName: userData
+                                  .split('+')[1]
+                                  .toString()
+                                  .split('=')[0],
+                              userEmail: userData
+                                  .split('+')[1]
+                                  .toString()
+                                  .split('=')[0],
+                              profilePicture: userData
+                                  .split('+')[1]
+                                  .toString()
+                                  .split('=')[0]));
+                          // print(_localUserInfo);
+                          // print(
+                          //     '${_localData[0].userEmail}+${_localData[0].userName}+${_localData[0].profilePicture}');
+                          localdb();
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      OpticalCharacterRecognition()));
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      }
+                    },
+                    child: EmptyContainer()),
               ]),
             );
           },
