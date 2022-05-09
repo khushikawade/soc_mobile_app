@@ -82,7 +82,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                               ishtml: true,
                             )))
                 : Utility.showSnackBar(
-                    scaffoldKey, 'No Information Available', context);
+                    scaffoldKey, 'No Information Available', context,null);
             break;
           case IconsMenu.Setting:
             await Navigator.push(

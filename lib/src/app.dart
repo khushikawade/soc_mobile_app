@@ -107,10 +107,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       ),
     );
   }
+}
 
   // clearTheme() async {
   //   final prefs = await SharedPreferences.getInstance();
   //   await prefs.remove(AdaptiveTheme.prefKey);
   //   // AdaptiveTheme.of(context).persist();
   // }
-}

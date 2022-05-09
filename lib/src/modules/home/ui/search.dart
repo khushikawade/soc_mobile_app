@@ -111,7 +111,7 @@ class _SearchPageState extends State<SearchPage> {
                         appBarTitle: obj.titleC!,
                         language: Globals.selectedLanguage!,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context,null);
     } else if (obj.typeC == "Form" &&
         obj.objectName == 'Staff_Directory_App__c') {
       List<SDlist> newObj = [];
@@ -191,7 +191,7 @@ class _SearchPageState extends State<SearchPage> {
     else if (obj.typeC == "URL") {
       obj.urlC != null
           ? await _launchURL(obj)
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+          : Utility.showSnackBar(_scaffoldKey, "No link available", context,null);
     } else if (obj.typeC == "RTF_HTML" ||
         obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
@@ -207,7 +207,7 @@ class _SearchPageState extends State<SearchPage> {
                         ishtml: true,
                         appbarTitle: obj.titleC!,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+          : Utility.showSnackBar(_scaffoldKey, "No data available", context,null);
       // _setLocked();
     } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
@@ -221,7 +221,7 @@ class _SearchPageState extends State<SearchPage> {
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context,null);
       // _setLocked();
     } else if (obj.typeC == "Calendar/Events") {
       obj.calendarId != null && obj.calendarId != ""
@@ -235,7 +235,7 @@ class _SearchPageState extends State<SearchPage> {
                         calendarId: obj.calendarId.toString(),
                       )))
           : Utility.showSnackBar(
-              _scaffoldKey, "No calendar/events available", context);
+              _scaffoldKey, "No calendar/events available", context,null);
     } else if (obj.typeC == "Sub-Menu") {
       await Navigator.push(
           context,
@@ -259,7 +259,7 @@ class _SearchPageState extends State<SearchPage> {
                   )));
     } else {
       Utility.showSnackBar(
-          _scaffoldKey, "No data available for this record", context);
+          _scaffoldKey, "No data available for this record", context,null);
     }
     _setLocked();
   }
@@ -271,7 +271,7 @@ class _SearchPageState extends State<SearchPage> {
       } else if (obj.urlC != null && obj.urlC != "URL__c") {
         await Utility.launchUrlOnExternalBrowser(obj.urlC);
       } else {
-        Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+        Utility.showSnackBar(_scaffoldKey, "No URL available", context,null);
       }
     } else if (obj.urlC != null || obj.appURLC != null) {
       await Navigator.push(
@@ -287,7 +287,7 @@ class _SearchPageState extends State<SearchPage> {
                   )));
       // _setLocked();
     } else {
-      Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+      Utility.showSnackBar(_scaffoldKey, "No URL available", context,null);
     }
   }
 

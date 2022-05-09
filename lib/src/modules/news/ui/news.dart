@@ -96,7 +96,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         onTap: () async {
           if (isCountLoading == true) {
             Utility.showSnackBar(
-                _scaffoldKey, "Please wait while count is loading", context);
+                _scaffoldKey, "Please wait while count is loading", context,null);
           } else {
             //free screen orientation
             //  Utility.setFree();
