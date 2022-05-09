@@ -56,6 +56,8 @@ class Globals {
   static String? themeType;
   static List icons = [0xe823, 0xe824, 0xe825, 0xe829];
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
+  static List pointsList = [1, 2, 3, 4];
+  static List scoringList = ['NYC 0-2', 'NYC 0-3', 'NYC 0-4', 'Custom', 'None'];
   static List<NotificationList> notificationList = [];
   static List<Item> socialList = [];
   static PackageInfo? packageInfo;
