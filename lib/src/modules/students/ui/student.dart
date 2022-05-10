@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
+//import 'package:Soc/src/modules/students/ui/demo.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -47,9 +48,11 @@ class _StudentPageState extends State<StudentPage> {
     if (obj.appUrlC != null) {
       if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
         showDialog(
+          useRootNavigator: false,
           // barrierColor: Color.fromARGB(96, 73, 73, 75),
           context: context,
           builder: (_) => AppsFolderPage(
+            scaffoldKey: _scaffoldKey,
             obj: subList,
             folderName: obj.titleC!,
           ),
@@ -229,15 +232,11 @@ class _StudentPageState extends State<StudentPage> {
               },
             ),
           )
-        : Center(
-            child: TranslationWidget(
-              message: "No apps available here",
-              fromLanguage: "en",
-              toLanguage: Globals.selectedLanguage,
-              builder: (translatedMessage) => Text(translatedMessage.toString(),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1!),
-            ),
+        : NoDataFoundErrorWidget(
+            isResultNotFoundMsg: false,
+            isNews: false,
+            isEvents: false,
+            // connected: connected,
           );
   }
 

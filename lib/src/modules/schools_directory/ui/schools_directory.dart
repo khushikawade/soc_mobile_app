@@ -16,12 +16,16 @@ import 'package:flutter_offline/flutter_offline.dart';
 
 class SchoolDirectoryPage extends StatefulWidget {
   final obj;
-  final bool? isStanderdPage;
+  final bool? isStandardPage;
   final bool? isSubmenu;
   final String? title;
 
   const SchoolDirectoryPage(
-      {Key? key, this.obj, this.isStanderdPage, this.isSubmenu, this.title})
+      {Key? key,
+      this.obj,
+      required this.isStandardPage,
+      this.isSubmenu,
+      this.title})
       : super(key: key);
 
   @override
@@ -42,7 +46,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     //Utility.setLocked();
     super.initState();
     bloc.add(SchoolDirectoryListEvent(
-        customRecordId: widget.isStanderdPage != false ? null : widget.obj.id,
+        customRecordId: widget.isStandardPage != false ? null : widget.obj.id,
         isSubMenu: widget.isSubmenu));
   }
 
@@ -139,7 +143,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                 if (connected) {
                   if (iserrorstate == true) {
                     bloc.add(SchoolDirectoryListEvent(
-                        customRecordId: widget.isStanderdPage != false
+                        customRecordId: widget.isStandardPage != false
                             ? null
                             : widget.obj.id,
                         isSubMenu: widget.isSubmenu));
@@ -228,7 +232,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: widget.isStanderdPage == true
+        appBar: widget.isStandardPage == true
             ? AppBarWidget(
                 marginLeft: 30,
                 refresh: (v) {
@@ -270,7 +274,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     bloc.add(SchoolDirectoryListEvent(
-        customRecordId: widget.isStanderdPage != false ? null : widget.obj.id,
+        customRecordId: widget.isStandardPage != false ? null : widget.obj.id,
         isSubMenu: widget.isSubmenu));
     _homeBloc.add(FetchStandardNavigationBar());
   }

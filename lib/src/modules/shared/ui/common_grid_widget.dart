@@ -174,7 +174,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         ? true
                         : false,
                     obj: obj,
-                    isStanderdPage: false,
+                    isStandardPage: false,
                   )));
     } else {
       Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
@@ -356,15 +356,11 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
               },
             ),
           )
-        : Center(
-            child: TranslationWidget(
-              message: "No apps available here",
-              fromLanguage: "en",
-              toLanguage: Globals.selectedLanguage,
-              builder: (translatedMessage) => Text(translatedMessage.toString(),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1!),
-            ),
+        : NoDataFoundErrorWidget(
+            isResultNotFoundMsg: false,
+            isNews: false,
+            isEvents: false,
+            // connected: connected,
           );
   }
 
@@ -384,6 +380,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
 
   subListDialog(obj) {
     showDialog(
+        useRootNavigator: false,
         // barrierColor: Color.fromARGB(96, 73, 73, 75),
         context: context,
         builder: (_) => CommonGridFolder(

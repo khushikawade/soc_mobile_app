@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     // initialIndex:
     Globals.isNewTap = false;
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
-    WidgetsBinding.instance!.addObserver(this); 
+    WidgetsBinding.instance!.addObserver(this);
     _checkNewVersion();
   }
 
@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               } else if (element.contains('school')) {
                 _screens.add(
                   SchoolDirectoryPage(
-                    isStanderdPage: true,
+                    isStandardPage: true,
                     isSubmenu: false,
                   ),
                 );
@@ -499,7 +499,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else if (Globals.customSetting![i].systemReferenceC ==
             'Directory Org') {
           _screens.add(SchoolDirectoryPage(
-            isStanderdPage: true,
+            isStandardPage: true,
             isSubmenu: false,
           ));
         } else if (Globals.customSetting![i].systemReferenceC ==

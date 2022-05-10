@@ -193,7 +193,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     title: obj.titleC,
                     isSubmenu: obj.typeC == 'Org Directory' ? true : false,
                     obj: obj,
-                    isStanderdPage: false,
+                    isStandardPage: false,
                   )));
       // } else if (obj.typeC == "OCR") {
       //   if (obj.isSecure == 'true') {

@@ -318,7 +318,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
-
                               Globals.appSetting =
                                   AppSetting.fromJson(state.obj);
                               setState(() {});

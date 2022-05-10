@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+// import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -46,6 +48,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
   @override
   void initState() {
     super.initState();
+    // _getPermission();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
@@ -143,4 +146,8 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
         },
         child: Container());
   }
+
+  // _getPermission() async {
+  //   await Permission.storage.request();
+  // }
 }
