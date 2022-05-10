@@ -58,6 +58,7 @@ class Globals {
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   static List pointsList = [1, 2, 3, 4];
   static List scoringList = ['NYC 0-2', 'NYC 0-3', 'NYC 0-4', 'Custom', 'None'];
+  static List classList = ['K', '1', '2', '3', '4','5', '6', '7', '8', '9','10','11','12','?','+'];
   static List<NotificationList> notificationList = [];
   static List<Item> socialList = [];
   static PackageInfo? packageInfo;

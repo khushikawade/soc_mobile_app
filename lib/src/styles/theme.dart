@@ -206,7 +206,7 @@ class AppTheme {
         hintStyle: TextStyle(
             color: kTxtFieldColor,
             height: 1.2,
-            fontSize: Globals.deviceType == "phone"
+            fontSize: Globals.deviceType == "phone"        
                 ? kSubtitleFontSize
                 : kSubtitleFontSize + kSize),
         focusedBorder: OutlineInputBorder(
