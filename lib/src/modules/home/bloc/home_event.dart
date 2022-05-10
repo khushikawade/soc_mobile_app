@@ -40,18 +40,20 @@ class GetRecordByID extends HomeEvent {
   final String? recordType;
   final String? recordId;
   final String? objectName;
-  final bool? isRecentRecord;
+ //bool? isRecentRecord;
   GetRecordByID(
       {@required this.recordId,
       required this.objectName,
       required this.recordType,
-      required this.isRecentRecord});
+    //  required this.isRecentRecord
+      });
 
   @override
   List<Object> get props =>
-      [recordId!, objectName!, recordType!, isRecentRecord!];
+      [recordId!, objectName!, recordType!, // isRecentRecord!
+      ];
 
   @override
   String toString() =>
-      'GlobalSearchEvent { referenceId: $recordId!,referenceTitle: ${objectName!},objectType:$recordType,isRecentRecord:${isRecentRecord!} }';
+      'GlobalSearchEvent { referenceId: $recordId!,referenceTitle: ${objectName!},objectType:$recordType }';
 }

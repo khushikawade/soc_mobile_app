@@ -163,49 +163,55 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 //ReferenceGlobalSearchREvent
 
     if (event is GetRecordByID) {
-      print("calling =====================>");
       try {
-        if (event.isRecentRecord == false) {
+        bool result = false;
+        //ge
+        List<dynamic> _localDb =
+            await getListData(Strings.hiveReferenceLogName);
+
+        for (int i = 0; i < _localDb.length; i++) {
+          if (event.recordId == _localDb[i].id) {
+            result = true;
+            yield RecordDetailSuccess(
+                  isRecentRecod: true ,
+                recordObject: _localDb[i],
+                objectName: event.objectName,
+                objectType: event.recordType);
+            break;
+          }
+        }
+
+        if (!result) {
           yield RefrenceSearchLoading();
         }
+
         dynamic recordObject = await getrecordByID_API(
             event.recordId, event.objectName, event.recordType!);
 
-        if (recordObject != null) {
-          List<dynamic> recordDetailList = [];
-          recordDetailList = await getListData(Strings.hiveReferenceLogName);
-          //  print("recent list length =======> ${recordDetailList.length}");
-          List<dynamic> idReferenceList = [];
-          for (int i = 0; i < recordDetailList.length; i++) {
-            idReferenceList.add(recordDetailList[i].id);
-            if (recordDetailList[i].id.toString() ==
-                recordObject.id.toString()) {
-              // recordDetailList[i] = recordObject;
-              await HiveDbServices().updateListData(
-                  Strings.hiveReferenceLogName, i, recordObject);
-            }
-          }
+        // List<dynamic> recordDetailList = [];
+        // recordDetailList = await getListData(Strings.hiveReferenceLogName);
+        //  print("recent list length =======> ${recordDetailList.length}");
 
-          if (idReferenceList.contains(recordObject.id)) {
-            //  cleanList();
-            //updateRecordList(recordDetailList);
-          } else {
-            if (recordObject != null) {
-              deleteItem(Strings.hiveReferenceLogName);
-              addRecordDetailtoLocalDb(recordObject);
-            }
-          }
-          List<dynamic> d = await getListData(Strings.hiveReferenceLogName);
-          print(d.length);
-          print("sending data back");
-          if (event.isRecentRecord == false) {
-            yield RecordDetailSuccess(
-                isRecentRecod: event.isRecentRecord,
-                recordObject: recordObject,
-                objectName: event.objectName,
-                objectType: event.recordType);
+        List<dynamic> idReferenceList = [];
+        for (int i = 0; i < _localDb.length; i++) {
+          idReferenceList.add(_localDb[i].id);
+          if (_localDb[i].id.toString() == recordObject.id.toString()) {
+            // recordDetailList[i] = recordObject;
+            await HiveDbServices()
+                .updateListData(Strings.hiveReferenceLogName, i, recordObject);
           }
         }
+
+        if (!idReferenceList.contains(recordObject.id)) {
+          deleteItem(Strings.hiveReferenceLogName);
+          addRecordDetailtoLocalDb(recordObject);
+        }
+
+        yield RecordDetailSuccess(
+             isRecentRecod: false,
+            recordObject: recordObject,
+            objectName: event.objectName,
+            objectType: event.recordType);
       } catch (e) {
         if (event.recordId!.isNotEmpty &&
             event.objectName!.isNotEmpty &&
@@ -249,13 +255,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           //                             : "",
           //     event.recordId);
 
-          if (recordObject != null && recordObject.isNotEmpty) {
-            yield RecordDetailSuccess(
-                isRecentRecod: event.isRecentRecord,
-                recordObject: recordObject,
-                objectName: event.objectName,
-                objectType: event.recordType);
-          }
+          yield RecordDetailSuccess(
+                isRecentRecod: false,
+              recordObject: recordObject,
+              objectName: event.objectName,
+              objectType: event.recordType);
         }
 
         // yield HomeErrorReceived(err: e);
@@ -346,6 +350,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+  // ignore: non_constant_identifier_names
   Future<dynamic> getRecordByID_localDatabase(dataBaseName, id) async {
     try {
       LocalDatabase<dynamic> _localDb = LocalDatabase(dataBaseName);
@@ -505,6 +510,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+  // ignore: non_constant_identifier_names
   Future<dynamic> getrecordByID_API(
       String? recordId, String? objectName, String recordType) async {
     try {
@@ -534,7 +540,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         //jsonDecode(response.data['body']);
         // print(data);
         // print(data);
-        return null;
+
         // return response.data.map<SearchList>((i) => SearchList.fromJson(i));
       }
     } catch (e) {
@@ -572,7 +578,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     //     await HiveDbServices().addData(log, Strings.hiveReferenceLogName);
   }
 
-  deleteItem(String localDatalogName) async {
+  void deleteItem(String localDatalogName) async {
     int itemcount = await HiveDbServices().getListLength(localDatalogName);
     if (itemcount > 5) {
       await HiveDbServices().deleteData(localDatalogName, 0);

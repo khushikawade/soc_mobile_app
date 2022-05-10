@@ -194,6 +194,7 @@ class _SearchPageState extends State<SearchPage> {
                     obj: obj,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
+                    isSubmenu:false
                   )));
     } else if (objectType == "SchoolDirectoryApp") {
       await Navigator.push(
@@ -441,29 +442,36 @@ class _SearchPageState extends State<SearchPage> {
         List<dynamic> reversedRecentDetailDbList =
             new List.from(recentDetailDbList.reversed);
 
+        _homeBloc.add(GetRecordByID(
+            //  isRecentRecord: true,
+            // title: data.titleC,
+            recordType: items[index].typeC,
+            recordId: items[index].id,
+            objectName: items[index].objectName));
+
         if (items[index].id == reversedRecentDetailDbList[index].id) {
           //updateing currrent record object
-          _homeBloc.add(GetRecordByID(
-              isRecentRecord: true,
-              // title: data.titleC,
-              recordType: items[index].typeC,
-              recordId: items[index].id,
-              objectName: items[index].objectName));
+          // _homeBloc.add(GetRecordByID(
+          //     //  isRecentRecord: true,
+          //     // title: data.titleC,
+          //     recordType: items[index].typeC,
+          //     recordId: items[index].id,
+          //     objectName: items[index].objectName));
 
           _route(
               obj: reversedRecentDetailDbList[index],
               objectName: items[index].objectName,
               objectType: items[index].typeC);
-        } else {
-          _homeBloc.add(GetRecordByID(
-              isRecentRecord: false,
-              // title: data.titleC,
-              recordType: items[index].typeC,
-              recordId: items[index].id,
-              objectName: items[index].objectName));
         }
 
-        //  _route( obj: items[index], objectName: '', objectType: '');
+        //  else {
+        //   _homeBloc.add(GetRecordByID(
+        //       //  isRecentRecord: false,
+        //       // title: data.titleC,
+        //       recordType: items[index].typeC,
+        //       recordId: items[index].id,
+        //       objectName: items[index].objectName));
+        // }
       },
       child: Container(
           margin: EdgeInsets.only(
@@ -587,7 +595,7 @@ class _SearchPageState extends State<SearchPage> {
                             onTap: () async {
                               //  _route(data);
                               _homeBloc.add(GetRecordByID(
-                                  isRecentRecord: false,
+                                  // isRecentRecord: false,
                                   // title: data.titleC,
                                   recordType: data.typeC,
                                   recordId: data.id,
@@ -838,13 +846,17 @@ class _SearchPageState extends State<SearchPage> {
                                   AppSetting.fromJson(state.obj);
                               setState(() {});
                             } else if (state is RecordDetailSuccess) {
-                              print("return bloc response ===========>");
                               //Navigator.of(context, rootNavigator: true).pop();
 
                               if (state.recordObject != '' &&
-                                  state.recordObject != null &&
-                                  state.isRecentRecod == false) {
-                                Navigator.pop(context);
+                                      state.recordObject != null
+                                  //  &&
+                                  // state.isRecentRecod == false
+                                  ) {
+                                if (!state.isRecentRecod!) {
+                                  Navigator.pop(context);
+                                }
+
                                 _route(
                                     obj: state.recordObject,
                                     objectType: state.objectType!,
