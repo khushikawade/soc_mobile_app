@@ -75,7 +75,8 @@ class _StaffPageState extends State<StaffPage> {
                   callBackFunction: (value) async {
                     if (value.toString().contains('displayName')) {
                       value = value.split('?')[1];
-                      print(value.split('+')[1].toString().split('=')[1]);
+
+                      //Comparing and saving the user profile locally
                       if (value
                               .split('+')[1]
                               .toString()
@@ -104,6 +105,7 @@ class _StaffPageState extends State<StaffPage> {
                                 .split('=')[1]));
 
                         localdb();
+
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -268,7 +270,6 @@ class _StaffPageState extends State<StaffPage> {
         ),
         child: FloatingActionButton(
           onPressed: () async {
-            _localData.clear();
             if (_localData.isEmpty) {
               await _launchURL('Google Authentication');
             } else {
@@ -278,8 +279,6 @@ class _StaffPageState extends State<StaffPage> {
                       builder: (BuildContext context) =>
                           OpticalCharacterRecognition()));
             }
-
-            // Add your onPressed code here!
           },
           child: Icon(
             Icons.add,
