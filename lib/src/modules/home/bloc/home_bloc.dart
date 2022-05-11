@@ -173,7 +173,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           if (event.recordId == _localDb[i].id) {
             result = true;
             yield RecordDetailSuccess(
-                  isRecentRecod: true ,
+                isRecentRecod: true,
                 recordObject: _localDb[i],
                 objectName: event.objectName,
                 objectType: event.recordType);
@@ -187,10 +187,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         dynamic recordObject = await getrecordByID_API(
             event.recordId, event.objectName, event.recordType!);
-
-        // List<dynamic> recordDetailList = [];
-        // recordDetailList = await getListData(Strings.hiveReferenceLogName);
-        //  print("recent list length =======> ${recordDetailList.length}");
 
         List<dynamic> idReferenceList = [];
         for (int i = 0; i < _localDb.length; i++) {
@@ -208,7 +204,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
 
         yield RecordDetailSuccess(
-             isRecentRecod: false,
+            isRecentRecod: false,
             recordObject: recordObject,
             objectName: event.objectName,
             objectType: event.recordType);
@@ -238,25 +234,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 Strings.schoolDirectoryObjectName, event.recordId);
           }
 
-          // dynamic recordObject = await getRecordByID_localDatabase(
-          //     event.objectName == "Families_App__c"
-          //         ? Strings.familiesObjectName
-          //         : event.objectName == 'Staff_Directory_App__c'
-          //             ? Strings.staffObjectName
-          //             : event.objectName == 'Resources_App__c'
-          //                 ? Strings.resourcesObjectName
-          //                 : event.objectName == 'About_App__c'
-          //                     ? Strings.aboutObjectName
-          //                     : event.objectName == 'Student_App__c'
-          //                         ? Strings.studentsObjectName
-          //                         : event.objectName ==
-          //                                 'School_Directory_App__c'
-          //                             ? Strings.schoolDirectoryObjectName
-          //                             : "",
-          //     event.recordId);
-
           yield RecordDetailSuccess(
-                isRecentRecod: false,
+              isRecentRecod: false,
               recordObject: recordObject,
               objectName: event.objectName,
               objectType: event.recordType);

@@ -5,7 +5,6 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
-import 'package:Soc/src/modules/students/ui/marqee.dart';
 //import 'package:Soc/src/modules/students/ui/demo.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -148,45 +147,34 @@ class StudentPageState extends State<StudentPage> {
                                           Orientation.portrait &&
                                       translatedMessage.toString().length > 11
                                   ? Expanded(
-                                      child: MarqueeWidget(
-                                        key: widget.key,
-                                     // pauseDuration: Duration(seconds: 1),
-                                      child: Text(
-                                        translatedMessage.toString(),
+                                      child: Marquee(
+                                        text: translatedMessage.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1!
+                                            .copyWith(
+                                                fontSize: Globals.deviceType ==
+                                                        "phone"
+                                                    ? 16
+                                                    : 24),
+                                        scrollAxis: Axis.horizontal,
+                                        velocity: 30.0,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        blankSpace: 50,
+                                        //MediaQuery.of(context).size.width
+                                        // velocity: 100.0,
+                                        pauseAfterRound: Duration(seconds: 5),
+                                        showFadingOnlyWhenScrolling: true,
+                                        startPadding: 10.0,
+                                        accelerationDuration:
+                                            Duration(seconds: 1),
+                                        accelerationCurve: Curves.linear,
+                                        decelerationDuration:
+                                            Duration(milliseconds: 500),
+                                        decelerationCurve: Curves.easeOut,
                                       ),
                                     )
-
-                                      //  Marquee(
-                                      //   text: translatedMessage.toString(),
-                                      //   style: Theme.of(context)
-                                      //       .textTheme
-                                      //       .bodyText1!
-                                      //       .copyWith(
-                                      //           fontSize: Globals.deviceType ==
-                                      //                   "phone"
-                                      //               ? 16
-                                      //               : 24),
-                                      //   scrollAxis: Axis.horizontal,
-                                      //   velocity: 30.0,
-                                      //   crossAxisAlignment:
-                                      //       CrossAxisAlignment.start,
-                                      //   blankSpace: 50,
-                                      //   //MediaQuery.of(context).size.width
-                                      //   // velocity: 100.0,
-                                      //   //   pauseAfterRound: Duration(seconds: 5),
-                                      //   showFadingOnlyWhenScrolling: true,
-                                      //   startPadding: 10.0,
-                                      //   accelerationDuration:
-                                      //       Duration(seconds: 1),
-                                      //   accelerationCurve: Curves.linear,
-                                      //   decelerationDuration:
-                                      //       Duration(milliseconds: 500),
-                                      //   decelerationCurve: Curves.easeOut,
-                                      //   numberOfRounds: 1,
-                                      //   startAfter: Duration.zero,
-
-                                      // ),
-                                      )
                                   : MediaQuery.of(context).orientation ==
                                               Orientation.landscape &&
                                           translatedMessage.toString().length >
@@ -211,7 +199,7 @@ class StudentPageState extends State<StudentPage> {
                                           blankSpace:
                                               50, //MediaQuery.of(context).size.width
                                           // velocity: 100.0,
-                                          //   pauseAfterRound: Duration(seconds: 5),
+                                          pauseAfterRound: Duration(seconds: 5),
                                           showFadingOnlyWhenScrolling: true,
                                           startPadding: 10.0,
                                           accelerationDuration:
@@ -220,7 +208,6 @@ class StudentPageState extends State<StudentPage> {
                                           decelerationDuration:
                                               Duration(milliseconds: 500),
                                           decelerationCurve: Curves.easeOut,
-                                          numberOfRounds: 1,
                                         ))
                                       : SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
