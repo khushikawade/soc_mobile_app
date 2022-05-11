@@ -45,3 +45,47 @@ class OcrErrorReceived extends OcrState {
   @override
   List<Object> get props => [err];
 }
+class SubjectDataSuccess extends OcrState {
+  final List<SubjectList>? obj;
+  SubjectDataSuccess({
+    this.obj,
+  });
+  SubjectDataSuccess copyWith({
+    obj,
+  }) {
+    return SubjectDataSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+class NycDataSuccess extends OcrState {
+  final List<SubjectList> obj;
+  NycDataSuccess({
+    required this.obj,
+  });
+
+  get list => null;
+  NycDataSuccess copyWith({
+    obj,
+  }) {
+    return NycDataSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+class NycSubDataSuccess extends OcrState {
+  final List<SubjectList>? obj;
+  NycSubDataSuccess({
+    this.obj,
+  });
+  NycSubDataSuccess copyWith({
+    obj,
+  }) {
+    return NycSubDataSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}

@@ -76,7 +76,7 @@ class _StudentPageState extends State<StudentPage> {
       //lock screen orientation
 
     } else {
-      Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+      Utility.showSnackBar(_scaffoldKey, "No URL available", context,null);
     }
     //  Utility.setLocked();
   }

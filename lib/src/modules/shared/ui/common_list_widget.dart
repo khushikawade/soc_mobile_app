@@ -86,7 +86,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
       obj.appUrlC != null && obj.appUrlC != ""
           ? await _launchURL(obj, '')
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No link available", context);
+              widget.scaffoldKey, "No link available", context,null);
     } else if (obj.typeC == "Form") {
       await Navigator.push(
           context,
@@ -113,7 +113,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         calendarId: obj.calendarId.toString(),
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No calendar/events available", context);
+              widget.scaffoldKey, "No calendar/events available", context,null);
     } else if (obj.typeC == "RTF_HTML" ||
         obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
@@ -130,7 +130,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No data available", context);
+              widget.scaffoldKey, "No data available", context,null);
     } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
           ? await Navigator.push(
@@ -144,7 +144,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No data available", context);
+              widget.scaffoldKey, "No data available", context,null);
     } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
           ? await Navigator.push(
@@ -158,7 +158,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No pdf available", context);
+              widget.scaffoldKey, "No pdf available", context,null);
     } else if (obj.typeC == "Sub-Menu") {
       await Navigator.push(
           context,
@@ -208,7 +208,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
       //                             builder: (BuildContext context) =>
       //                                 OpticalCharacterRecognition()));}
     } else {
-      Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
+      Utility.showSnackBar(widget.scaffoldKey, "No data available", context,null);
     }
     // Utility.setLocked();
   }

@@ -17,6 +17,13 @@ class AuthenticateEmail extends OcrEvent {
   @override
   List<Object> get props => [email!];
 }
+class FatchSubjectDetails extends OcrEvent {
+  final String? type;
+  FatchSubjectDetails({required this.type});
+  
+  @override
+  List<Object> get props => [type!];
+}
 
 
 class FetchTextFromImage extends OcrEvent {

@@ -54,80 +54,83 @@ class _StaffPageState extends State<StaffPage> {
 
   localdb() async {
     _localData = await _localUserInfo.getData();
-    print('test++++++++++++++++++++++');
-    if (_localData.isNotEmpty) {
-      print(_localData[0].userName);
-    }
   }
 
 //To authenticate the user via google
   _launchURL(String? title) async {
-    await Navigator.push(
+   Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) =>
+            builder: (BuildContext context) => OpticalCharacterRecognition() ));
+    // await Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (BuildContext context) =>
             
-             GoogleAuthWebview(
-                  title: title!,
-                  url: Overrides.secureLoginURL +
-                      '?' +
-                      Globals.appSetting
-                          .appLogoC, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                  hideAppbar: false,
-                  hideShare: true,
-                  zoomEnabled: false,
-                  callBackFunction: (value) async {
-                    // https://034d-111-118-246-106.in.ngrok.io/success/?displayName=Test%20account+userEmail=testmystuffss@gmail.com+picture=https://lh3.googleusercontent.com/a-/AOh14Ghhyn8_YWCM_qOlFpbhOqM9keF0xvIHJ6PmVP72=s96-c
+    //          GoogleAuthWebview(
+    //               title: title!,
+    //               url: Overrides.secureLoginURL +
+    //                   '?' +
+    //                   Globals.appSetting
+    //                       .appLogoC, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
+    //               isbuttomsheet: true,
+    //               language: Globals.selectedLanguage,
+    //               hideAppbar: false,
+    //               hideShare: true,
+    //               zoomEnabled: false,
+    //               callBackFunction: (value) async {
+    //                 if (value.toString().contains('displayName')) {
+    //                   value = value.split('?')[1];
+    //                   print(value.split('+')[1].toString().split('=')[1]);
+    //                   if (value
+    //                           .split('+')[1]
+    //                           .toString()
+    //                           .split('=')[1]
+    //                           .contains('@schools.nyc.gov') ||
+    //                       value
+    //                           .split('+')[1]
+    //                           .toString()
+    //                           .split('=')[1]
+    //                           .contains('@solvedconsulting')) {
+    //                     _localUserInfo.addData(UserInfo(
+    //                         userName: value
+    //                             .split('+')[0]
+    //                             .toString()
+    //                             .toString()
+    //                             .split('=')[1],
+    //                         userEmail: value
+    //                             .split('+')[1]
+    //                             .toString()
+    //                             .toString()
+    //                             .split('=')[1],
+    //                         profilePicture: value
+    //                             .split('+')[2]
+    //                             .toString()
+    //                             .toString()
+    //                             .split('=')[1]));
 
-                    // if (_localData.isEmpty) {
-                    if (value.toString().contains('displayName')) {
-                      value = value.split('?')[1];
-                      print(value.split('+')[1].toString().split('=')[1]);
-                      ocrBloc.add(AuthenticateEmail(
-                          email: value.split('+')[1].toString().split('=')[1]));
-                      setState(() {
-                        userData = value;
-                      });
-
-                      // List<UserInfo> userinfo = [];
-                      // userinfo.add(UserInfo(
-                      //     userName: value[1].split('+')[0],
-                      //     userEmail: value[2].split('+')[0],
-                      //     profilePicture: value[3].split('+')[0]));
-                      // Navigator.pop(context);
-
-                      //store user profile in local database
-
-// _localUserInfo.addData(UserInfo(
-//                           userName: value[1].split('+')[0],
-//                           userEmail: value[2].split('+')[0],
-//                           profilePicture: value[3].split('+')[0]));
-//                       // print(_localUserInfo);
-//                       print(_localData.length);
-//                       print(_localData[0]);
-
-                      //   Future.delayed(const Duration(milliseconds: 5000), () {
-                      //     Navigator.pushReplacement(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //             builder: (BuildContext context) =>
-                      //                 OpticalCharacterRecognition()));
-                      //   });
-                      // }
-                      // }
-                      // else{
-                      //   Future.delayed(const Duration(milliseconds: 5000), () {
-                      //     Navigator.pushReplacement(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //             builder: (BuildContext context) =>
-                      //                 OpticalCharacterRecognition()));
-                      //   });
-                    }
-                  },
-                )));
+    //                     localdb();
+    //                     Navigator.pushReplacement(
+    //                         context,
+    //                         MaterialPageRoute(
+    //                             builder: (BuildContext context) =>
+    //                                 OpticalCharacterRecognition()));
+    //                   } else {
+    //                     Navigator.pop(context, false);
+    //                     Utility.showSnackBar(
+    //                         _scaffoldKey,
+    //                         'You are not authorized to access the feature. Please use the authorized account.',
+    //                         context,
+    //                         50.0);
+    //                   }
+    //                   // ocrBloc.add(AuthenticateEmail(
+    //                   //     email: value.split('+')[1].toString().split('=')[1]));
+    //                   // setState(() {
+    //                   //   userData = value;
+    //                   // });
+    //                 }
+    //               },
+    //             )));
   }
 
   Widget _body(String key) => RefreshIndicator(
@@ -192,45 +195,44 @@ class _StaffPageState extends State<StaffPage> {
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
                           Globals.appSetting = AppSetting.fromJson(state.obj);
-
-                          setState(() {});
                         }
                       },
                       child: EmptyContainer()),
                 ),
-                BlocListener<OcrBloc, OcrState>(
-                    bloc: ocrBloc,
-                    listener: (context, state) async {
-                      if (state is EmailAuthenticationSuccess) {
-                        if (state.obj == "true") {
-                          _localUserInfo.addData(UserInfo(
-                              userName: userData
-                                  .split('+')[1]
-                                  .toString()
-                                  .split('=')[0],
-                              userEmail: userData
-                                  .split('+')[1]
-                                  .toString()
-                                  .split('=')[0],
-                              profilePicture: userData
-                                  .split('+')[1]
-                                  .toString()
-                                  .split('=')[0]));
-                          // print(_localUserInfo);
-                          // print(
-                          //     '${_localData[0].userEmail}+${_localData[0].userName}+${_localData[0].profilePicture}');
-                          localdb();
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      OpticalCharacterRecognition()));
-                        } else {
-                          Navigator.pop(context);
-                        }
-                      }
-                    },
-                    child: EmptyContainer()),
+                // BlocListener<OcrBloc, OcrState>(
+                //     bloc: ocrBloc,
+                //     listener: (context, state) async {
+                //       if (state is EmailAuthenticationSuccess) {
+                //         if (state.obj == "true") {
+                //           _localUserInfo.addData(UserInfo(
+                //               userName: userData
+                //                   .split('+')[0]
+                //                   .toString()
+                //                   .toString()
+                //                   .split('=')[1],
+                //               userEmail: userData
+                //                   .split('+')[1]
+                //                   .toString()
+                //                   .toString()
+                //                   .split('=')[1],
+                //               profilePicture: userData
+                //                   .split('+')[2]
+                //                   .toString()
+                //                   .toString()
+                //                   .split('=')[1]));
+
+                //           localdb();
+                //           Navigator.pushReplacement(
+                //               context,
+                //               MaterialPageRoute(
+                //                   builder: (BuildContext context) =>
+                //                       OpticalCharacterRecognition()));
+                //         } else {
+                //           Navigator.pop(context);
+                //         }
+                //       }
+                //     },
+                //     child: EmptyContainer()),
               ]),
             );
           },
@@ -272,16 +274,7 @@ class _StaffPageState extends State<StaffPage> {
         ),
         child: FloatingActionButton(
           onPressed: () async {
-            // var url='https://034d-111-118-246-106.in.ngrok.io/success/?displayName=Test%20account+userEmail=testmystuffss@gmail.com+picture=https://lh3.googleusercontent.com/a-/AOh14Ghhyn8_YWCM_qOlFpbhOqM9keF0xvIHJ6PmVP72=s96-c';
-            //  var data = url.split('=');
-            // //  var data1 = data.toString().split('=');
-            //           print(data);
-            //           List<UserInfo> userinfo = [];
-            //           userinfo.add(UserInfo(
-            //               userName: data[1].split('+')[0],
-            //               userEmail: data[2].split('+')[0],
-            //               profilePicture: data[3].split('+')[0]));
-
+            _localData.clear();
             if (_localData.isEmpty) {
               await _launchURL('Google Authentication');
             } else {

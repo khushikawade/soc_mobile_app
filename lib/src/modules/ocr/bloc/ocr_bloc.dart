@@ -1,4 +1,6 @@
-import 'package:Soc/src/modules/ocr/modal/ocr_modal.dart';
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,6 +49,67 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         // }
         yield OcrErrorReceived(err: e);
       }
+    }
+    if (event is FatchSubjectDetails) {
+      try {
+        if (event.type == 'subject') {
+        yield OcrLoading();
+        }
+        
+        List<SubjectList> data = await fatchSubjectDetails();
+        if (event.type == 'subject') {
+          yield SubjectDataSuccess(
+            obj: data,
+          );
+        } else if (event.type == 'nyc') {
+          List<SubjectList> list = [];
+
+          for (int i = 0; i < Globals.nycDetailsList.length; i++) {
+            SubjectList subjectList = SubjectList();
+            subjectList.subjectNameC = Globals.nycDetailsList[i];
+            list.insert(i, subjectList);
+          }
+          yield NycDataSuccess(
+            obj: list,
+          );
+        } else if (event.type == 'nycSub') {
+          List<SubjectList> list = [];
+
+          for (int i = 0; i < Globals.subjectDetailsList.length; i++) {
+            SubjectList subjectList = SubjectList();
+            subjectList.subjectNameC = Globals.subjectDetailsList[i];
+            list.insert(i, subjectList);
+          }
+          yield NycSubDataSuccess(
+            obj: list,
+          );
+        }
+      } catch (e) {
+        // if (e.toString().contains('NO_CONNECTION')) {
+        //   Utility.showSnackBar(event.scaffoldKey,
+        //       'Make sure you have a proper Internet connection', event.context);
+        // }
+        yield OcrErrorReceived(err: e);
+      }
+    }
+  }
+
+  Future<List<SubjectList>> fatchSubjectDetails() async {
+    try {
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+          "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Subject__c&fetchType=All"));
+
+      if (response.statusCode == 200) {
+        List<SubjectList> _list = response.data['body']
+            .map<SubjectList>((i) => SubjectList.fromJson(i))
+            .toList();
+        // _list.removeWhere((SubjectList element) => element.status == 'Hide');
+        return _list;
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 

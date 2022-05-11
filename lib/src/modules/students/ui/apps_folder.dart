@@ -132,7 +132,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                           : Utility.showSnackBar(
                                               widget.scaffoldKey,
                                               "No URL available",
-                                              context);
+                                              context,40);
                                     },
                                     child: Column(
                                       children: [

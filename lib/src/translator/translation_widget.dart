@@ -55,7 +55,7 @@ class _TranslationWidgetState extends State<TranslationWidget> {
                   Utility.showSnackBar(
                       Globals.scaffoldKey,
                       'Unable to translate, Please check the Internet connection',
-                      context);
+                      context,null);
                 });
               }
               translation = widget.message!;

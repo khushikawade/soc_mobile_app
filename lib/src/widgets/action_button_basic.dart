@@ -137,7 +137,7 @@ class _UserActionBasicState extends State<UserActionBasic> {
                 return countIncrement(index, scaffoldKey);
               } else {
                 Utility.showSnackBar(scaffoldKey,
-                    'Make sure you have a proper Internet connection', context);
+                    'Make sure you have a proper Internet connection', context,null);
               }
             },
             size: 20,
@@ -324,7 +324,7 @@ class _UserActionBasicState extends State<UserActionBasic> {
         _shareNews(fallBackImageUrl: _fallBackImageUrl);
       } else {
         Utility.showSnackBar(
-            widget.scaffoldKey, 'Something went wrong.', context);
+            widget.scaffoldKey, 'Something went wrong.', context,null);
       }
     }
   }

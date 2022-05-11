@@ -115,7 +115,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
       obj.appUrlC != null && obj.appUrlC != ""
           ? await _launchURL(obj)
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No link available", context);
+              widget.scaffoldKey, "No link available", context,null);
     } else if (obj.typeC == "Calendar/Events") {
       obj.calendarId != null && obj.calendarId != ""
           ? await Navigator.push(
@@ -128,7 +128,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                         calendarId: obj.calendarId.toString(),
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No calendar/events available", context);
+              widget.scaffoldKey, "No calendar/events available", context,null);
     } else if (obj.typeC == "RTF_HTML" ||
         obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
@@ -145,7 +145,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No data available", context);
+              widget.scaffoldKey, "No data available", context,null);
     } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
           ? await Navigator.push(
@@ -159,7 +159,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No data available", context);
+              widget.scaffoldKey, "No data available", context,null);
     } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
           ? await Navigator.push(
@@ -173,7 +173,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No pdf available", context);
+              widget.scaffoldKey, "No pdf available", context,null);
     // } else if (obj.typeC == "OCR" ) {
     //   if(obj.isSecure=='true'){
     //        obj.appUrlC != null && obj.appUrlC != ""
@@ -182,7 +182,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
     //           widget.scaffoldKey, "No authentication URL available", context);
     //   }
     } else {
-      Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
+      Utility.showSnackBar(widget.scaffoldKey, "No data available", context,null);
     }
   }
 

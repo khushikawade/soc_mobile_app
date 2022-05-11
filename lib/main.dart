@@ -14,9 +14,8 @@ import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.da
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
-
-import 'package:camera/camera.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:camera/camera.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,9 +27,8 @@ import 'src/modules/families/modal/calendar_event_list.dart';
 import 'src/services/local_database/hive_db_services.dart';
 
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
-    cameras = await availableCameras();  
- 
+  WidgetsFlutterBinding.ensureInitialized();
+   cameras = await availableCameras();
 
   if (!kIsWeb) {
     // Not running on the web!
@@ -60,7 +58,6 @@ void main() async {
     DeviceOrientation.landscapeRight,
     DeviceOrientation.landscapeLeft
   ]).then((_) {
-    
     runApp(App());
   });
   getDeviceType();

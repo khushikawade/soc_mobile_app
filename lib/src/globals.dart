@@ -58,7 +58,26 @@ class Globals {
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   static List pointsList = [1, 2, 3, 4];
   static List scoringList = ['NYC 0-2', 'NYC 0-3', 'NYC 0-4', 'Custom', 'None'];
-  static List classList = ['K', '1', '2', '3', '4','5', '6', '7', '8', '9','10','11','12','?','+'];
+  static List subjectDetailsList = ['NY-3.OA.1 Interpret Products of whole numbers', 'NY-3.OA.2  Interpret whole-number quotients of whole numbers.', 'NY-3.OA.3. Use multiplication and division within 100 to solve word problems…', 'NY-3.OA.4 Determine unknown whole number in multiplication or division…' ];
+  static List nycDetailsList = ['N&OBase Ten', 'Geometry', 'N&OFractions', 'Measurement' ];
+  static List subjectList = ['Maths', 'Science', 'ELA', '+'];
+  static List classList = [
+    'K',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '?',
+    '+'
+  ];
   static List<NotificationList> notificationList = [];
   static List<Item> socialList = [];
   static PackageInfo? packageInfo;
@@ -69,4 +88,5 @@ class Globals {
   static String? homeUrl;
   static PersistentTabController? controller;
   static bool? disableDarkMode;
+  static bool? isbottomNavbar = true;
 }

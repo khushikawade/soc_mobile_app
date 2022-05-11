@@ -108,12 +108,12 @@ class Utility {
     }
   }
 
-  static void showSnackBar(_scaffoldKey, msg, context) {
+  static void showSnackBar(_scaffoldKey, msg, context,height) {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Container(
         alignment: Alignment.centerLeft,
-        height: 40,
+        height:height?? 40,
         child: TranslationWidget(
           message: msg,
           fromLanguage: "en",
