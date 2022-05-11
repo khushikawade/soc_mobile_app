@@ -88,6 +88,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
+        
           yield FamilyLoading();
         } else {
           yield FamiliesSublistSucess(obj: _localData);
