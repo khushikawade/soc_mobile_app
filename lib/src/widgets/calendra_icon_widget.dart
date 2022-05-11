@@ -61,9 +61,11 @@ class CalendraIconWidget extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-                color: color == null || color == ''
-                    ? Theme.of(context).primaryColor
-                    : color,
+                color: color,
+                
+                //  color == null || color == ''
+                //     ? Theme.of(context).primaryColor
+                //     : color,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8.0),
                   topRight: Radius.circular(8.0),
