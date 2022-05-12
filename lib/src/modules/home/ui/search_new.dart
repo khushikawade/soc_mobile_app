@@ -122,7 +122,7 @@ class _SearchPageState extends State<SearchPage> {
     // obj.typeC != null && obj.typeC != '' ? _setFree() : _setLocked();
 
     if (objectType == "Contact") {
-      objectType != null
+      objectType != null && objectType != ""
           ? await Navigator.push(
               context,
               MaterialPageRoute(
@@ -152,22 +152,8 @@ class _SearchPageState extends State<SearchPage> {
     // }
 
     else if (objectType == "Form" && objectName == 'Staff_Directory_App__c') {
-      print(obj);
       List<dynamic> newObj = [];
       newObj.add(obj);
-      // newObj.add(obj);
-      //To manage the list type in a correct way
-      // newObj.add(SDlist(
-      //     descriptionC: obj.descriptionC,
-      //     designation: obj.titleC,
-      //     emailC: obj.emailC,
-      //     id: obj.id,
-      //     imageUrlC: obj.appIconUrlC,
-      //     name: obj.name,
-      //     phoneC: obj.phoneC,
-      //     sortOrderC: obj.sortOrder,
-      //     status: obj.statusC));
-      //     print(newObj);
       await Navigator.push(
           context,
           MaterialPageRoute(
@@ -442,6 +428,7 @@ class _SearchPageState extends State<SearchPage> {
         List<dynamic> reversedRecentDetailDbList =
             new List.from(recentDetailDbList.reversed);
 
+        //To call the latest data silently.
         _homeBloc.add(GetRecordByID(
             //  isRecentRecord: true,
             // title: data.titleC,
@@ -609,8 +596,7 @@ class _SearchPageState extends State<SearchPage> {
                                 idList.add(itemListData[i].id);
                               }
 
-                              if (idList.contains(data.id)) {
-                              } else {
+                              if (!idList.contains(data.id)) {                              
                                 if (data != null) {
                                   deleteItem(Strings.hiveLogName);
                                   final recentitem = Recent(
@@ -893,7 +879,7 @@ class _SearchPageState extends State<SearchPage> {
                               } else {
                                 Utility.showSnackBar(
                                     _scaffoldKey,
-                                    "please make sure you have a proper internet connection ",
+                                    "please make sure you have a proper internet connection",
                                     context);
                               }
                             } else if (state is RefrenceSearchLoading) {
