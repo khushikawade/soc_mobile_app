@@ -46,6 +46,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String language2 = Translations.supportedLanguages.last;
   var item;
   var item2;
+
+  final GlobalKey<StudentPageState> _key = GlobalKey();
+  int? studentIndex;
   List<Widget> _screens = [];
   String? _versionNumber;
 
@@ -166,6 +169,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 _screens.add(NewsPage());
               } else if (element.contains('student')) {
                 _screens.add(StudentPage(
+                  key: _key,
                   homeObj: widget.homeObj,
                 ));
               } else if (element.contains('families')) {
@@ -198,6 +202,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               }
             }
           });
+
     return _screens;
   }
 
@@ -223,6 +228,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
             addNewsIndex(Globals.newsIndex);
           }
+          if (item.split("_")[0].toString().toLowerCase().contains("student")) {
+            studentIndex =
+                Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
+
+            // addNewsIndex(Globals.newsIndex);
+          }
           setState(() {});
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
@@ -235,7 +246,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Widget _bottomIcon(title, iconData, section) {
-  //  print(title);
+    //  print(title);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -327,6 +338,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       // hideNavigationBar: true,
       onItemSelected: (i) {
         // _controller.index = i;
+
+        if (studentIndex == i) {
+          _key.currentState?.methodInStudentSection();
+        }
+
         setState(() {
           if (previousIndex == i && Globals.urlIndex == i) {
             Globals.webViewController1!.loadUrl(Globals.homeUrl!);
@@ -492,7 +508,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           }
           _screens.add(SocialNewPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Students') {
-          _screens.add(StudentPage());
+          _screens.add(StudentPage(
+            key: _key,
+          ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
           _screens.add(StaffPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC == 'Families') {

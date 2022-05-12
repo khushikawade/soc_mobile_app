@@ -5,7 +5,7 @@ class MarqueeWidget extends StatefulWidget {
   final Axis direction;
   final Duration animationDuration, backDuration, pauseDuration;
 
-  const MarqueeWidget({
+  MarqueeWidget({
     Key? key,
     required this.child,
     this.direction = Axis.horizontal,
@@ -20,13 +20,10 @@ class MarqueeWidget extends StatefulWidget {
 
 class MarqueeWidgetState extends State<MarqueeWidget> {
   late ScrollController scrollController;
-  bool firstTime = true;
+  int numberOfRounds = 0;
   @override
   void initState() {
-    print("callling maequeeeeeeeeeeeeeeeeeeeeeeee inistate");
-    scrollController = ScrollController(
-      initialScrollOffset: 50.0,
-    );
+    _controllerInitialization();
     WidgetsBinding.instance!.addPostFrameCallback(scroll);
     super.initState();
   }
@@ -39,6 +36,12 @@ class MarqueeWidgetState extends State<MarqueeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (numberOfRounds != 0) {
+      numberOfRounds = 0;
+      _controllerInitialization();
+      scroll(context);
+    }
+
     return SingleChildScrollView(
       child: widget.child,
       scrollDirection: widget.direction,
@@ -49,35 +52,22 @@ class MarqueeWidgetState extends State<MarqueeWidget> {
   void scroll(_) async {
     while (scrollController.hasClients) {
       await Future.delayed(widget.pauseDuration);
-
-      if (scrollController.hasClients && firstTime) {
-        firstTime = false;
+      if (scrollController.hasClients && numberOfRounds == 0) {
         await scrollController.animateTo(
           scrollController.position.maxScrollExtent,
           duration: widget.animationDuration,
           curve: Curves.ease,
         );
+        numberOfRounds = 1;
       }
-      await Future.delayed(widget.pauseDuration);
+      // await Future.delayed(widget.pauseDuration);
       if (scrollController.hasClients) {
-        await scrollController.animateTo(
-          0.0,
-          duration: widget.backDuration,
-          curve: Curves.easeOut,
-        );
+        scrollController.jumpTo(0.0);
       }
     }
   }
 
-  methodInChild() {
-    print("insdie method in child inside marqueeeeeeeeeeeeeeeeeeeeeeeeee");
-    firstTime = true;
-    scrollController = ScrollController(
-      initialScrollOffset: 50.0,
-    );
-    WidgetsBinding.instance!.addPostFrameCallback(scroll);
-    setState(() {
-      print("insdie method in child inside marqueeeeeeeeeeeeeeeeeeeeeeeeee");
-    });
+  _controllerInitialization() {
+    scrollController = ScrollController(initialScrollOffset: 0.0);
   }
 }

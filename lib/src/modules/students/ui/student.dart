@@ -149,14 +149,21 @@ class StudentPageState extends State<StudentPage> {
                                       translatedMessage.toString().length > 11
                                   ? Expanded(
                                       child: MarqueeWidget(
-                                        key: widget.key,
-                                     // pauseDuration: Duration(seconds: 1),
+                                      pauseDuration: Duration(seconds: 3),
                                       child: Text(
                                         translatedMessage.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1!
+                                            .copyWith(
+                                                fontSize: Globals.deviceType ==
+                                                        "phone"
+                                                    ? 16
+                                                    : 24),
                                       ),
                                     )
 
-                                      //  Marquee(
+                                      // child: Marquee(
                                       //   text: translatedMessage.toString(),
                                       //   style: Theme.of(context)
                                       //       .textTheme
@@ -173,7 +180,7 @@ class StudentPageState extends State<StudentPage> {
                                       //   blankSpace: 50,
                                       //   //MediaQuery.of(context).size.width
                                       //   // velocity: 100.0,
-                                      //   //   pauseAfterRound: Duration(seconds: 5),
+                                      //   pauseAfterRound: Duration(seconds: 5),
                                       //   showFadingOnlyWhenScrolling: true,
                                       //   startPadding: 10.0,
                                       //   accelerationDuration:
@@ -181,10 +188,9 @@ class StudentPageState extends State<StudentPage> {
                                       //   accelerationCurve: Curves.linear,
                                       //   decelerationDuration:
                                       //       Duration(milliseconds: 500),
-                                      //   decelerationCurve: Curves.easeOut,
+                                      //   decelerationCurve: Curves.bounceIn,
                                       //   numberOfRounds: 1,
                                       //   startAfter: Duration.zero,
-
                                       // ),
                                       )
                                   : MediaQuery.of(context).orientation ==
@@ -192,36 +198,54 @@ class StudentPageState extends State<StudentPage> {
                                           translatedMessage.toString().length >
                                               18
                                       ? Expanded(
-                                          child: Marquee(
-                                          text: translatedMessage.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1!
-                                              .copyWith(
-                                                  fontSize:
-                                                      Globals.deviceType ==
-                                                              "phone"
-                                                          ? 16
-                                                          : 24),
-                                          scrollAxis: Axis.horizontal,
-                                          velocity: 30.0,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          child: MarqueeWidget(
+                                          pauseDuration: Duration(seconds: 3),
+                                          child: Text(
+                                            translatedMessage.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    fontSize:
+                                                        Globals.deviceType ==
+                                                                "phone"
+                                                            ? 16
+                                                            : 24),
+                                          ),
+                                        )
 
-                                          blankSpace:
-                                              50, //MediaQuery.of(context).size.width
-                                          // velocity: 100.0,
+                                          //    Marquee(
+                                          //   text: translatedMessage.toString(),
+                                          //   style: Theme.of(context)
+                                          //       .textTheme
+                                          //       .bodyText1!
+                                          //       .copyWith(
+                                          //           fontSize:
+                                          //               Globals.deviceType ==
+                                          //                       "phone"
+                                          //                   ? 16
+                                          //                   : 24),
+                                          //   scrollAxis: Axis.horizontal,
+                                          //   velocity: 30.0,
+                                          //   crossAxisAlignment:
+                                          //       CrossAxisAlignment.start,
+
+                                          //   blankSpace:
+                                          //       50, //MediaQuery.of(context).size.width
+                                          //   // velocity: 100.0,
                                           //   pauseAfterRound: Duration(seconds: 5),
-                                          showFadingOnlyWhenScrolling: true,
-                                          startPadding: 10.0,
-                                          accelerationDuration:
-                                              Duration(seconds: 1),
-                                          accelerationCurve: Curves.linear,
-                                          decelerationDuration:
-                                              Duration(milliseconds: 500),
-                                          decelerationCurve: Curves.easeOut,
-                                          numberOfRounds: 1,
-                                        ))
+                                          //   showFadingOnlyWhenScrolling: true,
+                                          //   startPadding: 10.0,
+                                          //   accelerationDuration:
+                                          //       Duration(seconds: 1),
+                                          //   accelerationCurve: Curves.linear,
+                                          //   decelerationDuration:
+                                          //       Duration(milliseconds: 500),
+                                          //   decelerationCurve: Curves.easeOut,
+                                          //   numberOfRounds: 1,
+                                          // )
+
+                                          )
                                       : SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
                                           child: Text(
@@ -369,5 +393,9 @@ class StudentPageState extends State<StudentPage> {
                 },
                 body: _body('body1'))
             : _body('body2'));
+  }
+
+  void methodInStudentSection() {
+    setState(() {});
   }
 }
