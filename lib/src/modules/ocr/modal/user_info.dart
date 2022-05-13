@@ -10,6 +10,7 @@ class UserInfo {
   String? profilePicture;
     @HiveField(3)
   String? authorizationToken;
+  
 
   UserInfo({
     this.userName,

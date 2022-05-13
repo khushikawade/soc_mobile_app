@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_access/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
@@ -44,6 +45,7 @@ class _StaffPageState extends State<StaffPage> {
   OcrBloc ocrBloc = new OcrBloc();
   bool? authSuccess = false;
   dynamic userData;
+  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
 
   @override
   void initState() {
@@ -115,6 +117,14 @@ class _StaffPageState extends State<StaffPage> {
                                 .replaceAll('#', '')));
 
                         localdb();
+
+                        _googleDriveBloc.add(CreateGoogleDriveFolderEvent(
+                            token: value
+                                .split('+')[3]
+                                .toString()
+                                .split('=')[1]
+                                .replaceAll('#', ''),
+                            folderName: "test_folder_C"));
 
                         Navigator.pushReplacement(
                             context,
