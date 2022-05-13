@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
-import 'package:Soc/src/modules/students/ui/marqee.dart';
+import 'package:Soc/src/styles/marqee.dart';
 //import 'package:Soc/src/modules/students/ui/demo.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -26,10 +26,10 @@ class StudentPage extends StatefulWidget {
   final homeObj;
 
   StudentPage({Key? key, this.homeObj}) : super(key: key);
-  StudentPageState createState() => StudentPageState();
+  _StudentPageState createState() => _StudentPageState();
 }
 
-class StudentPageState extends State<StudentPage> {
+class _StudentPageState extends State<StudentPage> {
   static const double _kLableSpacing = 12.0;
   int? gridLength;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -149,7 +149,7 @@ class StudentPageState extends State<StudentPage> {
                                       translatedMessage.toString().length > 11
                                   ? Expanded(
                                       child: MarqueeWidget(
-                                      pauseDuration: Duration(seconds: 3),
+                                      pauseDuration: Duration(seconds: 1),
                                       child: Text(
                                         translatedMessage.toString(),
                                         style: Theme.of(context)
@@ -395,7 +395,7 @@ class StudentPageState extends State<StudentPage> {
             : _body('body2'));
   }
 
-  void methodInStudentSection() {
-    setState(() {});
-  }
+  // void methodInStudentSection() {
+  //   setState(() {});
+  // }
 }

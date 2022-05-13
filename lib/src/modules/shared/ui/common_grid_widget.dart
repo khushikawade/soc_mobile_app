@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/families/ui/event.dart';
 import 'package:Soc/src/modules/shared/ui/common_grid_folder_widget.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
+import 'package:Soc/src/styles/marqee.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -206,6 +207,8 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
 
   Widget _buildGrid(
       List<SharedList> list, List<SharedList> subList, String key) {
+    print(
+        "inside heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeellllll custom sectionnnnnnnnnn");
     return list.length > 0
         ? GridView.count(
             shrinkWrap: true,
@@ -265,8 +268,10 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                                             Orientation.portrait &&
                                         translatedMessage.toString().length > 11
                                     ? Expanded(
-                                        child: Marquee(
-                                          text: translatedMessage.toString(),
+                                        child: MarqueeWidget(
+                                        pauseDuration: Duration(seconds: 1),
+                                        child: Text(
+                                          translatedMessage.toString(),
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyText1!
@@ -276,24 +281,39 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                                                               "phone"
                                                           ? 16
                                                           : 24),
-                                          scrollAxis: Axis.horizontal,
-                                          velocity: 30.0,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          blankSpace: 50,
-                                          //MediaQuery.of(context).size.width
-                                          // velocity: 100.0,
-                                          pauseAfterRound: Duration(seconds: 5),
-                                          showFadingOnlyWhenScrolling: true,
-                                          startPadding: 10.0,
-                                          accelerationDuration:
-                                              Duration(seconds: 1),
-                                          accelerationCurve: Curves.linear,
-                                          decelerationDuration:
-                                              Duration(milliseconds: 500),
-                                          decelerationCurve: Curves.easeOut,
                                         ),
                                       )
+
+                                        //  Marquee(
+                                        //   text: translatedMessage.toString(),
+                                        //   style: Theme.of(context)
+                                        //       .textTheme
+                                        //       .bodyText1!
+                                        //       .copyWith(
+                                        //           fontSize:
+                                        //               Globals.deviceType ==
+                                        //                       "phone"
+                                        //                   ? 16
+                                        //                   : 24),
+                                        //   scrollAxis: Axis.horizontal,
+                                        //   velocity: 30.0,
+                                        //   crossAxisAlignment:
+                                        //       CrossAxisAlignment.start,
+                                        //   blankSpace: 50,
+                                        //   //MediaQuery.of(context).size.width
+                                        //   // velocity: 100.0,
+                                        //   pauseAfterRound: Duration(seconds: 5),
+                                        //   showFadingOnlyWhenScrolling: true,
+                                        //   startPadding: 10.0,
+                                        //   accelerationDuration:
+                                        //       Duration(seconds: 1),
+                                        //   accelerationCurve: Curves.linear,
+                                        //   decelerationDuration:
+                                        //       Duration(milliseconds: 500),
+                                        //   decelerationCurve: Curves.easeOut,
+                                        //   numberOfRounds: 1,
+                                        // ),
+                                        )
                                     : MediaQuery.of(context).orientation ==
                                                 Orientation.landscape &&
                                             translatedMessage
@@ -301,36 +321,54 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                                                     .length >
                                                 18
                                         ? Expanded(
-                                            child: Marquee(
-                                            text: translatedMessage.toString(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1!
-                                                .copyWith(
-                                                    fontSize:
-                                                        Globals.deviceType ==
-                                                                "phone"
-                                                            ? 16
-                                                            : 24),
-                                            scrollAxis: Axis.horizontal,
-                                            velocity: 30.0,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            child: MarqueeWidget(
+                                            pauseDuration: Duration(seconds: 1),
+                                            child: Text(
+                                              translatedMessage.toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .copyWith(
+                                                      fontSize:
+                                                          Globals.deviceType ==
+                                                                  "phone"
+                                                              ? 16
+                                                              : 24),
+                                            ),
+                                          )
 
-                                            blankSpace:
-                                                50, //MediaQuery.of(context).size.width
-                                            // velocity: 100.0,
-                                            pauseAfterRound:
-                                                Duration(seconds: 5),
-                                            showFadingOnlyWhenScrolling: true,
-                                            startPadding: 10.0,
-                                            accelerationDuration:
-                                                Duration(seconds: 1),
-                                            accelerationCurve: Curves.linear,
-                                            decelerationDuration:
-                                                Duration(milliseconds: 500),
-                                            decelerationCurve: Curves.easeOut,
-                                          ))
+                                            //    Marquee(
+                                            //   text: translatedMessage.toString(),
+                                            //   style: Theme.of(context)
+                                            //       .textTheme
+                                            //       .bodyText1!
+                                            //       .copyWith(
+                                            //           fontSize:
+                                            //               Globals.deviceType ==
+                                            //                       "phone"
+                                            //                   ? 16
+                                            //                   : 24),
+                                            //   scrollAxis: Axis.horizontal,
+                                            //   velocity: 30.0,
+                                            //   crossAxisAlignment:
+                                            //       CrossAxisAlignment.start,
+
+                                            //   blankSpace:
+                                            //       50, //MediaQuery.of(context).size.width
+                                            //   // velocity: 100.0,
+                                            //   pauseAfterRound:
+                                            //       Duration(seconds: 5),
+                                            //   showFadingOnlyWhenScrolling: true,
+                                            //   startPadding: 10.0,
+                                            //   accelerationDuration:
+                                            //       Duration(seconds: 1),
+                                            //   accelerationCurve: Curves.linear,
+                                            //   decelerationDuration:
+                                            //       Duration(milliseconds: 500),
+                                            //   decelerationCurve: Curves.easeOut,
+                                            //   numberOfRounds: 1,
+                                            // )
+                                            )
                                         : SingleChildScrollView(
                                             scrollDirection: Axis.horizontal,
                                             child: Text(
