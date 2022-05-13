@@ -8,10 +8,13 @@ class UserInfo {
   String? userEmail;
   @HiveField(2)
   String? profilePicture;
+    @HiveField(3)
+  String? authorizationToken;
 
   UserInfo({
     this.userName,
     this.userEmail,
     this.profilePicture,
+    this.authorizationToken
   });
 }

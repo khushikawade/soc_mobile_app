@@ -20,19 +20,22 @@ class UserInfoAdapter extends TypeAdapter<UserInfo> {
       userName: fields[0] as String?,
       userEmail: fields[1] as String?,
       profilePicture: fields[2] as String?,
+      authorizationToken: fields[3] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserInfo obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.userName)
       ..writeByte(1)
       ..write(obj.userEmail)
       ..writeByte(2)
-      ..write(obj.profilePicture);
+      ..write(obj.profilePicture)
+      ..writeByte(3)
+      ..write(obj.authorizationToken);
   }
 
   @override
