@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/social/ui/social_new.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
+
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -26,7 +27,6 @@ import 'package:new_version/new_version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../overrides.dart';
-import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
@@ -46,6 +46,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String language2 = Translations.supportedLanguages.last;
   var item;
   var item2;
+
   List<Widget> _screens = [];
   String? _versionNumber;
 
@@ -198,6 +199,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               }
             }
           });
+
     return _screens;
   }
 
@@ -223,6 +225,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
             addNewsIndex(Globals.newsIndex);
           }
+
           setState(() {});
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
@@ -235,7 +238,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Widget _bottomIcon(title, iconData, section) {
-  //  print(title);
+    //  print(title);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -327,6 +330,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       // hideNavigationBar: true,
       onItemSelected: (i) {
         // _controller.index = i;
+
         setState(() {
           if (previousIndex == i && Globals.urlIndex == i) {
             Globals.webViewController1!.loadUrl(Globals.homeUrl!);
@@ -351,7 +355,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-      stateManagement: true, // Default is true.
+      stateManagement: false, // Default is true.
       hideNavigationBarWhenKeyboardShows:
           true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
       decoration: NavBarDecoration(
@@ -480,6 +484,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (Globals.customSetting!.length > 0) {
       for (var i = 0; i < Globals.customSetting!.length; i++) {
         // if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
+
         if (Globals.customSetting![i].systemReferenceC == 'News') {
           _screens.add(NewsPage());
           Globals.newsIndex = i;
@@ -496,7 +501,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
           _screens.add(StaffPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC == 'Families') {
-          _screens.add(FamilyPage(customObj: Globals.customSetting![i]));
+          _screens.add(FamilyPage(
+            customObj: Globals.customSetting![i],
+          ));
         } else if (Globals.customSetting![i].systemReferenceC ==
             'Directory Org') {
           _screens.add(SchoolDirectoryPage(
@@ -529,20 +536,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else {
           _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
         }
-        // } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-        //   if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
-        //       Globals.customSetting![i].typeOfPageC == 'List Menu') {
-        //     _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-        //   } else {
-        //     _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
-        //     if (Globals.customSetting![i].typeOfPageC == 'URL') {
-        //       Globals.urlIndex = _screens.length - 1;
-        //       Globals.homeUrl = Globals.customSetting![i].appUrlC;
-        //     }
-        //   }
-        // } else {
-        //   _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-        // }
       }
     } else {
       EmptyContainer();

@@ -104,7 +104,7 @@ class _SearchPageState extends State<SearchPage> {
     // obj.typeC != null && obj.typeC != '' ? _setFree() : _setLocked();
 
     if (objectType == "Contact") {
-      objectType != null
+      objectType != null && objectType != ""
           ? await Navigator.push(
               context,
               MaterialPageRoute(
@@ -117,7 +117,6 @@ class _SearchPageState extends State<SearchPage> {
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (objectType == "Form" && objectName == 'Staff_Directory_App__c') {
-      print(obj);
       List<dynamic> newObj = [];
       newObj.add(obj);
       await Navigator.push(
@@ -377,6 +376,7 @@ class _SearchPageState extends State<SearchPage> {
         List<dynamic> reversedRecentDetailDbList =
             new List.from(recentDetailDbList.reversed);
 
+        //To call the latest data silently.
         _homeBloc.add(GetRecordByID(
             //  isRecentRecord: true,
             // title: data.titleC,
@@ -529,6 +529,7 @@ class _SearchPageState extends State<SearchPage> {
 
                               if (idList.contains(data.id)) {
                               } else {
+                                //TODO : Improve the recent item, Add only required keys
                                 if (data != null) {
                                   deleteItem(Strings.hiveLogName);
                                   final recentitem = Recent(
@@ -777,7 +778,7 @@ class _SearchPageState extends State<SearchPage> {
                               } else {
                                 Utility.showSnackBar(
                                     _scaffoldKey,
-                                    "please make sure you have a proper internet connection ",
+                                    "please make sure you have a proper internet connection",
                                     context);
                               }
                             } else if (state is RefrenceSearchLoading) {

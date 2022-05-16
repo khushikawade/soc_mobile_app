@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
@@ -167,7 +166,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         bool result = false;
         //ge
         List<dynamic> _localDb =
-            await getListData(Strings.hiveReferenceLogName);
+            await getRecentSearchListData(Strings.hiveReferenceLogName);
 
         for (int i = 0; i < _localDb.length; i++) {
           if (event.recordId == _localDb[i].id) {
@@ -199,7 +198,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
 
         if (!idReferenceList.contains(recordObject.id)) {
-          deleteItem(Strings.hiveReferenceLogName);
+          deleteRecentSearchItem(Strings.hiveReferenceLogName);
           addRecordDetailtoLocalDb(recordObject);
         }
 
@@ -296,6 +295,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+//TODO : Improve the logic via model
   Future<List<SearchList>> getGlobalSearchList(
       dataBaseName, keyword, objectName) async {
     try {
@@ -349,6 +349,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+//TODO : Improve the logic via model
   Future<List<SearchList>> getGlobalSearchListSchool(
       dataBaseName, keyword, objectName) async {
     SearchList _searchList = SearchList();
@@ -384,6 +385,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+//TODO : Improve the logic via model
   Future<List<SearchList>> getGlobalSearchListStudent(
       dataBaseName, keyword, objectName) async {
     SearchList _searchList = SearchList();
@@ -493,14 +495,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<dynamic> getrecordByID_API(
       String? recordId, String? objectName, String recordType) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          'getRecord/$objectName/$recordId'
-
-          // 'searchRecords?schoolId=${Overrides.SCHOOL_ID}&keyword=$keyword'
-
-          );
+      final ResponseModel response =
+          await _dbServices.getapi('getRecord/$objectName/$recordId');
       if (response.statusCode == 200) {
-        // print(response.data['body']);
         dynamic data;
         if (objectName == "Staff_Directory_App__c") {
           return data = SDlist.fromJson(response.data['body']);
@@ -515,19 +512,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         } else if (objectName == "Student_App__c") {
           return data = StudentApp.fromJson(response.data['body']);
         }
-
-        //jsonDecode(response.data['body']);
-        // print(data);
-        // print(data);
-
-        // return response.data.map<SearchList>((i) => SearchList.fromJson(i));
       }
     } catch (e) {
       throw (e);
     }
   }
 
-  getListData(String localDatalogName) async {
+  getRecentSearchListData(String localDatalogName) async {
     List listItem = await HiveDbServices().getListData(localDatalogName);
     return listItem;
   }
@@ -536,28 +527,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   //   await HiveDbServices().clearAll(Strings.hiveReferenceLogName);
   // }
 
-  void updateRecordList(List<dynamic> log) async {
-    LocalDatabase<dynamic> _localDb =
-        LocalDatabase(Strings.hiveReferenceLogName);
-    // List<dynamic> _localData = await _localDb.getData();
-    try {
-      _localDb.clear();
-      log.forEach((dynamic e) {
-        print("local database");
-        _localDb.addData(e);
-      });
-    } catch (e) {
-      print(e);
-      print("inside catch");
-    }
+  // void updateRecordList(List<dynamic> log) async {
+  //   LocalDatabase<dynamic> _localDb =
+  //       LocalDatabase(Strings.hiveReferenceLogName);
+  //   // List<dynamic> _localData = await _localDb.getData();
+  //   try {
+  //     _localDb.clear();
+  //     log.forEach((dynamic e) {
+  //       print("local database");
+  //       _localDb.addData(e);
+  //     });
+  //   } catch (e) {
+  //     print(e);
+  //     print("inside catch");
+  //   }
 
-    //_localDb.close();
+  //   //_localDb.close();
 
-    // bool isSuccess =
-    //     await HiveDbServices().addData(log, Strings.hiveReferenceLogName);
-  }
+  //   // bool isSuccess =
+  //   //     await HiveDbServices().addData(log, Strings.hiveReferenceLogName);
+  // }
 
-  void deleteItem(String localDatalogName) async {
+  void deleteRecentSearchItem(String localDatalogName) async {
     int itemcount = await HiveDbServices().getListLength(localDatalogName);
     if (itemcount > 5) {
       await HiveDbServices().deleteData(localDatalogName, 0);
