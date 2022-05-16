@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/social/ui/social_new.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
+
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -26,7 +27,6 @@ import 'package:new_version/new_version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../overrides.dart';
-import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
@@ -47,8 +47,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   var item;
   var item2;
 
-  final GlobalKey<StudentPageState> _key = GlobalKey();
-  int? studentIndex;
   List<Widget> _screens = [];
   String? _versionNumber;
 
@@ -169,7 +167,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 _screens.add(NewsPage());
               } else if (element.contains('student')) {
                 _screens.add(StudentPage(
-                  key: _key,
                   homeObj: widget.homeObj,
                 ));
               } else if (element.contains('families')) {
@@ -228,12 +225,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
             addNewsIndex(Globals.newsIndex);
           }
-          if (item.split("_")[0].toString().toLowerCase().contains("student")) {
-            studentIndex =
-                Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
 
-            // addNewsIndex(Globals.newsIndex);
-          }
           setState(() {});
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
@@ -339,10 +331,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       onItemSelected: (i) {
         // _controller.index = i;
 
-        if (studentIndex == i) {
-          _key.currentState?.methodInStudentSection();
-        }
-
         setState(() {
           if (previousIndex == i && Globals.urlIndex == i) {
             Globals.webViewController1!.loadUrl(Globals.homeUrl!);
@@ -367,7 +355,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-      stateManagement: true, // Default is true.
+      stateManagement: false, // Default is true.
       hideNavigationBarWhenKeyboardShows:
           true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
       decoration: NavBarDecoration(
@@ -496,6 +484,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (Globals.customSetting!.length > 0) {
       for (var i = 0; i < Globals.customSetting!.length; i++) {
         // if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
+
         if (Globals.customSetting![i].systemReferenceC == 'News') {
           _screens.add(NewsPage());
           Globals.newsIndex = i;
@@ -508,13 +497,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           }
           _screens.add(SocialNewPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Students') {
-          _screens.add(StudentPage(
-            key: _key,
-          ));
+          _screens.add(StudentPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
           _screens.add(StaffPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC == 'Families') {
-          _screens.add(FamilyPage(customObj: Globals.customSetting![i]));
+          _screens.add(FamilyPage(
+            customObj: Globals.customSetting![i],
+          ));
         } else if (Globals.customSetting![i].systemReferenceC ==
             'Directory Org') {
           _screens.add(SchoolDirectoryPage(
