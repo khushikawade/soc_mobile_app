@@ -17,6 +17,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
+import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../ocr/modal/user_info.dart';
 import '../../ocr/ui/ocr_home.dart';
 import '../../shared/ui/common_grid_widget.dart';
@@ -44,6 +45,7 @@ class _StaffPageState extends State<StaffPage> {
   OcrBloc ocrBloc = new OcrBloc();
   bool? authSuccess = false;
   dynamic userData;
+  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
 
   @override
   void initState() {
@@ -58,7 +60,7 @@ class _StaffPageState extends State<StaffPage> {
 
 //To authenticate the user via google
   _launchURL(String? title) async {
-   Navigator.push(
+    Navigator.push(
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => GoogleAuthWebview(
@@ -86,7 +88,12 @@ class _StaffPageState extends State<StaffPage> {
                               .split('+')[1]
                               .toString()
                               .split('=')[1]
-                              .contains('@solvedconsulting')) {
+                              .contains('@solvedconsulting') ||
+                          value
+                              .split('+')[1]
+                              .toString()
+                              .split('=')[1]
+                              .contains('appdevelopersdp7')) {
                         _localUserInfo.addData(UserInfo(
                             userName: value
                                 .split('+')[0]
@@ -102,9 +109,23 @@ class _StaffPageState extends State<StaffPage> {
                                 .split('+')[2]
                                 .toString()
                                 .toString()
-                                .split('=')[1]));
+                                .split('=')[1],
+                            authorizationToken: value
+                                .split('+')[3]
+                                .toString()
+                                .split('=')[1]
+                                .replaceAll('#', '')));
 
                         localdb();
+
+                        _googleDriveBloc.add(CreateGoogleDriveFolderEvent(
+                            token: value
+                                .split('+')[3]
+                                .toString()
+                                .split('=')[1]
+                                .replaceAll('#', ''),
+                            folderName: "test_folder_C"));
+
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -269,7 +290,7 @@ class _StaffPageState extends State<StaffPage> {
         ),
         child: FloatingActionButton(
           onPressed: () async {
-            _localData.clear();
+            // _localData.clear();
             if (_localData.isEmpty) {
               await _launchURL('Google Authentication');
             } else {

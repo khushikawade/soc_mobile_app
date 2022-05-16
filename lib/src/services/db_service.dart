@@ -6,11 +6,13 @@ import '../overrides.dart';
 import 'db_service_response.model.dart';
 
 class DbServices {
-  getapi(api, {headers}) async {
+  getapi(api, {headers, bool? isGoogleApi}) async {
     try {
       final response = await httpClient.get(
-        Uri.parse('${Overrides.API_BASE_URL}$api'),
-      );
+          isGoogleApi == true
+              ? Uri.parse('$api')
+              : Uri.parse('${Overrides.API_BASE_URL}$api'),
+          headers: headers);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -31,15 +33,39 @@ class DbServices {
     }
   }
 
+  // googlegetapi(api, {headers}) async {
+  //   try {
+  //     final response = await httpClient.get(Uri.parse(api), headers: headers);
+
+  //     if (response.statusCode == 200) {
+  //       print(response.body);
+  //       final data = json.decode(response.body);
+  //       return ResponseModel(statusCode: response.statusCode, data: data);
+  //     } else {
+  //       if (response.body == 'Unauthorized') {
+  //         ResponseModel _res = await getapi(api, headers: headers);
+  //         return _res;
+  //       }
+  //       return ResponseModel(statusCode: response.statusCode, data: null);
+  //     }
+  //   } catch (e) {
+  //     if (e.toString().contains('Failed host lookup')) {
+  //       throw ('NO_CONNECTION');
+  //     } else {
+  //       throw (e);
+  //     }
+  //   }
+  // }
+
   postapi(api, {body, headers, bool? isGoogleApi}) async {
     try {
       final response = await httpClient.post(
           isGoogleApi == true
               ? Uri.parse('$api')
               : Uri.parse('${Overrides.API_BASE_URL}$api'),
-          headers: isGoogleApi == true
+          headers: isGoogleApi == true && headers == null
               ? {
-                  'Content-Type' : 'application/json',
+                  'Content-Type': 'application/json',
                 }
               : headers ??
                   {
