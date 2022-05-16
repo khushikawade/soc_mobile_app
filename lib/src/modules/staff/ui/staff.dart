@@ -58,75 +58,83 @@ class _StaffPageState extends State<StaffPage> {
 
 //To authenticate the user via google
   _launchURL(String? title) async {
-   Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => GoogleAuthWebview(
-                  title: title!,
-                  url: Overrides.secureLoginURL +
-                      '?' +
-                      Globals.appSetting
-                          .appLogoC, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                  hideAppbar: false,
-                  hideShare: true,
-                  zoomEnabled: false,
-                  callBackFunction: (value) async {
-                    if (value.toString().contains('displayName')) {
-                      value = value.split('?')[1];
+    Globals.isbottomNavbar = false;
+    setState(() {
+      
+    });
+    Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const OpticalCharacterRecognition()),
+  );
+  //  Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (BuildContext context) => GoogleAuthWebview(
+  //                 title: title!,
+  //                 url: Overrides.secureLoginURL +
+  //                     '?' +
+  //                     Globals.appSetting
+  //                         .appLogoC, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
+  //                 isbuttomsheet: true,
+  //                 language: Globals.selectedLanguage,
+  //                 hideAppbar: false,
+  //                 hideShare: true,
+  //                 zoomEnabled: false,
+  //                 callBackFunction: (value) async {
+  //                   if (value.toString().contains('displayName')) {
+  //                     value = value.split('?')[1];
 
-                      //Comparing and saving the user profile locally
-                      if (value
-                              .split('+')[1]
-                              .toString()
-                              .split('=')[1]
-                              .contains('@schools.nyc.gov') ||
-                          value
-                              .split('+')[1]
-                              .toString()
-                              .split('=')[1]
-                              .contains('@solvedconsulting')) {
-                        _localUserInfo.addData(UserInfo(
-                            userName: value
-                                .split('+')[0]
-                                .toString()
-                                .toString()
-                                .split('=')[1],
-                            userEmail: value
-                                .split('+')[1]
-                                .toString()
-                                .toString()
-                                .split('=')[1],
-                            profilePicture: value
-                                .split('+')[2]
-                                .toString()
-                                .toString()
-                                .split('=')[1]));
+  //                     //Comparing and saving the user profile locally
+  //                     if (value
+  //                             .split('+')[1]
+  //                             .toString()
+  //                             .split('=')[1]
+  //                             .contains('@schools.nyc.gov') ||
+  //                         value
+  //                             .split('+')[1]
+  //                             .toString()
+  //                             .split('=')[1]
+  //                             .contains('@solvedconsulting')) {
+  //                       _localUserInfo.addData(UserInfo(
+  //                           userName: value
+  //                               .split('+')[0]
+  //                               .toString()
+  //                               .toString()
+  //                               .split('=')[1],
+  //                           userEmail: value
+  //                               .split('+')[1]
+  //                               .toString()
+  //                               .toString()
+  //                               .split('=')[1],
+  //                           profilePicture: value
+  //                               .split('+')[2]
+  //                               .toString()
+  //                               .toString()
+  //                               .split('=')[1]));
 
-                        localdb();
+  //                       localdb();
 
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OpticalCharacterRecognition()));
-                      } else {
-                        Navigator.pop(context, false);
-                        Utility.showSnackBar(
-                            _scaffoldKey,
-                            'You are not authorized to access the feature. Please use the authorized account.',
-                            context,
-                            50.0);
-                      }
-                      // ocrBloc.add(AuthenticateEmail(
-                      //     email: value.split('+')[1].toString().split('=')[1]));
-                      // setState(() {
-                      //   userData = value;
-                      // });
-                    }
-                  },
-                )));
+  //                       Navigator.pushReplacement(
+  //                           context,
+  //                           MaterialPageRoute(
+  //                               builder: (BuildContext context) =>
+  //                                   OpticalCharacterRecognition()));
+  //                     } else {
+  //                       Navigator.pop(context, false);
+  //                       Utility.showSnackBar(
+  //                           _scaffoldKey,
+  //                           'You are not authorized to access the feature. Please use the authorized account.',
+  //                           context,
+  //                           50.0);
+  //                     }
+  //                     // ocrBloc.add(AuthenticateEmail(
+  //                     //     email: value.split('+')[1].toString().split('=')[1]));
+  //                     // setState(() {
+  //                     //   userData = value;
+  //                     // });
+  //                   }
+  //                 },
+  //               )));
   }
 
   Widget _body(String key) => RefreshIndicator(

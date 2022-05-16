@@ -57,9 +57,20 @@ class Globals {
   static List icons = [0xe823, 0xe824, 0xe825, 0xe829];
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   static List pointsList = [1, 2, 3, 4];
-  static List scoringList = ['NYC 0-2', 'NYC 0-3', 'NYC 0-4', 'Custom', 'None'];
-  static List subjectDetailsList = ['NY-3.OA.1 Interpret Products of whole numbers', 'NY-3.OA.2  Interpret whole-number quotients of whole numbers.', 'NY-3.OA.3. Use multiplication and division within 100 to solve word problems…', 'NY-3.OA.4 Determine unknown whole number in multiplication or division…' ];
-  static List nycDetailsList = ['N&OBase Ten', 'Geometry', 'N&OFractions', 'Measurement' ];
+  static List pointsEarnedList = [0, 1, 2];
+  static List scoringList = ['NYC 0-2','Custom', 'NYC 0-3','None', 'NYC 0-4', ];
+  static List subjectDetailsList = [
+    'NY-3.OA.1 Interpret Products of whole numbers',
+    'NY-3.OA.2  Interpret whole-number quotients of whole numbers.',
+    'NY-3.OA.3. Use multiplication and division within 100 to solve word problems…',
+    'NY-3.OA.4 Determine unknown whole number in multiplication or division…'
+  ];
+  static List nycDetailsList = [
+    'N&OBase Ten',
+    'Geometry',
+    'N&OFractions',
+    'Measurement'
+  ];
   static List subjectList = ['Maths', 'Science', 'ELA', '+'];
   static List classList = [
     'K',
@@ -88,5 +99,8 @@ class Globals {
   static String? homeUrl;
   static PersistentTabController? controller;
   static bool? disableDarkMode;
-  static bool? isbottomNavbar = true;
+  static bool isbottomNavbar = true;
+  static List ocrResultIcons = [0xe823, 0xe824, 0xe825, 0xe829];
+  static List ocrResultIconsName = ["Share", "Add to drive", "History assessment", "Download"];
+  static List finishedList = ["Scan another assessment", "View all assessment results"];
 }

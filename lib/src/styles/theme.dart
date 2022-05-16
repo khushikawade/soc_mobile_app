@@ -11,6 +11,10 @@ class AppTheme {
   // dark
   static const Color kAccentColor2 = Colors.black;
 
+  // Colors for OCR features
+  static const Color kSelectedColor = Color(0xff0095CD); //#03DAC60095CD
+  static const Color kButtonColor = Color(0xff03DAC6); //#03DAC6
+
   //Colors
 
   static Color kPrimaryColor = Colors.greenAccent;
@@ -206,7 +210,7 @@ class AppTheme {
         hintStyle: TextStyle(
             color: kTxtFieldColor,
             height: 1.2,
-            fontSize: Globals.deviceType == "phone"        
+            fontSize: Globals.deviceType == "phone"
                 ? kSubtitleFontSize
                 : kSubtitleFontSize + kSize),
         focusedBorder: OutlineInputBorder(
@@ -615,8 +619,7 @@ class AppTheme {
                 contentTextStyle: TextStyle(color: Colors.white),
               ),
               textSelectionTheme: TextSelectionThemeData(
-               
-                selectionColor:_primaryColor,
+                selectionColor: _primaryColor,
                 selectionHandleColor: Colors.white,
               ),
 

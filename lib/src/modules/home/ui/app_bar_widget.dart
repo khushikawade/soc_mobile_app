@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
-import 'package:Soc/src/modules/ocr/ui/ocr_google.dart';
-
+import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
@@ -99,7 +98,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>    OpticalCharacterRecognition()));
+                    builder: (context) =>    SuccessScreen()));
                     // OpticalCharacterRecognition
             break;
           // case IconsMenu.Login:
