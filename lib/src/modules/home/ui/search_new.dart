@@ -117,7 +117,6 @@ class _SearchPageState extends State<SearchPage> {
                       )))
           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
     } else if (objectType == "Form" && objectName == 'Staff_Directory_App__c') {
-      print(obj);
       List<dynamic> newObj = [];
       newObj.add(obj);
       await Navigator.push(
@@ -529,6 +528,7 @@ class _SearchPageState extends State<SearchPage> {
 
                               if (idList.contains(data.id)) {
                               } else {
+                                //TODO : Improve the recent item, Add only required keys
                                 if (data != null) {
                                   deleteItem(Strings.hiveLogName);
                                   final recentitem = Recent(
