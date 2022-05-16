@@ -10,13 +10,14 @@ abstract class OcrEvent extends Equatable {
 //   List<Object> get props => [];
 // }
 
-class AuthenticateEmail extends OcrEvent {
-  final String? email;
-  AuthenticateEmail({required this.email});
+// class AuthenticateEmail extends OcrEvent {
+//   final String? email;
+//   AuthenticateEmail({required this.email});
   
-  @override
-  List<Object> get props => [email!];
-}
+//   @override
+//   List<Object> get props => [email!];
+// }
+
 class FatchSubjectDetails extends OcrEvent {
   final String? type;
   FatchSubjectDetails({required this.type});

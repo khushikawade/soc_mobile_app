@@ -105,7 +105,6 @@ class _StaffPageState extends State<StaffPage> {
                                 .split('=')[1]));
 
                         localdb();
-
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -270,6 +269,7 @@ class _StaffPageState extends State<StaffPage> {
         ),
         child: FloatingActionButton(
           onPressed: () async {
+            _localData.clear();
             if (_localData.isEmpty) {
               await _launchURL('Google Authentication');
             } else {
