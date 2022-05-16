@@ -118,13 +118,13 @@ class _StaffPageState extends State<StaffPage> {
 
                         localdb();
 
-                        _googleDriveBloc.add(CreateGoogleDriveFolderEvent(
+                        _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
                             token: value
                                 .split('+')[3]
                                 .toString()
                                 .split('=')[1]
                                 .replaceAll('#', ''),
-                            folderName: "test_folder_C"));
+                            folderName: "test_folder_A"));
 
                         Navigator.pushReplacement(
                             context,

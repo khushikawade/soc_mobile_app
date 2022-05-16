@@ -4,8 +4,11 @@ import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as httpClient;
-
+import 'package:http/io_client.dart';
+import 'package:http/http.dart';
+import '../../../services/Strings.dart';
 import '../../../services/db_service.dart';
+import '../../../services/local_database/hive_db_services.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -19,7 +22,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Stream<GoogleDriveState> mapEventToState(
     GoogleDriveEvent event,
   ) async* {
-    if (event is CreateGoogleDriveFolderEvent) {
+    if (event is CreateFolderOnGoogleDriveEvent) {
       try {
         bool isFolderExist = await _getGoogleDriveFolderList(
             token: event.token, folderName: event.folderName);
@@ -27,8 +30,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (!isFolderExist) {
           _createFolderOnDrive(
               token: event.token, folderName: event.folderName);
+        }else{
+         // _uploadFileToGoogleDrive();
         }
-      } catch (e) {}
+      } catch (e) {
+        throw (e);
+      }
     }
   }
 
@@ -70,7 +77,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
-      String id;
+
       final ResponseModel response = await _dbServices.getapi(
           'https://www.googleapis.com/drive/v3/files?fields=*',
           headers: headers,
@@ -83,8 +90,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (data[i]['name'] == folderName &&
               data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
               data[i]["trashed"] == false) {
-            id = data[i]['id'];
-
+            String id = data[i]['id'];
+            await addIdtoDataBase(id);
             return true;
           }
         }
@@ -94,4 +101,38 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       throw (e);
     }
   }
+
+  Future addIdtoDataBase(String log) async {
+    await HiveDbServices().putData(Strings.googleDrive, log);
+  }
+
+// _uploadFileToGoogleDrive() async {  
+//    var client = GoogleHttpClient(await googleSignInAccount.authHeaders);  
+//   // var drive = ga.DriveApi(client);  
+//   //  ga.File fileToUpload = ga.File();  
+//   //  var file = await FilePicker.getFile();  
+//   //  fileToUpload.parents = ["appDataFolder"];  
+//   //  fileToUpload.name = path.basename(file.absolute.path);  
+//   //  var response = await drive.files.create(  
+//   //    fileToUpload,  
+//   //    uploadMedia: ga.Media(file.openRead(), file.lengthSync()),  
+//   //  );  
+//   // print(response);  
+//  } 
 }
+
+
+// class GoogleHttpClient extends IOClient {
+//   Map<String, String> _headers;
+
+//   GoogleHttpClient(this._headers) : super();
+
+//   @override
+//   Future<StreamedResponse> send(BaseRequest request) =>
+//       super.send(request..headers.addAll(_headers));
+
+//   @override
+//   Future<Response> head(Object url, {Map<String, String> headers}) =>
+//       super.head(url, headers: headers..addAll(_headers));
+
+// }
