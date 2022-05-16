@@ -17,6 +17,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
+import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../ocr/modal/user_info.dart';
 import '../../ocr/ui/ocr_home.dart';
 import '../../shared/ui/common_grid_widget.dart';
@@ -44,6 +45,7 @@ class _StaffPageState extends State<StaffPage> {
   OcrBloc ocrBloc = new OcrBloc();
   bool? authSuccess = false;
   dynamic userData;
+  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
 
   @override
   void initState() {
@@ -58,83 +60,93 @@ class _StaffPageState extends State<StaffPage> {
 
 //To authenticate the user via google
   _launchURL(String? title) async {
-    Globals.isbottomNavbar = false;
-    setState(() {
-      
-    });
     Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const OpticalCharacterRecognition()),
-  );
-  //  Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //           builder: (BuildContext context) => GoogleAuthWebview(
-  //                 title: title!,
-  //                 url: Overrides.secureLoginURL +
-  //                     '?' +
-  //                     Globals.appSetting
-  //                         .appLogoC, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
-  //                 isbuttomsheet: true,
-  //                 language: Globals.selectedLanguage,
-  //                 hideAppbar: false,
-  //                 hideShare: true,
-  //                 zoomEnabled: false,
-  //                 callBackFunction: (value) async {
-  //                   if (value.toString().contains('displayName')) {
-  //                     value = value.split('?')[1];
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => GoogleAuthWebview(
+                  title: title!,
+                  url: Overrides.secureLoginURL +
+                      '?' +
+                      Globals.appSetting
+                          .appLogoC, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
+                  isbuttomsheet: true,
+                  language: Globals.selectedLanguage,
+                  hideAppbar: false,
+                  hideShare: true,
+                  zoomEnabled: false,
+                  callBackFunction: (value) async {
+                    if (value.toString().contains('displayName')) {
+                      value = value.split('?')[1];
 
-  //                     //Comparing and saving the user profile locally
-  //                     if (value
-  //                             .split('+')[1]
-  //                             .toString()
-  //                             .split('=')[1]
-  //                             .contains('@schools.nyc.gov') ||
-  //                         value
-  //                             .split('+')[1]
-  //                             .toString()
-  //                             .split('=')[1]
-  //                             .contains('@solvedconsulting')) {
-  //                       _localUserInfo.addData(UserInfo(
-  //                           userName: value
-  //                               .split('+')[0]
-  //                               .toString()
-  //                               .toString()
-  //                               .split('=')[1],
-  //                           userEmail: value
-  //                               .split('+')[1]
-  //                               .toString()
-  //                               .toString()
-  //                               .split('=')[1],
-  //                           profilePicture: value
-  //                               .split('+')[2]
-  //                               .toString()
-  //                               .toString()
-  //                               .split('=')[1]));
+                      //Comparing and saving the user profile locally
+                      if (value
+                              .split('+')[1]
+                              .toString()
+                              .split('=')[1]
+                              .contains('@schools.nyc.gov') ||
+                          value
+                              .split('+')[1]
+                              .toString()
+                              .split('=')[1]
+                              .contains('@solvedconsulting') ||
+                          value
+                              .split('+')[1]
+                              .toString()
+                              .split('=')[1]
+                              .contains('appdevelopersdp7')) {
+                        _localUserInfo.addData(UserInfo(
+                            userName: value
+                                .split('+')[0]
+                                .toString()
+                                .toString()
+                                .split('=')[1],
+                            userEmail: value
+                                .split('+')[1]
+                                .toString()
+                                .toString()
+                                .split('=')[1],
+                            profilePicture: value
+                                .split('+')[2]
+                                .toString()
+                                .toString()
+                                .split('=')[1],
+                            authorizationToken: value
+                                .split('+')[3]
+                                .toString()
+                                .split('=')[1]
+                                .replaceAll('#', '')));
 
   //                       localdb();
 
-  //                       Navigator.pushReplacement(
-  //                           context,
-  //                           MaterialPageRoute(
-  //                               builder: (BuildContext context) =>
-  //                                   OpticalCharacterRecognition()));
-  //                     } else {
-  //                       Navigator.pop(context, false);
-  //                       Utility.showSnackBar(
-  //                           _scaffoldKey,
-  //                           'You are not authorized to access the feature. Please use the authorized account.',
-  //                           context,
-  //                           50.0);
-  //                     }
-  //                     // ocrBloc.add(AuthenticateEmail(
-  //                     //     email: value.split('+')[1].toString().split('=')[1]));
-  //                     // setState(() {
-  //                     //   userData = value;
-  //                     // });
-  //                   }
-  //                 },
-  //               )));
+                        _googleDriveBloc.add(CreateGoogleDriveFolderEvent(
+                            token: value
+                                .split('+')[3]
+                                .toString()
+                                .split('=')[1]
+                                .replaceAll('#', ''),
+                            folderName: "test_folder_C"));
+
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    OpticalCharacterRecognition()));
+                      } else {
+                        Navigator.pop(context, false);
+                        Utility.showSnackBar(
+                            _scaffoldKey,
+                            'You are not authorized to access the feature. Please use the authorized account.',
+                            context,
+                            50.0);
+                      }
+                      // ocrBloc.add(AuthenticateEmail(
+                      //     email: value.split('+')[1].toString().split('=')[1]));
+                      // setState(() {
+                      //   userData = value;
+                      // });
+                    }
+                  },
+                )));
   }
 
   Widget _body(String key) => RefreshIndicator(
@@ -278,6 +290,7 @@ class _StaffPageState extends State<StaffPage> {
         ),
         child: FloatingActionButton(
           onPressed: () async {
+            // _localData.clear();
             if (_localData.isEmpty) {
               await _launchURL('Google Authentication');
             } else {

@@ -101,9 +101,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                     builder: (context) =>    SuccessScreen()));
                     // OpticalCharacterRecognition
             break;
-          // case IconsMenu.Login:
+          // case IconsMenu.Google:
           //   Navigator.push(context,
-          //       MaterialPageRoute(builder: (context) => LoginSecured()));
+          //       MaterialPageRoute(builder: (context) => GoogleDriveTest()));
           //   break;
         }
         // Utility.setLocked();
