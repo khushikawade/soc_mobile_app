@@ -58,7 +58,13 @@ class Globals {
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   static List pointsList = [1, 2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
-  static List scoringList = ['NYC 0-2','Custom', 'NYC 0-3','None', 'NYC 0-4', ];
+  static List scoringList = [
+    'NYC 0-2',
+    'Custom',
+    'NYC 0-3',
+    'None',
+    'NYC 0-4',
+  ];
   static List subjectDetailsList = [
     'NY-3.OA.1 Interpret Products of whole numbers',
     'NY-3.OA.2  Interpret whole-number quotients of whole numbers.',
@@ -99,8 +105,17 @@ class Globals {
   static String? homeUrl;
   static PersistentTabController? controller;
   static bool? disableDarkMode;
-  static bool isbottomNavbar = true;
-  static List ocrResultIcons = [0xe823, 0xe824, 0xe825, 0xe829];
-  static List ocrResultIconsName = ["Share", "Add to drive", "History assessment", "Download"];
-  static List finishedList = ["Scan another assessment", "View all assessment results"];
+  static bool hideBottomNavbar = false;
+  static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe870];
+  static List ocrResultIconsName = [
+    "Share",
+    "Add to drive",
+    "History assessment",
+    "Download"
+  ];
+  static List finishedList = [
+    "Scan another assessment",
+    "View all assessment results"
+  ];
+  static List gradeList = [];
 }

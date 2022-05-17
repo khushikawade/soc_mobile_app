@@ -386,7 +386,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       ),
       navBarStyle: NavBarStyle.style6,
       navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
-      hideNavigationBar:!Globals.isbottomNavbar,
+      hideNavigationBar:Globals.hideBottomNavbar,
       
     );
   }

@@ -95,10 +95,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 settingsCode: SettingsCode.APP_SETTINGS);
             break;
           case IconsMenu.Camera:
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>    SuccessScreen()));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) =>    SuccessScreen()));
                     // OpticalCharacterRecognition
             break;
           // case IconsMenu.Google:

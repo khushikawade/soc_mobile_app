@@ -37,7 +37,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(IconData(0xe80d,
+            
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),color: AppTheme.kButtonColor ,),
           onPressed: () {
             if (indexGlobal == 1) {
               _ocrBloc.add(FatchSubjectDetails(type: 'subject'));
@@ -48,6 +51,15 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             }
           },
         ),
+        actions: [
+          Container(
+            padding: EdgeInsets.only(right: 10),
+            child: Icon(IconData(0xe874,
+              
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),color: AppTheme.kButtonColor ,),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -92,7 +104,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               },
               child: Container(),
             ),
-            SpacerWidget(_KVertcalSpace / 4),
+          //  SpacerWidget(_KVertcalSpace / 4),
             // changePages(),
             progressIndicatorBar(),
           ],
@@ -240,7 +252,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             width: MediaQuery.of(context).size.width * 0.3,
             height: 20,
             decoration: BoxDecoration(
-                color: Colors.green,
+                color:AppTheme.kButtonColor,
                 // border: Border(left: BorderSide(color: Colors.black)),
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
@@ -251,7 +263,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             height: 20,
             decoration: BoxDecoration(
               color: indexGlobal == 1 || indexGlobal == 2
-                  ? Colors.green
+                  ? AppTheme.kButtonColor
                   : Colors.grey,
               // border: Border(left: BorderSide(color: Colors.black)),
               // borderRadius: BorderRadius.circular(15)
@@ -261,7 +273,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             width: MediaQuery.of(context).size.width * 0.3,
             height: 20,
             decoration: BoxDecoration(
-                color: indexGlobal == 2 ? Colors.green : Colors.grey,
+                color: indexGlobal == 2 ? AppTheme.kButtonColor : Colors.grey,
                 //  border: Border(left: BorderSide(color: Colors.black)),
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),

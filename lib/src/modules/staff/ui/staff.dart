@@ -116,7 +116,7 @@ class _StaffPageState extends State<StaffPage> {
                                 .split('=')[1]
                                 .replaceAll('#', '')));
 
-  //                       localdb();
+                        //                       localdb();
 
                         _googleDriveBloc.add(CreateGoogleDriveFolderEvent(
                             token: value
@@ -211,6 +211,7 @@ class _StaffPageState extends State<StaffPage> {
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
                           Globals.appSetting = AppSetting.fromJson(state.obj);
+                          setState(() {});
                         }
                       },
                       child: EmptyContainer()),
@@ -290,16 +291,16 @@ class _StaffPageState extends State<StaffPage> {
         ),
         child: FloatingActionButton(
           onPressed: () async {
-            // _localData.clear();
+            _localData.clear();
             if (_localData.isEmpty) {
               await _launchURL('Google Authentication');
             } else {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          OpticalCharacterRecognition()));
-            }
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        OpticalCharacterRecognition()));
+               }
           },
           child: Icon(
             Icons.add,

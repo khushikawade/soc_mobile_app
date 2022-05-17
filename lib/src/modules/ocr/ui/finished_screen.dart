@@ -1,4 +1,8 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
+import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -17,19 +21,51 @@ class _FinishedScreenState extends State<FinishedScreen> {
   int? selectedIndex;
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: CustomOcrAppBarWidget(
+        isBackButton: false,
+      ),
+      // AppBar(
+      //   elevation: 0,
+      //   automaticallyImplyLeading: false,
+      //   actions: [
+      //     Container(
+      //       padding: EdgeInsets.only(right: 10),
+      //       child: Icon(
+      //         IconData(0xe874,
+      //             fontFamily: Overrides.kFontFam,
+      //             fontPackage: Overrides.kFontPkg),
+      //         color: AppTheme.kButtonColor,
+      //       ),
+      //     ),
+      //   ],
+      // ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        //mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SpacerWidget(_KVertcalSpace / 3),
-          Center(
-              child: highlightText(
-                  text: 'Finished!',
-                  theme: Theme.of(context).textTheme.headline6)),
-          SpacerWidget(_KVertcalSpace / 3),
-          lineSeparater(),
+          Container(
+              width: MediaQuery.of(context).size.width * 0.5,
+              // color: Colors.blue,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    IconData(0xe878,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    size: 28,
+                    color: Colors.green,
+                  ),
+                  highlightText(
+                      text: 'Finished!',
+                      theme: Theme.of(context).textTheme.headline6)
+                ],
+              )),
+          // SpacerWidget(_KVertcalSpace / 3),
+          // lineSeparater(),
           SpacerWidget(_KVertcalSpace / 2),
-          flipButton()
+          Center(child: flipButton())
         ],
       ),
     );
@@ -65,6 +101,18 @@ class _FinishedScreenState extends State<FinishedScreen> {
         setState(() {
           selectedIndex = index;
         });
+        if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AssessmentSummary()),
+          );
+        } else if (index == 0) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => OpticalCharacterRecognition()),
+          );
+        }
       },
       child: AnimatedContainer(
         padding: EdgeInsets.only(bottom: 10),
@@ -123,11 +171,11 @@ class _FinishedScreenState extends State<FinishedScreen> {
     );
   }
 
-  Widget lineSeparater() {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      height: 2,
-      color: Theme.of(context).colorScheme.primaryVariant,
-    );
-  }
+  // Widget lineSeparater() {
+  //   return Container(
+  //     width: MediaQuery.of(context).size.width * 0.9,
+  //     height: 2,
+  //     color: Theme.of(context).colorScheme.primaryVariant,
+  //   );
+  // }
 }
