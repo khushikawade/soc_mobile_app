@@ -537,28 +537,8 @@ class _SearchPageState extends State<SearchPage> {
                                       data.titleC,
                                       data.appIconUrlC,
                                       data.id,
-                                      data.name,
                                       data.objectName,
-                                      data.rtfHTMLC,
                                       data.typeC,
-                                      // data.schoolId,
-                                      // data.dept,
-                                      data.statusC,
-                                      data.urlC,
-                                      data.pdfURL,
-                                      data.sortOrder,
-                                      data.deepLink,
-                                      data.appURLC,
-                                      data.calendarId,
-                                      data.emailC,
-                                      data.imageUrlC,
-                                      data.phoneC,
-                                      data.webURLC,
-                                      data.address,
-                                      data.geoLocation,
-                                      data.descriptionC,
-                                      data.latitude,
-                                      data.longitude,
                                       data.darkModeIconC);
                                   addtoDataBase(recentitem);
                                 }
@@ -589,9 +569,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ));
-          }
-      
-          else {
+          } else {
             return Container(height: 0);
           }
         });
@@ -774,7 +752,6 @@ class _SearchPageState extends State<SearchPage> {
                                     obj: state.recordObject,
                                     objectType: state.objectType!,
                                     objectName: state.objectName!);
-
                               } else {
                                 Utility.showSnackBar(
                                     _scaffoldKey,

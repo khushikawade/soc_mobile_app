@@ -11,15 +11,15 @@ class Recent {
   @HiveField(2)
   dynamic appIconUrlC;
 
-  @HiveField(4)
+  @HiveField(3)
   String? id;
-  @HiveField(5)
-  String? name;
-  @HiveField(6)
+  // @HiveField(5)
+  // String? name;
+  @HiveField(4)
   String? objectName;
-  @HiveField(7)
-  String? rtfHTMLC;
-  @HiveField(8)
+  // @HiveField(7)
+  // String? rtfHTMLC;
+  @HiveField(5)
   String? typeC;
 
   // @HiveField(10)
@@ -29,39 +29,39 @@ class Recent {
 
   // @HiveField(13)
 
-  @HiveField(9)
-  final statusC;
-  @HiveField(10)
-  String? urlC;
-  @HiveField(11)
-  String? pdfURL;
-  @HiveField(12)
-  final sortOrder;
-  @HiveField(13)
-  String? deepLink;
-  @HiveField(14)
-  String? appURLC;
-  @HiveField(15)
-  String? calendarId;
-  @HiveField(16)
-  String? emailC;
-  @HiveField(17)
-  String? imageUrlC;
-  @HiveField(18)
-  String? phoneC;
-  @HiveField(19)
-  String? webURLC;
-  @HiveField(20)
-  String? address;
-  @HiveField(21)
-  final geoLocation;
-  @HiveField(22)
-  dynamic descriptionC;
-  @HiveField(23)
-  final latitude;
-  @HiveField(24)
-  final longitude;
-  @HiveField(25)
+  // @HiveField(9)
+  // final statusC;
+  // @HiveField(10)
+  // String? urlC;
+  // @HiveField(11)
+  // String? pdfURL;
+  // @HiveField(12)
+  // final sortOrder;
+  // @HiveField(13)
+  // String? deepLink;
+  // @HiveField(14)
+  // String? appURLC;
+  // @HiveField(15)
+  // String? calendarId;
+  // @HiveField(16)
+  // String? emailC;
+  // @HiveField(17)
+  // String? imageUrlC;
+  // @HiveField(18)
+  // String? phoneC;
+  // @HiveField(19)
+  // String? webURLC;
+  // @HiveField(20)
+  // String? address;
+  // @HiveField(21)
+  // final geoLocation;
+  // @HiveField(22)
+  // dynamic descriptionC;
+  // @HiveField(23)
+  // final latitude;
+  // @HiveField(24)
+  // final longitude;
+  @HiveField(6)
   final darkModeIconC;
 
   Recent(
@@ -69,29 +69,29 @@ class Recent {
       this.titleC,
       this.appIconUrlC,
       this.id,
-      this.name,
+      //  this.name,
       this.objectName,
-      this.rtfHTMLC,
+      // this.rtfHTMLC,
       this.typeC,
 
       // this.schoolId,
       // this.dept,
 
-      this.statusC,
-      this.urlC,
-      this.pdfURL,
-      this.sortOrder,
-      this.deepLink,
-      this.appURLC,
-      this.calendarId,
-      this.emailC,
-      this.imageUrlC,
-      this.phoneC,
-      this.webURLC,
-      this.address,
-      this.geoLocation,
-      this.descriptionC,
-      this.latitude,
-      this.longitude,
+      // this.statusC,
+      // this.urlC,
+      // this.pdfURL,
+      // this.sortOrder,
+      // this.deepLink,
+      // this.appURLC,
+      // this.calendarId,
+      // this.emailC,
+      // this.imageUrlC,
+      // this.phoneC,
+      // this.webURLC,
+      // this.address,
+      // this.geoLocation,
+      // this.descriptionC,
+      // this.latitude,
+      // this.longitude,
       this.darkModeIconC);
 }
