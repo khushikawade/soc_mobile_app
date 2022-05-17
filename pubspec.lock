@@ -63,7 +63,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.2"
+    version: "2.8.1"
   auto_orientation:
     dependency: "direct main"
     description:
@@ -205,7 +205,7 @@ packages:
       name: characters
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.1.0"
   charcode:
     dependency: transitive
     description:
@@ -631,14 +631,14 @@ packages:
       name: google_sign_in_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.7"
+    version: "5.2.5"
   google_sign_in_ios:
     dependency: transitive
     description:
       name: google_sign_in_ios
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.7"
+    version: "5.2.5"
   google_sign_in_platform_interface:
     dependency: transitive
     description:
@@ -652,7 +652,7 @@ packages:
       name: google_sign_in_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.1+2"
+    version: "0.10.0+5"
   googleapis:
     dependency: "direct main"
     description:
@@ -834,14 +834,7 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.11"
-  material_color_utilities:
-    dependency: transitive
-    description:
-      name: material_color_utilities
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.3"
+    version: "0.12.10"
   meta:
     dependency: transitive
     description:
@@ -1364,7 +1357,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.8"
+    version: "0.4.2"
   timing:
     dependency: transitive
     description:
@@ -1455,7 +1448,7 @@ packages:
       name: vector_math
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.0"
   video_player:
     dependency: transitive
     description:
@@ -1604,5 +1597,10 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
+<<<<<<< HEAD
   dart: ">=2.16.0 <3.0.0"
   flutter: ">=2.8.0"
+=======
+  dart: ">=2.14.0 <3.0.0"
+  flutter: ">=2.5.0"
+>>>>>>> 4bb8b22212ebcfc716c2fd98618c6bd50539a05a

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_access/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
@@ -20,6 +19,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
+import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../ocr/modal/user_info.dart';
 import '../../ocr/ui/ocr_home.dart';
 import '../../shared/ui/common_grid_widget.dart';
@@ -217,6 +217,7 @@ class _StaffPageState extends State<StaffPage> {
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
                           Globals.appSetting = AppSetting.fromJson(state.obj);
+                          setState(() {});
                         }
                       },
                       child: EmptyContainer()),
@@ -296,17 +297,16 @@ class _StaffPageState extends State<StaffPage> {
         ),
         child: FloatingActionButton(
           onPressed: () async {
-            await _launchURL('Google Authentication');
-
-            // if (_localData.isEmpty) {
-            //   await _launchURL('Google Authentication');
-            // } else {
-            //   Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //           builder: (BuildContext context) =>
-            //               OpticalCharacterRecognition()));
-            // }
+            _localData.clear();
+            if (_localData.isEmpty) {
+              await _launchURL('Google Authentication');
+            } else {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        OpticalCharacterRecognition()));
+               }
           },
           child: Icon(
             Icons.add,

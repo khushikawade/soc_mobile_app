@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
+import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
@@ -94,10 +95,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 settingsCode: SettingsCode.APP_SETTINGS);
             break;
           case IconsMenu.Camera:
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>    OpticalCharacterRecognition()));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) =>    SuccessScreen()));
                     // OpticalCharacterRecognition
             break;
           // case IconsMenu.Google:

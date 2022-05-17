@@ -13,8 +13,8 @@ class OcrLoading extends OcrState {}
 class SearchLoading extends OcrState {}
 
 class FetchTextFromImageSuccess extends OcrState {
-  String? schoolId;
-  String? grade;
+  final String? schoolId;
+  final String? grade;
   FetchTextFromImageSuccess({required this.schoolId,required this.grade});
   FetchTextFromImageSuccess copyWith({final schoolId}) {
     return FetchTextFromImageSuccess(schoolId: schoolId ?? this.schoolId, grade: grade ?? this.grade);
@@ -24,16 +24,16 @@ class FetchTextFromImageSuccess extends OcrState {
   List<Object> get props => [];
 }
 
-class EmailAuthenticationSuccess extends OcrState {
-  final obj;
-  EmailAuthenticationSuccess({this.obj});
-  EmailAuthenticationSuccess copyWith({final obj}) {
-    return EmailAuthenticationSuccess(obj: obj ?? this.obj);
-  }
+// class EmailAuthenticationSuccess extends OcrState {
+//   final obj;
+//   EmailAuthenticationSuccess({this.obj});
+//   EmailAuthenticationSuccess copyWith({final obj}) {
+//     return EmailAuthenticationSuccess(obj: obj ?? this.obj);
+//   }
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 class OcrErrorReceived extends OcrState {
   final err;

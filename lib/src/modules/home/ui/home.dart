@@ -26,7 +26,6 @@ import 'package:new_version/new_version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../overrides.dart';
-import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
@@ -51,6 +50,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
+     
   late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
@@ -122,6 +122,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     // _getNotificationIntance();
+    
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
     restart();
@@ -385,6 +386,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       ),
       navBarStyle: NavBarStyle.style6,
       navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+      hideNavigationBar:Globals.hideBottomNavbar,
+      
     );
   }
 
@@ -397,6 +400,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return Scaffold(
       body: Stack(
         children: [
+          // ValueListenableBuilder(
+          //   builder: (context, value, _) {
+          //     return _tabBarBody();
+          //   },
+          //   valueListenable: Globals.isbottomNavbar,
+          //   child: Container(),
+          // ),
           _tabBarBody(),
           ValueListenableBuilder<bool>(
               valueListenable: Globals.hasShowcaseInitialised,
@@ -518,8 +528,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else if (Globals.customSetting![i].systemReferenceC == 'Resources') {
           _screens.add(ResourcesPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC == 'Other') {
-          // if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
-          //     Globals.customSetting![i].typeOfPageC == 'List Menu') {
           if (Globals.customSetting![i].sectionTemplate == 'URL') {
             Globals.urlIndex = _screens.length;
             Globals.homeUrl = Globals.customSetting![i].appUrlC;
@@ -528,20 +536,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else {
           _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
         }
-        // } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-        //   if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
-        //       Globals.customSetting![i].typeOfPageC == 'List Menu') {
-        //     _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-        //   } else {
-        //     _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
-        //     if (Globals.customSetting![i].typeOfPageC == 'URL') {
-        //       Globals.urlIndex = _screens.length - 1;
-        //       Globals.homeUrl = Globals.customSetting![i].appUrlC;
-        //     }
-        //   }
-        // } else {
-        //   _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-        // }
       }
     } else {
       EmptyContainer();
