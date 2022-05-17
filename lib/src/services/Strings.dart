@@ -1,4 +1,5 @@
 class Strings {
+ 
   static final String hiveLogName = "recent_items";
   static final String SplashUrl = "SPLASHURL";
   static final String deviceType = "Device";
@@ -27,4 +28,5 @@ class Strings {
   static final String socialActionObjectName = 'social_action';
   static final String globalSearchName = 'global_search';
   static final String calendarObjectName = 'calandar_action';
+  static final String hiveReferenceLogName ='reference_recent_item'; //To get search record object from local database
 }

@@ -66,4 +66,5 @@ class Globals {
   static String? homeUrl;
   static PersistentTabController? controller;
   static bool? disableDarkMode;
+
 }
