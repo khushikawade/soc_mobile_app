@@ -1,23 +1,28 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
+import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ClassDetails extends StatefulWidget {
-  ClassDetails({Key? key}) : super(key: key);
+class SubjectSelection extends StatefulWidget {
+  SubjectSelection({Key? key}) : super(key: key);
 
   @override
-  State<ClassDetails> createState() => _ClassDetailsState();
+  State<SubjectSelection> createState() => _SubjectSelectionState();
 }
 
-class _ClassDetailsState extends State<ClassDetails> {
+class _SubjectSelectionState extends State<SubjectSelection> {
   static const double _KVertcalSpace = 60.0;
   final searchController = TextEditingController();
   int indexGlobal = 0;
+  int? subjectIndex;
+  int? nycIndex;
+  int? nycSubIndex;
   OcrBloc _ocrBloc = OcrBloc();
   @override
   void initState() {
@@ -28,6 +33,7 @@ class _ClassDetailsState extends State<ClassDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
@@ -43,50 +49,54 @@ class _ClassDetailsState extends State<ClassDetails> {
           },
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          BlocBuilder<OcrBloc, OcrState>(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            BlocBuilder<OcrBloc, OcrState>(
+                bloc: _ocrBloc,
+                builder: (context, state) {
+                  if (state is OcrLoading) {
+                    return loadingPage();
+                  }
+
+                  if (state is SubjectDataSuccess) {
+                    indexGlobal = 0;
+                    return subjectPage(list: state.obj!);
+                  } else if (state is NycDataSuccess) {
+                    indexGlobal = 1;
+                    return secondPage(list: state.obj);
+                  } else if (state is NycSubDataSuccess) {
+                    indexGlobal = 2;
+                    return thirdPage(list: state.obj!);
+                  }
+                  return Container();
+                  // return widget here based on BlocA's state
+                }),
+            BlocListener(
               bloc: _ocrBloc,
-              builder: (context, state) {
-                if (state is OcrLoading) {
-                  return loadingPage();
-                }
+              listener: (context, state) {
                 if (state is SubjectDataSuccess) {
-                  indexGlobal = 0;
-                  return subjectPage(list: state.obj!);
+                  setState(() {
+                    indexGlobal = 0;
+                  });
                 } else if (state is NycDataSuccess) {
-                  indexGlobal = 1;
-                  return secondPage(list: state.obj);
+                  setState(() {
+                    indexGlobal = 1;
+                  });
                 } else if (state is NycSubDataSuccess) {
-                  indexGlobal = 2;
-                  return thirdPage(list: state.obj!);
+                  setState(() {
+                    indexGlobal = 2;
+                  });
                 }
-                return Container();
-                // return widget here based on BlocA's state
-              }),
-          BlocListener(
-            bloc: _ocrBloc,
-            listener: (context, state) {
-              if (state is SubjectDataSuccess) {
-                setState(() {
-                  indexGlobal = 0;
-                });
-              } else if (state is NycDataSuccess) {
-                setState(() {
-                  indexGlobal = 1;
-                });
-              } else if (state is NycSubDataSuccess) {
-                setState(() {
-                  indexGlobal = 2;
-                });
-              }
-            },
-            child: Container(),
-          ),
-          // changePages(),
-          progressIndicatorBar(),
-        ],
+              },
+              child: Container(),
+            ),
+            SpacerWidget(_KVertcalSpace / 4),
+            // changePages(),
+            progressIndicatorBar(),
+          ],
+        ),
       ),
     );
   }
@@ -104,7 +114,7 @@ class _ClassDetailsState extends State<ClassDetails> {
   Widget secondPage({required List<SubjectList> list}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
-      height: MediaQuery.of(context).size.height * 0.72,
+      height: MediaQuery.of(context).orientation == Orientation.portrait ? MediaQuery.of(context).size.height * 0.82 :MediaQuery.of(context).size.width * 0.50,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         highlightText(text: 'Learning Standard'),
         SpacerWidget(_KVertcalSpace / 4),
@@ -116,10 +126,10 @@ class _ClassDetailsState extends State<ClassDetails> {
     );
   }
 
-  Widget loadingPage() {  
+  Widget loadingPage() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
-      height: MediaQuery.of(context).size.height * 0.72,
+      height: MediaQuery.of(context).size.height * 0.80,
       child: Center(
         child: CircularProgressIndicator(
           color: Colors.white,
@@ -131,7 +141,7 @@ class _ClassDetailsState extends State<ClassDetails> {
   Widget thirdPage({required List<SubjectList> list}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
-      height: MediaQuery.of(context).size.height * 0.72,
+      height: MediaQuery.of(context).orientation == Orientation.portrait ? MediaQuery.of(context).size.height * 0.82 :MediaQuery.of(context).size.width * 0.80,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         highlightText(text: 'Learning Standard'),
         SpacerWidget(_KVertcalSpace / 4),
@@ -139,6 +149,7 @@ class _ClassDetailsState extends State<ClassDetails> {
             controller: searchController, onSaved: (String value) {}),
         SpacerWidget(_KVertcalSpace / 4),
         detailsList(list: list),
+        textActionButton(),
         // scoringButton(list: Globals.subjectDetailsList),
       ]),
     );
@@ -147,8 +158,8 @@ class _ClassDetailsState extends State<ClassDetails> {
   Widget detailsList({required List<SubjectList> list}) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.55
-          : MediaQuery.of(context).size.width * 0.55,
+          ? MediaQuery.of(context).size.height * 0.60
+          : MediaQuery.of(context).size.width * 0.50,
       width: MediaQuery.of(context).size.width * 0.9,
       child: ListView.separated(
         physics: NeverScrollableScrollPhysics(),
@@ -166,20 +177,44 @@ class _ClassDetailsState extends State<ClassDetails> {
               // } else if(indexGlobal == 1){
               //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
               // }
+              if (indexGlobal == 2) {
+                setState(() {
+                  nycSubIndex = index;
+                });
+              }
             },
-            child: Container(
-              padding: EdgeInsets.all(15),
-              alignment: Alignment.center,
-              child: textwidget(
-                text: list[index].subjectNameC!,
-                textTheme: Theme.of(context).textTheme.headline2,
-              ),
+            child: AnimatedContainer(
+              padding: EdgeInsets.only(bottom: 5),
               decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.primaryVariant,
-                  ),
-                  // color: scoringColor == index ? Colors.orange : null,
-                  borderRadius: BorderRadius.circular(15)),
+                color: (nycSubIndex == index && indexGlobal == 2)
+                    ? AppTheme.kSelectedColor
+                    : Colors.grey,
+                // Theme.of(context)
+                //     .colorScheme
+                //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
+
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15),
+                ),
+              ),
+              duration: Duration(microseconds: 100),
+              child: Container(
+                padding: EdgeInsets.all(15),
+                alignment: Alignment.center,
+                child: textwidget(
+                  text: list[index].subjectNameC!,
+                  textTheme: Theme.of(context).textTheme.headline2,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.background,
+                    border: Border.all(
+                      color: (nycSubIndex == index && indexGlobal == 2)
+                          ? AppTheme.kSelectedColor
+                    : Colors.grey,
+                    ),
+                    // color: scoringColor == index ? Colors.orange : null,
+                    borderRadius: BorderRadius.circular(15)),
+              ),
             ),
           );
         },
@@ -205,12 +240,11 @@ class _ClassDetailsState extends State<ClassDetails> {
             width: MediaQuery.of(context).size.width * 0.3,
             height: 20,
             decoration: BoxDecoration(
-              color: Colors.green,
-             // border: Border(left: BorderSide(color: Colors.black)),
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  bottomLeft: Radius.circular(15))
-            ),
+                color: Colors.green,
+                // border: Border(left: BorderSide(color: Colors.black)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    bottomLeft: Radius.circular(15))),
           ),
           Container(
             width: MediaQuery.of(context).size.width * 0.3,
@@ -227,14 +261,11 @@ class _ClassDetailsState extends State<ClassDetails> {
             width: MediaQuery.of(context).size.width * 0.3,
             height: 20,
             decoration: BoxDecoration(
-              color: indexGlobal == 2
-                  ? Colors.green
-                  :Colors.grey,
-            //  border: Border(left: BorderSide(color: Colors.black)),
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(15),
-                  bottomRight: Radius.circular(15))
-            ),
+                color: indexGlobal == 2 ? Colors.green : Colors.grey,
+                //  border: Border(left: BorderSide(color: Colors.black)),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    bottomRight: Radius.circular(15))),
           )
         ],
       ),
@@ -244,7 +275,7 @@ class _ClassDetailsState extends State<ClassDetails> {
   Widget subjectPage({required List<SubjectList> list}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
-      height: MediaQuery.of(context).size.height * 0.72,
+      height: MediaQuery.of(context).orientation == Orientation.portrait ? MediaQuery.of(context).size.height * 0.82 :MediaQuery.of(context).size.width * 0.50,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         highlightText(text: 'Subject'),
         SpacerWidget(_KVertcalSpace / 4),
@@ -259,8 +290,8 @@ class _ClassDetailsState extends State<ClassDetails> {
   Widget scoringButton({required List<SubjectList> list}) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.55
-          : MediaQuery.of(context).size.width * 0.55,
+          ? MediaQuery.of(context).size.height * 0.60
+          : MediaQuery.of(context).size.width * 0.30,
       width: MediaQuery.of(context).size.width * 0.9,
       child: GridView.builder(
           physics: NeverScrollableScrollPhysics(),
@@ -274,23 +305,54 @@ class _ClassDetailsState extends State<ClassDetails> {
             return InkWell(
               onTap: () {
                 if (indexGlobal == 0) {
+                  setState(() {
+                    subjectIndex = index;
+                  });
                   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
                 } else if (indexGlobal == 1) {
+                  setState(() {
+                    nycIndex = index;
+                  });
                   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
+                } else if (indexGlobal == 1) {
+                  setState(() {
+                    nycSubIndex = index;
+                  });
                 }
               },
-              child: Container(
-                alignment: Alignment.center,
-                child: textwidget(
-                  text: list[index].subjectNameC!,
-                  textTheme: Theme.of(context).textTheme.headline2,
-                ),
+              child: AnimatedContainer(
+                padding: EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                    ),
-                    // color: scoringColor == index ? Colors.orange : null,
-                    borderRadius: BorderRadius.circular(15)),
+                  color: (subjectIndex == index && indexGlobal == 0) ||
+                          (nycIndex == index && indexGlobal == 1)
+                      ? AppTheme.kSelectedColor
+                      : Colors.grey,
+                  // Theme.of(context)
+                  //     .colorScheme
+                  //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
+
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(15),
+                  ),
+                ),
+                duration: Duration(microseconds: 100),
+                child: Container(
+                  alignment: Alignment.center,
+                  child: textwidget(
+                    text: list[index].subjectNameC!,
+                    textTheme: Theme.of(context).textTheme.headline2,
+                  ),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.background,
+                      border: Border.all(
+                        color: (subjectIndex == index && indexGlobal == 0) ||
+                                (nycIndex == index && indexGlobal == 1)
+                            ? AppTheme.kSelectedColor
+                            : Colors.grey,
+                      ),
+                      // color: scoringColor == index ? Colors.orange : null,
+                      borderRadius: BorderRadius.circular(15)),
+                ),
               ),
             );
           }),
@@ -309,7 +371,7 @@ class _ClassDetailsState extends State<ClassDetails> {
     );
   }
 
-  Widget highlightText({required String text}) {
+  Widget highlightText({required String text,theme}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5),
       child: TranslationWidget(
@@ -319,7 +381,7 @@ class _ClassDetailsState extends State<ClassDetails> {
         builder: (translatedMessage) => Text(
           translatedMessage.toString(),
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline6,
+          style: theme != null ?theme: Theme.of(context).textTheme.headline6,
         ),
       ),
     );
@@ -347,8 +409,7 @@ class _ClassDetailsState extends State<ClassDetails> {
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                    borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary, width: 2),
+                    borderSide: BorderSide(color: Colors.green, width: 2),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30.0)),
@@ -379,6 +440,33 @@ class _ClassDetailsState extends State<ClassDetails> {
                 onChanged: onSaved,
               );
             }),
+      ),
+    );
+  }
+  Widget textActionButton() {
+    return InkWell(
+      onTap: (){
+        Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>  ResultsSummary()),
+            );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.kButtonColor,
+          borderRadius: BorderRadius.all(Radius.circular(25)),
+        ),
+        height: 54,
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: Center(
+          child: highlightText(
+            text: 'Next',
+            theme: Theme.of(context)
+                .textTheme
+                .headline1!
+                .copyWith(color: Theme.of(context).colorScheme.background),
+          ),
+        ),
       ),
     );
   }

@@ -1,10 +1,14 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/modules/ocr/ui/success.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
+import 'camera_screen.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -24,110 +28,72 @@ class _OpticalCharacterRecognitionPageState
   @override
   void initState() {
     super.initState();
-    Globals.isbottomNavbar = false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBarWidget(
-        appBarTitle: 'OCR',
-        isSearch: true,
-        isShare: false,
-        language: Globals.selectedLanguage,
-        isCenterIcon: false,
-        ishtmlpage: false,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(20),
+        appBar: CustomAppBarWidget(
+          appBarTitle: 'OCR',
+          isSearch: true,
+          isShare: false,
+          language: Globals.selectedLanguage,
+          isCenterIcon: false,
+          ishtmlpage: false,
+          sharedpopBodytext: '',
+          sharedpopUpheaderText: '',
+        ),
+        body: Container(
+          padding: EdgeInsets.only(left: 15, right: 15),
           height: MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.height * 0.80
-              : MediaQuery.of(context).size.width * 0.80,
+              ? MediaQuery.of(context).size.height
+              : MediaQuery.of(context).size.width * 0.8,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              highlightText(
-                text: 'Create Assessment',
-                theme: Theme.of(context).textTheme.headline6,
-              ),
-              SpacerWidget(_KVertcalSpace / 5),
-
-              Text(
-                'Nullam posuere nisl at ipsum condimentum, sit amet rhoncus leo volutpat.',
-                style: Theme.of(context).textTheme.headline3,
-              ),
-              SpacerWidget(_KVertcalSpace / 1.5),
-
-              highlightText(
-                  text: 'Assessment Name',
-                  theme: Theme.of(context).textTheme.subtitle1),
-              textFormField(
-                  controller: assessmentController, onSaved: (String value) {}),
-              SpacerWidget(_KVertcalSpace / 5),
-              highlightText(
-                  text: 'Class Name',
-                  theme: Theme.of(context).textTheme.subtitle1),
-              textFormField(
-                  controller: classController, onSaved: (String value) {}),
-              SpacerWidget(_KVertcalSpace / 3),
+              highlightText(text: 'Points Possible'),
+              SpacerWidget(_KVertcalSpace / 4),
+              smallButton(),
+              SpacerWidget(_KVertcalSpace / 2),
+              highlightText(text: 'Scoring Rubric'),
+              SpacerWidget(_KVertcalSpace / 4),
               scoringButton(),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ClassDetails()),
-                    );
-                  },
-                  child: Text('Next'))
-              // smallButton(),
-              // SpacerWidget(_KVertcalSpace / 2),
-
-              // SpacerWidget(_KVertcalSpace / 4),
-              // scoringButton(),
-              // // SpacerWidget(_KVertcalSpace / 8),
-              // cameraButton(),
+              SpacerWidget(_KVertcalSpace * 1.6),
+              cameraButton(),
             ],
           ),
-        ),
-      ),
-      bottomNavigationBar: null,
-    );
+        ));
   }
 
-  // Widget cameraButton() {
-  //   return InkWell(
-  //     onTap: () {},
-  //     child: CircleAvatar(
-  //         maxRadius: 65,
-  //         child: Column(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             textwidget(
-  //               text: 'Start',
-  //               textTheme: Theme.of(context).textTheme.headline6!.copyWith(
-  //                     fontWeight: FontWeight.bold,
-  //                   ),
-  //             ),
-  //             textwidget(
-  //               text: 'Scanning',
-  //               textTheme: Theme.of(context).textTheme.subtitle1,
-  //             ),
-  //             textwidget(
-  //               text: 'Student',
-  //               textTheme: Theme.of(context).textTheme.subtitle1,
-  //             ),
-  //             textwidget(
-  //               text: 'Work',
-  //               textTheme: Theme.of(context).textTheme.subtitle1,
-  //             )
-  //           ],
-  //         )),
-  //   );
-  // }
+  Widget cameraButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            textwidget(
+                text: 'Start Scanning',
+                textTheme: Theme.of(context).textTheme.headline1),
+            textwidget(
+                text: 'Student Work',
+                textTheme: Theme.of(context).textTheme.headline6)
+          ],
+        ),
+        IconButton(
+          iconSize: 50,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreateAssessment()),
+            );
+          },
+          icon: Icon(Icons.camera_alt_rounded),
+        )
+      ],
+    );
+  }
 
   Widget textwidget({required String text, required dynamic textTheme}) {
     return TranslationWidget(
@@ -141,186 +107,152 @@ class _OpticalCharacterRecognitionPageState
     );
   }
 
-  // Widget smallButton() {
-  //   return Container(
-  //     width: MediaQuery.of(context).size.width * 0.75,
-  //     // height: MediaQuery.of(context).size.height * 0.08,
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //       children: Globals.icons
-  //           .map<Widget>(
-  //               (element) => pointsButton(Globals.icons.indexOf(element)))
-  //           .toList(),
-  //     ),
-  //   );
-  // }
+  Widget smallButton() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      // height: MediaQuery.of(context).size.height * 0.08,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: Globals.icons
+            .map<Widget>(
+                (element) => pointsButton(Globals.icons.indexOf(element)))
+            .toList(),
+      ),
+    );
+  }
 
-  // Widget pointsButton(index) {
-  //   return InkWell(
-  //       onTap: () {
-  //         setState(() {
-  //           indexColor = index + 1;
-  //         });
-  //       },
-  //       child: Container(
-  //           padding: EdgeInsets.symmetric(horizontal: 22, vertical: 12),
-  //           decoration: BoxDecoration(
-  //             color: indexColor == index + 1 ? Colors.orange : null,
-  //             border: Border.all(
-  //                 color: Theme.of(context).colorScheme.primaryVariant),
-  //             borderRadius: BorderRadius.all(Radius.circular(15)),
-  //           ),
-  //           child: TranslationWidget(
-  //             message: '${index + 1}',
-  //             toLanguage: Globals.selectedLanguage,
-  //             fromLanguage: "en",
-  //             builder: (translatedMessage) => Text(
-  //               translatedMessage.toString(),
-  //               style: Theme.of(context).textTheme.headline1,
-  //             ),
-  //           )));
-  // }
+  Widget pointsButton(index) {
+    return InkWell(
+        onTap: () {
+          setState(() {
+            indexColor = index + 1;
+          });
+        },
+        child: AnimatedContainer(
+          padding: EdgeInsets.only(bottom: 6),
+          decoration: BoxDecoration(
+            color: indexColor == index + 1
+                ? AppTheme.kSelectedColor
+                : Colors.grey,
+                // Theme.of(context)
+                //     .colorScheme
+                //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
+
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+          duration: Duration(microseconds: 100),
+          child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.background,
+                
+                //  indexColor == index + 1
+                //     ? AppTheme.kSelectedColor
+                //     : Theme.of(context).colorScheme.background,
+                border: Border.all(
+                    color: indexColor == index + 1
+                ? AppTheme.kSelectedColor
+                : Colors.grey,),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15),
+                ),
+              ),
+              child: TranslationWidget(
+                message: '${index + 1}',
+                toLanguage: Globals.selectedLanguage,
+                fromLanguage: "en",
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.headline1!.copyWith(
+                      color: indexColor == index + 1
+                ? AppTheme.kSelectedColor
+                : Theme.of(context).colorScheme.primaryVariant,
+                       ),
+                ),
+              )),
+        ));
+  }
 
   Widget scoringButton() {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.35
+          ? MediaQuery.of(context).size.height * 0.45
           : MediaQuery.of(context).size.width * 0.35,
-      // width: MediaQuery.of(context).size.width * 0.7,
+      width: MediaQuery.of(context).size.width,
       child: GridView.builder(
           physics: NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 80,
-              childAspectRatio: 6 / 4,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 5),
-          itemCount: Globals.classList.length,
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent:
+                  MediaQuery.of(context).orientation == Orientation.portrait
+                      ? MediaQuery.of(context).size.width * 0.5
+                      : MediaQuery.of(context).size.height * 0.5,
+              childAspectRatio: 6 / 3.5,
+              crossAxisSpacing: 15,
+              mainAxisSpacing: 15),
+          itemCount: Globals.scoringList.length,
           itemBuilder: (BuildContext ctx, index) {
             return InkWell(
-                onTap: () {
-                  setState(() {
-                    scoringColor = index;
-                  });
-                },
-                child: index < Globals.classList.length - 1
-                    ?
-                    // Container(
+              onTap: () {
+                setState(() {
+                  scoringColor = index;
+                });
+              },
+              child: AnimatedContainer(
+                padding: EdgeInsets.only(bottom: 6),
+          decoration: BoxDecoration(
+            color: scoringColor == index
+                ? AppTheme.kSelectedColor
+                : Colors.grey,
+                // Theme.of(context)
+                //     .colorScheme
+                //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
 
-                    //   decoration: BoxDecoration(
-                    //     border: Border.all(color: Colors.black),
-                    //     borderRadius: BorderRadius.circular(90),
-                    //     color: scoringColor == index? Colors.orange: Theme.of(context).backgroundColor ,
-                    //   ),
-                    //  //
-
-                    //   child: Center(
-                    //     child: textwidget(
-                    //                   text: Globals.classList[index],
-                    //                   textTheme: Theme.of(context).textTheme.headline2,
-                    //                 ),
-                    //   ),
-                    // )
-                    Container(
-                        child: new CircleAvatar(
-                          child: textwidget(
-                            text: Globals.classList[index],
-                            textTheme: Theme.of(context).textTheme.headline2,
-                          ),
-                          foregroundColor: Colors.black,
-                          backgroundColor: scoringColor == index
-                              ? Colors.orange
-                              : Theme.of(context).backgroundColor,
-                        ),
-                        width: 32.0,
-                        height: 32.0,
-                        padding: const EdgeInsets.all(2.0), // borde width
-                        decoration: BoxDecoration(
-                          color: Colors.red, // border color
-                          shape: BoxShape.circle,
-                        ))
-                    // CircleAvatar(
-
-                    //   radius: 80,
-                    //   backgroundColor: scoringColor == index? Colors.orange: Theme.of(context).backgroundColor ,
-                    //   child: textwidget(
-                    //     text: Globals.classList[index],
-                    //     textTheme: Theme.of(context).textTheme.headline2,
-                    //   ),
-                    // )
-                    : Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          color: scoringColor == index
-                              ? Colors.orange
-                              : Theme.of(context).backgroundColor,
-                        ),
-                        child: Center(
-                          child: textwidget(
-                            text: Globals.classList[index],
-                            textTheme: Theme.of(context).textTheme.headline2,
-                          ),
-                        )));
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+          duration: Duration(microseconds: 100),
+                child: Container(
+                  // width:Globals.scoringList.length -1 == index ? MediaQuery.of(context).size.width: null,
+                  alignment: Alignment.center,
+                  child: textwidget(
+                    text: Globals.scoringList[index],
+                    textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                        color: scoringColor == index
+                            ? AppTheme.kSelectedColor
+                            : Theme.of(context).colorScheme.primaryVariant),
+                  ),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: scoringColor == index
+                            ? AppTheme.kSelectedColor
+                            : Colors.grey,
+                      ),
+                      color:
+                          Theme.of(context).colorScheme.background,
+                      borderRadius: BorderRadius.circular(15)),
+                ),
+              ),
+            );
           }),
     );
   }
 
-  Widget highlightText({required String text, required theme}) {
+  Widget highlightText({required String text}) {
     return TranslationWidget(
       message: text,
       toLanguage: Globals.selectedLanguage,
       fromLanguage: "en",
       builder: (translatedMessage) => Text(
         translatedMessage.toString(),
-        maxLines: 2,
-        //overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.center,
-        style: theme,
+        style: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
-
-  Widget textFormField(
-      {required TextEditingController controller, required onSaved}) {
-    return Container(
-        child: TextFormField(
-      controller: controller,
-      cursorColor: Theme.of(context).colorScheme.primaryVariant,
-      decoration: InputDecoration(
-        fillColor: Theme.of(context).backgroundColor,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primaryVariant,
-          ),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primaryVariant,
-          ),
-        ),
-        border: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primaryVariant,
-          ),
-        ),
-      ),
-      onChanged: onSaved,
-    ));
-  }
-// void getCameraImage() async {
-//     ImagePicker _imagePicker = ImagePicker();
-//     XFile? image = await _imagePicker.pickImage(source: ImageSource.camera);
-//     final bytes = File(image!.path).readAsBytesSync();
-//     String img64 = base64Encode(bytes);
-
-//     setState(() {
-//       myImagePath = File(image.path);
-//       isLoading2 = false;
-//       pathOfImage = image.path.toString();
-//     });
-//     if (myImagePath != null) {
-//       _bloc.add(FetchTextFromImage(base64: img64));
-//     }
-//     // reconizeText(pathOfImage);
-//   }
-
 }

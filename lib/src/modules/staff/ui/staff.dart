@@ -68,7 +68,7 @@ class _StaffPageState extends State<StaffPage> {
                   url: Overrides.secureLoginURL +
                       '?' +
                       Globals.appSetting
-                          .appLogoC, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
+                          .appLogoC +'?'+ Theme.of(context).backgroundColor.toString(), //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
                   isbuttomsheet: true,
                   language: Globals.selectedLanguage,
                   hideAppbar: false,
@@ -116,7 +116,7 @@ class _StaffPageState extends State<StaffPage> {
                                 .split('=')[1]
                                 .replaceAll('#', '')));
 
-                        localdb();
+  //                       localdb();
 
                         _googleDriveBloc.add(CreateGoogleDriveFolderEvent(
                             token: value
@@ -290,7 +290,8 @@ class _StaffPageState extends State<StaffPage> {
         ),
         child: FloatingActionButton(
           onPressed: () async {
-            // _localData.clear();
+            print(Theme.of(context).backgroundColor.toString());
+            _localData.clear();
             if (_localData.isEmpty) {
               await _launchURL('Google Authentication');
             } else {

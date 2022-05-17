@@ -50,6 +50,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
+     
   late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
@@ -121,6 +122,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     // _getNotificationIntance();
+    
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
     restart();
@@ -384,6 +386,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       ),
       navBarStyle: NavBarStyle.style6,
       navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
+      hideNavigationBar:!Globals.isbottomNavbar,
+      
     );
   }
 
@@ -396,6 +400,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return Scaffold(
       body: Stack(
         children: [
+          // ValueListenableBuilder(
+          //   builder: (context, value, _) {
+          //     return _tabBarBody();
+          //   },
+          //   valueListenable: Globals.isbottomNavbar,
+          //   child: Container(),
+          // ),
           _tabBarBody(),
           ValueListenableBuilder<bool>(
               valueListenable: Globals.hasShowcaseInitialised,

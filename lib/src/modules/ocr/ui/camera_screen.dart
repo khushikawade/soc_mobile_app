@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
   @override
@@ -8,7 +11,8 @@ class CameraScreen extends StatefulWidget {
 
 List<CameraDescription> cameras = [];
 
-class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver{
+class _CameraScreenState extends State<CameraScreen>
+    with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final CameraController? cameraController = controller;
@@ -26,10 +30,13 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
       onNewCameraSelected(cameraController.description);
     }
   }
+
   CameraController? controller;
   bool _isCameraInitialized = false;
   @override
   void initState() {
+    // Hide the status bar
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     onNewCameraSelected(cameras[0]);
     super.initState();
   }
@@ -42,7 +49,36 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: _isCameraInitialized
+          ? Stack(children: [
+              controller!.buildPreview(),
+              Positioned(
+                bottom: MediaQuery.of(context).size.height * 0.1,
+                left: MediaQuery.of(context).size.width * 0.35,
+                child: IconButton(
+                    onPressed: () async {
+                      XFile? rawImage = await takePicture();
+                      File imageFile = File(rawImage!.path);
+
+                      //  File imageFile = File(rawImage!.path);
+
+                      int currentUnix = DateTime.now().millisecondsSinceEpoch;
+                      final directory = await getApplicationDocumentsDirectory();
+                      String fileFormat = imageFile.path.split('.').last;
+
+                      await imageFile.copy(
+                        '${directory.path}/$currentUnix.$fileFormat',
+                      );
+                    },
+                    icon: Icon(
+                      Icons.circle,
+                      size: 120,
+                    )),
+              )
+            ])
+          : Container(),
+    );
   }
 
   void onNewCameraSelected(CameraDescription cameraDescription) async {
@@ -81,6 +117,21 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
       setState(() {
         _isCameraInitialized = controller!.value.isInitialized;
       });
+    }
+  }
+
+  Future<XFile?> takePicture() async {
+    final CameraController? cameraController = controller;
+    if (cameraController!.value.isTakingPicture) {
+      // A capture is already pending, do nothing.
+      return null;
+    }
+    try {
+      XFile file = await cameraController.takePicture();
+      return file;
+    } on CameraException catch (e) {
+      print('Error occured while taking picture: $e');
+      return null;
     }
   }
 }
