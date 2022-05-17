@@ -7,8 +7,10 @@ abstract class GoogleDriveEvent extends Equatable {
 class CreateFolderOnGoogleDriveEvent extends GoogleDriveEvent {
   final String? token;
   final String? folderName;
+  //final File? filePath;
   CreateFolderOnGoogleDriveEvent(
-      {required this.token, required this.folderName});
+      {required this.token, required this.folderName, //required this.filePath
+      });
 
   @override
   List<Object> get props => [token!, folderName!];

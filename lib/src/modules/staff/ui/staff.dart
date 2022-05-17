@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_access/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
@@ -21,6 +23,8 @@ import '../../custom/model/custom_setting.dart';
 import '../../ocr/modal/user_info.dart';
 import '../../ocr/ui/ocr_home.dart';
 import '../../shared/ui/common_grid_widget.dart';
+
+import 'package:file_picker/file_picker.dart';
 
 class StaffPage extends StatefulWidget {
   StaffPage({Key? key, this.title, this.language, this.customObj})
@@ -117,20 +121,22 @@ class _StaffPageState extends State<StaffPage> {
                                 .replaceAll('#', '')));
 
                         localdb();
-
+                        //   File file = await _getpath();
                         _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
+                            //  filePath: file,
                             token: value
                                 .split('+')[3]
                                 .toString()
                                 .split('=')[1]
                                 .replaceAll('#', ''),
-                            folderName: "test_folder_A"));
+                            folderName: "test_folder_table"));
 
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OpticalCharacterRecognition()));
+                        // Navigator.pushReplacement(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (BuildContext context) =>
+                        //             OpticalCharacterRecognition())
+                        //             );
                       } else {
                         Navigator.pop(context, false);
                         Utility.showSnackBar(
@@ -318,5 +324,10 @@ class _StaffPageState extends State<StaffPage> {
     await Future.delayed(Duration(seconds: 2));
     _bloc.add(StaffPageEvent());
     _homeBloc.add(FetchStandardNavigationBar());
+  }
+
+  Future<File> _getpath() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    return File(result!.files.first.path!);
   }
 }
