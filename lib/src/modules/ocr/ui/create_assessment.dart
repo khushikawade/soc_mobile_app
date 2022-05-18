@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -35,89 +36,101 @@ class _CreateAssessmentState extends State<CreateAssessment>
     )..addListener(() {
         setState(() {});
       });
-    
   }
 
   @override
   Widget build(BuildContext context) {
     _scale = 1 - _controller!.value;
-    return Scaffold(
-      appBar: CustomOcrAppBarWidget(isBackButton: false,),
-      // AppBar(
-      //   elevation: 0,
-      //   automaticallyImplyLeading: false,
-      //   actions: [
-      //     Container(
-      //       padding: EdgeInsets.only(right: 10),
-      //       child: Icon(
-      //         IconData(0xe874,
-      //             fontFamily: Overrides.kFontFam,
-      //             fontPackage: Overrides.kFontPkg),
-      //         color: AppTheme.kButtonColor,
-      //       ),
-      //     ),
-      //   ],
-      // ),
-      //  CustomAppBarWidget(
-      //   appBarTitle: 'OCR',
-      //   isSearch: true,
-      //   isShare: false,
-      //   language: Globals.selectedLanguage,
-      //   isCenterIcon: false,
-      //   ishtmlpage: false,
-      //   sharedpopBodytext: '',
-      //   sharedpopUpheaderText: '',
-      // ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal:20),
-          height: MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.height * 0.9
-              : MediaQuery.of(context).size.width,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              highlightText(
-                text: 'Create Assessment',
-                theme: Theme.of(context).textTheme.headline6,
-              ),
-              SpacerWidget(_KVertcalSpace / 1.5),
-              highlightText(
-                  text: 'Assessment Name',
-                  theme: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primaryVariant
-                          .withOpacity(0.3))),
-              textFormField(
-                  controller: assessmentController, onSaved: (String value) {}),
-              SpacerWidget(_KVertcalSpace / 2),
-              highlightText(
-                  text: 'Class Name',
-                  theme: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primaryVariant
-                          .withOpacity(0.3))),
-              textFormField(
-                  controller: classController, onSaved: (String value) {}),
-              SpacerWidget(_KVertcalSpace / 1),
-              scoringButton(),
-              SpacerWidget(_KVertcalSpace / 1.2),
-              textActionButton()
-              // smallButton(),
-              // SpacerWidget(_KVertcalSpace / 2),
-
-              // SpacerWidget(_KVertcalSpace / 4),
-              // scoringButton(),
-              // // SpacerWidget(_KVertcalSpace / 8),
-              // cameraButton(),
-            ],
+    return Stack(
+      children: [
+     CommonBackGroundImgWidget(),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomOcrAppBarWidget(
+            isBackButton: false,
           ),
+          // AppBar(
+          //   elevation: 0,
+          //   automaticallyImplyLeading: false,
+          //   actions: [
+          //     Container(
+          //       padding: EdgeInsets.only(right: 10),
+          //       child: Icon(
+          //         IconData(0xe874,
+          //             fontFamily: Overrides.kFontFam,
+          //             fontPackage: Overrides.kFontPkg),
+          //         color: AppTheme.kButtonColor,
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          //  CustomAppBarWidget(
+          //   appBarTitle: 'OCR',
+          //   isSearch: true,
+          //   isShare: false,
+          //   language: Globals.selectedLanguage,
+          //   isCenterIcon: false,
+          //   ishtmlpage: false,
+          //   sharedpopBodytext: '',
+          //   sharedpopUpheaderText: '',
+          // ),
+          body: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              height: MediaQuery.of(context).orientation == Orientation.portrait
+                  ? MediaQuery.of(context).size.height * 0.9
+                  : MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SpacerWidget(_KVertcalSpace / 2),
+                  highlightText(
+                    text: 'Create Assessment',
+                    theme: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  SpacerWidget(_KVertcalSpace / 1.8),
+                  highlightText(
+                      text: 'Assessment Name',
+                      theme: Theme.of(context).textTheme.headline2!.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.3))),
+                  textFormField(
+                      controller: assessmentController,
+                      onSaved: (String value) {}),
+                  SpacerWidget(_KVertcalSpace / 2),
+                  highlightText(
+                      text: 'Class Name',
+                      theme: Theme.of(context).textTheme.headline2!.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.3))),
+                  textFormField(
+                      controller: classController, onSaved: (String value) {}),
+                  SpacerWidget(_KVertcalSpace / 1),
+                  scoringButton(),
+                  SpacerWidget(_KVertcalSpace / 1.2),
+                  textActionButton()
+                  // smallButton(),
+                  // SpacerWidget(_KVertcalSpace / 2),
+
+                  // SpacerWidget(_KVertcalSpace / 4),
+                  // scoringButton(),
+                  // // SpacerWidget(_KVertcalSpace / 8),
+                  // cameraButton(),
+                ],
+              ),
+            ),
+          ),
+          bottomNavigationBar: null,
         ),
-      ),
-      bottomNavigationBar: null,
+      ],
     );
   }
 
@@ -153,8 +166,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 50,
                   childAspectRatio: 5 / 6,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 5),
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 10),
               itemCount: Globals.classList.length,
               itemBuilder: (BuildContext ctx, index) {
                 return GestureDetector(
@@ -227,7 +240,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
     return TextFormField(
       //
       textAlign: TextAlign.start,
-      style: Theme.of(context).textTheme.headline6!.copyWith(fontWeight: FontWeight.bold),
+      style: Theme.of(context)
+          .textTheme
+          .headline6!
+          .copyWith(fontWeight: FontWeight.bold),
       controller: controller,
       cursorColor: Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
@@ -240,10 +256,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-              color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5) // Theme.of(context).colorScheme.primaryVariant,
+              color: Theme.of(context).colorScheme.primaryVariant.withOpacity(
+                  0.5) // Theme.of(context).colorScheme.primaryVariant,
               ),
         ),
+        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
         border: UnderlineInputBorder(
           borderSide: BorderSide(
             color:
@@ -273,10 +290,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
         child: Center(
           child: highlightText(
             text: 'Next',
-            theme: Theme.of(context)
-                .textTheme
-                .headline1!
-                .copyWith(color: Theme.of(context).colorScheme.background),
+            theme: Theme.of(context).textTheme.headline1!.copyWith(
+                color: Theme.of(context).colorScheme.background,
+                fontWeight: FontWeight.bold,
+                fontSize: 20),
           ),
         ),
       ),

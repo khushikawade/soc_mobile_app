@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -264,59 +265,66 @@ class _StaffPageState extends State<StaffPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBarWidget(
-        marginLeft: 30,
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: Globals.appSetting.staffBannerImageC != null &&
-              Globals.appSetting.staffBannerImageC != ''
-          ? NestedScrollView(
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  BannerImageWidget(
-                    imageUrl: Globals.appSetting.staffBannerImageC!,
-                    bgColor: Globals.appSetting.studentBannerColorC != null
-                        ? Utility.getColorFromHex(
-                            Globals.appSetting.studentBannerColorC!)
-                        : null,
-                  )
-                ];
-              },
-              body: _body('body1'),
-            )
-          : _body('body2'),
-      floatingActionButton: Container(
-        height: Globals.deviceType == 'phone' ? 80 : 100.0,
-        width: Globals.deviceType == 'phone' ? 80 : 100.0,
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).size.height * 0.03,
-        ),
-        child: FloatingActionButton(
-          onPressed: () async {
-            _localData.clear();
-            if (_localData.isEmpty) {
-              await _launchURL('Google Authentication');
-            } else {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        OpticalCharacterRecognition()));
-               }
+        key: _scaffoldKey,
+        appBar: AppBarWidget(
+          marginLeft: 30,
+          refresh: (v) {
+            setState(() {});
           },
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
-            size: 40,
-          ),
-          backgroundColor: Theme.of(context).primaryColor,
         ),
-      ),
-    );
+        body: Globals.appSetting.staffBannerImageC != null &&
+                Globals.appSetting.staffBannerImageC != ''
+            ? NestedScrollView(
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    BannerImageWidget(
+                      imageUrl: Globals.appSetting.staffBannerImageC!,
+                      bgColor: Globals.appSetting.studentBannerColorC != null
+                          ? Utility.getColorFromHex(
+                              Globals.appSetting.studentBannerColorC!)
+                          : null,
+                    )
+                  ];
+                },
+                body: _body('body1'),
+              )
+            : _body('body2'),
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height * 0.03,
+          ),
+          child: cameraButton(),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat
+        // floatingActionButton: Container(
+        //   height: Globals.deviceType == 'phone' ? 80 : 100.0,
+        //   width: Globals.deviceType == 'phone' ? 80 : 100.0,
+        //   padding: EdgeInsets.only(
+        //     bottom: MediaQuery.of(context).size.height * 0.03,
+        //   ),
+        //   child: FloatingActionButton(
+        //     onPressed: () async {
+        //       _localData.clear();
+        //       if (_localData.isEmpty) {
+        //         await _launchURL('Google Authentication');
+        //       } else {
+        //         Navigator.push(
+        //             context,
+        //             MaterialPageRoute(
+        //                 builder: (BuildContext context) =>
+        //                     OpticalCharacterRecognition()));
+        //       }
+        //     },
+        //     child: Icon(
+        //       Icons.add,
+        //       color: Colors.white,
+        //       size: 40,
+        //     ),
+        //     backgroundColor: Theme.of(context).primaryColor,
+        //   ),
+        // ),
+        );
   }
 
   Future refreshPage() async {
@@ -329,5 +337,90 @@ class _StaffPageState extends State<StaffPage> {
   Future<File> _getpath() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     return File(result!.files.first.path!);
+  }
+
+  Widget cameraButton() {
+    return
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+        InkWell(
+      onTap: () async {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    OpticalCharacterRecognition()));
+        // _localData.clear();
+        // if (_localData.isEmpty) {
+        //   await _launchURL('Google Authentication');
+        // } else {
+        //   Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (BuildContext context) =>
+        //               OpticalCharacterRecognition()));
+        // }
+      },
+      child: Container(
+          //   padding: EdgeInsets.only(
+          //     bottom: MediaQuery.of(context).size.height * 0.03,
+          //   ),
+          decoration: BoxDecoration(
+              color: AppTheme.kButtonColor,
+              borderRadius: BorderRadius.circular(30)),
+          width: MediaQuery.of(context).orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.width * 0.55
+              : MediaQuery.of(context).size.height * 0.55,
+          height: 65,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
+              Container(
+                // color: Colors.red,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    textwidget(
+                        text: 'Create',
+                        textTheme:
+                            Theme.of(context).textTheme.headline4!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                )),
+                    textwidget(
+                        text: 'Assessment',
+                        textTheme:
+                            Theme.of(context).textTheme.headline2!.copyWith(
+                                  fontSize: 17,
+                                  color: Colors.white,
+                                )),
+                  ],
+                ),
+              )
+            ],
+          )),
+    );
+  }
+
+  Widget textwidget({required String text, required dynamic textTheme}) {
+    return TranslationWidget(
+      message: text,
+      toLanguage: Globals.selectedLanguage,
+      fromLanguage: "en",
+      builder: (translatedMessage) => Text(
+        translatedMessage.toString(),
+        style: textTheme,
+      ),
+    );
   }
 }

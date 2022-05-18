@@ -26,12 +26,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       List data = await fatchDetails(base64: event.base64);
       for (var i = 0; i < data.length; i++) {
         if (data[i]['description'].toString().length == 9) {
-           schoolIdNew.add(data[i]);
+          schoolIdNew.add(data[i]);
         }
       }
       grade = data[data.length - 1]['description'];
       print(data);
-     yield FetchTextFromImageSuccess(schoolId: schoolIdNew[0]['description'] ?? '', grade: grade ?? '');
+      yield FetchTextFromImageSuccess(
+          schoolId: schoolIdNew[0]['description'] ?? '', grade: grade ?? '');
       try {} catch (e) {}
     }
 
@@ -54,9 +55,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is FatchSubjectDetails) {
       try {
         if (event.type == 'subject') {
-        yield OcrLoading();
+          yield OcrLoading();
         }
-        
+
         List<SubjectList> data = await fatchSubjectDetails();
         if (event.type == 'subject') {
           yield SubjectDataSuccess(
@@ -193,9 +194,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         print(
             '------------------------------------test111111-----------------------------------');
         List text = response.data['text']['responses'][0]['textAnnotations'];
-   //     List grade = response.data['coordinate'];
+        //     List grade = response.data['coordinate'];
 
-      //  List result = processData(data: text, coordinate: grade);
+        //  List result = processData(data: text, coordinate: grade);
 
         // _list.removeWhere((CustomSetting element) => element.status == 'Hide');
         // _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));

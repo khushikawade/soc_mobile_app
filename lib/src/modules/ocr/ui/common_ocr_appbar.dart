@@ -10,11 +10,8 @@ import 'package:flutter/material.dart';
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
     implements PreferredSizeWidget {
-  CustomOcrAppBarWidget({
-    Key? key,
-    required this.isBackButton,
-    this.isTitle
-  })  : preferredSize = Size.fromHeight(60.0),
+  CustomOcrAppBarWidget({Key? key, required this.isBackButton, this.isTitle})
+      : preferredSize = Size.fromHeight(60.0),
         super(key: key);
 
   bool? isBackButton;
@@ -35,9 +32,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
-      
       leading: widget.isBackButton == true
           ? IconButton(
               onPressed: () {
@@ -69,6 +66,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
                 color: AppTheme.kButtonColor,
+                size: 30,
               ),
             )),
       ],
