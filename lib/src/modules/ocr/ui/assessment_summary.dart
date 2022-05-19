@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -17,53 +18,68 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   static const double _KVertcalSpace = 60.0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomOcrAppBarWidget(isBackButton: true),
-      
-      // AppBar(
-      //   elevation: 0,
-      //   leading: IconButton(
-      //     icon: Icon(
-      //       IconData(0xe80d,
-      //           fontFamily: Overrides.kFontFam,
-      //           fontPackage: Overrides.kFontPkg),
-      //       color: AppTheme.kButtonColor,
-      //     ),
-      //     onPressed: () {
-      //       Navigator.pop(context);
-      //     },
-      //   ),
-      //   actions: [
-      //     Container(
-      //       padding: EdgeInsets.only(right: 10),
-      //       child: Icon(
-      //         IconData(0xe874,
-      //             fontFamily: Overrides.kFontFam,
-      //             fontPackage: Overrides.kFontPkg),
-      //         color: AppTheme.kButtonColor,
-      //       ),
-      //     ),
-      //   ],
-      // ),
-      body: Container(
-        // padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: [
-            highlightText(
-                text: 'Assessment Summary',
-                theme: Theme.of(context).textTheme.headline6),
-            SpacerWidget(_KVertcalSpace / 3),
-            listView()
-          ],
+    return Stack(
+      children: [
+        CommonBackGroundImgWidget(),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomOcrAppBarWidget(isBackButton: true),
+
+          // AppBar(
+          //   elevation: 0,
+          //   leading: IconButton(
+          //     icon: Icon(
+          //       IconData(0xe80d,
+          //           fontFamily: Overrides.kFontFam,
+          //           fontPackage: Overrides.kFontPkg),
+          //       color: AppTheme.kButtonColor,
+          //     ),
+          //     onPressed: () {
+          //       Navigator.pop(context);
+          //     },
+          //   ),
+          //   actions: [
+          //     Container(
+          //       padding: EdgeInsets.only(right: 10),
+          //       child: Icon(
+          //         IconData(0xe874,
+          //             fontFamily: Overrides.kFontFam,
+          //             fontPackage: Overrides.kFontPkg),
+          //         color: AppTheme.kButtonColor,
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          body: Container(
+            // padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SpacerWidget(_KVertcalSpace * 0.50),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: highlightText(
+                    text: 'Assessment Summary',
+                    theme: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SpacerWidget(_KVertcalSpace / 3),
+                listView()
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
   Widget listView() {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.80
+          ? MediaQuery.of(context).size.height * 0.75
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
         shrinkWrap: true,
@@ -108,7 +124,11 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
         //           style: Theme.of(context).textTheme.bodyText1!);
         //     }),
         trailing: highlightText(
-            text: index.toString(), theme: Theme.of(context).textTheme.headline2),
+          text: index.toString(),
+          theme: Theme.of(context).textTheme.headline2!.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
       ),
     );
   }

@@ -127,13 +127,21 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   .textTheme
                   .subtitle2!
                   .copyWith(color: Colors.black, fontWeight: FontWeight.bold)),
-          Icon(
-            IconData(Globals.ocrResultIcons[index],
-                fontFamily: Overrides.kFontFam,
-                fontPackage: Overrides.kFontPkg),
-            size: 32,
-            color: AppTheme.kButtonColor,
-          ),
+          index == 1
+              ? Image(
+                  image: AssetImage("assets/images/drive.png"),
+                )
+              : Icon(
+                  IconData(Globals.ocrResultIcons[index],
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  size: 32,
+                  color: index == 2
+                      ? Colors.black
+                      : index == 3
+                          ? Colors.green
+                          : AppTheme.kButtonColor,
+                ),
         ],
       ),
     );
@@ -192,9 +200,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         // contentPadding:
         //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: highlightText(
-            text: 'Ben Carney',
-            theme:
-                Theme.of(context).textTheme.headline2!.copyWith(fontSize: 17)),
+            text: 'Ben Carney', theme: Theme.of(context).textTheme.headline2!),
         // title: TranslationWidget(
         //     message: "No title",
         //     fromLanguage: "en",
@@ -208,7 +214,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             theme: Theme.of(context)
                 .textTheme
                 .headline2!
-                .copyWith(fontWeight: FontWeight.bold, fontSize: 17)),
+                .copyWith(fontWeight: FontWeight.bold)),
       ),
     );
   }

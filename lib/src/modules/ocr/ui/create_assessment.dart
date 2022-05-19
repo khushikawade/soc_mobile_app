@@ -282,9 +282,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SuccessScreen()
-              // SubjectSelection()
-              ),
+          MaterialPageRoute(
+              builder: (context) =>
+                  // SuccessScreen()
+                  SubjectSelection()),
         );
       },
       child: Container(
