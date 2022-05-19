@@ -61,14 +61,17 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             ),
             actions: [
               Container(
-                padding: EdgeInsets.only(right: 10),
-                child: Icon(
-                  IconData(0xe874,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: AppTheme.kButtonColor,
-                ),
-              ),
+                  padding: EdgeInsets.only(right: 10),
+                  child: IconButton(
+                    icon: Icon(
+                      IconData(0xe874,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: AppTheme.kButtonColor,
+                      size: 30,
+                    ),
+                    onPressed: () {},
+                  )),
             ],
           ),
           body: SingleChildScrollView(
@@ -139,7 +142,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.82
+          ? MediaQuery.of(context).size.height * 0.85
           : MediaQuery.of(context).size.width * 0.50,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SpacerWidget(_KVertcalSpace * 0.50),
@@ -156,7 +159,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   Widget loadingPage() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
-      height: MediaQuery.of(context).size.height * 0.80,
+      height: MediaQuery.of(context).size.height * 0.85,
       child: Center(
         child: CircularProgressIndicator(
           color: Colors.white,
@@ -169,30 +172,26 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.82
+          ? MediaQuery.of(context).size.height * 0.85
           : MediaQuery.of(context).size.width * 0.80,
-      child: ListView(
-        children: [
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SpacerWidget(_KVertcalSpace * 0.50),
-            highlightText(text: 'Learning Standard'),
-            SpacerWidget(_KVertcalSpace / 2.5),
-            _buildSearchbar(
-                controller: searchController, onSaved: (String value) {}),
-            SpacerWidget(_KVertcalSpace / 4),
-            detailsList(list: list),
-            textActionButton(),
-            // scoringButton(list: Globals.subjectDetailsList),
-          ]),
-        ],
-      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        SpacerWidget(_KVertcalSpace * 0.50),
+        highlightText(text: 'Learning Standard'),
+        SpacerWidget(_KVertcalSpace / 2.5),
+        _buildSearchbar(
+            controller: searchController, onSaved: (String value) {}),
+        SpacerWidget(_KVertcalSpace / 4),
+        detailsList(list: list),
+        textActionButton(),
+        // scoringButton(list: Globals.subjectDetailsList),
+      ]),
     );
   }
 
   Widget detailsList({required List<SubjectList> list}) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.60
+          ? MediaQuery.of(context).size.height * 0.56
           : MediaQuery.of(context).size.width * 0.50,
       width: MediaQuery.of(context).size.width * 0.9,
       child: ListView.separated(
@@ -228,7 +227,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
 
                 borderRadius: BorderRadius.all(
-                  Radius.circular(15),
+                  Radius.circular(8),
                 ),
               ),
               duration: Duration(microseconds: 100),
@@ -240,20 +239,23 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   textTheme: Theme.of(context).textTheme.headline2,
                 ),
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.background,
+                    color:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Color(0xffF7F8F9)
+                            : Color(0xff111C20),
                     border: Border.all(
                       color: (nycSubIndex == index && indexGlobal == 2)
                           ? AppTheme.kSelectedColor
                           : Colors.grey,
                     ),
                     // color: scoringColor == index ? Colors.orange : null,
-                    borderRadius: BorderRadius.circular(15)),
+                    borderRadius: BorderRadius.circular(8)),
               ),
             ),
           );
         },
         separatorBuilder: (BuildContext context, int index) {
-          return SpacerWidget(_KVertcalSpace / 3);
+          return SpacerWidget(_KVertcalSpace / 3.75);
         },
       ),
     );
@@ -310,7 +312,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.82
+          ? MediaQuery.of(context).size.height * 0.85
           : MediaQuery.of(context).size.width * 0.50,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SpacerWidget(_KVertcalSpace * 0.50),
@@ -384,7 +386,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.background,
+                      color:
+                          Color(0xff000000) != Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
                       border: Border.all(
                         color: (subjectIndex == index && indexGlobal == 0) ||
                                 (nycIndex == index && indexGlobal == 1)
@@ -516,7 +521,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             theme: Theme.of(context)
                 .textTheme
                 .headline1!
-                .copyWith(color: Theme.of(context).colorScheme.background),
+                .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ),

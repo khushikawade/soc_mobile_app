@@ -214,14 +214,16 @@ class _OpticalCharacterRecognitionPageState
             //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
 
             borderRadius: BorderRadius.all(
-              Radius.circular(15),
+              Radius.circular(8),
             ),
           ),
           duration: Duration(microseconds: 100),
           child: Container(
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background,
+                color: Color(0xff000000) != Theme.of(context).backgroundColor
+                    ? Color(0xffF7F8F9)
+                    : Color(0xff111C20),
 
                 //  indexColor == index + 1
                 //     ? AppTheme.kSelectedColor
@@ -232,7 +234,7 @@ class _OpticalCharacterRecognitionPageState
                       : Colors.grey,
                 ),
                 borderRadius: BorderRadius.all(
-                  Radius.circular(15),
+                  Radius.circular(8),
                 ),
               ),
               child: TranslationWidget(
@@ -289,7 +291,7 @@ class _OpticalCharacterRecognitionPageState
                   //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
 
                   borderRadius: BorderRadius.all(
-                    Radius.circular(15),
+                    Radius.circular(8),
                   ),
                 ),
                 duration: Duration(microseconds: 100),
@@ -310,8 +312,11 @@ class _OpticalCharacterRecognitionPageState
                             ? AppTheme.kSelectedColor
                             : Colors.grey,
                       ),
-                      color: Theme.of(context).colorScheme.background,
-                      borderRadius: BorderRadius.circular(15)),
+                      color:
+                          Color(0xff000000) != Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                      borderRadius: BorderRadius.circular(8)),
                 ),
               ),
             );
@@ -347,14 +352,14 @@ class _OpticalCharacterRecognitionPageState
     });
 
     if (myImagePath != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SuccessScreen(
-                  img64: img64,
-                  imgPath: myImagePath,
-                )),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => SuccessScreen(
+      //             img64: img64,
+      //             imgPath: myImagePath,
+      //           )),
+      // );
 
       //_bloc.add(FetchTextFromImage(base64: img64));
     }

@@ -14,6 +14,8 @@ class AppTheme {
   // Colors for OCR features
   static const Color kSelectedColor = Color(0xff0095CD); //#03DAC60095CD
   static const Color kButtonColor = Color(0xff03DAC6); //#03DAC6
+  static const Color kbackgroudColorlight = Color(0xffF7F8F9);
+  static const Color kbackgroudColordark = Color(0xff111C20);
 
   //Colors
 
@@ -429,12 +431,12 @@ class AppTheme {
               //Primary color
               primaryColor: _primaryColor,
               colorScheme: ColorScheme.light(
-                onPrimary: _primaryColor,
-                primary: _primaryColor,
-                secondary: _secondaryColor,
-                background: _backgroundColor,
-                primaryVariant: _fontColor,
-              ),
+                  onPrimary: _primaryColor,
+                  primary: _primaryColor,
+                  secondary: _secondaryColor,
+                  background: _backgroundColor,
+                  primaryVariant: _fontColor,
+                  tertiary: kbackgroudColorlight),
               //Background color
               backgroundColor: _backgroundColor,
               scaffoldBackgroundColor: _backgroundColor,
