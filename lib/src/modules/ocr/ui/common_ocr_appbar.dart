@@ -3,17 +3,21 @@ import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 
 import 'package:Soc/src/widgets/sharepopmenu.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
     implements PreferredSizeWidget {
-  CustomOcrAppBarWidget({Key? key, required this.isBackButton, this.isTitle})
+  CustomOcrAppBarWidget(
+      {Key? key, required this.isBackButton, this.isTitle, this.isFailureState})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
-
+  bool? isFailureState;
   bool? isBackButton;
   bool? isTitle;
 
@@ -34,23 +38,53 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      leadingWidth: widget.isFailureState == true ? 200 : null,
       automaticallyImplyLeading: false,
-      leading: widget.isBackButton == true
-          ? IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                IconData(0xe80d,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kButtonColor,
-              ),
+      leading: widget.isFailureState == true
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                highlightText(
+                    text: 'Scane Failure',
+                    theme: Theme.of(context)
+                        .textTheme
+                        .headline4!
+                        .copyWith(fontWeight: FontWeight.bold)),
+                SizedBox(
+                  width: 5.0,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xffCF6679),
+                  ),
+                  child: Icon(
+                      IconData(0xe838,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      size: 19,
+                      color: Colors.white),
+                ),
+              ],
             )
-          : null,
+          : widget.isBackButton == true
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    IconData(0xe80d,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: AppTheme.kButtonColor,
+                  ),
+                )
+              : null,
       actions: [
         Container(
-            padding: EdgeInsets.only(right: 10),
+            padding: widget.isFailureState != true
+                ? EdgeInsets.only(right: 10)
+                : EdgeInsets.zero,
             child: IconButton(
               onPressed: () {
                 setState(() {
@@ -69,7 +103,40 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 size: 30,
               ),
             )),
+        widget.isFailureState == true
+            ? Container(
+                padding: widget.isFailureState != true
+                    ? EdgeInsets.only(right: 10)
+                    : EdgeInsets.zero,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                      IconData(0xe838,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      size: 30,
+                      color: Colors.grey),
+                ),
+              )
+            : Container()
       ],
+    );
+  }
+
+  Widget highlightText({required String text, required theme}) {
+    return TranslationWidget(
+      message: text,
+      toLanguage: Globals.selectedLanguage,
+      fromLanguage: "en",
+      builder: (translatedMessage) => Center(
+        child: Text(
+          translatedMessage.toString(),
+          // maxLines: 2,
+          //overflow: TextOverflow.ellipsis,
+          // textAlign: TextAlign.center,
+          style: theme,
+        ),
+      ),
     );
   }
 }

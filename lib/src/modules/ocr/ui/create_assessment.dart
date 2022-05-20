@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -43,7 +44,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     _scale = 1 - _controller!.value;
     return Stack(
       children: [
-     CommonBackGroundImgWidget(),
+        CommonBackGroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
@@ -84,7 +85,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SpacerWidget(_KVertcalSpace / 2),
+                  SpacerWidget(_KVertcalSpace * 0.50),
                   highlightText(
                     text: 'Create Assessment',
                     theme: Theme.of(context)
@@ -113,9 +114,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               .withOpacity(0.3))),
                   textFormField(
                       controller: classController, onSaved: (String value) {}),
-                  SpacerWidget(_KVertcalSpace / 1),
+
+                  SpacerWidget(_KVertcalSpace / 0.90),
                   scoringButton(),
-                  SpacerWidget(_KVertcalSpace / 1.2),
+                  SpacerWidget(_KVertcalSpace / 20),
                   textActionButton()
                   // smallButton(),
                   // SpacerWidget(_KVertcalSpace / 2),
@@ -182,7 +184,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     scale: _scale!,
                     child: AnimatedContainer(
                       duration: Duration(microseconds: 100),
-                      padding: EdgeInsets.only(bottom: 8),
+                      padding: EdgeInsets.only(bottom: 5),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: scoringColor == index
@@ -191,7 +193,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       ),
                       child: new Container(
                         decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.background,
+                            color: Color(0xff000000) !=
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xffF7F8F9)
+                                : Color(0xff111C20),
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: scoringColor == index
@@ -247,7 +252,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
       controller: controller,
       cursorColor: Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
-        fillColor: Theme.of(context).backgroundColor,
+        fillColor: Colors.transparent,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color:
@@ -277,7 +282,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SubjectSelection()),
+          MaterialPageRoute(
+              builder: (context) =>
+                  // SuccessScreen()
+                  SubjectSelection()),
         );
       },
       child: Container(
@@ -291,9 +299,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
           child: highlightText(
             text: 'Next',
             theme: Theme.of(context).textTheme.headline1!.copyWith(
-                color: Theme.of(context).colorScheme.background,
-                fontWeight: FontWeight.bold,
-                fontSize: 20),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
         ),
       ),

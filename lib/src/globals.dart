@@ -110,7 +110,7 @@ class Globals {
   static List ocrResultIconsName = [
     "Share",
     "Add to drive",
-    "History assessment",
+    "History",
     "Download"
   ];
   static List finishedList = [
