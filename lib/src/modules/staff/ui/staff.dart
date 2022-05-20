@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/ocr_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -76,116 +77,91 @@ class _StaffPageState extends State<StaffPage> {
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => GoogleAuthWebview(
-                  title: title!,
-                  url: Overrides.secureLoginURL +
-                      '?' +
-                      Globals.appSetting.appLogoC +
-                      '?' +
-                      Theme.of(context)
-                          .backgroundColor
-                          .toString(), //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
-                  isbuttomsheet: true,
-                  language: Globals.selectedLanguage,
-                  hideAppbar: false,
-                  hideShare: true,
-                  zoomEnabled: false,
-                  callBackFunction: (value) async {
-                    if (value.toString().contains('displayName')) {
-                      value = value.split('?')[1];
+                title: title!,
+                url: Overrides.secureLoginURL +
+                    '?' +
+                    Globals.appSetting.appLogoC +
+                    '?' +
+                    Theme.of(context)
+                        .backgroundColor
+                        .toString().split('(')[1], //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
+                isbuttomsheet: true,
+                language: Globals.selectedLanguage,
+                hideAppbar: false,
+                hideShare: true,
+                zoomEnabled: false,
+                callBackFunction: (value) async {
+                  print(value);
+                  if (value.toString().contains('displayName')) {
+                    value = value.split('?')[1];
 
-                      //Comparing and saving the user profile locally
-                      if (value
-                              .split('+')[1]
-                              .toString()
-                              .split('=')[1]
-                              .contains('@schools.nyc.gov') ||
-                          value
-                              .split('+')[1]
-                              .toString()
-                              .split('=')[1]
-                              .contains('@solvedconsulting') ||
-                          value
-                              .split('+')[1]
-                              .toString()
-                              .split('=')[1]
-                              .contains('appdevelopersdp7')) {
-                        _localUserInfo.addData(UserInfo(
-                            userName: value
-                                .split('+')[0]
-                                .toString()
-                                .toString()
-                                .split('=')[1],
-                            userEmail: value
-                                .split('+')[1]
-                                .toString()
-                                .toString()
-                                .split('=')[1],
-                            profilePicture: value
-                                .split('+')[2]
-                                .toString()
-                                .toString()
-                                .split('=')[1],
-                            authorizationToken: value
-                                .split('+')[3]
-                                .toString()
-                                .split('=')[1]
-                                .replaceAll('#', '')));
+                    //Comparing and saving the user profile locally
+                    if (value
+                            .split('+')[1]
+                            .toString()
+                            .split('=')[1]
+                            .contains('@schools.nyc.gov') ||
+                        value
+                            .split('+')[1]
+                            .toString()
+                            .split('=')[1]
+                            .contains('@solvedconsulting') ||
+                        value
+                            .split('+')[1]
+                            .toString()
+                            .split('=')[1]
+                            .contains('appdevelopersdp7')) {
+                      saveUserProfile(value);
 
-                        localdb();
-                        //   File file = await _getpath();
-                        _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
-                            //  filePath: file,
-                            token: value
-                                .split('+')[3]
-                                .toString()
-                                .split('=')[1]
-                                .replaceAll('#', ''),
-                            folderName: "test_folder_table"));
+                      //   File file = await _getpath();
 
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OpticalCharacterRecognition()));
-
-                        // BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                        //   bloc:
-                        //       _googleDriveBloc, // provide the local bloc instance
-                        //   listener: (context, state) {
-                        //     if (state is GoogleDriveAccountSuccess) {
-                        //       Navigator.pushReplacement(
-                        //           context,
-                        //           MaterialPageRoute(
-                        //               builder: (BuildContext context) =>
-                        //                   OpticalCharacterRecognition()));
-                        //     }
-                        //     if (state is GoogleDriveAccountError) {
-                        //       Navigator.pop(context, false);
-                        //       Utility.showSnackBar(
-                        //           _scaffoldKey,
-                        //           'check your internet connection ',
-                        //           context,
-                        //           50.0);
-                        //     }
-                        //     // do stuff here based on BlocA's state
-                        //   },
-                        // );
-                      } else {
-                        Navigator.pop(context, false);
-                        Utility.showSnackBar(
-                            _scaffoldKey,
-                            'You are not authorized to access the feature. Please use the authorized account.',
-                            context,
-                            50.0);
-                      }
-                      // ocrBloc.add(AuthenticateEmail(
-                      //     email: value.split('+')[1].toString().split('=')[1]));
-                      // setState(() {
-                      //   userData = value;
-                      // });
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  OpticalCharacterRecognition()));
+                    } else {
+                      Navigator.pop(context, false);
+                      Utility.showSnackBar(
+                          _scaffoldKey,
+                          'You are not authorized to access the feature. Please use the authorized account.',
+                          context,
+                          50.0);
                     }
-                  },
-                )));
+                  } /*else {
+                    Navigator.pop(context, false);
+                    Utility.showSnackBar(
+                        _scaffoldKey,
+                        'You are not authorized to access the feature. Please use the authorized account.',
+                        context,
+                        50.0);
+                  }*/
+                })));
+  }
+
+  saveUserProfile(profileData) {
+    var profile = profileData.split('+');
+    _localUserInfo.addData(UserInfo(
+        userName: profile[0].toString().split('=')[1],
+        userEmail:
+            profile[1].toString().split('=')[1],
+        profilePicture:
+            profile[2].toString().split('=')[1],
+        authorizationToken: profile[3]
+            .toString()
+            .split('=')[1]
+            .replaceAll('#', '')));
+
+    localdb();
+
+//Creating a assessment folder in users google drive to maintain all the assessments together at one place
+    _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
+        //  filePath: file,
+        token: profile[3]
+            .toString()
+            .split('=')[1]
+            .replaceAll('#', ''),
+        folderName: "test_folder_table"));
   }
 
   Widget _body(String key) => RefreshIndicator(
@@ -294,35 +270,7 @@ class _StaffPageState extends State<StaffPage> {
           ),
           child: cameraButton(),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat
-        // floatingActionButton: Container(
-        //   height: Globals.deviceType == 'phone' ? 80 : 100.0,
-        //   width: Globals.deviceType == 'phone' ? 80 : 100.0,
-        //   padding: EdgeInsets.only(
-        //     bottom: MediaQuery.of(context).size.height * 0.03,
-        //   ),
-        //   child: FloatingActionButton(
-        //     onPressed: () async {
-        //       _localData.clear();
-        //       if (_localData.isEmpty) {
-        //         await _launchURL('Google Authentication');
-        //       } else {
-        //         Navigator.push(
-        //             context,
-        //             MaterialPageRoute(
-        //                 builder: (BuildContext context) =>
-        //                     OpticalCharacterRecognition()));
-        //       }
-        //     },
-        //     child: Icon(
-        //       Icons.add,
-        //       color: Colors.white,
-        //       size: 40,
-        //     ),
-        //     backgroundColor: Theme.of(context).primaryColor,
-        //   ),
-        // ),
-        );
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat);
   }
 
   Future refreshPage() async {
@@ -343,12 +291,7 @@ class _StaffPageState extends State<StaffPage> {
 
         InkWell(
       onTap: () async {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (BuildContext context) =>
-        //             OpticalCharacterRecognition()));
-
+        // _localData.clear();
         if (_localData.isEmpty) {
           await _launchURL('Google Authentication');
         } else {
@@ -360,9 +303,6 @@ class _StaffPageState extends State<StaffPage> {
         }
       },
       child: Container(
-          //   padding: EdgeInsets.only(
-          //     bottom: MediaQuery.of(context).size.height * 0.03,
-          //   ),
           decoration: BoxDecoration(
               color: AppTheme.kButtonColor,
               borderRadius: BorderRadius.circular(30)),
