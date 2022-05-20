@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
@@ -24,8 +23,7 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../ocr/modal/user_info.dart';
 import '../../ocr/ui/ocr_home.dart';
 import '../../shared/ui/common_grid_widget.dart';
-
-import 'package:file_picker/file_picker.dart';
+//import 'package:file_picker/file_picker.dart';
 
 class StaffPage extends StatefulWidget {
   StaffPage(
@@ -81,8 +79,11 @@ class _StaffPageState extends State<StaffPage> {
                   title: title!,
                   url: Overrides.secureLoginURL +
                       '?' +
-                      Globals.appSetting
-                          .appLogoC, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
+                      Globals.appSetting.appLogoC +
+                      '?' +
+                      Theme.of(context)
+                          .backgroundColor
+                          .toString(), //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
                   isbuttomsheet: true,
                   language: Globals.selectedLanguage,
                   hideAppbar: false,
@@ -141,12 +142,34 @@ class _StaffPageState extends State<StaffPage> {
                                 .replaceAll('#', ''),
                             folderName: "test_folder_table"));
 
-                        // Navigator.pushReplacement(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (BuildContext context) =>
-                        //             OpticalCharacterRecognition())
-                        //             );
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    OpticalCharacterRecognition()));
+
+                        // BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                        //   bloc:
+                        //       _googleDriveBloc, // provide the local bloc instance
+                        //   listener: (context, state) {
+                        //     if (state is GoogleDriveAccountSuccess) {
+                        //       Navigator.pushReplacement(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //               builder: (BuildContext context) =>
+                        //                   OpticalCharacterRecognition()));
+                        //     }
+                        //     if (state is GoogleDriveAccountError) {
+                        //       Navigator.pop(context, false);
+                        //       Utility.showSnackBar(
+                        //           _scaffoldKey,
+                        //           'check your internet connection ',
+                        //           context,
+                        //           50.0);
+                        //     }
+                        //     // do stuff here based on BlocA's state
+                        //   },
+                        // );
                       } else {
                         Navigator.pop(context, false);
                         Utility.showSnackBar(
@@ -232,40 +255,6 @@ class _StaffPageState extends State<StaffPage> {
                       },
                       child: EmptyContainer()),
                 ),
-                // BlocListener<OcrBloc, OcrState>(
-                //     bloc: ocrBloc,
-                //     listener: (context, state) async {
-                //       if (state is EmailAuthenticationSuccess) {
-                //         if (state.obj == "true") {
-                //           _localUserInfo.addData(UserInfo(
-                //               userName: userData
-                //                   .split('+')[0]
-                //                   .toString()
-                //                   .toString()
-                //                   .split('=')[1],
-                //               userEmail: userData
-                //                   .split('+')[1]
-                //                   .toString()
-                //                   .toString()
-                //                   .split('=')[1],
-                //               profilePicture: userData
-                //                   .split('+')[2]
-                //                   .toString()
-                //                   .toString()
-                //                   .split('=')[1]));
-
-                //           localdb();
-                //           Navigator.pushReplacement(
-                //               context,
-                //               MaterialPageRoute(
-                //                   builder: (BuildContext context) =>
-                //                       OpticalCharacterRecognition()));
-                //         } else {
-                //           Navigator.pop(context);
-                //         }
-                //       }
-                //     },
-                //     child: EmptyContainer()),
               ]),
             );
           },
@@ -343,10 +332,10 @@ class _StaffPageState extends State<StaffPage> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
-  Future<File> _getpath() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    return File(result!.files.first.path!);
-  }
+//   Future<File> _getpath() async {
+//  //   FilePickerResult? result = await FilePicker.platform.pickFiles();
+//   //  return File(result!.files.first.path!);
+//   }
 
   Widget cameraButton() {
     return

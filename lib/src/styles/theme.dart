@@ -436,7 +436,8 @@ class AppTheme {
                   secondary: _secondaryColor,
                   background: _backgroundColor,
                   primaryVariant: _fontColor,
-                  tertiary: kbackgroudColorlight),
+                  //tertiary: kbackgroudColorlight
+                  ),
               //Background color
               backgroundColor: _backgroundColor,
               scaffoldBackgroundColor: _backgroundColor,
