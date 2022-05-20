@@ -107,7 +107,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     }
                     return Container();
                     // return widget here based on BlocA's state
-                  }),))]);
+                  })
+                  ,))]);
     
   }
 

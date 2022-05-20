@@ -20,35 +20,38 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     OcrEvent event,
   ) async* {
     if (event is FetchTextFromImage) {
-      try {
-        yield OcrLoading();
-        List data = await fatchAndProcessDetails(base64: event.base64);
-        if (data[0] != '' && data[1] != '') {
-          yield FetchTextFromImageSuccess(schoolId: data[0], grade: data[1]);
-        } else {
-          yield FetchTextFromImageFailure(schoolId: data[0], grade: data[1]);
+      String? grade;
+      List schoolIdNew = [];
+      yield OcrLoading();
+      List data = await fatchDetails(base64: event.base64);
+      for (var i = 0; i < data.length; i++) {
+        if (data[i]['description'].toString().length == 9) {
+          schoolIdNew.add(data[i]);
         }
-      } catch (e) {
-        print(e);
       }
+      grade = data[data.length - 1]['description'];
+      print(data);
+      yield FetchTextFromImageSuccess(
+          schoolId: schoolIdNew[0]['description'] ?? '', grade: grade ?? '');
+      try {} catch (e) {}
     }
 
-    // if (event is AuthenticateEmail) {
-    //   try {
-    //     yield OcrLoading();
-    //     var data = await authenticateEmail({"email": event.email.toString()});
+    if (event is AuthenticateEmail) {
+      try {
+        yield OcrLoading();
+        var data = await authenticateEmail({"email": event.email.toString()});
 
-    //     yield EmailAuthenticationSuccess(
-    //       obj: data,
-    //     );
-    //   } catch (e) {
-    //     // if (e.toString().contains('NO_CONNECTION')) {
-    //     //   Utility.showSnackBar(event.scaffoldKey,
-    //     //       'Make sure you have a proper Internet connection', event.context);
-    //     // }
-    //     yield OcrErrorReceived(err: e);
-    //   }
-    // }
+        yield EmailAuthenticationSuccess(
+          obj: data,
+        );
+      } catch (e) {
+        // if (e.toString().contains('NO_CONNECTION')) {
+        //   Utility.showSnackBar(event.scaffoldKey,
+        //       'Make sure you have a proper Internet connection', event.context);
+        // }
+        yield OcrErrorReceived(err: e);
+      }
+    }
     if (event is FatchSubjectDetails) {
       try {
         if (event.type == 'subject') {
@@ -160,7 +163,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   //   }
   // }
 
-  int covertStringtoInt(String data) {
+  int covertStringtoint(String data) {
     try {
       int result = int.parse(data);
       return result;
@@ -168,189 +171,65 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       return 0;
     }
   }
-  // {h:h,w:w}
 
-  // Future fatchDetails({required String base64}) async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.postapi(
-  //         Uri.encodeFull('https://916f-111-118-246-106.in.ngrok.io'),
-  //         body: {'data': '$base64'},
-  //         isGoogleApi: true
-
-  //         // headers: {
-  //         //   'Content-Type': 'application/json',
-  //         //   'authorization': 'Bearer AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'
-  //         // }
-  //         );
-
-  //     if (response.statusCode == 200) {
-  //       // List<FullTextAnnotation> _list = response.data['text']['responses'][0]
-  //       //     .map<FullTextAnnotation>((i) => FullTextAnnotation.fromJson(i))
-  //       //     .toList();
-
-  //       print(response.data['text']['responses'][0]['textAnnotations']);
-  //       print(
-  //           '------------------------------------test111111-----------------------------------');
-  //       List text = response.data['text']['responses'][0]['textAnnotations'];
-  //       List coordinate = response.data['coordinate'];
-  //       List schoolgrade = [];
-  //       //     List grade = response.data['coordinate'];
-
-  //       for (var i = 0; i < text.length; i++) {
-  //         for (var j = 0; j < coordinate.length; j++) {
-  //           int circleX = covertStringtoInt(coordinate[j].split(',')[0]);
-  //           int circleY = covertStringtoInt(coordinate[j].split(',')[1]);
-  //           int radiusR = covertStringtoInt(coordinate[j].split(',')[1]);
-
-  //           int textx = covertStringtoInt(
-  //               text[i]['boundingPoly']['vertices'][0]['x'].toString());
-  //           int texty = covertStringtoInt(
-  //               text[i]['boundingPoly']['vertices'][0]['y'].toString());
-
-  //           if (text[i]['description'].toString().length == 1 &&
-  //               textx < circleX + radiusR &&
-  //               textx > circleX - radiusR &&
-  //               texty < circleY + radiusR &&
-  //               texty > circleY - radiusR &&
-  //               (text[i]['description'] == '0' ||
-  //                   text[i]['description'] == '1' ||
-  //                   text[i]['description'] == '2')) {
-  //             schoolgrade.add(text[i]['description']);
-  //           }
-  //         }
-  //       }
-
-  //       //  List result = processData(data: text, coordinate: grade);
-
-  //       // _list.removeWhere((CustomSetting element) => element.status == 'Hide');
-  //       // _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
-  //       // if (_list.length > 6) {
-  //       //   _list.removeRange(6, _list.length);
-  //       // }
-  //       // Globals.customSetting = _list;
-  //       // // To take the backup for all the sections.
-  //       // _backupAppData();
-  //       // return _list;
-  //       print(schoolgrade);
-  //       return text;
-  //     }
-  //   } catch (e) {
-  //     print(
-  //         '------------------------------------test-----------------------------------');
-  //     print(e);
-  //   }
-  // }
-
-  Future fatchAndProcessDetails({required String base64}) async {
+  Future fatchDetails({required String base64}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-        Uri.encodeFull('https://916f-111-118-246-106.in.ngrok.io'),
-        body: {'data': '$base64'},
-        isGoogleApi: true,
-      );
+          Uri.encodeFull('https://b32f-111-118-246-106.in.ngrok.io'),
+          body: {'data': '$base64'},
+          isGoogleApi: true
+
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   'authorization': 'Bearer AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'
+          // }
+          );
 
       if (response.statusCode == 200) {
-        // ***********  Process The respoance and collecting OSS ID  ***********
-        List schoolIdNew = [];
-        if (response.data['text']['responses'][0] != null) {
-          List text = response.data['text']['responses'][0]['textAnnotations'];
-          for (var i = 0; i < text.length; i++) {
-            if (text[i]['description'].toString().length == 9 &&
-                text[i]['description'][0] == '2') {
-              bool result = checkForInt(text[i]['description']);
-              if (result) {
-                schoolIdNew.add(text[i]['description']);
-              }
-            }
-          }
-          if (schoolIdNew.isEmpty) {
-            for (var i = 0; i < text.length - 1; i++) {
-              int sum = 0;
-              String id = '';
-              for (int j = i; j < text.length - (i + 1); j++) {
-                sum = sum + text[j]['description'].toString().length;
-                id = '$id${text[j]['description']}';
-                if (sum == 9 && text[i]['description'].toString()[0] == '2') {
-                  bool result = checkForInt(id);
-                  if (result) {
-                    schoolIdNew.add(id);
-                  }
+        // List<FullTextAnnotation> _list = response.data['text']['responses'][0]
+        //     .map<FullTextAnnotation>((i) => FullTextAnnotation.fromJson(i))
+        //     .toList();
 
-                  
-                } else if (sum > 9) {
-                  break;
-                }
-              }
-            }
-          }
-        }
-        // ***********  Process The respoance and collecting Point Scored  ***********
-        List schoolgrade = [];
-        if (response.data['text']['responses'][0] != null &&
-            response.data['coordinate'] != null) {
-          List coordinate = response.data['coordinate'];
-          List text = response.data['text']['responses'][0]['textAnnotations'];
-          for (var i = 0; i < text.length; i++) {
-            for (var j = 0; j < coordinate.length; j++) {
-              int circleX = covertStringtoInt(coordinate[j].split(',')[0]);
-              int circleY = covertStringtoInt(coordinate[j].split(',')[1]);
-              int radiusR = covertStringtoInt(coordinate[j].split(',')[1]);
+        print(response.data['text']['responses'][0]['textAnnotations']);
+        print(
+            '------------------------------------test111111-----------------------------------');
+        List text = response.data['text']['responses'][0]['textAnnotations'];
+        //     List grade = response.data['coordinate'];
 
-              int textx = covertStringtoInt(
-                  text[i]['boundingPoly']['vertices'][0]['x'].toString());
-              int texty = covertStringtoInt(
-                  text[i]['boundingPoly']['vertices'][0]['y'].toString());
+        //  List result = processData(data: text, coordinate: grade);
 
-              if (text[i]['description'].toString().length == 1 &&
-                  textx < circleX + radiusR &&
-                  textx > circleX - radiusR &&
-                  texty < circleY + radiusR &&
-                  texty > circleY - radiusR &&
-                  (text[i]['description'] == '0' ||
-                      text[i]['description'] == '1' ||
-                      text[i]['description'] == '2')) {
-                schoolgrade.add(text[i]['description']);
-              }
-            }
-          }
-        }
-
-        print(schoolgrade);
-        return [
-          schoolIdNew.isNotEmpty ? schoolIdNew[0] : '',
-          schoolgrade.isNotEmpty ? schoolgrade[0] : ''
-        ];
+        // _list.removeWhere((CustomSetting element) => element.status == 'Hide');
+        // _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
+        // if (_list.length > 6) {
+        //   _list.removeRange(6, _list.length);
+        // }
+        // Globals.customSetting = _list;
+        // // To take the backup for all the sections.
+        // _backupAppData();
+        // return _list;
+        return text;
       }
     } catch (e) {
       print(
-          '------------------------------------error-----------------------------------');
+          '------------------------------------test-----------------------------------');
       print(e);
     }
   }
 
-  bool checkForInt(String data) {
+  Future authenticateEmail(body) async {
     try {
-      int result = int.parse(data);
-      return true;
+      final ResponseModel response = await _dbServices
+          .postapi("authorizeEmail?objectName=Contact", body: body);
+
+      if (response.statusCode == 200) {
+        var res = response.data;
+        var data = res["body"];
+        return data;
+      } else {
+        throw ('something_went_wrong');
+      }
     } catch (e) {
-      return false;
+      throw (e);
     }
   }
-
-  // Future authenticateEmail(body) async {
-  //   try {
-  //     final ResponseModel response = await _dbServices
-  //         .postapi("authorizeEmail?objectName=Contact", body: body);
-
-  //     if (response.statusCode == 200) {
-  //       var res = response.data;
-  //       var data = res["body"];
-  //       return data;
-  //     } else {
-  //       throw ('something_went_wrong');
-  //     }
-  //   } catch (e) {
-  //     throw (e);
-  //   }
-  // }
 }

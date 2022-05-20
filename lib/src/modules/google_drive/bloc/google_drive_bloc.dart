@@ -35,13 +35,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           parentId = await _createFolderOnDrive(
               token: event.token, folderName: event.folderName);
         }
+        //TODO : Open the commented code
+        
         // File file = await GoogleDriveAccess.file();
         // if (parentId != "") {
         //   createSheetOnDrive(
         //       folderId: parentId, accessToken: event.token, image: file);
+        yield GoogleDriveAccountError();
         // }
       } catch (e) {
-        throw (e);
+        yield GoogleDriveAccountError();
+        // throw (e);
       }
     }
 
@@ -204,6 +208,4 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     //   throw ('${json['error']['message']}');
     // }
   }
-
-  
 }

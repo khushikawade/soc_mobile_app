@@ -38,16 +38,16 @@ class FetchTextFromImageFailure extends OcrState {
   List<Object> get props => [];
 }
 
-// class EmailAuthenticationSuccess extends OcrState {
-//   final obj;
-//   EmailAuthenticationSuccess({this.obj});
-//   EmailAuthenticationSuccess copyWith({final obj}) {
-//     return EmailAuthenticationSuccess(obj: obj ?? this.obj);
-//   }
+class EmailAuthenticationSuccess extends OcrState {
+  final obj;
+  EmailAuthenticationSuccess({this.obj});
+  EmailAuthenticationSuccess copyWith({final obj}) {
+    return EmailAuthenticationSuccess(obj: obj ?? this.obj);
+  }
 
-//   @override
-//   List<Object> get props => [];
-// }
+  @override
+  List<Object> get props => [];
+}
 
 class OcrErrorReceived extends OcrState {
   final err;

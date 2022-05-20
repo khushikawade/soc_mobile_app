@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
-     
+
   late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     // _getNotificationIntance();
-    
+
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
     restart();
@@ -176,7 +176,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   ),
                 );
               } else if (element.contains('staff')) {
-                _screens.add(StaffPage());
+                _screens.add(StaffPage(
+                  isFromOcr: false,
+                ));
               } else if (element.contains('social')) {
                 _screens.add(
                   SocialNewPage(),
@@ -501,7 +503,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else if (Globals.customSetting![i].systemReferenceC == 'Students') {
           _screens.add(StudentPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
-          _screens.add(StaffPage(customObj: Globals.customSetting![i]));
+          _screens.add(StaffPage(
+            customObj: Globals.customSetting![i],
+            isFromOcr: false,
+          ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Families') {
           _screens.add(FamilyPage(customObj: Globals.customSetting![i]));
         } else if (Globals.customSetting![i].systemReferenceC ==
