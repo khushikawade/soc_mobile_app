@@ -80,13 +80,19 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               ],
             ),
           ),
-          floatingActionButton: Container(
-              decoration: BoxDecoration(boxShadow: [
+          floatingActionButton: 
+          Container(
+            
+              decoration: BoxDecoration(
+                color: Colors.red,
+                boxShadow: [
                 new BoxShadow(
                   color: Color.fromRGBO(0, 0, 0, 0.1),
                   blurRadius: 20.0,
                 ),
-              ], color: Colors.white, borderRadius: BorderRadius.circular(4)),
+              ], 
+              
+               borderRadius: BorderRadius.circular(4)),
               padding: EdgeInsets.symmetric(horizontal: 20),
               height: MediaQuery.of(context).orientation == Orientation.portrait
                   ? MediaQuery.of(context).size.height * 0.086
