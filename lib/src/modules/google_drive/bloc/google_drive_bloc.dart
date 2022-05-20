@@ -1,18 +1,16 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/io_client.dart';
-import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../../../services/Strings.dart';
 import '../../../services/db_service.dart';
 import '../../../services/local_database/hive_db_services.dart';
-import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
+
+import '../google_drive_access.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -37,19 +35,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           parentId = await _createFolderOnDrive(
               token: event.token, folderName: event.folderName);
         }
-        File file = await _file();
-        if (parentId != "") {
-          createSheetOnDrive(
-              folderId: parentId, accessToken: event.token, image: file);
-        }
+        //TODO : Open the commented code
+        
+        // File file = await GoogleDriveAccess.file();
+        // if (parentId != "") {
+        //   createSheetOnDrive(
+        //       folderId: parentId, accessToken: event.token, image: file);
+        yield GoogleDriveAccountError();
+        // }
       } catch (e) {
-        throw (e);
+        yield GoogleDriveAccountError();
+        // throw (e);
       }
     }
 
     if (event is CreateDoc) {
       try {
-        _file();
+        GoogleDriveAccess.file();
       } catch (e) {
         print(e);
       }
@@ -205,23 +207,5 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     //   Map json = jsonDecode(res.body);
     //   throw ('${json['error']['message']}');
     // }
-  }
-
-  Future _file() async {
-    List<String> name = ['nikhar', 'rupesh', 'rajesh'];
-
-    // Create a new Excel document.
-    final Workbook workbook = new Workbook();
-    //Accessing worksheet via index.
-    Worksheet sheet = workbook.worksheets[0];
-    sheet.getRangeByName('A1').setText("Hello doc");
-    // Save the document.
-    final List<int> bytes = workbook.saveAsStream();
-    //Dispose the workbook.
-    workbook.dispose();
-    final String path = (await getApplicationSupportDirectory()).path;
-    final String fileName = '$path/Output.xlsx';
-    File file = File(fileName);
-    return file;
   }
 }

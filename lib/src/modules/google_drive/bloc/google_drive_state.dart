@@ -13,3 +13,13 @@ class GoogleDriveLoading extends GoogleDriveState {
   @override
   List<Object> get props => [];
 }
+
+class GoogleDriveAccountSuccess extends GoogleDriveState {
+  @override
+  List<Object> get props => [];
+}
+
+class GoogleDriveAccountError extends GoogleDriveState {
+  @override
+  List<Object> get props => [];
+}
