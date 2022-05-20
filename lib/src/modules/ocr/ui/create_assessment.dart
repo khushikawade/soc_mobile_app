@@ -46,6 +46,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
       children: [
         CommonBackGroundImgWidget(),
         Scaffold(
+          floatingActionButton: textActionButton(),
+          // floatingActionButtonLocation:
+          //   FloatingActionButtonLocation.centerFloat,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
             isBackButton: false,
@@ -118,7 +121,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   SpacerWidget(_KVertcalSpace / 0.90),
                   scoringButton(),
                   SpacerWidget(_KVertcalSpace / 20),
-                  textActionButton()
+                  // textActionButton()
                   // smallButton(),
                   // SpacerWidget(_KVertcalSpace / 2),
 
@@ -130,7 +133,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
               ),
             ),
           ),
-          bottomNavigationBar: null,
+          // bottomNavigationBar: null,
         ),
       ],
     );
@@ -278,35 +281,67 @@ class _CreateAssessmentState extends State<CreateAssessment>
   }
 
   Widget textActionButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  // SuccessScreen()
-                  SubjectSelection()),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.kButtonColor,
-          borderRadius: BorderRadius.all(Radius.circular(25)),
-        ),
-        height: 54,
-        width: MediaQuery.of(context).size.width * 0.9,
-        child: Center(
-          child: highlightText(
-            text: 'Next',
-            theme: Theme.of(context).textTheme.headline1!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ),
-      ),
-    );
+    return FloatingActionButton.extended(
+        backgroundColor: AppTheme.kButtonColor,
+        onPressed: () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    // SuccessScreen()
+                    SubjectSelection()),
+          );
+        },
+        // icon:
+        // Icon(Icons.arrow_back, color: Colors.white),
+        label: Row(
+          children: [
+            textwidget(
+                text: 'Next',
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(color: Theme.of(context).backgroundColor)),
+            SpacerWidget(5),
+            RotatedBox(
+              quarterTurns: 90,
+              child: Icon(Icons.arrow_back,
+                  color: Theme.of(context).backgroundColor, size: 20),
+            )
+          ],
+        ));
   }
+
+  // Widget textActionButton() {
+  //   return InkWell(
+  //     onTap: () {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (context) =>
+  //                 // SuccessScreen()
+  //                 SubjectSelection()),
+  //       );
+  //     },
+  //     child: Container(
+  //       decoration: BoxDecoration(
+  //         color: AppTheme.kButtonColor,
+  //         borderRadius: BorderRadius.all(Radius.circular(25)),
+  //       ),
+  //       height: 54,
+  //       width: MediaQuery.of(context).size.width * 0.9,
+  //       child: Center(
+  //         child: highlightText(
+  //           text: 'Next',
+  //           theme: Theme.of(context).textTheme.headline1!.copyWith(
+  //                 color: Colors.white,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _tapDown(TapDownDetails details) {
     _controller!.forward();

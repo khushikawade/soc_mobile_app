@@ -8,13 +8,10 @@ import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
-import 'package:Soc/src/modules/ocr/ui/demo_camera.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
-import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -41,11 +38,9 @@ class _OpticalCharacterRecognitionPageState
   final HomeBloc _homeBloc = new HomeBloc();
   File? myImagePath;
   String pathOfImage = '';
+
   @override
   void initState() {
-    setState(() {
-      Globals.hideBottomNavbar = true;
-    });
     Globals.gradeList.clear();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
@@ -131,44 +126,30 @@ class _OpticalCharacterRecognitionPageState
   }
 
   Widget cameraButton() {
-    return
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-        InkWell(
-      onTap: () {
-        //   getGallaryImage();
-        Navigator.push(
+    return FloatingActionButton.extended(
+        backgroundColor: AppTheme.kButtonColor,
+        onPressed: () async {
+          Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => CameraScreen()));
-      },
-      child: Container(
-          decoration: BoxDecoration(
-              color: AppTheme.kButtonColor,
-              borderRadius: BorderRadius.circular(30)),
-          width: MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.width * 0.55
-              : MediaQuery.of(context).size.height * 0.55,
-          height: 65,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Icon(
-                IconData(0xe875,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: Colors.white,
-                size: 22,
-              ),
-              textwidget(
-                  text: 'Start Scanning',
-                  textTheme: Theme.of(context).textTheme.headline1!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ))
-            ],
-          )),
-    );
+            MaterialPageRoute(builder: (context) => CreateAssessment()),
+          );
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) => CameraScreen()));
+        },
+        icon: Icon(
+            IconData(0xe875,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            color: Theme.of(context).backgroundColor,
+            size: 16),
+        label: textwidget(
+            text: 'Start Scanning',
+            textTheme: Theme.of(context)
+                .textTheme
+                .headline2!
+                .copyWith(color: Theme.of(context).backgroundColor)));
   }
 
   Widget textwidget({required String text, required dynamic textTheme}) {
