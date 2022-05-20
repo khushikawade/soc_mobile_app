@@ -90,9 +90,13 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 setState(() {
                   Globals.hideBottomNavbar = false;
                 });
+
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => StaffPage()),
+                  MaterialPageRoute(
+                      builder: (context) => StaffPage(
+                            isFromOcr: true,
+                          )),
                 );
               },
               icon: Icon(

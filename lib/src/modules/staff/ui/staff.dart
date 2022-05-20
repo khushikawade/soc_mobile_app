@@ -28,11 +28,17 @@ import '../../shared/ui/common_grid_widget.dart';
 import 'package:file_picker/file_picker.dart';
 
 class StaffPage extends StatefulWidget {
-  StaffPage({Key? key, this.title, this.language, this.customObj})
+  StaffPage(
+      {Key? key,
+      this.title,
+      this.language,
+      this.customObj,
+      required this.isFromOcr})
       : super(key: key);
   final CustomSetting? customObj;
   final String? title;
   final String? language;
+  bool isFromOcr;
 
   @override
   _StaffPageState createState() => _StaffPageState();
@@ -56,6 +62,9 @@ class _StaffPageState extends State<StaffPage> {
   void initState() {
     super.initState();
     _bloc.add(StaffPageEvent());
+    if (widget.isFromOcr) {
+      _homeBloc.add(FetchStandardNavigationBar());
+    }
     localdb();
   }
 
