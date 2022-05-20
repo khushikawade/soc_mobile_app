@@ -175,15 +175,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future fatchDetails({required String base64}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-          Uri.encodeFull('https://b32f-111-118-246-106.in.ngrok.io'),
-          body: {'data': '$base64'},
-          isGoogleApi: true
-
-          // headers: {
-          //   'Content-Type': 'application/json',
-          //   'authorization': 'Bearer AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'
-          // }
-          );
+        Uri.encodeFull('http://3.142.181.122:5050/ocr'),
+        body: {'data': '$base64'},
+        isGoogleApi: true,
+      );
 
       if (response.statusCode == 200) {
         // List<FullTextAnnotation> _list = response.data['text']['responses'][0]

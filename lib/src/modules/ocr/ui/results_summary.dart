@@ -126,7 +126,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               theme: Theme.of(context)
                   .textTheme
                   .subtitle2!
-                  .copyWith(color: Colors.black, fontWeight: FontWeight.bold)),
+                  .copyWith(fontWeight: FontWeight.bold)),
           index == 1
               ? Image(
                   image: AssetImage("assets/images/drive.png"),
