@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -44,7 +46,10 @@ class _CameraScreenState extends State<CameraScreen>
   FlashMode? _currentFlashMode;
   @override
   void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _showStartDialog());
+    Globals.iscameraPopup
+        ? WidgetsBinding.instance!
+            .addPostFrameCallback((_) => _showStartDialog())
+        : null;
     // Hide the status bar
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     Utility.setLocked();
@@ -84,7 +89,12 @@ class _CameraScreenState extends State<CameraScreen>
           Container(
               padding: EdgeInsets.only(right: 5),
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => CreateAssessment()),
+                  );
+                },
                 icon: Icon(
                   IconData(0xe877,
                       fontFamily: Overrides.kFontFam,
@@ -132,6 +142,8 @@ class _CameraScreenState extends State<CameraScreen>
                           onTap: () async {
                             XFile? rawImage = await takePicture();
                             File imageFile = File(rawImage!.path);
+                            final bytes = File(rawImage.path).readAsBytesSync();
+                            String img64 = base64Encode(bytes);
 
                             //  File imageFile = File(rawImage!.path);
 
@@ -148,7 +160,10 @@ class _CameraScreenState extends State<CameraScreen>
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SuccessScreen()),
+                                  builder: (context) => SuccessScreen(
+                                        img64: img64,
+                                        imgPath: imageFile,
+                                      )),
                             );
                           },
                           child: Container(
@@ -265,7 +280,9 @@ class _CameraScreenState extends State<CameraScreen>
                               style: Theme.of(context)
                                   .textTheme
                                   .headline2!
-                                  .copyWith(fontWeight: FontWeight.bold));
+                                  .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black));
                         }),
                   ),
                   Divider()
@@ -286,6 +303,7 @@ class _CameraScreenState extends State<CameraScreen>
                                   ));
                     }),
                 onPressed: () {
+                  Globals.iscameraPopup = false;
                   Navigator.of(context).pop();
                 },
               ),

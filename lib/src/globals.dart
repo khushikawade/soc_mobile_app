@@ -118,4 +118,5 @@ class Globals {
     "View all assessment results"
   ];
   static List gradeList = [];
+  static bool iscameraPopup = true;
 }

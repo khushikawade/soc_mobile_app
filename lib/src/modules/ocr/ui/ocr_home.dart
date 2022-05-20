@@ -137,6 +137,7 @@ class _OpticalCharacterRecognitionPageState
         InkWell(
       onTap: () {
         //   getGallaryImage();
+        // getCameraImage();
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -365,6 +366,31 @@ class _OpticalCharacterRecognitionPageState
       // );
 
       //_bloc.add(FetchTextFromImage(base64: img64));
+    }
+    // reconizeText(pathOfImage);
+  }
+
+  void getCameraImage() async {
+    ImagePicker _imagePicker = ImagePicker();
+    XFile? image = await _imagePicker.pickImage(source: ImageSource.camera);
+    final bytes = File(image!.path).readAsBytesSync();
+    String img64 = base64Encode(bytes);
+    File imageFile = File(image.path);
+
+    setState(() {
+      myImagePath = File(image.path);
+      // isLoading2 = false;
+      pathOfImage = image.path.toString();
+    });
+    if (myImagePath != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SuccessScreen(
+                  img64: img64,
+                  imgPath: imageFile,
+                )),
+      );
     }
     // reconizeText(pathOfImage);
   }

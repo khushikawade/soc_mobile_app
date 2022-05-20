@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
-import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -14,12 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SuccessScreen extends StatefulWidget {
-  // final String? img64;
-  // final File? imgPath;
-  SuccessScreen({
-    Key? key,
-    //  required this.img64, required this.imgPath
-  }) : super(key: key);
+  final String? img64;
+  final File? imgPath;
+  SuccessScreen({Key? key, required this.img64, required this.imgPath})
+      : super(key: key);
 
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
@@ -30,88 +28,94 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final idController = TextEditingController();
   static const double _KVertcalSpace = 60.0;
   OcrBloc _bloc = OcrBloc();
-  bool failure = true;
+  bool failure = false;
   int? indexColor;
   @override
   void initState() {
     // TODO: implement initState
     // Globals.isbottomNavbar = false;
-    //  _bloc.add(FetchTextFromImage(base64: widget.img64!));
+    _bloc.add(FetchTextFromImage(base64: widget.img64!));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CommonBackGroundImgWidget(),
-        Scaffold(
+    return Stack(children: [
+      CommonBackGroundImgWidget(),
+      Scaffold(
           backgroundColor: Colors.transparent,
-          appBar:
-              CustomOcrAppBarWidget(isBackButton: false, isFailureState: true),
+          appBar: CustomOcrAppBarWidget(
+              isBackButton: false, isFailureState: failure),
           // AppBar(
           //   elevation: 0,
           // ),
           body: Container(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: 
-              //failureScreen()
-              //   successScreen(grade: '1', id: "123")
-              // BlocBuilder<OcrBloc, OcrState>(
-              //     bloc: _bloc, // provide the local bloc instance
-              //     builder: (context, state) {
-              //       if (state is OcrLoading) {
-              //         return CircularProgressIndicator(
-              //           color: Colors.white,
-              //         );
-              //       } else if (state is FetchTextFromImageSuccess) {
-              //         idController.text = state.schoolId!;
-              //         Globals.gradeList.add(state.grade!);
-              //         return successScreen(id: state.schoolId!, grade: state.grade!);
-              //
-              //       }
-              //       return Container();
-              //     }),
+            padding: EdgeInsets.only(left: 20, right: 20),
+            child:
+                //failureScreen()
+                //   successScreen(grade: '1', id: "123")
+                // BlocBuilder<OcrBloc, OcrState>(
+                //     bloc: _bloc, // provide the local bloc instance
+                //     builder: (context, state) {
+                //       if (state is OcrLoading) {
+                //         return CircularProgressIndicator(
+                //           color: Colors.white,
+                //         );
+                //       } else if (state is FetchTextFromImageSuccess) {
+                //         idController.text = state.schoolId!;
+                //         Globals.gradeList.add(state.grade!);
+                //         return successScreen(id: state.schoolId!, grade: state.grade!);
+                //
+                //       }
+                //       return Container();
+                //     }),
 
-              BlocConsumer<OcrBloc, OcrState>(
-                  bloc: _bloc, // provide the local bloc instance
-                  listener: (context, state) {
-                    if (state is FetchTextFromImageSuccess) {
-                      idController.text = state.schoolId!;
-                      Globals.gradeList.add(state.grade!);
-                      Timer(Duration(seconds: 5), () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => OpticalCharacterRecognition()));
-                      });
-                    }
-                    // do stuff here based on BlocA's state
-                  },
-                  builder: (context, state) {
-                    if (state is OcrLoading) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
-                      );
-                    } else if (state is FetchTextFromImageSuccess) {
-                      idController.text = state.schoolId!;
-                      Globals.gradeList.add(state.grade!);
-                      return successScreen(
-                          id: state.schoolId!, grade: state.grade!);
-                    } else if (state is FetchTextFromImageFailure) {
-                      idController.text = state.schoolId!;
-                      Globals.gradeList.add(state.grade!);
-                      return failureScreen();
-                    }
-                    return Container();
-                    // return widget here based on BlocA's state
-                  }),))]);
-    
+                BlocConsumer<OcrBloc, OcrState>(
+                    bloc: _bloc, // provide the local bloc instance
+                    listener: (context, state) {
+                      if (state is FetchTextFromImageSuccess) {
+                        idController.text = state.schoolId!;
+                        Globals.gradeList.add(state.grade!);
+                        Timer(Duration(seconds: 5), () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => CameraScreen()));
+                        });
+                      } else if (state is FetchTextFromImageFailure) {
+                        idController.text = state.schoolId ?? '';
+                        setState(() {
+                          failure = true;
+                        });
+                      }
+                      // do stuff here based on BlocA's state
+                    },
+                    builder: (context, state) {
+                      if (state is OcrLoading) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: AppTheme.kButtonColor,
+                          ),
+                        );
+                      } else if (state is FetchTextFromImageSuccess) {
+                        idController.text = state.schoolId!;
+                        Globals.gradeList.add(state.grade!);
+                        return successScreen(
+                            id: state.schoolId!, grade: state.grade!);
+                      } else if (state is FetchTextFromImageFailure) {
+                        idController.text = state.schoolId!;
+                        Globals.gradeList.add(state.grade!);
+                        return failureScreen(
+                            id: state.schoolId!, grade: state.grade!);
+                      }
+                      return Container();
+                      // return widget here based on BlocA's state
+                    }),
+          ))
+    ]);
   }
 
-  Widget failureScreen() {
+  Widget failureScreen({required String id, required String grade}) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +149,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         .withOpacity(0.5))),
           ),
           SpacerWidget(_KVertcalSpace / 4),
-          Center(child: smallButton(2)),
+          Center(child: smallButton(grade == '' ? 2 :int.parse(grade))),
           SpacerWidget(_KVertcalSpace / 2),
           Center(child: previewWidget()),
           SpacerWidget(_KVertcalSpace / 0.9),
@@ -228,15 +232,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
       width: MediaQuery.of(context).size.width * 0.58,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6.52),
-        child: Image(
-          fit: BoxFit.fitHeight,
-          image:
-              NetworkImage('https://www.tutorialkart.com/img/hummingbird.png'),
+        child:
+            // Image(
+            //   fit: BoxFit.fitHeight,
+            //   image:
+            //       NetworkImage('https://www.tutorialkart.com/img/hummingbird.png'),
+            // ),
+            Image.file(
+          widget.imgPath!,
+          fit: BoxFit.fill,
         ),
-        //  Image.file(
-        //   widget.imgPath!,
-        //   fit: BoxFit.fill,
-        // ),
       ),
     );
   }
@@ -271,20 +276,20 @@ class _SuccessScreenState extends State<SuccessScreen> {
     );
   }
 
-  Widget pointsButton(index, grade) {
+  Widget pointsButton(index, int grade) {
+    indexColor = grade;
     return InkWell(
         onTap: () {
           setState(() {
-            indexColor = index + 1;
+            indexColor = index;
+            // grade = index;
           });
         },
         child: AnimatedContainer(
           duration: Duration(microseconds: 100),
           padding: EdgeInsets.only(bottom: 5),
           decoration: BoxDecoration(
-            color: indexColor == index || index == grade
-                ? AppTheme.kSelectedColor
-                : Colors.grey,
+            color: index == indexColor ? AppTheme.kSelectedColor : Colors.grey,
             // Theme.of(context)
             //     .colorScheme
             //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
@@ -300,7 +305,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     ? Color(0xffF7F8F9)
                     : Color(0xff111C20),
                 border: Border.all(
-                  color: indexColor == index || index == grade
+                  color: index == indexColor
                       ? AppTheme.kSelectedColor
                       : Colors.grey,
                 ),
@@ -360,7 +365,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   Widget textActionButton() {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CameraScreen()),
+        );
+      },
       child: Container(
         decoration: BoxDecoration(
           color: AppTheme.kButtonColor,

@@ -244,7 +244,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future fatchAndProcessDetails({required String base64}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-        Uri.encodeFull('https://916f-111-118-246-106.in.ngrok.io'),
+        Uri.encodeFull('http://3.142.181.122:5050/ocr'),
         body: {'data': '$base64'},
         isGoogleApi: true,
       );
