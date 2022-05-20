@@ -14,10 +14,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SuccessScreen extends StatefulWidget {
-  final String? img64;
-  final File? imgPath;
-  SuccessScreen({Key? key, required this.img64, required this.imgPath})
-      : super(key: key);
+  // final String? img64;
+  // final File? imgPath;
+  SuccessScreen({
+    Key? key,
+    //  required this.img64, required this.imgPath
+  }) : super(key: key);
 
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();

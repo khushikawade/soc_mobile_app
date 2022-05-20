@@ -156,22 +156,22 @@ class Utility {
     }
   }
 
-// static void setLocked() async {
-//     await SystemChrome.setPreferredOrientations([
-//       DeviceOrientation.portraitUp,
-//       DeviceOrientation.portraitDown,
-//     ]);
-//   }
+static void setLocked() async {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
 
-// static void setFree() async {
+static void setFree() async {
 
-//     await SystemChrome.setPreferredOrientations([
-//       DeviceOrientation.landscapeRight,
-//       DeviceOrientation.landscapeLeft,
-//       DeviceOrientation.portraitUp,
-//       DeviceOrientation.portraitDown,
-//     ]);
-//   }
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
 
   static showBottomSheet(body, context) {
     return showModalBottomSheet(

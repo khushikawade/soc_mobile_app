@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:camera/camera.dart';
@@ -45,12 +47,14 @@ class _CameraScreenState extends State<CameraScreen>
     WidgetsBinding.instance!.addPostFrameCallback((_) => _showStartDialog());
     // Hide the status bar
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    Utility.setLocked();
     onNewCameraSelected(cameras[0]);
     super.initState();
   }
 
   @override
   void dispose() {
+    Utility.setFree();
     controller?.dispose();
     super.dispose();
   }
@@ -140,6 +144,12 @@ class _CameraScreenState extends State<CameraScreen>
                             await imageFile.copy(
                               '${directory.path}/$currentUnix.$fileFormat',
                             );
+                            await controller!.setFlashMode(FlashMode.off);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SuccessScreen()),
+                            );
                           },
                           child: Container(
                             decoration: const BoxDecoration(
@@ -178,7 +188,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   void onNewCameraSelected(CameraDescription cameraDescription) async {
     final previousCameraController = controller;
-    _currentFlashMode = controller!.value.flashMode;
+
     // Instantiating the camera controller
     final CameraController cameraController = CameraController(
       cameraDescription,
@@ -188,7 +198,7 @@ class _CameraScreenState extends State<CameraScreen>
 
     // Dispose the previous controller
     await previousCameraController?.dispose();
-
+    // _currentFlashMode = controller!.value.flashMode;
     // Replace with the new controller
     if (mounted) {
       setState(() {
