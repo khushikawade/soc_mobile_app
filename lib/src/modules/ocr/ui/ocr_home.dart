@@ -5,6 +5,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/demo_camera.dart';
@@ -135,9 +136,11 @@ class _OpticalCharacterRecognitionPageState
 
         InkWell(
       onTap: () {
-        getGallaryImage();
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (BuildContext context) => DemoCamera()));
+        //   getGallaryImage();
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => CameraScreen()));
       },
       child: Container(
           decoration: BoxDecoration(

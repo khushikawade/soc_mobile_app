@@ -1,7 +1,13 @@
 import 'dart:io';
+
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/ocr/ui/success.dart';
+import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -33,16 +39,21 @@ class _CameraScreenState extends State<CameraScreen>
 
   CameraController? controller;
   bool _isCameraInitialized = false;
+  bool flash = false;
+  FlashMode? _currentFlashMode;
   @override
   void initState() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _showStartDialog());
     // Hide the status bar
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    Utility.setLocked();
     onNewCameraSelected(cameras[0]);
     super.initState();
   }
 
   @override
   void dispose() {
+    Utility.setFree();
     controller?.dispose();
     super.dispose();
   }
@@ -50,31 +61,124 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight:
+            MediaQuery.of(context).orientation == Orientation.portrait
+                ? 80
+                : 60,
+        leading: IconButton(
+            onPressed: () async {
+              setState(() {
+                flash = !flash;
+              });
+              await controller!
+                  .setFlashMode(flash ? FlashMode.torch : FlashMode.off);
+            },
+            icon: Icon(
+              Icons.flash_on,
+              color: Colors.white,
+              size: 30,
+            )),
+        actions: [
+          Container(
+              padding: EdgeInsets.only(right: 5),
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  IconData(0xe877,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kButtonColor,
+                  size: 30,
+                ),
+              )),
+        ],
+        backgroundColor: Colors.black,
+        automaticallyImplyLeading: false,
+      ),
       body: _isCameraInitialized
           ? Stack(children: [
               controller!.buildPreview(),
+              // Positioned(
+              //   top: 0.0,
+              //   // left: MediaQuery.of(context).size.width * 0.35,
+              //   child: Container(
+              //     height: AppBar().preferredSize.height,
+              //     color: Colors.black,
+              //     width: MediaQuery.of(context).size.width,
+              //   ),
+              // ),
               Positioned(
-                bottom: MediaQuery.of(context).size.height * 0.1,
-                left: MediaQuery.of(context).size.width * 0.35,
-                child: IconButton(
-                    onPressed: () async {
-                      XFile? rawImage = await takePicture();
-                      File imageFile = File(rawImage!.path);
+                bottom: 0.0,
+                // left: MediaQuery.of(context).size.width * 0.35,
+                child: Container(
+                  color: Colors.black,
+                  height:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? MediaQuery.of(context).size.height * 0.15
+                          : MediaQuery.of(context).size.height * 0.25,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Container(
+                        height: 60,
+                        width: 60,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.transparent,
+                            border: Border.all(color: Colors.white, width: 5)),
+                        padding: EdgeInsets.all(3),
+                        child: InkWell(
+                          onTap: () async {
+                            XFile? rawImage = await takePicture();
+                            File imageFile = File(rawImage!.path);
 
-                      //  File imageFile = File(rawImage!.path);
+                            //  File imageFile = File(rawImage!.path);
 
-                      int currentUnix = DateTime.now().millisecondsSinceEpoch;
-                      final directory = await getApplicationDocumentsDirectory();
-                      String fileFormat = imageFile.path.split('.').last;
+                            int currentUnix =
+                                DateTime.now().millisecondsSinceEpoch;
+                            final directory =
+                                await getApplicationDocumentsDirectory();
+                            String fileFormat = imageFile.path.split('.').last;
 
-                      await imageFile.copy(
-                        '${directory.path}/$currentUnix.$fileFormat',
-                      );
-                    },
-                    icon: Icon(
-                      Icons.circle,
-                      size: 120,
-                    )),
+                            await imageFile.copy(
+                              '${directory.path}/$currentUnix.$fileFormat',
+                            );
+                            await controller!.setFlashMode(FlashMode.off);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SuccessScreen()),
+                            );
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.white),
+                          ),
+                        )),
+                  ),
+
+                  // IconButton(
+                  //     onPressed: () async {
+                  //       XFile? rawImage = await takePicture();
+                  //       File imageFile = File(rawImage!.path);
+
+                  //       //  File imageFile = File(rawImage!.path);
+
+                  //       int currentUnix = DateTime.now().millisecondsSinceEpoch;
+                  //       final directory =
+                  //           await getApplicationDocumentsDirectory();
+                  //       String fileFormat = imageFile.path.split('.').last;
+
+                  //       await imageFile.copy(
+                  //         '${directory.path}/$currentUnix.$fileFormat',
+                  //       );
+                  //     },
+                  //     icon: Icon(
+                  //       Icons.radio_button_on,
+                  //       color: Colors.white,
+                  //       size: 120,
+                  //     )),
+                ),
               )
             ])
           : Container(),
@@ -83,6 +187,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   void onNewCameraSelected(CameraDescription cameraDescription) async {
     final previousCameraController = controller;
+
     // Instantiating the camera controller
     final CameraController cameraController = CameraController(
       cameraDescription,
@@ -92,7 +197,7 @@ class _CameraScreenState extends State<CameraScreen>
 
     // Dispose the previous controller
     await previousCameraController?.dispose();
-
+    // _currentFlashMode = controller!.value.flashMode;
     // Replace with the new controller
     if (mounted) {
       setState(() {
@@ -133,5 +238,63 @@ class _CameraScreenState extends State<CameraScreen>
       print('Error occured while taking picture: $e');
       return null;
     }
+  }
+
+  Future<void> _showStartDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: Container(
+              height: MediaQuery.of(context).size.height / 10,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: TranslationWidget(
+                        message:
+                            "Image are stored in the Cloud, not on your phone ",
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(translatedMessage.toString(),
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(fontWeight: FontWeight.bold));
+                        }),
+                  ),
+                  Divider()
+                ],
+              )),
+          actions: [
+            Center(
+              child: new TextButton(
+                child: TranslationWidget(
+                    message: "ok ",
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) {
+                      return Text(translatedMessage.toString(),
+                          style:
+                              Theme.of(context).textTheme.headline5!.copyWith(
+                                    color: AppTheme.kButtonColor,
+                                  ));
+                    }),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 16,
+        );
+      },
+    );
   }
 }
