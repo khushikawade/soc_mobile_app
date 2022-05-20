@@ -132,7 +132,7 @@ class _OpticalCharacterRecognitionPageState
         onPressed: () async {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateAssessment()),
+            MaterialPageRoute(builder: (context) => CameraScreen()),
           );
           // Navigator.push(
           //     context,
@@ -351,28 +351,28 @@ class _OpticalCharacterRecognitionPageState
     // reconizeText(pathOfImage);
   }
 
-  void getCameraImage() async {
-    ImagePicker _imagePicker = ImagePicker();
-    XFile? image = await _imagePicker.pickImage(source: ImageSource.camera);
-    final bytes = File(image!.path).readAsBytesSync();
-    String img64 = base64Encode(bytes);
-    File imageFile = File(image.path);
+  // void getCameraImage() async {
+  //   ImagePicker _imagePicker = ImagePicker();
+  //   XFile? image = await _imagePicker.pickImage(source: ImageSource.camera);
+  //   final bytes = File(image!.path).readAsBytesSync();
+  //   String img64 = base64Encode(bytes);
+  //   File imageFile = File(image.path);
 
-    setState(() {
-      myImagePath = File(image.path);
-      // isLoading2 = false;
-      pathOfImage = image.path.toString();
-    });
-    if (myImagePath != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SuccessScreen(
-                  img64: img64,
-                  imgPath: imageFile,
-                )),
-      );
-    }
-    // reconizeText(pathOfImage);
-  }
+  //   setState(() {
+  //     myImagePath = File(image.path);
+  //     // isLoading2 = false;
+  //     pathOfImage = image.path.toString();
+  //   });
+  //   if (myImagePath != null) {
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => SuccessScreen(
+  //                 img64: img64,
+  //                 imgPath: imageFile,
+  //               )),
+  //     );
+  //   }
+  //   // reconizeText(pathOfImage);
+  // }
 }

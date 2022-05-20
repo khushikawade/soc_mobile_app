@@ -164,7 +164,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       height: MediaQuery.of(context).size.height * 0.85,
       child: Center(
         child: CircularProgressIndicator(
-          color: Colors.white,
+          color: AppTheme.kButtonColor,
         ),
       ),
     );

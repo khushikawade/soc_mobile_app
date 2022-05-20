@@ -30,6 +30,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   OcrBloc _bloc = OcrBloc();
   bool failure = false;
   int? indexColor;
+  bool isSelected = true;
   @override
   void initState() {
     // TODO: implement initState
@@ -149,7 +150,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         .withOpacity(0.5))),
           ),
           SpacerWidget(_KVertcalSpace / 4),
-          Center(child: smallButton(grade == '' ? 2 :int.parse(grade))),
+          Center(child: smallButton(grade == '' ? 2 : int.parse(grade))),
           SpacerWidget(_KVertcalSpace / 2),
           Center(child: previewWidget()),
           SpacerWidget(_KVertcalSpace / 0.9),
@@ -277,10 +278,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   Widget pointsButton(index, int grade) {
-    indexColor = grade;
+    isSelected ? indexColor = grade : null;
+    // indexColor = grade;
     return InkWell(
         onTap: () {
           setState(() {
+            isSelected = false;
             indexColor = index;
             // grade = index;
           });

@@ -80,19 +80,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               ],
             ),
           ),
-          floatingActionButton: 
-          Container(
-            
+          floatingActionButton: Container(
               decoration: BoxDecoration(
-                color: Colors.red,
-                boxShadow: [
-                new BoxShadow(
-                  color: Color.fromRGBO(0, 0, 0, 0.1),
-                  blurRadius: 20.0,
-                ),
-              ], 
-              
-               borderRadius: BorderRadius.circular(4)),
+                  color: Theme.of(context).backgroundColor,
+                  boxShadow: [
+                    new BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.1),
+                      blurRadius: 20.0,
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(4)),
               padding: EdgeInsets.symmetric(horizontal: 20),
               height: MediaQuery.of(context).orientation == Orientation.portrait
                   ? MediaQuery.of(context).size.height * 0.086
@@ -143,7 +140,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       fontPackage: Overrides.kFontPkg),
                   size: 32,
                   color: index == 2
-                      ? Colors.black
+                      ? Colors.green
                       : index == 3
                           ? Colors.green
                           : AppTheme.kButtonColor,
