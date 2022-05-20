@@ -348,7 +348,7 @@ class _StaffPageState extends State<StaffPage> {
         //     MaterialPageRoute(
         //         builder: (BuildContext context) =>
         //             OpticalCharacterRecognition()));
-        _localData.clear();
+
         if (_localData.isEmpty) {
           await _launchURL('Google Authentication');
         } else {
