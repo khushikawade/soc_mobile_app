@@ -25,7 +25,7 @@ import '../../ocr/modal/user_info.dart';
 import '../../ocr/ui/ocr_home.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
-import 'package:file_picker/file_picker.dart';
+//import 'package:file_picker/file_picker.dart';
 
 class StaffPage extends StatefulWidget {
   StaffPage({Key? key, this.title, this.language, this.customObj})
@@ -334,10 +334,10 @@ class _StaffPageState extends State<StaffPage> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
-  Future<File> _getpath() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    return File(result!.files.first.path!);
-  }
+//   Future<File> _getpath() async {
+//  //   FilePickerResult? result = await FilePicker.platform.pickFiles();
+//   //  return File(result!.files.first.path!);
+//   }
 
   Widget cameraButton() {
     return

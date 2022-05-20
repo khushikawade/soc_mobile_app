@@ -89,6 +89,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       Globals.gradeList.add(state.grade!);
                       return successScreen(
                           id: state.schoolId!, grade: state.grade!);
+                    } else if (state is FetchTextFromImageFailure) {
+                      idController.text = state.schoolId!;
+                      Globals.gradeList.add(state.grade!);
+                      return failureScreen();
                     }
                     return Container();
                     // return widget here based on BlocA's state
@@ -264,10 +268,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.background,
                 border: Border.all(
-                  color: indexColor == index + 1 || index == grade
-                      ? AppTheme.kSelectedColor
-                      : Colors.grey,
-                ),
+                    color: grade == null
+                        ? (indexColor == index + 1
+                            ? AppTheme.kSelectedColor
+                            : Colors.grey)
+                        : (grade == index
+                            ? AppTheme.kSelectedColor
+                            : Colors.grey)),
                 borderRadius: BorderRadius.all(Radius.circular(15)),
               ),
               child: TranslationWidget(
@@ -290,7 +297,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
     return TextFormField(
       //
       textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.headline6,
+      style: Theme.of(context).textTheme.headline1,
       controller: controller,
       cursorColor: Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
