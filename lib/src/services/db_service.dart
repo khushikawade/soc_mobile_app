@@ -121,4 +121,33 @@ class DbServices {
       }
     }
   }
+
+  patchapi(
+    api, {
+    body,
+    headers,
+  }) async {
+    try {
+      final response = await httpClient.patch(Uri.parse('$api'),
+          headers: headers, body: body);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      } else {
+        if (response.body == 'Unauthorized') {
+          ResponseModel _res =
+              await patchapi(api, body: body, headers: headers);
+          return _res;
+        }
+        final data = json.decode(response.body);
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      }
+    } catch (e) {
+      if (e.toString().contains('Failed host lookup')) {
+        throw ('NO_CONNECTION');
+      } else {
+        throw (e);
+      }
+    }
+  }
 }

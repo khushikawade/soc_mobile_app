@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
@@ -7,6 +9,7 @@ import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -21,6 +24,7 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../ocr/modal/user_info.dart';
 import '../../ocr/ui/ocr_home.dart';
 import '../../shared/ui/common_grid_widget.dart';
+import 'package:file_picker/file_picker.dart';
 
 class StaffPage extends StatefulWidget {
   StaffPage({Key? key, this.title, this.language, this.customObj})
@@ -116,21 +120,23 @@ class _StaffPageState extends State<StaffPage> {
                                 .split('=')[1]
                                 .replaceAll('#', '')));
 
-  //                       localdb();
-
-                        _googleDriveBloc.add(CreateGoogleDriveFolderEvent(
+                        localdb();
+                        //   File file = await _getpath();
+                        _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
+                            //  filePath: file,
                             token: value
                                 .split('+')[3]
                                 .toString()
                                 .split('=')[1]
                                 .replaceAll('#', ''),
-                            folderName: "test_folder_C"));
+                            folderName: "test_folder_table"));
 
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OpticalCharacterRecognition()));
+                        // Navigator.pushReplacement(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (BuildContext context) =>
+                        //             OpticalCharacterRecognition())
+                        //             );
                       } else {
                         Navigator.pop(context, false);
                         Utility.showSnackBar(
@@ -211,44 +217,11 @@ class _StaffPageState extends State<StaffPage> {
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
                           Globals.appSetting = AppSetting.fromJson(state.obj);
+                          setState(() {});
                         }
                       },
                       child: EmptyContainer()),
                 ),
-                // BlocListener<OcrBloc, OcrState>(
-                //     bloc: ocrBloc,
-                //     listener: (context, state) async {
-                //       if (state is EmailAuthenticationSuccess) {
-                //         if (state.obj == "true") {
-                //           _localUserInfo.addData(UserInfo(
-                //               userName: userData
-                //                   .split('+')[0]
-                //                   .toString()
-                //                   .toString()
-                //                   .split('=')[1],
-                //               userEmail: userData
-                //                   .split('+')[1]
-                //                   .toString()
-                //                   .toString()
-                //                   .split('=')[1],
-                //               profilePicture: userData
-                //                   .split('+')[2]
-                //                   .toString()
-                //                   .toString()
-                //                   .split('=')[1]));
-
-                //           localdb();
-                //           Navigator.pushReplacement(
-                //               context,
-                //               MaterialPageRoute(
-                //                   builder: (BuildContext context) =>
-                //                       OpticalCharacterRecognition()));
-                //         } else {
-                //           Navigator.pop(context);
-                //         }
-                //       }
-                //     },
-                //     child: EmptyContainer()),
               ]),
             );
           },
@@ -257,60 +230,66 @@ class _StaffPageState extends State<StaffPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBarWidget(
-        marginLeft: 30,
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: Globals.appSetting.staffBannerImageC != null &&
-              Globals.appSetting.staffBannerImageC != ''
-          ? NestedScrollView(
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  BannerImageWidget(
-                    imageUrl: Globals.appSetting.staffBannerImageC!,
-                    bgColor: Globals.appSetting.studentBannerColorC != null
-                        ? Utility.getColorFromHex(
-                            Globals.appSetting.studentBannerColorC!)
-                        : null,
-                  )
-                ];
-              },
-              body: _body('body1'),
-            )
-          : _body('body2'),
-      floatingActionButton: Container(
-        height: Globals.deviceType == 'phone' ? 80 : 100.0,
-        width: Globals.deviceType == 'phone' ? 80 : 100.0,
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).size.height * 0.03,
-        ),
-        child: FloatingActionButton(
-          onPressed: () async {
-            print(Theme.of(context).backgroundColor.toString());
-            _localData.clear();
-            if (_localData.isEmpty) {
-              await _launchURL('Google Authentication');
-            } else {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          OpticalCharacterRecognition()));
-            }
+        key: _scaffoldKey,
+        appBar: AppBarWidget(
+          marginLeft: 30,
+          refresh: (v) {
+            setState(() {});
           },
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
-            size: 40,
-          ),
-          backgroundColor: Theme.of(context).primaryColor,
         ),
-      ),
-    );
+        body: Globals.appSetting.staffBannerImageC != null &&
+                Globals.appSetting.staffBannerImageC != ''
+            ? NestedScrollView(
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    BannerImageWidget(
+                      imageUrl: Globals.appSetting.staffBannerImageC!,
+                      bgColor: Globals.appSetting.studentBannerColorC != null
+                          ? Utility.getColorFromHex(
+                              Globals.appSetting.studentBannerColorC!)
+                          : null,
+                    )
+                  ];
+                },
+                body: _body('body1'),
+              )
+            : _body('body2'),
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height * 0.03,
+          ),
+          child: cameraButton(),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat
+        // floatingActionButton: Container(
+        //   height: Globals.deviceType == 'phone' ? 80 : 100.0,
+        //   width: Globals.deviceType == 'phone' ? 80 : 100.0,
+        //   padding: EdgeInsets.only(
+        //     bottom: MediaQuery.of(context).size.height * 0.03,
+        //   ),
+        //   child: FloatingActionButton(
+        //     onPressed: () async {
+        //       _localData.clear();
+        //       if (_localData.isEmpty) {
+        //         await _launchURL('Google Authentication');
+        //       } else {
+        //         Navigator.push(
+        //             context,
+        //             MaterialPageRoute(
+        //                 builder: (BuildContext context) =>
+        //                     OpticalCharacterRecognition()));
+        //       }
+        //     },
+        //     child: Icon(
+        //       Icons.add,
+        //       color: Colors.white,
+        //       size: 40,
+        //     ),
+        //     backgroundColor: Theme.of(context).primaryColor,
+        //   ),
+        // ),
+        );
   }
 
   Future refreshPage() async {
@@ -318,5 +297,95 @@ class _StaffPageState extends State<StaffPage> {
     await Future.delayed(Duration(seconds: 2));
     _bloc.add(StaffPageEvent());
     _homeBloc.add(FetchStandardNavigationBar());
+  }
+
+  // Future<File> _getpath() async {
+  //   FilePickerResult? result = await FilePicker.platform.pickFiles();
+  //   return File(result!.files.first.path!);
+  // }
+
+  Widget cameraButton() {
+    return
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+        InkWell(
+      onTap: () async {
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (BuildContext context) =>
+        //             OpticalCharacterRecognition()));
+        _localData.clear();
+        if (_localData.isEmpty) {
+          await _launchURL('Google Authentication');
+        } else {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      OpticalCharacterRecognition()));
+        }
+      },
+      child: Container(
+          //   padding: EdgeInsets.only(
+          //     bottom: MediaQuery.of(context).size.height * 0.03,
+          //   ),
+          decoration: BoxDecoration(
+              color: AppTheme.kButtonColor,
+              borderRadius: BorderRadius.circular(30)),
+          width: MediaQuery.of(context).orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.width * 0.55
+              : MediaQuery.of(context).size.height * 0.55,
+          height: 65,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
+              Container(
+                // color: Colors.red,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    textwidget(
+                        text: 'Create',
+                        textTheme:
+                            Theme.of(context).textTheme.headline4!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                )),
+                    textwidget(
+                        text: 'Assessment',
+                        textTheme:
+                            Theme.of(context).textTheme.headline2!.copyWith(
+                                  fontSize: 17,
+                                  color: Colors.white,
+                                )),
+                  ],
+                ),
+              )
+            ],
+          )),
+    );
+  }
+
+  Widget textwidget({required String text, required dynamic textTheme}) {
+    return TranslationWidget(
+      message: text,
+      toLanguage: Globals.selectedLanguage,
+      fromLanguage: "en",
+      builder: (translatedMessage) => Text(
+        translatedMessage.toString(),
+        style: textTheme,
+      ),
+    );
   }
 }

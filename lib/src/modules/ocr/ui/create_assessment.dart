@@ -1,8 +1,10 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
@@ -17,8 +19,8 @@ class CreateAssessment extends StatefulWidget {
 class _CreateAssessmentState extends State<CreateAssessment>
     with SingleTickerProviderStateMixin {
   static const double _KVertcalSpace = 60.0;
-  final assessmentController = TextEditingController();
-  final classController = TextEditingController();
+  final assessmentController = TextEditingController(text: 'Version_0.01');
+  final classController = TextEditingController(text: '11th');
   double? _scale;
   AnimationController? _controller;
   int scoringColor = 0;
@@ -35,72 +37,102 @@ class _CreateAssessmentState extends State<CreateAssessment>
     )..addListener(() {
         setState(() {});
       });
-    Globals.isbottomNavbar = false;
   }
 
   @override
   Widget build(BuildContext context) {
     _scale = 1 - _controller!.value;
-    return Scaffold(
-      appBar: CustomAppBarWidget(
-        appBarTitle: 'OCR',
-        isSearch: true,
-        isShare: false,
-        language: Globals.selectedLanguage,
-        isCenterIcon: false,
-        ishtmlpage: false,
-        sharedpopBodytext: '',
-        sharedpopUpheaderText: '',
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          height: MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.height * 0.9
-              : MediaQuery.of(context).size.width,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              highlightText(
-                text: 'Create Assessment',
-                theme: Theme.of(context).textTheme.headline6,
-              ),
-              SpacerWidget(_KVertcalSpace / 1.5),
-              highlightText(
-                  text: 'Assessment Name',
-                  theme: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primaryVariant
-                          .withOpacity(0.3))),
-              textFormField(
-                  controller: assessmentController, onSaved: (String value) {}),
-              SpacerWidget(_KVertcalSpace / 2),
-              highlightText(
-                  text: 'Class Name',
-                  theme: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primaryVariant
-                          .withOpacity(0.3))),
-              textFormField(
-                  controller: classController, onSaved: (String value) {}),
-              SpacerWidget(_KVertcalSpace / 1),
-              scoringButton(),
-              textActionButton()
-              // smallButton(),
-              // SpacerWidget(_KVertcalSpace / 2),
-
-              // SpacerWidget(_KVertcalSpace / 4),
-              // scoringButton(),
-              // // SpacerWidget(_KVertcalSpace / 8),
-              // cameraButton(),
-            ],
+    return Stack(
+      children: [
+        CommonBackGroundImgWidget(),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomOcrAppBarWidget(
+            isBackButton: false,
           ),
+          // AppBar(
+          //   elevation: 0,
+          //   automaticallyImplyLeading: false,
+          //   actions: [
+          //     Container(
+          //       padding: EdgeInsets.only(right: 10),
+          //       child: Icon(
+          //         IconData(0xe874,
+          //             fontFamily: Overrides.kFontFam,
+          //             fontPackage: Overrides.kFontPkg),
+          //         color: AppTheme.kButtonColor,
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          //  CustomAppBarWidget(
+          //   appBarTitle: 'OCR',
+          //   isSearch: true,
+          //   isShare: false,
+          //   language: Globals.selectedLanguage,
+          //   isCenterIcon: false,
+          //   ishtmlpage: false,
+          //   sharedpopBodytext: '',
+          //   sharedpopUpheaderText: '',
+          // ),
+          body: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              height: MediaQuery.of(context).orientation == Orientation.portrait
+                  ? MediaQuery.of(context).size.height * 0.9
+                  : MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SpacerWidget(_KVertcalSpace * 0.50),
+                  highlightText(
+                    text: 'Create Assessment',
+                    theme: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  SpacerWidget(_KVertcalSpace / 1.8),
+                  highlightText(
+                      text: 'Assessment Name',
+                      theme: Theme.of(context).textTheme.headline2!.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.3))),
+                  textFormField(
+                      controller: assessmentController,
+                      onSaved: (String value) {}),
+                  SpacerWidget(_KVertcalSpace / 2),
+                  highlightText(
+                      text: 'Class Name',
+                      theme: Theme.of(context).textTheme.headline2!.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.3))),
+                  textFormField(
+                      controller: classController, onSaved: (String value) {}),
+
+                  SpacerWidget(_KVertcalSpace / 0.90),
+                  scoringButton(),
+                  SpacerWidget(_KVertcalSpace / 20),
+                  textActionButton()
+                  // smallButton(),
+                  // SpacerWidget(_KVertcalSpace / 2),
+
+                  // SpacerWidget(_KVertcalSpace / 4),
+                  // scoringButton(),
+                  // // SpacerWidget(_KVertcalSpace / 8),
+                  // cameraButton(),
+                ],
+              ),
+            ),
+          ),
+          bottomNavigationBar: null,
         ),
-      ),
-      bottomNavigationBar: null,
+      ],
     );
   }
 
@@ -122,62 +154,74 @@ class _CreateAssessmentState extends State<CreateAssessment>
           ? MediaQuery.of(context).size.height * 0.35
           : MediaQuery.of(context).size.width * 0.35,
       // width: MediaQuery.of(context).size.width * 0.7,
-      child: GridView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 60,
-              childAspectRatio: 5 / 6,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 5),
-          itemCount: Globals.classList.length,
-          itemBuilder: (BuildContext ctx, index) {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  scoringColor = index;
-                });
-              },
-              onTapDown: _tapDown,
-              onTapUp: _tapUp,
-              child: Transform.scale(
-                scale: _scale!,
-                child: AnimatedContainer(
-                  duration: Duration(microseconds: 100),
-                  padding: EdgeInsets.only(bottom: 8),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: scoringColor == index
-                        ? AppTheme.kSelectedColor
-                        : Colors.grey,
-                  ),
-                  child: new Container(
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.background,
+      child:
+          // Column(
+          //   children: [
+          //     Row(children: [
+
+          //     ],)
+          //   ],
+          // ),
+
+          GridView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 50,
+                  childAspectRatio: 5 / 6,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 10),
+              itemCount: Globals.classList.length,
+              itemBuilder: (BuildContext ctx, index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      scoringColor = index;
+                    });
+                  },
+                  onTapDown: _tapDown,
+                  onTapUp: _tapUp,
+                  child: Transform.scale(
+                    scale: _scale!,
+                    child: AnimatedContainer(
+                      duration: Duration(microseconds: 100),
+                      padding: EdgeInsets.only(bottom: 5),
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: scoringColor == index
-                              ? AppTheme.kSelectedColor
-                              : Colors.grey,
-                        )),
-                    child: Center(
-                      child: textwidget(
-                        text: Globals.classList[index],
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline1!
-                            .copyWith(
-                                color: scoringColor == index
-                                    ? AppTheme.kSelectedColor
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant),
+                        color: scoringColor == index
+                            ? AppTheme.kSelectedColor
+                            : Colors.grey,
+                      ),
+                      child: new Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xff000000) !=
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xffF7F8F9)
+                                : Color(0xff111C20),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: scoringColor == index
+                                  ? AppTheme.kSelectedColor
+                                  : Colors.grey,
+                            )),
+                        child: Center(
+                          child: textwidget(
+                            text: Globals.classList[index],
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    color: scoringColor == index
+                                        ? AppTheme.kSelectedColor
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            );
-          }),
+                );
+              }),
     );
   }
 
@@ -200,12 +244,15 @@ class _CreateAssessmentState extends State<CreateAssessment>
       {required TextEditingController controller, required onSaved}) {
     return TextFormField(
       //
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.headline6,
+      textAlign: TextAlign.start,
+      style: Theme.of(context)
+          .textTheme
+          .headline6!
+          .copyWith(fontWeight: FontWeight.bold),
       controller: controller,
       cursorColor: Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
-        fillColor: Theme.of(context).backgroundColor,
+        fillColor: Colors.transparent,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color:
@@ -214,10 +261,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-              color:
-                  Colors.green // Theme.of(context).colorScheme.primaryVariant,
+              color: Theme.of(context).colorScheme.primaryVariant.withOpacity(
+                  0.5) // Theme.of(context).colorScheme.primaryVariant,
               ),
         ),
+        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
         border: UnderlineInputBorder(
           borderSide: BorderSide(
             color:
@@ -231,11 +279,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
   Widget textActionButton() {
     return InkWell(
-      onTap: (){
+      onTap: () {
         Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) =>  SubjectSelection()),
-            );
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  // SuccessScreen()
+                  SubjectSelection()),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -247,10 +298,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
         child: Center(
           child: highlightText(
             text: 'Next',
-            theme: Theme.of(context)
-                .textTheme
-                .headline1!
-                .copyWith(color: Theme.of(context).colorScheme.background),
+            theme: Theme.of(context).textTheme.headline1!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
         ),
       ),

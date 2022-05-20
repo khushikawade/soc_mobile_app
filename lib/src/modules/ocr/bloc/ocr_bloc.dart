@@ -21,16 +21,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   ) async* {
     if (event is FetchTextFromImage) {
       String? grade;
+      List schoolIdNew = [];
       yield OcrLoading();
       List data = await fatchDetails(base64: event.base64);
       for (var i = 0; i < data.length; i++) {
         if (data[i]['description'].toString().length == 9) {
-          // schoolIdNew.add(data[i]);
+          schoolIdNew.add(data[i]);
         }
       }
       grade = data[data.length - 1]['description'];
       print(data);
-      // yield FetchTextFromImageSuccess(schoolId: schoolIdNew ?? '', grade: grade ?? '');
+      yield FetchTextFromImageSuccess(
+          schoolId: schoolIdNew[0]['description'] ?? '', grade: grade ?? '');
       try {} catch (e) {}
     }
 
@@ -53,9 +55,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is FatchSubjectDetails) {
       try {
         if (event.type == 'subject') {
-        yield OcrLoading();
+          yield OcrLoading();
         }
-        
+
         List<SubjectList> data = await fatchSubjectDetails();
         if (event.type == 'subject') {
           yield SubjectDataSuccess(
@@ -113,53 +115,53 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  List processData({required List data, required List coordinate}) {
-    List schoolIdNew = [];
-    List schoolgrade = [];
+  // List processData({required List data, required List coordinate}) {
+  //   List schoolIdNew = [];
+  //   List schoolgrade = [];
 
-    try {
-      for (var i = 0; i < data.length; i++) {
-        if (data[i]['description'].toString().length == 9) {
-          String id = data[i]['description'];
-          id.replaceAll('o', '0');
-          id.replaceAll('O', '0');
-          id.replaceAll('I', '1');
-          id.replaceAll('i', '1');
-          id.replaceAll('L', '1');
-          id.replaceAll('l', '1');
-          id.replaceAll('S', '5');
-          id.replaceAll('s', '5');
-          id.replaceAll('Y', '4');
-          id.replaceAll('y', '4');
-          id.replaceAll('q', '9');
-          id.replaceAll('b', '6');
-          schoolIdNew.add(id);
+  //   try {
+  //     for (var i = 0; i < data.length; i++) {
+  //       if (data[i]['description'].toString().length == 9) {
+  //         String id = data[i]['description'];
+  //         id.replaceAll('o', '0');
+  //         id.replaceAll('O', '0');
+  //         id.replaceAll('I', '1');
+  //         id.replaceAll('i', '1');
+  //         id.replaceAll('L', '1');
+  //         id.replaceAll('l', '1');
+  //         id.replaceAll('S', '5');
+  //         id.replaceAll('s', '5');
+  //         id.replaceAll('Y', '4');
+  //         id.replaceAll('y', '4');
+  //         id.replaceAll('q', '9');
+  //         id.replaceAll('b', '6');
+  //         schoolIdNew.add(id);
 
-          //schoolIdNew!.add(data[i]);
-        }
-        for (var j = 0; j < coordinate.length; j++) {
-          int circleX = covertStringtoint(coordinate[j].split(',')[0]);
-          int circleY = covertStringtoint(coordinate[j].split(',')[1]);
-          int textx = covertStringtoint(
-              data[i]['boundingPoly']['vertices'][0]['x'].toString());
-          int texty = covertStringtoint(
-              data[i]['boundingPoly']['vertices'][0]['y'].toString());
+  //         //schoolIdNew!.add(data[i]);
+  //       }
+  //       for (var j = 0; j < coordinate.length; j++) {
+  //         int circleX = covertStringtoint(coordinate[j].split(',')[0]);
+  //         int circleY = covertStringtoint(coordinate[j].split(',')[1]);
+  //         int textx = covertStringtoint(
+  //             data[i]['boundingPoly']['vertices'][0]['x'].toString());
+  //         int texty = covertStringtoint(
+  //             data[i]['boundingPoly']['vertices'][0]['y'].toString());
 
-          if (data[i]['description'].toString().length == 1 &&
-              textx < circleX + 25 &&
-              textx > circleX - 25 &&
-              texty < circleY + 25 &&
-              texty > circleY - 25) {
-            schoolgrade.add(data[i]['description']);
-          }
-        }
-      }
-      print(schoolIdNew);
-      return schoolgrade;
-    } catch (e) {
-      throw Exception('Something went wrong');
-    }
-  }
+  //         if (data[i]['description'].toString().length == 1 &&
+  //             textx < circleX + 25 &&
+  //             textx > circleX - 25 &&
+  //             texty < circleY + 25 &&
+  //             texty > circleY - 25) {
+  //           schoolgrade.add(data[i]['description']);
+  //         }
+  //       }
+  //     }
+  //     print(schoolIdNew);
+  //     return schoolgrade;
+  //   } catch (e) {
+  //     throw Exception('Something went wrong');
+  //   }
+  // }
 
   int covertStringtoint(String data) {
     try {
@@ -173,7 +175,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future fatchDetails({required String base64}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-          Uri.encodeFull('https://d21d-111-118-246-106.in.ngrok.io'),
+          Uri.encodeFull('https://b32f-111-118-246-106.in.ngrok.io'),
           body: {'data': '$base64'},
           isGoogleApi: true
 
@@ -192,9 +194,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         print(
             '------------------------------------test111111-----------------------------------');
         List text = response.data['text']['responses'][0]['textAnnotations'];
-        List grade = response.data['coordinate'];
+        //     List grade = response.data['coordinate'];
 
-        List result = processData(data: text, coordinate: grade);
+        //  List result = processData(data: text, coordinate: grade);
 
         // _list.removeWhere((CustomSetting element) => element.status == 'Hide');
         // _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));

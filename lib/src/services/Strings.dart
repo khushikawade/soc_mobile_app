@@ -27,4 +27,5 @@ class Strings {
   static final String socialActionObjectName = 'social_action';
   static final String globalSearchName = 'global_search';
   static final String calendarObjectName = 'calandar_action';
+  static final String googleDrive = 'google_drive';
 }

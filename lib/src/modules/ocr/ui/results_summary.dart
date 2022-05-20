@@ -1,9 +1,12 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/ui/finished_screen.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ResultsSummary extends StatefulWidget {
   ResultsSummary({Key? key}) : super(key: key);
@@ -16,69 +19,129 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   static const double _KVertcalSpace = 60.0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FinishedScreen()),
-                );
-              },
-              child: highlightText(
-                  text: 'Done', theme: Theme.of(context).textTheme.headline3))
-        ],
-      ),
-      body: Container(
-        // padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: [
-            highlightText(
-                text: 'Results Summary',
-                theme: Theme.of(context).textTheme.headline6),
-            SpacerWidget(_KVertcalSpace / 3),
-            listView()
-          ],
-        ),
-      ),
-      floatingActionButton: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          height: MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.height * 0.09
-              : MediaQuery.of(context).size.width * 0.09,
-          width: MediaQuery.of(context).size.width * 0.9,
-        //  color: Colors.blue,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: Globals.ocrResultIcons
-                .map<Widget>(
-                    (element) => _iconButton(Globals.icons.indexOf(element)))
-                .toList(),
+    return Stack(
+      children: [
+        CommonBackGroundImgWidget(),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            actions: [
+              Container(
+                  child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  IconData(0xe874,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kButtonColor,
+                  size: 30,
+                ),
+              )),
+              Container(
+                  padding: EdgeInsets.only(right: 5),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FinishedScreen()),
+                      );
+                    },
+                    icon: Icon(
+                      IconData(0xe877,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: AppTheme.kButtonColor,
+                      size: 30,
+                    ),
+                  )),
+            ],
+          ),
+          body: Container(
+            //     padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SpacerWidget(_KVertcalSpace * 0.50),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: highlightText(
+                      text: 'Results Summary',
+                      theme: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(fontWeight: FontWeight.bold)),
+                ),
+                SpacerWidget(_KVertcalSpace / 3),
+                listView()
+              ],
+            ),
+          ),
+          floatingActionButton: Container(
+              decoration: BoxDecoration(boxShadow: [
+                new BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, 0.1),
+                  blurRadius: 20.0,
+                ),
+              ], color: Colors.white, borderRadius: BorderRadius.circular(4)),
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              height: MediaQuery.of(context).orientation == Orientation.portrait
+                  ? MediaQuery.of(context).size.height * 0.086
+                  : MediaQuery.of(context).size.width * 0.086,
+              width: MediaQuery.of(context).size.width * 0.9,
+              //  color: Colors.blue,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: Globals.ocrResultIcons
+                    .map<Widget>((element) =>
+                        _iconButton(Globals.ocrResultIcons.indexOf(element)))
+                    .toList(),
 
-            // [
-            //   Icon(Icons.star_border),
-            //   Icon(Icons.star_border),
-            //   Icon(Icons.star_border),
-            //   Icon(Icons.star_border),
-            // ],
-          )),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+                // [
+                //   Icon(Icons.star_border),
+                //   Icon(Icons.star_border),
+                //   Icon(Icons.star_border),
+                //   Icon(Icons.star_border),
+                // ],
+              )),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        ),
+      ],
     );
   }
 
   Widget _iconButton(int index) {
     return Container(
-      padding: EdgeInsets.only(top: 15),
+      // padding: EdgeInsets.only(top: 15),
       child: Column(
-        //  mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           highlightText(
               text: Globals.ocrResultIconsName[index],
-              theme: Theme.of(context).textTheme.subtitle2),
-          Icon(IconData(Globals.ocrResultIcons[index])),
+              theme: Theme.of(context)
+                  .textTheme
+                  .subtitle2!
+                  .copyWith(color: Colors.black, fontWeight: FontWeight.bold)),
+          index == 1
+              ? Image(
+                  image: AssetImage("assets/images/drive.png"),
+                )
+              : Icon(
+                  IconData(Globals.ocrResultIcons[index],
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  size: 32,
+                  color: index == 2
+                      ? Colors.black
+                      : index == 3
+                          ? Colors.green
+                          : AppTheme.kButtonColor,
+                ),
         ],
       ),
     );
@@ -108,7 +171,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         shrinkWrap: true,
         padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
-        itemCount: 50,
+        itemCount: 20, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
           return _buildList(index);
         },
@@ -118,6 +181,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   Widget _buildList(int index) {
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).colorScheme.background,
@@ -136,8 +200,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         // contentPadding:
         //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: highlightText(
-            text: 'Benjamin Dalgleish',
-            theme: Theme.of(context).textTheme.headline2),
+            text: 'Ben Carney', theme: Theme.of(context).textTheme.headline2!),
         // title: TranslationWidget(
         //     message: "No title",
         //     fromLanguage: "en",
@@ -147,7 +210,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         //           style: Theme.of(context).textTheme.bodyText1!);
         //     }),
         trailing: highlightText(
-            text: '0/2', theme: Theme.of(context).textTheme.headline2),
+            text: '0/2', // '${Globals.gradeList[index]} /2',
+            theme: Theme.of(context)
+                .textTheme
+                .headline2!
+                .copyWith(fontWeight: FontWeight.bold)),
       ),
     );
   }
