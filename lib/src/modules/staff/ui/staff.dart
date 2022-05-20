@@ -354,21 +354,21 @@ class _StaffPageState extends State<StaffPage> {
 
         InkWell(
       onTap: () async {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    OpticalCharacterRecognition()));
-        // _localData.clear();
-        // if (_localData.isEmpty) {
-        //   await _launchURL('Google Authentication');
-        // } else {
-        //   Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (BuildContext context) =>
-        //               OpticalCharacterRecognition()));
-        // }
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (BuildContext context) =>
+        //             OpticalCharacterRecognition()));
+        _localData.clear();
+        if (_localData.isEmpty) {
+          await _launchURL('Google Authentication');
+        } else {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      OpticalCharacterRecognition()));
+        }
       },
       child: Container(
           //   padding: EdgeInsets.only(
