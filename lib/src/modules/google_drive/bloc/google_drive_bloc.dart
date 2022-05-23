@@ -62,11 +62,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           ExcelSheet('11', 'Ava', '1', '41'),
         ];
 
-        File file = await GoogleDriveAccess.createSheet(data: data);
-        createSheetOnDrive(
+        File file =
+            await GoogleDriveAccess.createSheet(data: data, name: event.name!);
+        print(event.name!);
+        bool result = await createSheetOnDrive(
+            name: event.name!,
             folderId: Globals.folderId,
             accessToken: Globals.authorizationToken,
             image: file);
+        if (!result) {
+          await createSheetOnDrive(
+              folderId: Globals.folderId,
+              accessToken: Globals.authorizationToken,
+              image: file);
+        }
       } catch (e) {
         print(e);
       }
@@ -76,10 +85,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       try {
         List<Assessment> _list = await _fetchHistoryAssessment(
             Globals.authorizationToken, Globals.folderId);
-        if (_list.length >0) {
+        if (_list.length > 0) {
           yield GoogleDriveGetSuccess(obj: _list);
-        }else{
-            yield GoogleNoAssessment();
+        } else {
+          yield GoogleNoAssessment();
         }
       } catch (e) {
         print(e);
@@ -103,10 +112,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           body: body,
           isGoogleApi: true);
-      // final response = await httpClient.post(
-      //     Uri.parse('https://www.googleapis.com/drive/v2/files'),
-      //     headers: headers,
-      //     body: body);
 
       if (response.statusCode == 200) {
         //  String id = response.data['id'];
@@ -152,14 +157,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future addIdtoDataBase(String log) async {
-    await HiveDbServices().putData(Strings.googleDrive, log);
-  }
-
   Future createSheetOnDrive(
-      {File? image, String? folderId, String? accessToken}) async {
+      {String? name,
+      File? image,
+      String? folderId,
+      String? accessToken}) async {
     Map body = {
-      'name': 'testfile3.xlsx',
+      'name': name,
       'description': 'Newly created file',
       'mimeType': 'application/vnd.google-apps.spreadsheet',
       'parents': ['$folderId']
@@ -178,8 +182,22 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (response.statusCode == 200) {
       print(response.data['id']);
       String fileId = response.data['id'];
-      await uploadSheetOnDrive(image, fileId, accessToken);
+      bool result = await spreadsheetSharable(accessToken!, fileId);
+      if (!result) {
+        await spreadsheetSharable(accessToken, fileId);
+      }
+
+      bool uploadresult = await uploadSheetOnDrive(image, fileId, accessToken);
+      if (!uploadresult) {
+        await uploadSheetOnDrive(image, fileId, accessToken);
+      }
+      bool link = await _getShareableLink(accessToken, fileId);
+      if (!link) {
+        await _getShareableLink(accessToken, fileId);
+      }
+      return true;
     }
+    return false;
     // var res = await http.post(
     //   Uri.parse('https://www.googleapis.com/drive/v3/files'),
     //   headers: {
@@ -219,8 +237,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       body: sheet.readAsBytesSync(),
     );
     if (response.statusCode == 200) {
-      print("heeeeeeeeeeeeeeeeeeeeeeelllllllllooooooooooo");
+      return true;
     }
+    return false;
 
     // var res = await http.patch(
     //   Uri.parse(
@@ -262,5 +281,42 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     } catch (e) {
       print(e);
     }
+  }
+
+  spreadsheetSharable(String token, String folderId) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'authorization': 'Bearer $token'
+    };
+    final body = {"role": "reader", "type": "anyone"};
+
+    final ResponseModel response = await _dbServices.postapi(
+        'https://www.googleapis.com/drive/v3/files/$folderId/permissions',
+        headers: headers,
+        body: body,
+        isGoogleApi: true);
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
+
+  _getShareableLink(String token, String fileId) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'authorization': 'Bearer $token'
+    };
+    final ResponseModel response = await _dbServices.getapi(
+        'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+        headers: headers,
+        isGoogleApi: true);
+
+    if (response.statusCode == 200) {
+      var data = response.data;
+      var link = response.data['weblink'];
+      return true;
+    }
+    return false;
   }
 }

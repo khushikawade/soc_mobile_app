@@ -4,7 +4,8 @@ import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GoogleDriveAccess {
-  static Future createSheet({required List<ExcelSheet> data}) async {
+  static Future createSheet(
+      {required List<ExcelSheet> data, required String name}) async {
     try {
       var excel = Excel.createExcel();
       final sheet = excel[excel.getDefaultSheet()!];
@@ -31,7 +32,7 @@ class GoogleDriveAccess {
       var fileBytes = excel.save();
 
       var directory = (await getApplicationDocumentsDirectory()).path;
-      File file = File("$directory/testfile3.xlsx")
+      File file = File("$directory/name.xlsx")
         ..createSync(recursive: true)
         ..writeAsBytesSync(fileBytes!);
       // });
