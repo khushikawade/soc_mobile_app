@@ -53,6 +53,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is CreateDoc) {
       try {
+        print("create calling");
         List<ExcelSheet> data = [
           ExcelSheet('id', 'Name', 'Points earned', 'Points possible'),
           ExcelSheet('1', 'Noah', '1', '1'),
@@ -89,6 +90,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is GetSheetFromDrive) {
       try {
+        yield GoogleDriveLoading();
         List<Assessment> _list = await _fetchHistoryAssessment(
             Globals.authorizationToken, Globals.folderId);
         if (_list.length > 0) {
@@ -186,6 +188,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
+      print("done sheet");
       print(response.data['id']);
       String fileId = response.data['id'];
       bool result = await spreadsheetSharable(accessToken!, fileId);

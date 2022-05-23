@@ -91,7 +91,11 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                       } else if (state is GoogleDriveGetSuccess) {
                         return listView(state.obj);
                       } else if (state is GoogleNoAssessment) {
-                        return Center(child: Text("No assessment available"));
+                        return Center(
+                            child: Text(
+                          "No assessment available",
+                          style: Theme.of(context).textTheme.bodyText1!,
+                        ));
                       } else {
                         return Container();
                       }

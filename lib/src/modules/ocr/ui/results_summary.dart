@@ -134,16 +134,21 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               ? Image(
                   image: AssetImage("assets/images/drive.png"),
                 )
-              : Icon(
-                  IconData(Globals.ocrResultIcons[index],
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  size: 32,
-                  color: index == 2
-                      ? Colors.green
-                      : index == 3
-                          ? Colors.green
-                          : AppTheme.kButtonColor,
+              : InkWell(
+                  onTap: () {
+                    if (index == 0) {}
+                  },
+                  child: Icon(
+                    IconData(Globals.ocrResultIcons[index],
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    size: 32,
+                    color: index == 2
+                        ? Colors.green
+                        : index == 3
+                            ? Colors.green
+                            : AppTheme.kButtonColor,
+                  ),
                 ),
         ],
       ),
