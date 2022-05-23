@@ -92,51 +92,25 @@ class _StaffPageState extends State<StaffPage> {
                 hideShare: true,
                 zoomEnabled: false,
                 callBackFunction: (value) async {
-                  print(value);
+                  // print(value);
                   if (value.toString().contains('displayName')) {
                     value = value.split('?')[1];
-
-                    //Comparing and saving the user profile locally
-                    if (value
-                            .split('+')[1]
-                            .toString()
-                            .split('=')[1]
-                            .contains('@schools.nyc.gov') ||
-                        value
-                            .split('+')[1]
-                            .toString()
-                            .split('=')[1]
-                            .contains('@solvedconsulting') ||
-                        value
-                            .split('+')[1]
-                            .toString()
-                            .split('=')[1]
-                            .contains('appdevelopersdp7')) {
-                      saveUserProfile(value);
-
-                      //   File file = await _getpath();
-
-                      pushNewScreen(
-                        context,
-                        screen: OpticalCharacterRecognition(),
-                        withNavBar: false,
-                      );
-                    } else {
-                      Navigator.pop(context, false);
-                      Utility.showSnackBar(
-                          _scaffoldKey,
-                          'You are not authorized to access the feature. Please use the authorized account.',
-                          context,
-                          50.0);
-                    }
-                  } /*else {
+                    //Save user profile
+                    saveUserProfile(value);
+                    // Push to the grading system
+                    pushNewScreen(
+                      context,
+                      screen: OpticalCharacterRecognition(),
+                      withNavBar: false,
+                    );
+                  } else if(value.toString().contains('authenticationfailure')){
                     Navigator.pop(context, false);
                     Utility.showSnackBar(
                         _scaffoldKey,
                         'You are not authorized to access the feature. Please use the authorized account.',
                         context,
                         50.0);
-                  }*/
+                  }
                 })));
   }
 
@@ -151,7 +125,7 @@ class _StaffPageState extends State<StaffPage> {
 
     localdb();
 
-//Creating a assessment folder in users google drive to maintain all the assessments together at one place
+    //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
         //  filePath: file,
         token: profile[3].toString().split('=')[1].replaceAll('#', ''),
@@ -285,7 +259,7 @@ class _StaffPageState extends State<StaffPage> {
     return FloatingActionButton.extended(
         backgroundColor: AppTheme.kButtonColor,
         onPressed: () async {
-          // _localData.clear();
+          _localData.clear();
           if (_localData.isEmpty) {
             await _launchURL('Google Authentication');
           } else {
