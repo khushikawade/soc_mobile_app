@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
@@ -8,14 +7,9 @@ import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/io_client.dart';
-import 'package:http/http.dart';
-import 'package:path_provider/path_provider.dart';
 import '../../../services/Strings.dart';
 import '../../../services/db_service.dart';
 import '../../../services/local_database/hive_db_services.dart';
-import 'package:http/http.dart' as http;
-
 import 'package:path/path.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
