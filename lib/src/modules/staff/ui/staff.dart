@@ -103,7 +103,9 @@ class _StaffPageState extends State<StaffPage> {
                       screen: OpticalCharacterRecognition(),
                       withNavBar: false,
                     );
-                  } else if(value.toString().contains('authenticationfailure')){
+                  } else if (value
+                      .toString()
+                      .contains('authenticationfailure')) {
                     Navigator.pop(context, false);
                     Utility.showSnackBar(
                         _scaffoldKey,
@@ -259,7 +261,7 @@ class _StaffPageState extends State<StaffPage> {
     return FloatingActionButton.extended(
         backgroundColor: AppTheme.kButtonColor,
         onPressed: () async {
-          _localData.clear();
+          // _localData.clear();
           if (_localData.isEmpty) {
             await _launchURL('Google Authentication');
           } else {

@@ -34,6 +34,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   bool failure = false;
   int? indexColor;
   bool isSelected = true;
+  bool onChange = false;
+
   String? pointScored;
   @override
   void initState() {
@@ -46,13 +48,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-       onWillPop: () async => false,
+      onWillPop: () async => false,
       child: Stack(children: [
         CommonBackGroundImgWidget(),
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
-                isBackButton: false, isFailureState: failure, isHomeButtonPopup: true,),
+              isBackButton: false,
+              isFailureState: failure,
+              isHomeButtonPopup: true,
+            ),
             // AppBar(
             //   elevation: 0,
             // ),
@@ -76,12 +81,14 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   //       }
                   //       return Container();
                   //     }),
-    
+
                   BlocConsumer<OcrBloc, OcrState>(
                       bloc: _bloc, // provide the local bloc instance
                       listener: (context, state) {
                         if (state is FetchTextFromImageSuccess) {
-                          idController.text = state.schoolId!;
+                          onChange == false
+                              ? idController.text = state.schoolId!
+                              : null;
                           pointScored = state.grade;
                           // Globals.gradeList.add(state.grade!);
                           Timer(Duration(seconds: 5), () {
@@ -92,8 +99,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                     builder: (_) => CameraScreen()));
                           });
                         } else if (state is FetchTextFromImageFailure) {
-                          idController.text = state.schoolId ?? '';
-                          pointScored = state.grade ;
+                          onChange == false
+                              ? idController.text = state.schoolId ?? ''
+                              : null;
+                          pointScored = state.grade;
                           updateDetails();
                           setState(() {
                             failure = true;
@@ -144,6 +153,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
               controller: nameController,
               onSaved: (String value) {
                 updateDetails(isUpdateData: true);
+                nameController.text = nameController.text;
+                onChange = true;
               }),
           SpacerWidget(_KVertcalSpace / 2),
           highlightText(
@@ -157,6 +168,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               controller: idController,
               onSaved: (String value) {
                 updateDetails(isUpdateData: true);
+                onChange = true;
               }),
           SpacerWidget(_KVertcalSpace / 2),
           Center(
@@ -197,6 +209,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               controller: nameController,
               onSaved: (String value) {
                 updateDetails(isUpdateData: true);
+                onChange = true;
               }),
           SpacerWidget(_KVertcalSpace / 2),
           highlightText(
@@ -210,6 +223,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               controller: idController,
               onSaved: (String value) {
                 updateDetails(isUpdateData: true);
+                onChange = true;
               }),
           SpacerWidget(_KVertcalSpace / 2),
           Center(
@@ -362,7 +376,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Widget textFormField(
       {required TextEditingController controller, required onSaved}) {
     return TextFormField(
-      //
+      //keyboardType: TextInputType.phone,
+
       textAlign: TextAlign.start,
       style: Theme.of(context)
           .textTheme
@@ -430,8 +445,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
       studentAssessmentInfo.studentName = nameController.text;
       studentAssessmentInfo.studentId = idController.text;
-      studentAssessmentInfo.studentGrade =
-          pointScored ;
+      studentAssessmentInfo.studentGrade = pointScored;
 
       Globals.studentInfo!.add(studentAssessmentInfo);
     } else {
@@ -440,8 +454,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             StudentAssessmentInfo();
         studentAssessmentInfo.studentName = nameController.text;
         studentAssessmentInfo.studentId = idController.text;
-        studentAssessmentInfo.studentGrade =
-            pointScored;
+        studentAssessmentInfo.studentGrade = pointScored;
 
         Globals.studentInfo!.add(studentAssessmentInfo);
       } else {
@@ -453,8 +466,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
           studentAssessmentInfo.studentName = nameController.text;
           studentAssessmentInfo.studentId = idController.text;
-          studentAssessmentInfo.studentGrade =
-              pointScored ;
+          studentAssessmentInfo.studentGrade = pointScored;
 
           Globals.studentInfo!.add(studentAssessmentInfo);
         }
