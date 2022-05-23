@@ -151,7 +151,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
           //       return Text(translatedMessage.toString(),
           //           style: Theme.of(context).textTheme.bodyText1!);
           //     }),
-          trailing:Icon(Icons.arrow_forward_ios)),
+          trailing: Icon(Icons.arrow_forward_ios)),
     );
   }
 

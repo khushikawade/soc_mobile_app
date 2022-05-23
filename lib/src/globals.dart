@@ -120,4 +120,5 @@ class Globals {
   static bool iscameraPopup = true;
   static String? folderId;
   static String? authorizationToken;
+  static String? shareableLink;
 }
