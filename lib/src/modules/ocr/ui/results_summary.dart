@@ -6,7 +6,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:share/share.dart';
 
 class ResultsSummary extends StatefulWidget {
   ResultsSummary({Key? key}) : super(key: key);
@@ -136,7 +136,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 )
               : InkWell(
                   onTap: () {
-                    if (index == 0) {}
+                    if (index == 0) {
+                      Share.share(Globals.shareableLink!);
+                    }
                   },
                   child: Icon(
                     IconData(Globals.ocrResultIcons[index],
