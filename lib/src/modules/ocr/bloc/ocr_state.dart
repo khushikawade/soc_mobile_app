@@ -15,39 +15,25 @@ class SearchLoading extends OcrState {}
 class FetchTextFromImageSuccess extends OcrState {
   final String? schoolId;
   final String? grade;
-  FetchTextFromImageSuccess({required this.schoolId, required this.grade});
+  FetchTextFromImageSuccess({required this.schoolId,required this.grade});
   FetchTextFromImageSuccess copyWith({final schoolId}) {
-    return FetchTextFromImageSuccess(
-        schoolId: schoolId ?? this.schoolId, grade: grade ?? this.grade);
+    return FetchTextFromImageSuccess(schoolId: schoolId ?? this.schoolId, grade: grade ?? this.grade);
   }
 
   @override
   List<Object> get props => [];
 }
 
-class FetchTextFromImageFailure extends OcrState {
-  final String? schoolId;
-  final String? grade;
-  FetchTextFromImageFailure({required this.schoolId, required this.grade});
-  FetchTextFromImageFailure copyWith({final schoolId}) {
-    return FetchTextFromImageFailure(
-        schoolId: schoolId ?? this.schoolId, grade: grade ?? this.grade);
-  }
+// class EmailAuthenticationSuccess extends OcrState {
+//   final obj;
+//   EmailAuthenticationSuccess({this.obj});
+//   EmailAuthenticationSuccess copyWith({final obj}) {
+//     return EmailAuthenticationSuccess(obj: obj ?? this.obj);
+//   }
 
-  @override
-  List<Object> get props => [];
-}
-
-class EmailAuthenticationSuccess extends OcrState {
-  final obj;
-  EmailAuthenticationSuccess({this.obj});
-  EmailAuthenticationSuccess copyWith({final obj}) {
-    return EmailAuthenticationSuccess(obj: obj ?? this.obj);
-  }
-
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 class OcrErrorReceived extends OcrState {
   final err;
@@ -59,7 +45,6 @@ class OcrErrorReceived extends OcrState {
   @override
   List<Object> get props => [err];
 }
-
 class SubjectDataSuccess extends OcrState {
   final List<SubjectList>? obj;
   SubjectDataSuccess({
@@ -74,7 +59,6 @@ class SubjectDataSuccess extends OcrState {
   @override
   List<Object> get props => [];
 }
-
 class NycDataSuccess extends OcrState {
   final List<SubjectList> obj;
   NycDataSuccess({
@@ -91,7 +75,6 @@ class NycDataSuccess extends OcrState {
   @override
   List<Object> get props => [];
 }
-
 class NycSubDataSuccess extends OcrState {
   final List<SubjectList>? obj;
   NycSubDataSuccess({

@@ -55,6 +55,7 @@ class _StaffPageState extends State<StaffPage> {
   bool? authSuccess = false;
   dynamic userData;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
+  OcrBloc _ocrBloc = new OcrBloc();
 
   @override
   void initState() {
@@ -133,20 +134,27 @@ class _StaffPageState extends State<StaffPage> {
 
                         localdb();
                         //   File file = await _getpath();
-                        _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
-                            //  filePath: file,
-                            token: value
-                                .split('+')[3]
-                                .toString()
-                                .split('=')[1]
-                                .replaceAll('#', ''),
-                            folderName: "test_folder_table"));
+                        _ocrBloc.add(AuthenticateEmail(
+                          email: value
+                              .split('+')[1]
+                              .toString()
+                              .toString()
+                              .split('=')[1],
+                        ));
+                        // _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
+                        //     //  filePath: file,
+                        //     token: value
+                        //         .split('+')[3]
+                        //         .toString()
+                        //         .split('=')[1]
+                        //         .replaceAll('#', ''),
+                        //     folderName: "test_folder_table"));
 
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OpticalCharacterRecognition()));
+                        // Navigator.pushReplacement(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (BuildContext context) =>
+                        //             OpticalCharacterRecognition()));
 
                         // BlocListener<GoogleDriveBloc, GoogleDriveState>(
                         //   bloc:
@@ -343,21 +351,19 @@ class _StaffPageState extends State<StaffPage> {
 
         InkWell(
       onTap: () async {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (BuildContext context) =>
-        //             OpticalCharacterRecognition()));
-
-        if (_localData.isEmpty) {
-          await _launchURL('Google Authentication');
-        } else {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      OpticalCharacterRecognition()));
-        }
+        _ocrBloc.add(AuthenticateEmail(
+          email: "test1@gmail.com",
+        ));
+        // _localData.clear();
+        // if (_localData.isEmpty) {
+        //   await _launchURL('Google Authentication');
+        // } else {
+        //   Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (BuildContext context) =>
+        //               OpticalCharacterRecognition()));
+        // }
       },
       child: Container(
           //   padding: EdgeInsets.only(

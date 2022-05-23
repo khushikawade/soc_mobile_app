@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
+import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -39,12 +40,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is AuthenticateEmail) {
       try {
         yield OcrLoading();
-        var data = await authenticateEmail({"email": event.email.toString()});
+        //  var data =
+        bool result = await authenticateEmail(email: event.email.toString());
+        if (!result) {
+          await authenticateEmail(email: event.email.toString());
+        }
 
-        yield EmailAuthenticationSuccess(
-          obj: data,
-        );
+        // yield EmailAuthenticationSuccess(
+        //   obj: data,
+        // );
       } catch (e) {
+        await authenticateEmail(email: event.email.toString());
         // if (e.toString().contains('NO_CONNECTION')) {
         //   Utility.showSnackBar(event.scaffoldKey,
         //       'Make sure you have a proper Internet connection', event.context);
@@ -216,20 +222,82 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future authenticateEmail(body) async {
-    try {
-      final ResponseModel response = await _dbServices
-          .postapi("authorizeEmail?objectName=Contact", body: body);
+  Future<bool> authenticateEmail({required String? email}) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+    };
+    final body = {"email": email.toString()};
+    final ResponseModel response = await _dbServices.postapi(
+        "authorizeEmail?objectName=Contact",
+        body: body,
+        headers: headers);
 
-      if (response.statusCode == 200) {
-        var res = response.data;
-        var data = res["body"];
-        return data;
+    if (response.statusCode == 200) {
+      var res = response.data;
+      var data = res["body"];
+      if (data == false) {
+        bool result = await _createAccount(email: email.toString());
+        if (!result) {
+          await _createAccount(email: email.toString());
+        }
       } else {
-        throw ('something_went_wrong');
+        bool result = await _updateAccount(recordId: data['Id']);
+        if (!result) {
+          await _updateAccount(recordId: data['Id']);
+        }
       }
-    } catch (e) {
-      throw (e);
+      return true;
+      // return data;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> _createAccount({required String? email}) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+    };
+    final body = {
+      "AccountId": "0017h00000k3TgjAAE",
+      "Assessment_App_User__c": "true",
+      "LastName": email!.split("@")[0],
+      "Email": email
+    };
+
+    final ResponseModel response = await _dbServices.postapi(
+        "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Contact",
+        isGoogleApi: true,
+        body: body,
+        headers: headers);
+    if (response.statusCode == 200) {
+      print("created");
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> _updateAccount({required String? recordId}) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+    };
+    final body = {
+      "Assessment_App_User__c": "true",
+    };
+    final ResponseModel response = await _dbServices.postapi(
+        "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Contact/$recordId",
+        isGoogleApi: true,
+        body: body,
+        headers: headers);
+    if (response.statusCode == 200) {
+      print("updated");
+      return true;
+    } else {
+      return false;
     }
   }
 }

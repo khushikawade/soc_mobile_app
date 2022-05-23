@@ -54,8 +54,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           // ),
           body: Container(
               padding: EdgeInsets.only(left: 20, right: 20),
-              child: 
-              //failureScreen()
+              child: failureScreen()
               //   successScreen(grade: '1', id: "123")
               // BlocBuilder<OcrBloc, OcrState>(
               //     bloc: _bloc, // provide the local bloc instance
@@ -73,43 +72,41 @@ class _SuccessScreenState extends State<SuccessScreen> {
               //       return Container();
               //     }),
 
-              BlocConsumer<OcrBloc, OcrState>(
-                  bloc: _bloc, // provide the local bloc instance
-                  listener: (context, state) {
-                    if (state is FetchTextFromImageSuccess) {
-                      idController.text = state.schoolId!;
-                      Globals.gradeList.add(state.grade!);
-                      Timer(Duration(seconds: 5), () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => OpticalCharacterRecognition()));
-                      });
-                    }
-                    // do stuff here based on BlocA's state
-                  },
-                  builder: (context, state) {
-                    if (state is OcrLoading) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
-                      );
-                    } else if (state is FetchTextFromImageSuccess) {
-                      idController.text = state.schoolId!;
-                      Globals.gradeList.add(state.grade!);
-                      return successScreen(
-                          id: state.schoolId!, grade: state.grade!);
-                    } else if (state is FetchTextFromImageFailure) {
-                      idController.text = state.schoolId!;
-                      Globals.gradeList.add(state.grade!);
-                      return failureScreen();
-                    }
-                    return Container();
-                    // return widget here based on BlocA's state
-                  })
-                  ,))]);
-    
+              // BlocConsumer<OcrBloc, OcrState>(
+              //     bloc: _bloc, // provide the local bloc instance
+              //     listener: (context, state) {
+              //       if (state is FetchTextFromImageSuccess) {
+              //         idController.text = state.schoolId!;
+              //         Globals.gradeList.add(state.grade!);
+              //         Timer(Duration(seconds: 5), () {
+              //           Navigator.push(
+              //               context,
+              //               MaterialPageRoute(
+              //                   builder: (_) => OpticalCharacterRecognition()));
+              //         });
+              //       }
+              //       // do stuff here based on BlocA's state
+              //     },
+              //     builder: (context, state) {
+              //       if (state is OcrLoading) {
+              //         return Center(
+              //           child: CircularProgressIndicator(
+              //             color: Colors.white,
+              //           ),
+              //         );
+              //       } else if (state is FetchTextFromImageSuccess) {
+              //         idController.text = state.schoolId!;
+              //         Globals.gradeList.add(state.grade!);
+              //         return successScreen(
+              //             id: state.schoolId!, grade: state.grade!);
+              //       }
+              //       return Container();
+              //       // return widget here based on BlocA's state
+              //     })
+              ),
+        ),
+      ],
+    );
   }
 
   Widget failureScreen() {
