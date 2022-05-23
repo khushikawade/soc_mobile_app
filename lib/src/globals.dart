@@ -122,4 +122,5 @@ class Globals {
   static String? folderId;
   static String? authorizationToken;
   static late List<StudentAssessmentInfo>? studentInfo = [];
+  static String? shareableLink;
 }

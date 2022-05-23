@@ -314,7 +314,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (response.statusCode == 200) {
       var data = response.data;
-      var link = response.data['weblink'];
+      Globals.shareableLink = response.data['webViewLink'];
       return true;
     }
     return false;
