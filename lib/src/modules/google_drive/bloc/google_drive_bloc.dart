@@ -3,8 +3,6 @@ import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../../../services/Strings.dart';
 import '../../../services/db_service.dart';
 import '../../../services/local_database/hive_db_services.dart';
@@ -27,7 +25,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is CreateFolderOnGoogleDriveEvent) {
       try {
         String parentId;
-
         parentId = await _getGoogleDriveFolderList(
             token: event.token, folderName: event.folderName);
 
@@ -36,7 +33,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               token: event.token, folderName: event.folderName);
         }
         //TODO : Open the commented code
-        
+
         // File file = await GoogleDriveAccess.file();
         // if (parentId != "") {
         //   createSheetOnDrive(

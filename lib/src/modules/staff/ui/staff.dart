@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/modal/ocr_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -14,7 +12,6 @@ import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -39,7 +36,7 @@ class StaffPage extends StatefulWidget {
   final CustomSetting? customObj;
   final String? title;
   final String? language;
-  bool isFromOcr;
+  final bool isFromOcr;
 
   @override
   _StaffPageState createState() => _StaffPageState();
@@ -75,43 +72,98 @@ class _StaffPageState extends State<StaffPage> {
 
 //To authenticate the user via google
   _launchURL(String? title) async {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => GoogleAuthWebview(
-                title: title!,
-                url: Overrides.secureLoginURL +
-                    '?' +
-                    Globals.appSetting.appLogoC +
-                    '?' +
-                    Theme.of(context).backgroundColor.toString().split('(')[
-                        1], //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
-                isbuttomsheet: true,
-                language: Globals.selectedLanguage,
-                hideAppbar: false,
-                hideShare: true,
-                zoomEnabled: false,
-                callBackFunction: (value) async {
-                  // print(value);
-                  if (value.toString().contains('displayName')) {
-                    value = value.split('?')[1];
-                    //Save user profile
-                    saveUserProfile(value);
-                    // Push to the grading system
-                    pushNewScreen(
-                      context,
-                      screen: OpticalCharacterRecognition(),
-                      withNavBar: false,
-                    );
-                  } else if(value.toString().contains('authenticationfailure')){
-                    Navigator.pop(context, false);
-                    Utility.showSnackBar(
-                        _scaffoldKey,
-                        'You are not authorized to access the feature. Please use the authorized account.',
-                        context,
-                        50.0);
-                  }
-                })));
+    var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
+        ? Color(0xff000000)
+        : Color(0xffFFFFFF);
+
+    print(Theme.of(context)
+        .backgroundColor
+        .toString()
+        .split('0xff')[1]
+        .split(')')[0]);
+
+    pushNewScreen(
+      context,
+      screen: GoogleAuthWebview(
+          title: title!,
+          url: Overrides.secureLoginURL +
+              '?' +
+              Globals.appSetting.appLogoC +
+              '?' +
+              themeColor.toString().split('0xff')[1].split(')')[0],
+
+          // .split('0x')[
+          //     1].split(')')[0], //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
+          isbuttomsheet: true,
+          language: Globals.selectedLanguage,
+          hideAppbar: false,
+          hideShare: true,
+          zoomEnabled: false,
+          callBackFunction: (value) async {
+            // print(value);
+            if (value.toString().contains('displayName')) {
+              value = value.split('?')[1];
+              //Save user profile
+              saveUserProfile(value);
+              // Push to the grading system
+              pushNewScreen(
+                context,
+                screen: OpticalCharacterRecognition(),
+                withNavBar: false,
+              );
+            } else if (value.toString().contains('authenticationfailure')) {
+              Navigator.pop(context, false);
+              Utility.showSnackBar(
+                  _scaffoldKey,
+                  'You are not authorized to access the feature. Please use the authorized account.',
+                  context,
+                  50.0);
+            }
+          }),
+      withNavBar: false,
+    );
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (BuildContext context) => GoogleAuthWebview(
+    //             title: title!,
+    //             url: Overrides.secureLoginURL +
+    //                 '?' +
+    //                 Globals.appSetting.appLogoC +
+    //                 '?' + themeColor.toString().split('0xff')[
+    //                     1].split(')')[0],
+
+    //                 // .split('0x')[
+    //                 //     1].split(')')[0], //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
+    //             isbuttomsheet: true,
+    //             language: Globals.selectedLanguage,
+    //             hideAppbar: false,
+    //             hideShare: true,
+    //             zoomEnabled: false,
+    //             callBackFunction: (value) async {
+    //               // print(value);
+    //               if (value.toString().contains('displayName')) {
+    //                 value = value.split('?')[1];
+    //                 //Save user profile
+    //                 saveUserProfile(value);
+    //                 // Push to the grading system
+    //                 pushNewScreen(
+    //                   context,
+    //                   screen: OpticalCharacterRecognition(),
+    //                   withNavBar: false,
+    //                 );
+    //               } else if (value
+    //                   .toString()
+    //                   .contains('authenticationfailure')) {
+    //                 Navigator.pop(context, false);
+    //                 Utility.showSnackBar(
+    //                     _scaffoldKey,
+    //                     'You are not authorized to access the feature. Please use the authorized account.',
+    //                     context,
+    //                     50.0);
+    //               }
+    //             })
+    //             ));
   }
 
   saveUserProfile(profileData) {
@@ -129,7 +181,7 @@ class _StaffPageState extends State<StaffPage> {
     _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
         //  filePath: file,
         token: profile[3].toString().split('=')[1].replaceAll('#', ''),
-        folderName: "test_folder_table"));
+        folderName: "Assessments"));
   }
 
   Widget _body(String key) => RefreshIndicator(
@@ -259,7 +311,7 @@ class _StaffPageState extends State<StaffPage> {
     return FloatingActionButton.extended(
         backgroundColor: AppTheme.kButtonColor,
         onPressed: () async {
-          _localData.clear();
+          // _localData.clear();
           if (_localData.isEmpty) {
             await _launchURL('Google Authentication');
           } else {
