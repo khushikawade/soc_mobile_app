@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
@@ -9,7 +8,6 @@ import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
-import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -49,80 +47,75 @@ class _OpticalCharacterRecognitionPageState
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CommonBackGroundImgWidget(),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: CustomOcrAppBarWidget(
-            isBackButton: false,
-          ), // https://algramo.s3.ap-south-1.amazonaws.com/SVG/Container/Fourstar.svg
-          // AppBar(
-          //   elevation: 0,
-          //   automaticallyImplyLeading: false,
-          //   actions: [
-          //     Container(
-          //       padding: EdgeInsets.only(right: 10),
-          //       child: Icon(
-          //         IconData(0xe874,
-          //             fontFamily: Overrides.kFontFam,
-          //             fontPackage: Overrides.kFontPkg),
-          //         color: AppTheme.kButtonColor,
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          body: SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.only(left: 15, right: 15),
-              height: MediaQuery.of(context).orientation == Orientation.portrait
-                  ? MediaQuery.of(context).size.height
-                  : MediaQuery.of(context).size.width * 0.8,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  highlightText(text: 'Points Possible'),
-                  SpacerWidget(_KVertcalSpace / 4),
-                  smallButton(),
-                  SpacerWidget(_KVertcalSpace / 2),
-                  highlightText(text: 'Scoring Rubric'),
-                  SpacerWidget(_KVertcalSpace / 4),
-                  scoringButton(),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                        bloc: _homeBloc,
-                        listener: (context, state) async {
-                          if (state is BottomNavigationBarSuccess) {
-                            AppTheme.setDynamicTheme(
-                                Globals.appSetting, context);
-                            Globals.appSetting = AppSetting.fromJson(state.obj);
-                            setState(() {});
-                          }
-                        },
-                        child: EmptyContainer()),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateAssessment()),
-                        );
-                      },
-                      icon: Icon(Icons.next_plan))
-                  //SpacerWidget(_KVertcalSpace * 1.6),
-                ],
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Stack(
+        children: [
+          CommonBackGroundImgWidget(),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: CustomOcrAppBarWidget(
+              isBackButton: false,
+            ), // https://algramo.s3.ap-south-1.amazonaws.com/SVG/Container/Fourstar.svg
+            // AppBar(
+            //   elevation: 0,
+            //   automaticallyImplyLeading: false,
+            //   actions: [
+            //     Container(
+            //       padding: EdgeInsets.only(right: 10),
+            //       child: Icon(
+            //         IconData(0xe874,
+            //             fontFamily: Overrides.kFontFam,
+            //             fontPackage: Overrides.kFontPkg),
+            //         color: AppTheme.kButtonColor,
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            body: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.only(left: 15, right: 15),
+                height:
+                    MediaQuery.of(context).orientation == Orientation.portrait
+                        ? MediaQuery.of(context).size.height
+                        : MediaQuery.of(context).size.width * 0.8,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    highlightText(text: 'Points Possible'),
+                    SpacerWidget(_KVertcalSpace / 4),
+                    smallButton(),
+                    SpacerWidget(_KVertcalSpace / 2),
+                    highlightText(text: 'Scoring Rubric'),
+                    SpacerWidget(_KVertcalSpace / 4),
+                    scoringButton(),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                          bloc: _homeBloc,
+                          listener: (context, state) async {
+                            if (state is BottomNavigationBarSuccess) {
+                              AppTheme.setDynamicTheme(
+                                  Globals.appSetting, context);
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
+                              setState(() {});
+                            }
+                          },
+                          child: EmptyContainer()),
+                    ),
+                  ],
+                ),
               ),
             ),
+            floatingActionButton: cameraButton(),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
           ),
-          floatingActionButton: cameraButton(),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -130,6 +123,7 @@ class _OpticalCharacterRecognitionPageState
     return FloatingActionButton.extended(
         backgroundColor: AppTheme.kButtonColor,
         onPressed: () async {
+          Globals.studentInfo = [];
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CameraScreen()),
@@ -187,6 +181,13 @@ class _OpticalCharacterRecognitionPageState
         onTap: () {
           setState(() {
             indexColor = index + 1;
+            if (index == 1) {
+              scoringColor = 0;
+            } else if (index == 2) {
+              scoringColor = 2;
+            } else if (index == 3) {
+              scoringColor = 4;
+            }
           });
         },
         child: AnimatedContainer(
