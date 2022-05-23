@@ -42,6 +42,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   CameraController? controller;
   bool _isCameraInitialized = false;
+  bool isflashOff = true;
   bool flash = false;
   FlashMode? _currentFlashMode;
   @override
@@ -78,12 +79,13 @@ class _CameraScreenState extends State<CameraScreen>
               onPressed: () async {
                 setState(() {
                   flash = !flash;
+                  isflashOff = !isflashOff;
                 });
                 await controller!
                     .setFlashMode(flash ? FlashMode.torch : FlashMode.off);
               },
               icon: Icon(
-                Icons.flash_on,
+                isflashOff == true ? Icons.flash_off : Icons.flash_on,
                 color: Colors.white,
                 size: 30,
               )),
