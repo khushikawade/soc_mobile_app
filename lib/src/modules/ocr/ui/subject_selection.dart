@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
@@ -33,99 +34,105 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: [
-          CommonBackGroundImgWidget(),
-          Scaffold(
-            floatingActionButton: indexGlobal == 2 ? textActionButton() : null,
-            backgroundColor: Colors.transparent,
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Container(
+        child: Stack(
+          children: [
+            CommonBackGroundImgWidget(),
+            Scaffold(
+              floatingActionButton:
+                  indexGlobal == 2 ? textActionButton() : null,
               backgroundColor: Colors.transparent,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(
-                  IconData(0xe80d,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: AppTheme.kButtonColor,
-                ),
-                onPressed: () {
-                  if (indexGlobal == 1) {
-                    _ocrBloc.add(FatchSubjectDetails(type: 'subject'));
-                  } else if (indexGlobal == 2) {
-                    _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-              actions: [
-                Container(
-                    padding: EdgeInsets.only(right: 10),
-                    child: IconButton(
-                      icon: Icon(
-                        IconData(0xe874,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        color: AppTheme.kButtonColor,
-                        size: 30,
-                      ),
-                      onPressed: () {},
-                    )),
-              ],
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  BlocBuilder<OcrBloc, OcrState>(
-                      bloc: _ocrBloc,
-                      builder: (context, state) {
-                        if (state is OcrLoading) {
-                          return loadingPage();
-                        }
-                        if (state is SubjectDataSuccess) {
-                          indexGlobal = 0;
-                          return subjectPage(list: state.obj!);
-                        } else if (state is NycDataSuccess) {
-                          indexGlobal = 1;
-                          return secondPage(list: state.obj);
-                        } else if (state is NycSubDataSuccess) {
-                          indexGlobal = 2;
-                          return thirdPage(list: state.obj!);
-                        }
-                        return Container();
-                        // return widget here based on BlocA's state
-                      }),
-                  BlocListener(
-                    bloc: _ocrBloc,
-                    listener: (context, state) {
-                      if (state is SubjectDataSuccess) {
-                        setState(() {
-                          indexGlobal = 0;
-                        });
-                      } else if (state is NycDataSuccess) {
-                        setState(() {
-                          indexGlobal = 1;
-                        });
-                      } else if (state is NycSubDataSuccess) {
-                        setState(() {
-                          indexGlobal = 2;
-                        });
-                      }
-                    },
-                    child: Container(),
+              resizeToAvoidBottomInset: false,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: Icon(
+                    IconData(0xe80d,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: AppTheme.kButtonColor,
                   ),
-                  //  SpacerWidget(_KVertcalSpace / 4),
-                  // changePages(),
+                  onPressed: () {
+                    if (indexGlobal == 1) {
+                      _ocrBloc.add(FatchSubjectDetails(type: 'subject'));
+                    } else if (indexGlobal == 2) {
+                      _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
+                actions: [
+                  Container(
+                      padding: EdgeInsets.only(right: 10),
+                      child: IconButton(
+                        icon: Icon(
+                          IconData(0xe874,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          color: AppTheme.kButtonColor,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          _onHomePressed();
+                        },
+                      )),
                 ],
               ),
+              body: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    BlocBuilder<OcrBloc, OcrState>(
+                        bloc: _ocrBloc,
+                        builder: (context, state) {
+                          if (state is OcrLoading) {
+                            return loadingPage();
+                          }
+                          if (state is SubjectDataSuccess) {
+                            indexGlobal = 0;
+                            return subjectPage(list: state.obj!);
+                          } else if (state is NycDataSuccess) {
+                            indexGlobal = 1;
+                            return secondPage(list: state.obj);
+                          } else if (state is NycSubDataSuccess) {
+                            indexGlobal = 2;
+                            return thirdPage(list: state.obj!);
+                          }
+                          return Container();
+                          // return widget here based on BlocA's state
+                        }),
+                    BlocListener(
+                      bloc: _ocrBloc,
+                      listener: (context, state) {
+                        if (state is SubjectDataSuccess) {
+                          setState(() {
+                            indexGlobal = 0;
+                          });
+                        } else if (state is NycDataSuccess) {
+                          setState(() {
+                            indexGlobal = 1;
+                          });
+                        } else if (state is NycSubDataSuccess) {
+                          setState(() {
+                            indexGlobal = 2;
+                          });
+                        }
+                      },
+                      child: Container(),
+                    ),
+                    //  SpacerWidget(_KVertcalSpace / 4),
+                    // changePages(),
+                  ],
+                ),
+              ),
+              bottomNavigationBar: progressIndicatorBar(),
             ),
-            bottomNavigationBar: progressIndicatorBar(),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -285,51 +292,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         ),
       ),
     );
-    // return Container(
-    //   // padding: const EdgeInsets.only(bottom: 20),
-    //   width: MediaQuery.of(context).size.width * 0.912,
-    //   height: 15,
-    //   // decoration: BoxDecoration(
-    //   //      color: Colors.grey,
-    //   //     border: Border.all(color: Colors.black, width: 2),
-    //   //     borderRadius: BorderRadius.circular(15)),
-    //   child: Row(
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     children: [
-    //       Container(
-    //         width: MediaQuery.of(context).size.width * 0.3,
-    //         height: 20,
-    //         decoration: BoxDecoration(
-    //             color: AppTheme.kButtonColor,
-    //             // border: Border(left: BorderSide(color: Colors.black)),
-    //             borderRadius: BorderRadius.only(
-    //                 topLeft: Radius.circular(15),
-    //                 bottomLeft: Radius.circular(15))),
-    //       ),
-    //       Container(
-    //         width: MediaQuery.of(context).size.width * 0.3,
-    //         height: 20,
-    //         decoration: BoxDecoration(
-    //           color: indexGlobal == 1 || indexGlobal == 2
-    //               ? AppTheme.kButtonColor
-    //               : Colors.grey,
-    //           // border: Border(left: BorderSide(color: Colors.black)),
-    //           // borderRadius: BorderRadius.circular(15)
-    //         ),
-    //       ),
-    //       Container(
-    //         width: MediaQuery.of(context).size.width * 0.3,
-    //         height: 20,
-    //         decoration: BoxDecoration(
-    //             color: indexGlobal == 2 ? AppTheme.kButtonColor : Colors.grey,
-    //             //  border: Border(left: BorderSide(color: Colors.black)),
-    //             borderRadius: BorderRadius.only(
-    //                 topRight: Radius.circular(15),
-    //                 bottomRight: Radius.circular(15))),
-    //       )
-    //     ],
-    //   ),
-    // );
   }
 
   Widget subjectPage({required List<SubjectList> list}) {
@@ -524,33 +486,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-//   Widget textActionButton() {
-//     return InkWell(
-//       onTap: () {
-//         Navigator.push(
-//           context,
-//           MaterialPageRoute(builder: (context) => ResultsSummary()),
-//         );
-//       },
-//       child: Container(
-//         decoration: BoxDecoration(
-//           color: AppTheme.kButtonColor,
-//           borderRadius: BorderRadius.all(Radius.circular(25)),
-//         ),
-//         height: 54,
-//         width: MediaQuery.of(context).size.width * 0.9,
-//         child: Center(
-//           child: highlightText(
-//             text: 'Next',
-//             theme: Theme.of(context)
-//                 .textTheme
-//                 .headline1!
-//                 .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
   Widget textActionButton() {
     return FloatingActionButton.extended(
         backgroundColor:
@@ -578,5 +513,99 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             // )
           ],
         ));
+  }
+
+  _onHomePressed() {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: Center(
+                  child: Container(
+                    padding: Globals.deviceType == 'phone'
+                        ? null
+                        : const EdgeInsets.only(top: 10.0),
+                    height: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 15
+                            : MediaQuery.of(context).size.width / 15,
+                    width: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.width / 2
+                            : MediaQuery.of(context).size.height / 2,
+                    child: TranslationWidget(
+                        message: "you are about to lose scanned assessment sheet",
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(color: Colors.black));
+                        }),
+                  ),
+                ),
+                actions: <Widget>[
+                  Container(
+                    height: 1,
+                    width: MediaQuery.of(context).size.height,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      TextButton(
+                        child: TranslationWidget(
+                            message: "No",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: AppTheme.kButtonColor,
+                                      ));
+                            }),
+                        onPressed: () {
+                          //Globals.iscameraPopup = false;
+                          Navigator.pop(context, false);
+                        },
+                      ),
+                      TextButton(
+                        child: TranslationWidget(
+                            message: "Yes ",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: AppTheme.kButtonColor,
+                                      ));
+                            }),
+                        onPressed: () {
+                          //Globals.iscameraPopup = false;
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()),
+                              (_) => false);
+                        },
+                      ),
+                    ],
+                  )
+                ],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              );
+            }));
   }
 }
