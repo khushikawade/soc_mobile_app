@@ -59,11 +59,11 @@ class Globals {
   static List pointsList = [1, 2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
   static List scoringList = [
-    'NYC 0-2',
+    'NYS 0-2',
     'Custom',
-    'NYC 0-3',
+    'NYS 0-3',
     'None',
-    'NYC 0-4',
+    'NYS 0-4',
   ];
   static List subjectDetailsList = [
     'NY-3.OA.1 Interpret Products of whole numbers',
@@ -105,7 +105,6 @@ class Globals {
   static String? homeUrl;
   static PersistentTabController? controller;
   static bool? disableDarkMode;
-  static bool hideBottomNavbar = false;
   static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe870];
   static List ocrResultIconsName = [
     "Share",
@@ -118,4 +117,5 @@ class Globals {
     "View all assessment results"
   ];
   static List gradeList = [];
+  static bool iscameraPopup = true;
 }

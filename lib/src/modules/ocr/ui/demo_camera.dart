@@ -28,9 +28,6 @@ class _DemoCameraState
   final HomeBloc _homeBloc = new HomeBloc();
   @override
   void initState() {
-    setState(() {
-      Globals.hideBottomNavbar = true;
-    });
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
   }

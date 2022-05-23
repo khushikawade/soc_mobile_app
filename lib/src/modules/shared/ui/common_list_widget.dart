@@ -20,6 +20,7 @@ class CommonListWidget extends StatefulWidget {
   CommonListWidget(
       {Key? key,
       required this.data,
+      this.bottomPadding,
       required this.sectionName,
       required this.scaffoldKey,
       this.connected})
@@ -29,6 +30,7 @@ class CommonListWidget extends StatefulWidget {
   final List<SharedList> data;
   final scaffoldKey;
   final String sectionName;
+  final double? bottomPadding;
 
   @override
   _CommonListWidgetState createState() => _CommonListWidgetState();
@@ -279,7 +281,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     return widget.data.length > 0
         ? ListView.builder(
             shrinkWrap: true,
-            padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+            padding: EdgeInsets.only(bottom: widget.bottomPadding ?? AppTheme.klistPadding),
             scrollDirection: Axis.vertical,
             itemCount: widget.data.length,
             itemBuilder: (BuildContext context, int index) {

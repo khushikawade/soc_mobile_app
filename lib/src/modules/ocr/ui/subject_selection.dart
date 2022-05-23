@@ -33,98 +33,100 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CommonBackGroundImgWidget(),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
+    return Container(
+      child: Stack(
+        children: [
+          CommonBackGroundImgWidget(),
+          Scaffold(
+            floatingActionButton: indexGlobal == 2 ? textActionButton() : null,
             backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: Icon(
-                IconData(0xe80d,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kButtonColor,
-              ),
-              onPressed: () {
-                if (indexGlobal == 1) {
-                  _ocrBloc.add(FatchSubjectDetails(type: 'subject'));
-                } else if (indexGlobal == 2) {
-                  _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            actions: [
-              Container(
-                  padding: EdgeInsets.only(right: 10),
-                  child: IconButton(
-                    icon: Icon(
-                      IconData(0xe874,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      color: AppTheme.kButtonColor,
-                      size: 30,
-                    ),
-                    onPressed: () {},
-                  )),
-            ],
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                BlocBuilder<OcrBloc, OcrState>(
-                    bloc: _ocrBloc,
-                    builder: (context, state) {
-                      if (state is OcrLoading) {
-                        return loadingPage();
-                      }
-
-                      if (state is SubjectDataSuccess) {
-                        indexGlobal = 0;
-                        return subjectPage(list: state.obj!);
-                      } else if (state is NycDataSuccess) {
-                        indexGlobal = 1;
-                        return secondPage(list: state.obj);
-                      } else if (state is NycSubDataSuccess) {
-                        indexGlobal = 2;
-                        return thirdPage(list: state.obj!);
-                      }
-                      return Container();
-                      // return widget here based on BlocA's state
-                    }),
-                BlocListener(
-                  bloc: _ocrBloc,
-                  listener: (context, state) {
-                    if (state is SubjectDataSuccess) {
-                      setState(() {
-                        indexGlobal = 0;
-                      });
-                    } else if (state is NycDataSuccess) {
-                      setState(() {
-                        indexGlobal = 1;
-                      });
-                    } else if (state is NycSubDataSuccess) {
-                      setState(() {
-                        indexGlobal = 2;
-                      });
-                    }
-                  },
-                  child: Container(),
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: Icon(
+                  IconData(0xe80d,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kButtonColor,
                 ),
-                //  SpacerWidget(_KVertcalSpace / 4),
-                // changePages(),
-                progressIndicatorBar(),
+                onPressed: () {
+                  if (indexGlobal == 1) {
+                    _ocrBloc.add(FatchSubjectDetails(type: 'subject'));
+                  } else if (indexGlobal == 2) {
+                    _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              actions: [
+                Container(
+                    padding: EdgeInsets.only(right: 10),
+                    child: IconButton(
+                      icon: Icon(
+                        IconData(0xe874,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        color: AppTheme.kButtonColor,
+                        size: 30,
+                      ),
+                      onPressed: () {},
+                    )),
               ],
             ),
+            body: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  BlocBuilder<OcrBloc, OcrState>(
+                      bloc: _ocrBloc,
+                      builder: (context, state) {
+                        if (state is OcrLoading) {
+                          return loadingPage();
+                        }
+                        if (state is SubjectDataSuccess) {
+                          indexGlobal = 0;
+                          return subjectPage(list: state.obj!);
+                        } else if (state is NycDataSuccess) {
+                          indexGlobal = 1;
+                          return secondPage(list: state.obj);
+                        } else if (state is NycSubDataSuccess) {
+                          indexGlobal = 2;
+                          return thirdPage(list: state.obj!);
+                        }
+                        return Container();
+                        // return widget here based on BlocA's state
+                      }),
+                  BlocListener(
+                    bloc: _ocrBloc,
+                    listener: (context, state) {
+                      if (state is SubjectDataSuccess) {
+                        setState(() {
+                          indexGlobal = 0;
+                        });
+                      } else if (state is NycDataSuccess) {
+                        setState(() {
+                          indexGlobal = 1;
+                        });
+                      } else if (state is NycSubDataSuccess) {
+                        setState(() {
+                          indexGlobal = 2;
+                        });
+                      }
+                    },
+                    child: Container(),
+                  ),
+                  //  SpacerWidget(_KVertcalSpace / 4),
+                  // changePages(),
+                ],
+              ),
+            ),
+            bottomNavigationBar: progressIndicatorBar(),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -162,7 +164,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       height: MediaQuery.of(context).size.height * 0.85,
       child: Center(
         child: CircularProgressIndicator(
-          color: Colors.white,
+          color: AppTheme.kButtonColor,
         ),
       ),
     );
@@ -182,7 +184,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             controller: searchController, onSaved: (String value) {}),
         SpacerWidget(_KVertcalSpace / 4),
         detailsList(list: list),
-        textActionButton(),
+        // textActionButton(),
         // scoringButton(list: Globals.subjectDetailsList),
       ]),
     );
@@ -263,49 +265,71 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   Widget progressIndicatorBar() {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.912,
-      height: 15,
-      // decoration: BoxDecoration(
-      //      color: Colors.grey,
-      //     border: Border.all(color: Colors.black, width: 2),
-      //     borderRadius: BorderRadius.circular(15)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            height: 20,
-            decoration: BoxDecoration(
-                color: AppTheme.kButtonColor,
-                // border: Border(left: BorderSide(color: Colors.black)),
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    bottomLeft: Radius.circular(15))),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            height: 20,
-            decoration: BoxDecoration(
-              color: indexGlobal == 1 || indexGlobal == 2
-                  ? AppTheme.kButtonColor
-                  : Colors.grey,
-              // border: Border(left: BorderSide(color: Colors.black)),
-              // borderRadius: BorderRadius.circular(15)
+      margin: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+      child: Container(
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          child: AnimatedContainer(
+            duration: Duration(seconds: 2),
+            curve: Curves.easeOutExpo,
+            child: LinearProgressIndicator(
+              color: AppTheme.kButtonColor,
+              minHeight: 15.0,
+              value: indexGlobal == 0
+                  ? 0.33
+                  : indexGlobal == 1
+                      ? 0.66
+                      : 1,
             ),
           ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            height: 20,
-            decoration: BoxDecoration(
-                color: indexGlobal == 2 ? AppTheme.kButtonColor : Colors.grey,
-                //  border: Border(left: BorderSide(color: Colors.black)),
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    bottomRight: Radius.circular(15))),
-          )
-        ],
+        ),
       ),
     );
+    // return Container(
+    //   // padding: const EdgeInsets.only(bottom: 20),
+    //   width: MediaQuery.of(context).size.width * 0.912,
+    //   height: 15,
+    //   // decoration: BoxDecoration(
+    //   //      color: Colors.grey,
+    //   //     border: Border.all(color: Colors.black, width: 2),
+    //   //     borderRadius: BorderRadius.circular(15)),
+    //   child: Row(
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     children: [
+    //       Container(
+    //         width: MediaQuery.of(context).size.width * 0.3,
+    //         height: 20,
+    //         decoration: BoxDecoration(
+    //             color: AppTheme.kButtonColor,
+    //             // border: Border(left: BorderSide(color: Colors.black)),
+    //             borderRadius: BorderRadius.only(
+    //                 topLeft: Radius.circular(15),
+    //                 bottomLeft: Radius.circular(15))),
+    //       ),
+    //       Container(
+    //         width: MediaQuery.of(context).size.width * 0.3,
+    //         height: 20,
+    //         decoration: BoxDecoration(
+    //           color: indexGlobal == 1 || indexGlobal == 2
+    //               ? AppTheme.kButtonColor
+    //               : Colors.grey,
+    //           // border: Border(left: BorderSide(color: Colors.black)),
+    //           // borderRadius: BorderRadius.circular(15)
+    //         ),
+    //       ),
+    //       Container(
+    //         width: MediaQuery.of(context).size.width * 0.3,
+    //         height: 20,
+    //         decoration: BoxDecoration(
+    //             color: indexGlobal == 2 ? AppTheme.kButtonColor : Colors.grey,
+    //             //  border: Border(left: BorderSide(color: Colors.black)),
+    //             borderRadius: BorderRadius.only(
+    //                 topRight: Radius.circular(15),
+    //                 bottomRight: Radius.circular(15))),
+    //       )
+    //     ],
+    //   ),
+    // );
   }
 
   Widget subjectPage({required List<SubjectList> list}) {
@@ -500,31 +524,59 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
+//   Widget textActionButton() {
+//     return InkWell(
+//       onTap: () {
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(builder: (context) => ResultsSummary()),
+//         );
+//       },
+//       child: Container(
+//         decoration: BoxDecoration(
+//           color: AppTheme.kButtonColor,
+//           borderRadius: BorderRadius.all(Radius.circular(25)),
+//         ),
+//         height: 54,
+//         width: MediaQuery.of(context).size.width * 0.9,
+//         child: Center(
+//           child: highlightText(
+//             text: 'Next',
+//             theme: Theme.of(context)
+//                 .textTheme
+//                 .headline1!
+//                 .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
   Widget textActionButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ResultsSummary()),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.kButtonColor,
-          borderRadius: BorderRadius.all(Radius.circular(25)),
-        ),
-        height: 54,
-        width: MediaQuery.of(context).size.width * 0.9,
-        child: Center(
-          child: highlightText(
-            text: 'Next',
-            theme: Theme.of(context)
-                .textTheme
-                .headline1!
-                .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
-    );
+    return FloatingActionButton.extended(
+        backgroundColor:
+            AppTheme.kButtonColor.withOpacity(nycSubIndex == null ? 0.5 : 1.0),
+        onPressed: () async {
+          if (nycSubIndex == null) return;
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ResultsSummary()),
+          );
+        },
+        label: Row(
+          children: [
+            textwidget(
+                text: 'Submit',
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(color: Theme.of(context).backgroundColor)),
+            // SpacerWidget(5),
+            // RotatedBox(
+            //   quarterTurns: 90,
+            //   child: Icon(Icons.arrow_back,
+            //       color: Theme.of(context).backgroundColor, size: 20),
+            // )
+          ],
+        ));
   }
 }

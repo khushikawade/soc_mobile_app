@@ -4,11 +4,8 @@ import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-
 import 'package:Soc/src/widgets/sharepopmenu.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
@@ -29,7 +26,6 @@ class CustomOcrAppBarWidget extends StatefulWidget
 }
 
 class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
-  static const double _kLabelSpacing = 15.0;
   double lineProgress = 0.0;
   SharePopUp shareobj = new SharePopUp();
 
@@ -87,17 +83,12 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 : EdgeInsets.zero,
             child: IconButton(
               onPressed: () {
-                setState(() {
-                  Globals.hideBottomNavbar = false;
-                });
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => StaffPage(
-                            isFromOcr: true,
-                          )),
-                );
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                    (_) => false);
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(builder: (context) => HomePage()),
+                // );
               },
               icon: Icon(
                 IconData(0xe874,
