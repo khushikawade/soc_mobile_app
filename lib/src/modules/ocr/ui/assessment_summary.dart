@@ -90,11 +90,10 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         ));
                       } else if (state is GoogleDriveGetSuccess) {
                         return listView(state.obj);
+                      } else if (state is GoogleNoAssessment) {
+                        return Center(child: Text("No assessment available"));
                       } else {
-                        return Center(
-                            child: CircularProgressIndicator(
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                        ));
+                        return Container();
                       }
                     })
               ],
@@ -135,30 +134,24 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             : Theme.of(context).colorScheme.secondary,
       ),
       child: ListTile(
-        // onTap: () {
-        //   _navigate(obj, index);
-        // },
-        visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        // contentPadding:
-        //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: highlightText(
-            text: list[index].title,
-            theme: Theme.of(context).textTheme.headline2),
-        // title: TranslationWidget(
-        //     message: "No title",
-        //     fromLanguage: "en",
-        //     toLanguage: Globals.selectedLanguage,
-        //     builder: (translatedMessage) {
-        //       return Text(translatedMessage.toString(),
-        //           style: Theme.of(context).textTheme.bodyText1!);
-        //     }),
-        trailing: highlightText(
-          text: index.toString(),
-          theme: Theme.of(context).textTheme.headline2!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-      ),
+          // onTap: () {
+          //   _navigate(obj, index);
+          // },
+          visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+          // contentPadding:
+          //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
+          leading: highlightText(
+              text: list[index].title.split('.')[0],
+              theme: Theme.of(context).textTheme.headline2),
+          // title: TranslationWidget(
+          //     message: "No title",
+          //     fromLanguage: "en",
+          //     toLanguage: Globals.selectedLanguage,
+          //     builder: (translatedMessage) {
+          //       return Text(translatedMessage.toString(),
+          //           style: Theme.of(context).textTheme.bodyText1!);
+          //     }),
+          trailing:Icon(Icons.arrow_forward_ios)),
     );
   }
 

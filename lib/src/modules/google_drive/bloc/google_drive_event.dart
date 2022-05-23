@@ -18,9 +18,9 @@ class CreateFolderOnGoogleDriveEvent extends GoogleDriveEvent {
 }
 
 class CreateDoc extends GoogleDriveEvent {
-  // final String? token;
-  // final String? folderName;
-  CreateDoc();
+  final String? name;
+
+  CreateDoc({this.name});
 
   @override
   List<Object> get props => [];

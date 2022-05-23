@@ -82,8 +82,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       try {
         List<Assessment> _list = await _fetchHistoryAssessment(
             Globals.authorizationToken, Globals.folderId);
-
-        yield GoogleDriveGetSuccess(obj: _list);
+        if (_list.length >0) {
+          yield GoogleDriveGetSuccess(obj: _list);
+        }else{
+            yield GoogleNoAssessment();
+        }
       } catch (e) {
         print(e);
       }
