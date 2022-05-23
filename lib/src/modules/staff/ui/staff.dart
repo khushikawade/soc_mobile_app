@@ -88,12 +88,6 @@ class _StaffPageState extends State<StaffPage> {
         ? Color(0xff000000)
         : Color(0xffFFFFFF);
 
-    print(Theme.of(context)
-        .backgroundColor
-        .toString()
-        .split('0xff')[1]
-        .split(')')[0]);
-
     pushNewScreen(
       context,
       screen: GoogleAuthWebview(
