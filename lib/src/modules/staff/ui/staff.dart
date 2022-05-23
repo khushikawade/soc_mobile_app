@@ -58,6 +58,8 @@ class _StaffPageState extends State<StaffPage> {
   bool? authSuccess = false;
   dynamic userData;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
+  ScrollController _scrollController = new ScrollController();
+  final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -67,6 +69,15 @@ class _StaffPageState extends State<StaffPage> {
       _homeBloc.add(FetchStandardNavigationBar());
     }
     localdb();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  _scrollListener() async {
+    if (isScrolling.value == true) return;
+    isScrolling.value = true;
+    if (isScrolling.value == false) return;
+    await Future.delayed(Duration(milliseconds: 2000));
+    isScrolling.value = false;
   }
 
   localdb() async {
@@ -103,7 +114,9 @@ class _StaffPageState extends State<StaffPage> {
                       screen: OpticalCharacterRecognition(),
                       withNavBar: false,
                     );
-                  } else if(value.toString().contains('authenticationfailure')){
+                  } else if (value
+                      .toString()
+                      .contains('authenticationfailure')) {
                     Navigator.pop(context, false);
                     Utility.showSnackBar(
                         _scaffoldKey,
@@ -174,6 +187,7 @@ class _StaffPageState extends State<StaffPage> {
                                   data: state.obj!,
                                   sectionName: "staff")
                               : CommonListWidget(
+                                  scrollController: _scrollController,
                                   bottomPadding: 80,
                                   key: ValueKey(key),
                                   scaffoldKey: _scaffoldKey,
@@ -245,7 +259,7 @@ class _StaffPageState extends State<StaffPage> {
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     _bloc.add(StaffPageEvent());
     _homeBloc.add(FetchStandardNavigationBar());
   }
@@ -256,27 +270,37 @@ class _StaffPageState extends State<StaffPage> {
 //   }
 
   Widget cameraButton() {
-    return FloatingActionButton.extended(
-        backgroundColor: AppTheme.kButtonColor,
-        onPressed: () async {
-          _localData.clear();
-          if (_localData.isEmpty) {
-            await _launchURL('Google Authentication');
-          } else {
-            pushNewScreen(
-              context,
-              screen: OpticalCharacterRecognition(),
-              withNavBar: false,
-            );
-          }
-        },
-        icon: Icon(Icons.add, color: Theme.of(context).backgroundColor),
-        label: textwidget(
-            text: 'Add Assessment',
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline2!
-                .copyWith(color: Theme.of(context).backgroundColor)));
+    return ValueListenableBuilder<bool>(
+        valueListenable: isScrolling,
+        child: Container(),
+        builder: (BuildContext context, bool value, Widget? child) {
+          return AnimatedOpacity(
+            opacity: isScrolling.value ? 0 : 1,
+            curve: Curves.easeInOut,
+            duration: Duration(milliseconds: 800),
+            child: FloatingActionButton.extended(
+                backgroundColor: AppTheme.kButtonColor,
+                onPressed: () async {
+                  _localData.clear();
+                  if (_localData.isEmpty) {
+                    await _launchURL('Google Authentication');
+                  } else {
+                    pushNewScreen(
+                      context,
+                      screen: OpticalCharacterRecognition(),
+                      withNavBar: false,
+                    );
+                  }
+                },
+                icon: Icon(Icons.add, color: Theme.of(context).backgroundColor),
+                label: textwidget(
+                    text: 'Add Assessment',
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: Theme.of(context).backgroundColor))),
+          );
+        });
   }
 
   Widget textwidget({required String text, required dynamic textTheme}) {
