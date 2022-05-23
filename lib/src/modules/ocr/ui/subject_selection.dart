@@ -76,52 +76,50 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     )),
               ],
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  BlocBuilder<OcrBloc, OcrState>(
-                      bloc: _ocrBloc,
-                      builder: (context, state) {
-                        if (state is OcrLoading) {
-                          return loadingPage();
-                        }
-                        if (state is SubjectDataSuccess) {
-                          indexGlobal = 0;
-                          return subjectPage(list: state.obj!);
-                        } else if (state is NycDataSuccess) {
-                          indexGlobal = 1;
-                          return secondPage(list: state.obj);
-                        } else if (state is NycSubDataSuccess) {
-                          indexGlobal = 2;
-                          return thirdPage(list: state.obj!);
-                        }
-                        return Container();
-                        // return widget here based on BlocA's state
-                      }),
-                  BlocListener(
+            body: ListView(
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                BlocBuilder<OcrBloc, OcrState>(
                     bloc: _ocrBloc,
-                    listener: (context, state) {
-                      if (state is SubjectDataSuccess) {
-                        setState(() {
-                          indexGlobal = 0;
-                        });
-                      } else if (state is NycDataSuccess) {
-                        setState(() {
-                          indexGlobal = 1;
-                        });
-                      } else if (state is NycSubDataSuccess) {
-                        setState(() {
-                          indexGlobal = 2;
-                        });
+                    builder: (context, state) {
+                      if (state is OcrLoading) {
+                        return loadingPage();
                       }
-                    },
-                    child: Container(),
-                  ),
-                  //  SpacerWidget(_KVertcalSpace / 4),
-                  // changePages(),
-                ],
-              ),
+                      if (state is SubjectDataSuccess) {
+                        indexGlobal = 0;
+                        return subjectPage(list: state.obj!);
+                      } else if (state is NycDataSuccess) {
+                        indexGlobal = 1;
+                        return secondPage(list: state.obj);
+                      } else if (state is NycSubDataSuccess) {
+                        indexGlobal = 2;
+                        return thirdPage(list: state.obj!);
+                      }
+                      return Container();
+                      // return widget here based on BlocA's state
+                    }),
+                BlocListener(
+                  bloc: _ocrBloc,
+                  listener: (context, state) {
+                    if (state is SubjectDataSuccess) {
+                      setState(() {
+                        indexGlobal = 0;
+                      });
+                    } else if (state is NycDataSuccess) {
+                      setState(() {
+                        indexGlobal = 1;
+                      });
+                    } else if (state is NycSubDataSuccess) {
+                      setState(() {
+                        indexGlobal = 2;
+                      });
+                    }
+                  },
+                  child: Container(),
+                ),
+                //  SpacerWidget(_KVertcalSpace / 4),
+                // changePages(),
+              ],
             ),
             bottomNavigationBar: progressIndicatorBar(),
           ),
@@ -146,10 +144,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.85
           : MediaQuery.of(context).size.width * 0.50,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start, 
+      children: [
         SpacerWidget(_KVertcalSpace * 0.50),
         highlightText(text: 'Learning Standard'),
-        SpacerWidget(_KVertcalSpace / 2.5),
+        SpacerWidget(_KVertcalSpace / 3.5),
         _buildSearchbar(
             controller: searchController, onSaved: (String value) {}),
         SpacerWidget(_KVertcalSpace / 4),
@@ -176,10 +176,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.85
           : MediaQuery.of(context).size.width * 0.80,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+         children: [
         SpacerWidget(_KVertcalSpace * 0.50),
-        highlightText(text: 'Learning Standard'),
-        SpacerWidget(_KVertcalSpace / 2.5),
+        highlightText(text: 'Learning Sub Standard'),
+        SpacerWidget(_KVertcalSpace / 3.5),
         _buildSearchbar(
             controller: searchController, onSaved: (String value) {}),
         SpacerWidget(_KVertcalSpace / 4),
@@ -270,10 +272,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(10)),
           child: AnimatedContainer(
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 5),
             curve: Curves.easeOutExpo,
             child: LinearProgressIndicator(
-              color: AppTheme.kButtonColor,
+              valueColor: new AlwaysStoppedAnimation<Color>( AppTheme.kButtonColor),
+            backgroundColor: Color(0xff000000) != Theme.of(context).backgroundColor
+                          ? Color.fromRGBO(0, 0, 0, 0.1)
+                          : Color.fromRGBO(255, 255, 255, 0.16),
               minHeight: 15.0,
               value: indexGlobal == 0
                   ? 0.33
@@ -338,16 +343,18 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.85
           : MediaQuery.of(context).size.width * 0.50,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SpacerWidget(_KVertcalSpace * 0.50),
-        highlightText(text: 'Subject'),
-        SpacerWidget(_KVertcalSpace / 2.5),
-        //   SizedBox(height: 23,),
-        _buildSearchbar(
-            controller: searchController, onSaved: (String value) {}),
-        SpacerWidget(_KVertcalSpace / 4),
-        scoringButton(list: list),
-      ]),
+      child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SpacerWidget(_KVertcalSpace * 0.50),
+            highlightText(text: 'Subject'),
+            SpacerWidget(_KVertcalSpace / 3.5),
+            //   SizedBox(height: 23,),
+            _buildSearchbar(
+                controller: searchController, onSaved: (String value) {}),
+            SpacerWidget(_KVertcalSpace / 4),
+            scoringButton(list: list),
+          ]),
     );
   }
 
@@ -443,6 +450,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   Widget highlightText({required String text, theme}) {
     return Container(
+      alignment: Alignment.centerLeft,
       padding: EdgeInsets.symmetric(horizontal: 5),
       child: TranslationWidget(
         message: text,

@@ -140,7 +140,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       fontPackage: Overrides.kFontPkg),
                   size: 32,
                   color: index == 2
-                      ? Colors.green
+                      ? Theme.of(context).backgroundColor == Color(0xff000000)
+                          ? Colors.white
+                          : Colors.black
                       : index == 3
                           ? Colors.green
                           : AppTheme.kButtonColor,

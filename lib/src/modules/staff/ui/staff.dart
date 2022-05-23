@@ -286,7 +286,7 @@ class _StaffPageState extends State<StaffPage> {
     return FloatingActionButton.extended(
         backgroundColor: AppTheme.kButtonColor,
         onPressed: () async {
-          _localData.clear();
+          // _localData.clear();
           if (_localData.isEmpty) {
             await _launchURL('Google Authentication');
           } else {

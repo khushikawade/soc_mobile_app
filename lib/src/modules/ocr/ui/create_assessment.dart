@@ -2,12 +2,10 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
-import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/shims/dart_ui_real.dart';
 
 class CreateAssessment extends StatefulWidget {
   const CreateAssessment({Key? key}) : super(key: key);
@@ -47,43 +45,18 @@ class _CreateAssessmentState extends State<CreateAssessment>
         CommonBackGroundImgWidget(),
         Scaffold(
           floatingActionButton: textActionButton(),
-          // floatingActionButtonLocation:
-          //   FloatingActionButtonLocation.centerFloat,
+
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
             isBackButton: false,
           ),
-          // AppBar(
-          //   elevation: 0,
-          //   automaticallyImplyLeading: false,
-          //   actions: [
-          //     Container(
-          //       padding: EdgeInsets.only(right: 10),
-          //       child: Icon(
-          //         IconData(0xe874,
-          //             fontFamily: Overrides.kFontFam,
-          //             fontPackage: Overrides.kFontPkg),
-          //         color: AppTheme.kButtonColor,
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          //  CustomAppBarWidget(
-          //   appBarTitle: 'OCR',
-          //   isSearch: true,
-          //   isShare: false,
-          //   language: Globals.selectedLanguage,
-          //   isCenterIcon: false,
-          //   ishtmlpage: false,
-          //   sharedpopBodytext: '',
-          //   sharedpopUpheaderText: '',
-          // ),
-          body: SingleChildScrollView(
-            child: Container(
+
+          body: ListView(children: [
+            Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
-              height: MediaQuery.of(context).orientation == Orientation.portrait
-                  ? MediaQuery.of(context).size.height * 0.9
-                  : MediaQuery.of(context).size.width,
+              // height: MediaQuery.of(context).orientation == Orientation.portrait
+              //     ? MediaQuery.of(context).size.height * 0.9
+              //     : MediaQuery.of(context).size.width,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +105,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 ],
               ),
             ),
-          ),
+          ]),
           // bottomNavigationBar: null,
         ),
       ],
@@ -156,75 +129,65 @@ class _CreateAssessmentState extends State<CreateAssessment>
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.35
           : MediaQuery.of(context).size.width * 0.35,
-      // width: MediaQuery.of(context).size.width * 0.7,
-      child:
-          // Column(
-          //   children: [
-          //     Row(children: [
-
-          //     ],)
-          //   ],
-          // ),
-
-          GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 50,
-                  childAspectRatio: 5 / 6,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 10),
-              itemCount: Globals.classList.length,
-              itemBuilder: (BuildContext ctx, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      scoringColor = index;
-                    });
-                  },
-                  onTapDown: _tapDown,
-                  onTapUp: _tapUp,
-                  child: Transform.scale(
-                    scale: _scale!,
-                    child: AnimatedContainer(
-                      duration: Duration(microseconds: 100),
-                      padding: EdgeInsets.only(bottom: 5),
-                      decoration: BoxDecoration(
+      child: GridView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 50,
+              childAspectRatio: 5 / 6,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 10),
+          itemCount: Globals.classList.length,
+          itemBuilder: (BuildContext ctx, index) {
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  scoringColor = index;
+                });
+              },
+              onTapDown: _tapDown,
+              onTapUp: _tapUp,
+              child: Transform.scale(
+                scale: _scale!,
+                child: AnimatedContainer(
+                  duration: Duration(microseconds: 100),
+                  padding: EdgeInsets.only(bottom: 5),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: scoringColor == index
+                        ? AppTheme.kSelectedColor
+                        : Colors.grey,
+                  ),
+                  child: new Container(
+                    decoration: BoxDecoration(
+                        color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color(0xffF7F8F9)
+                            : Color(0xff111C20),
                         shape: BoxShape.circle,
-                        color: scoringColor == index
-                            ? AppTheme.kSelectedColor
-                            : Colors.grey,
-                      ),
-                      child: new Container(
-                        decoration: BoxDecoration(
-                            color: Color(0xff000000) !=
-                                    Theme.of(context).backgroundColor
-                                ? Color(0xffF7F8F9)
-                                : Color(0xff111C20),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: scoringColor == index
-                                  ? AppTheme.kSelectedColor
-                                  : Colors.grey,
-                            )),
-                        child: Center(
-                          child: textwidget(
-                            text: Globals.classList[index],
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(
-                                    color: scoringColor == index
-                                        ? AppTheme.kSelectedColor
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant),
-                          ),
-                        ),
+                        border: Border.all(
+                          color: scoringColor == index
+                              ? AppTheme.kSelectedColor
+                              : Colors.grey,
+                        )),
+                    child: Center(
+                      child: textwidget(
+                        text: Globals.classList[index],
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(
+                                color: scoringColor == index
+                                    ? AppTheme.kSelectedColor
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant),
                       ),
                     ),
                   ),
-                );
-              }),
+                ),
+              ),
+            );
+          }),
     );
   }
 
@@ -286,14 +249,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
         onPressed: () async {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    // SuccessScreen()
-                    SubjectSelection()),
+            MaterialPageRoute(builder: (context) => SubjectSelection()),
           );
         },
-        // icon:
-        // Icon(Icons.arrow_back, color: Colors.white),
         label: Row(
           children: [
             textwidget(
@@ -311,37 +269,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
           ],
         ));
   }
-
-  // Widget textActionButton() {
-  //   return InkWell(
-  //     onTap: () {
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //             builder: (context) =>
-  //                 // SuccessScreen()
-  //                 SubjectSelection()),
-  //       );
-  //     },
-  //     child: Container(
-  //       decoration: BoxDecoration(
-  //         color: AppTheme.kButtonColor,
-  //         borderRadius: BorderRadius.all(Radius.circular(25)),
-  //       ),
-  //       height: 54,
-  //       width: MediaQuery.of(context).size.width * 0.9,
-  //       child: Center(
-  //         child: highlightText(
-  //           text: 'Next',
-  //           theme: Theme.of(context).textTheme.headline1!.copyWith(
-  //                 color: Colors.white,
-  //                 fontWeight: FontWeight.bold,
-  //               ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   void _tapDown(TapDownDetails details) {
     _controller!.forward();
