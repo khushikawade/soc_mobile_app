@@ -1,8 +1,11 @@
+// ignore_for_file: unnecessary_statements
+
 import 'dart:async';
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
@@ -31,6 +34,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   bool failure = false;
   int? indexColor;
   bool isSelected = true;
+  String? pointScored;
   @override
   void initState() {
     // TODO: implement initState
@@ -41,79 +45,86 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      CommonBackGroundImgWidget(),
-      Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: CustomOcrAppBarWidget(
-              isBackButton: false, isFailureState: failure),
-          // AppBar(
-          //   elevation: 0,
-          // ),
-          body: Container(
-            padding: EdgeInsets.only(left: 20, right: 20),
-            child:
-                //failureScreen()
-                //   successScreen(grade: '1', id: "123")
-                // BlocBuilder<OcrBloc, OcrState>(
-                //     bloc: _bloc, // provide the local bloc instance
-                //     builder: (context, state) {
-                //       if (state is OcrLoading) {
-                //         return CircularProgressIndicator(
-                //           color: Colors.white,
-                //         );
-                //       } else if (state is FetchTextFromImageSuccess) {
-                //         idController.text = state.schoolId!;
-                //         Globals.gradeList.add(state.grade!);
-                //         return successScreen(id: state.schoolId!, grade: state.grade!);
-                //
-                //       }
-                //       return Container();
-                //     }),
-
-                BlocConsumer<OcrBloc, OcrState>(
-                    bloc: _bloc, // provide the local bloc instance
-                    listener: (context, state) {
-                      if (state is FetchTextFromImageSuccess) {
-                        idController.text = state.schoolId!;
-                        Globals.gradeList.add(state.grade!);
-                        Timer(Duration(seconds: 5), () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => CameraScreen()));
-                        });
-                      } else if (state is FetchTextFromImageFailure) {
-                        idController.text = state.schoolId ?? '';
-                        setState(() {
-                          failure = true;
-                        });
-                      }
-                      // do stuff here based on BlocA's state
-                    },
-                    builder: (context, state) {
-                      if (state is OcrLoading) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: AppTheme.kButtonColor,
-                          ),
-                        );
-                      } else if (state is FetchTextFromImageSuccess) {
-                        idController.text = state.schoolId!;
-                        Globals.gradeList.add(state.grade!);
-                        return successScreen(
-                            id: state.schoolId!, grade: state.grade!);
-                      } else if (state is FetchTextFromImageFailure) {
-                        idController.text = state.schoolId!;
-                        Globals.gradeList.add(state.grade!);
-                        return failureScreen(
-                            id: state.schoolId!, grade: state.grade!);
-                      }
-                      return Container();
-                      // return widget here based on BlocA's state
-                    }),
-          ))
-    ]);
+    return WillPopScope(
+       onWillPop: () async => false,
+      child: Stack(children: [
+        CommonBackGroundImgWidget(),
+        Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: CustomOcrAppBarWidget(
+                isBackButton: false, isFailureState: failure, isHomeButtonPopup: true,),
+            // AppBar(
+            //   elevation: 0,
+            // ),
+            body: Container(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child:
+                  //failureScreen()
+                  //   successScreen(grade: '1', id: "123")
+                  // BlocBuilder<OcrBloc, OcrState>(
+                  //     bloc: _bloc, // provide the local bloc instance
+                  //     builder: (context, state) {
+                  //       if (state is OcrLoading) {
+                  //         return CircularProgressIndicator(
+                  //           color: Colors.white,
+                  //         );
+                  //       } else if (state is FetchTextFromImageSuccess) {
+                  //         idController.text = state.schoolId!;
+                  //         Globals.gradeList.add(state.grade!);
+                  //         return successScreen(id: state.schoolId!, grade: state.grade!);
+                  //
+                  //       }
+                  //       return Container();
+                  //     }),
+    
+                  BlocConsumer<OcrBloc, OcrState>(
+                      bloc: _bloc, // provide the local bloc instance
+                      listener: (context, state) {
+                        if (state is FetchTextFromImageSuccess) {
+                          idController.text = state.schoolId!;
+                          pointScored = state.grade;
+                          // Globals.gradeList.add(state.grade!);
+                          Timer(Duration(seconds: 5), () {
+                            updateDetails();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => CameraScreen()));
+                          });
+                        } else if (state is FetchTextFromImageFailure) {
+                          idController.text = state.schoolId ?? '';
+                          pointScored = state.grade ;
+                          updateDetails();
+                          setState(() {
+                            failure = true;
+                          });
+                        }
+                        // do stuff here based on BlocA's state
+                      },
+                      builder: (context, state) {
+                        if (state is OcrLoading) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: AppTheme.kButtonColor,
+                            ),
+                          );
+                        } else if (state is FetchTextFromImageSuccess) {
+                          idController.text = state.schoolId!;
+                          Globals.gradeList.add(state.grade!);
+                          return successScreen(
+                              id: state.schoolId!, grade: state.grade!);
+                        } else if (state is FetchTextFromImageFailure) {
+                          idController.text = state.schoolId!;
+                          Globals.gradeList.add(state.grade!);
+                          return failureScreen(
+                              id: state.schoolId!, grade: state.grade!);
+                        }
+                        return Container();
+                        // return widget here based on BlocA's state
+                      }),
+            ))
+      ]),
+    );
   }
 
   Widget failureScreen({required String id, required String grade}) {
@@ -129,7 +140,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       .colorScheme
                       .primaryVariant
                       .withOpacity(0.5))),
-          textFormField(controller: nameController, onSaved: (String value) {}),
+          textFormField(
+              controller: nameController,
+              onSaved: (String value) {
+                updateDetails(isUpdateData: true);
+              }),
           SpacerWidget(_KVertcalSpace / 2),
           highlightText(
               text: 'Student ID',
@@ -138,7 +153,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       .colorScheme
                       .primaryVariant
                       .withOpacity(0.5))),
-          textFormField(controller: idController, onSaved: (String value) {}),
+          textFormField(
+              controller: idController,
+              onSaved: (String value) {
+                updateDetails(isUpdateData: true);
+              }),
           SpacerWidget(_KVertcalSpace / 2),
           Center(
             child: highlightText(
@@ -174,7 +193,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       .colorScheme
                       .primaryVariant
                       .withOpacity(0.3))),
-          textFormField(controller: nameController, onSaved: (String value) {}),
+          textFormField(
+              controller: nameController,
+              onSaved: (String value) {
+                updateDetails(isUpdateData: true);
+              }),
           SpacerWidget(_KVertcalSpace / 2),
           highlightText(
               text: 'Student Id',
@@ -183,7 +206,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       .colorScheme
                       .primaryVariant
                       .withOpacity(0.5))),
-          textFormField(controller: idController, onSaved: (String value) {}),
+          textFormField(
+              controller: idController,
+              onSaved: (String value) {
+                updateDetails(isUpdateData: true);
+              }),
           SpacerWidget(_KVertcalSpace / 2),
           Center(
             child: highlightText(
@@ -282,9 +309,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
     // indexColor = grade;
     return InkWell(
         onTap: () {
+          pointScored = index.toString();
+          updateDetails(isUpdateData: true);
           setState(() {
             isSelected = false;
             indexColor = index;
+
             // grade = index;
           });
         },
@@ -392,5 +422,43 @@ class _SuccessScreenState extends State<SuccessScreen> {
         ),
       ),
     );
+  }
+
+  void updateDetails({bool? isUpdateData}) {
+    if (isUpdateData == true && Globals.studentInfo != null) {
+      Globals.studentInfo!.removeAt(Globals.studentInfo!.length - 1);
+      StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
+      studentAssessmentInfo.studentName = nameController.text;
+      studentAssessmentInfo.studentId = idController.text;
+      studentAssessmentInfo.studentGrade =
+          pointScored ;
+
+      Globals.studentInfo!.add(studentAssessmentInfo);
+    } else {
+      if (Globals.studentInfo == null) {
+        final StudentAssessmentInfo studentAssessmentInfo =
+            StudentAssessmentInfo();
+        studentAssessmentInfo.studentName = nameController.text;
+        studentAssessmentInfo.studentId = idController.text;
+        studentAssessmentInfo.studentGrade =
+            pointScored;
+
+        Globals.studentInfo!.add(studentAssessmentInfo);
+      } else {
+        List id = [];
+        for (int i = 0; i < Globals.studentInfo!.length; i++) {
+          id.add(Globals.studentInfo![i].studentId);
+        }
+        if (!id.contains(idController.text)) {
+          StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
+          studentAssessmentInfo.studentName = nameController.text;
+          studentAssessmentInfo.studentId = idController.text;
+          studentAssessmentInfo.studentGrade =
+              pointScored ;
+
+          Globals.studentInfo!.add(studentAssessmentInfo);
+        }
+      }
+    }
   }
 }

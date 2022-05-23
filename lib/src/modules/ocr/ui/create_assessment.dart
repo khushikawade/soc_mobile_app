@@ -42,75 +42,107 @@ class _CreateAssessmentState extends State<CreateAssessment>
   @override
   Widget build(BuildContext context) {
     _scale = 1 - _controller!.value;
-    return Stack(
-      children: [
-        CommonBackGroundImgWidget(),
-        Scaffold(
-          floatingActionButton: textActionButton(),
 
-          backgroundColor: Colors.transparent,
-          appBar: CustomOcrAppBarWidget(
-            isBackButton: false,
-          ),
-
-          body: ListView(children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              // height: MediaQuery.of(context).orientation == Orientation.portrait
-              //     ? MediaQuery.of(context).size.height * 0.9
-              //     : MediaQuery.of(context).size.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SpacerWidget(_KVertcalSpace * 0.50),
-                  highlightText(
-                    text: 'Create Assessment',
-                    theme: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SpacerWidget(_KVertcalSpace / 1.8),
-                  highlightText(
-                      text: 'Assessment Name',
-                      theme: Theme.of(context).textTheme.headline2!.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primaryVariant
-                              .withOpacity(0.3))),
-                  textFormField(
-                      controller: assessmentController,
-                      onSaved: (String value) {}),
-                  SpacerWidget(_KVertcalSpace / 2),
-                  highlightText(
-                      text: 'Class Name',
-                      theme: Theme.of(context).textTheme.headline2!.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primaryVariant
-                              .withOpacity(0.3))),
-                  textFormField(
-                      controller: classController, onSaved: (String value) {}),
-
-                  SpacerWidget(_KVertcalSpace / 0.90),
-                  scoringButton(),
-                  SpacerWidget(_KVertcalSpace / 20),
-                  // textActionButton()
-                  // smallButton(),
-                  // SpacerWidget(_KVertcalSpace / 2),
-
-                  // SpacerWidget(_KVertcalSpace / 4),
-                  // scoringButton(),
-                  // // SpacerWidget(_KVertcalSpace / 8),
-                  // cameraButton(),
-                ],
-              ),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Stack(
+        children: [
+          CommonBackGroundImgWidget(),
+          Scaffold(
+            floatingActionButton: textActionButton(),
+            // floatingActionButtonLocation:
+            //   FloatingActionButtonLocation.centerFloat,
+            backgroundColor: Colors.transparent,
+            appBar: CustomOcrAppBarWidget(
+              isBackButton: false,
+              isHomeButtonPopup: true,
             ),
-          ]),
-          // bottomNavigationBar: null,
-        ),
-      ],
+            // AppBar(
+            //   elevation: 0,
+            //   automaticallyImplyLeading: false,
+            //   actions: [
+            //     Container(
+            //       padding: EdgeInsets.only(right: 10),
+            //       child: Icon(
+            //         IconData(0xe874,
+            //             fontFamily: Overrides.kFontFam,
+            //             fontPackage: Overrides.kFontPkg),
+            //         color: AppTheme.kButtonColor,
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            //  CustomAppBarWidget(
+            //   appBarTitle: 'OCR',
+            //   isSearch: true,
+            //   isShare: false,
+            //   language: Globals.selectedLanguage,
+            //   isCenterIcon: false,
+            //   ishtmlpage: false,
+            //   sharedpopBodytext: '',
+            //   sharedpopUpheaderText: '',
+            // ),
+            body: ListView(children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height:
+                    MediaQuery.of(context).orientation == Orientation.portrait
+                        ? MediaQuery.of(context).size.height * 0.9
+                        : MediaQuery.of(context).size.width,
+                child: ListView(
+                  // mainAxisAlignment: MainAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SpacerWidget(_KVertcalSpace * 0.50),
+                    highlightText(
+                      text: 'Create Assessment',
+                      theme: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    SpacerWidget(_KVertcalSpace / 1.8),
+                    highlightText(
+                        text: 'Assessment Name',
+                        theme: Theme.of(context).textTheme.headline2!.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primaryVariant
+                                .withOpacity(0.3))),
+                    textFormField(
+                        controller: assessmentController,
+                        onSaved: (String value) {}),
+                    SpacerWidget(_KVertcalSpace / 2),
+                    highlightText(
+                        text: 'Class Name',
+                        theme: Theme.of(context).textTheme.headline2!.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primaryVariant
+                                .withOpacity(0.3))),
+                    textFormField(
+                        controller: classController,
+                        onSaved: (String value) {}),
+
+                    SpacerWidget(_KVertcalSpace / 0.90),
+                    scoringButton(),
+                    SpacerWidget(_KVertcalSpace / 20),
+                    // textActionButton()
+                    // smallButton(),
+                    // SpacerWidget(_KVertcalSpace / 2),
+
+                    // SpacerWidget(_KVertcalSpace / 4),
+                    // scoringButton(),
+                    // // SpacerWidget(_KVertcalSpace / 8),
+                    // cameraButton(),
+                  ],
+                ),
+              ),
+            ]),
+            // bottomNavigationBar: null,
+          ),
+        ],
+      ),
     );
   }
 
@@ -202,7 +234,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
         translatedMessage.toString(),
         maxLines: 2,
         //overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.center,
+        textAlign: TextAlign.left,
         style: theme,
       ),
     );
