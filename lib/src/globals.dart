@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -59,11 +60,11 @@ class Globals {
   static List pointsList = [1, 2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
   static List scoringList = [
-    'NYS 0-2',
+    'NYC 0-2',
     'Custom',
-    'NYS 0-3',
+    'NYC 0-3',
     'None',
-    'NYS 0-4',
+    'NYC 0-4',
   ];
   static List subjectDetailsList = [
     'NY-3.OA.1 Interpret Products of whole numbers',
@@ -120,5 +121,6 @@ class Globals {
   static bool iscameraPopup = true;
   static String? folderId;
   static String? authorizationToken;
+  static late List<StudentAssessmentInfo>? studentInfo = [];
   static String? shareableLink;
 }
