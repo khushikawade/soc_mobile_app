@@ -58,7 +58,7 @@ class _StaffPageState extends State<StaffPage> {
   bool? authSuccess = false;
   dynamic userData;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-  OcrBloc _ocrBloc = new OcrBloc();
+  // OcrBloc _ocrBloc = new OcrBloc();
 
   @override
   void initState() {
@@ -156,7 +156,7 @@ class _StaffPageState extends State<StaffPage> {
     _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
         //  filePath: file,
         token: profile[3].toString().split('=')[1].replaceAll('#', ''),
-        folderName: "test_folder_c"));
+        folderName: "Assessments"));
   }
 
   Widget _body(String key) => RefreshIndicator(

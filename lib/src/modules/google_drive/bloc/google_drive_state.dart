@@ -24,3 +24,8 @@ List obj;
   @override
   List<Object> get props => [];
 }
+
+class GoogleNoAssessment extends GoogleDriveState {
+  @override
+  List<Object> get props => [];
+}
