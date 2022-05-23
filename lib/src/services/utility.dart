@@ -108,12 +108,12 @@ class Utility {
     }
   }
 
-  static void showSnackBar(_scaffoldKey, msg, context,height) {
+  static void showSnackBar(_scaffoldKey, msg, context, height) {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Container(
         alignment: Alignment.centerLeft,
-        height:height?? 40,
+        height: height ?? 40,
         child: TranslationWidget(
           message: msg,
           fromLanguage: "en",
@@ -156,15 +156,14 @@ class Utility {
     }
   }
 
-static void setLocked() async {
+  static void setLocked() async {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
   }
 
-static void setFree() async {
-
+  static void setFree() async {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -379,5 +378,4 @@ static void setFree() async {
   //   }
   // }
 
- 
 }

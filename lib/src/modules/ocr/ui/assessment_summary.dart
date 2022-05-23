@@ -6,6 +6,9 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../google_drive/bloc/google_drive_bloc.dart';
 
 class AssessmentSummary extends StatefulWidget {
   AssessmentSummary({Key? key}) : super(key: key);
@@ -16,6 +19,16 @@ class AssessmentSummary extends StatefulWidget {
 
 class _AssessmentSummaryState extends State<AssessmentSummary> {
   static const double _KVertcalSpace = 60.0;
+
+  GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _driveBloc.add(GetSheetFromDrive());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -67,7 +80,23 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   ),
                 ),
                 SpacerWidget(_KVertcalSpace / 3),
-                listView()
+                BlocBuilder(
+                    bloc: _driveBloc,
+                    builder: (BuildContext contxt, GoogleDriveState state) {
+                      if (state is GoogleDriveLoading) {
+                        return Center(
+                            child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        ));
+                      } else if (state is GoogleDriveGetSuccess) {
+                        return listView(state.obj);
+                      } else {
+                        return Center(
+                            child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        ));
+                      }
+                    })
               ],
             ),
           ),
@@ -76,7 +105,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     );
   }
 
-  Widget listView() {
+  Widget listView(List _list) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.75
@@ -85,15 +114,15 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
         shrinkWrap: true,
         padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
-        itemCount: 25,
+        itemCount: _list.length,
         itemBuilder: (BuildContext context, int index) {
-          return _buildList(index);
+          return _buildList(_list, index);
         },
       ),
     );
   }
 
-  Widget _buildList(int index) {
+  Widget _buildList(List list, int index) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -113,7 +142,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
         // contentPadding:
         //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
         leading: highlightText(
-            text: 'Assessment $index',
+            text: list[index].title,
             theme: Theme.of(context).textTheme.headline2),
         // title: TranslationWidget(
         //     message: "No title",

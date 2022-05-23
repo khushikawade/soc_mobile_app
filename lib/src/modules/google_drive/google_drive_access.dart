@@ -1,25 +1,44 @@
 import 'dart:io';
+import 'package:Soc/src/modules/google_drive/model/sheet.dart';
+import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
 class GoogleDriveAccess {
+  static Future createSheet({required List<ExcelSheet> data}) async {
+    try {
+      var excel = Excel.createExcel();
+      final sheet = excel[excel.getDefaultSheet()!];
+      print(data);
+      for (int row = 0; row < data.length; row++) {
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
+            .value = data[row].id;
 
-  //TODO : Do not use syncfusion
-static Future file() async {
-    List<String> name = ['nikhar', 'rupesh', 'rajesh'];
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row))
+            .value = data[row].name;
 
-    // Create a new Excel document.
-    final Workbook workbook = new Workbook();
-    //Accessing worksheet via index.
-    Worksheet sheet = workbook.worksheets[0];
-    sheet.getRangeByName('A1').setText("Hello doc");
-    // Save the document.
-    final List<int> bytes = workbook.saveAsStream();
-    //Dispose the workbook.
-    workbook.dispose();
-    final String path = (await getApplicationSupportDirectory()).path;
-    final String fileName = '$path/Output.xlsx';
-    File file = File(fileName);
-    return file;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row))
+            .value = data[row].pointsEarned;
+
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row))
+            .value = data[row].pointsPossible;
+      }
+      // sheet.updateCell(CellIndex.indexByColumnRow(rowIndex: 0), cellStyle);
+
+      var fileBytes = excel.save();
+
+      var directory = (await getApplicationDocumentsDirectory()).path;
+      File file = File("$directory/testfile3.xlsx")
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(fileBytes!);
+      // });
+      // }
+      return file;
+    } catch (e) {
+      print(e);
+    }
   }
 }

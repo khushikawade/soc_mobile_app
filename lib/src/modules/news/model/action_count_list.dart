@@ -17,8 +17,7 @@ class ActionCountList {
       this.shareCount,
       this.title,
       this.id});
-
-  factory ActionCountList.fromJson(Map<String, dynamic> json) =>
+ factory ActionCountList.fromJson(Map<String, dynamic> json) =>
       ActionCountList(
         notificationId: json['Notification_Id__c'] as String?,
         schoolId: json['School_App__c'] as String?,
@@ -29,6 +28,7 @@ class ActionCountList {
         title: json['Title__c'] as String?,
         id: json['UID'] as String?,
       );
+ 
 
   Map<String, dynamic> toJson() => {
         'Notification_Id__c': notificationId,

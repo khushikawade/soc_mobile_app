@@ -38,5 +38,3 @@ class FetchTextFromImage extends OcrEvent {
   @override
   String toString() => 'GlobalSearchEvent { keyword: $base64}';
 }
-
-

@@ -1,16 +1,22 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
+import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/google_drive/model/sheet.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/io_client.dart';
+import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../../../services/Strings.dart';
 import '../../../services/db_service.dart';
 import '../../../services/local_database/hive_db_services.dart';
-import 'package:path/path.dart';
+import 'package:http/http.dart' as http;
 
-import '../google_drive_access.dart';
+import 'package:path/path.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -27,31 +33,57 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is CreateFolderOnGoogleDriveEvent) {
       try {
         String parentId;
-
+        Globals.authorizationToken = event.token;
         parentId = await _getGoogleDriveFolderList(
             token: event.token, folderName: event.folderName);
 
         if (parentId == '') {
-          parentId = await _createFolderOnDrive(
+          await _createFolderOnDrive(
               token: event.token, folderName: event.folderName);
+        } else {
+          print(event.token);
+          print("kkkkkkkkkkkkkkkk");
+          print(parentId);
+          Globals.folderId = parentId;
         }
-        //TODO : Open the commented code
-        
-        // File file = await GoogleDriveAccess.file();
-        // if (parentId != "") {
-        //   createSheetOnDrive(
-        //       folderId: parentId, accessToken: event.token, image: file);
-        yield GoogleDriveAccountError();
-        // }
       } catch (e) {
-        yield GoogleDriveAccountError();
-        // throw (e);
+        throw (e);
       }
     }
 
     if (event is CreateDoc) {
       try {
-        GoogleDriveAccess.file();
+        List<ExcelSheet> data = [
+          ExcelSheet('id', 'Name', 'Points earned', 'Points possible'),
+          ExcelSheet('1', 'Noah', '1', '1'),
+          ExcelSheet('2', 'Oliver', '1', '5'),
+          ExcelSheet('3', 'George', '1', '1'),
+          ExcelSheet('4', 'Theo', '21', '51'),
+          ExcelSheet('5', 'Arthur', '1', '1'),
+          ExcelSheet('6', 'Charlie', '14', '13'),
+          ExcelSheet('7', 'Lilly', '1', '1'),
+          ExcelSheet('8', 'Mia', '1', '1'),
+          ExcelSheet('9', 'Isla', '2', '81'),
+          ExcelSheet('10', 'Amelia', '1', '61'),
+          ExcelSheet('11', 'Ava', '1', '41'),
+        ];
+
+        File file = await GoogleDriveAccess.createSheet(data: data);
+        createSheetOnDrive(
+            folderId: Globals.folderId,
+            accessToken: Globals.authorizationToken,
+            image: file);
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    if (event is GetSheetFromDrive) {
+      try {
+        List<Assessment> _list = await _fetchHistoryAssessment(
+            Globals.authorizationToken, Globals.folderId);
+
+        yield GoogleDriveGetSuccess(obj: _list);
       } catch (e) {
         print(e);
       }
@@ -81,7 +113,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       if (response.statusCode == 200) {
         //  String id = response.data['id'];
-        return response.data['id'];
+        print("folder--------- created");
+        return Globals.folderId = response.data['id'];
       }
       return "";
     } catch (e) {
@@ -129,7 +162,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future createSheetOnDrive(
       {File? image, String? folderId, String? accessToken}) async {
     Map body = {
-      'name': 'test_sheet_A.xlsx',
+      'name': 'testfile3.xlsx',
       'description': 'Newly created file',
       'mimeType': 'application/vnd.google-apps.spreadsheet',
       'parents': ['$folderId']
@@ -207,5 +240,30 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     //   Map json = jsonDecode(res.body);
     //   throw ('${json['error']['message']}');
     // }
+  }
+
+  Future _fetchHistoryAssessment(String? token, String? folderId) async {
+    try {
+      print(token);
+      print(folderId);
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $token'
+      };
+      final ResponseModel response = await _dbServices.getapi(
+          "https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents",
+          headers: headers,
+          isGoogleApi: true);
+
+      if (response.statusCode == 200) {
+        //  var data = response.data['items'];
+        List<Assessment> _list = response.data['items']
+            .map<Assessment>((i) => Assessment.fromJson(i))
+            .toList();
+        return _list;
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

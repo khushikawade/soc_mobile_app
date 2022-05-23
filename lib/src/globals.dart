@@ -118,4 +118,6 @@ class Globals {
   ];
   static List gradeList = [];
   static bool iscameraPopup = true;
+  static String? folderId;
+  static String ? authorizationToken;
 }

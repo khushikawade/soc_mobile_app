@@ -156,7 +156,7 @@ class _StaffPageState extends State<StaffPage> {
     _googleDriveBloc.add(CreateFolderOnGoogleDriveEvent(
         //  filePath: file,
         token: profile[3].toString().split('=')[1].replaceAll('#', ''),
-        folderName: "test_folder_table"));
+        folderName: "test_folder_c"));
   }
 
   Widget _body(String key) => RefreshIndicator(
@@ -286,7 +286,7 @@ class _StaffPageState extends State<StaffPage> {
     return FloatingActionButton.extended(
         backgroundColor: AppTheme.kButtonColor,
         onPressed: () async {
-          // _localData.clear();
+          _localData.clear();
           if (_localData.isEmpty) {
             await _launchURL('Google Authentication');
           } else {
