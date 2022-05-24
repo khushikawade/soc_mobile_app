@@ -243,8 +243,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         //           style: Theme.of(context).textTheme.bodyText1!);
         //     }),
         trailing: highlightText(
-            text:
-                '${Globals.studentInfo![index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
+            text: Globals.studentInfo![index].studentGrade == ''
+                ? '2/2'
+                : '${Globals.studentInfo![index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
             theme: Theme.of(context)
                 .textTheme
                 .headline2!

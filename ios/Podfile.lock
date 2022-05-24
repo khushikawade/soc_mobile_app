@@ -215,8 +215,6 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - native_device_orientation (0.0.1):
-    - Flutter
   - onesignal_flutter (3.2.8):
     - Flutter
     - OneSignalXCFramework (= 3.10.0)
@@ -266,7 +264,6 @@ DEPENDENCIES:
   - google_ml_kit (from `.symlinks/plugins/google_ml_kit/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
-  - native_device_orientation (from `.symlinks/plugins/native_device_orientation/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
   - open_apps_settings (from `.symlinks/plugins/open_apps_settings/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -350,8 +347,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
-  native_device_orientation:
-    :path: ".symlinks/plugins/native_device_orientation/ios"
   onesignal_flutter:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
   open_apps_settings:
@@ -429,7 +424,6 @@ SPEC CHECKSUMS:
   MLKitVisionKit: 226bac429eda1d84285409e31ce9da72606850fb
   MLKitXenoCommon: bf5b3528d77cabe0d04f3c13536ba1302346e31c
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  native_device_orientation: 3b4cfc9565a7b879cc4fde282b3e27745e852d0d
   onesignal_flutter: 532fddb1b5921fb1145e4baef5177b9bca1c9d36
   OneSignalXCFramework: 10648e60ff3d335fbffa62d9b44b700b56d49b51
   open_apps_settings: b15bcddca026a201319f58e24f36464218793efc
