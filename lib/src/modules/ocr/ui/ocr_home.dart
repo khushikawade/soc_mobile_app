@@ -126,10 +126,12 @@ class _OpticalCharacterRecognitionPageState
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
               Globals.studentInfo = [];
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CameraScreen()),
-              );
+              // UNCOMMENT
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => CameraScreen()),
+              // );
+              getGallaryImage(); // COMMENT
             },
             icon: Icon(
                 IconData(0xe875,

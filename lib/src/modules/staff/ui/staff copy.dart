@@ -384,7 +384,7 @@ class _StaffPageState extends State<StaffPage> {
                     icon: Icon(Icons.add,
                         color: Theme.of(context).backgroundColor),
                     label: textwidget(
-                        text: 'Add Assessment',
+                        text: 'Assessment',
                         textTheme: Theme.of(context)
                             .textTheme
                             .headline2!

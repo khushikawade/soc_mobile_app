@@ -9,6 +9,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -217,53 +218,55 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         //     mainAxisSpacing: 15),
         itemCount: list.length,
         itemBuilder: (BuildContext ctx, index) {
-          return InkWell(
-            onTap: () {
-              // if(indexGlobal == 0){
-              //   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
-              // } else if(indexGlobal == 1){
-              //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
-              // }
-              if (indexGlobal == 2) {
-                setState(() {
-                  nycSubIndex = index;
-                });
-              }
-            },
-            child: AnimatedContainer(
-              padding: EdgeInsets.only(bottom: 5),
-              decoration: BoxDecoration(
-                color: (nycSubIndex == index && indexGlobal == 2)
-                    ? AppTheme.kSelectedColor
-                    : Colors.grey,
-                // Theme.of(context)
-                //     .colorScheme
-                //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
-
-                borderRadius: BorderRadius.all(
-                  Radius.circular(8),
-                ),
-              ),
-              duration: Duration(microseconds: 100),
-              child: Container(
-                padding: EdgeInsets.all(15),
-                alignment: Alignment.center,
-                child: Utility.textWidget(
-                    text: list[index].subjectNameC!,
-                    textTheme: Theme.of(context).textTheme.headline2,
-                    context: context),
+          return Bouncing(
+            child: InkWell(
+              onTap: () {
+                // if(indexGlobal == 0){
+                //   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                // } else if(indexGlobal == 1){
+                //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
+                // }
+                if (indexGlobal == 2) {
+                  setState(() {
+                    nycSubIndex = index;
+                  });
+                }
+              },
+              child: AnimatedContainer(
+                padding: EdgeInsets.only(bottom: 5),
                 decoration: BoxDecoration(
-                    color:
-                        Color(0xff000000) != Theme.of(context).backgroundColor
-                            ? Color(0xffF7F8F9)
-                            : Color(0xff111C20),
-                    border: Border.all(
-                      color: (nycSubIndex == index && indexGlobal == 2)
-                          ? AppTheme.kSelectedColor
-                          : Colors.grey,
-                    ),
-                    // color: scoringColor == index ? Colors.orange : null,
-                    borderRadius: BorderRadius.circular(8)),
+                  color: (nycSubIndex == index && indexGlobal == 2)
+                      ? AppTheme.kSelectedColor
+                      : Colors.grey,
+                  // Theme.of(context)
+                  //     .colorScheme
+                  //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
+
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+                duration: Duration(microseconds: 100),
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  alignment: Alignment.center,
+                  child: Utility.textWidget(
+                      text: list[index].subjectNameC!,
+                      textTheme: Theme.of(context).textTheme.headline2,
+                      context: context),
+                  decoration: BoxDecoration(
+                      color:
+                          Color(0xff000000) != Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                      border: Border.all(
+                        color: (nycSubIndex == index && indexGlobal == 2)
+                            ? AppTheme.kSelectedColor
+                            : Colors.grey,
+                      ),
+                      // color: scoringColor == index ? Colors.orange : null,
+                      borderRadius: BorderRadius.circular(8)),
+                ),
               ),
             ),
           );
@@ -326,6 +329,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   }
 
   Widget scoringButton({required List<SubjectList> list}) {
+    // return Bouncing(child: Container(color: Colors.blue, height: 200, width: 200));
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.60
@@ -340,62 +344,82 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               mainAxisSpacing: 15),
           itemCount: list.length,
           itemBuilder: (BuildContext ctx, index) {
-            return InkWell(
-              onTap: () {
+            return Bouncing(
+              onPress: () {
                 if (indexGlobal == 0) {
                   setState(() {
                     subjectIndex = index;
                   });
-                  _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                  _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));  // UNCOMMENT
                 } else if (indexGlobal == 1) {
                   setState(() {
                     nycIndex = index;
                   });
-                  _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
+                  _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));  // UNCOMMENT
                 } else if (indexGlobal == 1) {
                   setState(() {
                     nycSubIndex = index;
                   });
                 }
               },
-              child: AnimatedContainer(
-                padding: EdgeInsets.only(bottom: 5),
-                decoration: BoxDecoration(
-                  color: (subjectIndex == index && indexGlobal == 0) ||
-                          (nycIndex == index && indexGlobal == 1)
-                      ? AppTheme.kSelectedColor
-                      : Colors.grey,
-                  // Theme.of(context)
-                  //     .colorScheme
-                  //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
-
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8),
-                  ),
-                ),
-                duration: Duration(microseconds: 100),
-                child: Container(
-                  alignment: Alignment.center,
-                  child: Utility.textWidget(
-                      text: list[index].subjectNameC!,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(fontWeight: FontWeight.bold),
-                      context: context),
+              child: Container(
+                //InkWell
+                // onTap: () {
+                //   if (indexGlobal == 0) {
+                //     setState(() {
+                //       subjectIndex = index;
+                //     });
+                //     // _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));  // UNCOMMENT
+                //   } else if (indexGlobal == 1) {
+                //     setState(() {
+                //       nycIndex = index;
+                //     });
+                //     // _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));  // UNCOMMENT
+                //   } else if (indexGlobal == 1) {
+                //     setState(() {
+                //       nycSubIndex = index;
+                //     });
+                //   }
+                // },
+                child: AnimatedContainer(
+                  padding: EdgeInsets.only(bottom: 5),
                   decoration: BoxDecoration(
-                      color:
-                          Color(0xff000000) != Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                      border: Border.all(
-                        color: (subjectIndex == index && indexGlobal == 0) ||
-                                (nycIndex == index && indexGlobal == 1)
-                            ? AppTheme.kSelectedColor
-                            : Colors.grey,
-                      ),
-                      // color: scoringColor == index ? Colors.orange : null,
-                      borderRadius: BorderRadius.circular(8)),
+                    color: (subjectIndex == index && indexGlobal == 0) ||
+                            (nycIndex == index && indexGlobal == 1)
+                        ? AppTheme.kSelectedColor
+                        : Colors.grey,
+                    // Theme.of(context)
+                    //     .colorScheme
+                    //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
+
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                  duration: Duration(microseconds: 100),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Utility.textWidget(
+                        text: list[index].subjectNameC!,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(fontWeight: FontWeight.bold),
+                        context: context),
+                    decoration: BoxDecoration(
+                        color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color(0xffF7F8F9)
+                            : Color(0xff111C20),
+                        border: Border.all(
+                          color: (subjectIndex == index && indexGlobal == 0) ||
+                                  (nycIndex == index && indexGlobal == 1)
+                              ? AppTheme.kSelectedColor
+                              : Colors.grey,
+                        ),
+                        // color: scoringColor == index ? Colors.orange : null,
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
                 ),
               ),
             );
