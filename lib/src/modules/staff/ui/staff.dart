@@ -142,7 +142,7 @@ class _StaffPageState extends State<StaffPage> {
 
     List<UserInfo> userInfo = await localdb();
 
-    _ocrBloc.add(AuthenticateEmail(email: userInfo.last.userEmail));
+    _ocrBloc.add(VerifyUserWithDatabase(email: userInfo.last.userEmail));
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
@@ -286,6 +286,7 @@ class _StaffPageState extends State<StaffPage> {
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor,
                 onPressed: () async {
+                  localdb();
                   // _localData.clear();
                   if (_localData.isEmpty) {
                     await _launchURL('Google Authentication');

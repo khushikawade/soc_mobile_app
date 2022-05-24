@@ -349,8 +349,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-              color:
-                  Colors.green // Theme.of(context).colorScheme.primaryVariant,
+              // color:AppTheme.kButtonColor,
               ),
         ),
         border: UnderlineInputBorder(

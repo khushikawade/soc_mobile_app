@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -23,7 +24,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is FetchTextFromImage) {
       try {
         yield OcrLoading();
-        List data = await fatchAndProcessDetails(base64: event.base64);
+        List data = await fetchAndProcessDetails(base64: event.base64);
         if (data[0] != '' && data[1] != '') {
           yield FetchTextFromImageSuccess(schoolId: data[0], grade: data[1]);
         } else {
@@ -34,28 +35,22 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    if (event is AuthenticateEmail) {
+    if (event is VerifyUserWithDatabase) {
       try {
         yield OcrLoading();
         //  var data =
-        bool result = await authenticateEmail(email: event.email.toString());
+        bool result =
+            await verifyUserWithDatabase(email: event.email.toString());
         if (!result) {
-          await authenticateEmail(email: event.email.toString());
+          await verifyUserWithDatabase(email: event.email.toString());
         }
-
-        // yield EmailAuthenticationSuccess(
-        //   obj: data,
-        // );
       } catch (e) {
-        await authenticateEmail(email: event.email.toString());
-        // if (e.toString().contains('NO_CONNECTION')) {
-        //   Utility.showSnackBar(event.scaffoldKey,
-        //       'Make sure you have a proper Internet connection', event.context);
-        // }
-        yield OcrErrorReceived(err: e);
+        await verifyUserWithDatabase(email: event.email.toString());
+
+        // yield OcrErrorReceived(err: e);
       }
     }
-    
+
     if (event is FatchSubjectDetails) {
       try {
         if (event.type == 'subject') {
@@ -119,136 +114,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  // List processData({required List data, required List coordinate}) {
-  //   List schoolIdNew = [];
-  //   List schoolgrade = [];
-
-  //   try {
-  //     for (var i = 0; i < data.length; i++) {
-  //       if (data[i]['description'].toString().length == 9) {
-  //         String id = data[i]['description'];
-  //         id.replaceAll('o', '0');
-  //         id.replaceAll('O', '0');
-  //         id.replaceAll('I', '1');
-  //         id.replaceAll('i', '1');
-  //         id.replaceAll('L', '1');
-  //         id.replaceAll('l', '1');
-  //         id.replaceAll('S', '5');
-  //         id.replaceAll('s', '5');
-  //         id.replaceAll('Y', '4');
-  //         id.replaceAll('y', '4');
-  //         id.replaceAll('q', '9');
-  //         id.replaceAll('b', '6');
-  //         schoolIdNew.add(id);
-
-  //         //schoolIdNew!.add(data[i]);
-  //       }
-  //       for (var j = 0; j < coordinate.length; j++) {
-  //         int circleX = covertStringtoint(coordinate[j].split(',')[0]);
-  //         int circleY = covertStringtoint(coordinate[j].split(',')[1]);
-  //         int textx = covertStringtoint(
-  //             data[i]['boundingPoly']['vertices'][0]['x'].toString());
-  //         int texty = covertStringtoint(
-  //             data[i]['boundingPoly']['vertices'][0]['y'].toString());
-
-  //         if (data[i]['description'].toString().length == 1 &&
-  //             textx < circleX + 25 &&
-  //             textx > circleX - 25 &&
-  //             texty < circleY + 25 &&
-  //             texty > circleY - 25) {
-  //           schoolgrade.add(data[i]['description']);
-  //         }
-  //       }
-  //     }
-  //     print(schoolIdNew);
-  //     return schoolgrade;
-  //   } catch (e) {
-  //     throw Exception('Something went wrong');
-  //   }
-  // }
-
-  int covertStringtoInt(String data) {
-    try {
-      int result = int.parse(data);
-      return result;
-    } catch (e) {
-      return 0;
-    }
-  }
-  // {h:h,w:w}
-
-  // Future fatchDetails({required String base64}) async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.postapi(
-  //         Uri.encodeFull('https://916f-111-118-246-106.in.ngrok.io'),
-  //         body: {'data': '$base64'},
-  //         isGoogleApi: true
-
-  //         // headers: {
-  //         //   'Content-Type': 'application/json',
-  //         //   'authorization': 'Bearer AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'
-  //         // }
-  //         );
-
-  //     if (response.statusCode == 200) {
-  //       // List<FullTextAnnotation> _list = response.data['text']['responses'][0]
-  //       //     .map<FullTextAnnotation>((i) => FullTextAnnotation.fromJson(i))
-  //       //     .toList();
-
-  //       print(response.data['text']['responses'][0]['textAnnotations']);
-  //       print(
-  //           '------------------------------------test111111-----------------------------------');
-  //       List text = response.data['text']['responses'][0]['textAnnotations'];
-  //       List coordinate = response.data['coordinate'];
-  //       List schoolgrade = [];
-  //       //     List grade = response.data['coordinate'];
-
-  //       for (var i = 0; i < text.length; i++) {
-  //         for (var j = 0; j < coordinate.length; j++) {
-  //           int circleX = covertStringtoInt(coordinate[j].split(',')[0]);
-  //           int circleY = covertStringtoInt(coordinate[j].split(',')[1]);
-  //           int radiusR = covertStringtoInt(coordinate[j].split(',')[1]);
-
-  //           int textx = covertStringtoInt(
-  //               text[i]['boundingPoly']['vertices'][0]['x'].toString());
-  //           int texty = covertStringtoInt(
-  //               text[i]['boundingPoly']['vertices'][0]['y'].toString());
-
-  //           if (text[i]['description'].toString().length == 1 &&
-  //               textx < circleX + radiusR &&
-  //               textx > circleX - radiusR &&
-  //               texty < circleY + radiusR &&
-  //               texty > circleY - radiusR &&
-  //               (text[i]['description'] == '0' ||
-  //                   text[i]['description'] == '1' ||
-  //                   text[i]['description'] == '2')) {
-  //             schoolgrade.add(text[i]['description']);
-  //           }
-  //         }
-  //       }
-
-  //       //  List result = processData(data: text, coordinate: grade);
-
-  //       // _list.removeWhere((CustomSetting element) => element.status == 'Hide');
-  //       // _list.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
-  //       // if (_list.length > 6) {
-  //       //   _list.removeRange(6, _list.length);
-  //       // }
-  //       // Globals.customSetting = _list;
-  //       // // To take the backup for all the sections.
-  //       // _backupAppData();
-  //       // return _list;
-  //       print(schoolgrade);
-  //       return text;
-  //     }
-  //   } catch (e) {
-  //     print(
-  //         '------------------------------------test-----------------------------------');
-  //     print(e);
-  //   }
-  // }
-
-  Future fatchAndProcessDetails({required String base64}) async {
+  Future fetchAndProcessDetails({required String base64}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
         Uri.encodeFull('http://3.142.181.122:5050/ocr'),
@@ -264,7 +130,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           for (var i = 0; i < text.length; i++) {
             if (text[i]['description'].toString().length == 9 &&
                 text[i]['description'][0] == '2') {
-              bool result = checkForInt(text[i]['description']);
+              bool result = Utility.checkForInt(text[i]['description']);
               if (result) {
                 schoolIdNew.add(text[i]['description']);
               }
@@ -278,7 +144,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
                 sum = sum + text[j]['description'].toString().length;
                 id = '$id${text[j]['description']}';
                 if (sum == 9 && text[i]['description'].toString()[0] == '2') {
-                  bool result = checkForInt(id);
+                  bool result = Utility.checkForInt(id);
                   if (result) {
                     schoolIdNew.add(id);
                   }
@@ -297,13 +163,16 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           List text = response.data['text']['responses'][0]['textAnnotations'];
           for (var i = 0; i < text.length; i++) {
             for (var j = 0; j < coordinate.length; j++) {
-              int circleX = covertStringtoInt(coordinate[j].split(',')[0]);
-              int circleY = covertStringtoInt(coordinate[j].split(',')[1]);
-              int radiusR = covertStringtoInt(coordinate[j].split(',')[1]);
+              int circleX =
+                  Utility.covertStringtoInt(coordinate[j].split(',')[0]);
+              int circleY =
+                  Utility.covertStringtoInt(coordinate[j].split(',')[1]);
+              int radiusR =
+                  Utility.covertStringtoInt(coordinate[j].split(',')[1]);
 
-              int textx = covertStringtoInt(
+              int textx = Utility.covertStringtoInt(
                   text[i]['boundingPoly']['vertices'][0]['x'].toString());
-              int texty = covertStringtoInt(
+              int texty = Utility.covertStringtoInt(
                   text[i]['boundingPoly']['vertices'][0]['y'].toString());
 
               if (text[i]['description'].toString().length == 1 &&
@@ -333,16 +202,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  bool checkForInt(String data) {
-    try {
-      int result = int.parse(data);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> authenticateEmail({required String? email}) async {
+  Future<bool> verifyUserWithDatabase({required String? email}) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
@@ -357,14 +217,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       var res = response.data;
       var data = res["body"];
       if (data == false) {
-        bool result = await _createAccount(email: email.toString());
+        bool result = await _createContact(email: email.toString());
         if (!result) {
-          await _createAccount(email: email.toString());
+          await _createContact(email: email.toString());
         }
       } else {
-        bool result = await _updateAccount(recordId: data['Id']);
+        bool result = await _updateContact(recordId: data['Id']);
         if (!result) {
-          await _updateAccount(recordId: data['Id']);
+          await _updateContact(recordId: data['Id']);
         }
       }
       return true;
@@ -374,7 +234,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _createAccount({required String? email}) async {
+  Future<bool> _createContact({required String? email}) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
@@ -400,7 +260,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _updateAccount({required String? recordId}) async {
+  Future<bool> _updateContact({required String? recordId}) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
