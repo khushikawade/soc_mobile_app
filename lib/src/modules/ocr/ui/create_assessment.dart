@@ -281,9 +281,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
     return FloatingActionButton.extended(
         backgroundColor: AppTheme.kButtonColor,
         onPressed: () async {
-          _googleDriveBloc.add(CreateDoc(
+          _googleDriveBloc.add(CreateExcelSheetToDrive(
               name: "${assessmentController.text}_${classController.text}"));
-
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => SubjectSelection()),
