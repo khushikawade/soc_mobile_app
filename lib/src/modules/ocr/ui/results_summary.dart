@@ -154,9 +154,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         fontPackage: Overrides.kFontPkg),
                     size: 32,
                     color: index == 2
-                      ? Theme.of(context).backgroundColor == Color(0xff000000)
-                          ? Colors.white
-                          : Colors.black
+                        ? Theme.of(context).backgroundColor == Color(0xff000000)
+                            ? Colors.white
+                            : Colors.black
                         : index == 3
                             ? Colors.green
                             : AppTheme.kButtonColor,
@@ -173,7 +173,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       Share.share(Globals.shareableLink!);
                     }
                   },
-                  
                 ),
         ],
       ),

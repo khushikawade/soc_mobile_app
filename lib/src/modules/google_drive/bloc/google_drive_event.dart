@@ -17,11 +17,18 @@ class CreateFolderOnGoogleDriveEvent extends GoogleDriveEvent {
   List<Object> get props => [token!, folderName!];
 }
 
-class CreateDoc extends GoogleDriveEvent {
+class CreateDocOnDrive extends GoogleDriveEvent {
   final String? name;
 
-  CreateDoc({this.name});
+  CreateDocOnDrive({this.name});
 
+  @override
+  List<Object> get props => [];
+}
+
+class UpdateDocOnDrive extends GoogleDriveEvent {
+  final List<StudentAssessmentInfo>? studentData;
+  UpdateDocOnDrive({this.studentData});
   @override
   List<Object> get props => [];
 }

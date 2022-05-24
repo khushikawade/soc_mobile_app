@@ -179,6 +179,7 @@ class _OpticalCharacterRecognitionPageState
   Widget pointsButton(index) {
     return InkWell(
         onTap: () {
+          Globals.pointpossible = "${index + 1}";
           setState(() {
             indexColor = index + 1;
             if (index == 1) {
