@@ -23,7 +23,6 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../ocr/modal/user_info.dart';
 import '../../ocr/ui/ocr_home.dart';
 import '../../shared/ui/common_grid_widget.dart';
-//import 'package:file_picker/file_picker.dart';
 
 class StaffPage extends StatefulWidget {
   StaffPage(
@@ -55,7 +54,6 @@ class _StaffPageState extends State<StaffPage> {
   bool? authSuccess = false;
   dynamic userData;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-  // OcrBloc _ocrBloc = new OcrBloc();
   ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
 
@@ -71,11 +69,21 @@ class _StaffPageState extends State<StaffPage> {
   }
 
   _scrollListener() async {
-    if (isScrolling.value == true) return;
-    isScrolling.value = true;
-    if (isScrolling.value == false) return;
-    await Future.delayed(Duration(milliseconds: 2000));
-    isScrolling.value = false;
+    bool isTop = _scrollController.position.pixels < 150;
+    if (isTop) {
+      if (isScrolling.value == false) return;
+      isScrolling.value = false;
+    } else {
+      if (isScrolling.value == true) return;
+      isScrolling.value = true;
+    }
+    // }
+    // if (isScrolling.value == true) return;
+    // isScrolling.value = true;
+    // if (isScrolling.value == false) return;
+    // await Future.delayed(Duration(milliseconds: 900));
+    // isScrolling.value = false;
+    // setState(() {});
   }
 
   localdb() async {
@@ -88,88 +96,42 @@ class _StaffPageState extends State<StaffPage> {
         ? Color(0xff000000)
         : Color(0xffFFFFFF);
 
-    pushNewScreen(
+    var value = await pushNewScreen(
       context,
       screen: GoogleAuthWebview(
-          title: title!,
-          url: Overrides.secureLoginURL +
-              '?' +
-              Globals.appSetting.appLogoC +
-              '?' +
-              themeColor.toString().split('0xff')[1].split(')')[0],
-
-          // .split('0x')[
-          //     1].split(')')[0], //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
-          isbuttomsheet: true,
-          language: Globals.selectedLanguage,
-          hideAppbar: false,
-          hideShare: true,
-          zoomEnabled: false,
-          callBackFunction: (value) async {
-            // print(value);
-            if (value.toString().contains('displayName')) {
-              value = value.split('?')[1];
-              //Save user profile
-              saveUserProfile(value);
-              // Push to the grading system
-              pushNewScreen(
-                context,
-                screen: OpticalCharacterRecognition(),
-                withNavBar: false,
-              );
-            } else if (value.toString().contains('authenticationfailure')) {
-              Navigator.pop(context, false);
-              Utility.showSnackBar(
-                  _scaffoldKey,
-                  'You are not authorized to access the feature. Please use the authorized account.',
-                  context,
-                  50.0);
-            }
-          }),
+        title: title!,
+        url: Overrides.secureLoginURL +
+            '?' +
+            Globals.appSetting.appLogoC +
+            '?' +
+            themeColor.toString().split('0xff')[1].split(')')[0],
+        isbuttomsheet: true,
+        language: Globals.selectedLanguage,
+        hideAppbar: false,
+        hideShare: true,
+        zoomEnabled: false,
+      ),
       withNavBar: false,
     );
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (BuildContext context) => GoogleAuthWebview(
-    //             title: title!,
-    //             url: Overrides.secureLoginURL +
-    //                 '?' +
-    //                 Globals.appSetting.appLogoC +
-    //                 '?' + themeColor.toString().split('0xff')[
-    //                     1].split(')')[0],
 
-    //                 // .split('0x')[
-    //                 //     1].split(')')[0], //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
-    //             isbuttomsheet: true,
-    //             language: Globals.selectedLanguage,
-    //             hideAppbar: false,
-    //             hideShare: true,
-    //             zoomEnabled: false,
-    //             callBackFunction: (value) async {
-    //               // print(value);
-    //               if (value.toString().contains('displayName')) {
-    //                 value = value.split('?')[1];
-    //                 //Save user profile
-    //                 saveUserProfile(value);
-    //                 // Push to the grading system
-    //                 pushNewScreen(
-    //                   context,
-    //                   screen: OpticalCharacterRecognition(),
-    //                   withNavBar: false,
-    //                 );
-    //               } else if (value
-    //                   .toString()
-    //                   .contains('authenticationfailure')) {
-    //                 Navigator.pop(context, false);
-    //                 Utility.showSnackBar(
-    //                     _scaffoldKey,
-    //                     'You are not authorized to access the feature. Please use the authorized account.',
-    //                     context,
-    //                     50.0);
-    //               }
-    //             })
-    //             ));
+    if (value.toString().contains('displayName')) {
+      value = value.split('?')[1];
+      //Save user profile
+      saveUserProfile(value);
+      // Push to the grading system
+      pushNewScreen(
+        context,
+        screen: OpticalCharacterRecognition(),
+        withNavBar: false,
+      );
+    } else if (value.toString().contains('authenticationfailure')) {
+      Navigator.pop(context, false);
+      Utility.showSnackBar(
+          _scaffoldKey,
+          'You are not authorized to access the feature. Please use the authorized account.',
+          context,
+          50.0);
+    }
   }
 
   saveUserProfile(profileData) {
@@ -192,114 +154,123 @@ class _StaffPageState extends State<StaffPage> {
 
   Widget _body(String key) => RefreshIndicator(
       key: refreshKey,
-      child: OfflineBuilder(
-          connectivityBuilder: (
-            BuildContext context,
-            ConnectivityResult connectivity,
-            Widget child,
-          ) {
-            final bool connected = connectivity != ConnectivityResult.none;
-            if (connected) {
-              if (iserrorstate == true) {
-                iserrorstate = false;
-                _bloc.add(StaffPageEvent());
+      child: Stack(children: [
+        OfflineBuilder(
+            connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,
+            ) {
+              final bool connected = connectivity != ConnectivityResult.none;
+              if (connected) {
+                if (iserrorstate == true) {
+                  iserrorstate = false;
+                  _bloc.add(StaffPageEvent());
+                }
+              } else if (!connected) {
+                iserrorstate = true;
               }
-            } else if (!connected) {
-              iserrorstate = true;
-            }
 
-            return
-                // connected?
-                Container(
-              child: Column(mainAxisSize: MainAxisSize.max, children: [
-                Expanded(
-                  child: BlocBuilder<StaffBloc, StaffState>(
-                      bloc: _bloc,
-                      builder: (BuildContext contxt, StaffState state) {
-                        if (state is StaffInitial || state is StaffLoading) {
-                          return Center(
-                              child: CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.primaryVariant,
-                          ));
-                        } else if (state is StaffDataSucess) {
-                          return widget.customObj != null &&
-                                  widget.customObj!.sectionTemplate ==
-                                      "Grid Menu"
-                              ? CommonGridWidget(
-                                  scaffoldKey: _scaffoldKey,
-                                  bottomPadding: 60,
-                                  connected: connected,
-                                  data: state.obj!,
-                                  sectionName: "staff")
-                              : CommonListWidget(
-                                  scrollController: _scrollController,
-                                  bottomPadding: 80,
-                                  key: ValueKey(key),
-                                  scaffoldKey: _scaffoldKey,
-                                  connected: connected,
-                                  data: state.obj!,
-                                  sectionName: "staff");
-                        } else if (state is ErrorInStaffLoading) {
-                          return ListView(children: [ErrorMsgWidget()]);
-                        } else {
-                          return ErrorMsgWidget();
-                        }
-                      }),
-                ),
-                Container(
-                  height: 0,
-                  width: 0,
-                  child: BlocListener<HomeBloc, HomeState>(
-                      bloc: _homeBloc,
-                      listener: (context, state) async {
-                        if (state is BottomNavigationBarSuccess) {
-                          AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.appSetting = AppSetting.fromJson(state.obj);
-                          setState(() {});
-                        }
-                      },
-                      child: EmptyContainer()),
-                ),
-              ]),
-            );
-          },
-          child: Container()),
+              return
+                  // connected?
+                  Container(
+                child: Column(mainAxisSize: MainAxisSize.max, children: [
+                  Expanded(
+                    child: BlocBuilder<StaffBloc, StaffState>(
+                        bloc: _bloc,
+                        builder: (BuildContext contxt, StaffState state) {
+                          if (state is StaffInitial || state is StaffLoading) {
+                            return Center(
+                                child: CircularProgressIndicator(
+                              color:
+                                  Theme.of(context).colorScheme.primaryVariant,
+                            ));
+                          } else if (state is StaffDataSucess) {
+                            return widget.customObj != null &&
+                                    widget.customObj!.sectionTemplate ==
+                                        "Grid Menu"
+                                ? CommonGridWidget(
+                                    scaffoldKey: _scaffoldKey,
+                                    bottomPadding: 60,
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: "staff")
+                                : CommonListWidget(
+                                    scrollController: _scrollController,
+                                    bottomPadding: 80,
+                                    key: ValueKey(key),
+                                    scaffoldKey: _scaffoldKey,
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: "staff");
+                          } else if (state is ErrorInStaffLoading) {
+                            return ListView(children: [ErrorMsgWidget()]);
+                          } else {
+                            return ErrorMsgWidget();
+                          }
+                        }),
+                  ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+                            Globals.appSetting = AppSetting.fromJson(state.obj);
+                            setState(() {});
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                ]),
+              );
+            },
+            child: Container()),
+        cameraButton()
+      ]),
       onRefresh: refreshPage);
 
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBarWidget(
-          marginLeft: 30,
-          refresh: (v) {
-            setState(() {});
-          },
-        ),
-        body: Globals.appSetting.staffBannerImageC != null &&
-                Globals.appSetting.staffBannerImageC != ''
-            ? NestedScrollView(
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return <Widget>[
-                    BannerImageWidget(
-                      imageUrl: Globals.appSetting.staffBannerImageC!,
-                      bgColor: Globals.appSetting.studentBannerColorC != null
-                          ? Utility.getColorFromHex(
-                              Globals.appSetting.studentBannerColorC!)
-                          : null,
-                    )
-                  ];
-                },
-                body: _body('body1'),
-              )
-            : _body('body2'),
-        floatingActionButton: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height * 0.03,
-          ),
-          child: cameraButton(),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat);
+      key: _scaffoldKey,
+      appBar: AppBarWidget(
+        marginLeft: 30,
+        refresh: (v) {
+          setState(() {});
+        },
+      ),
+      body: Globals.appSetting.staffBannerImageC != null &&
+              Globals.appSetting.staffBannerImageC != ''
+          ? NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  BannerImageWidget(
+                    imageUrl: Globals.appSetting.staffBannerImageC!,
+                    bgColor: Globals.appSetting.studentBannerColorC != null
+                        ? Utility.getColorFromHex(
+                            Globals.appSetting.studentBannerColorC!)
+                        : null,
+                  )
+                ];
+              },
+              body: _body('body1'),
+            )
+          : _body('body2'),
+      // floatingActionButton: Padding(
+      //   padding: EdgeInsets.only(
+      //     bottom: MediaQuery.of(context).size.height * 0.03,
+      //   ),
+      //   child: cameraButton(),
+      // ),
+      // floatingActionButtonAnimator: NoScalingAnimation(),
+      // floatingActionButtonLocation: isScrolling.value
+      //     ? FloatingActionButtonLocation.endFloat
+      //     : FloatingActionButtonLocation.centerFloat,
+    );
   }
 
   Future refreshPage() async {
@@ -319,31 +290,39 @@ class _StaffPageState extends State<StaffPage> {
         valueListenable: isScrolling,
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
-          return AnimatedOpacity(
-            opacity: isScrolling.value ? 0 : 1,
-            curve: Curves.easeInOut,
-            duration: Duration(milliseconds: 800),
-            child: FloatingActionButton.extended(
-                backgroundColor: AppTheme.kButtonColor,
-                onPressed: () async {
-                  // _localData.clear();
-                  if (_localData.isEmpty) {
-                    await _launchURL('Google Authentication');
-                  } else {
-                    pushNewScreen(
-                      context,
-                      screen: OpticalCharacterRecognition(),
-                      withNavBar: false,
-                    );
-                  }
-                },
-                icon: Icon(Icons.add, color: Theme.of(context).backgroundColor),
-                label: textwidget(
-                    text: 'Add Assessment',
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(color: Theme.of(context).backgroundColor))),
+          return AnimatedPositioned(
+            bottom: 40.0,
+            right: isScrolling.value
+                ? 8
+                : (Utility.displayWidth(context) / 2) - 100,
+            duration: const Duration(milliseconds: 650),
+            curve: Curves.decelerate,
+            child: Container(
+              width: isScrolling.value ? null : 200,
+              child: FloatingActionButton.extended(
+                  isExtended: !isScrolling.value,
+                  backgroundColor: AppTheme.kButtonColor,
+                  onPressed: () async {
+                    // _localData.clear(); // COMMENT
+                    if (_localData.isEmpty) {
+                      await _launchURL('Google Authentication');
+                    } else {
+                      pushNewScreen(
+                        context,
+                        screen: OpticalCharacterRecognition(),
+                        withNavBar: false,
+                      );
+                    }
+                  },
+                  icon:
+                      Icon(Icons.add, color: Theme.of(context).backgroundColor),
+                  label: textwidget(
+                      text: 'Add Assessment',
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(color: Theme.of(context).backgroundColor))),
+            ),
           );
         });
   }
