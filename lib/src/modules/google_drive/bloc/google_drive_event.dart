@@ -4,11 +4,11 @@ abstract class GoogleDriveEvent extends Equatable {
   const GoogleDriveEvent();
 }
 
-class CreateFolderOnGoogleDriveEvent extends GoogleDriveEvent {
+class GetDriveFolderIdEvent extends GoogleDriveEvent {
   final String? token;
   final String? folderName;
   //final File? filePath;
-  CreateFolderOnGoogleDriveEvent({
+  GetDriveFolderIdEvent({
     required this.token,
     required this.folderName, //required this.filePath
   });
@@ -17,18 +17,15 @@ class CreateFolderOnGoogleDriveEvent extends GoogleDriveEvent {
   List<Object> get props => [token!, folderName!];
 }
 
-class CreateDoc extends GoogleDriveEvent {
+class CreateExcelSheetToDrive extends GoogleDriveEvent {
   final String? name;
-
-  CreateDoc({this.name});
-
+  CreateExcelSheetToDrive({this.name});
   @override
   List<Object> get props => [];
 }
 
-class GetSheetFromDrive extends GoogleDriveEvent {
-  GetSheetFromDrive();
-
+class GetHistoryAssessmentFromDrive extends GoogleDriveEvent {
+  GetHistoryAssessmentFromDrive();
   @override
   List<Object> get props => [];
 }

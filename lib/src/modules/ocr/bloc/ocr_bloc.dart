@@ -55,6 +55,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         yield OcrErrorReceived(err: e);
       }
     }
+    
     if (event is FatchSubjectDetails) {
       try {
         if (event.type == 'subject') {

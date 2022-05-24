@@ -14,6 +14,7 @@ class GoogleDriveLoading extends GoogleDriveState {
   List<Object> get props => [];
 }
 
+// ignore: must_be_immutable
 class GoogleDriveGetSuccess extends GoogleDriveState {
 List obj;
   GoogleDriveGetSuccess({required this.obj});
