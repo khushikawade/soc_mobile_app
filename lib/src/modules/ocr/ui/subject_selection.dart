@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
@@ -27,6 +28,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   int? nycIndex;
   int? nycSubIndex;
   OcrBloc _ocrBloc = OcrBloc();
+  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
   @override
   void initState() {
     _ocrBloc.add(FatchSubjectDetails(type: 'subject'));
@@ -469,6 +471,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             AppTheme.kButtonColor.withOpacity(nycSubIndex == null ? 0.5 : 1.0),
         onPressed: () async {
           if (nycSubIndex == null) return;
+          print(Globals.studentInfo!);
+          _googleDriveBloc
+              .add(UpdateDocOnDrive(studentData: Globals.studentInfo!));
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ResultsSummary()),

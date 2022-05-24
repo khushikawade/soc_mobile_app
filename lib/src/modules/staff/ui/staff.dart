@@ -55,7 +55,7 @@ class _StaffPageState extends State<StaffPage> {
   bool? authSuccess = false;
   dynamic userData;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-  // OcrBloc _ocrBloc = new OcrBloc();
+  OcrBloc _ocrBloc = new OcrBloc();
   ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
 
@@ -78,8 +78,9 @@ class _StaffPageState extends State<StaffPage> {
     isScrolling.value = false;
   }
 
-  localdb() async {
+  Future localdb() async {
     _localData = await _localUserInfo.getData();
+    return _localData;
   }
 
 //To authenticate the user via google
@@ -130,7 +131,7 @@ class _StaffPageState extends State<StaffPage> {
     );
   }
 
-  saveUserProfile(profileData) {
+  saveUserProfile(profileData) async {
     var profile = profileData.split('+');
     _localUserInfo.addData(UserInfo(
         userName: profile[0].toString().split('=')[1],
@@ -139,11 +140,13 @@ class _StaffPageState extends State<StaffPage> {
         authorizationToken:
             profile[3].toString().split('=')[1].replaceAll('#', '')));
 
-    localdb();
+    List<UserInfo> userInfo = await localdb();
 
+    _ocrBloc.add(AuthenticateEmail(email: userInfo.last.userEmail));
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
-        token: profile[3].toString().split('=')[1].replaceAll('#', ''),
+        //  filePath: file,
+        token: userInfo.last.authorizationToken,
         folderName: "Assessments"));
   }
 

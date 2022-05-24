@@ -24,8 +24,16 @@ class CreateExcelSheetToDrive extends GoogleDriveEvent {
   List<Object> get props => [];
 }
 
+class UpdateDocOnDrive extends GoogleDriveEvent {
+  final List<StudentAssessmentInfo>? studentData;
+  UpdateDocOnDrive({this.studentData});
+  @override
+  List<Object> get props => [];
+}
+
 class GetHistoryAssessmentFromDrive extends GoogleDriveEvent {
   GetHistoryAssessmentFromDrive();
+
   @override
   List<Object> get props => [];
 }

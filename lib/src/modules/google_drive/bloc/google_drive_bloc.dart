@@ -2,13 +2,14 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/google_drive/model/sheet.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/db_service.dart';
 import 'package:path/path.dart';
+
+import '../../ocr/modal/student_assessment_info_modal.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -44,39 +45,59 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is CreateExcelSheetToDrive) {
       try {
-        print("Calling CreateExcelSheetToDrive");
-        List<ExcelSheet> data = [
-          ExcelSheet('id', 'Name', 'Points earned', 'Points possible'),
-          ExcelSheet('1', 'Noah', '1', '1'),
-          ExcelSheet('2', 'Oliver', '1', '5'),
-          ExcelSheet('3', 'George', '1', '1'),
-          ExcelSheet('4', 'Theo', '21', '51'),
-          ExcelSheet('5', 'Arthur', '1', '1'),
-          ExcelSheet('6', 'Charlie', '14', '13'),
-          ExcelSheet('7', 'Lilly', '1', '1'),
-          ExcelSheet('8', 'Mia', '1', '1'),
-          ExcelSheet('9', 'Isla', '2', '81'),
-          ExcelSheet('10', 'Amelia', '1', '61'),
-          ExcelSheet('11', 'Ava', '1', '41'),
-        ];
+        // Globals.studentInfo!.insert(
+        //     0,
+        //     StudentAssessmentInfo(
+        //         studentId: "Id",
+        //         studentName: "Name",
+        //         studentGrade: "PointsEarned",
+        //         pointpossible: "PointsEarned"));
 
-        File file =
-            await GoogleDriveAccess.createSheet(data: data, name: event.name!);
+        // File file = await GoogleDriveAccess.createSheet(
+        //     data: Globals.studentInfo!, name: event.name!);
+        // print(event.name!);
+        Globals.assessmentName = event.name;
         bool result = await createSheetOnDrive(
-            name: event.name!,
-            folderId: Globals.folderId,
-            accessToken: Globals.authorizationToken,
-            image: file);
+          name: event.name!,
+          folderId: Globals.folderId,
+          accessToken: Globals.authorizationToken,
+          //  image: file
+        );
         if (!result) {
           print("Failed to create. Trying to create the excel sheet again : ${event.name!}");
           await createSheetOnDrive(
-              folderId: Globals.folderId,
-              accessToken: Globals.authorizationToken,
-              image: file);
+            folderId: Globals.folderId,
+            accessToken: Globals.authorizationToken,
+            // image: file
+          );
         }else{print("Excel sheet created successfully : ${event.name!}");}
       } catch (e) {
         print(e);
       }
+    }
+
+    if (event is UpdateDocOnDrive) {
+      try {
+        List<StudentAssessmentInfo>? assessmentData = event.studentData;
+        assessmentData!.insert(
+            0,
+            StudentAssessmentInfo(
+                studentId: "Id",
+                studentName: "Name",
+                studentGrade: "PointsEarned",
+                pointpossible: "PointsEarned"));
+        print(assessmentData);
+
+        File file = await GoogleDriveAccess.createSheet(
+            data: assessmentData, name: assessmentData[1].assessmentName!);
+
+        bool uploadresult = await uploadSheetOnDrive(
+            file, Globals.fileId, Globals.authorizationToken);
+        if (!uploadresult) {
+          await uploadSheetOnDrive(
+              file, Globals.fileId, Globals.authorizationToken);
+        }
+      } catch (e) {}
     }
 
     if (event is GetHistoryAssessmentFromDrive) {
@@ -146,6 +167,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //   String id = data[i]['id'];
             //  await addIdtoDataBase(id);
             //  await _uplaodfile(token);
+            print("foler is already exits");
             return data[i]['id'];
           }
         }
@@ -158,7 +180,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   Future createSheetOnDrive(
       {String? name,
-      File? image,
+      //  File? image,
       String? folderId,
       String? accessToken}) async {
     Map body = {
@@ -179,18 +201,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
-      print("done sheet");
+      print("file created ----------->");
       print(response.data['id']);
       String fileId = response.data['id'];
+      Globals.fileId = fileId;
       bool result = await spreadsheetSharable(accessToken!, fileId);
       if (!result) {
         await spreadsheetSharable(accessToken, fileId);
       }
 
-      bool uploadresult = await uploadSheetOnDrive(image, fileId, accessToken);
-      if (!uploadresult) {
-        await uploadSheetOnDrive(image, fileId, accessToken);
-      }
+      // bool uploadresult = await uploadSheetOnDrive(image, fileId, accessToken);
+      // if (!uploadresult) {
+      //   await uploadSheetOnDrive(image, fileId, accessToken);
+      // }
       bool link = await _getShareableLink(accessToken, fileId);
       if (!link) {
         await _getShareableLink(accessToken, fileId);
@@ -221,10 +244,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     // }
   }
 
-  Future uploadSheetOnDrive(
-      File? sheet, String? id, String? accessToken) async {
+  Future uploadSheetOnDrive(File? file, String? id, String? accessToken) async {
     // String accessToken = await Prefs.getToken();
-    String? mimeType = mime(basename(sheet!.path).toLowerCase());
+    String? mimeType = mime(basename(file!.path).toLowerCase());
 
     Map<String, String> headers = {
       'Authorization': 'Bearer $accessToken',
@@ -234,13 +256,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     final ResponseModel response = await _dbServices.patchapi(
       'https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media',
       headers: headers,
-      body: sheet.readAsBytesSync(),
+      body: file.readAsBytesSync(),
     );
     if (response.statusCode == 200) {
+      print("upload file done ----------->");
       return true;
     }
     return false;
-
     // var res = await http.patch(
     //   Uri.parse(
     //       'https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media'),
@@ -297,6 +319,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
+      print(" file permission sharebale  ----------->");
       return true;
     }
     return false;
@@ -313,6 +336,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
+      print(" get file link   ----------->");
       var data = response.data;
       Globals.shareableLink = response.data['webViewLink'];
       return true;
