@@ -140,6 +140,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (file != "") {
             List<StudentAssessmentInfo> _list =
                 await GoogleDriveAccess.excelToJson(file);
+
+            bool deleted = await deleteFile(File(file));
+            if (!deleted) {
+              deleteFile(File(file));
+            }
             if (_list.length > 0) {
               yield AssessmentDetailSuccess(obj: _list);
             } else {
@@ -394,5 +399,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     } catch (e) {
       throw (e);
     }
+  }
+
+  Future<bool> deleteFile(File file) async {
+    try {
+      if (await file.exists()) {
+        await file.delete();
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      throw (e);
+
+      // Error in getting access to the file.
+    }
+    return false;
   }
 }
