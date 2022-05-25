@@ -136,7 +136,11 @@ class _OpticalCharacterRecognitionPageState
               //   context,
               //   MaterialPageRoute(builder: (context) => CameraScreen()),
               // );
-             getGallaryImage(); // COMMENT
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateAssessment()),
+              );
+            //  getGallaryImage(); // COMMENT
             },
             icon: Icon(
                 IconData(0xe875,
@@ -162,7 +166,7 @@ class _OpticalCharacterRecognitionPageState
               padding: EdgeInsets.only(top: 10),
               // color: Colors.red,
               child: Utility.textWidget(
-                  text: 'History Assessment',
+                  text: 'Assessment History',
                   context: context,
                   textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                         decoration: TextDecoration.underline,
