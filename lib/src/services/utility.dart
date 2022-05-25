@@ -108,12 +108,12 @@ class Utility {
     }
   }
 
-  static void showSnackBar(_scaffoldKey, msg, context,height) {
+  static void showSnackBar(_scaffoldKey, msg, context, height) {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Container(
         alignment: Alignment.centerLeft,
-        height:height?? 40,
+        height: height ?? 40,
         child: TranslationWidget(
           message: msg,
           fromLanguage: "en",
@@ -156,15 +156,14 @@ class Utility {
     }
   }
 
-static void setLocked() async {
+  static void setLocked() async {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
   }
 
-static void setFree() async {
-
+  static void setFree() async {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -362,6 +361,41 @@ static void setFree() async {
     return utf8.decode(bytes);
   }
 
+  static Widget textWidget(
+      {required String text, textTheme, required context}) {
+    return TranslationWidget(
+      message: text,
+      toLanguage: Globals.selectedLanguage,
+      fromLanguage: "en",
+      builder: (translatedMessage) => Text(
+        translatedMessage.toString(),
+        style: textTheme != null
+            ? textTheme
+            : Theme.of(context)
+                .textTheme
+                .headline6!
+                .copyWith(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  static int covertStringtoInt(String data) {
+    try {
+      int result = int.parse(data);
+      return result;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  static bool checkForInt(String data) {
+    try {
+      int result = int.parse(data);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
   // static Future<String> sslErrorHandler(String url) async {
   //   try {
   //     final response = await http.get(Uri.parse(url));
@@ -379,5 +413,4 @@ static void setFree() async {
   //   }
   // }
 
- 
 }

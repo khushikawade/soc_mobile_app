@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
@@ -6,8 +7,10 @@ import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,6 +33,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   String? keyword;
   String? keywordSub;
   OcrBloc _ocrBloc = OcrBloc();
+  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
   @override
   void initState() {
     _ocrBloc.add(
@@ -46,6 +50,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           children: [
             CommonBackGroundImgWidget(),
             Scaffold(
+              bottomNavigationBar: progressIndicatorBar(),
               floatingActionButton:
                   indexGlobal == 2 ? textActionButton() : null,
               backgroundColor: Colors.transparent,
@@ -90,7 +95,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 ],
               ),
               body: ListView(
-               // crossAxisAlignment: CrossAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   BlocBuilder<OcrBloc, OcrState>(
                       bloc: _ocrBloc,
@@ -134,7 +139,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   // changePages(),
                 ],
               ),
-              bottomNavigationBar: progressIndicatorBar(),
             ),
           ],
         ),
@@ -158,15 +162,17 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.85
           : MediaQuery.of(context).size.width * 0.50,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SpacerWidget(_KVertcalSpace * 0.50),
-        highlightText(text: 'Learning Standard'),
-        SpacerWidget(_KVertcalSpace / 2.5),
-        _buildSearchbar(
-            controller: searchController, onSaved: (String value) {}),
-        SpacerWidget(_KVertcalSpace / 4),
-        scoringButton(list: list, page: 2),
-      ]),
+      child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SpacerWidget(_KVertcalSpace * 0.50),
+            Utility.textWidget(text: 'Learning Standard', context: context),
+            SpacerWidget(_KVertcalSpace / 3.5),
+            _buildSearchbar(
+                controller: searchController, onSaved: (String value) {}),
+            SpacerWidget(_KVertcalSpace / 4),
+            scoringButton(list: list, page: 2),
+          ]),
     );
   }
 
@@ -188,17 +194,19 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.85
           : MediaQuery.of(context).size.width * 0.80,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SpacerWidget(_KVertcalSpace * 0.50),
-        highlightText(text: 'Learning Standard'),
-        SpacerWidget(_KVertcalSpace / 2.5),
-        _buildSearchbar(
-            controller: searchController, onSaved: (String value) {}),
-        SpacerWidget(_KVertcalSpace / 4),
-        detailsList(list: list),
-        // textActionButton(),
-        // scoringButton(list: Globals.subjectDetailsList),
-      ]),
+      child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SpacerWidget(_KVertcalSpace * 0.50),
+            Utility.textWidget(text: 'Learning Sub Standard', context: context),
+            SpacerWidget(_KVertcalSpace / 3.5),
+            _buildSearchbar(
+                controller: searchController, onSaved: (String value) {}),
+            SpacerWidget(_KVertcalSpace / 4),
+            detailsList(list: list),
+            // textActionButton(),
+            // scoringButton(list: Globals.subjectDetailsList),
+          ]),
     );
   }
 
@@ -217,21 +225,22 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         //     mainAxisSpacing: 15),
         itemCount: list.length,
         itemBuilder: (BuildContext ctx, index) {
-          return InkWell(
-              onTap: () {
-                // if(indexGlobal == 0){
-                //   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
-                // } else if(indexGlobal == 1){
-                //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
-                // }
-                if (indexGlobal == 2) {
-                  setState(() {
-                    nycSubIndex = index;
-                  });
-                }
-              },
-              child: Column(children: [
-                AnimatedContainer(
+          return Column(children: [
+            Bouncing(
+              child: InkWell(
+                onTap: () {
+                  // if(indexGlobal == 0){
+                  //   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                  // } else if(indexGlobal == 1){
+                  //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
+                  // }
+                  if (indexGlobal == 2) {
+                    setState(() {
+                      nycSubIndex = index;
+                    });
+                  }
+                },
+                child: AnimatedContainer(
                   padding: EdgeInsets.only(bottom: 5),
                   decoration: BoxDecoration(
                     color: (nycSubIndex == index && indexGlobal == 2)
@@ -248,11 +257,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   duration: Duration(microseconds: 100),
                   child: Container(
                     padding: EdgeInsets.all(15),
-                    // alignment: Alignment.center,
-                    child: textwidget(
-                      text: list[index].standardAndDescriptionC!,
-                      textTheme: Theme.of(context).textTheme.headline2,
-                    ),
+                    alignment: Alignment.center,
+                    child: Utility.textWidget(
+                        text: list[index].descriptionC!,
+                        textTheme: Theme.of(context).textTheme.headline2,
+                        context: context),
                     decoration: BoxDecoration(
                         color: Color(0xff000000) !=
                                 Theme.of(context).backgroundColor
@@ -267,12 +276,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         borderRadius: BorderRadius.circular(8)),
                   ),
                 ),
-                index == list.length - 1
-                    ? SizedBox(
-                        height: 30,
-                      )
-                    : Container()
-              ]));
+              ),
+            ),
+            index == list.length - 1
+                ? SizedBox(
+                    height: 20,
+                  )
+                : Container()
+          ]);
         },
         separatorBuilder: (BuildContext context, int index) {
           return SpacerWidget(_KVertcalSpace / 3.75);
@@ -288,10 +299,15 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(10)),
           child: AnimatedContainer(
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 5),
             curve: Curves.easeOutExpo,
             child: LinearProgressIndicator(
-              color: AppTheme.kButtonColor,
+              valueColor:
+                  new AlwaysStoppedAnimation<Color>(AppTheme.kButtonColor),
+              backgroundColor:
+                  Color(0xff000000) != Theme.of(context).backgroundColor
+                      ? Color.fromRGBO(0, 0, 0, 0.1)
+                      : Color.fromRGBO(255, 255, 255, 0.16),
               minHeight: 15.0,
               value: indexGlobal == 0
                   ? 0.33
@@ -310,21 +326,24 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       padding: EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.85
-          : MediaQuery.of(context).size.width * 0.60,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SpacerWidget(_KVertcalSpace * 0.50),
-        highlightText(text: 'Subject'),
-        SpacerWidget(_KVertcalSpace / 2.5),
-        //   SizedBox(height: 23,),
-        _buildSearchbar(
-            controller: searchController, onSaved: (String value) {}),
-        SpacerWidget(_KVertcalSpace / 4),
-        scoringButton(list: list),
-      ]),
+          : MediaQuery.of(context).size.width * 0.50,
+      child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SpacerWidget(_KVertcalSpace * 0.50),
+            Utility.textWidget(text: 'Subject', context: context),
+            SpacerWidget(_KVertcalSpace / 3.5),
+            //   SizedBox(height: 23,),
+            _buildSearchbar(
+                controller: searchController, onSaved: (String value) {}),
+            SpacerWidget(_KVertcalSpace / 4),
+            scoringButton(list: list, page: 1),
+          ]),
     );
   }
 
   Widget scoringButton({required List<SubjectDetailList> list, int? page}) {
+    // return Bouncing(child: Container(color: Colors.blue, height: 200, width: 200));
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.65
@@ -339,8 +358,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               mainAxisSpacing: 15),
           itemCount: list.length,
           itemBuilder: (BuildContext ctx, index) {
-            return InkWell(
-              onTap: () {
+            return Bouncing(
+              onPress: () {
                 if (indexGlobal == 0) {
                   setState(() {
                     subjectIndex = index;
@@ -361,86 +380,71 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   });
                 }
               },
-              child: AnimatedContainer(
-                padding: EdgeInsets.only(bottom: 5),
-                decoration: BoxDecoration(
-                  color: (subjectIndex == index && indexGlobal == 0) ||
-                          (nycIndex == index && indexGlobal == 1)
-                      ? AppTheme.kSelectedColor
-                      : Colors.grey,
-                  // Theme.of(context)
-                  //     .colorScheme
-                  //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
-      
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8),
-                  ),
-                ),
-                duration: Duration(microseconds: 100),
-                child: Container(
-                  // alignment: Alignment.center,
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Center(
-                    child: textwidget(
-                      text: page == 2
-                          ? list[index].domainNameC!
-                          : list[index].subjectNameC!,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(fontWeight: FontWeight.bold),
+              child: Container(
+                //InkWell
+                // onTap: () {
+                //   if (indexGlobal == 0) {
+                //     setState(() {
+                //       subjectIndex = index;
+                //     });
+                //     // _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));  // UNCOMMENT
+                //   } else if (indexGlobal == 1) {
+                //     setState(() {
+                //       nycIndex = index;
+                //     });
+                //     // _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));  // UNCOMMENT
+                //   } else if (indexGlobal == 1) {
+                //     setState(() {
+                //       nycSubIndex = index;
+                //     });
+                //   }
+                // },
+                child: AnimatedContainer(
+                  padding: EdgeInsets.only(bottom: 5),
+                  decoration: BoxDecoration(
+                    color: (subjectIndex == index && indexGlobal == 0) ||
+                            (nycIndex == index && indexGlobal == 1)
+                        ? AppTheme.kSelectedColor
+                        : Colors.grey,
+                    // Theme.of(context)
+                    //     .colorScheme
+                    //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
+
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
                     ),
                   ),
-                  decoration: BoxDecoration(
-                      color:
-                          Color(0xff000000) != Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                      border: Border.all(
-                        color: (subjectIndex == index && indexGlobal == 0) ||
-                                (nycIndex == index && indexGlobal == 1)
-                            ? AppTheme.kSelectedColor
-                            : Colors.grey,
-                      ),
-                      // color: scoringColor == index ? Colors.orange : null,
-                      borderRadius: BorderRadius.circular(8)),
+                  duration: Duration(microseconds: 100),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    alignment: Alignment.center,
+                    child: Utility.textWidget(
+                        text: page == 1
+                            ? list[index].subjectNameC!
+                            : list[index].domainNameC!,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(fontWeight: FontWeight.bold),
+                        context: context),
+                    decoration: BoxDecoration(
+                        color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color(0xffF7F8F9)
+                            : Color(0xff111C20),
+                        border: Border.all(
+                          color: (subjectIndex == index && indexGlobal == 0) ||
+                                  (nycIndex == index && indexGlobal == 1)
+                              ? AppTheme.kSelectedColor
+                              : Colors.grey,
+                        ),
+                        // color: scoringColor == index ? Colors.orange : null,
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
                 ),
               ),
             );
           }),
-    );
-  }
-
-  Widget textwidget({required String text, required dynamic textTheme}) {
-    return TranslationWidget(
-      message: text,
-      toLanguage: Globals.selectedLanguage,
-      fromLanguage: "en",
-      builder: (translatedMessage) => Text(
-        translatedMessage.toString(),
-        style: textTheme,
-      ),
-    );
-  }
-
-  Widget highlightText({required String text, theme}) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5),
-      child: TranslationWidget(
-        message: text,
-        toLanguage: Globals.selectedLanguage,
-        fromLanguage: "en",
-        builder: (translatedMessage) => Text(
-          translatedMessage.toString(),
-          textAlign: TextAlign.center,
-          style: theme != null
-              ? theme
-              : Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontWeight: FontWeight.bold),
-        ),
-      ),
     );
   }
 
@@ -512,6 +516,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             AppTheme.kButtonColor.withOpacity(nycSubIndex == null ? 0.5 : 1.0),
         onPressed: () async {
           if (nycSubIndex == null) return;
+          print(Globals.studentInfo!);
+          _googleDriveBloc
+              .add(UpdateDocOnDrive(studentData: Globals.studentInfo!));
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ResultsSummary()),
@@ -519,18 +526,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         },
         label: Row(
           children: [
-            textwidget(
+            Utility.textWidget(
                 text: 'Submit',
+                context: context,
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline2!
                     .copyWith(color: Theme.of(context).backgroundColor)),
-            // SpacerWidget(5),
-            // RotatedBox(
-            //   quarterTurns: 90,
-            //   child: Icon(Icons.arrow_back,
-            //       color: Theme.of(context).backgroundColor, size: 20),
-            // )
           ],
         ));
   }

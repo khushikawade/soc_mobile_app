@@ -4,22 +4,35 @@ abstract class GoogleDriveEvent extends Equatable {
   const GoogleDriveEvent();
 }
 
-class CreateFolderOnGoogleDriveEvent extends GoogleDriveEvent {
+class GetDriveFolderIdEvent extends GoogleDriveEvent {
   final String? token;
   final String? folderName;
   //final File? filePath;
-  CreateFolderOnGoogleDriveEvent(
-      {required this.token, required this.folderName, //required this.filePath
-      });
+  GetDriveFolderIdEvent({
+    required this.token,
+    required this.folderName, //required this.filePath
+  });
 
   @override
   List<Object> get props => [token!, folderName!];
 }
 
-class CreateDoc extends GoogleDriveEvent {
-  // final String? token;
-  // final String? folderName;
-  CreateDoc();
+class CreateExcelSheetToDrive extends GoogleDriveEvent {
+  final String? name;
+  CreateExcelSheetToDrive({this.name});
+  @override
+  List<Object> get props => [];
+}
+
+class UpdateDocOnDrive extends GoogleDriveEvent {
+  final List<StudentAssessmentInfo>? studentData;
+  UpdateDocOnDrive({this.studentData});
+  @override
+  List<Object> get props => [];
+}
+
+class GetHistoryAssessmentFromDrive extends GoogleDriveEvent {
+  GetHistoryAssessmentFromDrive();
 
   @override
   List<Object> get props => [];

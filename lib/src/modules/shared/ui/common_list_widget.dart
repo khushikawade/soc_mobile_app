@@ -23,6 +23,7 @@ class CommonListWidget extends StatefulWidget {
       this.bottomPadding,
       required this.sectionName,
       required this.scaffoldKey,
+      this.scrollController,
       this.connected})
       : super(key: key);
 
@@ -31,6 +32,7 @@ class CommonListWidget extends StatefulWidget {
   final scaffoldKey;
   final String sectionName;
   final double? bottomPadding;
+  final ScrollController? scrollController;
 
   @override
   _CommonListWidgetState createState() => _CommonListWidgetState();
@@ -88,7 +90,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
       obj.appUrlC != null && obj.appUrlC != ""
           ? await _launchURL(obj, '')
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No link available", context,null);
+              widget.scaffoldKey, "No link available", context, null);
     } else if (obj.typeC == "Form") {
       await Navigator.push(
           context,
@@ -114,8 +116,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                         calendarId: obj.calendarId.toString(),
                       )))
-          : Utility.showSnackBar(
-              widget.scaffoldKey, "No calendar/events available", context,null);
+          : Utility.showSnackBar(widget.scaffoldKey,
+              "No calendar/events available", context, null);
     } else if (obj.typeC == "RTF_HTML" ||
         obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
@@ -132,7 +134,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No data available", context,null);
+              widget.scaffoldKey, "No data available", context, null);
     } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
           ? await Navigator.push(
@@ -146,7 +148,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No data available", context,null);
+              widget.scaffoldKey, "No data available", context, null);
     } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
           ? await Navigator.push(
@@ -160,7 +162,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No pdf available", context,null);
+              widget.scaffoldKey, "No pdf available", context, null);
     } else if (obj.typeC == "Sub-Menu") {
       await Navigator.push(
           context,
@@ -210,7 +212,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
       //                             builder: (BuildContext context) =>
       //                                 OpticalCharacterRecognition()));}
     } else {
-      Utility.showSnackBar(widget.scaffoldKey, "No data available", context,null);
+      Utility.showSnackBar(
+          widget.scaffoldKey, "No data available", context, null);
     }
     // Utility.setLocked();
   }
@@ -280,8 +283,10 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   Widget build(BuildContext context) {
     return widget.data.length > 0
         ? ListView.builder(
+            controller: widget.scrollController,
             shrinkWrap: true,
-            padding: EdgeInsets.only(bottom: widget.bottomPadding ?? AppTheme.klistPadding),
+            padding: EdgeInsets.only(
+                bottom: widget.bottomPadding ?? AppTheme.klistPadding),
             scrollDirection: Axis.vertical,
             itemCount: widget.data.length,
             itemBuilder: (BuildContext context, int index) {

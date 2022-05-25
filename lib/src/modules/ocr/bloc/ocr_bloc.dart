@@ -1,11 +1,13 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
+import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -39,22 +41,22 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    // if (event is AuthenticateEmail) {
-    //   try {
-    //     yield OcrLoading();
-    //     var data = await authenticateEmail({"email": event.email.toString()});
+    if (event is VerifyUserWithDatabase) {
+      try {
+        yield OcrLoading();
+        //  var data =
+        bool result =
+            await verifyUserWithDatabase(email: event.email.toString());
+        if (!result) {
+          await verifyUserWithDatabase(email: event.email.toString());
+        }
+      } catch (e) {
+        await verifyUserWithDatabase(email: event.email.toString());
 
-    //     yield EmailAuthenticationSuccess(
-    //       obj: data,
-    //     );
-    //   } catch (e) {
-    //     // if (e.toString().contains('NO_CONNECTION')) {
-    //     //   Utility.showSnackBar(event.scaffoldKey,
-    //     //       'Make sure you have a proper Internet connection', event.context);
-    //     // }
-    //     yield OcrErrorReceived(err: e);
-    //   }
-    // }
+        // yield OcrErrorReceived(err: e);
+      }
+    }
+
     if (event is FatchSubjectDetails) {
       try {
         // yield OcrLoading();
@@ -216,7 +218,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           for (var i = 0; i < text.length; i++) {
             if (text[i]['description'].toString().length == 9 &&
                 text[i]['description'][0] == '2') {
-              bool result = checkForInt(text[i]['description']);
+              bool result = Utility.checkForInt(text[i]['description']);
               if (result) {
                 schoolIdNew.add(text[i]['description']);
               }
@@ -230,7 +232,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
                 sum = sum + text[j]['description'].toString().length;
                 id = '$id${text[j]['description']}';
                 if (sum == 9 && text[i]['description'].toString()[0] == '2') {
-                  bool result = checkForInt(id);
+                  bool result = Utility.checkForInt(id);
                   if (result) {
                     schoolIdNew.add(id);
                   }
@@ -249,13 +251,16 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           List text = response.data['text']['responses'][0]['textAnnotations'];
           for (var i = 0; i < text.length; i++) {
             for (var j = 0; j < coordinate.length; j++) {
-              int circleX = covertStringtoInt(coordinate[j].split(',')[0]);
-              int circleY = covertStringtoInt(coordinate[j].split(',')[1]);
-              int radiusR = covertStringtoInt(coordinate[j].split(',')[1]);
+              int circleX =
+                  Utility.covertStringtoInt(coordinate[j].split(',')[0]);
+              int circleY =
+                  Utility.covertStringtoInt(coordinate[j].split(',')[1]);
+              int radiusR =
+                  Utility.covertStringtoInt(coordinate[j].split(',')[1]);
 
-              int textx = covertStringtoInt(
+              int textx = Utility.covertStringtoInt(
                   text[i]['boundingPoly']['vertices'][0]['x'].toString());
-              int texty = covertStringtoInt(
+              int texty = Utility.covertStringtoInt(
                   text[i]['boundingPoly']['vertices'][0]['y'].toString());
 
               if (text[i]['description'].toString().length == 1 &&
@@ -285,11 +290,81 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  bool checkForInt(String data) {
-    try {
-      int result = int.parse(data);
+  Future<bool> verifyUserWithDatabase({required String? email}) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+    };
+    final body = {"email": email.toString()};
+    final ResponseModel response = await _dbServices.postapi(
+        "authorizeEmail?objectName=Contact",
+        body: body,
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      var res = response.data;
+      var data = res["body"];
+      if (data == false) {
+        bool result = await _createContact(email: email.toString());
+        if (!result) {
+          await _createContact(email: email.toString());
+        }
+      } else {
+        bool result = await _updateContact(recordId: data['Id']);
+        if (!result) {
+          await _updateContact(recordId: data['Id']);
+        }
+      }
       return true;
-    } catch (e) {
+      // return data;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> _createContact({required String? email}) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+    };
+    final body = {
+      "AccountId": "0017h00000k3TgjAAE",
+      "Assessment_App_User__c": "true",
+      "LastName": email!.split("@")[0],
+      "Email": email
+    };
+
+    final ResponseModel response = await _dbServices.postapi(
+        "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Contact",
+        isGoogleApi: true,
+        body: body,
+        headers: headers);
+    if (response.statusCode == 200) {
+      print("created");
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> _updateContact({required String? recordId}) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+    };
+    final body = {
+      "Assessment_App_User__c": "true",
+    };
+    final ResponseModel response = await _dbServices.postapi(
+        "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Contact/$recordId",
+        isGoogleApi: true,
+        body: body,
+        headers: headers);
+    if (response.statusCode == 200) {
+      print("updated");
+      return true;
+    } else {
       return false;
     }
   }
