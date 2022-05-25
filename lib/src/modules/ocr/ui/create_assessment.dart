@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -163,14 +164,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
               mainAxisSpacing: 10),
           itemCount: Globals.classList.length,
           itemBuilder: (BuildContext ctx, index) {
-            return GestureDetector(
-              onTap: () {
+            return Bouncing(
+              onPress: () {
                 setState(() {
                   selectedClassIndex = index;
                 });
               },
-              onTapDown: _tapDown,
-              onTapUp: _tapUp,
               child: Transform.scale(
                 scale: 1, //_scale!,
                 child: AnimatedContainer(

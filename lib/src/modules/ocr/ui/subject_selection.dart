@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
@@ -227,54 +226,52 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         itemBuilder: (BuildContext ctx, index) {
           return Column(children: [
             Bouncing(
-              child: InkWell(
-                onTap: () {
-                  // if(indexGlobal == 0){
-                  //   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
-                  // } else if(indexGlobal == 1){
-                  //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
-                  // }
-                  if (indexGlobal == 2) {
-                    setState(() {
-                      nycSubIndex = index;
-                    });
-                  }
-                },
-                child: AnimatedContainer(
-                  padding: EdgeInsets.only(bottom: 5),
-                  decoration: BoxDecoration(
-                    color: (nycSubIndex == index && indexGlobal == 2)
-                        ? AppTheme.kSelectedColor
-                        : Colors.grey,
-                    // Theme.of(context)
-                    //     .colorScheme
-                    //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
+              onPress: () {
+                // if(indexGlobal == 0){
+                //   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                // } else if(indexGlobal == 1){
+                //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
+                // }
+                if (indexGlobal == 2) {
+                  setState(() {
+                    nycSubIndex = index;
+                  });
+                }
+              },
+              child: AnimatedContainer(
+                padding: EdgeInsets.only(bottom: 5),
+                decoration: BoxDecoration(
+                  color: (nycSubIndex == index && indexGlobal == 2)
+                      ? AppTheme.kSelectedColor
+                      : Colors.grey,
+                  // Theme.of(context)
+                  //     .colorScheme
+                  //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
 
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8),
-                    ),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
                   ),
-                  duration: Duration(microseconds: 100),
-                  child: Container(
-                    padding: EdgeInsets.all(15),
-                    alignment: Alignment.center,
-                    child: Utility.textWidget(
-                        text: list[index].descriptionC!,
-                        textTheme: Theme.of(context).textTheme.headline2,
-                        context: context),
-                    decoration: BoxDecoration(
-                        color: Color(0xff000000) !=
-                                Theme.of(context).backgroundColor
-                            ? Color(0xffF7F8F9)
-                            : Color(0xff111C20),
-                        border: Border.all(
-                          color: (nycSubIndex == index && indexGlobal == 2)
-                              ? AppTheme.kSelectedColor
-                              : Colors.grey,
-                        ),
-                        // color: scoringColor == index ? Colors.orange : null,
-                        borderRadius: BorderRadius.circular(8)),
-                  ),
+                ),
+                duration: Duration(microseconds: 100),
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  alignment: Alignment.center,
+                  child: Utility.textWidget(
+                      text: list[index].descriptionC!,
+                      textTheme: Theme.of(context).textTheme.headline2,
+                      context: context),
+                  decoration: BoxDecoration(
+                      color:
+                          Color(0xff000000) != Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                      border: Border.all(
+                        color: (nycSubIndex == index && indexGlobal == 2)
+                            ? AppTheme.kSelectedColor
+                            : Colors.grey,
+                      ),
+                      // color: scoringColor == index ? Colors.orange : null,
+                      borderRadius: BorderRadius.circular(8)),
                 ),
               ),
             ),
@@ -343,7 +340,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   }
 
   Widget scoringButton({required List<SubjectDetailList> list, int? page}) {
-    // return Bouncing(child: Container(color: Colors.blue, height: 200, width: 200));
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.65
