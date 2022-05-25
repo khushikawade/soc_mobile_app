@@ -14,7 +14,8 @@ class SubjectList {
 
   String? id;
 
-  factory SubjectList.fromRawJson(String str) => SubjectList.fromJson(json.decode(str));
+  factory SubjectList.fromRawJson(String str) =>
+      SubjectList.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 

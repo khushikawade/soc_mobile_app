@@ -25,29 +25,16 @@ class FetchTextFromImageSuccess extends OcrState {
   List<Object> get props => [];
 }
 
-class FetchTextFromImageFailure extends OcrState {
-  final String? schoolId;
-  final String? grade;
-  FetchTextFromImageFailure({required this.schoolId, required this.grade});
-  FetchTextFromImageFailure copyWith({final schoolId}) {
-    return FetchTextFromImageFailure(
-        schoolId: schoolId ?? this.schoolId, grade: grade ?? this.grade);
-  }
+// class EmailAuthenticationSuccess extends OcrState {
+//   final obj;
+//   EmailAuthenticationSuccess({this.obj});
+//   EmailAuthenticationSuccess copyWith({final obj}) {
+//     return EmailAuthenticationSuccess(obj: obj ?? this.obj);
+//   }
 
-  @override
-  List<Object> get props => [];
-}
-
-class EmailAuthenticationSuccess extends OcrState {
-  final obj;
-  EmailAuthenticationSuccess({this.obj});
-  EmailAuthenticationSuccess copyWith({final obj}) {
-    return EmailAuthenticationSuccess(obj: obj ?? this.obj);
-  }
-
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 class OcrErrorReceived extends OcrState {
   final err;
@@ -61,7 +48,7 @@ class OcrErrorReceived extends OcrState {
 }
 
 class SubjectDataSuccess extends OcrState {
-  final List<SubjectList>? obj;
+  final List<SubjectDetailList>? obj;
   SubjectDataSuccess({
     this.obj,
   });
@@ -76,7 +63,7 @@ class SubjectDataSuccess extends OcrState {
 }
 
 class NycDataSuccess extends OcrState {
-  final List<SubjectList> obj;
+  final List<SubjectDetailList> obj;
   NycDataSuccess({
     required this.obj,
   });
@@ -93,7 +80,7 @@ class NycDataSuccess extends OcrState {
 }
 
 class NycSubDataSuccess extends OcrState {
-  final List<SubjectList>? obj;
+  final List<SubjectDetailList>? obj;
   NycSubDataSuccess({
     this.obj,
   });
@@ -101,6 +88,22 @@ class NycSubDataSuccess extends OcrState {
     obj,
   }) {
     return NycSubDataSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class FetchTextFromImageFailure extends OcrState {
+  final String? schoolId;
+
+  final String? grade;
+
+  FetchTextFromImageFailure({required this.schoolId, required this.grade});
+
+  FetchTextFromImageFailure copyWith({final schoolId}) {
+    return FetchTextFromImageFailure(
+        schoolId: schoolId ?? this.schoolId, grade: grade ?? this.grade);
   }
 
   @override

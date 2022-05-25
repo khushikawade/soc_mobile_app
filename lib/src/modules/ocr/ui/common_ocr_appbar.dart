@@ -126,11 +126,12 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     }
                   },
                   icon: Icon(
-                      IconData(0xe877,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      size: 30,
-                      color: Colors.grey),
+                    IconData(0xe877,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    size: 30,
+                    color: AppTheme.kButtonColor,
+                  ),
                 ),
               )
             : Container()

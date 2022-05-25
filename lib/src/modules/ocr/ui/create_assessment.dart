@@ -1,13 +1,13 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
-import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/shims/dart_ui_real.dart';
 
 class CreateAssessment extends StatefulWidget {
   const CreateAssessment({Key? key}) : super(key: key);
@@ -21,30 +21,22 @@ class _CreateAssessmentState extends State<CreateAssessment>
   static const double _KVertcalSpace = 60.0;
   final assessmentController = TextEditingController(text: 'Version_0.01');
   final classController = TextEditingController(text: '11th');
+  int selectedClassIndex = 0;
   double? _scale;
-  AnimationController? _controller;
-  int scoringColor = 0;
+  // AnimationController? _controller;
+  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
+  //int scoringColor = 0;
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(
-        milliseconds: 500,
-      ),
-      lowerBound: 0.0,
-      upperBound: 0.1,
-    )..addListener(() {
-        setState(() {});
-      });
   }
 
   @override
   Widget build(BuildContext context) {
-    _scale = 1 - _controller!.value;
-    
+    // _scale = 1 - _controller!.value;
+
     return WillPopScope(
-       onWillPop: () async => false,
+      onWillPop: () async => false,
       child: Stack(
         children: [
           CommonBackGroundImgWidget(),
@@ -54,7 +46,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
             //   FloatingActionButtonLocation.centerFloat,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
-              
               isBackButton: false,
               isHomeButtonPopup: true,
             ),
@@ -83,15 +74,16 @@ class _CreateAssessmentState extends State<CreateAssessment>
             //   sharedpopBodytext: '',
             //   sharedpopUpheaderText: '',
             // ),
-            body: SingleChildScrollView(
-              child: Container(
+            body: ListView(children: [
+              Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                height: MediaQuery.of(context).orientation == Orientation.portrait
-                    ? MediaQuery.of(context).size.height * 0.9
-                    : MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                height:
+                    MediaQuery.of(context).orientation == Orientation.portrait
+                        ? MediaQuery.of(context).size.height * 0.9
+                        : MediaQuery.of(context).size.width,
+                child: ListView(
+                  // mainAxisAlignment: MainAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SpacerWidget(_KVertcalSpace * 0.50),
                     highlightText(
@@ -121,15 +113,16 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                 .primaryVariant
                                 .withOpacity(0.3))),
                     textFormField(
-                        controller: classController, onSaved: (String value) {}),
-    
+                        controller: classController,
+                        onSaved: (String value) {}),
+
                     SpacerWidget(_KVertcalSpace / 0.90),
                     scoringButton(),
                     SpacerWidget(_KVertcalSpace / 20),
                     // textActionButton()
                     // smallButton(),
                     // SpacerWidget(_KVertcalSpace / 2),
-    
+
                     // SpacerWidget(_KVertcalSpace / 4),
                     // scoringButton(),
                     // // SpacerWidget(_KVertcalSpace / 8),
@@ -137,7 +130,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   ],
                 ),
               ),
-            ),
+            ]),
             // bottomNavigationBar: null,
           ),
         ],
@@ -162,75 +155,63 @@ class _CreateAssessmentState extends State<CreateAssessment>
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.35
           : MediaQuery.of(context).size.width * 0.35,
-      // width: MediaQuery.of(context).size.width * 0.7,
-      child:
-          // Column(
-          //   children: [
-          //     Row(children: [
-
-          //     ],)
-          //   ],
-          // ),
-
-          GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 50,
-                  childAspectRatio: 5 / 6,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 10),
-              itemCount: Globals.classList.length,
-              itemBuilder: (BuildContext ctx, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      scoringColor = index;
-                    });
-                  },
-                  onTapDown: _tapDown,
-                  onTapUp: _tapUp,
-                  child: Transform.scale(
-                    scale: _scale!,
-                    child: AnimatedContainer(
-                      duration: Duration(microseconds: 100),
-                      padding: EdgeInsets.only(bottom: 5),
-                      decoration: BoxDecoration(
+      child: GridView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 50,
+              childAspectRatio: 5 / 6,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 10),
+          itemCount: Globals.classList.length,
+          itemBuilder: (BuildContext ctx, index) {
+            return Bouncing(
+              onPress: () {
+                setState(() {
+                  selectedClassIndex = index;
+                });
+              },
+              child: Transform.scale(
+                scale: 1, //_scale!,
+                child: AnimatedContainer(
+                  duration: Duration(microseconds: 10),
+                  padding: EdgeInsets.only(bottom: 5),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: selectedClassIndex == index
+                        ? AppTheme.kSelectedColor
+                        : Colors.grey,
+                  ),
+                  child: new Container(
+                    decoration: BoxDecoration(
+                        color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color(0xffF7F8F9)
+                            : Color(0xff111C20),
                         shape: BoxShape.circle,
-                        color: scoringColor == index
-                            ? AppTheme.kSelectedColor
-                            : Colors.grey,
-                      ),
-                      child: new Container(
-                        decoration: BoxDecoration(
-                            color: Color(0xff000000) !=
-                                    Theme.of(context).backgroundColor
-                                ? Color(0xffF7F8F9)
-                                : Color(0xff111C20),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: scoringColor == index
-                                  ? AppTheme.kSelectedColor
-                                  : Colors.grey,
-                            )),
-                        child: Center(
-                          child: textwidget(
-                            text: Globals.classList[index],
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(
-                                    color: scoringColor == index
-                                        ? AppTheme.kSelectedColor
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant),
-                          ),
-                        ),
+                        border: Border.all(
+                          color: selectedClassIndex == index
+                              ? AppTheme.kSelectedColor
+                              : Colors.grey,
+                        )),
+                    child: Center(
+                      child: textwidget(
+                        text: Globals.classList[index],
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(
+                                color: selectedClassIndex == index
+                                    ? AppTheme.kSelectedColor
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant),
                       ),
                     ),
                   ),
-                );
-              }),
+                ),
+              ),
+            );
+          }),
     );
   }
 
@@ -243,7 +224,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
         translatedMessage.toString(),
         maxLines: 2,
         //overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.center,
+        textAlign: TextAlign.left,
         style: theme,
       ),
     );
@@ -290,16 +271,18 @@ class _CreateAssessmentState extends State<CreateAssessment>
     return FloatingActionButton.extended(
         backgroundColor: AppTheme.kButtonColor,
         onPressed: () async {
+          _googleDriveBloc.add(CreateExcelSheetToDrive(
+              name: "${assessmentController.text}_${classController.text}"));
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
                     // SuccessScreen()
-                    SubjectSelection()),
+                    SubjectSelection(
+                      selectedClass: selectedClassIndex.toString(),
+                    )),
           );
         },
-        // icon:
-        // Icon(Icons.arrow_back, color: Colors.white),
         label: Row(
           children: [
             textwidget(
@@ -318,42 +301,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
         ));
   }
 
-  // Widget textActionButton() {
-  //   return InkWell(
-  //     onTap: () {
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //             builder: (context) =>
-  //                 // SuccessScreen()
-  //                 SubjectSelection()),
-  //       );
-  //     },
-  //     child: Container(
-  //       decoration: BoxDecoration(
-  //         color: AppTheme.kButtonColor,
-  //         borderRadius: BorderRadius.all(Radius.circular(25)),
-  //       ),
-  //       height: 54,
-  //       width: MediaQuery.of(context).size.width * 0.9,
-  //       child: Center(
-  //         child: highlightText(
-  //           text: 'Next',
-  //           theme: Theme.of(context).textTheme.headline1!.copyWith(
-  //                 color: Colors.white,
-  //                 fontWeight: FontWeight.bold,
-  //               ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   void _tapDown(TapDownDetails details) {
-    _controller!.forward();
+    //  _controller!.forward();
   }
 
   void _tapUp(TapUpDetails details) {
-    _controller!.reverse();
+    //  _controller!.reverse();
   }
 }

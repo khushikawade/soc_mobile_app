@@ -10,20 +10,26 @@ abstract class OcrEvent extends Equatable {
 //   List<Object> get props => [];
 // }
 
-// class AuthenticateEmail extends OcrEvent {
-//   final String? email;
-//   AuthenticateEmail({required this.email});
+class VerifyUserWithDatabase extends OcrEvent {
+  final String? email;
+  VerifyUserWithDatabase({required this.email});
 
-//   @override
-//   List<Object> get props => [email!];
-// }
+  @override
+  List<Object> get props => [email!];
+}
 
 class FatchSubjectDetails extends OcrEvent {
   final String? type;
-  FatchSubjectDetails({required this.type});
+  final String? keyword;
+  FatchSubjectDetails({required this.type,required this.keyword});
 
   @override
   List<Object> get props => [type!];
+}
+
+class SaveSubjectListDetails extends OcrEvent {
+  @override
+  List<Object> get props => [];
 }
 
 class FetchTextFromImage extends OcrEvent {
@@ -37,12 +43,4 @@ class FetchTextFromImage extends OcrEvent {
 
   @override
   String toString() => 'GlobalSearchEvent { keyword: $base64}';
-}
-
-class AuthenticateEmail extends OcrEvent {
-  final String? email;
-  AuthenticateEmail({required this.email});
-
-  @override
-  List<Object> get props => [email!];
 }

@@ -14,12 +14,19 @@ class GoogleDriveLoading extends GoogleDriveState {
   List<Object> get props => [];
 }
 
-class GoogleDriveAccountSuccess extends GoogleDriveState {
+// ignore: must_be_immutable
+class GoogleDriveGetSuccess extends GoogleDriveState {
+List obj;
+  GoogleDriveGetSuccess({required this.obj});
+  GoogleDriveGetSuccess copyWith({final obj}) {
+    return GoogleDriveGetSuccess(obj: obj ?? this.obj);
+  }
+
   @override
   List<Object> get props => [];
 }
 
-class GoogleDriveAccountError extends GoogleDriveState {
+class GoogleNoAssessment extends GoogleDriveState {
   @override
   List<Object> get props => [];
 }

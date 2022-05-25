@@ -3,10 +3,11 @@ import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 class ResultsSummary extends StatefulWidget {
   ResultsSummary({Key? key}) : super(key: key);
@@ -30,62 +31,23 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               isBackButton: false,
               isResultScreen: true,
             ),
-
-            // AppBar(
-            //   backgroundColor: Colors.transparent,
-            //   elevation: 0,
-            //   automaticallyImplyLeading: false,
-            //   actions: [
-            //     Container(
-            //         child: IconButton(
-            //       onPressed: () {},
-            //       icon: Icon(
-            //         IconData(0xe874,
-            //             fontFamily: Overrides.kFontFam,
-            //             fontPackage: Overrides.kFontPkg),
-            //         color: AppTheme.kButtonColor,
-            //         size: 30,
-            //       ),
-            //     )),
-            //     Container(
-            //         padding: EdgeInsets.only(right: 5),
-            //         child: IconButton(
-            //           onPressed: () {
-            //             Navigator.push(
-            //               context,
-            //               MaterialPageRoute(
-            //                   builder: (context) => FinishedScreen()),
-            //             );
-            //           },
-            //           icon: Icon(
-            //             IconData(0xe877,
-            //                 fontFamily: Overrides.kFontFam,
-            //                 fontPackage: Overrides.kFontPkg),
-            //             color: AppTheme.kButtonColor,
-            //             size: 30,
-            //           ),
-            //         )),
-            //   ],
-            // ),
-            body: Container(
-              //     padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SpacerWidget(_KVertcalSpace * 0.50),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: highlightText(
-                        text: 'Results Summary',
-                        theme: Theme.of(context)
-                            .textTheme
-                            .headline6!
-                            .copyWith(fontWeight: FontWeight.bold)),
-                  ),
-                  SpacerWidget(_KVertcalSpace / 3),
-                  listView()
-                ],
-              ),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SpacerWidget(_KVertcalSpace * 0.50),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Utility.textWidget(
+                      text: 'Results Summary',
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(fontWeight: FontWeight.bold)),
+                ),
+                SpacerWidget(_KVertcalSpace / 3),
+                resultList()
+              ],
             ),
             floatingActionButton: Container(
                 decoration: BoxDecoration(
@@ -98,11 +60,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     ],
                     borderRadius: BorderRadius.circular(4)),
                 padding: EdgeInsets.symmetric(horizontal: 20),
+                margin: EdgeInsets.symmetric(horizontal: 16),
                 height:
                     MediaQuery.of(context).orientation == Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.086
+                        ? MediaQuery.of(context).size.height * 0.1
                         : MediaQuery.of(context).size.width * 0.086,
-                width: MediaQuery.of(context).size.width * 0.9,
+                // width: MediaQuery.of(context).size.width * 0.9,
                 //  color: Colors.blue,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,12 +74,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       .map<Widget>((element) =>
                           _iconButton(Globals.ocrResultIcons.indexOf(element)))
                       .toList(),
-
-                  // [
-                  //   Icon(Icons.star_border),
-                  //   Icon(Icons.star_border),
-                  //   Icon(Icons.star_border),
-                  //   Icon(Icons.star_border),
                   // ],
                 )),
             floatingActionButtonLocation:
@@ -128,32 +85,36 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   }
 
   Widget _iconButton(int index) {
-    return Container(
-      // padding: EdgeInsets.only(top: 15),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            padding: index == 1 ? null : EdgeInsets.only(top: 10),
-            child: highlightText(
-                text: Globals.ocrResultIconsName[index],
-                theme: Theme.of(context)
-                    .textTheme
-                    .subtitle2!
-                    .copyWith(fontWeight: FontWeight.bold)),
-          ),
-          index == 1
-              ? Image(
-                  image: AssetImage("assets/images/drive.png"),
-                )
-              : IconButton(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+          padding: index == 1 ? null : EdgeInsets.only(top: 12),
+          child: Utility.textWidget(
+              text: Globals.ocrResultIconsName[index],
+              context: context,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .subtitle2!
+                  .copyWith(fontWeight: FontWeight.bold)),
+        ),
+        index == 1
+            ? Image(
+               width: Globals.deviceType == "phone" ? 34 : 32,
+          height: Globals.deviceType == "phone" ? 34 : 32,
+                image: AssetImage("assets/images/drive_ico.png",),
+              )
+            : Expanded(
+                child: IconButton(
                   icon: Icon(
                     IconData(Globals.ocrResultIcons[index],
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                     size: 32,
                     color: index == 2
-                        ? Colors.green
+                        ? Theme.of(context).backgroundColor == Color(0xff000000)
+                            ? Colors.white
+                            : Colors.black
                         : index == 3
                             ? Colors.green
                             : AppTheme.kButtonColor,
@@ -166,29 +127,17 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             builder: (context) => AssessmentSummary()),
                       );
                     }
+                    if (index == 0) {
+                      Share.share(Globals.shareableLink!);
+                    }
                   },
                 ),
-        ],
-      ),
+              ),
+      ],
     );
   }
 
-  Widget highlightText({required String text, required theme}) {
-    return TranslationWidget(
-      message: text,
-      toLanguage: Globals.selectedLanguage,
-      fromLanguage: "en",
-      builder: (translatedMessage) => Text(
-        translatedMessage.toString(),
-        // maxLines: 2,
-        //overflow: TextOverflow.ellipsis,
-        // textAlign: TextAlign.center,
-        style: theme,
-      ),
-    );
-  }
-
-  Widget listView() {
+  Widget resultList() {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.72
@@ -211,7 +160,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       decoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).colorScheme.background,
-          // width: 0.65,
         ),
         borderRadius: BorderRadius.circular(0.0),
         color: (index % 2 == 0)
@@ -219,27 +167,17 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             : Theme.of(context).colorScheme.secondary,
       ),
       child: ListTile(
-        // onTap: () {
-        //   _navigate(obj, index);
-        // },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        // contentPadding:
-        //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: highlightText(
+        leading: Utility.textWidget(
             text: Globals.studentInfo![index].studentId ?? 'Unknown',
-            theme: Theme.of(context).textTheme.headline2!),
-        // title: TranslationWidget(
-        //     message: "No title",
-        //     fromLanguage: "en",
-        //     toLanguage: Globals.selectedLanguage,
-        //     builder: (translatedMessage) {
-        //       return Text(translatedMessage.toString(),
-        //           style: Theme.of(context).textTheme.bodyText1!);
-        //     }),
-        trailing: highlightText(
-            text:
-                '${Globals.studentInfo![index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
-            theme: Theme.of(context)
+            context: context,
+            textTheme: Theme.of(context).textTheme.headline2!),
+        trailing: Utility.textWidget(
+            text: Globals.studentInfo![index].studentGrade == ''
+                ? '2/2'
+                : '${Globals.studentInfo![index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
+            context: context,
+            textTheme: Theme.of(context)
                 .textTheme
                 .headline2!
                 .copyWith(fontWeight: FontWeight.bold)),
