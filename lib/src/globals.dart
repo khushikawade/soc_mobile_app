@@ -1,12 +1,15 @@
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter/material.dart';
+import 'package:googleapis/bigquerydatatransfer/v1.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'modules/custom/model/custom_setting.dart';
 import 'modules/news/model/notification_list.dart';
+import 'modules/ocr/modal/user_info.dart';
 
 class Globals {
   static var iosInfo;
@@ -126,6 +129,6 @@ class Globals {
   static String? shareableLink;
   static String? pointpossible = '2';
   static String? assessmentName;
-
-  
+  static LocalDatabase<UserInformation> localUserInfo = LocalDatabase('user_profile');
+  static List<UserInformation> userprofilelocalData = [];
 }

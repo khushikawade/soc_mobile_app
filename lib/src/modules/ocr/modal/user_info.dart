@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 part 'user_info.g.dart';
 @HiveType(typeId: 15)
-class UserInfo {
+class UserInformation {
   @HiveField(0)
   String? userName;
   @HiveField(1)
@@ -11,8 +11,9 @@ class UserInfo {
     @HiveField(3)
   String? authorizationToken;
   
+  
 
-  UserInfo({
+  UserInformation({
     this.userName,
     this.userEmail,
     this.profilePicture,

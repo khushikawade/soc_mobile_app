@@ -5,7 +5,9 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
+import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -126,9 +128,13 @@ class _OpticalCharacterRecognitionPageState
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
               Globals.studentInfo = [];
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => CameraScreen()),
+              // );
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CameraScreen()),
+                MaterialPageRoute(builder: (context) => CreateAssessment()),
               );
             },
             icon: Icon(

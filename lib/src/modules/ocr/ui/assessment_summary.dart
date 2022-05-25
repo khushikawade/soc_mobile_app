@@ -9,7 +9,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../google_drive/bloc/google_drive_bloc.dart';
 
 class AssessmentSummary extends StatefulWidget {

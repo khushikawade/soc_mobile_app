@@ -28,7 +28,7 @@ import 'src/services/local_database/hive_db_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   cameras = await availableCameras();
+  cameras = await availableCameras();
 
   if (!kIsWeb) {
     // Not running on the web!
@@ -47,7 +47,7 @@ void main() async {
       ..registerAdapter(AppSettingAdapter())
       ..registerAdapter(CalendarEventListAdapter())
       ..registerAdapter(CustomSettingAdapter())
-      ..registerAdapter(UserInfoAdapter());
+      ..registerAdapter(UserInformationAdapter());
   }
   clearTheme();
   await disableDarkMode();
