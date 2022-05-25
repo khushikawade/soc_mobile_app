@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -157,7 +158,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SpacerWidget(_KVertcalSpace * 0.50),
-            highlightText(text: 'Learning Standard'),
+            Utility.textWidget(text: 'Learning Standard', context: context),
             SpacerWidget(_KVertcalSpace / 3.5),
             _buildSearchbar(
                 controller: searchController, onSaved: (String value) {}),
@@ -189,7 +190,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SpacerWidget(_KVertcalSpace * 0.50),
-            highlightText(text: 'Learning Sub Standard'),
+            Utility.textWidget(text: 'Learning Sub Standard', context: context),
             SpacerWidget(_KVertcalSpace / 3.5),
             _buildSearchbar(
                 controller: searchController, onSaved: (String value) {}),
@@ -247,10 +248,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               child: Container(
                 padding: EdgeInsets.all(15),
                 alignment: Alignment.center,
-                child: textwidget(
-                  text: list[index].subjectNameC!,
-                  textTheme: Theme.of(context).textTheme.headline2,
-                ),
+                child: Utility.textWidget(
+                    text: list[index].subjectNameC!,
+                    textTheme: Theme.of(context).textTheme.headline2,
+                    context: context),
                 decoration: BoxDecoration(
                     color:
                         Color(0xff000000) != Theme.of(context).backgroundColor
@@ -313,7 +314,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SpacerWidget(_KVertcalSpace * 0.50),
-            highlightText(text: 'Subject'),
+            Utility.textWidget(text: 'Subject', context: context),
             SpacerWidget(_KVertcalSpace / 3.5),
             //   SizedBox(height: 23,),
             _buildSearchbar(
@@ -375,13 +376,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 duration: Duration(microseconds: 100),
                 child: Container(
                   alignment: Alignment.center,
-                  child: textwidget(
-                    text: list[index].subjectNameC!,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
+                  child: Utility.textWidget(
+                      text: list[index].subjectNameC!,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(fontWeight: FontWeight.bold),
+                      context: context),
                   decoration: BoxDecoration(
                       color:
                           Color(0xff000000) != Theme.of(context).backgroundColor
@@ -399,40 +400,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               ),
             );
           }),
-    );
-  }
-
-  Widget textwidget({required String text, required dynamic textTheme}) {
-    return TranslationWidget(
-      message: text,
-      toLanguage: Globals.selectedLanguage,
-      fromLanguage: "en",
-      builder: (translatedMessage) => Text(
-        translatedMessage.toString(),
-        style: textTheme,
-      ),
-    );
-  }
-
-  Widget highlightText({required String text, theme}) {
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: EdgeInsets.symmetric(horizontal: 5),
-      child: TranslationWidget(
-        message: text,
-        toLanguage: Globals.selectedLanguage,
-        fromLanguage: "en",
-        builder: (translatedMessage) => Text(
-          translatedMessage.toString(),
-          textAlign: TextAlign.center,
-          style: theme != null
-              ? theme
-              : Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontWeight: FontWeight.bold),
-        ),
-      ),
     );
   }
 
@@ -517,18 +484,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         },
         label: Row(
           children: [
-            textwidget(
+            Utility.textWidget(
                 text: 'Submit',
+                context: context,
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline2!
                     .copyWith(color: Theme.of(context).backgroundColor)),
-            // SpacerWidget(5),
-            // RotatedBox(
-            //   quarterTurns: 90,
-            //   child: Icon(Icons.arrow_back,
-            //       color: Theme.of(context).backgroundColor, size: 20),
-            // )
           ],
         ));
   }

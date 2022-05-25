@@ -73,7 +73,7 @@ class _CameraScreenState extends State<CameraScreen>
         appBar: AppBar(
           toolbarHeight:
               MediaQuery.of(context).orientation == Orientation.portrait
-                  ? 80
+                  ? 50
                   : 60,
           leading: IconButton(
               onPressed: () async {
@@ -115,18 +115,8 @@ class _CameraScreenState extends State<CameraScreen>
         body: _isCameraInitialized
             ? Stack(children: [
                 controller!.buildPreview(),
-                // Positioned(
-                //   top: 0.0,
-                //   // left: MediaQuery.of(context).size.width * 0.35,
-                //   child: Container(
-                //     height: AppBar().preferredSize.height,
-                //     color: Colors.black,
-                //     width: MediaQuery.of(context).size.width,
-                //   ),
-                // ),
                 Positioned(
                   bottom: 0.0,
-                  // left: MediaQuery.of(context).size.width * 0.35,
                   child: Container(
                     color: Colors.black,
                     height: MediaQuery.of(context).orientation ==
@@ -181,28 +171,6 @@ class _CameraScreenState extends State<CameraScreen>
                             ),
                           )),
                     ),
-
-                    // IconButton(
-                    //     onPressed: () async {
-                    //       XFile? rawImage = await takePicture();
-                    //       File imageFile = File(rawImage!.path);
-
-                    //       //  File imageFile = File(rawImage!.path);
-
-                    //       int currentUnix = DateTime.now().millisecondsSinceEpoch;
-                    //       final directory =
-                    //           await getApplicationDocumentsDirectory();
-                    //       String fileFormat = imageFile.path.split('.').last;
-
-                    //       await imageFile.copy(
-                    //         '${directory.path}/$currentUnix.$fileFormat',
-                    //       );
-                    //     },
-                    //     icon: Icon(
-                    //       Icons.radio_button_on,
-                    //       color: Colors.white,
-                    //       size: 120,
-                    //     )),
                   ),
                 )
               ])
@@ -274,24 +242,19 @@ class _CameraScreenState extends State<CameraScreen>
         return AlertDialog(
           backgroundColor: Colors.white,
           title: TranslationWidget(
-              message: "Image are stored in the Cloud, not on your phone ",
+              message: "Images are stored in the Cloud, not on your device",
               fromLanguage: "en",
               toLanguage: Globals.selectedLanguage,
               builder: (translatedMessage) {
                 return Text(translatedMessage.toString(),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headline3!.copyWith(
-                        //fontWeight: FontWeight.bold,
-                        color: Colors.black));
+                        color: Colors.black, fontWeight: FontWeight.bold));
               }),
-          titleTextStyle: Theme.of(context).textTheme.headline3!.copyWith(
-              //fontWeight: FontWeight.bold,
-              color: Colors.black),
-          // content: Container(
-          //   height: 1,
-          //   width: MediaQuery.of(context).size.height,
-          //   color: Colors.red,
-          // ),
+          titleTextStyle: Theme.of(context)
+              .textTheme
+              .headline3!
+              .copyWith(color: Colors.black),
           actions: [
             Container(
               height: 1,
@@ -299,54 +262,25 @@ class _CameraScreenState extends State<CameraScreen>
               color: Colors.grey.withOpacity(0.2),
             ),
             Center(
-              child: Container(
-                // height: 20,
-                child: TextButton(
-                  child: TranslationWidget(
-                      message: "ok ",
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) {
-                        return Text(translatedMessage.toString(),
-                            style:
-                                Theme.of(context).textTheme.headline5!.copyWith(
-                                      color: AppTheme.kButtonColor,
-                                    ));
-                      }),
-                  onPressed: () {
-                    Globals.iscameraPopup = false;
-                    Navigator.of(context).pop();
-                  },
-                ),
+              child: TextButton(
+                child: TranslationWidget(
+                    message: "ok ",
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) {
+                      return Text(translatedMessage.toString(),
+                          style:
+                              Theme.of(context).textTheme.headline5!.copyWith(
+                                    color: AppTheme.kButtonColor,
+                                  ));
+                    }),
+                onPressed: () {
+                  Globals.iscameraPopup = false;
+                  Navigator.of(context).pop();
+                },
               ),
             ),
-          ]
-          // content: Container(
-          //     height: MediaQuery.of(context).size.height * 0.2,
-          //     child: Column(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Center(
-          //           child: TranslationWidget(
-          //               message:
-          //                   "Image are stored in the Cloud, not on your phone ",
-          //               fromLanguage: "en",
-          //               toLanguage: Globals.selectedLanguage,
-          //               builder: (translatedMessage) {
-          //                 return Text(translatedMessage.toString(),
-          //                     textAlign: TextAlign.center,
-          //                     style: Theme.of(context)
-          //                         .textTheme
-          //                         .headline3!
-          //                         .copyWith(
-          //                             //fontWeight: FontWeight.bold,
-          //                             color: Colors.black));
-          //               }),
-          //         ),
-          //         Divider()
-          //       ],
-          //     )),
-          ,
+          ],
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           elevation: 16,

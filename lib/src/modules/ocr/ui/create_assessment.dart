@@ -284,7 +284,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
           Globals.assessmentName =
               "${assessmentController.text}_${classController.text}";
           print(Globals.assessmentName);
-          _googleDriveBloc.add(CreateDocOnDrive(
+          _googleDriveBloc.add(CreateExcelSheetToDrive(
               name: "${assessmentController.text}_${classController.text}"));
           Navigator.push(
             context,

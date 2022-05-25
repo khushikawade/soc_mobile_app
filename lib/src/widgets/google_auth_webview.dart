@@ -16,23 +16,23 @@ class GoogleAuthWebview extends StatefulWidget {
   final bool isbuttomsheet;
   final String? language;
   final bool? isCustomMainPageWebView;
-  final callBackFunction;
+  // final callBackFunction;
   final bool? zoomEnabled; //To enable or disable the zoom functionality
 
   @override
-  GoogleAuthWebview(
-      {Key? key,
-      required this.title,
-      required this.url,
-      required this.isbuttomsheet,
-      required this.language,
-      this.hideAppbar,
-      this.hideShare,
-      this.zoomEnabled,
-      this.isiFrame,
-      this.isCustomMainPageWebView,
-      this.callBackFunction})
-      : super(key: key);
+  GoogleAuthWebview({
+    Key? key,
+    required this.title,
+    required this.url,
+    required this.isbuttomsheet,
+    required this.language,
+    this.hideAppbar,
+    this.hideShare,
+    this.zoomEnabled,
+    this.isiFrame,
+    this.isCustomMainPageWebView,
+    // this.callBackFunction
+  }) : super(key: key);
   _GoogleAuthWebviewState createState() => new _GoogleAuthWebviewState();
 }
 
@@ -118,14 +118,16 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                             (WebViewController webViewController) {
                           Globals.webViewController1 = webViewController;
                           _controller.complete(webViewController);
-                          
-                            webViewController.clearCache();
-                            final cookieManager = CookieManager();
-                            cookieManager.clearCookies();
-                          
+
+                          webViewController.clearCache();
+                          final cookieManager = CookieManager();
+                          cookieManager.clearCookies();
                         },
                         navigationDelegate: (NavigationRequest request) {
-                          widget.callBackFunction(request.url);
+                          // widget.callBackFunction(request.url);
+                          if (request.url.toString().contains('displayName')) {
+                            Navigator.pop(context, request.url);
+                          }
                           return NavigationDecision.navigate;
                         },
                       ),

@@ -6,8 +6,8 @@ import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -102,9 +102,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       )),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: highlightText(
+                    child: Utility.textWidget(
                         text: 'Results Summary',
-                        theme: Theme.of(context)
+                        context: context,
+                        textTheme: Theme.of(context)
                             .textTheme
                             .headline6!
                             .copyWith(fontWeight: FontWeight.bold)),
@@ -175,25 +176,29 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   }
 
   Widget _iconButton(int index) {
-    return Container(
-      // padding: EdgeInsets.only(top: 15),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            padding: index == 1 ? null : EdgeInsets.only(top: 10),
-            child: highlightText(
-                text: Globals.ocrResultIconsName[index],
-                theme: Theme.of(context)
-                    .textTheme
-                    .subtitle2!
-                    .copyWith(fontWeight: FontWeight.bold)),
-          ),
-          index == 1
-              ? Image(
-                  image: AssetImage("assets/images/drive.png"),
-                )
-              : IconButton(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+          padding: index == 1 ? null : EdgeInsets.only(top: 12),
+          child: Utility.textWidget(
+              text: Globals.ocrResultIconsName[index],
+              context: context,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .subtitle2!
+                  .copyWith(fontWeight: FontWeight.bold)),
+        ),
+        index == 1
+            ? Image(
+                width: Globals.deviceType == "phone" ? 34 : 32,
+                height: Globals.deviceType == "phone" ? 34 : 32,
+                image: AssetImage(
+                  "assets/images/drive_ico.png",
+                ),
+              )
+            : Expanded(
+                child: IconButton(
                   icon: Icon(
                     IconData(Globals.ocrResultIcons[index],
                         fontFamily: Overrides.kFontFam,
@@ -220,23 +225,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     }
                   },
                 ),
-        ],
-      ),
-    );
-  }
-
-  Widget highlightText({required String text, required theme}) {
-    return TranslationWidget(
-      message: text,
-      toLanguage: Globals.selectedLanguage,
-      fromLanguage: "en",
-      builder: (translatedMessage) => Text(
-        translatedMessage.toString(),
-        // maxLines: 2,
-        //overflow: TextOverflow.ellipsis,
-        // textAlign: TextAlign.center,
-        style: theme,
-      ),
+              ),
+      ],
     );
   }
 
@@ -251,19 +241,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         scrollDirection: Axis.vertical,
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
-          return _buildList(index, _list);
+          return _buildList(index, _list, context);
         },
       ),
     );
   }
 
-  Widget _buildList(int index, List<StudentAssessmentInfo> _list) {
+  Widget _buildList(int index, List<StudentAssessmentInfo> _list, context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).colorScheme.background,
-          // width: 0.65,
         ),
         borderRadius: BorderRadius.circular(0.0),
         color: (index % 2 == 0)
@@ -271,15 +260,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             : Theme.of(context).colorScheme.secondary,
       ),
       child: ListTile(
-        // onTap: () {
-        //   _navigate(obj, index);
-        // },
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         // contentPadding:
         //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: highlightText(
+        leading: Utility.textWidget(
             text: _list[index].studentId ?? 'Unknown',
-            theme: Theme.of(context).textTheme.headline2!),
+            context: context,
+            textTheme: Theme.of(context).textTheme.headline2!),
         // title: TranslationWidget(
         //     message: "No title",
         //     fromLanguage: "en",
@@ -288,11 +275,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         //       return Text(translatedMessage.toString(),
         //           style: Theme.of(context).textTheme.bodyText1!);
         //     }),
-        trailing: highlightText(
+        trailing: Utility.textWidget(
             text: _list[index].studentGrade == ''
                 ? '2/2'
                 : '${Globals.studentInfo![index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
-            theme: Theme.of(context)
+            context: context,
+            textTheme: Theme.of(context)
                 .textTheme
                 .headline2!
                 .copyWith(fontWeight: FontWeight.bold)),
