@@ -102,6 +102,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           await uploadSheetOnDrive(
               file, Globals.fileId, Globals.authorizationToken);
         }
+        bool deleted = await GoogleDriveAccess.deleteFile(file);
+        if (!deleted) {
+          GoogleDriveAccess.deleteFile(file);
+        }
       } catch (e) {}
     }
 
@@ -141,9 +145,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             List<StudentAssessmentInfo> _list =
                 await GoogleDriveAccess.excelToJson(file);
 
-            bool deleted = await deleteFile(File(file));
+            bool deleted = await GoogleDriveAccess.deleteFile(File(file));
             if (!deleted) {
-              deleteFile(File(file));
+              GoogleDriveAccess.deleteFile(File(file));
             }
             if (_list.length > 0) {
               yield AssessmentDetailSuccess(obj: _list);
@@ -399,20 +403,5 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     } catch (e) {
       throw (e);
     }
-  }
-
-  Future<bool> deleteFile(File file) async {
-    try {
-      if (await file.exists()) {
-        await file.delete();
-        return true;
-      }
-    } catch (e) {
-      print(e);
-      throw (e);
-
-      // Error in getting access to the file.
-    }
-    return false;
   }
 }
