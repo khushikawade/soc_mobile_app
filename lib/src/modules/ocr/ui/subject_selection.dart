@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
@@ -12,7 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SubjectSelection extends StatefulWidget {
-  SubjectSelection({Key? key}) : super(key: key);
+  final String? selectedClass;
+  SubjectSelection({Key? key, required this.selectedClass}) : super(key: key);
 
   @override
   State<SubjectSelection> createState() => _SubjectSelectionState();
@@ -25,10 +27,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   int? subjectIndex;
   int? nycIndex;
   int? nycSubIndex;
+  String? keyword;
+  String? keywordSub;
   OcrBloc _ocrBloc = OcrBloc();
   @override
   void initState() {
-    _ocrBloc.add(FatchSubjectDetails(type: 'subject'));
+    _ocrBloc.add(
+        FatchSubjectDetails(type: 'subject', keyword: widget.selectedClass));
     super.initState();
   }
 
@@ -57,9 +62,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   ),
                   onPressed: () {
                     if (indexGlobal == 1) {
-                      _ocrBloc.add(FatchSubjectDetails(type: 'subject'));
+                      _ocrBloc.add(FatchSubjectDetails(
+                          type: 'subject', keyword: widget.selectedClass));
                     } else if (indexGlobal == 2) {
-                      _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                      _ocrBloc.add(
+                          FatchSubjectDetails(type: 'nyc', keyword: keyword));
                     } else {
                       Navigator.pop(context);
                     }
@@ -82,52 +89,50 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       )),
                 ],
               ),
-              body: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    BlocBuilder<OcrBloc, OcrState>(
-                        bloc: _ocrBloc,
-                        builder: (context, state) {
-                          if (state is OcrLoading) {
-                            return loadingPage();
-                          }
-                          if (state is SubjectDataSuccess) {
-                            indexGlobal = 0;
-                            return subjectPage(list: state.obj!);
-                          } else if (state is NycDataSuccess) {
-                            indexGlobal = 1;
-                            return secondPage(list: state.obj);
-                          } else if (state is NycSubDataSuccess) {
-                            indexGlobal = 2;
-                            return thirdPage(list: state.obj!);
-                          }
-                          return Container();
-                          // return widget here based on BlocA's state
-                        }),
-                    BlocListener(
+              body: ListView(
+               // crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  BlocBuilder<OcrBloc, OcrState>(
                       bloc: _ocrBloc,
-                      listener: (context, state) {
-                        if (state is SubjectDataSuccess) {
-                          setState(() {
-                            indexGlobal = 0;
-                          });
-                        } else if (state is NycDataSuccess) {
-                          setState(() {
-                            indexGlobal = 1;
-                          });
-                        } else if (state is NycSubDataSuccess) {
-                          setState(() {
-                            indexGlobal = 2;
-                          });
+                      builder: (context, state) {
+                        if (state is OcrLoading) {
+                          return loadingPage();
                         }
-                      },
-                      child: Container(),
-                    ),
-                    //  SpacerWidget(_KVertcalSpace / 4),
-                    // changePages(),
-                  ],
-                ),
+                        if (state is SubjectDataSuccess) {
+                          indexGlobal = 0;
+                          return subjectPage(list: state.obj!);
+                        } else if (state is NycDataSuccess) {
+                          indexGlobal = 1;
+                          return secondPage(list: state.obj);
+                        } else if (state is NycSubDataSuccess) {
+                          indexGlobal = 2;
+                          return thirdPage(list: state.obj!);
+                        }
+                        return Container();
+                        // return widget here based on BlocA's state
+                      }),
+                  BlocListener(
+                    bloc: _ocrBloc,
+                    listener: (context, state) {
+                      if (state is SubjectDataSuccess) {
+                        setState(() {
+                          indexGlobal = 0;
+                        });
+                      } else if (state is NycDataSuccess) {
+                        setState(() {
+                          indexGlobal = 1;
+                        });
+                      } else if (state is NycSubDataSuccess) {
+                        setState(() {
+                          indexGlobal = 2;
+                        });
+                      }
+                    },
+                    child: Container(),
+                  ),
+                  //  SpacerWidget(_KVertcalSpace / 4),
+                  // changePages(),
+                ],
               ),
               bottomNavigationBar: progressIndicatorBar(),
             ),
@@ -147,7 +152,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   //   }
   // }
 
-  Widget secondPage({required List<SubjectList> list}) {
+  Widget secondPage({required List<SubjectDetailList> list}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).orientation == Orientation.portrait
@@ -160,7 +165,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         _buildSearchbar(
             controller: searchController, onSaved: (String value) {}),
         SpacerWidget(_KVertcalSpace / 4),
-        scoringButton(list: list),
+        scoringButton(list: list, page: 2),
       ]),
     );
   }
@@ -177,7 +182,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget thirdPage({required List<SubjectList> list}) {
+  Widget thirdPage({required List<SubjectDetailList> list}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).orientation == Orientation.portrait
@@ -197,14 +202,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget detailsList({required List<SubjectList> list}) {
+  Widget detailsList({required List<SubjectDetailList> list}) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.56
+          ? MediaQuery.of(context).size.height * 0.65
           : MediaQuery.of(context).size.width * 0.50,
       width: MediaQuery.of(context).size.width * 0.9,
       child: ListView.separated(
-        physics: NeverScrollableScrollPhysics(),
+        //physics: NeverScrollableScrollPhysics(),
         // gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         //     maxCrossAxisExtent: 180,
         //     childAspectRatio: 5 / 3,
@@ -213,55 +218,61 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         itemCount: list.length,
         itemBuilder: (BuildContext ctx, index) {
           return InkWell(
-            onTap: () {
-              // if(indexGlobal == 0){
-              //   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
-              // } else if(indexGlobal == 1){
-              //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
-              // }
-              if (indexGlobal == 2) {
-                setState(() {
-                  nycSubIndex = index;
-                });
-              }
-            },
-            child: AnimatedContainer(
-              padding: EdgeInsets.only(bottom: 5),
-              decoration: BoxDecoration(
-                color: (nycSubIndex == index && indexGlobal == 2)
-                    ? AppTheme.kSelectedColor
-                    : Colors.grey,
-                // Theme.of(context)
-                //     .colorScheme
-                //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
+              onTap: () {
+                // if(indexGlobal == 0){
+                //   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                // } else if(indexGlobal == 1){
+                //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
+                // }
+                if (indexGlobal == 2) {
+                  setState(() {
+                    nycSubIndex = index;
+                  });
+                }
+              },
+              child: Column(children: [
+                AnimatedContainer(
+                  padding: EdgeInsets.only(bottom: 5),
+                  decoration: BoxDecoration(
+                    color: (nycSubIndex == index && indexGlobal == 2)
+                        ? AppTheme.kSelectedColor
+                        : Colors.grey,
+                    // Theme.of(context)
+                    //     .colorScheme
+                    //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
 
-                borderRadius: BorderRadius.all(
-                  Radius.circular(8),
-                ),
-              ),
-              duration: Duration(microseconds: 100),
-              child: Container(
-                padding: EdgeInsets.all(15),
-                alignment: Alignment.center,
-                child: textwidget(
-                  text: list[index].subjectNameC!,
-                  textTheme: Theme.of(context).textTheme.headline2,
-                ),
-                decoration: BoxDecoration(
-                    color:
-                        Color(0xff000000) != Theme.of(context).backgroundColor
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                  duration: Duration(microseconds: 100),
+                  child: Container(
+                    padding: EdgeInsets.all(15),
+                    // alignment: Alignment.center,
+                    child: textwidget(
+                      text: list[index].standardAndDescriptionC!,
+                      textTheme: Theme.of(context).textTheme.headline2,
+                    ),
+                    decoration: BoxDecoration(
+                        color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
                             ? Color(0xffF7F8F9)
                             : Color(0xff111C20),
-                    border: Border.all(
-                      color: (nycSubIndex == index && indexGlobal == 2)
-                          ? AppTheme.kSelectedColor
-                          : Colors.grey,
-                    ),
-                    // color: scoringColor == index ? Colors.orange : null,
-                    borderRadius: BorderRadius.circular(8)),
-              ),
-            ),
-          );
+                        border: Border.all(
+                          color: (nycSubIndex == index && indexGlobal == 2)
+                              ? AppTheme.kSelectedColor
+                              : Colors.grey,
+                        ),
+                        // color: scoringColor == index ? Colors.orange : null,
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+                index == list.length - 1
+                    ? SizedBox(
+                        height: 30,
+                      )
+                    : Container()
+              ]));
         },
         separatorBuilder: (BuildContext context, int index) {
           return SpacerWidget(_KVertcalSpace / 3.75);
@@ -294,12 +305,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget subjectPage({required List<SubjectList> list}) {
+  Widget subjectPage({required List<SubjectDetailList> list}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.85
-          : MediaQuery.of(context).size.width * 0.50,
+          : MediaQuery.of(context).size.width * 0.60,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SpacerWidget(_KVertcalSpace * 0.50),
         highlightText(text: 'Subject'),
@@ -313,14 +324,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget scoringButton({required List<SubjectList> list}) {
+  Widget scoringButton({required List<SubjectDetailList> list, int? page}) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.60
+          ? MediaQuery.of(context).size.height * 0.65
           : MediaQuery.of(context).size.width * 0.30,
       width: MediaQuery.of(context).size.width * 0.9,
       child: GridView.builder(
-          physics: NeverScrollableScrollPhysics(),
+          // physics: NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 180,
               childAspectRatio: 5 / 3,
@@ -334,12 +345,16 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   setState(() {
                     subjectIndex = index;
                   });
-                  _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                  keyword = list[index].subjectNameC;
+                  _ocrBloc
+                      .add(FatchSubjectDetails(type: 'nyc', keyword: keyword));
                 } else if (indexGlobal == 1) {
                   setState(() {
                     nycIndex = index;
                   });
-                  _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
+                  keywordSub = list[index].domainNameC;
+                  _ocrBloc.add(
+                      FatchSubjectDetails(type: 'nycSub', keyword: keywordSub));
                 } else if (indexGlobal == 1) {
                   setState(() {
                     nycSubIndex = index;
@@ -356,20 +371,25 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   // Theme.of(context)
                   //     .colorScheme
                   //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
-
+      
                   borderRadius: BorderRadius.all(
                     Radius.circular(8),
                   ),
                 ),
                 duration: Duration(microseconds: 100),
                 child: Container(
-                  alignment: Alignment.center,
-                  child: textwidget(
-                    text: list[index].subjectNameC!,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(fontWeight: FontWeight.bold),
+                  // alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Center(
+                    child: textwidget(
+                      text: page == 2
+                          ? list[index].domainNameC!
+                          : list[index].subjectNameC!,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   decoration: BoxDecoration(
                       color:
@@ -538,7 +558,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             ? MediaQuery.of(context).size.width / 2
                             : MediaQuery.of(context).size.height / 2,
                     child: TranslationWidget(
-                        message: "you are about to lose scanned assessment sheet",
+                        message:
+                            "you are about to lose scanned assessment sheet",
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {

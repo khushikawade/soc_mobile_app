@@ -61,7 +61,7 @@ class OcrErrorReceived extends OcrState {
 }
 
 class SubjectDataSuccess extends OcrState {
-  final List<SubjectList>? obj;
+  final List<SubjectDetailList>? obj;
   SubjectDataSuccess({
     this.obj,
   });
@@ -76,7 +76,7 @@ class SubjectDataSuccess extends OcrState {
 }
 
 class NycDataSuccess extends OcrState {
-  final List<SubjectList> obj;
+  final List<SubjectDetailList> obj;
   NycDataSuccess({
     required this.obj,
   });
@@ -93,7 +93,7 @@ class NycDataSuccess extends OcrState {
 }
 
 class NycSubDataSuccess extends OcrState {
-  final List<SubjectList>? obj;
+  final List<SubjectDetailList>? obj;
   NycSubDataSuccess({
     this.obj,
   });

@@ -7,7 +7,6 @@
 
 import 'package:camera_web/camera_web.dart';
 import 'package:connectivity_for_web/connectivity_for_web.dart';
-import 'package:google_sign_in_web/google_sign_in_web.dart';
 import 'package:image_picker_for_web/image_picker_for_web.dart';
 import 'package:package_info_plus_web/package_info_plus_web.dart';
 import 'package:shared_preferences_web/shared_preferences_web.dart';
@@ -21,7 +20,6 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 void registerPlugins(Registrar registrar) {
   CameraPlugin.registerWith(registrar);
   ConnectivityPlugin.registerWith(registrar);
-  GoogleSignInPlugin.registerWith(registrar);
   ImagePickerPlugin.registerWith(registrar);
   PackageInfoPlugin.registerWith(registrar);
   SharedPreferencesPlugin.registerWith(registrar);

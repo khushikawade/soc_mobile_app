@@ -28,4 +28,5 @@ class Strings {
   static final String globalSearchName = 'global_search';
   static final String calendarObjectName = 'calandar_action';
   static final String googleDrive = 'google_drive';
+  static final String ocrSubjectObjectName = 'ocr_subject_details';
 }

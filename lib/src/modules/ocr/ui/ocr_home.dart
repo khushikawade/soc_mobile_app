@@ -124,6 +124,7 @@ class _OpticalCharacterRecognitionPageState
         backgroundColor: AppTheme.kButtonColor,
         onPressed: () async {
           Globals.studentInfo = [];
+          _bloc.add(SaveSubjectListDetails());
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CameraScreen()),

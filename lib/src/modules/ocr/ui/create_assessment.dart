@@ -2,7 +2,6 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
-import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -21,27 +20,16 @@ class _CreateAssessmentState extends State<CreateAssessment>
   static const double _KVertcalSpace = 60.0;
   final assessmentController = TextEditingController(text: 'Version_0.01');
   final classController = TextEditingController(text: '11th');
-  double? _scale;
-  AnimationController? _controller;
-  int scoringColor = 0;
+  int selectedClassIndex = 0;
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(
-        milliseconds: 500,
-      ),
-      lowerBound: 0.0,
-      upperBound: 0.1,
-    )..addListener(() {
-        setState(() {});
-      });
+    
   }
 
   @override
   Widget build(BuildContext context) {
-    _scale = 1 - _controller!.value;
+  
     
     return WillPopScope(
        onWillPop: () async => false,
@@ -184,48 +172,34 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 return GestureDetector(
                   onTap: () {
                     setState(() {
-                      scoringColor = index;
+                      selectedClassIndex = index;
                     });
                   },
-                  onTapDown: _tapDown,
-                  onTapUp: _tapUp,
-                  child: Transform.scale(
-                    scale: _scale!,
-                    child: AnimatedContainer(
-                      duration: Duration(microseconds: 100),
-                      padding: EdgeInsets.only(bottom: 5),
-                      decoration: BoxDecoration(
+                  
+                  child: new Container(
+                    decoration: BoxDecoration(
+                        color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color(0xffF7F8F9)
+                            : Color(0xff111C20),
                         shape: BoxShape.circle,
-                        color: scoringColor == index
-                            ? AppTheme.kSelectedColor
-                            : Colors.grey,
-                      ),
-                      child: new Container(
-                        decoration: BoxDecoration(
-                            color: Color(0xff000000) !=
-                                    Theme.of(context).backgroundColor
-                                ? Color(0xffF7F8F9)
-                                : Color(0xff111C20),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: scoringColor == index
-                                  ? AppTheme.kSelectedColor
-                                  : Colors.grey,
-                            )),
-                        child: Center(
-                          child: textwidget(
-                            text: Globals.classList[index],
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(
-                                    color: scoringColor == index
-                                        ? AppTheme.kSelectedColor
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant),
-                          ),
-                        ),
+                        border: Border.all(
+                          color: selectedClassIndex == index
+                              ? AppTheme.kSelectedColor
+                              : Colors.grey,
+                        )),
+                    child: Center(
+                      child: textwidget(
+                        text: Globals.classList[index],
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(
+                                color: selectedClassIndex == index
+                                    ? AppTheme.kSelectedColor
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant),
                       ),
                     ),
                   ),
@@ -295,7 +269,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             MaterialPageRoute(
                 builder: (context) =>
                     // SuccessScreen()
-                    SubjectSelection()),
+                    SubjectSelection(selectedClass: selectedClassIndex.toString(),)),
           );
         },
         // icon:
@@ -349,11 +323,5 @@ class _CreateAssessmentState extends State<CreateAssessment>
   //   );
   // }
 
-  void _tapDown(TapDownDetails details) {
-    _controller!.forward();
-  }
-
-  void _tapUp(TapUpDetails details) {
-    _controller!.reverse();
-  }
+ 
 }

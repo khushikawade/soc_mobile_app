@@ -7,7 +7,6 @@ import '../../../services/Strings.dart';
 import '../../../services/db_service.dart';
 import '../../../services/local_database/hive_db_services.dart';
 import 'package:path/path.dart';
-import '../google_drive_access.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -45,13 +44,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
     }
 
-    if (event is CreateDoc) {
-      try {
-        GoogleDriveAccess.file();
-      } catch (e) {
-        print(e);
-      }
-    }
+    // if (event is CreateDoc) {
+    //   try {
+    //     GoogleDriveAccess.file();
+    //   } catch (e) {
+    //     print(e);
+    //   }
+    // }
   }
 
   Future<String> _createFolderOnDrive(
