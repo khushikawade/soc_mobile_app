@@ -418,7 +418,6 @@
 //     return Tween<double>(begin: 1.0, end: 1.0).animate(parent);
 //   }
 
-<<<<<<< HEAD
 //   @override
 //   Animation<double> getScaleAnimation({required Animation<double> parent}) {
 //     return Tween<double>(begin: 0.5, end: 1.0).animate(parent);
@@ -426,10 +425,3 @@
 
 
 // }
-=======
-  @override
-  Animation<double> getScaleAnimation({required Animation<double> parent}) {
-    return Tween<double>(begin: 0.5, end: 1.0).animate(parent);
-  }
-}
->>>>>>> 0b6e8d844b81c43d46b93c861bdf44a9141f56ea
