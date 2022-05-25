@@ -35,7 +35,10 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
         CommonBackGroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: CustomOcrAppBarWidget(isBackButton: true),
+          appBar: CustomOcrAppBarWidget(
+            isBackButton: true,
+            assessmentDetailPage: true,
+          ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -55,22 +58,25 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               BlocBuilder(
                   bloc: _driveBloc,
                   builder: (BuildContext contxt, GoogleDriveState state) {
-                    if (state is GoogleDriveLoading) {
-                      return Center(
-                          child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.primaryVariant,
-                      ));
-                    } else if (state is GoogleDriveGetSuccess) {
+                    if (state is GoogleDriveGetSuccess) {
                       return listView(state.obj);
                     } else if (state is GoogleNoAssessment) {
-                      return Center(
-                          child: Text(
-                        "No assessment available",
-                        style: Theme.of(context).textTheme.bodyText1!,
-                      ));
-                    } else {
-                      return Container();
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: Center(
+                            child: Text(
+                          "No assessment available",
+                          style: Theme.of(context).textTheme.bodyText1!,
+                        )),
+                      );
                     }
+                    return Container(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                      )),
+                    );
                   })
             ],
           ),

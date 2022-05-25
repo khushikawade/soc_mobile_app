@@ -147,7 +147,7 @@ class _StaffPageState extends State<StaffPage> {
 
     List<UserInfo> userInfo = await localdb();
 
-    _ocrBloc.add(VerifyUserWithDatabase(email: userInfo.last.userEmail));
+    //_ocrBloc.add(VerifyUserWithDatabase(email: userInfo.last.userEmail));
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,

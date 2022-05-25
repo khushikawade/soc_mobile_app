@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,7 +47,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
-              isBackButton: false,
+              isBackButton: widget.assessmentDetailPage! ? true : false,
               isResultScreen: true,
             ),
 
@@ -92,14 +93,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SpacerWidget(_KVertcalSpace * 0.50),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.red,
-                      )),
+                  // IconButton(
+                  //     onPressed: () {
+                  //       Navigator.pop(context);
+                  //     },
+                  //     icon: Icon(
+                  //       Icons.arrow_back,
+                  //       color: Colors.red,
+                  //     )),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Utility.textWidget(
@@ -119,16 +120,30 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           bloc: _driveBloc,
                           builder:
                               (BuildContext contxt, GoogleDriveState state) {
-                            if (state is AssessmentSuccess) {
+                            if (state is AssessmentDetailSuccess) {
                               return listView(
                                 state.obj,
                               );
+                            } else if (state is GoogleNoAssessment) {
+                              return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.7,
+                                child: Center(
+                                    child: Text(
+                                  "No assessment available",
+                                  style: Theme.of(context).textTheme.bodyText1!,
+                                )),
+                              );
                             }
-                            return Center(
-                                child: CircularProgressIndicator(
-                              color:
-                                  Theme.of(context).colorScheme.primaryVariant,
-                            ));
+                            return Container(
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              )),
+                            );
                           })
                 ],
               ),
@@ -263,27 +278,25 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         // contentPadding:
         //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: Utility.textWidget(
-            text: _list[index].studentId ?? 'Unknown',
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline2!),
-        // title: TranslationWidget(
-        //     message: "No title",
-        //     fromLanguage: "en",
-        //     toLanguage: Globals.selectedLanguage,
-        //     builder: (translatedMessage) {
-        //       return Text(translatedMessage.toString(),
-        //           style: Theme.of(context).textTheme.bodyText1!);
-        //     }),
-        trailing: Utility.textWidget(
-            text: _list[index].studentGrade == ''
-                ? '2/2'
-                : '${Globals.studentInfo![index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
-            context: context,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline2!
-                .copyWith(fontWeight: FontWeight.bold)),
+        leading:
+            //  Text(_list[index].studentId!),
+
+            Utility.textWidget(
+                text: _list[index].studentName ?? 'Unknown',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!),
+
+        trailing:
+            // Text(_list[index].pointpossible!),
+            Utility.textWidget(
+                text: _list[index].studentGrade == ''
+                    ? '2/2'
+                    : '${_list[index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.bold)),
       ),
     );
   }

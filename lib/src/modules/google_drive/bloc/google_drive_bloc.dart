@@ -1,14 +1,18 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:excel/excel.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../services/db_service.dart';
 import 'package:path/path.dart';
-
 import '../../ocr/modal/student_assessment_info_modal.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
@@ -53,7 +57,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //         studentId: "Id",
         //         studentName: "Name",
         //         studentGrade: "PointsEarned",
-        //         pointpossible: "PointsEarned"));
+        //         pointpossible: "pointpossible"));
 
         // File file = await GoogleDriveAccess.createSheet(
         //     data: Globals.studentInfo!, name: event.name!);
@@ -90,7 +94,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 studentId: "Id",
                 studentName: "Name",
                 studentGrade: "PointsEarned",
-                pointpossible: "PointsEarned"));
+                pointpossible: "pointPossible"));
         print(assessmentData);
 
         File file = await GoogleDriveAccess.createSheet(
@@ -121,10 +125,26 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
     if (event is GetAssessmentDetail) {
       try {
-        print("inside get assessment token ${Globals.token}");
-        print(event.fileId);
-        _getAssessmentDetail(Globals.authorizationToken, event.fileId);
-      } catch (e) {}
+        String link = await _getAssessmentDetail(
+            Globals.authorizationToken, event.fileId);
+
+        if (link != "") {
+          String file = await downloadFile(
+              link, "test3", (await getExternalStorageDirectory())!.path);
+
+          if (file != "") {
+            List<StudentAssessmentInfo> _list =
+                await GoogleDriveAccess.excelToJson(file);
+            if (_list.length > 0) {
+              yield AssessmentDetailSuccess(obj: _list);
+            } else {
+              yield GoogleNoAssessment();
+            }
+          }
+        }
+      } catch (e) {
+        throw (e);
+      }
     }
   }
 
@@ -306,15 +326,24 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
-        var data = response.data['items'];
-        print(data);
+        List<int> index = [];
+        List data = response.data['items'];
+        for (int i = 0; i < data.length; i++) {
+          if (data[i]['labels']['trashed'] == true) {
+            index.add(i);
+          }
+        }
         List<Assessment> _list = response.data['items']
             .map<Assessment>((i) => Assessment.fromJson(i))
             .toList();
+        for (int i = 0; i < index.length; i++) {
+          _list.removeAt(index[i]);
+        }
+
         return _list;
       }
     } catch (e) {
-      print(e);
+      throw (e);
     }
   }
 
@@ -357,21 +386,48 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     return false;
   }
 
-  Future _getAssessmentDetail(String? token, String? fileId) async {
-    print(token);
-    print(fileId);
+  Future<String> _getAssessmentDetail(String? token, String? fileId) async {
     Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'authorization': 'Bearer $token'
+      'authorization': 'Bearer $token',
+      'Content-Type': 'application/json; charset=UTF-8'
     };
     final ResponseModel response = await _dbServices.getapi(
+        //'https://www.googleapis.com/drive/v3/files/$fileId?fields=webContentLink',
         'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         headers: headers,
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
-      print(" get file link   ----------->");
       var data = response.data;
+
+      String downloadLink = data['exportLinks']
+          ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+
+      return downloadLink;
+    }
+    return "";
+  }
+
+  Future<String> downloadFile(String url, String fileName, String dir) async {
+    try {
+      HttpClient httpClient = new HttpClient();
+      File file;
+      String filePath = '';
+      String myUrl = '';
+
+      myUrl = url;
+      var request = await httpClient.getUrl(Uri.parse(myUrl));
+      var response = await request.close();
+      if (response.statusCode == 200) {
+        var bytes = await consolidateHttpClientResponseBytes(response);
+        filePath = '$dir/$fileName';
+        file = File(filePath);
+        await file.writeAsBytes(bytes);
+        return filePath;
+      }
+      return "";
+    } catch (e) {
+      throw (e);
     }
   }
 }

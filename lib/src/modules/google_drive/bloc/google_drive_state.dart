@@ -32,11 +32,11 @@ class GoogleNoAssessment extends GoogleDriveState {
 }
 
 // ignore: must_be_immutable
-class AssessmentSuccess extends GoogleDriveState {
+class AssessmentDetailSuccess extends GoogleDriveState {
   List<StudentAssessmentInfo> obj;
-  AssessmentSuccess({required this.obj});
-  AssessmentSuccess copyWith({final obj}) {
-    return AssessmentSuccess(obj: obj ?? this.obj);
+  AssessmentDetailSuccess({required this.obj});
+  AssessmentDetailSuccess copyWith({final obj}) {
+    return AssessmentDetailSuccess(obj: obj ?? this.obj);
   }
 
   @override
