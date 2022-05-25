@@ -17,7 +17,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.isTitle,
       this.isFailureState,
       this.isResultScreen,
-      this.isHomeButtonPopup})
+      this.isHomeButtonPopup,
+      this.assessmentDetailPage})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? isFailureState;
@@ -25,6 +26,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? isTitle;
   bool? isResultScreen;
   bool? isHomeButtonPopup;
+  bool? assessmentDetailPage;
 
   @override
   final Size preferredSize;
@@ -85,56 +87,62 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 )
               : null,
       actions: [
-        Container(
-            padding: widget.isFailureState != true
-                ? EdgeInsets.only(right: 10)
-                : EdgeInsets.zero,
-            child: IconButton(
-              onPressed: () {
-                if (widget.isHomeButtonPopup == true) {
-                  _onHomePressed();
-                } else {
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (_) => false);
-                }
-
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(builder: (context) => HomePage()),
-                // );
-              },
-              icon: Icon(
-                IconData(0xe874,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kButtonColor,
-                size: 30,
-              ),
-            )),
-        widget.isFailureState == true || widget.isResultScreen == true
+        widget.assessmentDetailPage != null
             ? Container(
                 padding: widget.isFailureState != true
                     ? EdgeInsets.only(right: 10)
                     : EdgeInsets.zero,
                 child: IconButton(
                   onPressed: () {
-                    if (widget.isFailureState == true) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => CameraScreen()));
-                    } else if (widget.isResultScreen == true) {
-                      onFinishedPopup();
+                    if (widget.isHomeButtonPopup == true) {
+                      _onHomePressed();
+                    } else {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                          (_) => false);
                     }
+
+                    // Navigator.of(context).push(
+                    //   MaterialPageRoute(builder: (context) => HomePage()),
+                    // );
                   },
                   icon: Icon(
-                    IconData(0xe877,
+                    IconData(0xe874,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
-                    size: 30,
                     color: AppTheme.kButtonColor,
+                    size: 30,
                   ),
-                ),
-              )
-            : Container()
+                ))
+            : Container(),
+        widget.assessmentDetailPage == null
+            ? Container()
+            : widget.isFailureState == true || widget.isResultScreen == true
+                ? Container(
+                    padding: widget.isFailureState != true
+                        ? EdgeInsets.only(right: 10)
+                        : EdgeInsets.zero,
+                    child: IconButton(
+                      onPressed: () {
+                        if (widget.isFailureState == true) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => CameraScreen()));
+                        } else if (widget.isResultScreen == true) {
+                          onFinishedPopup();
+                        }
+                      },
+                      icon: Icon(
+                        IconData(0xe877,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        size: 30,
+                        color: AppTheme.kButtonColor,
+                      ),
+                    ),
+                  )
+                : Container()
       ],
     );
   }

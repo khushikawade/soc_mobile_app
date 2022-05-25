@@ -34,7 +34,10 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
         CommonBackGroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: CustomOcrAppBarWidget(isBackButton: true),
+          appBar: CustomOcrAppBarWidget(
+            isBackButton: true,
+            assessmentDetailPage: true,
+          ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -54,24 +57,25 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               BlocBuilder(
                   bloc: _driveBloc,
                   builder: (BuildContext contxt, GoogleDriveState state) {
-                    if (state is GoogleDriveLoading) {
-                      return Container(
-                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
-                        alignment: Alignment.center,
-                          child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.primaryVariant,
-                      ));
-                    } else if (state is GoogleDriveGetSuccess) {
+                    if (state is GoogleDriveGetSuccess) {
                       return listView(state.obj);
                     } else if (state is GoogleNoAssessment) {
-                      return Center(
-                          child: Text(
-                        "No assessment available",
-                        style: Theme.of(context).textTheme.bodyText1!,
-                      ));
-                    } else {
-                      return Container();
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: Center(
+                            child: Text(
+                          "No assessment available",
+                          style: Theme.of(context).textTheme.bodyText1!,
+                        )),
+                      );
                     }
+                    return Container(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                      )),
+                    );
                   })
             ],
           ),
@@ -80,7 +84,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     );
   }
 
-  Widget listView(List<Assessment> _list) {
+  Widget listView(List<HistoryAssessment> _list) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.75
@@ -97,7 +101,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     );
   }
 
-  Widget _buildList(List<Assessment> list, int index) {
+  Widget _buildList(List<HistoryAssessment> list, int index) {
     return InkWell(
       onTap: () {
         print(list[index].fileid);
