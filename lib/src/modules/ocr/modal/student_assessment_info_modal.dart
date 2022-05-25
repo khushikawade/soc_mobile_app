@@ -3,12 +3,11 @@ class StudentAssessmentInfo {
   String? studentId;
   String? studentGrade;
   String? pointpossible;
-  String? assessmentName;
 
-  StudentAssessmentInfo(
-      {this.studentName,
-      this.studentId,
-      this.studentGrade,
-      this.pointpossible,
-      this.assessmentName});
+  StudentAssessmentInfo({
+    this.studentName,
+    this.studentId,
+    this.studentGrade,
+    this.pointpossible,
+  });
 }

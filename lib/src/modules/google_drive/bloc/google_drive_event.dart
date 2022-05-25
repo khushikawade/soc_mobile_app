@@ -39,3 +39,11 @@ class GetSheetFromDrive extends GoogleDriveEvent {
   @override
   List<Object> get props => [];
 }
+
+class GetAssessmentDetail extends GoogleDriveEvent {
+  final String? fileId;
+  GetAssessmentDetail({this.fileId});
+
+  @override
+  List<Object> get props => [];
+}

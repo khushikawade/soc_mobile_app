@@ -509,7 +509,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               .add(UpdateDocOnDrive(studentData: Globals.studentInfo!));
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ResultsSummary()),
+            MaterialPageRoute(
+                builder: (context) => ResultsSummary(
+                      assessmentDetailPage: false,
+                    )),
           );
         },
         label: Row(
