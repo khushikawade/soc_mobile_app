@@ -90,7 +90,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print(assessmentData);
 
         File file = await GoogleDriveAccess.createSheet(
-            data: assessmentData, name: assessmentData[1].assessmentName!);
+            data: assessmentData, name: Globals.assessmentName!);
 
         bool uploadresult = await uploadSheetOnDrive(
             file, Globals.fileId, Globals.authorizationToken);
@@ -123,6 +123,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } catch (e) {
         print(e);
       }
+    }
+    if (event is GetAssessmentDetail) {
+      try {
+        print("inside get assessment token ${Globals.token}");
+        print(event.fileId);
+        _getAssessmentDetail(Globals.authorizationToken, event.fileId);
+      } catch (e) {}
     }
   }
 
@@ -265,7 +272,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
-        //  var data = response.data['items'];
+        var data = response.data['items'];
+        print(data);
         List<Assessment> _list = response.data['items']
             .map<Assessment>((i) => Assessment.fromJson(i))
             .toList();
@@ -313,5 +321,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       return true;
     }
     return false;
+  }
+
+  Future _getAssessmentDetail(String? token, String? fileId) async {
+    print(token);
+    print(fileId);
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'authorization': 'Bearer $token'
+    };
+    final ResponseModel response = await _dbServices.getapi(
+        'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+        headers: headers,
+        isGoogleApi: true);
+
+    if (response.statusCode == 200) {
+      print(" get file link   ----------->");
+      var data = response.data;
+    }
   }
 }

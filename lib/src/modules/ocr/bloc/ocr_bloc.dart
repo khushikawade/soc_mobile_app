@@ -23,6 +23,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   ) async* {
     if (event is FetchTextFromImage) {
       try {
+        yield FetchTextFromImageFailure(schoolId: '', grade: '');
         yield OcrLoading();
         List data = await fetchAndProcessDetails(base64: event.base64);
         if (data[0] != '' && data[1] != '') {
@@ -31,6 +32,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           yield FetchTextFromImageFailure(schoolId: data[0], grade: data[1]);
         }
       } catch (e) {
+        yield FetchTextFromImageFailure(schoolId: '', grade: '');
         print(e);
       }
     }

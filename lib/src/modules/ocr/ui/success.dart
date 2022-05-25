@@ -407,7 +407,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
       studentAssessmentInfo.studentId = idController.text;
       studentAssessmentInfo.studentGrade = pointScored;
       studentAssessmentInfo.pointpossible = Globals.pointpossible;
-      studentAssessmentInfo.assessmentName = Globals.assessmentName;
       Globals.studentInfo!.add(studentAssessmentInfo);
     } else {
       if (Globals.studentInfo == null) {
@@ -417,7 +416,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
         studentAssessmentInfo.studentId = idController.text;
         studentAssessmentInfo.studentGrade = pointScored;
         studentAssessmentInfo.pointpossible = Globals.pointpossible;
-        studentAssessmentInfo.assessmentName = Globals.assessmentName;
         Globals.studentInfo!.add(studentAssessmentInfo);
       } else {
         List id = [];
@@ -430,7 +428,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           studentAssessmentInfo.studentId = idController.text;
           studentAssessmentInfo.studentGrade = pointScored;
           studentAssessmentInfo.pointpossible = Globals.pointpossible;
-          studentAssessmentInfo.assessmentName = Globals.assessmentName;
+
           Globals.studentInfo!.add(studentAssessmentInfo);
         }
       }
