@@ -221,7 +221,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         if (!result) {
           await _createContact(email: email.toString());
         }
-      } else {
+      } else if(data['Assessment_App_User__c']!='true') {
         bool result = await _updateContact(recordId: data['Id']);
         if (!result) {
           await _updateContact(recordId: data['Id']);
@@ -252,7 +252,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         body: body,
         headers: headers);
     if (response.statusCode == 200) {
-      print("created");
+      print("contact created");
 
       return true;
     } else {
@@ -274,7 +274,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         body: body,
         headers: headers);
     if (response.statusCode == 200) {
-      print("updated");
+      print("contact updated");
       return true;
     } else {
       return false;

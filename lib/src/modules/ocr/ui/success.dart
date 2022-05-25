@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -37,10 +38,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   String? pointScored;
   @override
   void initState() {
-    // TODO: implement initState
-    // Globals.isbottomNavbar = false;
-    _bloc.add(FetchTextFromImage(base64: widget.img64!));
     super.initState();
+    _bloc.add(FetchTextFromImage(base64: widget.img64!));
   }
 
   @override
@@ -69,8 +68,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
                       Timer(Duration(seconds: 5), () {
                         updateDetails();
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => CameraScreen()));
+                        // COMMENT below section for enableing the camera
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreateAssessment()),
+                        );
+                        //UNCOMMENT below section for enableing the camera
+
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(builder: (_) => CameraScreen()));
                       });
                     } else if (state is FetchTextFromImageFailure) {
                       onChange == false

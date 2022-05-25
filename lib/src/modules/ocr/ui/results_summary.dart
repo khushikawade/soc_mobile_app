@@ -90,7 +90,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Container(
-          padding: index == 1 ? null : EdgeInsets.only(top: 12),
+          padding: index == 1 ? null : EdgeInsets.only(top: 16),
           child: Utility.textWidget(
               text: Globals.ocrResultIconsName[index],
               context: context,

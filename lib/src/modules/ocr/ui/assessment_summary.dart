@@ -6,7 +6,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../google_drive/bloc/google_drive_bloc.dart';
 
 class AssessmentSummary extends StatefulWidget {
@@ -53,7 +52,9 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   bloc: _driveBloc,
                   builder: (BuildContext contxt, GoogleDriveState state) {
                     if (state is GoogleDriveLoading) {
-                      return Center(
+                      return Container(
+                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
+                        alignment: Alignment.center,
                           child: CircularProgressIndicator(
                         color: Theme.of(context).colorScheme.primaryVariant,
                       ));

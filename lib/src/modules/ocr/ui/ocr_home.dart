@@ -5,7 +5,10 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
+import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -47,76 +50,73 @@ class _OpticalCharacterRecognitionPageState
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Stack(
-        children: [
-          CommonBackGroundImgWidget(),
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: CustomOcrAppBarWidget(
-              isBackButton: false,
-            ),
-            body: ListView(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 15,
-                  ),
-                  // height:
-                  //     MediaQuery.of(context).orientation == Orientation.portrait
-                  //         ? MediaQuery.of(context).size.height
-                  //         : MediaQuery.of(context).size.width * 0.8,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Utility.textWidget(
-                          text: 'Points Possible',
-                          context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.bold)),
-                      SpacerWidget(_KVertcalSpace / 4),
-                      smallButton(),
-                      SpacerWidget(_KVertcalSpace / 2),
-                      Utility.textWidget(
-                          text: 'Scoring Rubric',
-                          context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.bold)),
-                      SpacerWidget(_KVertcalSpace / 4),
-                      scoringRubric(),
-                      Container(
-                        height: 0,
-                        width: 0,
-                        child: BlocListener<HomeBloc, HomeState>(
-                            bloc: _homeBloc,
-                            listener: (context, state) async {
-                              if (state is BottomNavigationBarSuccess) {
-                                AppTheme.setDynamicTheme(
-                                    Globals.appSetting, context);
-                                Globals.appSetting =
-                                    AppSetting.fromJson(state.obj);
-                                setState(() {});
-                              }
-                            },
-                            child: EmptyContainer()),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-            floatingActionButton: scanButton(),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
+    return Stack(
+      children: [
+        CommonBackGroundImgWidget(),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomOcrAppBarWidget(
+            isBackButton: false,
           ),
-        ],
-      ),
+          body: ListView(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 15,
+                ),
+                // height:
+                //     MediaQuery.of(context).orientation == Orientation.portrait
+                //         ? MediaQuery.of(context).size.height
+                //         : MediaQuery.of(context).size.width * 0.8,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Utility.textWidget(
+                        text: 'Points Possible',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(fontWeight: FontWeight.bold)),
+                    SpacerWidget(_KVertcalSpace / 4),
+                    smallButton(),
+                    SpacerWidget(_KVertcalSpace / 2),
+                    Utility.textWidget(
+                        text: 'Scoring Rubric',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(fontWeight: FontWeight.bold)),
+                    SpacerWidget(_KVertcalSpace / 4),
+                    scoringRubric(),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<HomeBloc, HomeState>(
+                          bloc: _homeBloc,
+                          listener: (context, state) async {
+                            if (state is BottomNavigationBarSuccess) {
+                              AppTheme.setDynamicTheme(
+                                  Globals.appSetting, context);
+                              Globals.appSetting =
+                                  AppSetting.fromJson(state.obj);
+                              setState(() {});
+                            }
+                          },
+                          child: EmptyContainer()),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          floatingActionButton: scanButton(),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        ),
+      ],
     );
   }
 
@@ -128,9 +128,13 @@ class _OpticalCharacterRecognitionPageState
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
               Globals.studentInfo = [];
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => CameraScreen()),
+              // );
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CameraScreen()),
+                MaterialPageRoute(builder: (context) => CreateAssessment()),
               );
             },
             icon: Icon(
@@ -323,14 +327,14 @@ class _OpticalCharacterRecognitionPageState
     });
 
     if (myImagePath != null) {
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => SuccessScreen(
-      //             img64: img64,
-      //             imgPath: myImagePath,
-      //           )),
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SuccessScreen(
+                  img64: img64,
+                  imgPath: myImagePath,
+                )),
+      );
 
       //_bloc.add(FetchTextFromImage(base64: img64));
     }
