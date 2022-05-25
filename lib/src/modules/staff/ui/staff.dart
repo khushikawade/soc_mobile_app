@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import '../../../services/local_database/local_db.dart';
+// import '../../../services/local_database/local_db.dart';
 import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
@@ -43,8 +43,8 @@ class StaffPage extends StatefulWidget {
 }
 
 class _StaffPageState extends State<StaffPage> {
-  LocalDatabase<UserInfo> _localUserInfo = LocalDatabase('user_profile');
-  List<UserInfo> _localData = [];
+//   LocalDatabase<UserInfo> Globals.localUserInfo = LocalDatabase('user_profile');
+//   List<UserInfo> Globals.userprofilelocalData = [];
   FocusNode myFocusNode = new FocusNode();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -79,8 +79,8 @@ class _StaffPageState extends State<StaffPage> {
   }
 
   Future localdb() async {
-    _localData = await _localUserInfo.getData();
-    return _localData;
+    Globals.userprofilelocalData = await Globals.localUserInfo.getData();
+    return Globals.userprofilelocalData;
   }
 
 //To authenticate the user via google
@@ -133,22 +133,32 @@ class _StaffPageState extends State<StaffPage> {
 
   saveUserProfile(profileData) async {
     var profile = profileData.split('+');
-    _localUserInfo.addData(UserInfo(
+    Globals.localUserInfo.addData(UserInformation(
         userName: profile[0].toString().split('=')[1],
         userEmail: profile[1].toString().split('=')[1],
         profilePicture: profile[2].toString().split('=')[1],
         authorizationToken:
             profile[3].toString().split('=')[1].replaceAll('#', '')));
 
-    List<UserInfo> userInfo = await localdb();
+     await localdb();
 
-    _ocrBloc.add(VerifyUserWithDatabase(email: userInfo.last.userEmail));
+    _ocrBloc.add(VerifyUserWithDatabase(email: profile[3].toString().split('=')[1].replaceAll('#', '')));
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
-        token: userInfo.last.authorizationToken,
+        token: profile[3].toString().split('=')[1].replaceAll('#', ''),
         folderName: "Assessments"));
   }
+
+apiCall(){
+  print(Globals.userprofilelocalData[0].authorizationToken);
+   _ocrBloc.add(VerifyUserWithDatabase(email: Globals.userprofilelocalData[0].authorizationToken));
+    //Creating a assessment folder in users google drive to maintain all the assessments together at one place
+    _googleDriveBloc.add(GetDriveFolderIdEvent(
+        //  filePath: file,
+        token: Globals.userprofilelocalData[0].authorizationToken,
+        folderName: "Assessments"));
+}
 
   Widget _body(String key) => RefreshIndicator(
       key: refreshKey,
@@ -287,10 +297,11 @@ class _StaffPageState extends State<StaffPage> {
                 backgroundColor: AppTheme.kButtonColor,
                 onPressed: () async {
                   localdb();
-                  // _localData.clear();
-                  if (_localData.isEmpty) {
+                  // Globals.userprofilelocalData.clear();
+                  if (Globals.userprofilelocalData.isEmpty) {
                     await _launchURL('Google Authentication');
                   } else {
+                    apiCall();
                     pushNewScreen(
                       context,
                       screen: OpticalCharacterRecognition(),

@@ -47,7 +47,7 @@ void main() async {
       ..registerAdapter(AppSettingAdapter())
       ..registerAdapter(CalendarEventListAdapter())
       ..registerAdapter(CustomSettingAdapter())
-      ..registerAdapter(UserInfoAdapter());
+      ..registerAdapter(UserInformationAdapter());
   }
   clearTheme();
   await disableDarkMode();

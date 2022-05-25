@@ -45,17 +45,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is CreateExcelSheetToDrive) {
       try {
-        // Globals.studentInfo!.insert(
-        //     0,
-        //     StudentAssessmentInfo(
-        //         studentId: "Id",
-        //         studentName: "Name",
-        //         studentGrade: "PointsEarned",
-        //         pointpossible: "PointsEarned"));
-
-        // File file = await GoogleDriveAccess.createSheet(
-        //     data: Globals.studentInfo!, name: event.name!);
-        // print(event.name!);
         Globals.assessmentName = event.name;
         bool result = await createSheetOnDrive(
           name: event.name!,
@@ -294,6 +283,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
+        
         //  var data = response.data['items'];
         List<Assessment> _list = response.data['items']
             .map<Assessment>((i) => Assessment.fromJson(i))
