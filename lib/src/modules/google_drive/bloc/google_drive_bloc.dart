@@ -112,6 +112,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is GetHistoryAssessmentFromDrive) {
       try {
         yield GoogleDriveLoading();
+        print(Globals.folderId);
+        print(Globals.userprofilelocalData[0].authorizationToken);
         if (Globals.folderId != null) {
           List<Assessment> _list = await _fetchHistoryAssessment(
               Globals.userprofilelocalData[0].authorizationToken,
