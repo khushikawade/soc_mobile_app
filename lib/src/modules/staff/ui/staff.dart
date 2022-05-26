@@ -306,7 +306,7 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: !isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
-                    _localData.clear(); // COMMENT
+                    //   _localData.clear(); // COMMENT
                     if (_localData.isEmpty) {
                       await _launchURL('Google Authentication');
                     } else {
