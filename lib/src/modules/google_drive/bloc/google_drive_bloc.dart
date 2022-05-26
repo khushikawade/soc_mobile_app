@@ -48,6 +48,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           print('Authentication required');
+          _torefreshAuthenticationToken();
         }
       } catch (e) {
         throw (e);
@@ -145,7 +146,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             Globals.userprofilelocalData[0].authorizationToken, event.fileId);
 
         if (link != "") {
-        
           String file = await downloadFile(
               link, "test3", (await getApplicationDocumentsDirectory()).path);
           print("assessment downloaded");
@@ -402,7 +402,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       var request = await httpClient.getUrl(Uri.parse(myUrl));
       var response = await request.close();
       if (response.statusCode == 200) {
-
         var bytes = await consolidateHttpClientResponseBytes(response);
         filePath = '$dir/$fileName';
         file = File(filePath);
@@ -415,5 +414,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       print(e);
       throw (e);
     }
+  }
+
+  Future _torefreshAuthenticationToken() async {
+    try {} catch (e) {}
+
+    return "k";
   }
 }

@@ -143,6 +143,7 @@ class _StaffPageState extends State<StaffPage> {
 
   saveUserProfile(profileData) async {
     var profile = profileData.split('+');
+
     Globals.localUserInfo.clear();
 
     Globals.localUserInfo.addData(UserInformation(
@@ -150,17 +151,18 @@ class _StaffPageState extends State<StaffPage> {
         userEmail: profile[1].toString().split('=')[1],
         profilePicture: profile[2].toString().split('=')[1],
         authorizationToken:
-            profile[3].toString().split('=')[1].replaceAll('#', '')));
-
+            profile[3].toString().split('=')[1].replaceAll('#', ''),
+        refreshAuthorizationToken:
+            profile[4].toString().split('=')[1].replaceAll('#', '')));
     await localdb();
-
     _ocrBloc.add(
         VerifyUserWithDatabase(email: profile[1].toString().split('=')[1]));
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
         token: profile[3].toString().split('=')[1].replaceAll('#', ''),
-        folderName: "Assessments"));
+        folderName: "Assessments",
+        refreshtoken: profile[4].toString().split('=')[1].replaceAll('#', '')));
   }
 
   getDriveFolderId() {

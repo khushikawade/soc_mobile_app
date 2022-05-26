@@ -7,13 +7,14 @@ abstract class GoogleDriveEvent extends Equatable {
 class GetDriveFolderIdEvent extends GoogleDriveEvent {
   final String? token;
   final String? folderName;
-  final bool?fetchHistory;
+  final bool? fetchHistory;
+  final String? refreshtoken;
   //final File? filePath;
-  GetDriveFolderIdEvent({
-    required this.token,
-    required this.folderName, //required this.filePath
-    this.fetchHistory
-  });
+  GetDriveFolderIdEvent(
+      {required this.token,
+      required this.folderName, //required this.filePath
+      this.fetchHistory,
+      this.refreshtoken});
 
   @override
   List<Object> get props => [token!, folderName!];
