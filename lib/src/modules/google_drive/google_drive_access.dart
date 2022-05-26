@@ -87,7 +87,6 @@ class GoogleDriveAccess {
     } catch (e) {
       print(e);
       throw (e);
-
       // Error in getting access to the file.
     }
     return false;
