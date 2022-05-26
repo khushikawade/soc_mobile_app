@@ -316,19 +316,18 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: !isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
-                    await _launchURL('Google Authentication');
                     // Globals.localUserInfo.clear(); // COMMENT
-                    // List<UserInformation> _profileData = await getUserProfile();
-                    // if (_profileData.isEmpty) {
-                    //   await _launchURL('Google Authentication');
-                    // } else {
-                    //   verifyUserAndGetDriveFolder();
-                    //   pushNewScreen(
-                    //     context,
-                    //     screen: OpticalCharacterRecognition(),
-                    //     withNavBar: false,
-                    //   );
-                    // }
+                    List<UserInformation> _profileData = await getUserProfile();
+                    if (_profileData.isEmpty) {
+                      await _launchURL('Google Authentication');
+                    } else {
+                      verifyUserAndGetDriveFolder();
+                      pushNewScreen(
+                        context,
+                        screen: OpticalCharacterRecognition(),
+                        withNavBar: false,
+                      );
+                    }
                   },
                   icon:
                       Icon(Icons.add, color: Theme.of(context).backgroundColor),
