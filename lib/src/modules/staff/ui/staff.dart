@@ -121,8 +121,15 @@ class _StaffPageState extends State<StaffPage> {
       withNavBar: false,
     );
 
-    if (value.toString().contains('displayName')) {
-      value = value.split('?')[1];
+    if (value.toString().contains('authenticationfailure')) {
+      Navigator.pop(context, false);
+      Utility.showSnackBar(
+          _scaffoldKey,
+          'You are not authorized to access the feature. Please use the authorized account.',
+          context,
+          50.0);
+    } else {
+      value = value.split('?')[1] ?? '';
       //Save user profile
       saveUserProfile(value);
       // Push to the grading system
@@ -131,13 +138,6 @@ class _StaffPageState extends State<StaffPage> {
         screen: OpticalCharacterRecognition(),
         withNavBar: false,
       );
-    } else if (value.toString().contains('authenticationfailure')) {
-      Navigator.pop(context, false);
-      Utility.showSnackBar(
-          _scaffoldKey,
-          'You are not authorized to access the feature. Please use the authorized account.',
-          context,
-          50.0);
     }
   }
 
@@ -146,14 +146,22 @@ class _StaffPageState extends State<StaffPage> {
     Globals.localUserInfo.clear();
 
     Globals.localUserInfo.addData(UserInformation(
-        userName: profile[0].toString().split('=')[1],
-        userEmail: profile[1].toString().split('=')[1],
-        profilePicture: profile[2].toString().split('=')[1],
-        authorizationToken:
-            profile[3].toString().split('=')[1].replaceAll('#', '')));
+        userName: profile[0] != null && profile[0] != ''
+            ? profile[0].toString().split('=')[1]
+            : '',
+        userEmail: profile[1] != null && profile[1] != ''
+            ? profile[1].toString().split('=')[1]
+            : '',
+        profilePicture: profile[2] != null && profile[2] != ''
+            ? profile[2].toString().split('=')[1]
+            : '',
+        authorizationToken: profile[3] != null && profile[3] != ''
+            ? profile[3].toString().split('=')[1].replaceAll('#', '')
+            : ''));
 
     await localdb();
 
+    //Verify the user with SF database
     _ocrBloc.add(
         VerifyUserWithDatabase(email: profile[1].toString().split('=')[1]));
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
