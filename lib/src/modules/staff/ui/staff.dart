@@ -135,7 +135,6 @@ class _StaffPageState extends State<StaffPage> {
         profilePicture: profile[2].toString().split('=')[1],
         authorizationToken:
             profile[3].toString().split('=')[1].replaceAll('#', ''));
-    print(_userInformation);
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     await _localDb.addData(_userInformation);
   }
