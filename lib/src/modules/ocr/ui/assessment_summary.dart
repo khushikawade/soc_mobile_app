@@ -84,7 +84,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     );
   }
 
-  Widget listView(List<Assessment> _list) {
+  Widget listView(List<HistoryAssessment> _list) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.75
@@ -101,7 +101,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     );
   }
 
-  Widget _buildList(List<Assessment> list, int index) {
+  Widget _buildList(List<HistoryAssessment> list, int index) {
     return InkWell(
       onTap: () {
         print(list[index].fileid);

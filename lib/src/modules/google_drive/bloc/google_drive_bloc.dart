@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:excel/excel.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
@@ -112,14 +109,21 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is GetHistoryAssessmentFromDrive) {
       try {
         yield GoogleDriveLoading();
-        print(Globals.folderId);
-        print(Globals.userprofilelocalData[0].authorizationToken);
+        List<HistoryAssessment> assessmentList = [];
         if (Globals.folderId != null) {
-          List<Assessment> _list = await _fetchHistoryAssessment(
+          List<HistoryAssessment> _list = await _fetchHistoryAssessment(
               Globals.userprofilelocalData[0].authorizationToken,
               Globals.folderId);
           if (_list.length > 0) {
-            yield GoogleDriveGetSuccess(obj: _list);
+            // for (int i = 0; i < data.length; i++) {
+            _list.forEach((element) {
+              print(element.label['trashed']);
+              if (element.label['trashed'] != true) {
+                assessmentList.add(element);
+              }
+            });
+
+            yield GoogleDriveGetSuccess(obj: assessmentList);
           } else {
             yield GoogleNoAssessment();
           }
@@ -302,20 +306,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
-        List<int> index = [];
-        List data = response.data['items'];
-        for (int i = 0; i < data.length; i++) {
-          if (data[i]['labels']['trashed'] == true) {
-            index.add(i);
-          }
-        }
-        List<Assessment> _list = response.data['items']
-            .map<Assessment>((i) => Assessment.fromJson(i))
+        List<HistoryAssessment> _list = response.data['items']
+            .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
             .toList();
-        for (int i = 0; i < index.length; i++) {
-          _list.removeAt(index[i]);
-        }
-
         return _list;
       }
     } catch (e) {

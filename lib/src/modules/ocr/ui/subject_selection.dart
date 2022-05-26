@@ -2,19 +2,21 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SubjectSelection extends StatefulWidget {
-  SubjectSelection({Key? key}) : super(key: key);
+  final String? selectedClass;
+  SubjectSelection({Key? key, required this.selectedClass}) : super(key: key);
 
   @override
   State<SubjectSelection> createState() => _SubjectSelectionState();
@@ -27,11 +29,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   int? subjectIndex;
   int? nycIndex;
   int? nycSubIndex;
+  String? keyword;
+  String? keywordSub;
   OcrBloc _ocrBloc = OcrBloc();
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
   @override
   void initState() {
-    _ocrBloc.add(FatchSubjectDetails(type: 'subject'));
+    _ocrBloc.add(
+        FatchSubjectDetails(type: 'subject', keyword: widget.selectedClass));
     super.initState();
   }
 
@@ -61,9 +66,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   ),
                   onPressed: () {
                     if (indexGlobal == 1) {
-                      _ocrBloc.add(FatchSubjectDetails(type: 'subject'));
+                      _ocrBloc.add(FatchSubjectDetails(
+                          type: 'subject', keyword: widget.selectedClass));
                     } else if (indexGlobal == 2) {
-                      _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                      _ocrBloc.add(
+                          FatchSubjectDetails(type: 'nyc', keyword: keyword));
                     } else {
                       Navigator.pop(context);
                     }
@@ -148,7 +155,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   //   }
   // }
 
-  Widget secondPage({required List<SubjectList> list}) {
+  Widget secondPage({required List<SubjectDetailList> list}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).orientation == Orientation.portrait
@@ -163,7 +170,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             _buildSearchbar(
                 controller: searchController, onSaved: (String value) {}),
             SpacerWidget(_KVertcalSpace / 4),
-            scoringButton(list: list),
+            scoringButton(list: list, page: 2),
           ]),
     );
   }
@@ -180,7 +187,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget thirdPage({required List<SubjectList> list}) {
+  Widget thirdPage({required List<SubjectDetailList> list}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).orientation == Orientation.portrait
@@ -202,14 +209,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget detailsList({required List<SubjectList> list}) {
+  Widget detailsList({required List<SubjectDetailList> list}) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.56
+          ? MediaQuery.of(context).size.height * 0.65
           : MediaQuery.of(context).size.width * 0.50,
       width: MediaQuery.of(context).size.width * 0.9,
       child: ListView.separated(
-        physics: NeverScrollableScrollPhysics(),
+        //physics: NeverScrollableScrollPhysics(),
         // gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         //     maxCrossAxisExtent: 180,
         //     childAspectRatio: 5 / 3,
@@ -217,56 +224,63 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         //     mainAxisSpacing: 15),
         itemCount: list.length,
         itemBuilder: (BuildContext ctx, index) {
-          return InkWell(
-            onTap: () {
-              // if(indexGlobal == 0){
-              //   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
-              // } else if(indexGlobal == 1){
-              //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
-              // }
-              if (indexGlobal == 2) {
-                setState(() {
-                  nycSubIndex = index;
-                });
-              }
-            },
-            child: AnimatedContainer(
-              padding: EdgeInsets.only(bottom: 5),
-              decoration: BoxDecoration(
-                color: (nycSubIndex == index && indexGlobal == 2)
-                    ? AppTheme.kSelectedColor
-                    : Colors.grey,
-                // Theme.of(context)
-                //     .colorScheme
-                //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
+          return Column(children: [
+            Bouncing(
+              onPress: () {
+                // if(indexGlobal == 0){
+                //   _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                // } else if(indexGlobal == 1){
+                //   _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
+                // }
+                if (indexGlobal == 2) {
+                  setState(() {
+                    nycSubIndex = index;
+                  });
+                }
+              },
+              child: AnimatedContainer(
+                padding: EdgeInsets.only(bottom: 5),
+                decoration: BoxDecoration(
+                  color: (nycSubIndex == index && indexGlobal == 2)
+                      ? AppTheme.kSelectedColor
+                      : Colors.grey,
+                  // Theme.of(context)
+                  //     .colorScheme
+                  //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
 
-                borderRadius: BorderRadius.all(
-                  Radius.circular(8),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+                duration: Duration(microseconds: 100),
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  alignment: Alignment.center,
+                  child: Utility.textWidget(
+                      text: list[index].descriptionC!,
+                      textTheme: Theme.of(context).textTheme.headline2,
+                      context: context),
+                  decoration: BoxDecoration(
+                      color:
+                          Color(0xff000000) != Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                      border: Border.all(
+                        color: (nycSubIndex == index && indexGlobal == 2)
+                            ? AppTheme.kSelectedColor
+                            : Colors.grey,
+                      ),
+                      // color: scoringColor == index ? Colors.orange : null,
+                      borderRadius: BorderRadius.circular(8)),
                 ),
               ),
-              duration: Duration(microseconds: 100),
-              child: Container(
-                padding: EdgeInsets.all(15),
-                alignment: Alignment.center,
-                child: Utility.textWidget(
-                    text: list[index].subjectNameC!,
-                    textTheme: Theme.of(context).textTheme.headline2,
-                    context: context),
-                decoration: BoxDecoration(
-                    color:
-                        Color(0xff000000) != Theme.of(context).backgroundColor
-                            ? Color(0xffF7F8F9)
-                            : Color(0xff111C20),
-                    border: Border.all(
-                      color: (nycSubIndex == index && indexGlobal == 2)
-                          ? AppTheme.kSelectedColor
-                          : Colors.grey,
-                    ),
-                    // color: scoringColor == index ? Colors.orange : null,
-                    borderRadius: BorderRadius.circular(8)),
-              ),
             ),
-          );
+            index == list.length - 1
+                ? SizedBox(
+                    height: 20,
+                  )
+                : Container()
+          ]);
         },
         separatorBuilder: (BuildContext context, int index) {
           return SpacerWidget(_KVertcalSpace / 3.75);
@@ -304,7 +318,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget subjectPage({required List<SubjectList> list}) {
+  Widget subjectPage({required List<SubjectDetailList> list}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       height: MediaQuery.of(context).orientation == Orientation.portrait
@@ -320,19 +334,19 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             _buildSearchbar(
                 controller: searchController, onSaved: (String value) {}),
             SpacerWidget(_KVertcalSpace / 4),
-            scoringButton(list: list),
+            scoringButton(list: list, page: 1),
           ]),
     );
   }
 
-  Widget scoringButton({required List<SubjectList> list}) {
+  Widget scoringButton({required List<SubjectDetailList> list, int? page}) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.60
+          ? MediaQuery.of(context).size.height * 0.65
           : MediaQuery.of(context).size.width * 0.30,
       width: MediaQuery.of(context).size.width * 0.9,
       child: GridView.builder(
-          physics: NeverScrollableScrollPhysics(),
+          // physics: NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 180,
               childAspectRatio: 5 / 3,
@@ -340,62 +354,89 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               mainAxisSpacing: 15),
           itemCount: list.length,
           itemBuilder: (BuildContext ctx, index) {
-            return InkWell(
-              onTap: () {
+            return Bouncing(
+              onPress: () {
                 if (indexGlobal == 0) {
                   setState(() {
                     subjectIndex = index;
                   });
-                  _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));
+                  keyword = list[index].subjectNameC;
+                  _ocrBloc
+                      .add(FatchSubjectDetails(type: 'nyc', keyword: keyword));
                 } else if (indexGlobal == 1) {
                   setState(() {
                     nycIndex = index;
                   });
-                  _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));
+                  keywordSub = list[index].domainNameC;
+                  _ocrBloc.add(
+                      FatchSubjectDetails(type: 'nycSub', keyword: keywordSub));
                 } else if (indexGlobal == 1) {
                   setState(() {
                     nycSubIndex = index;
                   });
                 }
               },
-              child: AnimatedContainer(
-                padding: EdgeInsets.only(bottom: 5),
-                decoration: BoxDecoration(
-                  color: (subjectIndex == index && indexGlobal == 0) ||
-                          (nycIndex == index && indexGlobal == 1)
-                      ? AppTheme.kSelectedColor
-                      : Colors.grey,
-                  // Theme.of(context)
-                  //     .colorScheme
-                  //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
-
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8),
-                  ),
-                ),
-                duration: Duration(microseconds: 100),
-                child: Container(
-                  alignment: Alignment.center,
-                  child: Utility.textWidget(
-                      text: list[index].subjectNameC!,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(fontWeight: FontWeight.bold),
-                      context: context),
+              child: Container(
+                //InkWell
+                // onTap: () {
+                //   if (indexGlobal == 0) {
+                //     setState(() {
+                //       subjectIndex = index;
+                //     });
+                //     // _ocrBloc.add(FatchSubjectDetails(type: 'nyc'));  // UNCOMMENT
+                //   } else if (indexGlobal == 1) {
+                //     setState(() {
+                //       nycIndex = index;
+                //     });
+                //     // _ocrBloc.add(FatchSubjectDetails(type: 'nycSub'));  // UNCOMMENT
+                //   } else if (indexGlobal == 1) {
+                //     setState(() {
+                //       nycSubIndex = index;
+                //     });
+                //   }
+                // },
+                child: AnimatedContainer(
+                  padding: EdgeInsets.only(bottom: 5),
                   decoration: BoxDecoration(
-                      color:
-                          Color(0xff000000) != Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                      border: Border.all(
-                        color: (subjectIndex == index && indexGlobal == 0) ||
-                                (nycIndex == index && indexGlobal == 1)
-                            ? AppTheme.kSelectedColor
-                            : Colors.grey,
-                      ),
-                      // color: scoringColor == index ? Colors.orange : null,
-                      borderRadius: BorderRadius.circular(8)),
+                    color: (subjectIndex == index && indexGlobal == 0) ||
+                            (nycIndex == index && indexGlobal == 1)
+                        ? AppTheme.kSelectedColor
+                        : Colors.grey,
+                    // Theme.of(context)
+                    //     .colorScheme
+                    //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
+
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                  duration: Duration(microseconds: 100),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    alignment: Alignment.center,
+                    child: Utility.textWidget(
+                        text: page == 1
+                            ? list[index].subjectNameC!
+                            : list[index].domainNameC!,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(fontWeight: FontWeight.bold),
+                        context: context),
+                    decoration: BoxDecoration(
+                        color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color(0xffF7F8F9)
+                            : Color(0xff111C20),
+                        border: Border.all(
+                          color: (subjectIndex == index && indexGlobal == 0) ||
+                                  (nycIndex == index && indexGlobal == 1)
+                              ? AppTheme.kSelectedColor
+                              : Colors.grey,
+                        ),
+                        // color: scoringColor == index ? Colors.orange : null,
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
                 ),
               ),
             );

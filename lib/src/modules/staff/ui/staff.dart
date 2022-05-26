@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-// import '../../../services/local_database/local_db.dart';
 import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
@@ -164,10 +163,13 @@ class _StaffPageState extends State<StaffPage> {
         folderName: "Assessments"));
   }
 
-  apiCall() {
+  getDriveFolderId() {
     print(Globals.userprofilelocalData[0].authorizationToken);
+
+    //Verify the user with SF database
     _ocrBloc.add(VerifyUserWithDatabase(
         email: Globals.userprofilelocalData[0].userEmail));
+
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
@@ -283,16 +285,6 @@ class _StaffPageState extends State<StaffPage> {
               body: _body('body1'),
             )
           : _body('body2'),
-      // floatingActionButton: Padding(
-      //   padding: EdgeInsets.only(
-      //     bottom: MediaQuery.of(context).size.height * 0.03,
-      //   ),
-      //   child: cameraButton(),
-      // ),
-      // floatingActionButtonAnimator: NoScalingAnimation(),
-      // floatingActionButtonLocation: isScrolling.value
-      //     ? FloatingActionButtonLocation.endFloat
-      //     : FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -302,11 +294,6 @@ class _StaffPageState extends State<StaffPage> {
     _bloc.add(StaffPageEvent());
     _homeBloc.add(FetchStandardNavigationBar());
   }
-
-//   Future<File> _getpath() async {
-//  //   FilePickerResult? result = await FilePicker.platform.pickFiles();
-//   //  return File(result!.files.first.path!);
-//   }
 
   Widget cameraButton() {
     return ValueListenableBuilder<bool>(
@@ -327,24 +314,23 @@ class _StaffPageState extends State<StaffPage> {
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     //  Globals.localUserInfo.clear(); // COMMENT
+                    //  await localdb();
                     print(Globals.userprofilelocalData);
-                    //  if(result!=null &&result.length>0){
                     if (Globals.userprofilelocalData.isEmpty) {
                       await _launchURL('Google Authentication');
                     } else {
-                      apiCall();
+                      getDriveFolderId();
                       pushNewScreen(
                         context,
                         screen: OpticalCharacterRecognition(),
                         withNavBar: false,
                       );
                     }
-                    // }
                   },
                   icon:
                       Icon(Icons.add, color: Theme.of(context).backgroundColor),
                   label: textwidget(
-                      text: 'Add Assessment',
+                      text: 'Assessment',
                       textTheme: Theme.of(context)
                           .textTheme
                           .headline2!

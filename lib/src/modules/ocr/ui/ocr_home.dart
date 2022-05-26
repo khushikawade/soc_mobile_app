@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
@@ -38,6 +39,7 @@ class _OpticalCharacterRecognitionPageState
   int indexColor = 2;
   int scoringColor = 0;
   final HomeBloc _homeBloc = new HomeBloc();
+  final OcrBloc _bloc = new OcrBloc();
   File? myImagePath;
   String pathOfImage = '';
 
@@ -127,7 +129,9 @@ class _OpticalCharacterRecognitionPageState
         FloatingActionButton.extended(
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
+              _bloc.add(SaveSubjectListDetails());
               Globals.studentInfo = [];
+              //UNCOMMENT
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(builder: (context) => CameraScreen()),
@@ -136,6 +140,7 @@ class _OpticalCharacterRecognitionPageState
                 context,
                 MaterialPageRoute(builder: (context) => CreateAssessment()),
               );
+            //  getGallaryImage(); // COMMENT
             },
             icon: Icon(
                 IconData(0xe875,
@@ -161,7 +166,7 @@ class _OpticalCharacterRecognitionPageState
               padding: EdgeInsets.only(top: 10),
               // color: Colors.red,
               child: Utility.textWidget(
-                  text: 'History Assessment',
+                  text: 'Assessment History',
                   context: context,
                   textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                         decoration: TextDecoration.underline,

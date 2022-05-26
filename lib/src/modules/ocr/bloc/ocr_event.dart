@@ -20,10 +20,16 @@ class VerifyUserWithDatabase extends OcrEvent {
 
 class FatchSubjectDetails extends OcrEvent {
   final String? type;
-  FatchSubjectDetails({required this.type});
+  final String? keyword;
+  FatchSubjectDetails({required this.type,required this.keyword});
 
   @override
   List<Object> get props => [type!];
+}
+
+class SaveSubjectListDetails extends OcrEvent {
+  @override
+  List<Object> get props => [];
 }
 
 class FetchTextFromImage extends OcrEvent {

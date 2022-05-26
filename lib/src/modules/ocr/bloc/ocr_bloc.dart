@@ -1,9 +1,11 @@
-import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
-import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
+import '../../../services/local_database/local_db.dart';
+import '../modal/subject_details_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -16,6 +18,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   final DbServices _dbServices = DbServices();
   // final HiveDbServices _localDbService = HiveDbServices();
   OcrState get initialState => OcrInitial();
+  String grade = '';
+  String selectedSubject = '';
 
   @override
   Stream<OcrState> mapEventToState(
@@ -25,7 +29,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         yield FetchTextFromImageFailure(schoolId: '', grade: '');
         yield OcrLoading();
-        List data = await fetchAndProcessDetails(base64: event.base64);
+        List data = await fatchAndProcessDetails(base64: event.base64);
         if (data[0] != '' && data[1] != '') {
           yield FetchTextFromImageSuccess(schoolId: data[0], grade: data[1]);
         } else {
@@ -55,36 +59,21 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     if (event is FatchSubjectDetails) {
       try {
-        if (event.type == 'subject') {
-          yield OcrLoading();
-        }
+        // yield OcrLoading();
 
-        List<SubjectList> data = await fatchSubjectDetails();
+        List<SubjectDetailList> data = await fatchSubjectDetails(
+            type: event.type!, keyword: event.keyword!);
         if (event.type == 'subject') {
           yield SubjectDataSuccess(
             obj: data,
           );
         } else if (event.type == 'nyc') {
-          List<SubjectList> list = [];
-
-          for (int i = 0; i < Globals.nycDetailsList.length; i++) {
-            SubjectList subjectList = SubjectList();
-            subjectList.subjectNameC = Globals.nycDetailsList[i];
-            list.insert(i, subjectList);
-          }
           yield NycDataSuccess(
-            obj: list,
+            obj: data,
           );
         } else if (event.type == 'nycSub') {
-          List<SubjectList> list = [];
-
-          for (int i = 0; i < Globals.subjectDetailsList.length; i++) {
-            SubjectList subjectList = SubjectList();
-            subjectList.subjectNameC = Globals.subjectDetailsList[i];
-            list.insert(i, subjectList);
-          }
           yield NycSubDataSuccess(
-            obj: list,
+            obj: data,
           );
         }
       } catch (e) {
@@ -95,19 +84,33 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         yield OcrErrorReceived(err: e);
       }
     }
+    if (event is SaveSubjectListDetails) {
+      try {
+        bool result = await saveSubjectListDetails();
+      } catch (e) {}
+    }
   }
 
-  Future<List<SubjectList>> fatchSubjectDetails() async {
+  Future<bool> saveSubjectListDetails() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
-          "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Subject__c&fetchType=All"));
+      final ResponseModel response = await _dbServices.getapi(
+          Uri.encodeFull(
+              'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
+          isGoogleApi: true);
 
       if (response.statusCode == 200) {
-        List<SubjectList> _list = response.data['body']
-            .map<SubjectList>((i) => SubjectList.fromJson(i))
+        List<SubjectDetailList> _list = response.data['body']
+            .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
             .toList();
+        print(_list);
+        LocalDatabase<SubjectDetailList> _localDb =
+            LocalDatabase(Strings.ocrSubjectObjectName);
+        await _localDb.clear();
+        _list.forEach((SubjectDetailList e) {
+          _localDb.addData(e);
+        });
         // _list.removeWhere((SubjectList element) => element.status == 'Hide');
-        return _list;
+        return true;
       } else {
         throw ('something_went_wrong');
       }
@@ -116,7 +119,90 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future fetchAndProcessDetails({required String base64}) async {
+  Future<List<SubjectDetailList>> fatchSubjectDetails(
+      {required String type, required String keyword}) async {
+    try {
+      LocalDatabase<SubjectDetailList> _localDb =
+          LocalDatabase(Strings.ocrSubjectObjectName);
+      List<SubjectDetailList>? _localData = await _localDb.getData();
+      print(_localData);
+      List<SubjectDetailList> detailsList = [];
+      if (type == 'subject') {
+        grade = keyword;
+        List id = [];
+        for (int i = 0; i < _localData.length; i++) {
+          if (_localData[i].gradeC == keyword) {
+            if (detailsList.isNotEmpty &&
+                !id.contains(_localData[i].subjectNameC)) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].subjectNameC);
+            } else if (detailsList.isEmpty) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].subjectNameC);
+            }
+          }
+        }
+        return detailsList;
+      } else if (type == 'nyc') {
+        List id = [];
+        selectedSubject = keyword;
+        for (int i = 0; i < _localData.length; i++) {
+          if (_localData[i].subjectNameC == keyword &&
+              _localData[i].gradeC == grade) {
+            if (detailsList.isNotEmpty &&
+                !id.contains(_localData[i].domainNameC)) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].domainNameC);
+            } else if (detailsList.isEmpty) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].domainNameC);
+            }
+          }
+          // if (_localData[i].subjectNameC == keyword &&
+          //     _localData[i].gradeC == grade) {
+          //   nycList.add(_localData[i]);
+          // }
+        }
+        return detailsList;
+      } else if (type == 'nycSub') {
+        List id = [];
+
+        for (int i = 0; i < _localData.length; i++) {
+          if (_localData[i].subjectNameC == selectedSubject &&
+              _localData[i].gradeC == grade &&
+              _localData[i].domainNameC == keyword) {
+            if (detailsList.isNotEmpty &&
+                !id.contains(_localData[i].standardAndDescriptionC)) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].standardAndDescriptionC);
+            } else if (detailsList.isEmpty) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].standardAndDescriptionC);
+            }
+          }
+          // if (_localData[i].subjectNameC == keyword &&
+          //     _localData[i].gradeC == grade) {
+          //   nycList.add(_localData[i]);
+          // }
+        }
+        return detailsList;
+      }
+      return detailsList;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  int covertStringtoInt(String data) {
+    try {
+      int result = int.parse(data);
+      return result;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  Future fatchAndProcessDetails({required String base64}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
         Uri.encodeFull('http://3.142.181.122:5050/ocr'),

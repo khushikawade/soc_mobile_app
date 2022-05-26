@@ -16,7 +16,7 @@ class GoogleDriveLoading extends GoogleDriveState {
 
 // ignore: must_be_immutable
 class GoogleDriveGetSuccess extends GoogleDriveState {
-  List<Assessment> obj;
+  List<HistoryAssessment> obj;
   GoogleDriveGetSuccess({required this.obj});
   GoogleDriveGetSuccess copyWith({final obj}) {
     return GoogleDriveGetSuccess(obj: obj ?? this.obj);
