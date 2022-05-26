@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
@@ -36,6 +37,7 @@ class _OpticalCharacterRecognitionPageState
   int indexColor = 2;
   int scoringColor = 0;
   final HomeBloc _homeBloc = new HomeBloc();
+  final OcrBloc _bloc = new OcrBloc();
   File? myImagePath;
   String pathOfImage = '';
 
@@ -126,12 +128,13 @@ class _OpticalCharacterRecognitionPageState
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
               Globals.studentInfo = [];
+              _bloc.add(SaveSubjectListDetails());
               //UNCOMMENT
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => CameraScreen()),
               );
-             // getGallaryImage(); // COMMENT
+              // getGallaryImage(); // COMMENT
             },
             icon: Icon(
                 IconData(0xe875,
