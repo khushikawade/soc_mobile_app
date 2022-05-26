@@ -28,6 +28,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       try {
         String parentId;
         // Globals.authorizationToken = event.token;
+        print("calling get folder id");
         parentId = await _getGoogleDriveFolderList(
             token: event.token, folderName: event.folderName);
         print('FolderId = $parentId');
@@ -108,6 +109,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is GetHistoryAssessmentFromDrive) {
       try {
+        print("calling _fetchHistoryAssessment");
         yield GoogleDriveLoading();
         List<HistoryAssessment> assessmentList = [];
         if (Globals.folderId != null) {
@@ -143,17 +145,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             Globals.userprofilelocalData[0].authorizationToken, event.fileId);
 
         if (link != "") {
+        
           String file = await downloadFile(
-              link, "test3", (await getExternalStorageDirectory())!.path);
+              link, "test3", (await getApplicationDocumentsDirectory()).path);
+          print("assessment downloaded");
 
           if (file != "") {
             //  List<StudentAssessmentInfo>
             _list = await GoogleDriveAccess.excelToJson(file);
-
+            print("assessment data is converted into json ");
             bool deleted = await GoogleDriveAccess.deleteFile(File(file));
             if (!deleted) {
               GoogleDriveAccess.deleteFile(File(file));
             }
+            print("local assessment file is deleted");
             // if (_list.length > 0) {
             //   yield AssessmentDetailSuccess(obj: _list);
             // } else {
@@ -313,6 +318,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
+        print("assessment list is received ");
         List<HistoryAssessment> _list = response.data['items']
             .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
             .toList();
@@ -374,6 +380,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
+      print("detail assessment link is received");
       var data = response.data;
 
       String downloadLink = data['exportLinks']
@@ -395,6 +402,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       var request = await httpClient.getUrl(Uri.parse(myUrl));
       var response = await request.close();
       if (response.statusCode == 200) {
+
         var bytes = await consolidateHttpClientResponseBytes(response);
         filePath = '$dir/$fileName';
         file = File(filePath);
@@ -403,6 +411,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
       return "";
     } catch (e) {
+      print("donload exception");
+      print(e);
       throw (e);
     }
   }
