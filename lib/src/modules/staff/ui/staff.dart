@@ -17,7 +17,6 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:googleapis/classroom/v1.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
