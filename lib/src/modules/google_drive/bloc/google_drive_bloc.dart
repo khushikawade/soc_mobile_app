@@ -26,21 +26,24 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   ) async* {
     if (event is GetDriveFolderIdEvent) {
       try {
-        String parentId;
+        var folderObject;
         // Globals.authorizationToken = event.token;
-        print("calling get folder id");
-        parentId = await _getGoogleDriveFolderList(
+        folderObject = await _getGoogleDriveFolderList(
             token: event.token, folderName: event.folderName);
-        print('FolderId = $parentId');
+        print('FolderId = ${folderObject['id']}');
 
-        if (parentId != '401') {
-          if (parentId == '') {
+        if (folderObject['id'] != '401') {
+          if (folderObject['id'] == '') {
             await _createFolderOnDrive(
                 token: event.token, folderName: event.folderName);
             print("Folder created successfully");
           } else {
-            print("Folder Id received");
-            Globals.folderId = parentId;
+            print("Folder Id received : ${folderObject['id']}");
+            print("Folder path received : ${folderObject['webViewLink']}");
+
+            Globals.googleDriveFolderId = folderObject['id'];
+            Globals.googleDriveFolderPath = folderObject['webViewLink'];
+            // Globals.
             if (event.fetchHistory == true) {
               //Fetch history assessment
               GetHistoryAssessmentFromDrive();
@@ -60,7 +63,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         Globals.assessmentName = event.name;
         bool result = await createSheetOnDrive(
             name: event.name!,
-            folderId: Globals.folderId,
+            folderId: Globals.googleDriveFolderId,
             accessToken: Globals.userprofilelocalData[0].authorizationToken
             //  image: file
             );
@@ -68,7 +71,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           print(
               "Failed to create. Trying to create the excel sheet again : ${event.name!}");
           await createSheetOnDrive(
-              folderId: Globals.folderId,
+              folderId: Globals.googleDriveFolderId,
               accessToken: Globals.userprofilelocalData[0].authorizationToken
               // image: file
               );
@@ -113,10 +116,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print("calling _fetchHistoryAssessment");
         yield GoogleDriveLoading();
         List<HistoryAssessment> assessmentList = [];
-        if (Globals.folderId != null) {
+        if (Globals.googleDriveFolderId != null) {
           List<HistoryAssessment> _list = await _fetchHistoryAssessment(
               Globals.userprofilelocalData[0].authorizationToken,
-              Globals.folderId);
+              Globals.googleDriveFolderId);
           //     if (_list.length > 0) {
           // for (int i = 0; i < data.length; i++) {
           _list.forEach((element) {
@@ -200,7 +203,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200) {
         //  String id = response.data['id'];
         print("Folder created successfully : ${response.data['id']}");
-        return Globals.folderId = response.data['id'];
+        return Globals.googleDriveFolderId = response.data['id'];
       }
       return "";
     } catch (e) {
@@ -208,7 +211,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> _getGoogleDriveFolderList(
+  Future _getGoogleDriveFolderList(
       {required String? token, required String? folderName}) async {
     try {
       Map<String, String> headers = {
@@ -229,7 +232,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
               data[i]["trashed"] == false) {
             print("folder is already exits : ${data[i]['id']}");
-            return data[i]['id'];
+            return data[i];
           }
         }
       } else if (response.statusCode == 401) {

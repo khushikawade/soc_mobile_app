@@ -4,7 +4,6 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -107,11 +106,12 @@ class _StaffPageState extends State<StaffPage> {
       context,
       screen: GoogleAuthWebview(
         title: title!,
-        url: Overrides.secureLoginURL +
-            '?' +
-            Globals.appSetting.appLogoC +
-            '?' +
-            themeColor.toString().split('0xff')[1].split(')')[0],
+        url: Globals.appSetting.authenticationURL ??
+            '' + //Overrides.secureLoginURL +
+                '?' +
+                Globals.appSetting.appLogoC +
+                '?' +
+                themeColor.toString().split('0xff')[1].split(')')[0],
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
@@ -121,8 +121,15 @@ class _StaffPageState extends State<StaffPage> {
       withNavBar: false,
     );
 
-    if (value.toString().contains('displayName')) {
-      value = value.split('?')[1];
+    if (value.toString().contains('authenticationfailure')) {
+      Navigator.pop(context, false);
+      Utility.showSnackBar(
+          _scaffoldKey,
+          'You are not authorized to access the feature. Please use the authorized account.',
+          context,
+          50.0);
+    } else {
+      value = value.split('?')[1] ?? '';
       //Save user profile
       saveUserProfile(value);
       // Push to the grading system
@@ -131,13 +138,6 @@ class _StaffPageState extends State<StaffPage> {
         screen: OpticalCharacterRecognition(),
         withNavBar: false,
       );
-    } else if (value.toString().contains('authenticationfailure')) {
-      Navigator.pop(context, false);
-      Utility.showSnackBar(
-          _scaffoldKey,
-          'You are not authorized to access the feature. Please use the authorized account.',
-          context,
-          50.0);
     }
   }
 
@@ -315,6 +315,7 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: !isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
+                    print(Globals.appSetting.authenticationURL);
                     //  Globals.localUserInfo.clear(); // COMMENT
                     //  await localdb();
                     print(Globals.userprofilelocalData);

@@ -111,7 +111,7 @@ class Globals {
   static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe870];
   static List ocrResultIconsName = [
     "Share",
-    "Add to drive",
+    "Go to drive",
     "History",
     "Download"
   ];
@@ -121,13 +121,15 @@ class Globals {
   ];
   static List gradeList = [];
   static bool iscameraPopup = true;
-  static String? folderId;
+  static String? googleDriveFolderId;
+  static String? googleDriveFolderPath;
   static String? fileId;
- // static String? authorizationToken;
+  // static String? authorizationToken;
   static late List<StudentAssessmentInfo>? studentInfo = [];
   static String? shareableLink;
   static String? pointpossible = '2';
   static String? assessmentName;
-  static LocalDatabase<UserInformation> localUserInfo = LocalDatabase('user_profile');
+  static LocalDatabase<UserInformation> localUserInfo =
+      LocalDatabase('user_profile');
   static List<UserInformation> userprofilelocalData = [];
 }

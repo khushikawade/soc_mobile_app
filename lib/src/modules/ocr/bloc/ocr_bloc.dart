@@ -40,6 +40,53 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         print(e);
       }
     }
+    if (event is SearchSubjectDetails) {
+      try {
+        List<SubjectDetailList> data = await fatchSubjectDetails(
+            type: event.type!, keyword: event.keyword!);
+        List<SubjectDetailList> list = [];
+        if (event.type == 'subject') {
+          for (int i = 0; i < data.length; i++) {
+            if (data[i]
+                .subjectNameC!
+                .toUpperCase()
+                .contains(event.searchKeyword!.toUpperCase())) {
+              list.add(data[i]);
+            }
+          }
+          print(list.length);
+          yield SearchSubjectDetailsSuccess(
+            obj: list,
+          );
+        } else if (event.type == 'nyc') {
+          for (int i = 0; i < data.length; i++) {
+            if (data[i]
+                .domainNameC!
+                .toUpperCase()
+                .contains(event.searchKeyword!.toUpperCase())) {
+              list.add(data[i]);
+            }
+          }
+          print(list.length);
+          yield SearchSubjectDetailsSuccess(
+            obj: list,
+          );
+        } else if (event.type == 'nycSub') {
+          for (int i = 0; i < data.length; i++) {
+            if (data[i]
+                .descriptionC!
+                .toUpperCase()
+                .contains(event.searchKeyword!.toUpperCase())) {
+              list.add(data[i]);
+            }
+          }
+          print(list.length);
+          yield SearchSubjectDetailsSuccess(
+            obj: list,
+          );
+        }
+      } catch (e) {}
+    }
 
     if (event is VerifyUserWithDatabase) {
       try {
@@ -77,10 +124,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           );
         }
       } catch (e) {
-        // if (e.toString().contains('NO_CONNECTION')) {
-        //   Utility.showSnackBar(event.scaffoldKey,
-        //       'Make sure you have a proper Internet connection', event.context);
-        // }
         yield OcrErrorReceived(err: e);
       }
     }
@@ -102,7 +145,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         List<SubjectDetailList> _list = response.data['body']
             .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
             .toList();
-        print(_list);
+        print('Subject List fetched : ${_list.length}');
         LocalDatabase<SubjectDetailList> _localDb =
             LocalDatabase(Strings.ocrSubjectObjectName);
         await _localDb.clear();
@@ -125,7 +168,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       LocalDatabase<SubjectDetailList> _localDb =
           LocalDatabase(Strings.ocrSubjectObjectName);
       List<SubjectDetailList>? _localData = await _localDb.getData();
-      print(_localData);
+      print('Subject Local data : ${_localData.length}');
       List<SubjectDetailList> detailsList = [];
       if (type == 'subject') {
         grade = keyword;
@@ -158,10 +201,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               id.add(_localData[i].domainNameC);
             }
           }
-          // if (_localData[i].subjectNameC == keyword &&
-          //     _localData[i].gradeC == grade) {
-          //   nycList.add(_localData[i]);
-          // }
         }
         return detailsList;
       } else if (type == 'nycSub') {
@@ -277,7 +316,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           }
         }
 
-        print(schoolgrade);
+        print('School grades : ${schoolgrade.length}');
         return [
           schoolIdNew.isNotEmpty ? schoolIdNew[0] : '',
           schoolgrade.isNotEmpty ? schoolgrade[0] : ''
