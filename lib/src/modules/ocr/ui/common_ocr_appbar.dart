@@ -138,7 +138,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             fontFamily: Overrides.kFontFam,
                             fontPackage: Overrides.kFontPkg),
                         size: 30,
-                        color: Colors.red,
+                        color: AppTheme.kButtonColor,
                       ),
                     ),
                   )
