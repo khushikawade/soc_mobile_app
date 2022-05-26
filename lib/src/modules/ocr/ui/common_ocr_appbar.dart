@@ -87,7 +87,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 )
               : null,
       actions: [
-        widget.assessmentDetailPage != null
+        widget.assessmentDetailPage == null
             ? Container(
                 padding: widget.isFailureState != true
                     ? EdgeInsets.only(right: 10)
@@ -115,7 +115,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   ),
                 ))
             : Container(),
-        widget.assessmentDetailPage != null
+        widget.assessmentDetailPage == true
             ? Container()
             : widget.isFailureState == true || widget.isResultScreen == true
                 ? Container(
@@ -138,7 +138,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             fontFamily: Overrides.kFontFam,
                             fontPackage: Overrides.kFontPkg),
                         size: 30,
-                        color: AppTheme.kButtonColor,
+                        color: Colors.red,
                       ),
                     ),
                   )
