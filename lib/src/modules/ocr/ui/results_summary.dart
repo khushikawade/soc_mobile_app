@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
@@ -8,10 +7,12 @@ import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share/share.dart';
+
 
 class ResultsSummary extends StatefulWidget {
   ResultsSummary({Key? key, required this.assessmentDetailPage, this.fileId})
@@ -28,7 +29,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   @override
   void initState() {
-    // TODO: implement initState
     if (widget.assessmentDetailPage!) {
       _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
     }
@@ -46,7 +46,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
-              isBackButton: false,
+              isBackButton: true,
+              assessmentDetailPage: widget.assessmentDetailPage,
               isResultScreen: true,
             ),
 
@@ -89,17 +90,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             body: Container(
               //     padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SpacerWidget(_KVertcalSpace * 0.50),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.red,
-                      )),
+                  // IconButton(
+                  //     onPressed: () {
+                  //       Navigator.pop(context);
+                  //     },
+                  //     icon: Icon(
+                  //       Icons.arrow_back,
+                  //       color: Colors.red,
+                  //     )),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Utility.textWidget(
@@ -119,16 +121,38 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           bloc: _driveBloc,
                           builder:
                               (BuildContext contxt, GoogleDriveState state) {
-                            if (state is AssessmentSuccess) {
-                              return listView(
-                                state.obj,
-                              );
+                            if (state is AssessmentDetailSuccess) {
+                              return state.obj.length > 0
+                                  ? listView(
+                                      state.obj,
+                                    )
+                                  : Expanded(
+                                      child: NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: true,
+                                          isNews: false,
+                                          isEvents: false),
+                                    );
                             }
-                            return Center(
-                                child: CircularProgressIndicator(
-                              color:
-                                  Theme.of(context).colorScheme.primaryVariant,
-                            ));
+                            //  else if (state is GoogleNoAssessment) {
+                            //   return Container(
+                            //     height:
+                            //         MediaQuery.of(context).size.height * 0.7,
+                            //     child: Center(
+                            //         child: Text(
+                            //       "No assessment available",
+                            //       style: Theme.of(context).textTheme.bodyText1!,
+                            //     )),
+                            //   );
+                            // }
+                            return Container(
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              )),
+                            );
                           })
                 ],
               ),
@@ -190,11 +214,19 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   .copyWith(fontWeight: FontWeight.bold)),
         ),
         index == 1
-            ? Image(
-                width: Globals.deviceType == "phone" ? 34 : 32,
-                height: Globals.deviceType == "phone" ? 34 : 32,
-                image: AssetImage(
-                  "assets/images/drive_ico.png",
+            ? GestureDetector(
+                onTap: () {
+                  print(
+                      'Google drive folder path : ${Globals.googleDriveFolderPath}');
+                  Utility.launchUrlOnExternalBrowser(
+                      Globals.googleDriveFolderPath!);
+                },
+                child: Image(
+                  width: Globals.deviceType == "phone" ? 34 : 32,
+                  height: Globals.deviceType == "phone" ? 34 : 32,
+                  image: AssetImage(
+                    "assets/images/drive_ico.png",
+                  ),
                 ),
               )
             : Expanded(
@@ -213,16 +245,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             : AppTheme.kButtonColor,
                   ),
                   onPressed: () {
-                    if (index == 2) {
+                    if (index == 0) {
+                      Share.share(Globals.shareableLink!);
+                    } else if (index == 2) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => AssessmentSummary()),
                       );
-                    }
-                    if (index == 0) {
-                      Share.share(Globals.shareableLink!);
-                    }
+                    } else {}
                   },
                 ),
               ),
@@ -263,27 +294,25 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         // contentPadding:
         //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading: Utility.textWidget(
-            text: _list[index].studentId ?? 'Unknown',
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline2!),
-        // title: TranslationWidget(
-        //     message: "No title",
-        //     fromLanguage: "en",
-        //     toLanguage: Globals.selectedLanguage,
-        //     builder: (translatedMessage) {
-        //       return Text(translatedMessage.toString(),
-        //           style: Theme.of(context).textTheme.bodyText1!);
-        //     }),
-        trailing: Utility.textWidget(
-            text: _list[index].studentGrade == ''
-                ? '2/2'
-                : '${Globals.studentInfo![index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
-            context: context,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline2!
-                .copyWith(fontWeight: FontWeight.bold)),
+        leading:
+            //  Text(_list[index].studentId!),
+
+            Utility.textWidget(
+                text: _list[index].studentName ?? 'Unknown',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!),
+
+        trailing:
+            // Text(_list[index].pointpossible!),
+            Utility.textWidget(
+                text: _list[index].studentGrade == ''
+                    ? '2/2'
+                    : '${_list[index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.bold)),
       ),
     );
   }

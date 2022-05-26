@@ -1,8 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
-import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
@@ -17,7 +17,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.isTitle,
       this.isFailureState,
       this.isResultScreen,
-      this.isHomeButtonPopup})
+      this.isHomeButtonPopup,
+      this.assessmentDetailPage})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? isFailureState;
@@ -25,6 +26,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? isTitle;
   bool? isResultScreen;
   bool? isHomeButtonPopup;
+  bool? assessmentDetailPage;
 
   @override
   final Size preferredSize;
@@ -48,9 +50,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
           ? Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                highlightText(
+                Utility.textWidget(
                     text: 'Scane Failure',
-                    theme: Theme.of(context)
+                    context: context,
+                    textTheme: Theme.of(context)
                         .textTheme
                         .headline4!
                         .copyWith(fontWeight: FontWeight.bold)),
@@ -85,74 +88,82 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 )
               : null,
       actions: [
-        Container(
-            padding: widget.isFailureState != true
-                ? EdgeInsets.only(right: 10)
-                : EdgeInsets.zero,
-            child: IconButton(
-              onPressed: () {
-                if (widget.isHomeButtonPopup == true) {
-                  _onHomePressed();
-                } else {
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (_) => false);
-                }
-
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(builder: (context) => HomePage()),
-                // );
-              },
-              icon: Icon(
-                IconData(0xe874,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kButtonColor,
-                size: 30,
-              ),
-            )),
-        widget.isFailureState == true || widget.isResultScreen == true
+        widget.assessmentDetailPage == null
             ? Container(
                 padding: widget.isFailureState != true
                     ? EdgeInsets.only(right: 10)
                     : EdgeInsets.zero,
                 child: IconButton(
                   onPressed: () {
-                    if (widget.isFailureState == true) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => CameraScreen()));
-                    } else if (widget.isResultScreen == true) {
-                      onFinishedPopup();
+                    if (widget.isHomeButtonPopup == true) {
+                      _onHomePressed();
+                    } else {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                          (_) => false);
                     }
+
+                    // Navigator.of(context).push(
+                    //   MaterialPageRoute(builder: (context) => HomePage()),
+                    // );
                   },
                   icon: Icon(
-                    IconData(0xe877,
+                    IconData(0xe874,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
-                    size: 30,
                     color: AppTheme.kButtonColor,
+                    size: 30,
                   ),
-                ),
-              )
-            : Container()
-      ],
-    );
-  }
-
-  Widget highlightText({required String text, required theme}) {
-    return TranslationWidget(
-      message: text,
-      toLanguage: Globals.selectedLanguage,
-      fromLanguage: "en",
-      builder: (translatedMessage) => Center(
-        child: Text(
-          translatedMessage.toString(),
-          // maxLines: 2,
-          //overflow: TextOverflow.ellipsis,
-          // textAlign: TextAlign.center,
-          style: theme,
+                ))
+            : Container(),
+        widget.assessmentDetailPage == true
+            ? Container()
+            : widget.isFailureState == true || widget.isResultScreen == true
+                ? Container(
+                    padding: widget.isFailureState != true
+                        ? EdgeInsets.only(right: 10)
+                        : EdgeInsets.zero,
+                    child: IconButton(
+                      onPressed: () {
+                        if (widget.isFailureState == true) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => CameraScreen()));
+                        } else if (widget.isResultScreen == true) {
+                          onFinishedPopup();
+                        }
+                      },
+                      icon: Icon(
+                        IconData(0xe877,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        size: 30,
+                        color: AppTheme.kButtonColor,
+                      ),
+                    ),
+                  )
+                : Container(),
+        Container(
+          padding: widget.isFailureState != true
+              ? EdgeInsets.only(right: 10, top: 5)
+              : EdgeInsets.zero,
+          child: IconButton(
+            onPressed: () {
+              Globals.localUserInfo.clear();
+              Globals.userprofilelocalData.clear();
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                  (_) => false);
+            },
+            icon: Icon(
+              Icons.logout,
+              size: 26,
+              color: AppTheme.kButtonColor,
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -275,9 +286,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        highlightText(
+                        Utility.textWidget(
                             text: 'Finished!',
-                            theme: Theme.of(context)
+                            context: context,
+                            textTheme: Theme.of(context)
                                 .textTheme
                                 .headline6!
                                 .copyWith(
@@ -293,19 +305,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         ),
                       ],
                     )),
-                // SpacerWidget(_KVertcalSpace / 3),
-                // lineSeparater(),
-
-//           ),
-                //  TranslationWidget(
-                //     message: "you may loss scaned sheet if you exit",
-                //     fromLanguage: "en",
-                //     toLanguage: Globals.selectedLanguage,
-                //     builder: (translatedMessage) {
-                //       return Text(translatedMessage.toString(),
-                //           style: Theme.of(context).textTheme.headline2!);
-                //     }),
-
                 actions: [
                   Container(
                     height: 1,

@@ -1,9 +1,11 @@
-import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
-import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
+import '../../../services/local_database/local_db.dart';
+import '../modal/subject_details_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -16,6 +18,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   final DbServices _dbServices = DbServices();
   // final HiveDbServices _localDbService = HiveDbServices();
   OcrState get initialState => OcrInitial();
+  String grade = '';
+  String selectedSubject = '';
 
   @override
   Stream<OcrState> mapEventToState(
@@ -25,7 +29,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         yield FetchTextFromImageFailure(schoolId: '', grade: '');
         yield OcrLoading();
-        List data = await fetchAndProcessDetails(base64: event.base64);
+        List data = await fatchAndProcessDetails(base64: event.base64);
         if (data[0] != '' && data[1] != '') {
           yield FetchTextFromImageSuccess(schoolId: data[0], grade: data[1]);
         } else {
@@ -36,10 +40,57 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         print(e);
       }
     }
+    if (event is SearchSubjectDetails) {
+      try {
+        List<SubjectDetailList> data = await fatchSubjectDetails(
+            type: event.type!, keyword: event.keyword!);
+        List<SubjectDetailList> list = [];
+        if (event.type == 'subject') {
+          for (int i = 0; i < data.length; i++) {
+            if (data[i]
+                .subjectNameC!
+                .toUpperCase()
+                .contains(event.searchKeyword!.toUpperCase())) {
+              list.add(data[i]);
+            }
+          }
+          print(list.length);
+          yield SearchSubjectDetailsSuccess(
+            obj: list,
+          );
+        } else if (event.type == 'nyc') {
+          for (int i = 0; i < data.length; i++) {
+            if (data[i]
+                .domainNameC!
+                .toUpperCase()
+                .contains(event.searchKeyword!.toUpperCase())) {
+              list.add(data[i]);
+            }
+          }
+          print(list.length);
+          yield SearchSubjectDetailsSuccess(
+            obj: list,
+          );
+        } else if (event.type == 'nycSub') {
+          for (int i = 0; i < data.length; i++) {
+            if (data[i]
+                .descriptionC!
+                .toUpperCase()
+                .contains(event.searchKeyword!.toUpperCase())) {
+              list.add(data[i]);
+            }
+          }
+          print(list.length);
+          yield SearchSubjectDetailsSuccess(
+            obj: list,
+          );
+        }
+      } catch (e) {}
+    }
 
     if (event is VerifyUserWithDatabase) {
       try {
-        yield OcrLoading();
+        print("calling api to verifyUserWithDatabase");
         //  var data =
         bool result =
             await verifyUserWithDatabase(email: event.email.toString());
@@ -47,7 +98,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           await verifyUserWithDatabase(email: event.email.toString());
         }
       } catch (e) {
-        await verifyUserWithDatabase(email: event.email.toString());
+        print(e);
+        throw (e);
 
         // yield OcrErrorReceived(err: e);
       }
@@ -55,59 +107,54 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     if (event is FatchSubjectDetails) {
       try {
-        if (event.type == 'subject') {
-          yield OcrLoading();
-        }
+        // yield OcrLoading();
 
-        List<SubjectList> data = await fatchSubjectDetails();
+        List<SubjectDetailList> data = await fatchSubjectDetails(
+            type: event.type!, keyword: event.keyword!);
         if (event.type == 'subject') {
           yield SubjectDataSuccess(
             obj: data,
           );
         } else if (event.type == 'nyc') {
-          List<SubjectList> list = [];
-
-          for (int i = 0; i < Globals.nycDetailsList.length; i++) {
-            SubjectList subjectList = SubjectList();
-            subjectList.subjectNameC = Globals.nycDetailsList[i];
-            list.insert(i, subjectList);
-          }
           yield NycDataSuccess(
-            obj: list,
+            obj: data,
           );
         } else if (event.type == 'nycSub') {
-          List<SubjectList> list = [];
-
-          for (int i = 0; i < Globals.subjectDetailsList.length; i++) {
-            SubjectList subjectList = SubjectList();
-            subjectList.subjectNameC = Globals.subjectDetailsList[i];
-            list.insert(i, subjectList);
-          }
           yield NycSubDataSuccess(
-            obj: list,
+            obj: data,
           );
         }
       } catch (e) {
-        // if (e.toString().contains('NO_CONNECTION')) {
-        //   Utility.showSnackBar(event.scaffoldKey,
-        //       'Make sure you have a proper Internet connection', event.context);
-        // }
         yield OcrErrorReceived(err: e);
       }
     }
+    if (event is SaveSubjectListDetails) {
+      try {
+        bool result = await saveSubjectListDetails();
+      } catch (e) {}
+    }
   }
 
-  Future<List<SubjectList>> fatchSubjectDetails() async {
+  Future<bool> saveSubjectListDetails() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
-          "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Subject__c&fetchType=All"));
+      final ResponseModel response = await _dbServices.getapi(
+          Uri.encodeFull(
+              'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
+          isGoogleApi: true);
 
       if (response.statusCode == 200) {
-        List<SubjectList> _list = response.data['body']
-            .map<SubjectList>((i) => SubjectList.fromJson(i))
+        List<SubjectDetailList> _list = response.data['body']
+            .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
             .toList();
+        print('Subject List fetched : ${_list.length}');
+        LocalDatabase<SubjectDetailList> _localDb =
+            LocalDatabase(Strings.ocrSubjectObjectName);
+        await _localDb.clear();
+        _list.forEach((SubjectDetailList e) {
+          _localDb.addData(e);
+        });
         // _list.removeWhere((SubjectList element) => element.status == 'Hide');
-        return _list;
+        return true;
       } else {
         throw ('something_went_wrong');
       }
@@ -116,7 +163,86 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future fetchAndProcessDetails({required String base64}) async {
+  Future<List<SubjectDetailList>> fatchSubjectDetails(
+      {required String type, required String keyword}) async {
+    try {
+      LocalDatabase<SubjectDetailList> _localDb =
+          LocalDatabase(Strings.ocrSubjectObjectName);
+      List<SubjectDetailList>? _localData = await _localDb.getData();
+      print('Subject Local data : ${_localData.length}');
+      List<SubjectDetailList> detailsList = [];
+      if (type == 'subject') {
+        grade = keyword;
+        List id = [];
+        for (int i = 0; i < _localData.length; i++) {
+          if (_localData[i].gradeC == keyword) {
+            if (detailsList.isNotEmpty &&
+                !id.contains(_localData[i].subjectNameC)) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].subjectNameC);
+            } else if (detailsList.isEmpty) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].subjectNameC);
+            }
+          }
+        }
+        return detailsList;
+      } else if (type == 'nyc') {
+        List id = [];
+        selectedSubject = keyword;
+        for (int i = 0; i < _localData.length; i++) {
+          if (_localData[i].subjectNameC == keyword &&
+              _localData[i].gradeC == grade) {
+            if (detailsList.isNotEmpty &&
+                !id.contains(_localData[i].domainNameC)) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].domainNameC);
+            } else if (detailsList.isEmpty) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].domainNameC);
+            }
+          }
+        }
+        return detailsList;
+      } else if (type == 'nycSub') {
+        List id = [];
+
+        for (int i = 0; i < _localData.length; i++) {
+          if (_localData[i].subjectNameC == selectedSubject &&
+              _localData[i].gradeC == grade &&
+              _localData[i].domainNameC == keyword) {
+            if (detailsList.isNotEmpty &&
+                !id.contains(_localData[i].standardAndDescriptionC)) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].standardAndDescriptionC);
+            } else if (detailsList.isEmpty) {
+              detailsList.add(_localData[i]);
+              id.add(_localData[i].standardAndDescriptionC);
+            }
+          }
+          // if (_localData[i].subjectNameC == keyword &&
+          //     _localData[i].gradeC == grade) {
+          //   nycList.add(_localData[i]);
+          // }
+        }
+        return detailsList;
+      }
+      return detailsList;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  int covertStringtoInt(String data) {
+    try {
+      int result = int.parse(data);
+      return result;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  Future fatchAndProcessDetails({required String base64}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
         Uri.encodeFull('http://3.142.181.122:5050/ocr'),
@@ -191,7 +317,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           }
         }
 
-        print(schoolgrade);
+        print('School grades : ${schoolgrade.length}');
         return [
           schoolIdNew.isNotEmpty ? schoolIdNew[0] : '',
           schoolgrade.isNotEmpty ? schoolgrade[0] : ''
@@ -219,11 +345,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       var res = response.data;
       var data = res["body"];
       if (data == false) {
+        print("this is a new uer now create a user contaact inside database");
         bool result = await _createContact(email: email.toString());
         if (!result) {
           await _createContact(email: email.toString());
         }
-      } else if(data['Assessment_App_User__c']!='true') {
+      } else if (data['Assessment_App_User__c'] != 'true') {
+        print("this is a older user now updating datils in database");
         bool result = await _updateContact(recordId: data['Id']);
         if (!result) {
           await _updateContact(recordId: data['Id']);
@@ -237,6 +365,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   }
 
   Future<bool> _createContact({required String? email}) async {
+     print(email!.split("@")[0]);
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
@@ -244,7 +373,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     final body = {
       "AccountId": "0017h00000k3TgjAAE",
       "Assessment_App_User__c": "true",
-      "LastName": email!.split("@")[0],
+      "LastName": email.split("@")[0],
       "Email": email
     };
 
@@ -254,8 +383,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         body: body,
         headers: headers);
     if (response.statusCode == 200) {
-      print("contact created");
-
+      print("new user created ---->sucessfully ");
       return true;
     } else {
       return false;
@@ -276,7 +404,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         body: body,
         headers: headers);
     if (response.statusCode == 200) {
-      print("contact updated");
+      print("old user data updated --> sucessfully ");
       return true;
     } else {
       return false;

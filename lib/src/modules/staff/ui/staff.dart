@@ -19,7 +19,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:googleapis/classroom/v1.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-// import '../../../services/local_database/local_db.dart';
 import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
@@ -92,11 +91,12 @@ class _StaffPageState extends State<StaffPage> {
       context,
       screen: GoogleAuthWebview(
         title: title!,
-        url: Overrides.secureLoginURL +
-            '?' +
-            Globals.appSetting.appLogoC +
-            '?' +
-            themeColor.toString().split('0xff')[1].split(')')[0],
+        url: Globals.appSetting.authenticationURL ??
+            '' + //Overrides.secureLoginURL +
+                '?' +
+                Globals.appSetting.appLogoC +
+                '?' +
+                themeColor.toString().split('0xff')[1].split(')')[0],
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
@@ -106,8 +106,15 @@ class _StaffPageState extends State<StaffPage> {
       withNavBar: false,
     );
 
-    if (value.toString().contains('displayName')) {
-      value = value.split('?')[1];
+    if (value.toString().contains('authenticationfailure')) {
+      Navigator.pop(context, false);
+      Utility.showSnackBar(
+          _scaffoldKey,
+          'You are not authorized to access the feature. Please use the authorized account.',
+          context,
+          50.0);
+    } else {
+      value = value.split('?')[1] ?? '';
       //Save user profile
       await saveUserProfile(value);
       await verifyUserAndGetDriveFolder();
@@ -117,13 +124,6 @@ class _StaffPageState extends State<StaffPage> {
         screen: OpticalCharacterRecognition(),
         withNavBar: false,
       );
-    } else if (value.toString().contains('authenticationfailure')) {
-      Navigator.pop(context, false);
-      Utility.showSnackBar(
-          _scaffoldKey,
-          'You are not authorized to access the feature. Please use the authorized account.',
-          context,
-          50.0);
     }
   }
 
@@ -289,16 +289,6 @@ class _StaffPageState extends State<StaffPage> {
               body: _body('body1'),
             )
           : _body('body2'),
-      // floatingActionButton: Padding(
-      //   padding: EdgeInsets.only(
-      //     bottom: MediaQuery.of(context).size.height * 0.03,
-      //   ),
-      //   child: cameraButton(),
-      // ),
-      // floatingActionButtonAnimator: NoScalingAnimation(),
-      // floatingActionButtonLocation: isScrolling.value
-      //     ? FloatingActionButtonLocation.endFloat
-      //     : FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -308,11 +298,6 @@ class _StaffPageState extends State<StaffPage> {
     _bloc.add(StaffPageEvent());
     _homeBloc.add(FetchStandardNavigationBar());
   }
-
-//   Future<File> _getpath() async {
-//  //   FilePickerResult? result = await FilePicker.platform.pickFiles();
-//   //  return File(result!.files.first.path!);
-//   }
 
   Widget cameraButton() {
     return ValueListenableBuilder<bool>(
@@ -344,12 +329,11 @@ class _StaffPageState extends State<StaffPage> {
                         withNavBar: false,
                       );
                     }
-                    // }
                   },
                   icon:
                       Icon(Icons.add, color: Theme.of(context).backgroundColor),
                   label: textwidget(
-                      text: 'Add Assessment',
+                      text: 'Assessment',
                       textTheme: Theme.of(context)
                           .textTheme
                           .headline2!

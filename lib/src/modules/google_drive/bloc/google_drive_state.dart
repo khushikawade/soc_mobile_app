@@ -16,7 +16,7 @@ class GoogleDriveLoading extends GoogleDriveState {
 
 // ignore: must_be_immutable
 class GoogleDriveGetSuccess extends GoogleDriveState {
-  List<Assessment> obj;
+  List<HistoryAssessment> obj;
   GoogleDriveGetSuccess({required this.obj});
   GoogleDriveGetSuccess copyWith({final obj}) {
     return GoogleDriveGetSuccess(obj: obj ?? this.obj);
@@ -26,17 +26,17 @@ class GoogleDriveGetSuccess extends GoogleDriveState {
   List<Object> get props => [];
 }
 
-class GoogleNoAssessment extends GoogleDriveState {
-  @override
-  List<Object> get props => [];
-}
+// class GoogleNoAssessment extends GoogleDriveState {
+//   @override
+//   List<Object> get props => [];
+// }
 
 // ignore: must_be_immutable
-class AssessmentSuccess extends GoogleDriveState {
+class AssessmentDetailSuccess extends GoogleDriveState {
   List<StudentAssessmentInfo> obj;
-  AssessmentSuccess({required this.obj});
-  AssessmentSuccess copyWith({final obj}) {
-    return AssessmentSuccess(obj: obj ?? this.obj);
+  AssessmentDetailSuccess({required this.obj});
+  AssessmentDetailSuccess copyWith({final obj}) {
+    return AssessmentDetailSuccess(obj: obj ?? this.obj);
   }
 
   @override

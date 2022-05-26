@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 
@@ -28,7 +29,7 @@ import 'src/services/local_database/hive_db_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   cameras = await availableCameras();
+  cameras = await availableCameras();
 
   if (!kIsWeb) {
     // Not running on the web!
@@ -47,7 +48,8 @@ void main() async {
       ..registerAdapter(AppSettingAdapter())
       ..registerAdapter(CalendarEventListAdapter())
       ..registerAdapter(CustomSettingAdapter())
-      ..registerAdapter(UserInformationAdapter());
+      ..registerAdapter(UserInformationAdapter())
+      ..registerAdapter(SubjectDetailListAdapter());
   }
   clearTheme();
   await disableDarkMode();

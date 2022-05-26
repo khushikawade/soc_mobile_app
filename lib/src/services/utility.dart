@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:dio/dio.dart';
@@ -396,6 +397,7 @@ class Utility {
       return false;
     }
   }
+
   // static Future<String> sslErrorHandler(String url) async {
   //   try {
   //     final response = await http.get(Uri.parse(url));

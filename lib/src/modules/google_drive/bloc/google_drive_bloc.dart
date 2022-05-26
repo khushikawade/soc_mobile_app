@@ -3,14 +3,16 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../services/db_service.dart';
 import 'package:path/path.dart';
-
 import '../../ocr/modal/student_assessment_info_modal.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
@@ -27,19 +29,25 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   ) async* {
     if (event is GetDriveFolderIdEvent) {
       try {
-        String parentId;
+        var folderObject;
         // Globals.authorizationToken = event.token;
-        parentId = await _getGoogleDriveFolderList(
+        folderObject = await _getGoogleDriveFolderList(
             token: event.token, folderName: event.folderName);
+        print('FolderId = ${folderObject['id']}');
 
-        if (parentId != '401') {
-          if (parentId == '') {
+        if (folderObject['id'] != '401') {
+          if (folderObject['id'] == '') {
             await _createFolderOnDrive(
                 token: event.token, folderName: event.folderName);
             print("Folder created successfully");
           } else {
-            print("Folder Id received");
-            Globals.folderId = parentId;
+            print("Folder Id received : ${folderObject['id']}");
+            print("Folder path received : ${folderObject['webViewLink']}");
+            print(event.refreshtoken);
+            _torefreshAuthenticationToken(event.refreshtoken!);
+            Globals.googleDriveFolderId = folderObject['id'];
+            Globals.googleDriveFolderPath = folderObject['webViewLink'];
+            // Globals.
             if (event.fetchHistory == true) {
               //Fetch history assessment
               GetHistoryAssessmentFromDrive();
@@ -47,6 +55,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           print('Authentication required');
+          _torefreshAuthenticationToken(event.refreshtoken!);
         }
       } catch (e) {
         throw (e);
@@ -59,7 +68,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         Globals.assessmentName = event.name;
         bool result = await createSheetOnDrive(
             name: event.name!,
-            folderId: Globals.folderId,
+            folderId: Globals.googleDriveFolderId,
             accessToken: _userprofilelocalData[0].authorizationToken
             //  image: file
             );
@@ -67,7 +76,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           print(
               "Failed to create. Trying to create the excel sheet again : ${event.name!}");
           await createSheetOnDrive(
-              folderId: Globals.folderId,
+              folderId: Globals.googleDriveFolderId,
               accessToken: _userprofilelocalData[0].authorizationToken
               // image: file
               );
@@ -81,6 +90,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is UpdateDocOnDrive) {
       try {
+        List<UserInformation> _userprofilelocalData = await getUserProfile();
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
         assessmentData!.insert(
             0,
@@ -88,33 +98,46 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 studentId: "Id",
                 studentName: "Name",
                 studentGrade: "PointsEarned",
-                pointpossible: "PointsEarned"));
+                pointpossible: "pointPossible"));
         print(assessmentData);
 
         File file = await GoogleDriveAccess.createSheet(
             data: assessmentData, name: Globals.assessmentName!);
 
         bool uploadresult = await uploadSheetOnDrive(
-            file, Globals.fileId, Globals.authorizationToken);
+            file, Globals.fileId, _userprofilelocalData[0].authorizationToken);
         if (!uploadresult) {
-          await uploadSheetOnDrive(
-              file, Globals.fileId, Globals.authorizationToken);
+          await uploadSheetOnDrive(file, Globals.fileId,
+              _userprofilelocalData[0].authorizationToken);
+        }
+        bool deleted = await GoogleDriveAccess.deleteFile(file);
+        if (!deleted) {
+          GoogleDriveAccess.deleteFile(file);
         }
       } catch (e) {}
     }
 
     if (event is GetHistoryAssessmentFromDrive) {
       try {
+        print("calling _fetchHistoryAssessment");
         yield GoogleDriveLoading();
         List<UserInformation> _userprofilelocalData = await getUserProfile();
-        if (Globals.folderId != null) {
-          List<Assessment> _list = await _fetchHistoryAssessment(
-              _userprofilelocalData[0].authorizationToken, Globals.folderId);
-          if (_list.length > 0) {
-            yield GoogleDriveGetSuccess(obj: _list);
-          } else {
-            yield GoogleNoAssessment();
-          }
+        List<HistoryAssessment> assessmentList = [];
+        if (Globals.googleDriveFolderId != null) {
+          List<HistoryAssessment> _list = await _fetchHistoryAssessment(
+              _userprofilelocalData[0].authorizationToken,
+              Globals.googleDriveFolderId);
+          //     if (_list.length > 0) {
+          // for (int i = 0; i < data.length; i++) {
+          _list.forEach((element) {
+            print(element.label['trashed']);
+            if (element.label['trashed'] != true) {
+              assessmentList.add(element);
+            }
+          });
+
+          yield GoogleDriveGetSuccess(obj: assessmentList);
+          //   }
         } else {
           GetDriveFolderIdEvent(
               //  filePath: file,
@@ -128,10 +151,43 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
     if (event is GetAssessmentDetail) {
       try {
-        print("inside get assessment token ${Globals.token}");
-        print(event.fileId);
-        _getAssessmentDetail(Globals.authorizationToken, event.fileId);
-      } catch (e) {}
+        List<StudentAssessmentInfo> _list = [];
+        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        String link = await _getAssessmentDetail(
+            _userprofilelocalData[0].authorizationToken, event.fileId);
+
+        if (link != "") {
+          String file = await downloadFile(
+              link, "test3", (await getApplicationDocumentsDirectory()).path);
+          print("assessment downloaded");
+
+          if (file != "") {
+            //  List<StudentAssessmentInfo>
+            _list = await GoogleDriveAccess.excelToJson(file);
+            print("assessment data is converted into json ");
+            bool deleted = await GoogleDriveAccess.deleteFile(File(file));
+            if (!deleted) {
+              GoogleDriveAccess.deleteFile(File(file));
+            }
+            print("local assessment file is deleted");
+            // if (_list.length > 0) {
+            //   yield AssessmentDetailSuccess(obj: _list);
+            // } else {
+            //   yield GoogleNoAssessment();
+            // }
+            _list.insert(
+                0,
+                StudentAssessmentInfo(
+                    studentId: "Id",
+                    studentName: "Name",
+                    studentGrade: "PointsEarned",
+                    pointpossible: "pointPossible"));
+            yield AssessmentDetailSuccess(obj: _list);
+          }
+        }
+      } catch (e) {
+        throw (e);
+      }
     }
   }
 
@@ -161,7 +217,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200) {
         //  String id = response.data['id'];
         print("Folder created successfully : ${response.data['id']}");
-        return Globals.folderId = response.data['id'];
+        return Globals.googleDriveFolderId = response.data['id'];
       }
       return "";
     } catch (e) {
@@ -169,7 +225,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> _getGoogleDriveFolderList(
+  Future _getGoogleDriveFolderList(
       {required String? token, required String? folderName}) async {
     try {
       Map<String, String> headers = {
@@ -189,8 +245,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (data[i]['name'] == folderName &&
               data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
               data[i]["trashed"] == false) {
-            print("foler is already exits : ${data[i]['id']}");
-            return data[i]['id'];
+            print("folder is already exits : ${data[i]['id']}");
+            return data[i];
           }
         }
       } else if (response.statusCode == 401) {
@@ -230,9 +286,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       String fileId = response.data['id'];
       Globals.fileId = fileId;
-      bool result = await spreadsheetSharable(accessToken!, fileId);
+      bool result = await _updateSheetPermission(accessToken!, fileId);
       if (!result) {
-        await spreadsheetSharable(accessToken, fileId);
+        await _updateSheetPermission(accessToken, fileId);
       }
 
       bool link = await _getShareableLink(accessToken, fileId);
@@ -279,19 +335,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
-        var data = response.data['items'];
-        print(data);
-        List<Assessment> _list = response.data['items']
-            .map<Assessment>((i) => Assessment.fromJson(i))
+        print("assessment list is received ");
+        List<HistoryAssessment> _list = response.data['items']
+            .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
             .toList();
         return _list;
+      } else {
+        throw ('something_went_wrong');
       }
     } catch (e) {
-      print(e);
+      throw (e);
     }
   }
 
-  spreadsheetSharable(String token, String folderId) async {
+  _updateSheetPermission(String token, String folderId) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'authorization': 'Bearer $token'
@@ -330,21 +387,71 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     return false;
   }
 
-  Future _getAssessmentDetail(String? token, String? fileId) async {
-    print(token);
-    print(fileId);
+  Future<String> _getAssessmentDetail(String? token, String? fileId) async {
     Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'authorization': 'Bearer $token'
+      'authorization': 'Bearer $token',
+      'Content-Type': 'application/json; charset=UTF-8'
     };
     final ResponseModel response = await _dbServices.getapi(
+        //'https://www.googleapis.com/drive/v3/files/$fileId?fields=webContentLink',
         'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         headers: headers,
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
-      print(" get file link   ----------->");
+      print("detail assessment link is received");
       var data = response.data;
+
+      String downloadLink = data['exportLinks']
+          ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+
+      return downloadLink;
+    }
+    return "";
+  }
+
+  Future<String> downloadFile(String url, String fileName, String dir) async {
+    try {
+      HttpClient httpClient = new HttpClient();
+      File file;
+      String filePath = '';
+      String myUrl = '';
+
+      myUrl = url;
+      var request = await httpClient.getUrl(Uri.parse(myUrl));
+      var response = await request.close();
+      if (response.statusCode == 200) {
+        var bytes = await consolidateHttpClientResponseBytes(response);
+        filePath = '$dir/$fileName';
+        file = File(filePath);
+        await file.writeAsBytes(bytes);
+        return filePath;
+      }
+      return "";
+    } catch (e) {
+      print("donload exception");
+      print(e);
+      throw (e);
+    }
+  }
+
+  Future _torefreshAuthenticationToken(String refreshToken) async {
+    try {
+      print(refreshToken);
+      final body = {"refreshToken": refreshToken};
+      final ResponseModel response = await _dbServices.postapi(
+          "https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/refreshGoogleAuthenticationz",
+          body: body,
+          isGoogleApi: true);
+      if (response.statusCode == 200) {
+        print("refresh done");
+        return true;
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      print(e);
+      throw (e);
     }
   }
 }

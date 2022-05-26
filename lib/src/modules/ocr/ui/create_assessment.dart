@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -20,28 +21,19 @@ class _CreateAssessmentState extends State<CreateAssessment>
   static const double _KVertcalSpace = 60.0;
   final assessmentController = TextEditingController(text: 'Version_0.01');
   final classController = TextEditingController(text: '11th');
+  int selectedClassIndex = 0;
   double? _scale;
-  AnimationController? _controller;
+  // AnimationController? _controller;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-  int scoringColor = 0;
+  //int scoringColor = 0;
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(
-        milliseconds: 500,
-      ),
-      lowerBound: 0.0,
-      upperBound: 0.1,
-    )..addListener(() {
-        setState(() {});
-      });
   }
 
   @override
   Widget build(BuildContext context) {
-    _scale = 1 - _controller!.value;
+    // _scale = 1 - _controller!.value;
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -172,22 +164,20 @@ class _CreateAssessmentState extends State<CreateAssessment>
               mainAxisSpacing: 10),
           itemCount: Globals.classList.length,
           itemBuilder: (BuildContext ctx, index) {
-            return GestureDetector(
-              onTap: () {
+            return Bouncing(
+              onPress: () {
                 setState(() {
-                  scoringColor = index;
+                  selectedClassIndex = index;
                 });
               },
-              onTapDown: _tapDown,
-              onTapUp: _tapUp,
               child: Transform.scale(
-                scale: _scale!,
+                scale: 1, //_scale!,
                 child: AnimatedContainer(
-                  duration: Duration(microseconds: 100),
+                  duration: Duration(microseconds: 10),
                   padding: EdgeInsets.only(bottom: 5),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: scoringColor == index
+                    color: selectedClassIndex == index
                         ? AppTheme.kSelectedColor
                         : Colors.grey,
                   ),
@@ -199,7 +189,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             : Color(0xff111C20),
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: scoringColor == index
+                          color: selectedClassIndex == index
                               ? AppTheme.kSelectedColor
                               : Colors.grey,
                         )),
@@ -210,7 +200,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             .textTheme
                             .headline1!
                             .copyWith(
-                                color: scoringColor == index
+                                color: selectedClassIndex == index
                                     ? AppTheme.kSelectedColor
                                     : Theme.of(context)
                                         .colorScheme
@@ -288,7 +278,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
               name: "${assessmentController.text}_${classController.text}"));
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SubjectSelection()),
+            MaterialPageRoute(
+                builder: (context) =>
+                    // SuccessScreen()
+                    SubjectSelection(
+                      selectedClass: selectedClassIndex.toString(),
+                    )
+                    ),
           );
         },
         label: Row(
@@ -310,10 +306,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
   }
 
   void _tapDown(TapDownDetails details) {
-    _controller!.forward();
+    //  _controller!.forward();
   }
 
   void _tapUp(TapUpDetails details) {
-    _controller!.reverse();
+    //  _controller!.reverse();
   }
 }

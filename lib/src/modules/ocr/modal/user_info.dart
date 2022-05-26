@@ -10,13 +10,15 @@ class UserInformation {
   String? profilePicture;
     @HiveField(3)
   String? authorizationToken;
-  
+    @HiveField(4)
+  String? refreshAuthorizationToken;
   
 
   UserInformation({
     this.userName,
     this.userEmail,
     this.profilePicture,
-    this.authorizationToken
+    this.authorizationToken,
+    this.refreshAuthorizationToken
   });
 }

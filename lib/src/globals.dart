@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/bigquerydatatransfer/v1.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -112,7 +111,7 @@ class Globals {
   static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe870];
   static List ocrResultIconsName = [
     "Share",
-    "Add to drive",
+    "Go to drive",
     "History",
     "Download"
   ];
@@ -122,9 +121,10 @@ class Globals {
   ];
   static List gradeList = [];
   static bool iscameraPopup = true;
-  static String? folderId;
+  static String? googleDriveFolderId;
+  static String? googleDriveFolderPath;
   static String? fileId;
-  static String? authorizationToken;
+  // static String? authorizationToken;
   static late List<StudentAssessmentInfo>? studentInfo = [];
   static String? shareableLink;
   static String? pointpossible = '2';

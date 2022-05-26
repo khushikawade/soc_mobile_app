@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,9 +35,13 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
         CommonBackGroundImgWidget(),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: CustomOcrAppBarWidget(isBackButton: true),
+          appBar: CustomOcrAppBarWidget(
+            isBackButton: true,
+            assessmentDetailPage: true,
+          ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: [
               SpacerWidget(_KVertcalSpace * 0.50),
               Padding(
@@ -54,24 +59,33 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               BlocBuilder(
                   bloc: _driveBloc,
                   builder: (BuildContext contxt, GoogleDriveState state) {
-                    if (state is GoogleDriveLoading) {
-                      return Container(
-                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.3),
-                        alignment: Alignment.center,
+                    if (state is GoogleDriveGetSuccess) {
+                      return state.obj.length > 0
+                          ? listView(state.obj)
+                          : Expanded(
+                              child: NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: true,
+                                  isNews: false,
+                                  isEvents: false),
+                            );
+                    }
+                    //  else if (state is GoogleNoAssessment) {
+                    //   return Container(
+                    //     height: MediaQuery.of(context).size.height * 0.7,
+                    //     child: Center(
+                    //         child: Text(
+                    //       "No assessment available",
+                    //       style: Theme.of(context).textTheme.bodyText1!,
+                    //     )),
+                    //   );
+                    // }
+                    return Container(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: Center(
                           child: CircularProgressIndicator(
                         color: Theme.of(context).colorScheme.primaryVariant,
-                      ));
-                    } else if (state is GoogleDriveGetSuccess) {
-                      return listView(state.obj);
-                    } else if (state is GoogleNoAssessment) {
-                      return Center(
-                          child: Text(
-                        "No assessment available",
-                        style: Theme.of(context).textTheme.bodyText1!,
-                      ));
-                    } else {
-                      return Container();
-                    }
+                      )),
+                    );
                   })
             ],
           ),
@@ -80,7 +94,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     );
   }
 
-  Widget listView(List<Assessment> _list) {
+  Widget listView(List<HistoryAssessment> _list) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
           ? MediaQuery.of(context).size.height * 0.75
@@ -97,7 +111,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     );
   }
 
-  Widget _buildList(List<Assessment> list, int index) {
+  Widget _buildList(List<HistoryAssessment> list, int index) {
     return InkWell(
       onTap: () {
         print(list[index].fileid);

@@ -48,7 +48,7 @@ class OcrErrorReceived extends OcrState {
 }
 
 class SubjectDataSuccess extends OcrState {
-  final List<SubjectList>? obj;
+  final List<SubjectDetailList>? obj;
   SubjectDataSuccess({
     this.obj,
   });
@@ -62,8 +62,24 @@ class SubjectDataSuccess extends OcrState {
   List<Object> get props => [];
 }
 
+//SearchSubjectDetails
+class SearchSubjectDetailsSuccess extends OcrState {
+  final List<SubjectDetailList>? obj;
+  SearchSubjectDetailsSuccess({
+    this.obj,
+  });
+  SearchSubjectDetailsSuccess copyWith({
+    obj,
+  }) {
+    return SearchSubjectDetailsSuccess();
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
 class NycDataSuccess extends OcrState {
-  final List<SubjectList> obj;
+  final List<SubjectDetailList> obj;
   NycDataSuccess({
     required this.obj,
   });
@@ -80,7 +96,7 @@ class NycDataSuccess extends OcrState {
 }
 
 class NycSubDataSuccess extends OcrState {
-  final List<SubjectList>? obj;
+  final List<SubjectDetailList>? obj;
   NycSubDataSuccess({
     this.obj,
   });
